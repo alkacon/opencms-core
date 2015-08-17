@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import org.owasp.validator.html.ScanException;
 
 /**
  * This class is responsible for automatically escaping parameters in Flex requests. It keeps track
- * of which parameters to escape (or not escape), and which parameters need to be processed by AntiSamy.<p> 
+ * of which parameters to escape (or not escape), and which parameters need to be processed by AntiSamy.<p>
  */
 public class CmsParameterEscaper {
 
@@ -88,11 +88,11 @@ public class CmsParameterEscaper {
 
     /**
      * Helper method for reading an AntiSamy policy file from the VFS.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param sitePath the site path of the policy file
-     *  
-     * @return the policy object for the given path 
+     *
+     * @return the policy object for the given path
      */
     public static Policy readPolicy(CmsObject cms, String sitePath) {
 
@@ -118,11 +118,11 @@ public class CmsParameterEscaper {
 
     /**
      * Creates a new AntiSamy instance for a given policy path.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param policyPath the policy site path
-     *  
-     * @return the new AntiSamy instance 
+     *
+     * @return the new AntiSamy instance
      */
     public AntiSamy createAntiSamy(CmsObject cms, String policyPath) {
 
@@ -150,10 +150,10 @@ public class CmsParameterEscaper {
 
     /**
      * Enables the AntiSamy HTML cleaning for some parameters.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param policyPath the policy site path in the VFS 
-     * @param params the parameters for which HTML cleaning should be  enabled 
+     *
+     * @param cms the current CMS context
+     * @param policyPath the policy site path in the VFS
+     * @param params the parameters for which HTML cleaning should be  enabled
      */
     public void enableAntiSamy(CmsObject cms, String policyPath, Set<String> params) {
 
@@ -163,11 +163,11 @@ public class CmsParameterEscaper {
 
     /**
      * Escapes a single parameter value.<p>
-     * 
-     * @param name the name of the parameter 
-     * @param html the value of the parameter 
-     * 
-     * @return the escaped parameter value 
+     *
+     * @param name the name of the parameter
+     * @param html the value of the parameter
+     *
+     * @return the escaped parameter value
      */
     public String escape(String name, String html) {
 
@@ -186,11 +186,11 @@ public class CmsParameterEscaper {
 
     /**
      * Escapes an array of parameter values.<p>
-     * 
-     * @param name the parameter name 
+     *
+     * @param name the parameter name
      * @param values the parameter values
-     *  
-     * @return the escaped parameter values 
+     *
+     * @return the escaped parameter values
      */
     public String[] escape(String name, String[] values) {
 
@@ -214,10 +214,10 @@ public class CmsParameterEscaper {
 
     /**
      * Filters HTML input using the internal AntiSamy instance.<p>
-     * 
-     * @param html the HTML to filter 
-     * 
-     * @return the filtered HTML 
+     *
+     * @param html the HTML to filter
+     *
+     * @return the filtered HTML
      */
     public String filterAntiSamy(String html) {
 
@@ -245,8 +245,8 @@ public class CmsParameterEscaper {
 
     /**
      * Sets the set of names of parameters which shouldn't be escaped.<p>
-     * 
-     * @param exceptions a set of parameter names 
+     *
+     * @param exceptions a set of parameter names
      */
     public void setExceptions(Collection<String> exceptions) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-/** 
+/**
  * Action handler for single actions from logging view.<p>
- * 
+ *
  * */
 public class CmsChangeLogLevelAction extends CmsListDirectAction {
 
@@ -46,7 +46,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     protected Level m_logLevel;
 
     /** Constructor so generate an instance.<p>
-     * 
+     *
      * @param id The id of the Log-channel
      * @param level The level of the Log-channel
      */
@@ -57,7 +57,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     }
 
     /** Constructor so generate an instance.<p>
-     * 
+     *
      * @param id Id of the Log-channel
      * @param level Level of the Log-channel
      * @param helpText Helptext of the Log-Channel
@@ -71,7 +71,7 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
     }
 
     /** Constructor so generate an instance.<p>
-     * 
+     *
      * @param id Id of the Log-channel
      * @param level Level of the Log-channel
      * @param name Name of the Log-channel
@@ -87,9 +87,9 @@ public class CmsChangeLogLevelAction extends CmsListDirectAction {
 
     /**
      * Help method to resolve the name to use.<p>
-     * 
+     *
      * @param locale the used locale
-     * 
+     *
      * @return the name
      */
     @Override

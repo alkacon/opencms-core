@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,15 +40,15 @@ import java.util.List;
 
 /**
  * Sitemap context menu create gallery entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsOpenGalleryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -66,7 +66,8 @@ public class CmsOpenGalleryMenuEntry extends A_CmsSitemapMenuEntry {
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
 
         CmsGalleryConfiguration configuration = new CmsGalleryConfiguration();
-        List<String> typeNames = controller.getGalleryType(new Integer(entry.getResourceTypeId())).getContentTypeNames();
+        List<String> typeNames = controller.getGalleryType(
+            new Integer(entry.getResourceTypeId())).getContentTypeNames();
         configuration.setSearchTypes(typeNames);
         configuration.setResourceTypes(typeNames);
         configuration.setGalleryMode(GalleryMode.adeView);

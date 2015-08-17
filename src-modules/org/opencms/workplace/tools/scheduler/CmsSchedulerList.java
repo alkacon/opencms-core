@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,10 +66,10 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main scheduled jobs management list view.<p>
- * 
+ *
  * Defines the list columns and possible actions for scheduled jobs.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSchedulerList extends A_CmsListDialog {
 
@@ -147,7 +147,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSchedulerList(CmsJspActionElement jsp) {
@@ -163,7 +163,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -175,11 +175,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
     @Override
     public void executeListMultiActions() throws CmsRuntimeException {
@@ -194,9 +194,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
                     OpenCms.getScheduleManager().unscheduleJob(getCms(), listItem.getId());
                     removedItems.add(listItem.getId());
                 } catch (CmsException e) {
-                    throw new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_UNSCHEDULE_JOB_1,
-                        listItem.getId()), e);
+                    throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_UNSCHEDULE_JOB_1, listItem.getId()),
+                        e);
                 }
             }
             // update the XML configuration
@@ -210,13 +210,14 @@ public class CmsSchedulerList extends A_CmsListDialog {
                 // toggle the active state of the selected item(s)
                 CmsListItem listItem = itItems.next();
                 try {
-                    CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(listItem.getId()).clone();
+                    CmsScheduledJobInfo job = (CmsScheduledJobInfo)OpenCms.getScheduleManager().getJob(
+                        listItem.getId()).clone();
                     job.setActive(activate);
                     OpenCms.getScheduleManager().scheduleJob(getCms(), job);
                 } catch (CmsException e) {
-                    throw new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_SCHEDULE_JOB_1,
-                        listItem.getId()), e);
+                    throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_SCHEDULE_JOB_1, listItem.getId()),
+                        e);
                 }
             }
             // update the XML configuration
@@ -236,7 +237,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // edit a job from the list
             String jobId = getSelectedItem().getId();
-            // forward to the edit job screen with additional parameters               
+            // forward to the edit job screen with additional parameters
             Map<String, String[]> params = new HashMap<String, String[]>();
             params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, new String[] {jobId});
             // set action parameter to initial dialog call
@@ -434,7 +435,8 @@ public class CmsSchedulerList extends A_CmsListDialog {
             }
         };
         jobDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
-        jobDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
+        jobDeactAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
         jobDeactAction.setIconPath(ICON_ACTIVE);
         jobDeactAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0));
         activateCol.addDirectAction(jobDeactAction);
@@ -547,14 +549,14 @@ public class CmsSchedulerList extends A_CmsListDialog {
         CmsListItemDetails jobsContextInfoDetails = new CmsListItemDetails(LIST_DETAIL_CONTEXTINFO);
         jobsContextInfoDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsContextInfoDetails.setVisible(false);
-        jobsContextInfoDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0));
-        jobsContextInfoDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0));
-        jobsContextInfoDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0));
-        jobsContextInfoDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0));
+        jobsContextInfoDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_NAME_0));
+        jobsContextInfoDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_CONTEXTINFO_HELP_0));
+        jobsContextInfoDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_NAME_0));
+        jobsContextInfoDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_CONTEXTINFO_HELP_0));
         // create formatter to display context info
         CmsContextInfoDetailsFormatter contextFormatter = new CmsContextInfoDetailsFormatter();
         contextFormatter.setUserMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_USER_0));
@@ -563,7 +565,8 @@ public class CmsSchedulerList extends A_CmsListDialog {
         contextFormatter.setRootSiteMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_ROOTSITE_0));
         contextFormatter.setEncodingMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_ENCODING_0));
         contextFormatter.setRemoteAddrMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REMADR_0));
-        contextFormatter.setRequestedURIMessage(Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0));
+        contextFormatter.setRequestedURIMessage(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_CONTEXTINFO_REQURI_0));
         jobsContextInfoDetails.setFormatter(contextFormatter);
         // add context info item detail to meta data
         metadata.addItemDetails(jobsContextInfoDetails);
@@ -572,15 +575,17 @@ public class CmsSchedulerList extends A_CmsListDialog {
         CmsListItemDetails jobsParameterDetails = new CmsListItemDetails(LIST_DETAIL_PARAMETER);
         jobsParameterDetails.setAtColumn(LIST_COLUMN_NAME);
         jobsParameterDetails.setVisible(false);
-        jobsParameterDetails.setShowActionName(Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0));
-        jobsParameterDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0));
-        jobsParameterDetails.setHideActionName(Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0));
-        jobsParameterDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0));
+        jobsParameterDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_NAME_0));
+        jobsParameterDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_SHOW_PARAMETER_HELP_0));
+        jobsParameterDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_NAME_0));
+        jobsParameterDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_JOBS_DETAIL_HIDE_PARAMETER_HELP_0));
         // create formatter to display parameters
-        jobsParameterDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_JOBS_DETAIL_PARAMETER_FORMAT_0)));
+        jobsParameterDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_JOBS_DETAIL_PARAMETER_FORMAT_0)));
         // add parameter item to metadata
         metadata.addItemDetails(jobsParameterDetails);
     }
@@ -602,7 +607,8 @@ public class CmsSchedulerList extends A_CmsListDialog {
         // add the deactivate job multi action
         CmsListMultiAction deactivateJob = new CmsListMultiAction(LIST_MACTION_DEACTIVATE);
         deactivateJob.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_NAME_0));
-        deactivateJob.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0));
+        deactivateJob.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_CONF_0));
         deactivateJob.setIconPath(ICON_MULTI_DEACTIVATE);
         deactivateJob.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_MDEACTIVATE_HELP_0));
         metadata.addMultiAction(deactivateJob);
@@ -618,7 +624,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /**
      * Writes the updated scheduled job info back to the XML configuration file and refreshes the complete list.<p>
-     * 
+     *
      * @param refresh if true, the list items are refreshed
      */
     protected void writeConfiguration(boolean refresh) {

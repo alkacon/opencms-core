@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,14 +59,14 @@ import org.apache.commons.logging.Log;
 
 /**
  * The new resource xmlcontent dialog handles the creation of a xmlcontent.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_xmlcontent.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewResourceXmlContent extends CmsNewResource {
 
@@ -96,7 +96,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceXmlContent(CmsJspActionElement jsp) {
@@ -106,7 +106,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -118,7 +118,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Returns the possible model files for the new resource.<p>
-     * 
+     *
      * @param cms the current users context to work with
      * @param currentFolder the folder
      * @param newResourceTypeName the resource type name for the new resource to create
@@ -161,7 +161,8 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
                 if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
                     // folder for master files exists, get all files of the same resource type
-                    CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resType.getTypeId());
+                    CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                        resType.getTypeId());
                     return cms.readResources(masterFolder, filter, false);
                 }
             }
@@ -173,7 +174,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Creates the resource using the specified resource name and the newresourcetype parameter.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     @Override
@@ -196,7 +197,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
                 getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_MODEL, getParamModelFile());
             }
 
-            // create the new resource            
+            // create the new resource
             getCms().createResource(fullResourceName, resType.getTypeId(), null, properties);
             setParamResource(fullResourceName);
             setResourceCreated(true);
@@ -209,7 +210,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     /**
      * Returns the http URI of the current dialog, to be used
      * as value for the "action" attribute of a html form.<p>
-     *  
+     *
      * @return the http URI of the current dialog
      */
     @Override
@@ -224,7 +225,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Returns the possible model files for the new resource.<p>
-     * 
+     *
      * @return the possible model files for the new resource
      */
     protected List<CmsResource> getModelFiles() {
@@ -234,7 +235,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Returns the parameter that specifies the model file name.<p>
-     * 
+     *
      * @return the parameter that specifies the model file name
      */
     public String getParamModelFile() {
@@ -244,7 +245,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Returns if model files are available for the new resource.<p>
-     * 
+     *
      * @return true if model files are available for the new resource, otherwise false
      */
     public boolean hasModelFiles() {
@@ -262,7 +263,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_CHECKMODEL.equals(getParamAction())) {
@@ -312,7 +313,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
+            // build title for new resource dialog
             setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLCONTENT_0));
             setInitialResourceName();
         }
@@ -320,7 +321,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
 
     /**
      * Sets the parameter that specifies the model file name.<p>
-     * 
+     *
      * @param paramMasterFile the parameter that specifies the model file name
      */
     public void setParamModelFile(String paramMasterFile) {

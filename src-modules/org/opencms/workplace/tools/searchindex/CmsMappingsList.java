@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,12 +61,12 @@ import javax.servlet.ServletException;
 import org.apache.commons.logging.Log;
 
 /**
- * A list that displays the mappings of a request parameter given 
- * <code>{@link org.opencms.search.fields.CmsLuceneField}</code> ("field"). 
- * 
- * This list is no stand-alone page but has to be embedded in another dialog 
+ * A list that displays the mappings of a request parameter given
+ * <code>{@link org.opencms.search.fields.CmsLuceneField}</code> ("field").
+ *
+ * This list is no stand-alone page but has to be embedded in another dialog
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsMappingsList extends A_CmsEmbeddedListDialog {
@@ -112,7 +112,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsMappingsList(CmsJspActionElement jsp) {
@@ -122,7 +122,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -134,7 +134,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -175,13 +175,14 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
                         CmsListItem listItem = itItems.next();
                         Iterator<I_CmsSearchFieldMapping> itMappings = curField.getMappings().iterator();
                         while (itMappings.hasNext()) {
-                            // iterate all field mappings 
+                            // iterate all field mappings
                             CmsSearchFieldMapping curMapping = (CmsSearchFieldMapping)itMappings.next();
                             String itemValue = (String)listItem.get(LIST_COLUMN_VALUE);
                             String itemType = (String)listItem.get(LIST_COLUMN_TYPE);
                             // match the selected mapping
                             if (curMapping.getType().toString().equals(itemType)
-                                && (((curMapping.getParam() == null) && (itemValue == null)) || (curMapping.getParam().equals(itemValue)))) {
+                                && (((curMapping.getParam() == null) && (itemValue == null))
+                                    || (curMapping.getParam().equals(itemValue)))) {
                                 // mark for deletion
                                 deleteMappings.add(curMapping);
                             }
@@ -224,7 +225,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         if (action.equals(LIST_ACTION_EDIT)
             || action.equals(LIST_ACTION_EDITTYPE)
             || action.equals(LIST_ACTION_EDITVALUE)) {
-            // forward to the edit mapping screen   
+            // forward to the edit mapping screen
             getToolManager().jspForwardTool(
                 this,
                 "/searchindex/fieldconfigurations/fieldconfiguration/field/editmapping",
@@ -235,7 +236,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Returns the request parameter "field".<p>
-     *  
+     *
      * @return the request parameter "field"
      */
     public String getParamField() {
@@ -245,7 +246,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Returns the request parameter "fieldconfiguration".<p>
-     *  
+     *
      * @return the request parameter "fieldconfiguration"
      */
     public String getParamFieldconfiguration() {
@@ -255,11 +256,11 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Sets the request parameter "field". <p>
-     * 
-     * Method intended for workplace-proprietary automatic filling of 
+     *
+     * Method intended for workplace-proprietary automatic filling of
      * request parameter values to dialogs, not for manual invocation. <p>
-     *  
-     * @param field the request parameter "field" to set 
+     *
+     * @param field the request parameter "field" to set
      */
     public void setParamField(String field) {
 
@@ -268,11 +269,11 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
 
     /**
      * Sets the request parameter "fieldconfiguration". <p>
-     * 
-     * Method intended for workplace-proprietary automatic filling of 
+     *
+     * Method intended for workplace-proprietary automatic filling of
      * request parameter values to dialogs, not for manual invocation. <p>
-     *  
-     * @param fieldconfiguration the request parameter "fieldconfiguration" to set 
+     *
+     * @param fieldconfiguration the request parameter "fieldconfiguration" to set
      */
     public void setParamFieldconfiguration(String fieldconfiguration) {
 
@@ -389,18 +390,18 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         // add add multi action
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETEMAPPING);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_0));
-        deleteMultiAction.setHelpText(Messages.get().container(
-            Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0));
+        deleteMultiAction.setHelpText(
+            Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_NAME_HELP_0));
+        deleteMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_LIST_FIELD_MACTION_DELETEMAPPING_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }
 
     /**
-     * Writes the updated search configuration back to the XML 
+     * Writes the updated search configuration back to the XML
      * configuration file and refreshes the complete list.<p>
-     * 
+     *
      * @param refresh if true, the list items are refreshed
      */
     protected void writeConfiguration(boolean refresh) {
@@ -413,8 +414,8 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Returns the configured mappings of the current field. 
-     * 
+     * Returns the configured mappings of the current field.
+     *
      * @return the configured mappings of the current field
      */
     private List<I_CmsSearchFieldMapping> getMappings() {
@@ -435,9 +436,10 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
         } else {
             result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                        A_CmsFieldConfigurationDialog.PARAM_FIELDCONFIGURATION));
             }
         }
         return result;

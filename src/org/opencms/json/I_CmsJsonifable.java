@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,20 +27,19 @@
 
 package org.opencms.json;
 
-
 /**
  * To convert objects to json.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public interface I_CmsJsonifable {
 
     /**
      * Returns the JSON representation of this object.<p>
-     * 
+     *
      * @return the JSON representation of this object
-     * 
-     * @throws JSONException if something goes wrong 
+     *
+     * @throws JSONException if something goes wrong
      */
     JSONObject toJson() throws JSONException;
 }

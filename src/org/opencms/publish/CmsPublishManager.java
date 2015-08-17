@@ -62,8 +62,7 @@ public class CmsPublishManager {
      */
     public static enum PublishListRemoveMode {
         /** Remove publish list entries for all users if a resource is published. */
-        allUsers,
-        /** Remove publish list entry for the current user if a resource is published. */
+        allUsers, /** Remove publish list entry for the current user if a resource is published. */
         currentUser
     }
 
@@ -150,9 +149,10 @@ public class CmsPublishManager {
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.PROJECT_MANAGER)
             && !cms.getRequestContext().getCurrentUser().getId().equals(publishJob.getUserId())) {
             // Can only be executed by somebody with the role CmsRole#PROJECT_MANAGER or the owner of the job
-            throw new CmsSecurityException(Messages.get().container(
-                Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
-                cms.getRequestContext().getCurrentUser().getName()));
+            throw new CmsSecurityException(
+                Messages.get().container(
+                    Messages.ERR_PUBLISH_ENGINE_ABORT_DENIED_1,
+                    cms.getRequestContext().getCurrentUser().getName()));
         }
         m_publishEngine.abortPublishJob(cms.getRequestContext().getCurrentUser().getId(), publishJob, removeJob);
     }
@@ -271,8 +271,9 @@ public class CmsPublishManager {
      */
     public CmsPublishList getPublishList(CmsObject cms) throws CmsException {
 
-        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
-            cms.getRequestContext().getCurrentProject()));
+        return m_securityManager.fillPublishList(
+            cms.getRequestContext(),
+            new CmsPublishList(cms.getRequestContext().getCurrentProject()));
     }
 
     /**
@@ -288,12 +289,14 @@ public class CmsPublishManager {
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList(CmsObject cms, CmsResource directPublishResource, boolean directPublishSiblings)
-    throws CmsException {
+    public CmsPublishList getPublishList(
+        CmsObject cms,
+        CmsResource directPublishResource,
+        boolean directPublishSiblings) throws CmsException {
 
-        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
-            directPublishResource,
-            directPublishSiblings));
+        return m_securityManager.fillPublishList(
+            cms.getRequestContext(),
+            new CmsPublishList(directPublishResource, directPublishSiblings));
     }
 
     /**
@@ -337,10 +340,9 @@ public class CmsPublishManager {
         boolean directPublishSiblings,
         boolean publishSubResources) throws CmsException {
 
-        return m_securityManager.fillPublishList(cms.getRequestContext(), new CmsPublishList(
-            directPublishResources,
-            directPublishSiblings,
-            publishSubResources));
+        return m_securityManager.fillPublishList(
+            cms.getRequestContext(),
+            new CmsPublishList(directPublishResources, directPublishSiblings, publishSubResources));
     }
 
     /**

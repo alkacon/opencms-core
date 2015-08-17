@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,16 +32,16 @@ import org.opencms.test.OpenCmsTestCase;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** 
+/**
  * Tests the database creation / removal used during setup.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsSetupDb extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSetupDb(String arg0) {
@@ -51,7 +51,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class (becasue the order of test cases is important here).<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -81,7 +81,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
         setupDb.createDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
-        // check for errors 
+        // check for errors
         checkErrors(setupDb);
 
         // close connections
@@ -102,7 +102,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
         setupDb.createTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
-        // check for errors 
+        // check for errors
         checkErrors(setupDb);
 
         // close connections
@@ -123,7 +123,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = getSetupDb(m_setupConnection);
         setupDb.dropDatabase(getDbProduct(), getReplacer(m_defaultConnection), true);
 
-        // check for errors 
+        // check for errors
         checkErrors(setupDb);
 
         // close connections
@@ -144,7 +144,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = getSetupDb(m_defaultConnection);
         setupDb.dropTables(getDbProduct(), getReplacer(m_defaultConnection), true);
 
-        // check for errors 
+        // check for errors
         checkErrors(setupDb);
 
         // close connections

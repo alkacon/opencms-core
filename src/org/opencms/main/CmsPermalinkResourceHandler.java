@@ -87,8 +87,11 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException, CmsPermissionViolationException {
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsResourceInitException, CmsPermissionViolationException {
 
         // only do something if the resource was not found
         if (resource == null) {
@@ -137,7 +140,9 @@ public class CmsPermalinkResourceHandler implements I_CmsResourceInit {
                         CmsResource pageResource = cms.readResource(pageId);
                         if (res != null) {
                             CmsResource detailResource = cms.readResource(detailId);
-                            String detailName = cms.getDetailName(detailResource, cms.getRequestContext().getLocale(), // the locale in the request context should be the locale of the container page
+                            String detailName = cms.getDetailName(
+                                detailResource,
+                                cms.getRequestContext().getLocale(), // the locale in the request context should be the locale of the container page
                                 OpenCms.getLocaleManager().getDefaultLocales());
                             CmsResource parentFolder;
                             if (pageResource.isFile()) {

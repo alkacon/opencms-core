@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Select area widget. Allows the user to select an area inside the widget.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAreaSelectPanel extends Composite
@@ -82,16 +82,11 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
     /** States of the slect area panel. */
     private enum State {
         /** Dragging the selection. */
-        DRAGGING,
-        /** Nothing selected. */
-        EMPTY,
-        /** Resizing the height. */
-        RESIZE_HEIGHT,
-        /** Resizing the width. */
-        RESIZE_WIDTH,
-        /** Selected. */
-        SELECTED,
-        /** Selecting new selection. */
+        DRAGGING, /** Nothing selected. */
+        EMPTY, /** Resizing the height. */
+        RESIZE_HEIGHT, /** Resizing the width. */
+        RESIZE_WIDTH, /** Selected. */
+        SELECTED, /** Selecting new selection. */
         SELECTING
     }
 
@@ -260,9 +255,9 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Returns the position of the selected area, or <code>null</code> if nothing is selected.<p>
-     * 
-     * @param relative if <code>true</code> the relative position is returned, otherwise the absolute position 
-     * 
+     *
+     * @param relative if <code>true</code> the relative position is returned, otherwise the absolute position
+     *
      * @return the position of the selected area
      */
     public CmsPositionBean getAreaPosition(boolean relative) {
@@ -363,7 +358,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
                     case BORDER_BOTTOM:
                         m_state = State.RESIZE_HEIGHT;
 
-                        // fixing opposite border                        
+                        // fixing opposite border
                         m_firstX = m_currentSelection.getLeft();
                         m_firstY = m_currentSelection.getTop();
                         break;
@@ -454,7 +449,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
             case SELECTING:
                 if (m_heightToWidth > 0) {
                     // fixed height to width ratio
-                    // calculate the appropriate dimensions                    
+                    // calculate the appropriate dimensions
                     int tempX = getXForY(secondX, secondY);
                     if (((tempX > secondX) && (secondX > m_firstX)) || ((tempX < secondX) && (secondX < m_firstX))) {
                         secondY = getYForX(secondX, secondY);
@@ -583,7 +578,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Sets the selection area.<p>
-     * 
+     *
      * @param relative <code>true</code> if provided position is relative to the select area, not absolute to the page
      * @param pos the area position to select
      */
@@ -617,7 +612,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Sets a fixed selection ratio. Set <code>0</code> to remove the fix.<p>
-     * 
+     *
      * @param heightToWidth the height to width ratio
      */
     public void setRatio(double heightToWidth) {
@@ -639,8 +634,8 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Fires the value change event.<p>
-     * 
-     * @param alwaysFire <code>true</code> to always fire the change event, ignoring the fire all flag 
+     *
+     * @param alwaysFire <code>true</code> to always fire the change event, ignoring the fire all flag
      */
     private void fireChangeEvent(boolean alwaysFire) {
 
@@ -651,10 +646,10 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Calculates the matching X (left/width) value in case of a fixed height/width ratio.<p>
-     * 
+     *
      * @param newX the cursor X offset to the selection area
      * @param newY the cursor Y offset to the selection area
-     * 
+     *
      * @return the matching X value
      */
     private int getXForY(int newX, int newY) {
@@ -669,10 +664,10 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Calculates the matching Y (top/height) value in case of a fixed height/width ratio.<p>
-     * 
+     *
      * @param newX the cursor X offset to the selection area
      * @param newY the cursor Y offset to the selection area
-     * 
+     *
      * @return the matching Y value
      */
     private int getYForX(int newX, int newY) {
@@ -687,16 +682,22 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Moves the select area to the specified position, while keeping the size.<p>
-     * 
+     *
      * @param posX the new X position
      * @param posY the new Y position
      */
     private void moveTo(int posX, int posY) {
 
-        posX = (posX < 0) ? 0 : (((posX + m_currentSelection.getWidth()) >= m_elementWidth) ? m_elementWidth
-            - m_currentSelection.getWidth() : posX);
-        posY = (posY < 0) ? 0 : (((posY + m_currentSelection.getHeight()) >= m_elementHeight) ? m_elementHeight
-            - m_currentSelection.getHeight() : posY);
+        posX = (posX < 0)
+        ? 0
+        : (((posX + m_currentSelection.getWidth()) >= m_elementWidth)
+        ? m_elementWidth - m_currentSelection.getWidth()
+        : posX);
+        posY = (posY < 0)
+        ? 0
+        : (((posY + m_currentSelection.getHeight()) >= m_elementHeight)
+        ? m_elementHeight - m_currentSelection.getHeight()
+        : posY);
 
         m_markerStyle.setTop(posY, Unit.PX);
         m_markerStyle.setLeft(posX, Unit.PX);
@@ -717,7 +718,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Setting a new left/top value for the selection.<p>
-     * 
+     *
      * @param secondX the cursor X offset to the selection area
      */
     private void positionX(int secondX) {
@@ -731,7 +732,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Setting a new top/height value for the selection.<p>
-     * 
+     *
      * @param secondY the cursor Y offset to the selection area
      */
     private void positionY(int secondY) {
@@ -755,7 +756,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Adjusts the select area height, while keeping the Y position of the top/left corner.<p>
-     * 
+     *
      * @param height the new height
      */
     private void setSelectHeight(int height) {
@@ -769,7 +770,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Sets position and size of the select area.<p>
-     * 
+     *
      * @param posX the new X position
      * @param posY the new Y position
      * @param height the new height
@@ -783,7 +784,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Sets X position and width of the select area.<p>
-     * 
+     *
      * @param posX the new X position
      * @param width the new width
      */
@@ -805,7 +806,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Sets Y position and height of the select area.<p>
-     * 
+     *
      * @param posY the new Y position
      * @param height the new height
      */
@@ -823,7 +824,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Adjusts the select area width, while keeping the X position of the top/left corner.<p>
-     * 
+     *
      * @param width the new width
      */
     private void setSelectWidth(int width) {
@@ -839,7 +840,7 @@ HasClickHandlers, HasMouseMoveHandlers, MouseDownHandler, MouseUpHandler, MouseM
 
     /**
      * Shows or hides the select area.<p>
-     * 
+     *
      * @param show if <code>true</code> the select area will be shown
      */
     private void showSelect(boolean show) {

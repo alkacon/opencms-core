@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,25 +38,27 @@ import java.util.List;
 
 /**
  * Wrapper class for the different types of diff modes.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  * <li>{@link #ALL}</li>
  * <li>{@link #DIFF_ONLY}</li>
  * </ul>
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsDiffViewMode implements Serializable {
 
     /** Constant for viewing all lines. */
-    public static final CmsDiffViewMode ALL = new CmsDiffViewMode("all", Messages.get().container(
-        Messages.GUI_DIFF_MODE_DIFFONLY_NAME_0));
+    public static final CmsDiffViewMode ALL = new CmsDiffViewMode(
+        "all",
+        Messages.get().container(Messages.GUI_DIFF_MODE_DIFFONLY_NAME_0));
 
     /** Constant for viewing only the different lines. */
-    public static final CmsDiffViewMode DIFF_ONLY = new CmsDiffViewMode("diff_only", Messages.get().container(
-        Messages.GUI_DIFF_MODE_ALL_NAME_0));
+    public static final CmsDiffViewMode DIFF_ONLY = new CmsDiffViewMode(
+        "diff_only",
+        Messages.get().container(Messages.GUI_DIFF_MODE_ALL_NAME_0));
 
     /** Array constant for all available align types. */
     private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
@@ -76,7 +78,7 @@ public final class CmsDiffViewMode implements Serializable {
     /**
      * Private constructor.
      * <p>
-     * 
+     *
      * @param mode the view mode
      * @param name the name to show
      */
@@ -88,11 +90,11 @@ public final class CmsDiffViewMode implements Serializable {
 
     /**
      * Parses an string into an element of this enumeration.<p>
-     * 
+     *
      * @param value the mode to parse
-     * 
+     *
      * @return the enumeration element
-     * 
+     *
      * @throws CmsIllegalArgumentException if the given value could not be matched against an
      *             element of this type.
      */
@@ -108,15 +110,16 @@ public final class CmsDiffViewMode implements Serializable {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-            value,
-            CmsDiffViewMode.class.getName()));
+        throw new CmsIllegalArgumentException(
+            org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
+                value,
+                CmsDiffViewMode.class.getName()));
     }
 
     /**
      * Returns the mode string.<p>
-     * 
+     *
      * @return the mode string
      */
     public String getMode() {
@@ -126,7 +129,7 @@ public final class CmsDiffViewMode implements Serializable {
 
     /**
      * Returns the name to show.<p>
-     * 
+     *
      * @return the name to show
      */
     public CmsMessageContainer getName() {

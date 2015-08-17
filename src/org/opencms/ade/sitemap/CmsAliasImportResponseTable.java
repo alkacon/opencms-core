@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ public class CmsAliasImportResponseTable {
 
     /**
      * Adds a list of alias import results, and returns the key under which they were stored.<p>
-     * 
-     * @param importResults the alias import results 
-     * 
+     *
+     * @param importResults the alias import results
+     *
      * @return the key under which the alias import results were stored
      */
     public synchronized String addImportResult(List<CmsAliasImportResult> importResults) {
@@ -58,10 +58,10 @@ public class CmsAliasImportResponseTable {
 
     /**
      * Removes the list of alias import results for the given key and returns it.<p>
-     * 
-     * @param key the alias import result key 
-     * 
-     * @return the list of alias import results 
+     *
+     * @param key the alias import result key
+     *
+     * @return the list of alias import results
      */
     public synchronized List<CmsAliasImportResult> getAndRemove(String key) {
 

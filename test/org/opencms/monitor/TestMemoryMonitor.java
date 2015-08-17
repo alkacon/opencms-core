@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,14 +39,14 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the memory monitor.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestMemoryMonitor extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestMemoryMonitor(String arg0) {
@@ -56,7 +56,7 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -88,14 +88,14 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
 
     /**
      * Tests the memory monitor.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testMemoryMonitor() throws Exception {
 
         System.out.println("Testing the OpenCms memory monitor.");
 
-        // generate job description 
+        // generate job description
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);

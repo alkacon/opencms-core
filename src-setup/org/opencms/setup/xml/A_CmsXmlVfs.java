@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.dom4j.Document;
 
 /**
  * Skeleton for handling opencms-vfs.xml.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsXmlVfs extends A_CmsSetupXmlUpdate {
@@ -49,7 +49,7 @@ public abstract class A_CmsXmlVfs extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a resource type node.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the resource type (ie. <code>/opencms/vfs/resources/resourcetypes/type[@name='...']</code>)
      * @param name the name attribute value
@@ -65,7 +65,7 @@ public abstract class A_CmsXmlVfs extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a resource type parameter.<p>
-     * 
+     *
      * @param document the document to modify
      * @param xpath the xpath to the resource type (ie. <code>/opencms/vfs/resources/resourcetypes/type[@name='...']</code>)
      * @param name the parameter name

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * PostgreSQL implementation of the generic Alter Table class.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsUpdateDBAlterTables {
@@ -148,7 +148,7 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBAlterTables()
@@ -170,7 +170,7 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
 
     /**
      * Initializes the replacer.<p>
-     * 
+     *
      * @param replacer the replacer
      * @param tableName the table name
      * @param fieldName the field name
@@ -184,10 +184,10 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.db.update6to7.CmsU
 
     /**
      * Fixes the database schema.<p>
-     * 
+     *
      * @param dbCon database connection
-     * 
-     * @throws SQLException if something goes wrong changing the schema 
+     *
+     * @throws SQLException if something goes wrong changing the schema
      */
     private void fixSchema(CmsSetupDb dbCon) throws SQLException {
 

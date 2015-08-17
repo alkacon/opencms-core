@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A VFS indexer that resolves locale dependent documents.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsDependencyIndexer extends CmsVfsIndexer {
@@ -172,7 +172,8 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
                 Map<String, List<CmsResource>> folderLookupMap = createFolderLookupMap(resources);
                 // iterate all resources found in the folder
                 for (CmsResource resource : resources) {
-                    List<CmsResource> folderContent = folderLookupMap.get(CmsResource.getFolderPath(resource.getRootPath()));
+                    List<CmsResource> folderContent = folderLookupMap.get(
+                        CmsResource.getFolderPath(resource.getRootPath()));
                     CmsDocumentDependency dep = CmsDocumentDependency.load(m_cms, resource, folderContent);
                     dep.storeInContext(m_cms);
                     // now update all the resources individually
@@ -184,9 +185,9 @@ public class CmsDependencyIndexer extends CmsVfsIndexer {
 
     /**
      * Creates a folder based lookup map for the given resource list.<p>
-     * 
+     *
      * @param resources the list of resource to build the lookup map for
-     * 
+     *
      * @return a folder based lookup map for the given resource list
      */
     protected Map<String, List<CmsResource>> createFolderLookupMap(List<CmsResource> resources) {

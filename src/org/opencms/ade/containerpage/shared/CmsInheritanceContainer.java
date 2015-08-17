@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -92,8 +92,8 @@ public class CmsInheritanceContainer implements IsSerializable {
 
     /**
      * Returns true whether the inheritance information has been changed.<p>
-     * 
-     * @return true if the inheritance information has been changed  
+     *
+     * @return true if the inheritance information has been changed
      */
     public boolean getElementsChanged() {
 
@@ -102,8 +102,8 @@ public class CmsInheritanceContainer implements IsSerializable {
 
     /**
      * Returns true when the elements have been moved.<p>
-     * 
-     * @return true if the elements have been moved  
+     *
+     * @return true if the elements have been moved
      */
     public boolean getElementsMoved() {
 
@@ -172,8 +172,8 @@ public class CmsInheritanceContainer implements IsSerializable {
 
     /**
      * Sets the 'elements changed' flag.<p>
-     * 
-     * @param elementsChanged the 'element changed' flag's new value 
+     *
+     * @param elementsChanged the 'element changed' flag's new value
      */
     public void setElementsChanged(boolean elementsChanged) {
 
@@ -182,8 +182,8 @@ public class CmsInheritanceContainer implements IsSerializable {
 
     /**
      * Sets the 'elements moved' flag.<p>
-     * 
-     * @param moved the 'element moved' flag's new value 
+     *
+     * @param moved the 'element moved' flag's new value
      */
     public void setElementsMoved(boolean moved) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -68,8 +68,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Session list for broadcasting messages.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSessionsList extends A_CmsListDialog {
 
@@ -129,7 +129,7 @@ public class CmsSessionsList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSessionsList(CmsJspActionElement jsp) {
@@ -145,7 +145,7 @@ public class CmsSessionsList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -254,7 +254,9 @@ public class CmsSessionsList extends A_CmsListDialog {
             CmsSessionInfo sessionInfo = itSessions.next();
             CmsListItem item = getList().newItem(sessionInfo.getSessionId().toString());
             CmsUser user = getCms().readUser(sessionInfo.getUserId());
-            CmsOrganizationalUnit userOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), user.getOuFqn());
+            CmsOrganizationalUnit userOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                getCms(),
+                user.getOuFqn());
             if (!(manageableOus.contains(userOu) && !user.isWebuser())) {
                 continue;
             }
@@ -429,8 +431,8 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListItemDetails emailDetail = new CmsListItemDetails(LIST_DETAIL_EMAIL);
         emailDetail.setAtColumn(LIST_COLUMN_USER);
         emailDetail.setVisible(false);
-        emailDetail.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_SESSIONS_LABEL_EMAIL_0)));
+        emailDetail.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_SESSIONS_LABEL_EMAIL_0)));
         emailDetail.setShowActionName(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_SHOW_EMAIL_NAME_0));
         emailDetail.setShowActionHelpText(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_SHOW_EMAIL_HELP_0));
         emailDetail.setHideActionName(Messages.get().container(Messages.GUI_SESSIONS_DETAIL_HIDE_EMAIL_NAME_0));
@@ -448,8 +450,8 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListMultiAction messageMultiAction = new CmsListMultiAction(LIST_MACTION_MESSAGE);
         messageMultiAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_NAME_0));
         messageMultiAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_HELP_0));
-        messageMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_CONF_0));
+        messageMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_MESSAGE_CONF_0));
         messageMultiAction.setIconPath(PATH_BUTTONS + "multi_send_message.png");
         metadata.addMultiAction(messageMultiAction);
 
@@ -457,8 +459,8 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListMultiAction emailMultiAction = new CmsListMultiAction(LIST_MACTION_EMAIL);
         emailMultiAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_NAME_0));
         emailMultiAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_HELP_0));
-        emailMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0));
+        emailMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_SESSIONS_LIST_MACTION_EMAIL_CONF_0));
         emailMultiAction.setIconPath(PATH_BUTTONS + "multi_send_email.png");
         metadata.addMultiAction(emailMultiAction);
 

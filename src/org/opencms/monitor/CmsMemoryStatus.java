@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,8 +29,8 @@ package org.opencms.monitor;
 
 /**
  * Data structure for dealing with memory status information.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMemoryStatus {
 
@@ -53,7 +53,7 @@ public class CmsMemoryStatus {
     private long m_usedMemory;
 
     /**
-     * Initializes a new instance of the memory status with the current memory values.<p> 
+     * Initializes a new instance of the memory status with the current memory values.<p>
      */
     public CmsMemoryStatus() {
 
@@ -61,9 +61,9 @@ public class CmsMemoryStatus {
     }
 
     /**
-     * Calculates the average memory consumption by updating the stored information with 
-     * the provided current information.<p>  
-     * 
+     * Calculates the average memory consumption by updating the stored information with
+     * the provided current information.<p>
+     *
      * @param currentStatus the memory status to update the average with
      */
     public void calculateAverage(CmsMemoryStatus currentStatus) {
@@ -89,7 +89,7 @@ public class CmsMemoryStatus {
 
     /**
      * Returns the current free memory, in megabytes.<p>
-     * 
+     *
      * @return the current free memory, in megabytes
      */
     public long getFreeMemory() {
@@ -99,7 +99,7 @@ public class CmsMemoryStatus {
 
     /**
      * Returns the maximum available memory, in megabytes.<p>
-     * 
+     *
      * @return the maximum available memory, in megabytes
      */
     public long getMaxMemory() {
@@ -109,7 +109,7 @@ public class CmsMemoryStatus {
 
     /**
      * Returns the amount of memory currently availble to the JVM, in megabytes.<p>
-     * 
+     *
      * @return the amount of memory currently availble to the JVM, in megabytes
      */
     public long getTotalMemory() {
@@ -119,7 +119,7 @@ public class CmsMemoryStatus {
 
     /**
      * Returns the current memory usage, in percent.<p>
-     * 
+     *
      * @return the current memory usage, in percent
      */
     public long getUsage() {
@@ -129,7 +129,7 @@ public class CmsMemoryStatus {
 
     /**
      * Returns the amount of memory currently used, in megabytes.<p>
-     * 
+     *
      * @return the amount of memory currently used, in megabytes
      */
     public long getUsedMemory() {
@@ -138,7 +138,7 @@ public class CmsMemoryStatus {
     }
 
     /**
-     * Updates this memory status with the current memory information.<p> 
+     * Updates this memory status with the current memory information.<p>
      */
     public void update() {
 

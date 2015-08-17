@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,19 +35,19 @@ import com.google.web.bindery.autobean.shared.AutoBeanFactory;
  */
 public interface I_CmsCollectorInfoFactory extends AutoBeanFactory {
 
-    /** 
+    /**
      * Creates a new AutoBean.<p>
-     * 
-     * @return the created AutoBean 
+     *
+     * @return the created AutoBean
      */
     AutoBean<I_CmsContentLoadCollectorInfo> createCollectorInfo();
 
     /**
      * Creates an AutoBean wrapping an object.<p>
-     * 
-     * @param info the object to wrap 
-     * 
-     * @return the AutoBean wrapper 
+     *
+     * @param info the object to wrap
+     *
+     * @return the AutoBean wrapper
      */
     AutoBean<I_CmsContentLoadCollectorInfo> wrapCollectorInfo(I_CmsContentLoadCollectorInfo info);
 

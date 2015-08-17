@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class CmsRefreshAction implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {

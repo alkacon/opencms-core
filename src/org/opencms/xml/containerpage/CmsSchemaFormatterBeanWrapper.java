@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,11 +66,11 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
 
     /**
      * Creates a new wrapper instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param wrappedBean the wrapped formatter 
-     * @param contentHandler the content handler to ask for additional information 
-     * @param resource the resource which should be used to ask the content handler for additional information 
+     *
+     * @param cms the CMS context to use
+     * @param wrappedBean the wrapped formatter
+     * @param contentHandler the content handler to ask for additional information
+     * @param resource the resource which should be used to ask the content handler for additional information
      */
     public CmsSchemaFormatterBeanWrapper(
         CmsObject cms,
@@ -191,7 +191,7 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getRank()
      */
     public int getRank() {
@@ -200,7 +200,7 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeName()
      */
     public String getResourceTypeName() {
@@ -214,7 +214,7 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getSettings()
      */
     public Map<String, CmsXmlContentProperty> getSettings() {
@@ -231,7 +231,7 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isAutoEnabled()
      */
     public boolean isAutoEnabled() {
@@ -248,7 +248,7 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isFromFormatterConfigFile()
      */
     public boolean isFromFormatterConfigFile() {

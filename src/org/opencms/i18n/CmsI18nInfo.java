@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import java.util.Locale;
 
 /**
  * Bundle of i18n setting to be used to setup a new request context.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsI18nInfo {
 
@@ -44,7 +44,7 @@ public class CmsI18nInfo {
 
     /**
      * Generates a new i18n info object.<p>
-     * 
+     *
      * @param locale the locale to use
      * @param encoding the encoding to use
      */
@@ -56,7 +56,7 @@ public class CmsI18nInfo {
 
     /**
      * Returns the encoding to use.<p>
-     * 
+     *
      * @return the encoding to use
      */
     public String getEncoding() {
@@ -66,7 +66,7 @@ public class CmsI18nInfo {
 
     /**
      * Returns the locale to use.<p>
-     * 
+     *
      * @return the locale to use
      */
     public Locale getLocale() {

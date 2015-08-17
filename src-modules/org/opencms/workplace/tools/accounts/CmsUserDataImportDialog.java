@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
 
 /**
  * Dialog to import user data.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
@@ -78,7 +78,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserDataImportDialog(CmsJspActionElement jsp) {
@@ -88,7 +88,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -101,6 +101,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -119,7 +120,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
             }
         }
 
-        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+        if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
             byte[] content = fi.get();
             File importFile = File.createTempFile("import_users", ".csv");
             m_importFile = importFile.getAbsolutePath();
@@ -136,18 +137,20 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
             if (line != null) {
                 List colDefs = CmsStringUtil.splitAsList(line, CmsXsltUtil.getPreferredDelimiter(line));
                 if (!colDefs.contains("name")) {
-                    errors.add(new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_USERDATA_IMPORT_CSV_MISSING_NAME_0)));
+                    errors.add(
+                        new CmsRuntimeException(
+                            Messages.get().container(Messages.ERR_USERDATA_IMPORT_CSV_MISSING_NAME_0)));
                 }
                 if ((line.indexOf("password") == -1) && CmsStringUtil.isEmptyOrWhitespaceOnly(m_password)) {
-                    errors.add(new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_USERDATA_IMPORT_CSV_MISSING_PASSWORD_0)));
+                    errors.add(
+                        new CmsRuntimeException(
+                            Messages.get().container(Messages.ERR_USERDATA_IMPORT_CSV_MISSING_PASSWORD_0)));
                 }
             }
             bufferedReader.close();
         } else {
-            errors.add(new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_USERDATA_IMPORT_NO_CONTENT_0)));
+            errors.add(
+                new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_USERDATA_IMPORT_NO_CONTENT_0)));
         }
 
         if (errors.isEmpty()) {
@@ -169,6 +172,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         StringBuffer result = new StringBuffer(256);
@@ -185,7 +189,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns the path of the file to import.<p>
-     * 
+     *
      * @return the path of the file to import
      */
     public String getImportFile() {
@@ -195,7 +199,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Returns the password to set during import.<p>
-     * 
+     *
      * @return the password to set during import
      */
     public String getPassword() {
@@ -205,7 +209,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Sets the path of the import file.<p>
-     * 
+     *
      * @param importFile the import file path
      */
     public void setImportFile(String importFile) {
@@ -215,7 +219,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Sets the password to use during import.<p>
-     * 
+     *
      * @param password the password to use during import
      */
     public void setPassword(String password) {
@@ -225,12 +229,13 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -258,6 +263,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -280,16 +286,14 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initImportObject();
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(
-            this,
-            "groups",
-            PAGES[0],
-            new CmsGroupWidget(null, null, getParamOufqn())));
+        addWidget(
+            new CmsWidgetDialogParameter(this, "groups", PAGES[0], new CmsGroupWidget(null, null, getParamOufqn())));
         addWidget(new CmsWidgetDialogParameter(this, "roles", PAGES[0], new CmsSelectWidget(getSelectRoles())));
         addWidget(new CmsWidgetDialogParameter(this, "password", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "importFile", PAGES[0], new CmsHttpUploadWidget()));
@@ -298,6 +302,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#fillWidgetValues(javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters;
@@ -332,7 +337,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
         Iterator i = getWidgets().iterator();
 
         while (i.hasNext()) {
-            // check for all widget base parameters            
+            // check for all widget base parameters
             CmsWidgetDialogParameter base = (CmsWidgetDialogParameter)i.next();
 
             List params = new ArrayList();
@@ -400,6 +405,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

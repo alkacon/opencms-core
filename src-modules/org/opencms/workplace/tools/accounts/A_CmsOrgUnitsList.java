@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ import javax.servlet.ServletException;
 
 /**
  * Main organization unit management view.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
@@ -128,7 +128,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -195,7 +195,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /**
      * Returns the path of the edit icon.<p>
-     * 
+     *
      * @return the path of the edit icon
      */
     public String getEditIcon() {
@@ -205,7 +205,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /**
      * Returns the path of the group icon.<p>
-     * 
+     *
      * @return the path of the group icon
      */
     public String getGroupIcon() {
@@ -215,7 +215,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /**
      * Returns the path of the user icon.<p>
-     * 
+     *
      * @return the path of the user icon
      */
     public String getUserIcon() {
@@ -297,11 +297,8 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
-            item.set(
-                LIST_COLUMN_ADMIN,
-                Boolean.valueOf(OpenCms.getRoleManager().hasRole(
-                    getCms(),
-                    CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(
+                OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
             item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }
@@ -310,9 +307,9 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /**
      * Returns the organizational units to display.<p>
-     * 
+     *
      * @return the organizational units
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsOrganizationalUnit> getOrgUnits() throws CmsException {
@@ -462,8 +459,8 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         usersDetails.setHideActionName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_USERS_NAME_0));
         usersDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_USERS_HELP_0));
         usersDetails.setName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_USERS_NAME_0));
-        usersDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ORGUNITS_DETAIL_USERS_NAME_0)));
+        usersDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
         // add groups details
@@ -475,23 +472,25 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         groupsDetails.setHideActionName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_GROUPS_NAME_0));
         groupsDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_GROUPS_HELP_0));
         groupsDetails.setName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_GROUPS_NAME_0));
-        groupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ORGUNITS_DETAIL_GROUPS_NAME_0)));
+        groupsDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(groupsDetails);
 
         // add resources details
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_DESCRIPTION);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_SHOW_RESOURCES_NAME_0));
-        resourcesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_ORGUNITS_DETAIL_SHOW_RESOURCES_HELP_0));
-        resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_RESOURCES_NAME_0));
-        resourcesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_ORGUNITS_DETAIL_HIDE_RESOURCES_HELP_0));
+        resourcesDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_HIDE_RESOURCES_HELP_0));
         resourcesDetails.setName(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_RESOURCES_NAME_0));
-        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_ORGUNITS_DETAIL_RESOURCES_NAME_0)));
+        resourcesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_ORGUNITS_DETAIL_RESOURCES_NAME_0)));
         metadata.addItemDetails(resourcesDetails);
 
         // makes the list searchable

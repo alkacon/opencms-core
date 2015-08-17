@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import java.util.List;
 
 /**
  * Contains the settings for the synchronization.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSynchronizeSettings implements Serializable {
 
@@ -68,9 +68,9 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Performs a check if the values that have been set are valid.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
-     * 
+     *
      * @throws CmsException in case the values are not valid
      */
     public void checkValues(CmsObject cms) throws CmsException {
@@ -101,7 +101,7 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Returns the destination path of the synchronization in the "real" file system.<p>
-     * 
+     *
      * @return the destination path of the synchronization in the "real" file system
      */
     public String getDestinationPathInRfs() {
@@ -111,9 +111,9 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Returns the source path list of the synchronization in the OpenCms VFS.<p>
-     * 
+     *
      * The objects in the list are of type <code>{@link String}</code>.
-     * 
+     *
      * @return the source path list of the synchronization in the OpenCms VFS
      */
     public List<String> getSourceListInVfs() {
@@ -133,10 +133,10 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Returns <code>true</code> if the synchonization is enabled.<p>
-     * 
-     * The synchonization is enabled if both source and destination 
+     *
+     * The synchonization is enabled if both source and destination
      * path is set, and also the enabled flag is true.<p>
-     * 
+     *
      * @return <code>true</code> if the synchonization is enabled
      */
     public boolean isSyncEnabled() {
@@ -146,7 +146,7 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Sets the destination path of the synchronization in the "real" file system.<p>
-     * 
+     *
      * @param destinationPathInRfs the destination path of the synchronization in the "real" file system to set
      */
     public void setDestinationPathInRfs(String destinationPathInRfs) {
@@ -161,15 +161,13 @@ public class CmsSynchronizeSettings implements Serializable {
             File destinationFolder = new File(destination);
             if (!destinationFolder.exists() || !destinationFolder.isDirectory()) {
                 // destination folder does not exist
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_RFS_DESTINATION_NOT_THERE_1,
-                    destination));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_RFS_DESTINATION_NOT_THERE_1, destination));
             }
             if (!destinationFolder.canWrite()) {
                 // destination folder can't be written to
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_RFS_DESTINATION_NO_WRITE_1,
-                    destination));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_RFS_DESTINATION_NO_WRITE_1, destination));
             }
             destination = destinationFolder.getAbsolutePath();
             if (destination.endsWith(File.separator)) {
@@ -192,9 +190,9 @@ public class CmsSynchronizeSettings implements Serializable {
 
     /**
      * Sets the source path list of the synchronization in the OpenCms VFS.<p>
-     * 
+     *
      * The objects in the list must be of type <code>{@link String}</code>.
-     * 
+     *
      * @param sourceListInVfs the source path list of the synchronization in the OpenCms VFS to set
      */
     public void setSourceListInVfs(List<String> sourceListInVfs) {
@@ -237,9 +235,9 @@ public class CmsSynchronizeSettings implements Serializable {
     }
 
     /**
-     * Optimizes the list of VFS source files by removing all resources that 
-     * have a parent resource already included in the list.<p> 
-     * 
+     * Optimizes the list of VFS source files by removing all resources that
+     * have a parent resource already included in the list.<p>
+     *
      * @param sourceListInVfs the list of VFS resources to optimize
      * @return the optimized result list
      */

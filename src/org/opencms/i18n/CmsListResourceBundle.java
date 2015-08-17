@@ -9,9 +9,9 @@ import java.util.ResourceBundle;
 
 /**
  * A list based resource bundle that with increased visibility of some key methods.<p>
- * 
- * @since 8.0.1 
- * 
+ *
+ * @since 8.0.1
+ *
  * @see org.opencms.i18n.CmsResourceBundleLoader
  */
 public class CmsListResourceBundle extends ListResourceBundle implements I_CmsResourceBundle {
@@ -34,8 +34,8 @@ public class CmsListResourceBundle extends ListResourceBundle implements I_CmsRe
     }
 
     /**
-     * Create a new list resource bundle as copy of an existing one.<p> 
-     * 
+     * Create a new list resource bundle as copy of an existing one.<p>
+     *
      * @param bundleMap the resource bundle map
      * @param bundleObjects the resource bundle object to copy
      */
@@ -47,10 +47,10 @@ public class CmsListResourceBundle extends ListResourceBundle implements I_CmsRe
 
     /**
      * Adds a message to this list bundle.<p>
-     * 
+     *
      * Please note:
      * All additions after the initial call to {@link #getContents()} are ignored.<p>
-     * 
+     *
      * @param key the message key
      * @param value the message itself
      */
@@ -63,10 +63,10 @@ public class CmsListResourceBundle extends ListResourceBundle implements I_CmsRe
 
     /**
      * Returns a typed clone of this resource bundle.<p>
-     * 
-     * This is required in order to make sure the objects in the permanent cache of the 
-     * list based resource bundles which are usually read from the XML are never changed.<p> 
-     * 
+     *
+     * This is required in order to make sure the objects in the permanent cache of the
+     * list based resource bundles which are usually read from the XML are never changed.<p>
+     *
      * @return a typed clone of this resource bundle
      */
     public CmsListResourceBundle getClone() {
@@ -106,7 +106,7 @@ public class CmsListResourceBundle extends ListResourceBundle implements I_CmsRe
 
     /**
      * Sets the locale used for this resource bundle.<p>
-     * 
+     *
      * @param l the locale to set
      */
     public void setLocale(Locale l) {

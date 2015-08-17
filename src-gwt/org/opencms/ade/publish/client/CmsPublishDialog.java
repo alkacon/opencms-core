@@ -233,7 +233,7 @@ public class CmsPublishDialog extends CmsPopup {
      * Constructs a new publish dialog.<p>
      *
      * @param initData the initial data
-     * @param refreshAction the action to perform on a context menu triggered refresh 
+     * @param refreshAction the action to perform on a context menu triggered refresh
      * @param editorHandler the content editor handler
      */
     public CmsPublishDialog(
@@ -286,7 +286,7 @@ public class CmsPublishDialog extends CmsPopup {
      *
      * @param result the publish data
      * @param handler the dialog close handler
-     * @param refreshAction the action to execute on a context menu triggered refresh 
+     * @param refreshAction the action to execute on a context menu triggered refresh
      * @param editorHandler the content editor handler
      */
     public static void showPublishDialog(
@@ -309,7 +309,7 @@ public class CmsPublishDialog extends CmsPopup {
      *
      * @param handler the close handler
      * @param params the additional publish dialog parameters
-     * @param refreshAction the action to execute after a context menu triggered refresh 
+     * @param refreshAction the action to execute after a context menu triggered refresh
      * @param editorHandler the content editor handler
      */
     public static void showPublishDialog(
@@ -359,8 +359,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Convenience method which opens a publish dialog.<p>
-     * 
-     * @param refreshAction the action to execute after a context menu triggered refresh 
+     *
+     * @param refreshAction the action to execute after a context menu triggered refresh
      */
     public static void showPublishDialog(Runnable refreshAction) {
 
@@ -394,8 +394,8 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Gets the context menu handler.<p>
-     * 
-     * @return the context menu handler 
+     *
+     * @return the context menu handler
      */
     public CmsContextMenuHandler getContextMenuHandler() {
 
@@ -404,7 +404,7 @@ public class CmsPublishDialog extends CmsPopup {
 
     /**
      * Returns the content editor handler.<p>
-     * 
+     *
      * @return the content editor handler
      */
     public I_CmsContentEditorHandler getEditorHandler() {

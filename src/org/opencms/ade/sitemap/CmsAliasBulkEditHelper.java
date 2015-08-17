@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,8 +76,8 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Creates a new helper object.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      */
     public CmsAliasBulkEditHelper(CmsObject cms) {
 
@@ -86,10 +86,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Imports uploaded aliases from a request.<p>
-     * 
-     * @param request the request containing the uploaded aliases 
-     * @param response the response 
-     * @throws Exception if something goes wrong 
+     *
+     * @param request the request containing the uploaded aliases
+     * @param response the response
+     * @throws Exception if something goes wrong
      */
     public void importAliases(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -121,12 +121,12 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Saves alias changes to the database.<p>
-     * 
+     *
      * @param saveRequest an object containing the alias changes to save
-     * 
+     *
      * @return a validation error if the alias data is invalid, or null otherwise
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsAliasEditValidationReply saveAliases(CmsAliasSaveValidationRequest saveRequest) throws CmsException {
 
@@ -172,10 +172,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Validates the alias data.<p>
-     * 
-     * @param validationRequest an object containing the alias data to validate 
-     * 
-     * @return the validation result 
+     *
+     * @param validationRequest an object containing the alias data to validate
+     *
+     * @return the validation result
      */
     public CmsAliasEditValidationReply validateAliases(CmsAliasEditValidationRequest validationRequest) {
 
@@ -226,11 +226,11 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Filters all aliases from a set whose structure id is in a given set of structure ids.<p>
-     * 
-     * @param aliases the aliases to filter 
-     * @param structureIds the structure ids for which we want the aliases 
-     * 
-     * @return the filtered structure ids 
+     *
+     * @param aliases the aliases to filter
+     * @param structureIds the structure ids for which we want the aliases
+     *
+     * @return the filtered structure ids
      */
     protected Set<CmsAlias> filterStructureId(Set<CmsAlias> aliases, Set<CmsUUID> structureIds) {
 
@@ -245,10 +245,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Converts rewrite alias table rows to rewrite alias objects.<p>
-     * 
-     * @param rewriteData the rewrite data 
-     * 
-     * @return the converted rewrite aliases 
+     *
+     * @param rewriteData the rewrite data
+     *
+     * @return the converted rewrite aliases
      */
     private List<CmsRewriteAlias> convertRewriteData(List<CmsRewriteAliasTableRow> rewriteData) {
 
@@ -268,10 +268,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Message accessor.
-     *  
+     *
      * @param locale the locale for messages
-     *  
-     * @return the message string 
+     *
+     * @return the message string
      */
     private String messageDuplicateAliasPath(Locale locale) {
 
@@ -280,10 +280,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Message accessor.
-     *  
+     *
      * @param locale the locale for messages
-     *  
-     * @return the message string 
+     *
+     * @return the message string
      */
     private String messageInvalidAliasPath(Locale locale) {
 
@@ -292,10 +292,10 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Message accessor.
-     *  
+     *
      * @param locale the locale for messages
-     *  
-     * @return the message string 
+     *
+     * @return the message string
      */
     private String messageResourceNotFound(Locale locale) {
 
@@ -305,9 +305,9 @@ public class CmsAliasBulkEditHelper {
 
     /**
      * Validates a single alias row.<p>
-     * 
-     * @param cms the current CMS context  
-     * @param row the row to validate 
+     *
+     * @param cms the current CMS context
+     * @param row the row to validate
      */
     private void validateSingleAliasRow(CmsObject cms, CmsAliasTableRow row) {
 

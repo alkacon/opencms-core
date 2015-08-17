@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
 /**
  * Widget dialog that sets the settings to replace HTML Tags in pages below a folder.
  * <p>
- * 
+ *
  * @since 7.0.5
  */
 public class CmsUpdateXmlDialog extends CmsWidgetDialog {
@@ -72,7 +72,7 @@ public class CmsUpdateXmlDialog extends CmsWidgetDialog {
     /**
      * Public constructor with JSP action element.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUpdateXmlDialog(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsUpdateXmlDialog extends CmsWidgetDialog {
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -134,8 +134,8 @@ public class CmsUpdateXmlDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(Messages.get().getBundle(getLocale()).key(
-            Messages.GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0)));
+        result.append(createWidgetBlockStart(
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_UPDATEXML_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 1));
         result.append(createWidgetBlockEnd());
 
@@ -157,9 +157,14 @@ public class CmsUpdateXmlDialog extends CmsWidgetDialog {
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
         // add the widgets to show
-        addWidget(new CmsWidgetDialogParameter(m_settings, "vfsFolder", "/", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot()), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_settings,
+            "vfsFolder",
+            "/",
+            PAGES[0],
+            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+            1,
+            1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget("")));
     }

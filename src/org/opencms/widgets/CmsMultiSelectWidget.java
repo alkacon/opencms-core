@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,18 +37,18 @@ import java.util.Map;
 
 /**
  * Provides a widget for a standard HTML form multi select list or a group of check boxes.<p>
- * 
- * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ *
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description
  * about the configuration String syntax for the select options.<p>
  *
  * The multi select widget does use the following select options:<ul>
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the value of the option
- * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value 
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getOption()}</code> for the display name of the option
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
@@ -75,11 +75,11 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a select widget with the select options specified in the given configuration List.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public CmsMultiSelectWidget(List<CmsSelectWidgetOption> configuration) {
@@ -89,12 +89,12 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a select widget with the select options specified in the given configuration List.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
      * @param asCheckboxes indicates if used html code is a multi selection list or a list of checkboxes
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public CmsMultiSelectWidget(List<CmsSelectWidgetOption> configuration, boolean asCheckboxes) {
@@ -105,7 +105,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a select widget with the specified select options.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select box
      */
     public CmsMultiSelectWidget(String configuration) {
@@ -115,7 +115,7 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Sets the value of the widget parameter from the provided form parameters.<p>
-     * 
+     *
      * @param cms the cms context
      * @param formParameters the form parameters
      * @param widgetDialog the widget dialog
@@ -166,17 +166,18 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
         // the configured select widget height start element
         if (!m_asCheckBoxes) {
             if (m_requiresActivation) {
-                result.append("<input style=\"vertical-align:middle;\" type=\"checkbox\" id=\"check"
-                    + id
-                    + "\" name=\"check"
-                    + id
-                    + "\""
-                    + "onclick=toggleMultiSelectWidget(this);"
-                    + " />");
+                result.append(
+                    "<input style=\"vertical-align:middle;\" type=\"checkbox\" id=\"check"
+                        + id
+                        + "\" name=\"check"
+                        + id
+                        + "\""
+                        + "onclick=toggleMultiSelectWidget(this);"
+                        + " />");
                 result.append("&nbsp;<label style=\"vertical-align:middle;\" for=\"check" + id + "\">");
                 result.append(widgetDialog.getMessages().key(Messages.GUI_MULTISELECT_ACTIVATE_0));
                 result.append("</label>&nbsp;");
-                // adding hidden input with the current value, because disabled select box value won't be submitted 
+                // adding hidden input with the current value, because disabled select box value won't be submitted
                 result.append("<input type='hidden' name='").append(id).append("' id='").append(id).append("' value='");
                 List<String> values = getSelectedValues(cms, param);
                 if (values.size() > 0) {
@@ -269,9 +270,8 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
             int asCheckBoxesIndex = configuration.indexOf(CONFIGURATION_ASCHECKBOXES);
             if (asCheckBoxesIndex != -1) {
                 // the height is set
-                String asCheckBoxes = configuration.substring(asCheckBoxesIndex
-                    + CONFIGURATION_ASCHECKBOXES.length()
-                    + 1);
+                String asCheckBoxes = configuration.substring(
+                    asCheckBoxesIndex + CONFIGURATION_ASCHECKBOXES.length() + 1);
                 if (asCheckBoxes.indexOf('|') != -1) {
                     // cut eventual following configuration values
                     asCheckBoxes = asCheckBoxes.substring(0, asCheckBoxes.indexOf('|'));
@@ -281,9 +281,8 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
             int reqiresActivationIndex = configuration.indexOf(CONFIGURATION_REQUIRES_ACTIVATION);
             if (reqiresActivationIndex != -1) {
                 // the height is set
-                String requiresActivation = configuration.substring(reqiresActivationIndex
-                    + CONFIGURATION_REQUIRES_ACTIVATION.length()
-                    + 1);
+                String requiresActivation = configuration.substring(
+                    reqiresActivationIndex + CONFIGURATION_REQUIRES_ACTIVATION.length() + 1);
                 if (requiresActivation.indexOf('|') != -1) {
                     // cut eventual following configuration values
                     requiresActivation = requiresActivation.substring(0, requiresActivation.indexOf('|'));

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
 
     /**
      * Constructor.<p>
-     * 
-     * @param listener the native listener to wrap 
+     *
+     * @param listener the native listener to wrap
      */
     protected CmsEntityChangeListenerWrapper(JavaScriptObject listener) {
 
@@ -59,7 +59,7 @@ public final class CmsEntityChangeListenerWrapper implements I_CmsEntityChangeLi
 
     /**
      * Handles the on change call.<p>
-     * 
+     *
      * @param entity the changed entiy
      */
     private native void onChange(CmsEntity entity) /*-{

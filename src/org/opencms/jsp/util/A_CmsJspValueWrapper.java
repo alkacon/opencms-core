@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,36 +36,36 @@ abstract class A_CmsJspValueWrapper {
 
     /**
      * Returns if the value has been configured.<p>
-     * 
+     *
      * @return <code>true</code> if the value has been configured
      */
     public abstract boolean getExists();
 
     /**
-     * Returns <code>true</code> in case the value is empty, that is either <code>null</code> or an empty String.<p> 
-     * 
+     * Returns <code>true</code> in case the value is empty, that is either <code>null</code> or an empty String.<p>
+     *
      * @return <code>true</code> in case the value is empty
      */
     public abstract boolean getIsEmpty();
 
     /**
-     * Returns <code>true</code> in case the value is empty or whitespace only, 
-     * that is either <code>null</code> or String that contains only whitespace chars.<p> 
-     * 
+     * Returns <code>true</code> in case the value is empty or whitespace only,
+     * that is either <code>null</code> or String that contains only whitespace chars.<p>
+     *
      * @return <code>true</code> in case the value is empty or whitespace only
      */
     public abstract boolean getIsEmptyOrWhitespaceOnly();
 
     /**
-     * Returns <code>true</code> in case the value exists and is not empty.<p> 
-     * 
+     * Returns <code>true</code> in case the value exists and is not empty.<p>
+     *
      * @return <code>true</code> in case the value exists and is not empty
      */
     public abstract boolean getIsSet();
 
     /**
      * Parses the value to boolean.<p>
-     * 
+     *
      * @return the boolean value
      */
     public boolean getToBoolean() {
@@ -75,7 +75,7 @@ abstract class A_CmsJspValueWrapper {
 
     /**
      * Converts a time stamp to a date.<p>
-     *  
+     *
      * @return the date
      */
     public Date getToDate() {
@@ -85,7 +85,7 @@ abstract class A_CmsJspValueWrapper {
 
     /**
      * Parses the value to a Double.<p>
-     * 
+     *
      * @return the Double value
      */
     public Double getToFloat() {
@@ -95,7 +95,7 @@ abstract class A_CmsJspValueWrapper {
 
     /**
      * Parses the value to a Long.<p>
-     * 
+     *
      * @return the Long value
      */
     public Long getToInteger() {
@@ -105,7 +105,7 @@ abstract class A_CmsJspValueWrapper {
 
     /**
      * Returns the string value.<p>
-     * 
+     *
      * @return the string value
      */
     public String getToString() {

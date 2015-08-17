@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,14 +48,14 @@ import junit.framework.TestSuite;
 
 /**
  * Unit tests for the <code>{@link CmsJspContentAccessBean}</code>.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsJspContentAccessBean(String arg0) {
@@ -65,7 +65,7 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -98,14 +98,14 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
     /**
      * Tests general content access for XML content.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testContentAccess() throws Exception {
 
         CmsObject cms = getCmsObject();
 
-        // first read the XML content 
+        // first read the XML content
         CmsFile file = cms.readFile("/xmlcontent/article_0002.html");
         // need to set URI for macro resolver to work
         cms.getRequestContext().setUri("/xmlcontent/article_0002.html");
@@ -174,7 +174,7 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         // create the content access bean with a locale that is not available, so a fall back should be used
         bean = new CmsJspContentAccessBean(cms, Locale.FRENCH, content);
 
-        // check list access to default locale English 
+        // check list access to default locale English
         frValues = bean.getValueList();
         assertEquals(2, frValues.get("Teaser").size());
         assertEquals("This is teaser 2 in sample article 2.", String.valueOf(enValues.get("Teaser").get(1)));
@@ -182,14 +182,14 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
     /**
      * Tests for the {@link CmsJspContentAccessBean#getIsEditable()} method.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testIsEditable() throws Exception {
 
         CmsObject cms = getCmsObject();
 
-        // first read the XML content 
+        // first read the XML content
         CmsFile file = cms.readFile("/xmlcontent/article_0003.html");
         // need to set URI for macro resolver to work
         cms.getRequestContext().setUri("/xmlcontent/article_0003.html");
@@ -227,7 +227,9 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
         // lock the file with the admin user
         adminCms.lockResource(file);
-        assertFalse("Passed editable check with locked resource for test user in offline project", bean.getIsEditable());
+        assertFalse(
+            "Passed editable check with locked resource for test user in offline project",
+            bean.getIsEditable());
         adminCms.unlockResource(file);
 
         // try from the online project

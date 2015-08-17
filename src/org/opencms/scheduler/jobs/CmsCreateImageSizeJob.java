@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,28 +49,28 @@ import java.util.Map;
 
 /**
  * A schedulable OpenCms job to calculate image size information.<p>
- * 
- * Image size information is stored in the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property 
+ *
+ * Image size information is stored in the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property
  * of an image file must have the format "h:x,w:y" with x and y being positive Integer vaulues.<p>
- * 
+ *
  * Job parameters:<p>
  * <dl>
  * <dt><code>downscale=true|false</code></dt>
  * <dd>Controls if images are automatically downscaled according to the configured image
  * downscale settings, by default this is <code>false</code>.</dd>
  * </dl>
- * 
- * @since 6.0.2 
+ *
+ * @since 6.0.2
  */
 public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
-    /** 
+    /**
      * This job parameter controls if images are automatically downscaled according to the configured image
      * downscale settings, by default this is <code>false</code>.
-     * 
+     *
      * Possible values are <code>true</code> or <code>false</code> (default).
-     * If this is set to <code>true</code>, then all images are checked against the 
-     * configured image downscale settings (see {@link CmsImageLoader#CONFIGURATION_DOWNSCALE}). 
+     * If this is set to <code>true</code>, then all images are checked against the
+     * configured image downscale settings (see {@link CmsImageLoader#CONFIGURATION_DOWNSCALE}).
      * If the image is too large, it is automatically downscaled.<p>
      */
     public static final String PARAM_DOWNSCALE = "downscale";
@@ -96,8 +96,9 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
             // get all image resources
             resources = cms.readResources(
                 "/",
-                CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(OpenCms.getResourceManager().getResourceType(
-                    CmsResourceTypeImage.getStaticTypeName()).getTypeId()));
+                CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(
+                    OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeImage.getStaticTypeName()).getTypeId()));
         } catch (CmsException e) {
             report.println(e);
         }
@@ -109,11 +110,13 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
             try {
 
                 CmsResource res = resources.get(i);
-                report.print(Messages.get().container(
-                    Messages.RPT_IMAGE_SIZE_PROCESS_3,
-                    String.valueOf(i + 1),
-                    String.valueOf(resources.size()),
-                    res.getRootPath()), I_CmsReport.FORMAT_HEADLINE);
+                report.print(
+                    Messages.get().container(
+                        Messages.RPT_IMAGE_SIZE_PROCESS_3,
+                        String.valueOf(i + 1),
+                        String.valueOf(resources.size()),
+                        res.getRootPath()),
+                    I_CmsReport.FORMAT_HEADLINE);
 
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
@@ -139,7 +142,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                         }
 
                         if (scaler.isDownScaleRequired(downScaler)) {
-                            // downscaling is required - just write the file again, in this case everything is updated                            
+                            // downscaling is required - just write the file again, in this case everything is updated
                             lockResource(cms, lock, res);
                             cms.writeFile(file);
                             // calculate the downscaled image size (only used for the output report)
@@ -147,7 +150,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                             // the resource was updated
                             updated = true;
                         } else {
-                            // check if the "image.size" property must be updated                            
+                            // check if the "image.size" property must be updated
                             CmsProperty prop = cms.readPropertyObject(
                                 res,
                                 CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
@@ -170,7 +173,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                                 }
                                 // write the property
                                 cms.writePropertyObject(res.getRootPath(), prop);
-                                // the resource was updated                                
+                                // the resource was updated
                                 updated = true;
                             }
                         }
@@ -178,7 +181,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                         if (updated) {
                             // the resource was updated
                             unlockResource(cms, lock, res);
-                            // increase counter 
+                            // increase counter
                             count++;
                             // write report information
                             report.println(
@@ -215,11 +218,11 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
     /**
      * Locks the given resource (if required).<p>
-     * 
+     *
      * @param cms the OpenCms user context
      * @param lock the previous lock status of the resource
      * @param res the resource to lock
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     private void lockResource(CmsObject cms, CmsLock lock, CmsResource res) throws CmsException {
@@ -231,11 +234,11 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
     /**
      * Unlocks the given resource (if required).<p>
-     * 
+     *
      * @param cms the OpenCms user context
      * @param lock the lock of the resource
      * @param res the resource to lock
-     * 
+     *
      * @throws CmsException in case something goes wrong
      */
     private void unlockResource(CmsObject cms, CmsLock lock, CmsResource res) throws CmsException {

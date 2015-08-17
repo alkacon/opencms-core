@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * User dependencies list view.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
@@ -93,7 +93,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserPrincipalDependenciesList(CmsJspActionElement jsp) {
@@ -105,7 +105,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -118,7 +118,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -154,7 +154,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -164,7 +164,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
@@ -188,7 +188,10 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     protected List<CmsListItem> getListItems() throws CmsException {
 
         CmsIdentifiableObjectContainer<CmsListItem> ret = new CmsIdentifiableObjectContainer<CmsListItem>(true, false);
-        Iterator<String> itUsers = CmsStringUtil.splitAsList(getParamUserid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itUsers = CmsStringUtil.splitAsList(
+            getParamUserid(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
             getCms().getRequestContext().setSiteRoot("/");
@@ -224,10 +227,11 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
                         while (itAces.hasNext()) {
                             CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(user.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    item.set(LIST_COLUMN_PERMISSIONS, user.getName()
-                                        + ": "
-                                        + ace.getPermissions().getPermissionString());
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                                    ace.getPermissions().getPermissionString())) {
+                                    item.set(
+                                        LIST_COLUMN_PERMISSIONS,
+                                        user.getName() + ": " + ace.getPermissions().getPermissionString());
                                 }
                                 break;
                             }
@@ -241,7 +245,8 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
                         while (itAces.hasNext()) {
                             CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(user.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                                    ace.getPermissions().getPermissionString())) {
                                     String data = user.getName() + ": " + ace.getPermissions().getPermissionString();
                                     if (oldData != null) {
                                         data = oldData + ", " + data;
@@ -337,7 +342,7 @@ public class CmsUserPrincipalDependenciesList extends A_CmsListDialog {
     @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op       
+        // no-op
     }
 
     /**

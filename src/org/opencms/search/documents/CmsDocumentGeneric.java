@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,27 +29,27 @@ package org.opencms.search.documents;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
- * Lucene document factory class for indexing data from a generic <code>{@link CmsResource}</code>.<p> 
- * 
+ * Lucene document factory class for indexing data from a generic <code>{@link CmsResource}</code>.<p>
+ *
  * Since the document type is generic, no content extraction is performed for the resource.
  * However, meta data from the properties and attributes of the resource are indexed.<p>
- * 
- * The class is useful for example to have images appear in the search result if the title of the image 
+ *
+ * The class is useful for example to have images appear in the search result if the title of the image
  * matched the search query. It's also used if no specific extraction method is available for a binary document type.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDocumentGeneric extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the documenttype
      */
     public CmsDocumentGeneric(String name) {
@@ -59,7 +59,7 @@ public class CmsDocumentGeneric extends A_CmsVfsDocument {
 
     /**
      * Just returns an empty extraction result since the content can't be extracted form a generic resource.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)

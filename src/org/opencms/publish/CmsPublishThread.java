@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Publishes a resource or the users current project.<p>
- * 
- * @since 6.5.5 
+ *
+ * @since 6.5.5
  */
 /* default */final class CmsPublishThread extends A_CmsReportThread {
 
@@ -78,10 +78,10 @@ import org.apache.commons.logging.Log;
 
     /**
      * Creates a thread that start a new publish job with the given information.<p>
-     * 
+     *
      * @param publishEngine the publish engine instance
      * @param publishJob the publish job to process
-     * 
+     *
      * @see org.opencms.publish.CmsPublishManager#getPublishList(org.opencms.file.CmsObject, org.opencms.file.CmsResource, boolean)
      * @see org.opencms.publish.CmsPublishManager#getPublishList(org.opencms.file.CmsObject)
      */
@@ -116,7 +116,7 @@ import org.apache.commons.logging.Log;
 
     /**
      * Checks if the current publish job has been aborted.<p>
-     * 
+     *
      * @return <code>true</code> if the current publish job has been aborted
      */
     public boolean isAborted() {
@@ -186,9 +186,9 @@ import org.apache.commons.logging.Log;
 
     /**
      * Aborts the current job.<p>
-     * 
+     *
      * This can only be done until the publish job started event is fired.<p>
-     *  
+     *
      * @throws CmsPublishException if the current publish can not be aborted
      */
     protected void abort() throws CmsPublishException {
@@ -201,7 +201,7 @@ import org.apache.commons.logging.Log;
 
     /**
      * Returns the publish job for this thread.<p>
-     * 
+     *
      * @return the publish job for this thread
      */
     protected CmsPublishJobInfoBean getPublishJob() {
@@ -220,7 +220,7 @@ import org.apache.commons.logging.Log;
 
     /**
      * Returns the set of all strong link references from the files to publish.<p>
-     * 
+     *
      * @return the set of all strong link references
      */
     protected Set<String> getStrongLinkReferences() {
@@ -235,7 +235,8 @@ import org.apache.commons.logging.Log;
             m_report.println(
                 Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);
-            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            int plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
             Iterator<CmsResource> it = m_publishJob.getPublishList().getFileList().iterator();
             while (it.hasNext()) {
                 CmsResource resource = it.next();
@@ -243,9 +244,10 @@ import org.apache.commons.logging.Log;
                     m_report.print(
                         Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_0),
                         I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        dbc.removeSiteRoot(resource.getRootPath())));
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            dbc.removeSiteRoot(resource.getRootPath())));
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                     m_jspLoader.getReferencingStrongLinks(jspCms, resource, includingFiles);
                     m_report.println(

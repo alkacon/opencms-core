@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,8 +59,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Not role users view.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
@@ -81,7 +81,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNotRoleUsersList(CmsJspActionElement jsp) {
@@ -91,7 +91,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -113,9 +113,9 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsNotRoleUsersList(CmsJspActionElement jsp, boolean lazy) {
 
@@ -124,11 +124,11 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsNotRoleUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
@@ -139,7 +139,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
      * Protected constructor.<p>
      * @param jsp an initialized JSP action element
      * @param listId the id of the specialized list
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     protected CmsNotRoleUsersList(CmsJspActionElement jsp, String listId, boolean lazy) {
 
@@ -325,10 +325,10 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Gets the search parameters.<p>
-     * 
-     * @return the search parameters 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search parameters
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -351,9 +351,9 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
 
     /**
      * Gets the sort key for a column.<p>
-     * 
-     * @param column a column 
-     * @return the sort key 
+     *
+     * @param column a column
+     * @return the sort key
      */
     protected SortKey getSortKey(String column) {
 

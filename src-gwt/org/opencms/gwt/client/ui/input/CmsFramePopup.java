@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import com.google.gwt.user.client.ui.Frame;
 
 /**
  * This class represents a popup which displays an IFrame.<p>
- * 
+ *
  * It also exports a Javascript function to close the popup when given the id of the popup.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFramePopup extends CmsPopup {
@@ -53,9 +53,9 @@ public class CmsFramePopup extends CmsPopup {
 
     /**
      * Constructor.<p>
-     *  
-     * @param title the title of the popup dialog 
-     * @param url the URL which should be opened in the popup 
+     *
+     * @param title the title of the popup dialog
+     * @param url the URL which should be opened in the popup
      */
 
     public CmsFramePopup(String title, String url) {
@@ -78,8 +78,8 @@ public class CmsFramePopup extends CmsPopup {
 
     /**
      * Returns the frame contained in this popup.<p>
-     * 
-     * @return a frame 
+     *
+     * @return a frame
      */
     public Frame getFrame() {
 
@@ -91,8 +91,8 @@ public class CmsFramePopup extends CmsPopup {
      */
     public void hideDelayed() {
 
-        // The reason for using this function, instead of calling hide directly, is that 
-        // the latter leads to harmless but annoying Javascript errors when called from 
+        // The reason for using this function, instead of calling hide directly, is that
+        // the latter leads to harmless but annoying Javascript errors when called from
         // Javascript inside the IFrame, since the IFrame is closed before the function returns.
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -112,7 +112,7 @@ public class CmsFramePopup extends CmsPopup {
 
     /**
      * Sets the handler which should be called when the popup closes itself.<p>
-     * 
+     *
      * @param closeHandler the "close" handler
      */
     public void setCloseHandler(Runnable closeHandler) {
@@ -122,10 +122,10 @@ public class CmsFramePopup extends CmsPopup {
 
     /**
      * Sets the id of this IFrame popup.<p>
-     * 
+     *
      * The popup can be closed by calling the cmsCloseDialog Javascript function with the same id as a parameter.<p>
-     * 
-     * @param id the new id 
+     *
+     * @param id the new id
      */
     public void setId(String id) {
 
@@ -146,36 +146,36 @@ public class CmsFramePopup extends CmsPopup {
      * Exports a Javascript function 'cmsCloseDialog', which, when passed the id of a CmsFramePopup as a parameter, will close that dialog.<p>
      */
     protected native void exportCloseFunction() /*-{
-        var w = $wnd;
-        w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
-        // register the current instance under its id 
-        w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
-        if (!w.cmsCloseDialog) {
-            w.cmsCloseDialog = function(arg) {
-                var instance = w.CmsFramePopup_instances[arg];
-                instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
-                // remove current instance 
-                delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
-            } // cmsCloseDialog 
-        } // if
-    }-*/;
+                                                var w = $wnd;
+                                                w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
+                                                // register the current instance under its id
+                                                w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
+                                                if (!w.cmsCloseDialog) {
+                                                w.cmsCloseDialog = function(arg) {
+                                                var instance = w.CmsFramePopup_instances[arg];
+                                                instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
+                                                // remove current instance
+                                                delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
+                                                } // cmsCloseDialog
+                                                } // if
+                                                }-*/;
 
-    /** 
-     * test.<p> 
+    /**
+     * test.<p>
      */
     protected native void setGroupFormValue() /*-{
-        var w = $wnd;
-        w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
-        // register the current instance under its id 
-        w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
-        if (!w.cmsCloseDialog) {
-            w.cmsCloseDialog = function(arg) {
-                var instance = w.CmsFramePopup_instances[arg];
-                instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
-                // remove current instance 
-                delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
-            } // cmsCloseDialog 
-        } // if
-    }-*/;
+                                              var w = $wnd;
+                                              w.CmsFramePopup_instances = w.CmsFramePopup_instances || {};
+                                              // register the current instance under its id
+                                              w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id] = this;
+                                              if (!w.cmsCloseDialog) {
+                                              w.cmsCloseDialog = function(arg) {
+                                              var instance = w.CmsFramePopup_instances[arg];
+                                              instance.@org.opencms.gwt.client.ui.input.CmsFramePopup::hideDelayed()();
+                                              // remove current instance
+                                              delete w.CmsFramePopup_instances[this.@org.opencms.gwt.client.ui.input.CmsFramePopup::m_id];
+                                              } // cmsCloseDialog
+                                              } // if
+                                              }-*/;
 
 }

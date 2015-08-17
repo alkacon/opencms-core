@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Basic implementation of the I_CmsFormField class.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsBasicFormField implements I_CmsFormField {
 
@@ -82,13 +82,13 @@ public class CmsBasicFormField implements I_CmsFormField {
     /** Widget of the form field. */
     private I_CmsFormWidget m_widget;
 
-    /** 
+    /**
      * Constructs a new form field.<p>
-     * 
+     *
      * @param id the id of the form field
      * @param description the description of the form field
      * @param label the label of the form field
-     * @param defaultValue the default value of the form field 
+     * @param defaultValue the default value of the form field
      * @param widget the widget of the form field
      */
     public CmsBasicFormField(String id, String description, String label, Object defaultValue, I_CmsFormWidget widget) {
@@ -102,11 +102,11 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * Utility method for creating a single basic form field from an id and a property configuration. 
-     * 
+     * Utility method for creating a single basic form field from an id and a property configuration.
+     *
      * @param propertyConfig the configuration of the property
-     *   
-     * @return the newly created form field 
+     *
+     * @return the newly created form field
      */
     public static CmsBasicFormField createField(CmsXmlContentProperty propertyConfig) {
 
@@ -115,11 +115,11 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /**
      * Utility method for creating a basic form field.<p>
-     * 
-     * @param propertyConfig the property configuration 
-     * @param additionalParams the additional parameters 
-     * 
-     * @return the newly created form fields 
+     *
+     * @param propertyConfig the property configuration
+     * @param additionalParams the additional parameters
+     *
+     * @return the newly created form fields
      */
     public static CmsBasicFormField createField(
         CmsXmlContentProperty propertyConfig,
@@ -134,15 +134,15 @@ public class CmsBasicFormField implements I_CmsFormField {
     }
 
     /**
-     * Utility method for creating a single basic form field from an id and a property configuration. 
-     * 
+     * Utility method for creating a single basic form field from an id and a property configuration.
+     *
      * @param propertyConfig the configuration of the property
      * @param fieldId the field id
      * @param factory a factory for creating form  widgets
      * @param additionalParams
      * @param alwaysAllowEmpty
-     *   
-     * @return the newly created form field 
+     *
+     * @return the newly created form field
      */
     public static CmsBasicFormField createField(
         CmsXmlContentProperty propertyConfig,
@@ -185,14 +185,14 @@ public class CmsBasicFormField implements I_CmsFormField {
 
     /**
      * Creates a map of fields from a map of field configurations.<p>
-     * 
-     * @param propertyConfigurations the map of field configurations 
-     * 
-     * @return a map of form fields 
+     *
+     * @param propertyConfigurations the map of field configurations
+     *
+     * @return a map of form fields
      */
     public static Map<String, I_CmsFormField> createFields(Collection<CmsXmlContentProperty> propertyConfigurations) {
 
-        // using LinkedHashMap to preserve the order 
+        // using LinkedHashMap to preserve the order
         Map<String, I_CmsFormField> result = new LinkedHashMap<String, I_CmsFormField>();
         for (CmsXmlContentProperty propConfig : propertyConfigurations) {
             CmsBasicFormField field = createField(propConfig);
@@ -214,7 +214,8 @@ public class CmsBasicFormField implements I_CmsFormField {
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 I_CmsFormWidget widget = getWidget();
-                if ((widget instanceof I_CmsHasGhostValue) && !CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue())) {
+                if ((widget instanceof I_CmsHasGhostValue)
+                    && !CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue())) {
                     ((I_CmsHasGhostValue)widget).setGhostMode(false);
                 }
                 widget.setFormValueAsString(event.getValue());
@@ -271,7 +272,7 @@ public class CmsBasicFormField implements I_CmsFormField {
         return m_layoutData;
     }
 
-    /** 
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormField#getModel()
      */
     public I_CmsStringModel getModel() {

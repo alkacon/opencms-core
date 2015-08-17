@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.util.CmsUUID;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * The bean with the necessary information for the "Restore" dialog.<p> 
+ * The bean with the necessary information for the "Restore" dialog.<p>
  */
 public class CmsRestoreInfoBean implements IsSerializable {
 
@@ -67,7 +67,7 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Returns true if the move operation can be undone.<p>
-     * 
+     *
      * @return true if the move operation can be undone
      */
     public boolean canUndoMove() {
@@ -77,8 +77,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the bean containing the information for the file info box.<p>
-     * 
-     * @return the bean with the information for the file info box 
+     *
+     * @return the bean with the information for the file info box
      */
     public CmsListInfoBean getListInfoBean() {
 
@@ -87,8 +87,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the offline modification date.<p>
-     * 
-     * @return the offline modification date 
+     *
+     * @return the offline modification date
      */
     public String getOfflineDate() {
 
@@ -97,8 +97,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the offline root path of the resource.<p>
-     * 
-     * @return the offline path of the resource 
+     *
+     * @return the offline path of the resource
      */
     public String getOfflinePath() {
 
@@ -107,8 +107,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the online modification date.<p>
-     * 
-     * @return the online modification date 
+     *
+     * @return the online modification date
      */
     public String getOnlineDate() {
 
@@ -117,7 +117,7 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the online root path of the resource.<p>
-     * 
+     *
      * @return the online path of the resource
      */
     public String getOnlinePath() {
@@ -127,8 +127,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Gets the structure id of the resource for which changes should be undone.<p>
-     * 
-     * @return the structure id of the resource which changes should be undone 
+     *
+     * @return the structure id of the resource which changes should be undone
      */
     public CmsUUID getStructureId() {
 
@@ -137,8 +137,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Returns true if the resource was moved.<p>
-     * 
-     * @return true if the resource was moved 
+     *
+     * @return true if the resource was moved
      */
     public boolean isMoved() {
 
@@ -147,7 +147,7 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the 'canUndoMove' property.<p>
-     * 
+     *
      * @param canUndoMove the new value for the 'canUndoMove' property
      */
     public void setCanUndoMove(boolean canUndoMove) {
@@ -157,8 +157,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the list info bean for the resource.<p>
-     * 
-     * @param listInfoBean the list info bean for the resource 
+     *
+     * @param listInfoBean the list info bean for the resource
      */
     public void setListInfoBean(CmsListInfoBean listInfoBean) {
 
@@ -167,8 +167,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the offline modification date.<p>
-     * 
-     * @param offlineDate the offline modification date 
+     *
+     * @param offlineDate the offline modification date
      */
     public void setOfflineDate(String offlineDate) {
 
@@ -177,8 +177,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the offline root path.<p>
-     * 
-     * @param offlinePath the offline path 
+     *
+     * @param offlinePath the offline path
      */
     public void setOfflinePath(String offlinePath) {
 
@@ -187,8 +187,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the online modification date.<p>
-     * 
-     * @param onlineDate the online modification date 
+     *
+     * @param onlineDate the online modification date
      */
     public void setOnlineDate(String onlineDate) {
 
@@ -197,8 +197,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the online root path.<p>
-     * 
-     * @param onlinePath the online root path 
+     *
+     * @param onlinePath the online root path
      */
     public void setOnlinePath(String onlinePath) {
 
@@ -207,8 +207,8 @@ public class CmsRestoreInfoBean implements IsSerializable {
 
     /**
      * Sets the structure id of the resource.<p>
-     * 
-     * @param structureId the structure id to set 
+     *
+     * @param structureId the structure id to set
      */
     public void setStructureId(CmsUUID structureId) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import java.util.Map;
 
 /**
  * This singleton class is used for registering all widget factories.<p>
- *  
- *  @since 8.0.0 
+ *
+ *  @since 8.0.0
  *
  */
 public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFactory {
@@ -57,8 +57,8 @@ public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFacto
 
     /**
      * Returns the singleton instance of this class.<p>
-     * 
-     * @return the singleton instance of this class 
+     *
+     * @return the singleton instance of this class
      */
     public static CmsWidgetFactoryRegistry instance() {
 
@@ -68,13 +68,13 @@ public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFacto
         return instance;
     }
 
-    /** 
+    /**
      * Creates a new widget based on a type string and widget parameters.<p>
-     * 
-     * @param key the type string 
+     *
+     * @param key the type string
      * @param widgetParams the widget configuration parameters
-     *  
-     * @return the newly created widget  
+     *
+     * @return the newly created widget
      */
     public I_CmsFormWidget createFormWidget(String key, Map<String, String> widgetParams) {
 
@@ -92,9 +92,9 @@ public final class CmsWidgetFactoryRegistry implements I_CmsFormWidgetMultiFacto
 
     /**
      * Registers a new widget factory for a given widget type key.<p>
-     * 
-     * @param key the widget type key 
-     *  
+     *
+     * @param key the widget type key
+     *
      * @param factory the new factory for the key
      */
     public void registerFactory(String key, I_CmsFormWidgetFactory factory) {

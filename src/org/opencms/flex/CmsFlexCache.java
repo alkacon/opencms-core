@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,9 +65,9 @@ import org.apache.commons.logging.Log;
  * A suffix [online] or [offline] is appended to te resource name
  * to distinguish between the online and offline projects of OpenCms.
  * Also, for support of JSP based workplace pages, a suffix [workplace]
- * is appended. The same cached workplace pages are used both in the online and 
- * all offline projects.<p> 
- * 
+ * is appended. The same cached workplace pages are used both in the online and
+ * all offline projects.<p>
+ *
  * Entries in the first level of the cache are of type CmsFlexCacheVariation,
  * which is a sub-class of CmsFlexCache.
  * This class is a simple data type that contains of a Map of CmsFlexCacheEntries,
@@ -88,11 +88,11 @@ import org.apache.commons.logging.Log;
  * </ul>
  *
  * Cache clearing is handled using events.
- * The cache is fully flushed if an event {@link I_CmsEventListener#EVENT_PUBLISH_PROJECT} 
+ * The cache is fully flushed if an event {@link I_CmsEventListener#EVENT_PUBLISH_PROJECT}
  * or {@link I_CmsEventListener#EVENT_CLEAR_CACHES} is caught.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
  * @see org.opencms.cache.CmsLruCache
@@ -133,8 +133,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
         /**
          * Initialize the map with the given size.<p>
-         * 
-         * @param maxSize the maximum number of key to cache 
+         *
+         * @param maxSize the maximum number of key to cache
          */
         public CmsFlexKeyMap(int maxSize) {
 
@@ -144,11 +144,11 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
-         * 
+         *
          * @param entry the entry to remove
-         * 
+         *
          * @return <code>true</code> to actually delete the entry
-         * 
+         *
          * @see LRUMap#removeLRU(LinkEntry)
          */
         @Override
@@ -255,21 +255,25 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
         if (m_enabled) {
             CmsFlexKeyMap flexKeyMap = new CmsFlexKeyMap(maxKeys);
-            m_keyCache = Collections.synchronizedMap(CmsCollectionsGenericWrapper.<String, CmsFlexCacheVariation> map(flexKeyMap));
+            m_keyCache = Collections.synchronizedMap(
+                CmsCollectionsGenericWrapper.<String, CmsFlexCacheVariation> map(flexKeyMap));
             OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_resourceMap", flexKeyMap);
 
-            OpenCms.addCmsEventListener(this, new int[] {
-                I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR});
+            OpenCms.addCmsEventListener(
+                this,
+                new int[] {
+                    I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+                    I_CmsEventListener.EVENT_CLEAR_CACHES,
+                    I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR});
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.INIT_FLEXCACHE_CREATED_2,
-                Boolean.valueOf(m_enabled),
-                Boolean.valueOf(m_cacheOffline)));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_FLEXCACHE_CREATED_2,
+                    Boolean.valueOf(m_enabled),
+                    Boolean.valueOf(m_cacheOffline)));
         }
     }
 
@@ -311,8 +315,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 break;
             case I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR:
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_PARTIALLY_0));
+                    LOG.debug(
+                        Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_RECEIVED_EVENT_CLEAR_CACHE_PARTIALLY_0));
                 }
                 Map<String, ?> m = event.getData();
                 if (m == null) {
@@ -359,7 +363,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /**
      * Returns the CmsFlexCacheKey data structure for a given
      * key (i.e. resource name).<p>
-     * 
+     *
      * Useful if you want to show the cache key for a resources,
      * like on the FlexCache administration page.<p>
      *
@@ -384,7 +388,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Returns a set of all cached resource names.<p>
-     * 
+     *
      * Useful if you want to show a list of all cached resources,
      * like on the FlexCache administration page.<p>
      *
@@ -405,7 +409,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /**
      * Returns all variations in the cache for a given resource name.
      * The variations are of type String.<p>
-     * 
+     *
      * Useful if you want to show a list of all cached entry - variations,
      * like on the FlexCache administration page.<p>
      *
@@ -474,7 +478,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Looks up a specific entry in the cache.<p>
-     * 
+     *
      * In case a found entry has a timeout set, it will be checked upon lookup.
      * In case the timeout of the entry has been reached, it will be removed from
      * the cache (and null will be returned in this case).<p>
@@ -579,10 +583,11 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             // This is a cachable result
             key.setVariation(variation);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_FLEXCACHE_ADD_ENTRY_WITH_VARIATION_2,
-                    key.getResource(),
-                    key.getVariation()));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_FLEXCACHE_ADD_ENTRY_WITH_VARIATION_2,
+                        key.getResource(),
+                        key.getVariation()));
             }
             put(key, entry);
             // Note that duplicates are NOT checked, it it assumed that this is done beforehand,
@@ -658,12 +663,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Internal method to perform cache clearance.<p>
-     * 
+     *
      * It clears "one half" of the cache, i.e. either
      * the online or the offline parts.
      * A parameter is used to indicate if only
      * the entries or keys and entries are to be cleared.<p>
-     * 
+     *
      * @param suffix used to distinguish between "[Online]" and "[Offline]" entries
      * @param entriesOnly if <code>true</code>, only entries will be cleared, otherwise
      *         the entries and the keys will be cleared
@@ -703,16 +708,17 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             }
         }
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
-                suffix,
-                Boolean.valueOf(entriesOnly)));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_FLEXCACHE_CLEAR_HALF_2,
+                    suffix,
+                    Boolean.valueOf(entriesOnly)));
         }
     }
 
     /**
      * Clears all entries in the cache, online or offline.<p>
-     * 
+     *
      * The keys are not cleared.<p>
      *
      * Only users with administrator permissions are allowed
@@ -744,7 +750,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Clears all entries and all keys from offline projects in the cache.<p>
-     * 
+     *
      * Cached resources from the online project are not touched.<p>
      *
      * Only users with administrator permissions are allowed
@@ -763,7 +769,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Clears all entries from offline projects in the cache.<p>
-     * 
+     *
      * The keys from the offline projects are not cleared.
      * Cached resources from the online project are not touched.<p>
      *
@@ -783,7 +789,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Clears all entries and all keys from the online project in the cache.<p>
-     * 
+     *
      * Cached resources from the offline projects are not touched.<p>
      *
      * Only users with administrator permissions are allowed
@@ -802,7 +808,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /**
      * Clears all entries from the online project in the cache.<p>
-     * 
+     *
      * The keys from the online project are not cleared.
      * Cached resources from the offline projects are not touched.<p>
      *
@@ -824,7 +830,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * This method purges the JSP repository dirs,
      * i.e. it deletes all JSP files that OpenCms has written to the
      * real FS.<p>
-     * 
+     *
      * Obviously this method must be used with caution.
      * Purpose of this method is to allow
      * a complete purge of all JSP pages on a machine after
@@ -891,11 +897,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_FLEXCACHE_ADDED_ENTRY_FOR_RESOURCE_WITH_VARIATION_3,
-                new Integer(m_size),
-                key.getResource(),
-                key.getVariation()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_FLEXCACHE_ADDED_ENTRY_FOR_RESOURCE_WITH_VARIATION_3,
+                    new Integer(m_size),
+                    key.getResource(),
+                    key.getVariation()));
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHE_ADDED_ENTRY_1, theCacheEntry.toString()));
         }
     }

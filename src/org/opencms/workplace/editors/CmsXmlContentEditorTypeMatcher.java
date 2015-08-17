@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import java.util.List;
 
 /**
  * Implementation of an additionional editor resource type matcher for xmlcontent resources.<p>
- * 
+ *
  * All resourcetypes refering to xmlcontent will be found by this class.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,9 +34,9 @@ import org.opencms.main.CmsIllegalArgumentException;
  * Bean to hold the settings needed for the operation of converting xml files in
  * the OpenCms VFS.
  * <p>
- * 
+ *
  * @since 7.0.5
- * 
+ *
  */
 public final class CmsConvertXmlSettings {
 
@@ -64,7 +64,7 @@ public final class CmsConvertXmlSettings {
     /**
      * Bean constructor with cms object for path validation.
      * <p>
-     * 
+     *
      * @param cms used to test the working path for valididty.
      */
     public CmsConvertXmlSettings(CmsObject cms) {
@@ -78,7 +78,7 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Gets resource type to transform.<p>
-     * 
+     *
      * @return Resource type to transform.
      */
     public int getResourceType() {
@@ -88,7 +88,7 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Gets if also files in sub folders shall become processed.<p>
-     * 
+     *
      * @return if also files in sub folders shall become processed.
      */
     public boolean getIncludeSubFolders() {
@@ -98,7 +98,7 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Gets if only count files to transform.<p>
-     * 
+     *
      * @return If only count files to transform.
      */
     public boolean getOnlyCountFiles() {
@@ -109,7 +109,7 @@ public final class CmsConvertXmlSettings {
     /**
      * Returns the path under which files will be processed.
      * <p>
-     * 
+     *
      * @return the path under which files will be processed.
      */
     public String getVfsFolder() {
@@ -119,7 +119,7 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Gets path to xsl file.<p>
-     * 
+     *
      * @return Path to xsl file.
      */
     public String getXslFile() {
@@ -129,9 +129,9 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Sets resource type to transform.<p>
-     * 
+     *
      * @param resourceType File format to transform
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setResourceType(int resourceType) throws CmsIllegalArgumentException {
@@ -141,9 +141,9 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Sets value if also process files in sub folders.<p>
-     * 
+     *
      * @param subFolders True if process sub folders, too
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setIncludeSubFolders(boolean subFolders) throws CmsIllegalArgumentException {
@@ -153,9 +153,9 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Sets if only count files to transform.<p>
-     * 
+     *
      * @param countFiles True, if only count files to transform
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setOnlyCountFiles(boolean countFiles) throws CmsIllegalArgumentException {
@@ -165,9 +165,9 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Sets vfs folder to process files in.<p>
-     * 
+     *
      * @param vfsFolder The vfs folder to process files in
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setVfsFolder(String vfsFolder) throws CmsIllegalArgumentException {
@@ -177,9 +177,9 @@ public final class CmsConvertXmlSettings {
 
     /**
      * Sets path to xsl file.<p>
-     * 
+     *
      * @param xslFile Path to xsl file
-     * 
+     *
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
     public void setXslFile(String xslFile) throws CmsIllegalArgumentException {

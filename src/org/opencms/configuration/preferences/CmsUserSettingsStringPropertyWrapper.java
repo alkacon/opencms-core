@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,10 +34,10 @@ import org.opencms.main.CmsContextInfo;
 
 /**
  * Bean used to access the built-in preferences via reflection.<p>
- * 
+ *
  * All getter/setter pairs in this class are assumed to correspond to user settings, and the corresponding
  * property names can be used as keys in the new preference configuration format, so the method names should not
- * be changed. 
+ * be changed.
  */
 public class CmsUserSettingsStringPropertyWrapper {
 
@@ -236,13 +236,13 @@ public class CmsUserSettingsStringPropertyWrapper {
 
     /**
      * Gets the value of the 'show invalid elements in galleries'.<p>
-     * 
-     * @return the 'show invalid elements in galleries' setting  
+     *
+     * @return the 'show invalid elements in galleries' setting
      */
     @PrefMetadata(type = CmsGalleryShowInvalidDefaultPreference.class)
     public String getGalleryShowInvalidDefault() {
 
-        return m_settings.getAdditionalPreference(CmsGalleryService.PREF_GALLERY_SHOW_INVALID_DEFAULT, true);
+        return m_settings.getAdditionalPreference(CmsGalleryService.PREF_GALLERY_SHOW_INVALID_DEFAULT, false);
     }
 
     /**
@@ -561,7 +561,7 @@ public class CmsUserSettingsStringPropertyWrapper {
     public String getTimeWarp() {
 
         long warp = m_settings.getTimeWarp();
-        return warp < 0 ? "" : "" + warp; // if timewarp < 0 (i.e. time warp is not set), use the empty string because we don't want the date selector widget to interpret the negative value  
+        return warp < 0 ? "" : "" + warp; // if timewarp < 0 (i.e. time warp is not set), use the empty string because we don't want the date selector widget to interpret the negative value
     }
 
     /**
@@ -755,7 +755,7 @@ public class CmsUserSettingsStringPropertyWrapper {
 
     /**
      * Sets the element view.<p>
-     * 
+     *
      * @param elementView the element view
      */
     public void setElementView(String elementView) {
@@ -796,8 +796,8 @@ public class CmsUserSettingsStringPropertyWrapper {
 
     /**
      * Sets the default value for the checkbox which enables/disables showing invalid results in the gallery result tab.<p>
-     * 
-     * @param value the value to set 
+     *
+     * @param value the value to set
      */
     public void setGalleryShowInvalidDefault(String value) {
 
@@ -1098,7 +1098,7 @@ public class CmsUserSettingsStringPropertyWrapper {
         try {
             warp = Long.parseLong(l);
         } catch (NumberFormatException e) {
-            // if parsing the time warp fails, it will be set to -1 (i.e. disabled) 
+            // if parsing the time warp fails, it will be set to -1 (i.e. disabled)
         }
         m_settings.setTimeWarp(warp);
     }

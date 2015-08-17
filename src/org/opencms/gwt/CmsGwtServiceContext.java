@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,13 +54,13 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
 
 /**
  * This class contains the data that should be cached for a specific service class.<p>
- * 
+ *
  * We cache instances of this class rather than caching instances of {@link CmsGwtService} directly because
  * its superclass, {@link com.google.gwt.user.server.rpc.RemoteServiceServlet}, does some caching which we can't use because it doesn't
- * take the distinction between online and offline requests into account. 
- * 
+ * take the distinction between online and offline requests into account.
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsGwtServiceContext implements I_CmsEventListener {
 
@@ -81,24 +81,26 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Creates a new service context object.<p>
-     * 
+     *
      * @param name an identifier which is used for debugging
      */
     public CmsGwtServiceContext(String name) {
 
         m_name = name;
 
-        // listen on VFS changes for serialization policies 
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
+        // listen on VFS changes for serialization policies
+        OpenCms.addCmsEventListener(
+            this,
+            new int[] {
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCE_DELETED,
+                I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
+                I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
 
     }
 
@@ -118,7 +120,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
                     // skip lock & unlock
                     return;
                 }
-                // a resource has been modified in a way that it *IS NOT* necessary also to clear 
+                // a resource has been modified in a way that it *IS NOT* necessary also to clear
                 // lists of cached sub-resources where the specified resource might be contained inside.
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
                 uncacheResource(resource);
@@ -169,12 +171,12 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Returns the serialization policy for the service.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param moduleBaseURL the module's base URL 
-     * @param strongName the strong name of the service 
-     * 
-     * @return the serialization policy for the given service  
+     *
+     * @param cms the current CMS context
+     * @param moduleBaseURL the module's base URL
+     * @param strongName the strong name of the service
+     *
+     * @return the serialization policy for the given service
      */
     protected SerializationPolicy getSerializationPolicy(CmsObject cms, String moduleBaseURL, String strongName) {
 
@@ -186,10 +188,10 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Finds the path of the serialization policy file.<p>
-     * 
+     *
      * @param moduleBaseURL the GWT module's base url
-     * @param strongName the strong name of the service 
-     * 
+     * @param strongName the strong name of the service
+     *
      * @return the serialization policy path
      */
     protected String getSerializationPolicyPath(String moduleBaseURL, String strongName) {
@@ -212,10 +214,10 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Returns the serialization policy, using lazy initialization.<p>
-     * 
-     * @param cms the current cms context 
-     * 
-     * @return the serialization policy 
+     *
+     * @param cms the current cms context
+     *
+     * @return the serialization policy
      */
     private SerializationPolicy getSerializationPolicy(CmsObject cms) {
 
@@ -281,7 +283,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Removes a cached resource from the cache.<p>
-     * 
+     *
      * @param resource the resource
      */
     private void uncacheResource(CmsResource resource) {
@@ -296,9 +298,9 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
 
     /**
      * Removes a bunch of cached resources from the cache.<p>
-     * 
+     *
      * @param resources a list of resources
-     * 
+     *
      * @see #uncacheResource(CmsResource)
      */
     private void uncacheResources(List<CmsResource> resources) {

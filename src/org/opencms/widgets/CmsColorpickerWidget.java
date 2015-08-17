@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import java.util.Map;
 
 /**
  * Provides a HTML "color picker" widget, for use on a widget dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -58,7 +58,7 @@ public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget 
 
     /**
      * Creates a new color picker widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsColorpickerWidget(String configuration) {
@@ -158,13 +158,15 @@ public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget 
         result.append(";\"></td>");
 
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(
-            "javascript:showColorPicker('" + id + "');",
-            null,
-            "color_fill",
-            Messages.GUI_BUTTON_COLOR_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            widgetDialog.button(
+                "javascript:showColorPicker('" + id + "');",
+                null,
+                "color_fill",
+                Messages.GUI_BUTTON_COLOR_0,
+                widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
 
         result.append("</td></tr></table>");
@@ -237,7 +239,7 @@ public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget 
 
     /**
      * Check the stored color value to prevent display issues in the generated HTML ouput.<p>
-     * 
+     *
      * @param color the color value to check
      * @return the checked color value
      */
@@ -258,7 +260,7 @@ public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget 
 
     /**
      * Returns the font color of the input field depending on the selected color value.<p>
-     * 
+     *
      * @param backgroundColor the selected color value which is displayed as the input field background
      * @return the font color to use
      */
@@ -272,7 +274,7 @@ public class CmsColorpickerWidget extends A_CmsWidget implements I_CmsADEWidget 
                 // calculate int value of color
                 colorValue = Integer.parseInt(backgroundColor, 16);
             } catch (NumberFormatException nf) {
-                // this should never happen    
+                // this should never happen
             }
             if (colorValue < 50000) {
                 // for dark colors set font color to white

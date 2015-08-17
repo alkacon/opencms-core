@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,9 +62,9 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Provides the widget for the galleries(folder) tab.<p>
- * 
+ *
  * It displays the available gallery folders in the given order.
- * 
+ *
  * @since 8.0.
  */
 public class CmsGalleriesTab extends A_CmsListTab {
@@ -79,7 +79,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         /**
          * Creates a new instance.<p>
-         * @param folders the list of folders for which to generate list items 
+         * @param folders the list of folders for which to generate list items
          */
         public ListItemGenerator(List<CmsGalleryFolderBean> folders) {
 
@@ -127,8 +127,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param numItems the maximal number of items to add  
+         *
+         * @param numItems the maximal number of items to add
          */
         public MoreItemsCommand(int numItems) {
 
@@ -170,7 +170,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         /**
          * Creates a new instance.<p>
-         * 
+         *
          * @param folders the folders from which to generate list items
          */
         public TreeItemGenerator(List<CmsGalleryTreeEntry> folders) {
@@ -211,7 +211,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
         }
     }
 
-    /** 
+    /**
      * Handles the change of the item selection.<p>
      */
     private class SelectionHandler extends A_SelectionHandler {
@@ -221,7 +221,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param gallerPath as id for the selected category
          * @param checkBox the reference to the checkbox
          */
@@ -288,8 +288,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Constructor.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      */
     public CmsGalleriesTab(CmsGalleriesTabHandler tabHandler) {
 
@@ -310,8 +310,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Fill the content of the galleries tab panel.<p>
-     * 
-     * @param galleryInfos the gallery info beans 
+     *
+     * @param galleryInfos the gallery info beans
      * @param selectedGalleries the list of galleries to select
      */
     public void fillContent(List<CmsGalleryFolderBean> galleryInfos, List<String> selectedGalleries) {
@@ -345,8 +345,9 @@ public class CmsGalleriesTab extends A_CmsListTab {
                 if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
                     title = galleryBean.getPath();
                 }
-                CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                    Messages.GUI_PARAMS_LABEL_GALLERIES_0), this);
+                CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                    Messages.get().key(Messages.GUI_PARAMS_LABEL_GALLERIES_0),
+                    this);
                 panel.setContent(title, galleryPath);
                 result.add(panel);
             }
@@ -356,8 +357,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Returns the value of the "loading" flag, which indicates whether new elements are currently being added into the galleries tab.<p>
-     * 
-     * @return the "loading" flag 
+     *
+     * @return the "loading" flag
      */
     public boolean isLoading() {
 
@@ -385,8 +386,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Sets the "loading" flag.<p>
-     * 
-     * @param loading the new value of the loading flag 
+     *
+     * @param loading the new value of the loading flag
      */
     public void setLoading(boolean loading) {
 
@@ -395,7 +396,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
     * De-selects the galleries in the galleries list.<p>
-    * 
+    *
     * @param galleries the galleries to deselect
     */
     public void uncheckGalleries(List<String> galleries) {
@@ -410,7 +411,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Update the galleries list.<p>
-     * 
+     *
      * @param galleries the new gallery list
      * @param selectedGalleries the list of galleries to select
      */
@@ -422,7 +423,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Update the galleries tree.<p>
-     * 
+     *
      * @param galleryTreeEntries the new gallery tree list
      * @param selectedGalleries the list of galleries to select
      */
@@ -441,8 +442,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Adds children to the gallery tree and select the galleries.<p>
-     * 
-     * @param parent the parent item 
+     *
+     * @param parent the parent item
      * @param children the list of children
      * @param selectedGalleries the list of galleries to select
      */
@@ -464,11 +465,11 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Creates a tree item widget used in list and tree view of this tab.<p>
-     * 
+     *
      * @param galleryInfo the gallery folder bean
      * @param selectedGalleries the selected galleries
      * @param forTree <code>true</code> if the item is used within tree view
-     * 
+     *
      * @return the tree item
      */
     protected CmsTreeItem createTreeItem(
@@ -476,10 +477,8 @@ public class CmsGalleriesTab extends A_CmsListTab {
         List<String> selectedGalleries,
         boolean forTree) {
 
-        CmsListItemWidget listItemWidget = new CmsListItemWidget(new CmsListInfoBean(
-            galleryInfo.getTitle(),
-            galleryInfo.getPath(),
-            null));
+        CmsListItemWidget listItemWidget = new CmsListItemWidget(
+            new CmsListInfoBean(galleryInfo.getTitle(), galleryInfo.getPath(), null));
         listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(galleryInfo.getType(), false));
         listItemWidget.setUnselectable();
         CmsCheckBox checkBox = new CmsCheckBox();
@@ -561,7 +560,7 @@ public class CmsGalleriesTab extends A_CmsListTab {
 
     /**
      * Goes up the tree and opens the parents of the item.<p>
-     * 
+     *
      * @param item the child item to start from
      */
     private void openParents(CmsTreeItem item) {

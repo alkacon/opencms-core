@@ -19,15 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.gwt;
-
-import au.com.bytecode.opencsv.CSVWriter;
 
 import org.opencms.db.CmsAlias;
 import org.opencms.db.CmsAliasManager;
@@ -54,6 +52,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 /**
  * This class contains the real implementations of service methods related to aliases.<p>
  */
@@ -67,11 +67,11 @@ public class CmsAliasHelper {
 
     /**
      * Returns the comma separated alias data.<p>
-     * 
+     *
      * @param cms the OpenCms context
-     * 
+     *
      * @return the comma separated alias data
-     * 
+     *
      * @throws CmsException if something goes wrong reading the alias data
      */
     public String exportAliasesAsCsv(CmsObject cms) throws CmsException {
@@ -84,10 +84,8 @@ public class CmsAliasHelper {
         for (CmsAlias alias : aliases) {
             try {
                 CmsResource resource = cms.readResource(alias.getStructureId());
-                csvWriter.writeNext(new String[] {
-                    alias.getAliasPath(),
-                    cms.getSitePath(resource),
-                    alias.getMode().toString()});
+                csvWriter.writeNext(
+                    new String[] {alias.getAliasPath(), cms.getSitePath(resource), alias.getMode().toString()});
             } catch (CmsException e) {
                 LOG.warn("Could not read alias resource", e);
                 continue;
@@ -96,11 +94,12 @@ public class CmsAliasHelper {
 
         List<CmsRewriteAlias> rewriteAliases = OpenCms.getAliasManager().getRewriteAliases(cms, siteRoot);
         for (CmsRewriteAlias rewrite : rewriteAliases) {
-            csvWriter.writeNext(new String[] {
-                rewrite.getPatternString(),
-                rewrite.getReplacementString(),
-                rewrite.getMode().toString(),
-                "rewrite"});
+            csvWriter.writeNext(
+                new String[] {
+                    rewrite.getPatternString(),
+                    rewrite.getReplacementString(),
+                    rewrite.getMode().toString(),
+                    "rewrite"});
         }
         try {
             csvWriter.flush();
@@ -113,10 +112,10 @@ public class CmsAliasHelper {
 
     /**
      * Saves aliases.<p>
-     * 
-     * @param structureId the structure id 
-     * @param aliasBeans the alias beans 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param structureId the structure id
+     * @param aliasBeans the alias beans
+     * @throws CmsException if something goes wrong
      */
     public void saveAliases(CmsUUID structureId, List<CmsAliasBean> aliasBeans) throws CmsException {
 
@@ -136,7 +135,7 @@ public class CmsAliasHelper {
 
     /**
      * Sets the CMS object.<p>
-     * 
+     *
      * @param cms the CMS object
      */
     public void setCms(CmsObject cms) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import java.util.Map;
 
 /**
  * Generic list item.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListItem {
 
@@ -51,7 +51,7 @@ public class CmsListItem {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the id of the item has to be unique
      * @param metadata the corresponding list definition
      */
@@ -61,9 +61,8 @@ public class CmsListItem {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "id"));
         }
         if (metadata == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_LIST_INVALID_NULL_ARG_1,
-                "metadata"));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_LIST_INVALID_NULL_ARG_1, "metadata"));
         }
         m_metadata = metadata;
         m_id = id;
@@ -71,11 +70,11 @@ public class CmsListItem {
 
     /**
      * Returns the value of the column for this item.<p>
-     * 
+     *
      * @param columnId the column id
-     * 
+     *
      * @return the content, may be <code>null</code>
-     * 
+     *
      * @throws CmsIllegalArgumentException if the given <code>columnId</code> is invalid
      */
     public Object get(String columnId) throws CmsIllegalArgumentException {
@@ -92,7 +91,7 @@ public class CmsListItem {
      * Returns the id of the item.<p>
      *
      * @return the id
-     * 
+     *
      * @see CmsHtmlList#getItem(String)
      */
     public String getId() {
@@ -112,7 +111,7 @@ public class CmsListItem {
 
     /**
      * Returns the value map of the list item.<p>
-     * 
+     *
      * @return the value map of the list item
      */
     public Map<String, Object> getValues() {
@@ -122,13 +121,13 @@ public class CmsListItem {
 
     /**
      * Sets the object to display at the given column.<p>
-     * 
+     *
      * @param columnId the column id
      * @param value the value to display
-     * 
+     *
      * @return the previous value, or <code>null</code> if not set
      * @throws CmsIllegalArgumentException if the given <code>columnId</code> is invalid
-     * 
+     *
      */
     public Object set(String columnId, Object value) throws CmsIllegalArgumentException {
 

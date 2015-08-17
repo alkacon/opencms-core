@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import org.opencms.file.CmsObject;
  * This tool handler just hides the tool for the user, but the tool can still
  * be invoked explicitly, usefull for tool that requires an argument, like
  * edit tools.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsInvisibleToolHandler extends A_CmsToolHandler {
 

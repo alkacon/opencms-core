@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,9 +34,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a GUI for the file comparison dialog.<p> 
- * 
- * @since 6.0.0 
+ * Provides a GUI for the file comparison dialog.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
 
@@ -78,7 +78,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDifferenceDialog(CmsJspActionElement jsp) {
@@ -88,7 +88,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -319,7 +319,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getCopySource()
      */
     @Override
@@ -329,7 +329,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getLinesBeforeSkip()
      */
     @Override
@@ -339,7 +339,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getOriginalSource()
      */
     @Override
@@ -349,7 +349,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
     @Override

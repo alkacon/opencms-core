@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The role overview widget dialog.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsRoleOverviewDialog extends CmsWidgetDialog {
@@ -63,7 +63,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRoleOverviewDialog(CmsJspActionElement jsp) {
@@ -74,7 +74,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -95,7 +95,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns a String inculding all parent roles of the role object.<p>
-     * 
+     *
      * @return a String inculding all parent roles of the role object
      */
     public String getDependency() {
@@ -114,7 +114,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the localized description of the role object.<p>
-     *  
+     *
      * @return the localized description of the role object
      */
     public String getDescription() {
@@ -124,7 +124,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the localized name of the role object.<p>
-     * 
+     *
      * @return the localized name of the role object
      */
     public String getName() {
@@ -134,7 +134,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the organizational unit parameter value.<p>
-     * 
+     *
      * @return the organizational unit parameter value
      */
     public String getParamOufqn() {
@@ -144,7 +144,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Returns the role name parameter value.<p>
-     * 
+     *
      * @return the role name parameter value
      */
     public String getParamRole() {
@@ -154,7 +154,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * This method is needed only for displaying reasons.<p>
-     * 
+     *
      * @param dependency nothing to do with this parameter
      */
     public void setDependency(String dependency) {
@@ -165,7 +165,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * This method is needed only for displaying reasons.<p>
-     * 
+     *
      * @param description nothing to do with this parameter
      */
     public void setDescription(String description) {
@@ -176,7 +176,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * This method is needed only for displaying reasons.<p>
-     * 
+     *
      * @param name nothing to do with this parameter
      */
     public void setName(String name) {
@@ -187,7 +187,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user organizational unit value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -200,7 +200,7 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Sets the role name value.<p>
-     * 
+     *
      * @param role the role name parameter value
      */
     public void setParamRole(String role) {
@@ -210,9 +210,9 @@ public class CmsRoleOverviewDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */

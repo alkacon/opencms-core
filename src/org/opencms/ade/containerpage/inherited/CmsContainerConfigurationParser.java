@@ -16,14 +16,14 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details. 
+ * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,8 +80,8 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Creates a new configuration parser.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      */
     public CmsContainerConfigurationParser(CmsObject cms) {
 
@@ -91,8 +91,8 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Gets the parsed results as a map.<p>
-     * 
-     * @return the parse results 
+     *
+     * @return the parse results
      */
     public Map<Locale, Map<String, CmsContainerConfiguration>> getParsedResults() {
 
@@ -101,10 +101,10 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Parses the contents of a file.<p>
-     * 
+     *
      * @param file the file to parse
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void parse(CmsFile file) throws CmsException {
 
@@ -118,10 +118,10 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Parses the contents of a resource.<p>
-     * 
-     * @param resource the resource which should be parsed 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource which should be parsed
+     *
+     * @throws CmsException if something goes wrong
      */
     public void parse(CmsResource resource) throws CmsException {
 
@@ -131,7 +131,7 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Parses a group of named configurations from a given XML content location.<p>
-     * 
+     *
      * @param location the location from which to read the configuration group
      */
     protected void parseConfigurationGroup(I_CmsXmlContentLocation location) {
@@ -146,7 +146,7 @@ public class CmsContainerConfigurationParser {
 
     /**
      * Parses a single inheritance configuration from an XML content node.<p>
-     * 
+     *
      * @param location the node from which to read the single configuration
      */
     protected void parseSingleConfiguration(I_CmsXmlContentValueLocation location) {

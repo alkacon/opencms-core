@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,14 +62,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the publish scheduled dialog.<p> 
- * 
+ * Provides methods for the publish scheduled dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/publishscheduled.jsp
  * </ul>
  * <p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsPublishScheduled extends CmsDialog {
@@ -91,7 +91,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishScheduled(CmsJspActionElement jsp) {
@@ -101,7 +101,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -112,7 +112,7 @@ public class CmsPublishScheduled extends CmsDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
     @Override
@@ -125,7 +125,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Performs the resource operation, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionUpdate() throws JspException {
@@ -146,7 +146,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Returns the value of the publish scheduled date.<p>
-     * 
+     *
      * @return the value of the publish scheduled date
      */
     public String getParamPublishscheduleddate() {
@@ -156,7 +156,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Sets the title of the dialog.<p>
-     * 
+     *
      * @param singleKey the key for the single operation
      */
     public void setDialogTitle(String singleKey) {
@@ -168,7 +168,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Sets the value of the reset expire parameter.<p>
-     * 
+     *
      * @param paramPublishscheduleddate the value of the publish scheduled date
      */
     public void setParamPublishscheduleddate(String paramPublishscheduleddate) {
@@ -176,13 +176,13 @@ public class CmsPublishScheduled extends CmsDialog {
         m_paramPublishscheduleddate = paramPublishscheduleddate;
     }
 
-    /** 
+    /**
      * Creates the publish project's name for a given root path and publish date.<p>
-     * 
-     * @param rootPath the publish resource's root path 
+     *
+     * @param rootPath the publish resource's root path
      * @param date the publish date
-     *  
-     * @return the publish project name 
+     *
+     * @return the publish project name
      */
     protected String computeProjectName(String rootPath, Date date) {
 
@@ -199,9 +199,9 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
-     * 
+     *
      * @param flags the flags of the ACE
-     * 
+     *
      * @return localization for "Group", if the flag belongs to a group ACE
      */
     protected String getLocalizedType(int flags) {
@@ -222,7 +222,7 @@ public class CmsPublishScheduled extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to modify the resource       
+        // check the required permissions to modify the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -231,7 +231,7 @@ public class CmsPublishScheduled extends CmsDialog {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
@@ -249,7 +249,7 @@ public class CmsPublishScheduled extends CmsDialog {
 
     /**
      * Modifies the time shift publish date of a resource. <p>
-     * 
+     *
      * @return true, if the operation was performed, otherwise false
      *
      * @throws CmsException if something goes wrong
@@ -298,7 +298,7 @@ public class CmsPublishScheduled extends CmsDialog {
             if (resName.length() > 64) {
                 resName = resName.substring(0, 64) + "...";
             }
-            // use UUID to make sure the project name is still unique 
+            // use UUID to make sure the project name is still unique
             projectName = computeProjectName(resName, date) + " [" + new CmsUUID() + "]";
             // create the project
             tmpProject = cmsAdmin.createProject(

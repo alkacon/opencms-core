@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Helper class for locating configuration files by looking up their location in properties of another resource.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsConfigurationFileFinder {
@@ -51,11 +51,11 @@ public class CmsConfigurationFileFinder {
     /** The name of the property which should contain the configuration file path. */
     private String m_propertyName;
 
-    /** 
+    /**
      * Creates a new configuration file finder which expects the location of configuration files to be stored in the
-     * property with the given name.<p> 
-     * 
-     * @param propertyName the name of the property which should contain the configuration file path 
+     * property with the given name.<p>
+     *
+     * @param propertyName the name of the property which should contain the configuration file path
      */
     public CmsConfigurationFileFinder(String propertyName) {
 
@@ -64,10 +64,10 @@ public class CmsConfigurationFileFinder {
 
     /**
      * Returns the configuration file to use.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param containerPageUri the container page uri
-     * 
+     *
      * @return the configuration file to use, or <code>null</code> if not found
      */
     public CmsResource getConfigurationFile(CmsObject cms, String containerPageUri) {
@@ -77,7 +77,7 @@ public class CmsConfigurationFileFinder {
             // get the resource type configuration file from the vfs tree
             cfgPath = cms.readPropertyObject(containerPageUri, m_propertyName, true).getValue();
         } catch (CmsException e) {
-            // should never happen 
+            // should never happen
             LOG.error(e.getLocalizedMessage(), e);
         }
 
@@ -116,11 +116,12 @@ public class CmsConfigurationFileFinder {
                 String rootCfgPath = CmsStringUtil.joinPaths(siteRoot, cfgPath);
                 return cms.readResource(rootCfgPath);
             } catch (Exception e2) {
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.ERR_CONFIG_NOT_FOUND_3,
-                    containerPageUri,
-                    m_propertyName,
-                    cfgPath));
+                throw new CmsIllegalStateException(
+                    Messages.get().container(
+                        Messages.ERR_CONFIG_NOT_FOUND_3,
+                        containerPageUri,
+                        m_propertyName,
+                        cfgPath));
             }
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ public class CmsRewriteAliasFilter {
 
     /**
      * Gets the id to filter with.<p>
-     * 
-     * @return the id to filter with 
+     *
+     * @return the id to filter with
      */
     public CmsUUID getId() {
 
@@ -52,8 +52,8 @@ public class CmsRewriteAliasFilter {
 
     /**
      * Gets the site root used for filtering.<p>
-     * 
-     * @return the site root used for filtering 
+     *
+     * @return the site root used for filtering
      */
     public String getSiteRoot() {
 
@@ -62,10 +62,10 @@ public class CmsRewriteAliasFilter {
 
     /**
      * Sets the id of the rewrite alias we want.<p>
-     * 
+     *
      * @param id a rewrite alias id
-     *  
-     * @return this filter 
+     *
+     * @return this filter
      */
     public CmsRewriteAliasFilter setId(CmsUUID id) {
 
@@ -75,10 +75,10 @@ public class CmsRewriteAliasFilter {
 
     /**
      * Sets the site root to use for filtering.<p>
-     * 
-     * @param siteRoot the site root 
-     * 
-     * @return this filter 
+     *
+     * @param siteRoot the site root
+     *
+     * @return this filter
      */
     public CmsRewriteAliasFilter setSiteRoot(String siteRoot) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.io.File;
 
 /**
  * Displays a 16x16 icon from the explorer view in a list action.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListExplorerDirectAction extends CmsListDirectAction {
 
@@ -46,7 +46,7 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      */
     public CmsListExplorerDirectAction(String id) {
@@ -87,10 +87,10 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
-     * 
+     *
      * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
      * is that the icons are 16x16.<p>
-     * 
+     *
      * @param id the id
      * @param helpId the id of the helptext div tag
      * @param name the name, if empty only the icon is displayed
@@ -100,9 +100,9 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
      * @param onClick the js code to execute, if empty no link is generated
      * @param confirmationMessage the confirmation message
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
-     * 
+     *
      * @return html code
-     * 
+     *
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
      */
     protected String defButtonHtml(

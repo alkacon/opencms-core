@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -96,8 +96,8 @@ public class CmsSiteSelectorOptionBuilder {
 
     /**
      * Creates a new builder instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      */
     public CmsSiteSelectorOptionBuilder(CmsObject cms) {
 
@@ -107,8 +107,8 @@ public class CmsSiteSelectorOptionBuilder {
 
     /**
      * Adds the current subsite.<p>
-     * 
-     * @param referencePath the reference path 
+     *
+     * @param referencePath the reference path
      */
     public void addCurrentSubsite(String referencePath) {
 
@@ -125,8 +125,8 @@ public class CmsSiteSelectorOptionBuilder {
 
     /**
      * Adds 'normal' sites.<p>
-     * 
-     * @param includeRoot if true, also adds the root site 
+     *
+     * @param includeRoot if true, also adds the root site
      * @param startFolder the users configured start folder
      */
     public void addNormalSites(boolean includeRoot, String startFolder) {
@@ -192,15 +192,16 @@ public class CmsSiteSelectorOptionBuilder {
             addOption(
                 Type.shared,
                 shared,
-                org.opencms.workplace.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
-                    org.opencms.workplace.Messages.GUI_SHARED_TITLE_0));
+                org.opencms.workplace.Messages.get().getBundle(
+                    OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+                        org.opencms.workplace.Messages.GUI_SHARED_TITLE_0));
         }
     }
 
     /**
      * Gets the site selector options.<p>
-     * 
-     * @return the site selector options 
+     *
+     * @return the site selector options
      */
     public List<CmsSiteSelectorOption> getOptions() {
 
@@ -210,10 +211,10 @@ public class CmsSiteSelectorOptionBuilder {
 
     /**
      * Internal helper method for adding an option.<p>
-     * 
-     * @param type the option type 
-     * @param siteRoot the site root 
-     * @param message the message for the option 
+     *
+     * @param type the option type
+     * @param siteRoot the site root
+     * @param message the message for the option
      */
     private void addOption(Type type, String siteRoot, String message) {
 

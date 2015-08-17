@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Drag and drop event preview handler.<p>
-     * 
+     *
      * To be used while dragging.<p>
      */
     protected class CloseEventPreviewHandler implements NativePreviewHandler {
@@ -294,7 +294,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
      */
     public void setName(String name) {
 
-        // no input field so nothing to do.        
+        // no input field so nothing to do.
     }
 
     /**
@@ -422,7 +422,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         final List<String> categories = m_categoryList;
         final String category = m_category;
 
-        // start request 
+        // start request
         CmsRpcAction<List<CmsCategoryTreeEntry>> action = new CmsRpcAction<List<CmsCategoryTreeEntry>>() {
 
             /**
@@ -441,9 +441,9 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             @Override
             protected void onResponse(List<CmsCategoryTreeEntry> result) {
 
-                // copy the result to the global variable. 
+                // copy the result to the global variable.
                 m_resultList = result;
-                // start to generate the tree view. 
+                // start to generate the tree view.
                 m_categoryField.buildCategoryTree(m_resultList, m_selected);
                 setheight();
 
@@ -456,7 +456,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /**
      * Help function to parse the configuration.<p>
      * @param configuration the value to be parsed.
-     *  
+     *
      * */
     private void parseConfiguration(String configuration) {
 
@@ -473,9 +473,8 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
             if (selectiontypeIndex != -1) {
                 // selection type is given
-                String selectiontype = configuration.substring(selectiontypeIndex
-                    + CONFIGURATION_SELECTIONTYPE.length()
-                    + 1);
+                String selectiontype = configuration.substring(
+                    selectiontypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
                 if (selectiontype.indexOf("|") != -1) {
                     // cut eventual following configuration values
                     selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));

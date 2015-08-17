@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import com.google.common.cache.CacheBuilder;
 
 /**
  * A class used to keep track of which user is editing the alias table from which sites.<p>
- * 
- * It consists of a table from site roots to users. The entries of the table will be removed 
+ *
+ * It consists of a table from site roots to users. The entries of the table will be removed
  * if they haven't been updated in a given interval of time, but can also be removed manually.<p>
- * 
+ *
  */
 public class CmsAliasEditorLockTable {
 
-    /** 
+    /**
      * The interval after which a lock which has not been updated will be removed.<p>
      */
     public static final long TIMEOUT_INTERVAL = 60 * 1000;
@@ -67,9 +67,9 @@ public class CmsAliasEditorLockTable {
 
     /**
      * Clears the entry for a given site root, but only if the user from the given CMS context matches the user in the entry.<p>
-     * 
-     * @param cms the current CMS context  
-     * @param siteRoot the site root for which the entry should be cleared 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root for which the entry should be cleared
      */
     public void clear(CmsObject cms, String siteRoot) {
 
@@ -82,14 +82,14 @@ public class CmsAliasEditorLockTable {
 
     /**
      * Tries to update or create an entry for the given user/site root combination.<p>
-     * 
+     *
      * If this method succeeds, it will return null, but if another user has created an entry for the site root,
      * it will return that user.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param siteRoot the site root 
-     * 
-     * @return null of the user who has already created an entry 
+     *
+     * @param cms the current CMS context
+     * @param siteRoot the site root
+     *
+     * @return null of the user who has already created an entry
      */
     public CmsUser update(CmsObject cms, String siteRoot) {
 

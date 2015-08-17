@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,9 +54,9 @@ import com.google.gwt.user.client.Timer;
 
 /**
  * This class is used to start TinyMCE for editing the content of an element.<p>
- * 
+ *
  * After constructing the instance, the actual editor is opened using the init() method, and destroyed with the close()
- * method. While the editor is opened, the edited contents can be accessed using the methods of the HasValue interface.  
+ * method. While the editor is opened, the edited contents can be accessed using the methods of the HasValue interface.
  */
 public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResizeHandlers {
 
@@ -113,7 +113,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Creates a new instance for the given element. Use this constructor for in line editing.<p>
-     * 
+     *
      * @param element the DOM element
      * @param options the tinyMCE editor options to extend the default settings
      */
@@ -124,7 +124,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Creates a new instance with the given options. Use this constructor for form based editing.<p>
-     * 
+     *
      * @param options the tinyMCE editor options to extend the default settings
      */
     public CmsTinyMCEWidget(Object options) {
@@ -134,7 +134,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the DOM element
      * @param options the tinyMCE editor options to extend the default settings
      * @param inline flag indicating if in line editing is used
@@ -171,10 +171,10 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
         return addHandler(handler, ValueChangeEvent.getType());
     }
 
-    /** 
+    /**
      * Gets the main editable element.<p>
-     * 
-     * @return the editable element 
+     *
+     * @return the editable element
      */
     public Element getMainElement() {
 
@@ -260,7 +260,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     }
 
     /**
-     * Checks whether the necessary Javascript libraries are available by accessing them. 
+     * Checks whether the necessary Javascript libraries are available by accessing them.
      */
     protected native void checkLibraries() /*-{
                                            // fail early if tinymce is not available
@@ -270,10 +270,10 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Gives an element an id if it doesn't already have an id, and then returns the element's id.<p>
-     * 
+     *
      * @param element the element for which we want to add the id
-     *  
-     * @return the id 
+     *
+     * @return the id
      */
     protected String ensureId(Element element) {
 
@@ -287,7 +287,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Returns the editor parent element.<p>
-     * 
+     *
      * @return the editor parent element
      */
     protected Element getEditorParentElement() {
@@ -299,9 +299,9 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Gets an element by its id.<p>
-     * 
-     * @param id the id 
-     * @return the element with the given id 
+     *
+     * @param id the id
+     * @return the element with the given id
      */
     protected native Element getElementById(String id) /*-{
                                                        return $doc.getElementById(id);
@@ -309,8 +309,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Gets the toolbar element.<p>
-     * 
-     * @return the toolbar element 
+     *
+     * @return the toolbar element
      */
     protected Element getToolbarElement() {
 
@@ -321,7 +321,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Returns if the widget is used in inline mode.<p>
-     * 
+     *
      * @return <code>true</code> if the widget is used in inline mode
      */
     protected boolean isInline() {
@@ -403,7 +403,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
     /**
      * Propagates a native mouse event.<p>
      *
-     * @param eventType the mouse event type 
+     * @param eventType the mouse event type
      * @param eventSource the event source
      */
     protected native void propagateMouseEvent(String eventType, Element eventSource) /*-{
@@ -455,8 +455,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Sets the main content of the element which is inline editable.<p>
-     * 
-     * @param html the new content html 
+     *
+     * @param html the new content html
      */
     protected native void setMainElementContent(String html) /*-{
                                                              var instance = this;
@@ -467,7 +467,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Checks if the main element contains the current text selection.<p>
-     * 
+     *
      * @return <code>true</code> if the main element contains the current text selection
      */
     protected boolean shouldReceiveFocus() {
@@ -477,7 +477,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Calculates the needed editor height.<p>
-     * 
+     *
      * @return the calculated editor height
      */
     int calculateEditorHeight() {
@@ -488,7 +488,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Calculates the widget width.<p>
-     * 
+     *
      * @return the widget width
      */
     int calculateWidth() {
@@ -673,7 +673,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
                              }-*/;
 
     /**
-     * Resets the attached flag.<p> 
+     * Resets the attached flag.<p>
      */
     void resetAtachedFlag() {
 
@@ -728,7 +728,7 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Returns the editor content.<p>
-     * 
+     *
      * @return the editor content
      */
     private native String getContent() /*-{
@@ -750,8 +750,8 @@ public final class CmsTinyMCEWidget extends A_CmsEditWidget implements HasResize
 
     /**
      * Sets the content of the TinyMCE editor.<p>
-     * 
-     * @param newContent the new content 
+     *
+     * @param newContent the new content
      */
     private native void setContent(String newContent) /*-{
                                                       var editor = this.@org.opencms.acacia.client.widgets.CmsTinyMCEWidget::m_editor;

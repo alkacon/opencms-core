@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,13 +37,13 @@ import org.dom4j.QName;
 
 /**
  * Provides generic wrappers for XML library methods that do not support Java 5 generic types.<p>
- * 
- * @since 7.5.1 
+ *
+ * @since 7.5.1
  */
 public final class CmsXmlGenericWrapper {
 
     /**
-     * Prevents instances of this class from being generated.<p> 
+     * Prevents instances of this class from being generated.<p>
      */
     private CmsXmlGenericWrapper() {
 
@@ -52,9 +52,9 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#content()}.<p>
-     * 
+     *
      * @param element the element to get the content for
-     * 
+     *
      * @return type safe access to {@link Element#content()}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -65,10 +65,10 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Returns an element iterator.<p>
-     * 
+     *
      * @param element the element
      * @param name the name
-     * 
+     *
      * @return the iterator
      */
     public static Iterable<Element> elementIterable(final Element element, final String name) {
@@ -84,9 +84,9 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#elementIterator(org.dom4j.QName)}.<p>
-     * 
+     *
      * @param element the element to iterate
-     * 
+     *
      * @return type safe access to {@link Element#elementIterator(org.dom4j.QName)}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -97,10 +97,10 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#elementIterator(String)}.<p>
-     * 
+     *
      * @param element the element to iterate
      * @param name the element name to match
-     * 
+     *
      * @return type safe access to {@link Element#elementIterator(String)}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -111,9 +111,9 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#elements()}.<p>
-     * 
+     *
      * @param element the element to iterate
-     * 
+     *
      * @return type safe access to {@link Element#elements()}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -124,10 +124,10 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#elements(org.dom4j.QName)}.<p>
-     * 
+     *
      * @param element the element to iterate
      * @param name the element name to match
-     * 
+     *
      * @return type safe access to {@link Element#elements(org.dom4j.QName)}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -138,10 +138,10 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Element#elements(String)}.<p>
-     * 
+     *
      * @param element the element to iterate
      * @param name the element name to match
-     * 
+     *
      * @return type safe access to {@link Element#elements(String)}.<p>
      */
     @SuppressWarnings("unchecked")
@@ -152,10 +152,10 @@ public final class CmsXmlGenericWrapper {
 
     /**
      * Provides a type safe / generic wrapper for {@link Document#selectNodes(String)}.<p>
-     * 
+     *
      * @param doc the document to select the nodes from
      * @param xpathExpression the XPATH expression to select
-     * 
+     *
      * @return type safe access to {@link Document#selectNodes(String)}
      */
     @SuppressWarnings("unchecked")

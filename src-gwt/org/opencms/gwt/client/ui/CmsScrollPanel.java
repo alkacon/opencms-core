@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -88,7 +88,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Drag and drop event preview handler.<p>
-     * 
+     *
      * To be used while dragging.<p>
      */
     protected class ResizeEventPreviewHandler implements NativePreviewHandler {
@@ -152,7 +152,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.ScrollPanel#ScrollPanel()
      */
     public CmsScrollPanel() {
@@ -163,7 +163,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Constructor to be used by {@link org.opencms.gwt.client.ui.CmsScrollPanelImpl}.<p>
-     * 
+     *
      * @param root the root element of the widget
      * @param scrollabel the scrollable element of the widget
      * @param container the container element of the widget
@@ -186,7 +186,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     /**
      * Enables or disables the focused scrolling feature.<p>
      * Focused scrolling is enabled by default.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable the focused scrolling feature
      */
     public void enableFocusedScrolling(boolean enable) {
@@ -212,7 +212,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
      */
     public void onResizeDescendant() {
 
-        // not needed 
+        // not needed
     }
 
     /**
@@ -235,7 +235,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Sets the default height of the scrolling panel.
-     * 
+     *
      * @param height the default height
      */
     public void setDefaultHeight(double height) {
@@ -244,8 +244,8 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     }
 
     /**
-     * Sets the scrollpanel resizeable.<p> 
-     * 
+     * Sets the scrollpanel resizeable.<p>
+     *
      * @param resize true if the scrollpanel should be resizeable.
      */
     public void setResizable(boolean resize) {
@@ -312,7 +312,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Executed on mouse move while dragging.<p>
-     * 
+     *
      * @param event the event
      */
     protected void setNewHeight(Event event) {
@@ -329,7 +329,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
 
     /**
      * Sets the start parameters of the resize event.<p>
-     * 
+     *
      * @param event the mouse event
      */
     protected void setStartParameters(MouseDownEvent event) {

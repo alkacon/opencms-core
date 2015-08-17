@@ -147,7 +147,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     throws JspException {
 
         if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            // the metadata is only needed for editing 
+            // the metadata is only needed for editing
             return;
         }
         I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
@@ -243,7 +243,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      * @param resourceInfo contains information about the resource to edit
      *
      * @return the start HTML for an enabled direct edit button
-     * @throws JSONException if a JSON handling error occurs 
+     * @throws JSONException if a JSON handling error occurs
      */
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo)
     throws JSONException {
@@ -275,8 +275,8 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
                 m_cms,
                 resourceInfo.getResource().getRootPath());
-            CmsResourceTypeConfig typeConfig = configData.getResourceType(OpenCms.getResourceManager().getResourceType(
-                resourceInfo.getResource()).getTypeName());
+            CmsResourceTypeConfig typeConfig = configData.getResourceType(
+                OpenCms.getResourceManager().getResourceType(resourceInfo.getResource()).getTypeName());
             if (typeConfig != null) {
                 viewId = typeConfig.getElementView();
             }

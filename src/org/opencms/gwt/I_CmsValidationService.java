@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,21 +32,21 @@ import org.opencms.gwt.shared.CmsValidationResult;
 
 /**
  * This interface is the server-side counterpart to the <code>org.opencms.gwt.client.validation.I_CmsValidator</code>.<p>
- * 
+ *
  * It contains a method for validating a single field value.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsValidationService {
 
     /**
      * Validates a single form field value.<p>
-     * 
-     * @param cms the CMS context 
-     * @param value the value to validate 
-     * @param config the configuration string for the validator 
-     * 
-     * @return the result of the validation 
+     *
+     * @param cms the CMS context
+     * @param value the value to validate
+     * @param config the configuration string for the validator
+     *
+     * @return the result of the validation
      */
     CmsValidationResult validate(CmsObject cms, String value, String config);
 

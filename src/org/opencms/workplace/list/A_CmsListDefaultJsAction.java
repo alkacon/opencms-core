@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,14 +34,14 @@ import java.util.Locale;
 
 /**
  * Implementation of a default action in a html list column that can execute java script code.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id unique id
      */
     public A_CmsListDefaultJsAction(String id) {
@@ -57,8 +57,8 @@ public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
 
         String confirmationMessage = getConfirmationMessage().key(locale);
         if ((getColumnForTexts() != null) && (getItem().get(getColumnForTexts()) != null)) {
-            confirmationMessage = new MessageFormat(confirmationMessage, locale).format(new Object[] {getItem().get(
-                getColumnForTexts())});
+            confirmationMessage = new MessageFormat(confirmationMessage, locale).format(
+                new Object[] {getItem().get(getColumnForTexts())});
         }
         StringBuffer onClic = new StringBuffer(128);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
@@ -75,7 +75,7 @@ public abstract class A_CmsListDefaultJsAction extends CmsListDefaultAction {
 
     /**
      * The js code to execute.<p>
-     * 
+     *
      * @return js code to execute
      */
     public abstract String jsCode();

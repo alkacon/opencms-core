@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111R-1307  USA
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Used to access and display XML content item information from the VFS.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implements I_CmsMacroResolver {
 
@@ -198,7 +198,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
 
     /**
      * Returns the name of the content info's value that should be printed out.<p>
-     * 
+     *
      * @return the name of the content info's value that should be printed out
      */
     public String getValue() {
@@ -234,7 +234,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
 
     /**
      * Sets the name of the content info's value that should be printed out.<p>
-     * 
+     *
      * @param value the name of the content info's value that should be printed out
      */
     public void setValue(String value) {
@@ -244,7 +244,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
 
     /**
      * Stores the container's content info bean in the page context.<p>
-     * 
+     *
      * @param container the parent container
      */
     protected void storeContentInfoBean(CmsJspTagResourceLoad container) {

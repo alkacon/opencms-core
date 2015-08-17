@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,28 +49,28 @@ public class CmsPrepareEditResponse implements Serializable {
     private CmsUUID m_structureId;
 
     /**
-     * Default constructor.<p> 
+     * Default constructor.<p>
      */
     public CmsPrepareEditResponse() {
 
-        // do nothing 
+        // do nothing
 
     }
 
     /**
      * Gets the resource root path.<p>
-     * 
-     * @return the resource root path 
+     *
+     * @return the resource root path
      */
     public String getRootPath() {
 
         return m_rootPath;
     }
 
-    /** 
+    /**
      * Gets the resource site path.<p>
-     * 
-     * @return the resource site path 
+     *
+     * @return the resource site path
      */
     public String getSitePath() {
 
@@ -79,8 +79,8 @@ public class CmsPrepareEditResponse implements Serializable {
 
     /**
      * Gets the resource structure id.<p>
-     * 
-     * @return the resource structure id 
+     *
+     * @return the resource structure id
      */
     public CmsUUID getStructureId() {
 
@@ -89,8 +89,8 @@ public class CmsPrepareEditResponse implements Serializable {
 
     /**
      * Sets the resource root path.<p>
-     * 
-     * @param rootPath the resource root path 
+     *
+     * @param rootPath the resource root path
      */
     public void setRootPath(String rootPath) {
 
@@ -99,8 +99,8 @@ public class CmsPrepareEditResponse implements Serializable {
 
     /**
      * Sets the resource site path.<p>
-     * 
-     * @param sitePath the resource site path 
+     *
+     * @param sitePath the resource site path
      */
     public void setSitePath(String sitePath) {
 
@@ -109,8 +109,8 @@ public class CmsPrepareEditResponse implements Serializable {
 
     /**
      * Sets the resource structure id.<p>
-     * 
-     * @param structureId the resource structure id 
+     *
+     * @param structureId the resource structure id
      */
     public void setStructureId(CmsUUID structureId) {
 

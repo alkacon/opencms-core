@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,8 +59,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
         /**
          * Message accessor.<p>
-         * 
-         * @return the message text 
+         *
+         * @return the message text
          */
         public static String messageCancel() {
 
@@ -71,8 +71,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
         /**
          * Message accessor.<p>
-         * 
-         * @return the message text 
+         *
+         * @return the message text
          */
         public static String messageMainText() {
 
@@ -82,8 +82,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
         /**
          * Message accessor.<p>
-         * 
-         * @return the message text 
+         *
+         * @return the message text
          */
         public static String messageOk() {
 
@@ -92,8 +92,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
         /**
          * Message accessor.<p>
-         * 
-         * @return the message text 
+         *
+         * @return the message text
          */
         public static String messageTitle() {
 
@@ -106,7 +106,7 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
      * UiBinder interface for this dialog.<p>
      */
     interface I_UiBinder extends UiBinder<Panel, CmsRemovedElementDeletionDialog> {
-        // empty uibinder interface 
+        // empty uibinder interface
     }
 
     /** UiBinder instance for this dialog. */
@@ -129,13 +129,14 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
     /**
      * Creates a new dialog instance.<p>
-     * 
-     * @param status the status of the removed element 
+     *
+     * @param status the status of the removed element
      */
     public CmsRemovedElementDeletionDialog(final CmsRemovedElementStatus status) {
 
-        super(org.opencms.ade.containerpage.client.Messages.get().key(
-            org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0));
+        super(
+            org.opencms.ade.containerpage.client.Messages.get().key(
+                org.opencms.ade.containerpage.client.Messages.GUI_ASK_DELETE_REMOVED_ELEMENT_TITLE_0));
         setModal(true);
         setGlassEnabled(true);
         m_status = status;
@@ -153,8 +154,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
     /**
      * Click handler for the cancel button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     protected void onClickCancel(ClickEvent e) {
@@ -164,8 +165,8 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
 
     /**
      * Click handler for the ok button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_okButton")
     protected void onClickOk(ClickEvent e) {
@@ -189,10 +190,10 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
         deleteAction.execute();
     }
 
-    /** 
+    /**
      * Gets a list of the dialog buttons.<p>
-     * 
-     * @return the list of dialog buttons 
+     *
+     * @return the list of dialog buttons
      */
     private List<CmsPushButton> getDialogButtons() {
 

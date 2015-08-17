@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
 
     /**
      * Creates a new function reference.<p>
-     * 
-     * @param name the name of the function reference 
-     * @param structureId the structure id of the function 
-     * @param order the number used for sorting the function references 
+     *
+     * @param name the name of the function reference
+     * @param structureId the structure id of the function
+     * @param order the number used for sorting the function references
      */
     public CmsFunctionReference(String name, CmsUUID structureId, int order) {
 
@@ -67,7 +67,7 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
 
     /**
      * Returns the name of the function reference.<p>
-     * 
+     *
      * @return the name of the function reference
      */
     public String getName() {
@@ -77,8 +77,8 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
 
     /**
      * The order information for sorting the function references.<p>
-     * 
-     * @return the order information 
+     *
+     * @return the order information
      */
     public int getOrder() {
 
@@ -86,9 +86,9 @@ public class CmsFunctionReference implements I_CmsConfigurationObject<CmsFunctio
     }
 
     /**
-     * Returns the structure id of the dynamic function resource.<p> 
-     * 
-     * @return the structure id of the function 
+     * Returns the structure id of the dynamic function resource.<p>
+     *
+     * @return the structure id of the function
      */
     public CmsUUID getStructureId() {
 

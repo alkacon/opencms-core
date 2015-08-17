@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Used to check the availablity of an XML content item for conditional display.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentCheck extends TagSupport {
 
@@ -65,14 +65,14 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Internal action method to check the elements from the provided XML content item.<p>
-     * 
+     *
      * @param elementList the list of elements to check for
-     * @param prefix the Xpath prefix to append the elements to (in case of nested schemas) 
+     * @param prefix the Xpath prefix to append the elements to (in case of nested schemas)
      * @param checkall flag to indicate that all elements should be checked
      * @param checknone flag to indicate that the check is done for nonexisting elements
      * @param content the XML content document to check the elements from
      * @param locale the locale to check the element for
-     * 
+     *
      * @return true if the test succeeds, false if the test fails
      */
     public static boolean contentCheckTagAction(
@@ -130,7 +130,8 @@ public class CmsJspTagContentCheck extends TagSupport {
         // get a reference to the parent "content load" class
         Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTCHECK_WRONG_PARENT_0);
+            CmsMessageContainer errMsgContainer = Messages.get().container(
+                Messages.ERR_TAG_CONTENTCHECK_WRONG_PARENT_0);
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
@@ -156,7 +157,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements to check
      */
     public String getIfexists() {
@@ -166,7 +167,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements to check
      */
     public String getIfexistsall() {
@@ -176,7 +177,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements to check
      */
     public String getIfexistsnone() {
@@ -186,7 +187,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Returns the list of elements to check.<p>
-     * 
+     *
      * @return the list of elements to check
      */
     public String getIfexistsone() {
@@ -219,7 +220,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Sets the list of elements to check for.<p>
-     * 
+     *
      * @param elementList the list of elements to check for
      */
     public void setIfexists(String elementList) {
@@ -233,7 +234,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Sets the list of elements to check for.<p>
-     * 
+     *
      * @param elementList the list of elements to check for
      */
     public void setIfexistsall(String elementList) {
@@ -247,7 +248,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Sets the list of elements to check for.<p>
-     * 
+     *
      * @param elementList the list of elements to check for
      */
     public void setIfexistsnone(String elementList) {
@@ -261,7 +262,7 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /**
      * Sets the list of elements to check for.<p>
-     * 
+     *
      * @param elementList the list of elements to check for
      */
     public void setIfexistsone(String elementList) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,17 +35,17 @@ import java.util.Locale;
 
 /**
  * Interface for a CmsDecoratorConfiguration.<p>
- * 
- * This interface describes a CmsDecoratorConfiguration which provides methods to 
+ *
+ * This interface describes a CmsDecoratorConfiguration which provides methods to
  * get a filled CmsDecorationBundle. A decoration bundle contains a datastructure
  * of text decorations which can be used in the current request context.
- * 
+ *
  */
 public interface I_CmsDecoratorConfiguration {
 
     /**
      * Builds a CmsDecorationDefintion from a given configuration file.<p>
-     * 
+     *
      * @param configuration the configuration file
      * @param i the number of the decoration definition to create
      * @return CmsDecorationDefintion created form configuration file
@@ -67,7 +67,7 @@ public interface I_CmsDecoratorConfiguration {
 
     /**
      * Initialises the configuration.<p>
-     * 
+     *
      *@param cms the CmsObject
      * @param configFile the configuration file
      * @param locale to locale to build this configuration for
@@ -77,7 +77,7 @@ public interface I_CmsDecoratorConfiguration {
 
     /**
      * Tests if a tag is contained in the exclude list of the decorator.<p>
-     * 
+     *
      * @param tag the tag to test
      * @return true if the tag is in the exclode list, false othwerwise.
      */

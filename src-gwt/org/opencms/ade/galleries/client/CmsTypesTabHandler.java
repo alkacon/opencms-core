@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,17 +29,17 @@ package org.opencms.ade.galleries.client;
 
 /**
  * The results tab handler.<p>
- * 
- * This class receives events information from the results tab and 
+ *
+ * This class receives events information from the results tab and
  * delegates them to the gallery controller.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsTypesTabHandler extends A_CmsTabHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the gallery controller
      */
     public CmsTypesTabHandler(CmsGalleryController controller) {
@@ -58,7 +58,7 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
 
     /**
      * Will be triggered when the user unchecks the checkbox to deselect a type.<p>
-     * 
+     *
      * @param resourceType the resource type as id
      */
     public void deselectType(String resourceType) {
@@ -96,7 +96,7 @@ public class CmsTypesTabHandler extends A_CmsTabHandler {
 
     /**
      * Will be triggered when the user checks the checkbox to select a type.<p>
-     * 
+     *
      * @param resourceType the resource type as id
      */
     public void selectType(String resourceType) {

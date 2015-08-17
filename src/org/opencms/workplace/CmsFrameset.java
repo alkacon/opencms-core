@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,17 +56,17 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
- * 
+ * Provides methods for building the main framesets of the OpenCms Workplace.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/views/top.html
  * <li>/views/top_foot.html
  * <li>/views/top_head.html
  * </ul>
- * <p> 
- * 
- * @since 6.0.0 
+ * <p>
+ *
+ * @since 6.0.0
  */
 public class CmsFrameset extends CmsWorkplace {
 
@@ -96,7 +96,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsFrameset(CmsJspActionElement jsp) {
@@ -106,10 +106,10 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Performs additional filtering on the list of projects for the project selector.<p>
-     * 
+     *
      * @param projects the original project list
-     *  
-     * @return the filtered project list 
+     *
+     * @return the filtered project list
      */
     public List<CmsProject> filterProjectsForSelector(List<CmsProject> projects) {
 
@@ -124,7 +124,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the javascript code for the broadcast message alert in the foot of the workplace.<p>
-     * 
+     *
      * @return javascript code showing an alert box when the foot load
      */
     public String getBroadcastMessage() {
@@ -133,7 +133,7 @@ public class CmsFrameset extends CmsWorkplace {
         String message = getBroadcastMessageString();
 
         if (CmsStringUtil.isNotEmpty(message)) {
-            // create a javascript alert for the message 
+            // create a javascript alert for the message
             result.append("\n<script type=\"text/javascript\">\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
             result.append("function showMessage() {\n");
@@ -149,7 +149,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the remote ip address of the current user.<p>
-     * 
+     *
      * @return the remote ip address of the current user
      */
     public String getLoginAddress() {
@@ -168,9 +168,9 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * Returns the html for the "preferences" button depending on the current users permissions and 
+     * Returns the html for the "preferences" button depending on the current users permissions and
      * the default workplace settings.<p>
-     * 
+     *
      * @return the html for the "preferences" button
      */
     public String getPreferencesButton() {
@@ -190,8 +190,8 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns a html select box filled with the current users accessible projects.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
+     *
+     * @param htmlAttributes attributes that will be inserted into the generated html
      * @param htmlWidth additional style attributes containing width information
      * @return a html select box filled with the current users accessible projects
      */
@@ -259,8 +259,9 @@ public class CmsFrameset extends CmsWorkplace {
                 try {
                     projectName = projectName
                         + " - "
-                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
-                            getLocale());
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                            getCms(),
+                            project.getOuFqn()).getDisplayName(getLocale());
                 } catch (CmsException e) {
                     projectName = projectName + " - " + project.getOuFqn();
                 }
@@ -298,7 +299,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * Returns the html for the "publish project" button depending on the current users permissions and the default
      * workplace settings.<p>
-     * 
+     *
      * @return the html for the "publish project" button
      */
     public String getPublishButton() {
@@ -337,7 +338,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the html for the "publish queue" button.<p>
-     * 
+     *
      * @return the html for the "publish queue" button
      */
     public String getPublishQueueButton() {
@@ -358,8 +359,8 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns a html select box filled with the current users accessible sites.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
+     *
+     * @param htmlAttributes attributes that will be inserted into the generated html
      * @return a html select box filled with the current users accessible sites
      */
     public String getSiteSelect(String htmlAttributes) {
@@ -387,9 +388,9 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * Returns the startup URI for display in the main body frame, this can 
-     * either be the user default view, or (if set) a specific startup resource.<p> 
-     * 
+     * Returns the startup URI for display in the main body frame, this can
+     * either be the user default view, or (if set) a specific startup resource.<p>
+     *
      * @return the startup URI for display in the main body frame
      */
     public String getStartupUri() {
@@ -409,7 +410,10 @@ public class CmsFrameset extends CmsWorkplace {
             Iterator<Entry<?, ?>> i = params.iterator();
             while (i.hasNext()) {
                 Entry<?, ?> entry = i.next();
-                result = CmsRequestUtil.appendParameter(result, (String)entry.getKey(), ((String[])entry.getValue())[0]);
+                result = CmsRequestUtil.appendParameter(
+                    result,
+                    (String)entry.getKey(),
+                    ((String[])entry.getValue())[0]);
             }
         }
         // append the frame name to the startup uri
@@ -418,8 +422,8 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns a html select box filled with the views accessible by the current user.<p>
-     * 
-     * @param htmlAttributes attributes that will be inserted into the generated html 
+     *
+     * @param htmlAttributes attributes that will be inserted into the generated html
      * @return a html select box filled with the views accessible by the current user
      */
     public String getViewSelect(String htmlAttributes) {
@@ -460,7 +464,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the reload URI for the OpenCms workplace.<p>
-     * 
+     *
      * @return the reload URI for the OpenCms workplace
      */
     public String getWorkplaceReloadUri() {
@@ -470,14 +474,14 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns <code>true</code> if a reload of the main body frame is required.<p>
-     * 
-     * This value is modified with the select options (project, site or view) in the head frame of 
-     * the Workplace. If a user changes one of these select values, the head frame is posted 
+     *
+     * This value is modified with the select options (project, site or view) in the head frame of
+     * the Workplace. If a user changes one of these select values, the head frame is posted
      * "against itself". The posted values will be processed by this class, causing
      * the internal Workplace settings to change. After these settings have been changed,
      * a reload of the main body frame is required in order to update it with the new values.
      * A JavaScript in the Workplace head frame will be executed in this case.<p>
-     * 
+     *
      * @return <code>true</code> if a reload of the main body frame is required
      */
     public boolean isReloadRequired() {
@@ -487,7 +491,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns true if the user has enabled synchronization.<p>
-     * 
+     *
      * @return true if the user has enabled synchronization
      */
     public boolean isSyncEnabled() {
@@ -498,7 +502,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Indicates if the site selector should be shown in the top frame depending on the count of accessible sites.<p>
-     * 
+     *
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
@@ -518,9 +522,9 @@ public class CmsFrameset extends CmsWorkplace {
     @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
-        // overriden to avoid deletion of the configured time warp: 
-        // this is triggered by editors and in auto time warping a direct edit 
-        // must not delete a potential auto warped request time 
+        // overriden to avoid deletion of the configured time warp:
+        // this is triggered by editors and in auto time warping a direct edit
+        // must not delete a potential auto warped request time
     }
 
     /**
@@ -561,7 +565,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Performs certain clear cache actions if the top frame is reloaded.<p>
-     * 
+     *
      * @param settings the current users workplace settings
      */
     protected void topFrameReload(CmsWorkplaceSettings settings) {

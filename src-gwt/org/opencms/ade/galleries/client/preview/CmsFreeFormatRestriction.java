@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.ade.galleries.client.preview;
 
 /**
  * Free image format restriction. To be used within the image format tab of the image preview.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
@@ -42,8 +42,8 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
 
     /**
      * Constructor.<p>
-     * 
-     * @param name the format name 
+     *
+     * @param name the format name
      * @param label the format label
      */
     public CmsFreeFormatRestriction(String name, String label) {
@@ -133,7 +133,8 @@ public class CmsFreeFormatRestriction implements I_CmsFormatRestriction {
      */
     public boolean matchesCroppingParam(CmsCroppingParamBean croppingParam) {
 
-        return ((croppingParam.getCropX() != I_CmsFormatRestriction.DIMENSION_NOT_SET) && (croppingParam.getTargetHeight() == croppingParam.getCropHeight()))
+        return ((croppingParam.getCropX() != I_CmsFormatRestriction.DIMENSION_NOT_SET)
+            && (croppingParam.getTargetHeight() == croppingParam.getCropHeight()))
             && (croppingParam.getTargetWidth() == croppingParam.getCropWidth());
     }
 

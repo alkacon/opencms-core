@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import java.util.Locale;
 
 /**
  * Provides a OpenCms Group selection widget, for use on a widget dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -75,7 +75,7 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new group selection widget with the parameters to configure the popup window behaviour.<p>
-     * 
+     *
      * @param flags the group flags to restrict the group selection, can be <code>null</code>
      * @param userName the user to restrict the group selection, can be <code>null</code>
      */
@@ -88,7 +88,7 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new group selection widget with the parameters to configure the popup window behaviour.<p>
-     * 
+     *
      * @param flags the group flags to restrict the group selection, can be <code>null</code>
      * @param userName the user to restrict the group selection, can be <code>null</code>
      * @param ouFqn the organizational unit to restrict the group selection, can be <code>null</code>
@@ -102,7 +102,7 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new group selection widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsGroupWidget(String configuration) {
@@ -197,7 +197,8 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
         StringBuffer result = new StringBuffer(128);
 
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td style=\"width: 100%;\">");
+        result.append(
+            "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td style=\"width: 100%;\">");
         result.append("<input style=\"width: 99%;\" class=\"xmlInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
@@ -210,7 +211,8 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
         result.append(id);
         result.append("\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
         StringBuffer buttonJs = new StringBuffer(8);
         buttonJs.append("javascript:openGroupWin('");
@@ -244,12 +246,13 @@ public class CmsGroupWidget extends A_CmsWidget implements I_CmsADEWidget {
         }
         buttonJs.append(");");
 
-        result.append(widgetDialog.button(
-            buttonJs.toString(),
-            null,
-            "group",
-            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                buttonJs.toString(),
+                null,
+                "group",
+                org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
+                widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");
 

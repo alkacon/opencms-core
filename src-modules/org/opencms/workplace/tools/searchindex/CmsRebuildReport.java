@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
 /**
  * A report for displaying the rebuild process of the corresponding
  * <code>{@link org.opencms.workplace.tools.searchindex.CmsIndexingReportThread}</code>.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsRebuildReport extends A_CmsListReport {
@@ -68,7 +68,7 @@ public class CmsRebuildReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRebuildReport(CmsJspActionElement jsp) {
@@ -79,7 +79,7 @@ public class CmsRebuildReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -92,7 +92,7 @@ public class CmsRebuildReport extends A_CmsListReport {
 
     /**
      * Returns the comma-separated String of index names of the indexes that have to be rebuilt.<p>
-     * 
+     *
      * @return the comma-separated String of index names of the indexes that have to be rebuilt
      */
     public String getParamIndexes() {
@@ -101,23 +101,22 @@ public class CmsRebuildReport extends A_CmsListReport {
     }
 
     /**
-     * Returns the <b>unstarted</b> <code>Thread</code> that will do the work of rebuilding the indexes 
+     * Returns the <b>unstarted</b> <code>Thread</code> that will do the work of rebuilding the indexes
      * provided by the request parameter "indexes" value (comma-separated List).<p>
-     * 
-     * @throws CmsRuntimeException if the request parameter "indexes" is missing. 
-     * 
-     * @return the <b>unstarted</b> <code>Thread</code> that will do the work of rebuilding the indexes 
-     *         provided by the request parameter "indexes" value (comma-separated List) 
-     * 
-     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread() 
+     *
+     * @throws CmsRuntimeException if the request parameter "indexes" is missing.
+     *
+     * @return the <b>unstarted</b> <code>Thread</code> that will do the work of rebuilding the indexes
+     *         provided by the request parameter "indexes" value (comma-separated List)
+     *
+     * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
     public I_CmsReportThread initializeThread() throws CmsRuntimeException {
 
         if (getParamIndexes() == null) {
-            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                PARAM_INDEXES));
+            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1, PARAM_INDEXES));
             LOG.warn(ex);
 
             try {
@@ -135,7 +134,7 @@ public class CmsRebuildReport extends A_CmsListReport {
 
     /**
      * Sets the comma-separated String of index names of the indexes that that have to be rebuilt.<p>
-     * 
+     *
      * @param paramIndexes the comma-separated String of index names of the indexes that have to be rebuilt
      */
     public void setParamIndexes(String paramIndexes) {
@@ -144,15 +143,15 @@ public class CmsRebuildReport extends A_CmsListReport {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        // closelink is a bit complicated: If a forward from a single searchindex overview page 
-        // was made, go back to that searchindex-overview. If more indexes are in the given 
+        // closelink is a bit complicated: If a forward from a single searchindex overview page
+        // was made, go back to that searchindex-overview. If more indexes are in the given
         // parameter "indexes" go back to the search management entry page...
         List<String> indexes = extractIndexNames();
         if (indexes.size() == 1) {

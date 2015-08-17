@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ public class TestExists extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestExists(String arg0) {
@@ -53,7 +53,7 @@ public class TestExists extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -87,7 +87,7 @@ public class TestExists extends OpenCmsTestCase {
 
     /**
      * Tests the availability of a file that exists and with proper permissions.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testExistsForExistingFile() throws Throwable {
@@ -101,7 +101,7 @@ public class TestExists extends OpenCmsTestCase {
 
     /**
      * Tests the availability of a file that does not exist.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testExistsForUnexistingFile() throws Throwable {
@@ -115,7 +115,7 @@ public class TestExists extends OpenCmsTestCase {
 
     /**
      * Tests the availability of a file that exists but with not enough permissions.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testExistsForUnauthorizedFile() throws Throwable {

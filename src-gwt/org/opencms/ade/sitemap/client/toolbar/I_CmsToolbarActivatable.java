@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,21 +31,21 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Interface for activatable toolbar widgets.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsToolbarActivatable {
 
     /**
      * Execute on activation.<p>
-     * 
+     *
      * @param widget the widget
      */
     void onActivation(Widget widget);
 
     /**
      * Sets whether this button is enabled.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button, <code>false</code> to disable it
      */
     void setEnabled(boolean enabled);

@@ -1,0 +1,3504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.0.1</opencms_version>
+		<createdate>Thu, 05 Jun 2014 12:51:55 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.locale.cs</name>
+		<nicename><![CDATA[OpenCms 9 Czech localization for the workplace]]></nicename>
+		<group>OpenCms Localization</group>
+		<class/>
+		<description><![CDATA[OpenCms Localization]]></description>
+		<version>9.0.1</version>
+		<authorname><![CDATA[NELASOFT Technologies, s.r.o.]]></authorname>
+		<authoremail><![CDATA[info@nelasoft.cz]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/locales/cs/messages/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/workplace/locales/cs/messages/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>d52a1ac8-98ac-11e3-b976-f37bd8f2f259</uuidstructure>
+			<datelastmodified>Tue, 18 Feb 2014 14:56:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Feb 2014 14:56:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>6dbd9558-8db6-11e0-972f-8f51174189b7</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/locales</destination>
+			<type>folder</type>
+			<uuidstructure>82b7ea68-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs</destination>
+			<type>folder</type>
+			<uuidstructure>eac86697-2f74-11e2-812d-85586845ae7c</uuidstructure>
+			<datelastmodified>Tue, 07 Aug 2012 08:31:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Nov 2012 22:36:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages</destination>
+			<type>folder</type>
+			<uuidstructure>6c00eaa8-e06a-11e1-9b7f-51f3073ee387</uuidstructure>
+			<datelastmodified>Tue, 07 Aug 2012 08:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Aug 2012 08:32:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org</destination>
+			<type>folder</type>
+			<uuidstructure>77a913fa-e06a-11e1-9b7f-51f3073ee387</uuidstructure>
+			<datelastmodified>Tue, 07 Aug 2012 08:32:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Aug 2012 08:32:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>81f09bdc-e06a-11e1-9b7f-51f3073ee387</uuidstructure>
+			<datelastmodified>Tue, 07 Aug 2012 08:33:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Aug 2012 08:33:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade</destination>
+			<type>folder</type>
+			<uuidstructure>c33504b4-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/config</destination>
+			<type>folder</type>
+			<uuidstructure>560732a5-9ae4-11e3-814b-0800273de986</uuidstructure>
+			<datelastmodified>Fri, 21 Feb 2014 10:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 21 Feb 2014 10:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/config/workplace_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/config/workplace_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>560efad7-9ae4-11e3-814b-0800273de986</uuidstructure>
+			<uuidresource>560efad8-9ae4-11e3-814b-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 21 Feb 2014 10:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>c33c0996-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/containerpage/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/containerpage/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>35aaf5ae-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>35aaf5af-eaa7-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/containerpage/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/containerpage/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c33fda28-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c33fda29-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/contenteditor</destination>
+			<type>folder</type>
+			<uuidstructure>48ad0f46-5b18-11e2-a1e3-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 11:24:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 11:24:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/contenteditor/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/contenteditor/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>48cdddb8-5b18-11e2-a1e3-fd66de89122b</uuidstructure>
+			<uuidresource>48cdddb9-5b18-11e2-a1e3-fd66de89122b</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 11:24:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/detailpage</destination>
+			<type>folder</type>
+			<uuidstructure>c3457f7b-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/detailpage/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/detailpage/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c347f07d-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c347f07e-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>c34bc110-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/galleries/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/galleries/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>32461fcb-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>32461fcc-eaa7-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/galleries/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/galleries/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c34e8032-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c34e8033-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/postupload</destination>
+			<type>folder</type>
+			<uuidstructure>8b55a3e8-5b21-11e2-a1e3-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 12:30:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 12:30:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/postupload/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/postupload/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>8b6b9cea-5b21-11e2-a1e3-fd66de89122b</uuidstructure>
+			<uuidresource>8b6b9ceb-5b21-11e2-a1e3-fd66de89122b</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 12:30:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/publish</destination>
+			<type>folder</type>
+			<uuidstructure>c350f135-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/publish/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/publish/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>301e0fa8-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>301e0fa9-eaa7-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/publish/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/publish/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c3536237-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c3536238-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/sitemap</destination>
+			<type>folder</type>
+			<uuidstructure>c355d33a-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/sitemap/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/sitemap/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>2d5fb2f5-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>2d5fb2f6-eaa7-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/sitemap/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/sitemap/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c358443c-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c358443d-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/upload</destination>
+			<type>folder</type>
+			<uuidstructure>c35adc4f-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 08:52:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/upload/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/upload/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dca16673-ea9f-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dca16674-ea9f-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 08:20:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/ade/upload/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/ade/upload/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>c35efb01-e77f-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>c35efb02-e77f-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 08:52:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/cache</destination>
+			<type>folder</type>
+			<uuidstructure>b69d1d03-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 09:13:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/cache/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/cache/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>b6b3d955-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>b6b3d956-e782-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/configuration</destination>
+			<type>folder</type>
+			<uuidstructure>b6beaec8-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 09:13:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/configuration/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/configuration/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>b6c2cd7a-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>b6c2cd7b-e782-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db</destination>
+			<type>folder</type>
+			<uuidstructure>909abacc-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/db/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>90b2d5b8-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>90b2d5b9-e798-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db/generic</destination>
+			<type>folder</type>
+			<uuidstructure>90a0d54e-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/db/generic/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db/generic/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>90a4cbf0-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>90a4cbf1-e798-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db/log</destination>
+			<type>folder</type>
+			<uuidstructure>90ac4603-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 11:50:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/db/log/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/db/log/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>90af0525-e798-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>90af0526-e798-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 11:50:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file</destination>
+			<type>folder</type>
+			<uuidstructure>5f6100ec-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 12:24:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/file/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5f732963-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>5f732964-e79d-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/collectors</destination>
+			<type>folder</type>
+			<uuidstructure>5f698c6e-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 12:24:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/file/collectors/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/collectors/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5f6cc0c0-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>5f6cc0c1-e79d-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/types</destination>
+			<type>folder</type>
+			<uuidstructure>5f7684c6-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 12:24:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/file/types/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/types/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5f78f5c8-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>5f78f5c9-e79d-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/wrapper</destination>
+			<type>folder</type>
+			<uuidstructure>5f7bb4eb-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 12:24:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/file/wrapper/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/file/wrapper/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5f7e9b1d-e79d-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>5f7e9b1e-e79d-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 12:24:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/flex</destination>
+			<type>folder</type>
+			<uuidstructure>fdec4eef-9b09-11e3-814b-0800273de986</uuidstructure>
+			<datelastmodified>Fri, 21 Feb 2014 15:08:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 21 Feb 2014 15:08:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/flex/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/flex/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>fdf576b1-9b09-11e3-814b-0800273de986</uuidstructure>
+			<uuidresource>fdf576b2-9b09-11e3-814b-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 21 Feb 2014 15:08:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/gwt</destination>
+			<type>folder</type>
+			<uuidstructure>225ace80-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 09:12:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/gwt/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/gwt/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>225d3f82-eaa7-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>225d3f83-eaa7-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 09:12:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/gwt/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/gwt/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4c6ed715-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4c6ed716-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/gwt/seo</destination>
+			<type>folder</type>
+			<uuidstructure>4c8c7138-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<datelastmodified>Fri, 01 Feb 2013 08:56:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/gwt/seo/clientmessages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/gwt/seo/clientmessages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4c9ee7ca-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4c9ee7cb-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[clientmessages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/i18n</destination>
+			<type>folder</type>
+			<uuidstructure>f38b8f11-ea9d-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 08:06:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 08:06:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/i18n/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/i18n/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f38e2723-ea9d-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>f38e2724-ea9d-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 08:06:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/importexport</destination>
+			<type>folder</type>
+			<uuidstructure>4ca79a5d-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<datelastmodified>Fri, 01 Feb 2013 08:56:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/importexport/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/importexport/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4caca36f-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4caca370-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp</destination>
+			<type>folder</type>
+			<uuidstructure>9a4eeb66-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 14:13:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/jsp/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9a5bbcad-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>9a5bbcae-e7ac-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp/decorator</destination>
+			<type>folder</type>
+			<uuidstructure>9a5294e8-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 14:13:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/jsp/decorator/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp/decorator/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9a58614a-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>9a58614b-e7ac-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp/util</destination>
+			<type>folder</type>
+			<uuidstructure>9a5fb450-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 14:13:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/jsp/util/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/jsp/util/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9a622552-e7ac-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>9a624c63-e7ac-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 14:13:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/loader</destination>
+			<type>folder</type>
+			<uuidstructure>b6c5b3ad-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<datelastmodified>Thu, 16 Aug 2012 09:13:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/loader/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/loader/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>b6c84bbf-e782-11e1-aea4-51f3073ee387</uuidstructure>
+			<uuidresource>b6c84bc0-e782-11e1-aea4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Aug 2012 09:13:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/lock</destination>
+			<type>folder</type>
+			<uuidstructure>e21dcb2f-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/lock/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/lock/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e2267dc1-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e2267dc2-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/mail</destination>
+			<type>folder</type>
+			<uuidstructure>e22cbf54-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/mail/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/mail/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e22e9416-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e22e9417-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/main</destination>
+			<type>folder</type>
+			<uuidstructure>e230b6f9-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/main/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/main/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e232d9db-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e232d9dc-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/module</destination>
+			<type>folder</type>
+			<uuidstructure>e236353e-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/module/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/module/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e2383110-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e2383111-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/monitor</destination>
+			<type>folder</type>
+			<uuidstructure>e23b3e53-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/monitor/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/monitor/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e23daf55-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e23daf56-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/notification</destination>
+			<type>folder</type>
+			<uuidstructure>e2406e78-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/notification/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/notification/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e242915a-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e242915b-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/publish</destination>
+			<type>folder</type>
+			<uuidstructure>e245025d-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/publish/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/publish/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e247253f-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e2472540-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/relations</destination>
+			<type>folder</type>
+			<uuidstructure>e2499642-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/relations/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/relations/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e24b43f4-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e24b43f5-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/report</destination>
+			<type>folder</type>
+			<uuidstructure>e24db4f7-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/report/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/report/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e24f89b9-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e24f89ba-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/repository</destination>
+			<type>folder</type>
+			<uuidstructure>e251d3ac-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/repository/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/repository/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e253f68e-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e253f68f-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/scheduler</destination>
+			<type>folder</type>
+			<uuidstructure>dc600ae2-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/scheduler/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/scheduler/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc66c1a9-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc66c1aa-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/scheduler/jobs</destination>
+			<type>folder</type>
+			<uuidstructure>dc6206b4-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/scheduler/jobs/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/scheduler/jobs/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc6450a6-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc6450a7-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search</destination>
+			<type>folder</type>
+			<uuidstructure>dc4bbf7e-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/search/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc58deea-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc58deeb-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/documents</destination>
+			<type>folder</type>
+			<uuidstructure>dc4ef3d0-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/search/documents/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/documents/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc5116b2-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc5116b3-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/extractors</destination>
+			<type>folder</type>
+			<uuidstructure>dc53d5d5-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/search/extractors/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/extractors/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc566de7-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc566de8-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/solr</destination>
+			<type>folder</type>
+			<uuidstructure>9dc481f4-9d37-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 09:39:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:39:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/search/solr/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/search/solr/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>9de613b6-9d37-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>9de613b7-9d37-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Mon, 24 Feb 2014 09:39:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:39:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/security</destination>
+			<type>folder</type>
+			<uuidstructure>dc5b76fd-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/security/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/security/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc5dc0ef-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc5dc0f0-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/setup</destination>
+			<type>folder</type>
+			<uuidstructure>0e8a7119-9d38-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 09:43:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:43:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/setup/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/setup/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>0e96a61b-9d38-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>0e96a61c-9d38-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:43:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/setup/xml</destination>
+			<type>folder</type>
+			<uuidstructure>26dd66ae-9d38-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 09:43:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:43:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/setup/xml/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/setup/xml/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>26e68e70-9d38-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>26e68e71-9d38-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 09:43:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/site</destination>
+			<type>folder</type>
+			<uuidstructure>dc6959bc-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/site/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/site/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc6b2e7e-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc6b2e7f-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/staticexport</destination>
+			<type>folder</type>
+			<uuidstructure>dc6d7871-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/staticexport/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/staticexport/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc6fc263-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc6fc264-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/synchronize</destination>
+			<type>folder</type>
+			<uuidstructure>dc728186-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/synchronize/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/synchronize/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc74a468-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc74a469-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/util</destination>
+			<type>folder</type>
+			<uuidstructure>dc76ee5b-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/util/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/util/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc79384d-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc79384e-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/webdav</destination>
+			<type>folder</type>
+			<uuidstructure>dc7ba950-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 20 Aug 2012 15:15:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/webdav/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/webdav/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>dc7dcc32-ead9-11e1-83f8-51f3073ee387</uuidstructure>
+			<uuidresource>dc7df343-ead9-11e1-83f8-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Aug 2012 15:15:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/widgets</destination>
+			<type>folder</type>
+			<uuidstructure>e2577901-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:38:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/widgets/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/widgets/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e25aad53-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>e25aad54-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Tue, 08 Apr 2014 13:58:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:38:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workflow</destination>
+			<type>folder</type>
+			<uuidstructure>4cb41d82-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<datelastmodified>Fri, 01 Feb 2013 08:56:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workflow/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workflow/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4cba5f14-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4cba5f15-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>59af9420-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7ea27f25-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7ea27f26-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/administration</destination>
+			<type>folder</type>
+			<uuidstructure>59bd01a2-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/administration/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/administration/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e6b1c5d-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e6b1c5e-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/commons</destination>
+			<type>folder</type>
+			<uuidstructure>59cf9f47-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/commons/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/commons/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e7617e0-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e7617e1-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/comparison</destination>
+			<type>folder</type>
+			<uuidstructure>59dac2dc-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/comparison/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/comparison/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e7aabc3-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e7aabc4-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/demos</destination>
+			<type>folder</type>
+			<uuidstructure>07bf3457-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/demos/list</destination>
+			<type>folder</type>
+			<uuidstructure>07dddfe9-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/demos/widget</destination>
+			<type>folder</type>
+			<uuidstructure>07e3fa6b-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors</destination>
+			<type>folder</type>
+			<uuidstructure>59e2b221-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/editors/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e81d7b6-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e81d7b7-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Tue, 08 Apr 2014 14:08:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors/directedit</destination>
+			<type>folder</type>
+			<uuidstructure>86fb2063-9d3c-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 10:15:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:15:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/editors/directedit/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors/directedit/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>87013ae5-9d3c-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>87013ae6-9d3c-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Tue, 08 Apr 2014 13:59:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:15:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors/fckeditor</destination>
+			<type>folder</type>
+			<uuidstructure>eb52eb86-a073-11e3-a490-0800273de986</uuidstructure>
+			<datelastmodified>Fri, 28 Feb 2014 12:29:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Feb 2014 12:29:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/editors/fckeditor/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/editors/fckeditor/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>eb55f8c8-a073-11e3-a490-0800273de986</uuidstructure>
+			<uuidresource>eb55f8c9-a073-11e3-a490-0800273de986</uuidresource>
+			<datelastmodified>Fri, 28 Feb 2014 12:40:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Feb 2014 12:29:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/explorer</destination>
+			<type>folder</type>
+			<uuidstructure>59eb1696-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/explorer/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/explorer/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e90f2ec-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e90f2ed-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/explorer/menu</destination>
+			<type>folder</type>
+			<uuidstructure>59ee4ae8-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/explorer/menu/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/explorer/menu/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e899fe9-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e899fea-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/galleries</destination>
+			<type>folder</type>
+			<uuidstructure>59fb1c30-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/galleries/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/galleries/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e97347f-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e973480-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/help</destination>
+			<type>folder</type>
+			<uuidstructure>5a026f35-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/help/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/help/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7e9b5332-f03f-11e1-80a1-51f3073ee387</uuidstructure>
+			<uuidresource>7e9b5333-f03f-11e1-80a1-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 12:05:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/list</destination>
+			<type>folder</type>
+			<uuidstructure>5a0be51a-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/list/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/list/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6e9c5ade-f03c-11e1-af0d-51f3073ee387</uuidstructure>
+			<uuidresource>6e9c5adf-f03c-11e1-af0d-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 21 Mar 2013 09:34:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 11:43:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/search</destination>
+			<type>folder</type>
+			<uuidstructure>5a18dd72-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/search/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/search/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>068b93ef-f03c-11e1-8565-51f3073ee387</uuidstructure>
+			<uuidresource>068b93f0-f03c-11e1-8565-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 11:40:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/threads</destination>
+			<type>folder</type>
+			<uuidstructure>5a203077-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/threads/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/threads/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f71a54ab-f03b-11e1-8565-51f3073ee387</uuidstructure>
+			<uuidresource>f71a54ac-f03b-11e1-8565-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 11:40:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools</destination>
+			<type>folder</type>
+			<uuidstructure>5a26c02c-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a5dfcec-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a5dfced-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/accounts</destination>
+			<type>folder</type>
+			<uuidstructure>5a29cd6e-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/accounts/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/accounts/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a2e3a40-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a2e3a41-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/cache</destination>
+			<type>folder</type>
+			<uuidstructure>5a33df93-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/cache/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/cache/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a37fe45-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a37fe46-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:54:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content</destination>
+			<type>folder</type>
+			<uuidstructure>5a3bf5e8-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a3fc67a-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a3fc67b-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/check</destination>
+			<type>folder</type>
+			<uuidstructure>07eab12d-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/check/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/check/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>819aaf58-9d41-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>819aaf59-9d41-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:50:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/convertxml</destination>
+			<type>folder</type>
+			<uuidstructure>07f5adaf-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/convertxml/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/convertxml/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>bbdfd46b-9d41-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>bbdfd46c-9d41-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:52:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/languagecopy</destination>
+			<type>folder</type>
+			<uuidstructure>07fe8751-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/languagecopy/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/languagecopy/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>0805da53-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<uuidresource>0805da54-5b3d-11e2-ada4-fd66de89122b</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/propertyviewer</destination>
+			<type>folder</type>
+			<uuidstructure>08167c26-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/propertyviewer/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/propertyviewer/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>f4f63d7e-9d41-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>f4f63d7f-9d41-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:53:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/updatexml</destination>
+			<type>folder</type>
+			<uuidstructure>081d59f8-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/updatexml/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/content/updatexml/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>0f9a27f1-9d42-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>0f9a27f2-9d42-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 10:54:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/database</destination>
+			<type>folder</type>
+			<uuidstructure>5a44334d-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/database/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/database/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a48ee3f-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a48ee40-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/galleryoverview</destination>
+			<type>folder</type>
+			<uuidstructure>5a4d3402-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/galleryoverview/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/galleryoverview/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a5179c4-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a5179c5-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/history</destination>
+			<type>folder</type>
+			<uuidstructure>5a560da7-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/history/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/history/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a59de39-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a59de3a-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/link</destination>
+			<type>folder</type>
+			<uuidstructure>082410ba-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/link/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/link/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4cdd9e87-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4cdd9e88-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/modules</destination>
+			<type>folder</type>
+			<uuidstructure>5a637b2f-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/modules/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/modules/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a6724b1-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a6724b2-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/projects</destination>
+			<type>folder</type>
+			<uuidstructure>5a6bb894-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/projects/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/projects/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a6f8926-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a6f8927-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/publishqueue</destination>
+			<type>folder</type>
+			<uuidstructure>5a73a7d9-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/publishqueue/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/publishqueue/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a77515b-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a77515c-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/scheduler</destination>
+			<type>folder</type>
+			<uuidstructure>5a7bbe2e-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/scheduler/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/scheduler/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a7f40a0-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a7f40a1-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex</destination>
+			<type>folder</type>
+			<uuidstructure>5a835f53-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a87cc25-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a87cc26-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex/sourcesearch</destination>
+			<type>folder</type>
+			<uuidstructure>e726b6a4-9d5d-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 14:13:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 14:13:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex/sourcesearch/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/searchindex/sourcesearch/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>e72fde66-9d5d-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>e72fde67-9d5d-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 14:13:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/sites</destination>
+			<type>folder</type>
+			<uuidstructure>6d2fcdd9-9d5f-11e3-8e30-0800273de986</uuidstructure>
+			<datelastmodified>Mon, 24 Feb 2014 14:24:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 14:24:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/sites/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/sites/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6d35e85b-9d5f-11e3-8e30-0800273de986</uuidstructure>
+			<uuidresource>6d35e85c-9d5f-11e3-8e30-0800273de986</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Feb 2014 14:24:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>5a8bead8-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a97839f-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a9783a0-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 18 Mar 2013 13:59:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/broadcast</destination>
+			<type>folder</type>
+			<uuidstructure>5a8f945a-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<datelastmodified>Mon, 27 Aug 2012 10:45:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/broadcast/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/broadcast/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>5a933ddc-f034-11e1-acfc-51f3073ee387</uuidstructure>
+			<uuidresource>5a933ddd-f034-11e1-acfc-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Aug 2012 10:45:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/rfsfile</destination>
+			<type>folder</type>
+			<uuidstructure>082bfffc-5b3d-11e2-ada4-fd66de89122b</uuidstructure>
+			<datelastmodified>Thu, 10 Jan 2013 15:47:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 10 Jan 2013 15:47:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/workplace/tools/workplace/rfsfile/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>4ce5b4da-6c4d-11e2-827a-b1a0242956dc</uuidstructure>
+			<uuidresource>4ce5b4db-6c4d-11e2-827a-b1a0242956dc</uuidresource>
+			<datelastmodified>Fri, 15 Mar 2013 10:10:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 01 Feb 2013 08:56:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml</destination>
+			<type>folder</type>
+			<uuidstructure>6c9fab15-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:35:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6cb15e61-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>6cb15e62-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/adeconfig</destination>
+			<type>folder</type>
+			<uuidstructure>823f1989-9efb-11e3-8742-0800273de986</uuidstructure>
+			<datelastmodified>Wed, 26 Feb 2014 15:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2014 15:34:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/adeconfig/xmlvfsbundle_messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>826b59ab-9efb-11e3-8742-0800273de986</uuidstructure>
+			<uuidresource>826b59ac-9efb-11e3-8742-0800273de986</uuidresource>
+			<datelastmodified>Wed, 26 Feb 2014 15:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2014 15:34:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/containerpage</destination>
+			<type>folder</type>
+			<uuidstructure>6ca5eca7-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:35:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/containerpage/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/containerpage/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6ca83699-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>6ca8369a-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Thu, 27 Feb 2014 14:15:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/content</destination>
+			<type>folder</type>
+			<uuidstructure>6cab91fc-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:35:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/content/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/content/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6cae782e-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>6cae782f-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/page</destination>
+			<type>folder</type>
+			<uuidstructure>6cb3f674-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:35:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/page/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/page/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6cb66776-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>6cb66777-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/types</destination>
+			<type>folder</type>
+			<uuidstructure>6cb8ff89-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<datelastmodified>Fri, 17 Aug 2012 13:35:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/cs/messages/org/opencms/xml/types/messages_cs.properties</source>
+			<destination>system/workplace/locales/cs/messages/org/opencms/xml/types/messages_cs.properties</destination>
+			<type>plain</type>
+			<uuidstructure>6cbb497b-e870-11e1-98a4-51f3073ee387</uuidstructure>
+			<uuidresource>6cbb497c-e870-11e1-98a4-51f3073ee387</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2012 07:20:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Aug 2012 13:35:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[messages_cs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

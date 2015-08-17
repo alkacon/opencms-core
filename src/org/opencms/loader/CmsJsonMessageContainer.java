@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,9 +34,9 @@ import java.util.Locale;
 
 /**
  * Simple JSON-based message container.<p>
- * 
+ *
  * This message container will accept an Object which may either be a simple string (in which case
- * this string will always be returned as the message), or a JSONObject which has locale strings as 
+ * this string will always be returned as the message), or a JSONObject which has locale strings as
  * keys and the corresponding message strings as values.
  */
 public class CmsJsonMessageContainer implements I_CmsMessageContainer {
@@ -46,7 +46,7 @@ public class CmsJsonMessageContainer implements I_CmsMessageContainer {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param jsonValue the JSON value containing the message(s).<p>
      */
     public CmsJsonMessageContainer(Object jsonValue) {

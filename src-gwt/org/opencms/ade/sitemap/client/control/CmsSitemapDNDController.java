@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.google.gwt.dom.client.Style.Unit;
 
 /**
  * The sitemap drag and drop controller.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapDNDController implements I_CmsDNDController {
@@ -84,7 +84,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the sitemap controller
      * @param toolbar the sitemap toolbar
      */
@@ -240,7 +240,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Adjust the original position indicator by styling the draggable element for this purpose.<p>
-     * 
+     *
      * @param draggable the draggable
      * @param target the current drop target
      * @param handler the drag and drop handler
@@ -266,9 +266,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Handles a dropped detail page.<p>
-     * 
-     * @param createItem the detail page which was dropped into the sitemap 
-     * @param parent the parent sitemap entry  
+     *
+     * @param createItem the detail page which was dropped into the sitemap
+     * @param parent the parent sitemap entry
      */
     private void handleDropNewEntry(CmsCreatableListItem createItem, CmsClientSitemapEntry parent) {
 
@@ -314,9 +314,9 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Handles the drop for a sitemap item which was dragged to a different position.<p>
-     * 
-     * @param sitemapEntry the dropped item  
-     * @param target the drop target 
+     *
+     * @param sitemapEntry the dropped item
+     * @param target the drop target
      * @param parent the parent sitemap entry
      */
     private void handleDropSitemapEntry(
@@ -348,7 +348,7 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Hides the content of list items by setting a specific css class.<p>
-     * 
+     *
      * @param element the list item element
      */
     private void hideItemContent(Element element) {
@@ -363,11 +363,11 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
 
     /**
      * Checks whether the current placeholder position represents a change to the original draggable position within the tree.<p>
-     * 
+     *
      * @param draggable the draggable
      * @param target the current drop target
      * @param strict if <code>false</code> only the parent path is considered, the index position will be ignored
-     * 
+     *
      * @return <code>true</code> if the position changed
      */
     private boolean isChangedPosition(I_CmsDraggable draggable, I_CmsDropTarget target, boolean strict) {
@@ -387,8 +387,8 @@ public class CmsSitemapDNDController implements I_CmsDNDController {
             return true;
         }
         // if the new index is not next to the old one, the position has changed
-        if (!((target.getPlaceholderIndex() == (m_originalIndex + 1)) || (target.getPlaceholderIndex() == m_originalIndex))
-            && strict) {
+        if (!((target.getPlaceholderIndex() == (m_originalIndex + 1))
+            || (target.getPlaceholderIndex() == m_originalIndex)) && strict) {
             return true;
         }
         return false;

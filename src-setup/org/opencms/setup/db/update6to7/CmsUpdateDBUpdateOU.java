@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import java.util.Map;
 
 /**
  * This class upgrades the database tables containing new OU columns.<p>
- * 
+ *
  * These tables are
  * cms_groups
  * cms_history_principals
  * cms_history_projects
  * cms_projects
  * cms_users
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
@@ -87,7 +87,7 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBUpdateOU()
@@ -99,11 +99,11 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
     /**
      * Checks if the column USER_OU is found in the resultset.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param table the table to check
      * @param ouColumn the type of OU to find (e.g. USER_OU or GROUP_OU)
-     * 
+     *
      * @return true if the column is in the result set, false if not
      */
     protected boolean findOUColumn(CmsSetupDb dbCon, String table, String ouColumn) {
@@ -128,11 +128,11 @@ public class CmsUpdateDBUpdateOU extends A_CmsUpdateDBPart {
 
     /**
      * Updates the database tables with the new OUs if necessary for the given table.<p>
-     * 
+     *
      * @param dbCon the db connection interface
      * @param table the table to update
      * @param ouColumn the column to insert
-     * 
+     *
      * @return true if everything worked fine, false if not
      */
     protected int updateOUs(CmsSetupDb dbCon, String table, String ouColumn) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param scrollPanel the scroll panel to focus on
      */
     private CmsFocusedScrollingHandler(ScrollPanel scrollPanel) {
@@ -57,9 +57,9 @@ public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
     /**
      * Installs a focused scrolling handler on the given widget.<p>
-     * 
+     *
      * @param scrollPanel the scroll panel
-     * 
+     *
      * @return the focused scrolling handler
      */
     public static CmsFocusedScrollingHandler installFocusedScrollingHandler(ScrollPanel scrollPanel) {
@@ -107,7 +107,7 @@ public final class CmsFocusedScrollingHandler implements NativePreviewHandler {
 
     /**
      * Returns if the handler is currently registered.<p>
-     * 
+     *
      * @return <code>true</code> if the handler is currently registered and active
      */
     public boolean isRegistered() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import junit.framework.Test;
 
 /**
  * Tests the URL name mapping facilities of OpenCms.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class TestUrlNameMapping extends OpenCmsTestCase {
@@ -59,7 +59,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Test constructor.<p>
-     * 
+     *
      * @param arg0
      */
     public TestUrlNameMapping(String arg0) {
@@ -69,11 +69,11 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Creates an XML content for testing URL name mappings.<p>
-     * 
-     * @param title the title value  
-     * @param replace the replace value 
-     * 
-     * @return the XML content data 
+     *
+     * @param title the title value
+     * @param replace the replace value
+     *
+     * @return the XML content data
      */
     public static String createTestContent(String title, String replace) {
 
@@ -94,8 +94,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Returns the test suite.<p>
-     * 
-     * @return the test suite 
+     *
+     * @return the test suite
      */
     public static Test suite() {
 
@@ -105,11 +105,11 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Creates an XML content with the given string as file content.<p>
-     * 
-     * @param content the file content 
-     * @return the created resource 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param content the file content
+     * @return the created resource
+     *
+     * @throws Exception if something goes wrong
      */
     public CmsResource createContent(String content) throws Exception {
 
@@ -128,9 +128,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Creates a new file and returns it.<p>
-     * 
-     * @return the new file 
-     * @throws Exception if something goes wrong 
+     *
+     * @return the new file
+     * @throws Exception if something goes wrong
      */
     public CmsResource createFile() throws Exception {
 
@@ -142,10 +142,10 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Helper method for getting a CMS context set to the Online project.<p>
-     * 
+     *
      * @return a {@link CmsObject} with the project set to the Online project
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public CmsObject getOnlineCmsObject() throws Exception {
 
@@ -157,7 +157,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests adding normal mappings after having added 'replace' mappings.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testChangeReplaceSetting() throws Exception {
@@ -178,8 +178,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests that when a not-new resource is deleted and published, its URL name mappings are also deleted.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testDeleteChanged() throws Exception {
 
@@ -197,10 +197,12 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         publish();
         delete(res);
         assertEquals(res.getStructureId(), onlineCms.readIdForUrlName(baseName));
-        assertEquals(baseName, onlineCms.readBestUrlName(
-            res.getStructureId(),
-            onlineCms.getRequestContext().getLocale(),
-            OpenCms.getLocaleManager().getDefaultLocales()));
+        assertEquals(
+            baseName,
+            onlineCms.readBestUrlName(
+                res.getStructureId(),
+                onlineCms.getRequestContext().getLocale(),
+                OpenCms.getLocaleManager().getDefaultLocales()));
         assertEquals(res.getStructureId(), cms.readIdForUrlName(baseName));
         assertEquals(baseName, readBestUrlName(cms, res.getStructureId()));
         publish();
@@ -215,8 +217,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests that when a new resource is deleted, its URL name mapping is also deleted.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testDeleteNew() throws Exception {
 
@@ -231,8 +233,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests mapping the same URL name to multiple ids.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testMultipleIdMapping() throws Exception {
 
@@ -254,8 +256,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests mapping multiple names to the same resource.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testMultipleNameMapping() throws Exception {
 
@@ -277,8 +279,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests that an URL name that has not been published will be overwritten by a new URL name.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testOverwrite() throws Exception {
 
@@ -295,8 +297,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests publishing the URL name mappings of a resource.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testPublish() throws Exception {
 
@@ -314,7 +316,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests that the urlname.replace property mapping is handled correctly, and that the urlname.replace property works the way it should.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testReplaceProperty() throws Exception {
@@ -347,8 +349,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests adding a single url name in the Offline project.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testSimpleMapping() throws Exception {
 
@@ -366,8 +368,8 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Tests that when the changes of a resource are undone, its unpublished URL name mapping will be removed.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testUndo() throws Exception {
 
@@ -389,7 +391,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
     * Tests replace-on-publish functionality for URL names.<p>
-    * 
+    *
     * @throws Exception
     */
     public void testUrlNameReplace() throws Exception {
@@ -414,17 +416,17 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Helper method for adding a resource mapping.<p>
-     * 
-     * @param name the mapping name to be used 
+     *
+     * @param name the mapping name to be used
      * @param res the resource to which the
-     *  
-     * @return the URL name which has actually been mapped 
+     *
+     * @return the URL name which has actually been mapped
      * @throws Exception
      */
     protected String addMapping(String name, CmsResource res) throws Exception {
 
         CmsObject cms = getCmsObject();
-        // touch the resource so that we can publish it and its URL name mappings later 
+        // touch the resource so that we can publish it and its URL name mappings later
         touch(res);
         String result = cms.writeUrlNameMapping(name, res.getStructureId(), "en", false);
         return result;
@@ -432,18 +434,18 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Adds a 'replace' mapping to a resource.<p>
-     * 
-     * @param name the URL name 
+     *
+     * @param name the URL name
      * @param res the resource to which to add the mapping
-     *  
-     * @return the actual URL name which was used 
-     *  
+     *
+     * @return the actual URL name which was used
+     *
      * @throws Exception
      */
     protected String addReplaceMapping(String name, CmsResource res) throws Exception {
 
         CmsObject cms = getCmsObject();
-        // touch the resource so that we can publish it and its URL name mappings later 
+        // touch the resource so that we can publish it and its URL name mappings later
         touch(res);
         String result = cms.writeUrlNameMapping(name, res.getStructureId(), "en", true);
         return result;
@@ -451,9 +453,9 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Helper method for deleting a resource.<p>
-     * 
-     * @param res the resource to delete 
-     * @throws Exception if something goes wrong 
+     *
+     * @param res the resource to delete
+     * @throws Exception if something goes wrong
      */
     protected void delete(CmsResource res) throws Exception {
 
@@ -464,7 +466,7 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
         try {
             cms.unlockResource(sitePath);
         } catch (CmsException e) {
-            // ignore 
+            // ignore
         }
     }
 
@@ -480,10 +482,10 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Changes a resource's "last modified" time to the current time.<p>
-     * 
+     *
      * @param res the resource which should be touched
-     *  
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     protected void touch(CmsResource res) throws Exception {
 
@@ -496,12 +498,12 @@ public class TestUrlNameMapping extends OpenCmsTestCase {
 
     /**
      * Reads the best URL name for the given structure id.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param structureId the structure ID of the resource
-     *  
-     * @return the best URL name for the resource 
-     * 
+     *
+     * @return the best URL name for the resource
+     *
      * @throws CmsException
      */
     String readBestUrlName(CmsObject cms, CmsUUID structureId) throws CmsException {

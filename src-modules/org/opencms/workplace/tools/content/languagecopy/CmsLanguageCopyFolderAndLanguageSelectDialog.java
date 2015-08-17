@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
 /**
  * Widget dialog that collects the folders and the languages for XML content language node copy operation.
  * <p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialog {
@@ -66,7 +66,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     /**
      * Settings bean for the dialog.
      * <p>
-     * 
+     *
      */
     public class CmsLanguageCopyFolderAndLanguageSelectDialogSettings {
 
@@ -232,7 +232,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     /**
      * Public constructor with JSP action element.
      * <p>
-     * 
+     *
      * @param jsp
      *            an initialized JSP action element
      */
@@ -244,7 +244,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -342,33 +342,34 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
             new CmsDisplayWidget(),
             1,
             1));
-        addWidget(new CmsWidgetDialogParameter(m_dialogSettings, "paths", "/", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
         addWidget(new CmsWidgetDialogParameter(
             m_dialogSettings,
-            "delete",
-            "false",
-            PAGES[0],
-            new CmsCheckboxWidget(),
-            1,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_dialogSettings,
-            "sourcelanguage",
+            "paths",
             "/",
             PAGES[0],
-            new CmsRadioSelectWidget(options),
+            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
             1,
-            1));
-        addWidget(new CmsWidgetDialogParameter(
-            m_dialogSettings,
-            "targetlanguage",
-            "/",
-            PAGES[0],
-            new CmsRadioSelectWidget(options),
-            1,
-            1));
+            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(m_dialogSettings, "delete", "false", PAGES[0], new CmsCheckboxWidget(), 1, 1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_dialogSettings,
+                "sourcelanguage",
+                "/",
+                PAGES[0],
+                new CmsRadioSelectWidget(options),
+                1,
+                1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_dialogSettings,
+                "targetlanguage",
+                "/",
+                PAGES[0],
+                new CmsRadioSelectWidget(options),
+                1,
+                1));
     }
 
     /**
@@ -407,7 +408,7 @@ public class CmsLanguageCopyFolderAndLanguageSelectDialog extends CmsWidgetDialo
     /**
      * Returns a list with the possible <code>{@link Locale}</code> selections based on the OpenCms configuration.
      * <p>
-     * 
+     *
      * @return a list with the possible <code>{@link Locale}</code> selections based on the OpenCms configuration.
      */
     private List<CmsSelectWidgetOption> getLanguageSelections() {

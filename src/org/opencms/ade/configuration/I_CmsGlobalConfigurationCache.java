@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.file.CmsResource;
 
 /**
  * This is interface is intended to be used in combination with the {@link CmsGlobalConfigurationCacheEventHandler} class.<p>
- * 
+ *
  * It provides several method which allow the mentioned event handler class to update the cache object implementing this
  * interface.
  */
@@ -49,34 +49,34 @@ public interface I_CmsGlobalConfigurationCache {
 
     /**
      * Removes a published resource from the cache.<p>
-     * 
-     * @param pubRes the published resource 
+     *
+     * @param pubRes the published resource
      */
     void remove(CmsPublishedResource pubRes);
 
     /**
      * Removes a resource from the cache.<p>
-     * 
-     * @param resource the resource to remove 
+     *
+     * @param resource the resource to remove
      */
     void remove(CmsResource resource);
 
     /**
      * Updates the cache entry for the given published resource.<p>
-     * 
+     *
      * NOTE: Cache implementations should not directly read the updated resource in this method because it might interfere with other
-     * caches. Instead, the resource should be marked as updated and read the next time the cache is queried. 
-     * 
+     * caches. Instead, the resource should be marked as updated and read the next time the cache is queried.
+     *
      * @param pubRes a published resource
      */
     void update(CmsPublishedResource pubRes);
 
-    /** 
+    /**
      * Updates the cache entry for the given resource.<p>
      *
      * NOTE: Cache implementations should not directly read the updated resource in this method because it might interfere with other
      * caches. Instead, the resource should be marked as updated and read the next time the cache is queried.
-     *  
+     *
      * @param resource the resource for which the cache entry should be updated
      */
     void update(CmsResource resource);

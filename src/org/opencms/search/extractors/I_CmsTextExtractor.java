@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,73 +30,73 @@ package org.opencms.search.extractors;
 import java.io.InputStream;
 
 /**
- * Allows extraction of the indexable "plain" text plus (optional) meta information from a given binary 
+ * Allows extraction of the indexable "plain" text plus (optional) meta information from a given binary
  * input document format.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsTextExtractor {
 
     /**
-     * Extracts the text and meta information from the given binary document.<p> 
-     * 
-     * The encoding of the input stream is either not required (the document type may have 
-     * one common default encoding) or the extractor is able to divine the encoding 
+     * Extracts the text and meta information from the given binary document.<p>
+     *
+     * The encoding of the input stream is either not required (the document type may have
+     * one common default encoding) or the extractor is able to divine the encoding
      * from the provided binary array automatically.<p>
-     * 
+     *
      * Delivers is the same result as calling <code>{@link #extractText(byte[], String)}</code>
      * when <code>String == null</code>.<p>
-     * 
+     *
      * @param content the binary content of the document to extract the text from
      * @return the extracted text
-     * 
+     *
      * @throws Exception if the text extration fails
      */
     I_CmsExtractionResult extractText(byte[] content) throws Exception;
 
     /**
-     * Extracts the text and meta information from the given binary document, using the specified content encoding.<p> 
-     * 
-     * The encoding is a hint for the text extractor, if the value given is <code>null</code> then 
+     * Extracts the text and meta information from the given binary document, using the specified content encoding.<p>
+     *
+     * The encoding is a hint for the text extractor, if the value given is <code>null</code> then
      * the text extractor should try to figure out the encoding itself.<p>
-     * 
+     *
      * @param content the binary content of the document to extract the text from
      * @param encoding the encoding to use
-     * 
+     *
      * @return the extracted text
-     * 
+     *
      * @throws Exception if the text extration fails
      */
     I_CmsExtractionResult extractText(byte[] content, String encoding) throws Exception;
 
     /**
-     * Extracts the text and meta information from the document on the input stream.<p> 
-     * 
-     * The encoding of the input stream is either not required (the document type may have 
-     * one common default encoding) or the extractor is able to divine the encoding 
+     * Extracts the text and meta information from the document on the input stream.<p>
+     *
+     * The encoding of the input stream is either not required (the document type may have
+     * one common default encoding) or the extractor is able to divine the encoding
      * from the provided input stream automatically.<p>
-     * 
+     *
      * Delivers is the same result as calling <code>{@link #extractText(InputStream, String)}</code>
      * when <code>String == null</code>.<p>
-     * 
+     *
      * @param in the input stream for the document to extract the text from
-     * @return the extracted text and meta information 
-     * 
+     * @return the extracted text and meta information
+     *
      * @throws Exception if the text extration fails
      */
     I_CmsExtractionResult extractText(InputStream in) throws Exception;
 
     /**
-     * Extracts the text and meta information from the document on the input stream, using the specified content encoding.<p> 
-     * 
-     * The encoding is a hint for the text extractor, if the value given is <code>null</code> then 
+     * Extracts the text and meta information from the document on the input stream, using the specified content encoding.<p>
+     *
+     * The encoding is a hint for the text extractor, if the value given is <code>null</code> then
      * the text extractor should try to figure out the encoding itself.<p>
-     * 
+     *
      * @param in the input stream for the document to extract the text from
      * @param encoding the encoding to use
-     * 
-     * @return the extracted text and meta information 
-     * 
+     *
+     * @return the extracted text and meta information
+     *
      * @throws Exception if the text extration fails
      */
     I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception;

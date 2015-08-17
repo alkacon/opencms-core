@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,22 +31,22 @@ import java.util.List;
 
 /**
  * Common interface for accessing sitemap/VFS entry beans as tree nodes.<p>
- * 
- * @param <T> the node type 
+ *
+ * @param <T> the node type
  */
 public interface I_CmsGalleryTreeEntry<T> {
 
     /**
      * Adds a new child to the node.<p>
-     * 
-     * @param child the child to add 
+     *
+     * @param child the child to add
      */
     void addChild(T child);
 
     /**
      * Gets the children of this node.<p>
-     * 
-     * @return the children of this node 
+     *
+     * @return the children of this node
      */
     List<T> getChildren();
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.util.List;
 
 /**
  * Configurable VFS based cache, for caching objects related to offline/online resources.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public abstract class CmsVfsCache implements I_CmsEventListener {
 
@@ -67,7 +67,7 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
                     // skip lock & unlock
                     return;
                 }
-                // a resource has been modified in a way that it *IS NOT* necessary also to clear 
+                // a resource has been modified in a way that it *IS NOT* necessary also to clear
                 // lists of cached sub-resources where the specified resource might be contained inside.
                 resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
                 uncacheResource(resource);
@@ -109,7 +109,7 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
 
     /**
      * Clean up at shutdown time. Only intended to be called at system shutdown.<p>
-     * 
+     *
      * @see org.opencms.main.OpenCmsCore#shutDown
      */
     public void shutdown() {
@@ -125,7 +125,7 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
 
     /**
      * Flushes the caches.<p>
-     * 
+     *
      * @param online if to flush the online or offline caches
      */
     protected abstract void flush(boolean online);
@@ -135,31 +135,33 @@ public abstract class CmsVfsCache implements I_CmsEventListener {
      */
     protected void registerEventListener() {
 
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-            I_CmsEventListener.EVENT_RESOURCE_MOVED,
-            I_CmsEventListener.EVENT_RESOURCE_DELETED,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
-            I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
+        OpenCms.addCmsEventListener(
+            this,
+            new int[] {
+                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+                I_CmsEventListener.EVENT_RESOURCE_MOVED,
+                I_CmsEventListener.EVENT_RESOURCE_DELETED,
+                I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
+                I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
     }
 
     /**
      * Removes a cached resource from the cache.<p>
-     * 
+     *
      * @param resource the resource
      */
     protected abstract void uncacheResource(CmsResource resource);
 
     /**
      * Removes a bunch of cached resources from the cache.<p>
-     * 
+     *
      * @param resources a list of resources
-     * 
+     *
      * @see #uncacheResource(CmsResource)
      */
     protected void uncacheResources(List<CmsResource> resources) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
  * CSS resource interface for the classic Direct Edit Buttons.<p>
- * 
+ *
  * @since 8.0.0
  */
 @Shared
@@ -41,36 +41,36 @@ public interface I_CmsDirectEditCss extends I_CmsToolbarButtonCss {
 
     /**
      * CSS class accessor.<p>
-     * 
-     * @return a CSS class name 
+     *
+     * @return a CSS class name
      */
     String directEditButtons();
 
     /**
      * CSS class accessor.<p>
-     * 
-     * @return a CSS class name 
+     *
+     * @return a CSS class name
      */
     String expiredListElementOverlay();
 
     /**
      * CSS class accessor.<p>
-     * 
-     * @return a CSS class name 
+     *
+     * @return a CSS class name
      */
     String hideButtons();
 
     /**
      * CSS class accessor.<p>
-     * 
-     * @return a CSS class name 
+     *
+     * @return a CSS class name
      */
     String optionBar();
 
     /**
      * CSS class accessor.<p>
-     * 
-     * @return a CSS class name 
+     *
+     * @return a CSS class name
      */
     String showButtons();
 

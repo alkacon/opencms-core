@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import javax.persistence.EntityManager;
 
 /**
  * Wraps context information to access the OpenCms database.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsDbContext extends org.opencms.db.CmsDbContext {
@@ -49,7 +49,7 @@ public final class CmsDbContext extends org.opencms.db.CmsDbContext {
     protected boolean m_shouldCommit;
 
     /**
-     * Creates a new, empty database context.<p> 
+     * Creates a new, empty database context.<p>
      */
     public CmsDbContext() {
 
@@ -58,7 +58,7 @@ public final class CmsDbContext extends org.opencms.db.CmsDbContext {
 
     /**
      * Creates a new database context initialized with the given user request context.<p>
-     *  
+     *
      * @param context the current users request context
      */
     public CmsDbContext(CmsRequestContext context) {
@@ -89,7 +89,7 @@ public final class CmsDbContext extends org.opencms.db.CmsDbContext {
 
     /**
      * Returns the entity manager of this db context.<p>
-     * 
+     *
      * @return the entity manager of this db context
      */
     public EntityManager getEntityManager() {
@@ -99,11 +99,11 @@ public final class CmsDbContext extends org.opencms.db.CmsDbContext {
 
     /**
      * Reports an error to the given report (if available) and to the OpenCms log file.<p>
-     *  
+     *
      * @param report the report to write the error to
      * @param message the message to write to the report / log
      * @param throwable the exception to write to the report / log
-     * 
+     *
      * @throws CmsException if the throwable parameter is not null and a CmsException
      * @throws CmsVfsException if the throwable parameter is not null and no CmsException
      */

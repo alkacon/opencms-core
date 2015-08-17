@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The toolbar notification widget.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsNotificationWidget extends Composite implements I_CmsNotificationWidget {
@@ -189,7 +189,7 @@ public class CmsNotificationWidget extends Composite implements I_CmsNotificatio
 
     /**
      * Checks if any message requires a blocking overlay.<p>
-     * 
+     *
      * @return <code>true</code> if the blocking overlay is required
      */
     private boolean requiresBlocking() {
@@ -204,7 +204,7 @@ public class CmsNotificationWidget extends Composite implements I_CmsNotificatio
 
     /**
      * Checks if any message requires the busy icon.<p>
-     * 
+     *
      * @return <code>true</code> if the busy icon is required
      */
     private boolean requiresBusy() {
@@ -231,7 +231,7 @@ public class CmsNotificationWidget extends Composite implements I_CmsNotificatio
 
     /**
      * Toggles the blocking overlay.<p>
-     * 
+     *
      * @param blocking <code>true</code> to show the blocking overlay
      */
     private void setBlocking(boolean blocking) {
@@ -245,7 +245,7 @@ public class CmsNotificationWidget extends Composite implements I_CmsNotificatio
 
     /**
      * Toggles the busy icon.<p>
-     * 
+     *
      * @param busy <code>true</code> to show the busy icon
      */
     private void setBusy(boolean busy) {

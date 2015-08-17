@@ -19,15 +19,15 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * - org.apache.catalina.servlets.DefaultServlet/Range
  * from the Apache Tomcat project.
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -48,7 +48,7 @@ package org.opencms.webdav;
 
 /**
  * Helper class for the WebDAV servlet. Holds values for a range.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsWebdavRange {
@@ -58,7 +58,7 @@ public class CmsWebdavRange {
 
     /** The length of the range. */
     private long m_length;
-    
+
     /** The start of the range. */
     private long m_start;
 
@@ -135,7 +135,7 @@ public class CmsWebdavRange {
 
     /**
      * Validate range.<p>
-     * 
+     *
      * @return true if the actual range is valid otherwise false
      */
     public boolean validate() {

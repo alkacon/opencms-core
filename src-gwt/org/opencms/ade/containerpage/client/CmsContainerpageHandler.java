@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -103,12 +103,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The container-page handler.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
-    /** 
+    /**
      * Action which is executed when the user selects a client variant.<p>
      */
     class ClientVariantSelectAction implements Runnable {
@@ -121,9 +121,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param context the context name  
-         * @param variant the variant information 
+         *
+         * @param context the context name
+         * @param variant the variant information
          */
         public ClientVariantSelectAction(String context, CmsClientVariantInfo variant) {
 
@@ -141,7 +141,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
-    /** 
+    /**
      * Action which does nothing.<p>
      */
     public static final Runnable DO_NOTHING = new Runnable() {
@@ -174,7 +174,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the container-page controller
      * @param editor the container-page editor
      */
@@ -195,7 +195,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Adds the given list item widget to the favorite list widget.<p>
-     * 
+     *
      * @param listItem the list item
      */
     public void addToFavorites(CmsListItem listItem) {
@@ -205,7 +205,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Adds the element with the given id to the favorite list.<p>
-     * 
+     *
      * @param clientId the client id
      */
     public void addToFavorites(String clientId) {
@@ -215,7 +215,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Adds the given list item widget to the recent list widget.<p>
-     * 
+     *
      * @param listItem the list item
      */
     public void addToRecent(CmsListItem listItem) {
@@ -225,7 +225,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Adds the element with the given id to the favorite list.<p>
-     * 
+     *
      * @param clientId the client id
      */
     public void addToRecent(String clientId) {
@@ -235,9 +235,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Switches the template context.<p>
-     * 
-     * @param cookieName the cookie name 
-     * @param value the new template context 
+     *
+     * @param cookieName the cookie name
+     * @param value the new template context
      */
     @SuppressWarnings("deprecation")
     public void changeTemplateContextManually(final String cookieName, final String value) {
@@ -252,10 +252,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Checks whether GWT widgets are available for all fields of a content.<p>
-     * 
-     * @param structureId the structure id of the content 
-     * 
-     * @param asyncCallback the callback for the result 
+     *
+     * @param structureId the structure id of the content
+     *
+     * @param asyncCallback the callback for the result
      */
     public void checkNewWidgetsAvailable(CmsUUID structureId, AsyncCallback<Boolean> asyncCallback) {
 
@@ -264,12 +264,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates a context menu entry.<p>
-     * 
-     * @param structureId structure id of the resource 
-     * @param name the label 
+     *
+     * @param structureId structure id of the resource
+     * @param name the label
      * @param checked true if checkbox should be displayed
-     * @param action the action to execute 
-     * 
+     * @param action the action to execute
+     *
      * @return the menu entry
      */
     public CmsContextMenuEntry createSimpleContextMenuEntry(
@@ -284,7 +284,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * De-activates the current button.<p> 
+     * De-activates the current button.<p>
      */
     public void deactivateCurrentButton() {
 
@@ -308,7 +308,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
-    /** 
+    /**
      * Deactivates the selection.<p>
      */
     public void deactivateSelection() {
@@ -326,8 +326,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Starts the property editor for the given container element.<p>
-     * 
-     * @param elementWidget the container element widget for which the properties should be edited 
+     *
+     * @param elementWidget the container element widget for which the properties should be edited
      */
     public void editElementSettings(final CmsContainerPageElementPanel elementWidget) {
 
@@ -337,7 +337,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
             public void execute(final CmsContainerElementData elementBean) {
 
-                CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(m_controller, elementWidget, elementBean);
+                CmsElementSettingsDialog dialog = new CmsElementSettingsDialog(
+                    m_controller,
+                    elementWidget,
+                    elementBean);
                 dialog.center();
             }
         });
@@ -345,7 +348,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Enables the favorites editing drag and drop controller.<p>
-     * 
+     *
      * @param enable if <code>true</code> favorites editing will enabled, otherwise disabled
      * @param dndController the favorites editing drag and drop controller
      */
@@ -356,7 +359,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Enables the save and reset button of the tool-bar.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable
      */
     public void enableSaveReset(boolean enable) {
@@ -386,7 +389,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         return m_controller.lockContainerpage();
     }
 
-    /** 
+    /**
      * @see org.opencms.gwt.client.ui.I_CmsToolbarHandler#getActiveButton()
      */
     public I_CmsToolbarButton getActiveButton() {
@@ -417,7 +420,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
         final String sitemapUri = CmsCoreProvider.get().link(m_controller.getData().getSitemapUri());
         if (sitemapUri.equals("")) {
-            return; // normally, we shouldn't even get to this point because the sitemap button should be disabled  
+            return; // normally, we shouldn't even get to this point because the sitemap button should be disabled
         }
         Command leaveCommand = new Command() {
 
@@ -438,7 +441,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Returns if the selection button is active.<p>
-     * 
+     *
      * @return <code>true</code> if the selection button is active
      */
     public boolean hasActiveSelection() {
@@ -468,9 +471,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Inserts the context menu.<p>
-     *  
+     *
      * @param menuBeans the menu beans from the server
-     * @param structureId the structure id of the resource for which the context menu entries should be generated 
+     * @param structureId the structure id of the resource for which the context menu entries should be generated
      */
     public void insertContextMenu(List<CmsContextMenuEntryBean> menuBeans, CmsUUID structureId) {
 
@@ -480,7 +483,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Call to leave the page. Will open save/leave/cancel dialog if page contains any changes.<p>
-     * 
+     *
      * @param leavingCommand the page leaving command
      */
     public void leavePage(final Command leavingCommand) {
@@ -523,7 +526,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Call to leave the page. Will open save/leave/cancel dialog if page contains any changes.<p>
-     * 
+     *
      * @param target the target
      */
     public void leavePage(final String target) {
@@ -565,8 +568,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Loads the context menu entries for a given URI.<p>
-     * 
-     * @param structureId the structure id of the resource for which the context menu should be loaded  
+     *
+     * @param structureId the structure id of the resource for which the context menu should be loaded
      * @param context the ade context (sitemap or containerpage)
      */
     public void loadContextMenu(CmsUUID structureId, final AdeContext context) {
@@ -582,8 +585,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         m_controller.loadFavorites(new I_CmsSimpleCallback<List<CmsContainerElementData>>() {
 
             /**
-             * Generating the list item widgets and inserting them into the favorite list.<p> 
-             * 
+             * Generating the list item widgets and inserting them into the favorite list.<p>
+             *
              * @param arg the element data
              */
             public void execute(List<CmsContainerElementData> arg) {
@@ -606,8 +609,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         m_controller.loadRecent(new I_CmsSimpleCallback<List<CmsContainerElementData>>() {
 
             /**
-             * Generating the list item widgets and inserting them into the recent list.<p> 
-             * 
+             * Generating the list item widgets and inserting them into the recent list.<p>
+             *
              * @param arg the element data
              */
             public void execute(List<CmsContainerElementData> arg) {
@@ -624,8 +627,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Should be called when locking the container page failed.<p>
-     * 
-     * @param errorMessage the locking information  
+     *
+     * @param errorMessage the locking information
      */
     public void onLockFail(String errorMessage) {
 
@@ -638,14 +641,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Opens the edit dialog for the specified element.<p>
-     * 
+     *
      * @param element the element to edit
      * @param inline <code>true</code> to open the inline editor for the given element if available
      */
     public void openEditorForElement(final CmsContainerPageElementPanel element, boolean inline) {
 
         if (element.isNew()) {
-            //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished 
+            //openEditorForElement will be called again asynchronously when the RPC for creating the element has finished
             m_controller.createAndEditNewElement(element, inline);
             return;
         }
@@ -694,7 +697,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Opens the lock report for the given element.<p>
-     * 
+     *
      * @param element the element
      */
     public void openLockReportForElement(final CmsContainerPageElementPanel element) {
@@ -710,7 +713,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Opens the model select dialog for the given new element.<p>
-     * 
+     *
      * @param element the element widget
      * @param modelResources the available resource models
      */
@@ -775,7 +778,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Reloads the content for the given element and all related elements.<p>
-     * 
+     *
      * @param elementIds the element id's
      */
     public void reloadElements(String... elementIds) {
@@ -785,10 +788,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Removes the given container-page element.<p>
-     * 
+     *
      * @param element the element
-     * @param removeMode the element remove mode  
-     * 
+     * @param removeMode the element remove mode
+     *
      */
     public void removeElement(CmsContainerPageElementPanel element, ElementRemoveMode removeMode) {
 
@@ -808,9 +811,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void resetPage() {
 
-        CmsConfirmDialog dialog = new CmsConfirmDialog(Messages.get().key(Messages.GUI_DIALOG_RESET_TITLE_0), "<p>"
-            + Messages.get().key(Messages.GUI_DIALOG_PAGE_RESET_0)
-            + "</p>");
+        CmsConfirmDialog dialog = new CmsConfirmDialog(
+            Messages.get().key(Messages.GUI_DIALOG_RESET_TITLE_0),
+            "<p>" + Messages.get().key(Messages.GUI_DIALOG_PAGE_RESET_0) + "</p>");
         dialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_CANCEL_TEXT_0));
         dialog.setOkText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
         dialog.setHandler(new I_CmsConfirmDialogHandler() {
@@ -837,9 +840,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Saves the favorite list.<p>
-     * 
+     *
      * @param clientIds the client id's of the list's elements
-     * 
+     *
      * @see org.opencms.ade.containerpage.client.CmsContainerpageController#saveFavoriteList(java.util.List)
      */
     public void saveFavoriteList(List<String> clientIds) {
@@ -860,7 +863,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Sets the currently active tool-bar button.<p>
-     * 
+     *
      * @param button the button
      */
     public void setActiveButton(I_CmsToolbarButton button) {
@@ -870,8 +873,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Shows resource information for a given element.<p>
-     * 
-     * @param element the element for which to show the information 
+     *
+     * @param element the element for which to show the information
      */
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
@@ -906,8 +909,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_PUBLISH_NOT_SAVED_0) + "</p>");
             warningMessage.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
 
-            CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
-                Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), warningMessage.toString());
+            CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(
+                Messages.get().key(Messages.GUI_DIALOG_NOT_SAVED_TITLE_0),
+                warningMessage.toString());
             leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
             leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
             leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
@@ -997,8 +1001,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Updates the clip board elements is necessary.<p>
-     * 
-     * @param elements the elements data  
+     *
+     * @param elements the elements data
      */
     public void updateClipboard(Map<String, CmsContainerElementData> elements) {
 
@@ -1014,7 +1018,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates the element view selection menu entry, returns <code>null</code> in case no other views available.<p>
-     * 
+     *
      * @return the menu entry
      */
     protected I_CmsContextMenuEntry createElementViewSelectionMenuEntry() {
@@ -1028,7 +1032,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     I_CmsContextMenuHandler handler,
                     CmsContextMenuEntryBean bean) {
 
-                    // do nothing 
+                    // do nothing
                 }
 
                 public A_CmsContextMenuItem getItemWidget(
@@ -1053,10 +1057,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             parentEntry.setBean(parentBean);
             List<I_CmsContextMenuEntry> viewEntries = new ArrayList<I_CmsContextMenuEntry>();
             for (CmsElementViewInfo viewInfo : elementViews) {
-                viewEntries.add(createMenuEntryForElementView(
-                    viewInfo,
-                    m_controller.getElementView().equals(viewInfo.getElementViewId()),
-                    this));
+                viewEntries.add(
+                    createMenuEntryForElementView(
+                        viewInfo,
+                        m_controller.getElementView().equals(viewInfo.getElementViewId()),
+                        this));
             }
 
             parentEntry.setSubMenu(viewEntries);
@@ -1068,17 +1073,20 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates a menu entry based on a structure id and action without anything else.<p>
-     * 
-     * @param structureId the structure id  
-     * @param action the action for the menu entry 
-     * 
-     * @return the new menu entry 
+     *
+     * @param structureId the structure id
+     * @param action the action for the menu entry
+     *
+     * @return the new menu entry
      */
     protected CmsContextMenuEntry createRawMenuEntry(CmsUUID structureId, final Runnable action) {
 
         CmsContextMenuEntry entry = new CmsContextMenuEntry(this, structureId, new I_CmsContextMenuCommand() {
 
-            public void execute(CmsUUID innerStructureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+            public void execute(
+                CmsUUID innerStructureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
 
                 if (action != null) {
                     action.run();
@@ -1104,10 +1112,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates the template context selection entry for the context menu.<p>
-     * 
+     *
      * @param structureId the structure id of the page
-     * 
-     * @return the new context menu entry 
+     *
+     * @return the new context menu entry
      */
     protected I_CmsContextMenuEntry createTemplateContextSelectionMenuEntry(CmsUUID structureId) {
 
@@ -1120,7 +1128,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     I_CmsContextMenuHandler handler,
                     CmsContextMenuEntryBean bean) {
 
-                    // do nothing 
+                    // do nothing
                 }
 
                 public A_CmsContextMenuItem getItemWidget(
@@ -1139,8 +1147,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             });
             CmsContextMenuEntryBean parentBean = new CmsContextMenuEntryBean();
 
-            parentBean.setLabel(org.opencms.gwt.client.Messages.get().key(
-                org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_PARENT_0));
+            parentBean.setLabel(
+                org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_PARENT_0));
             parentBean.setActive(true);
             parentBean.setVisible(true);
             parentEntry.setBean(parentBean);
@@ -1188,13 +1197,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                     templateContextEntries.add(menuEntry);
                 }
             }
-            templateContextEntries.add(createMenuEntryForTemplateContext(
-                info.getCookieName(),
-                null,
-                org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_NONE_0),
-                Objects.equal(null, info.getSelectedContext()),
-                this,
-                structureId));
+            templateContextEntries.add(
+                createMenuEntryForTemplateContext(
+                    info.getCookieName(),
+                    null,
+                    org.opencms.gwt.client.Messages.get().key(
+                        org.opencms.gwt.client.Messages.GUI_TEMPLATE_CONTEXT_NONE_0),
+                    Objects.equal(null, info.getSelectedContext()),
+                    this,
+                    structureId));
             parentEntry.setSubMenu(templateContextEntries);
 
             return parentEntry;
@@ -1204,10 +1215,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
-    /** 
+    /**
      * Creates the context menu entry for enabling or disabling editing of small elements.<p>
-     * 
-     * @return the created context menu entry 
+     *
+     * @return the created context menu entry
      */
     protected I_CmsContextMenuEntry createToggleEditSmallElementsMenuEntry() {
 
@@ -1248,12 +1259,12 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         return entry;
     }
 
-    /** 
+    /**
      * Fills in label and checkbox of a menu entry.<p>
-     * 
-     * @param entry the menu entry  
-     * @param name the label 
-     * @param checked true if checkbox should be shown 
+     *
+     * @param entry the menu entry
+     * @param name the label
+     * @param checked true if checkbox should be shown
      */
     protected void decorateMenuEntry(CmsContextMenuEntry entry, String name, boolean checked) {
 
@@ -1268,9 +1279,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Helper method for getting the error message for a locking error.<p>
-     * 
-     * @param lockInfo the lock information 
-     * @return the error message 
+     *
+     * @param lockInfo the lock information
+     * @return the error message
      */
     protected String getLockErrorMessage(CmsLockInfo lockInfo) {
 
@@ -1287,10 +1298,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         }
     }
 
-    /** 
+    /**
      * Helper method for getting the error message box title for a locking error.<p>
-     * 
-     * @param lockInfo the lock information 
+     *
+     * @param lockInfo the lock information
      * @return the error message box title
      */
     protected String getLockErrorTitle(CmsLockInfo lockInfo) {
@@ -1339,7 +1350,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Sets the element view.<p>
-     * 
+     *
      * @param elementView the element view
      */
     protected void setElementView(CmsUUID elementView) {
@@ -1349,11 +1360,11 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates the menu entry for a single element view.<p>
-     * 
+     *
      * @param elementView the element view
      * @param isActive if the group is the currently active group
      * @param handler the menu handler
-     * 
+     *
      * @return the menu entry
      */
     private CmsContextMenuEntry createMenuEntryForElementView(
@@ -1398,15 +1409,15 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Creates a context menu entry for selecting a template context.<p>
-     * 
-     * @param cookieName the name of the cookie 
-     * @param value the value of the cookie 
-     * @param label the text for the menu entry 
-     * @param isActive true if context is currently active  
-     * @param handler the context menu handler 
-     * @param structureId the current page's structure id 
-     * 
-     * @return the created context menu entry 
+     *
+     * @param cookieName the name of the cookie
+     * @param value the value of the cookie
+     * @param label the text for the menu entry
+     * @param isActive true if context is currently active
+     * @param handler the context menu handler
+     * @param structureId the current page's structure id
+     *
+     * @return the created context menu entry
      */
     private CmsContextMenuEntry createMenuEntryForTemplateContext(
         final String cookieName,
@@ -1451,9 +1462,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     }
 
-    /** 
+    /**
      * Returns the page leaving dialog.<p>
-     * 
+     *
      * @return the page leaving dialog
      */
     private CmsAcceptDeclineCancelDialog getLeaveDialog() {
@@ -1462,8 +1473,9 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_LEAVE_NOT_SAVED_0) + "</p>");
         message.append("<p>" + Messages.get().key(Messages.GUI_DIALOG_SAVE_QUESTION_0) + "</p>");
 
-        CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(Messages.get().key(
-            Messages.GUI_DIALOG_NOT_SAVED_TITLE_0), message.toString());
+        CmsAcceptDeclineCancelDialog leavingDialog = new CmsAcceptDeclineCancelDialog(
+            Messages.get().key(Messages.GUI_DIALOG_NOT_SAVED_TITLE_0),
+            message.toString());
         leavingDialog.setAcceptText(Messages.get().key(Messages.GUI_BUTTON_SAVE_TEXT_0));
         leavingDialog.setDeclineText(Messages.get().key(Messages.GUI_BUTTON_DISCARD_TEXT_0));
         leavingDialog.setCloseText(Messages.get().key(Messages.GUI_BUTTON_RETURN_TEXT_0));
@@ -1472,7 +1484,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Opens the group-container element editor.<p>
-     * 
+     *
      * @param groupContainer the group-container element
      */
     private void openGroupEditor(CmsGroupContainerElementPanel groupContainer) {

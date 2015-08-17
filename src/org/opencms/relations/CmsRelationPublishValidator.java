@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Util class to find broken links in a bundle of resources to be published.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsRelationPublishValidator {
@@ -60,7 +60,7 @@ public class CmsRelationPublishValidator {
 
     /**
      * Creates a new helper object.<p>
-     * 
+     *
      * @param cms the cms object
      * @param publishList a publish list to validate
      */
@@ -82,10 +82,10 @@ public class CmsRelationPublishValidator {
     }
 
     /**
-     * Returns the information bean for the given entry.<p> 
-     * 
+     * Returns the information bean for the given entry.<p>
+     *
      * @param resourceName the entry name
-     * 
+     *
      * @return the information bean for the given entry
      */
     public CmsRelationValidatorInfoEntry getInfoEntry(String resourceName) {
@@ -124,7 +124,7 @@ public class CmsRelationPublishValidator {
 
     /**
      * If no relation would be broken deleting the given resources.<p>
-     * 
+     *
      * @return <code>true</code> if no relation would be broken deleting the given resources
      */
     public boolean isEmpty() {
@@ -134,7 +134,7 @@ public class CmsRelationPublishValidator {
 
     /**
      * @see java.util.Map#keySet()
-     * 
+     *
      * @return the broken relations key set
      */
     public Set<String> keySet() {
@@ -144,7 +144,7 @@ public class CmsRelationPublishValidator {
 
     /**
      * @see java.util.Map#values()
-     * 
+     *
      * @return the broken relations value set
      */
     public Collection<List<CmsRelation>> values() {

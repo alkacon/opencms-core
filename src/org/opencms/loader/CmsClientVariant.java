@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,9 +53,9 @@ public class CmsClientVariant {
     /** The screen width. */
     private int m_screenWidth;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param name the internal name of the client variant
      * @param message the nice name of the variant
      * @param width the screen width
@@ -78,8 +78,8 @@ public class CmsClientVariant {
 
     /**
      * Gets the internal name.<p>
-     *  
-     * @return the name 
+     *
+     * @return the name
      */
     public String getName() {
 
@@ -88,10 +88,10 @@ public class CmsClientVariant {
 
     /**
      * Gets the nice name for a locale.<p>
-     * 
-     * @param locale the locale 
-     *  
-     * @return the nice name 
+     *
+     * @param locale the locale
+     *
+     * @return the nice name
      */
     public String getNiceName(Locale locale) {
 
@@ -100,8 +100,8 @@ public class CmsClientVariant {
 
     /**
      * Gets the parameters.<p>
-     * 
-     * @return the parameters 
+     *
+     * @return the parameters
      */
     public Map<String, String> getParameters() {
 
@@ -110,18 +110,18 @@ public class CmsClientVariant {
 
     /**
      * Gets the screen height.<p>
-     * 
-     * @return the screen height 
+     *
+     * @return the screen height
      */
     public int getScreenHeight() {
 
         return m_screenHeight;
     }
 
-    /** 
+    /**
      * Gets the screen width.<p>
-     * 
-     * @return the screen width 
+     *
+     * @return the screen width
      */
     public int getScreenWidth() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Dialog to select a resource model for a new resource.<p>
- * 
- * @param <INFO> the type of list info bean which should be used as select options 
- * 
+ *
+ * @param <INFO> the type of list info bean which should be used as select options
+ *
  * @since 8.0.3
  */
 public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> extends CmsPopup {
@@ -83,10 +83,10 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
 
     /**
      * Constructor.<p>
-     * 
-     * @param itemInfos the list info beans for the possible select options 
-     * @param title the title for the model selection dialog 
-     * @param message the message to display in the model selection dialog 
+     *
+     * @param itemInfos the list info beans for the possible select options
+     * @param title the title for the model selection dialog
+     * @param message the message to display in the model selection dialog
      */
     public A_CmsListItemSelectDialog(List<INFO> itemInfos, String title, String message) {
 
@@ -129,7 +129,8 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
         content.add(m_messageLabel);
         m_radioGroup = new CmsRadioButtonGroup();
         m_listPanel = new CmsList<CmsListItem>();
-        m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().modelSelectList());
+        m_listPanel.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.dialogCss().modelSelectList());
         m_listPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         content.add(m_listPanel);
         boolean first = true;
@@ -184,13 +185,13 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
 
     /**
      * Makes sure the item with the given structure id is checked.<p>
-     * 
+     *
      * @param structureId the structure id
      */
     protected void ensureChecked(CmsUUID structureId) {
 
-        CmsRadioButton button = (CmsRadioButton)m_listPanel.getItem(String.valueOf(structureId)).getDecorationWidgets().get(
-            0);
+        CmsRadioButton button = (CmsRadioButton)m_listPanel.getItem(
+            String.valueOf(structureId)).getDecorationWidgets().get(0);
         if (!button.isChecked()) {
             button.setChecked(true);
         }
@@ -198,7 +199,7 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
 
     /**
      * The method that will be called with the selected item when the user clicks on OK.<p>
-     * 
+     *
      * @param info the selected item
      */
     protected abstract void handleSelection(INFO info);
@@ -226,8 +227,8 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
 
     /**
      * Generates internal names for the radio button widgets.<p>
-     * 
-     * @return the generated name 
+     *
+     * @return the generated name
      */
     private String generateName() {
 

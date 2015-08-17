@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 /**
- * This data access object represents a history properties entry 
+ * This data access object represents a history properties entry
  * inside the table "cms_history_properties".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -65,7 +65,7 @@ public class CmsDAOHistoryProperties {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -75,7 +75,7 @@ public class CmsDAOHistoryProperties {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -118,7 +118,7 @@ public class CmsDAOHistoryProperties {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOHistoryPropertiesPK(String str) {
@@ -150,9 +150,11 @@ public class CmsDAOHistoryProperties {
 
             CmsDAOHistoryPropertiesPK other = (CmsDAOHistoryPropertiesPK)obj;
             return (m_propertyMappingType == other.m_propertyMappingType)
-                && (((m_propertyDefId == null) && (other.m_propertyDefId == null)) || ((m_propertyDefId != null) && m_propertyDefId.equals(other.m_propertyDefId)))
+                && (((m_propertyDefId == null) && (other.m_propertyDefId == null))
+                    || ((m_propertyDefId != null) && m_propertyDefId.equals(other.m_propertyDefId)))
                 && (m_publishTag == other.m_publishTag)
-                && (((m_structureId == null) && (other.m_structureId == null)) || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
+                && (((m_structureId == null) && (other.m_structureId == null))
+                    || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
         }
 
         /**
@@ -202,10 +204,10 @@ public class CmsDAOHistoryProperties {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + m_propertyMappingType;
-            rs = rs * 37 + ((m_propertyDefId == null) ? 0 : m_propertyDefId.hashCode());
-            rs = rs * 37 + m_publishTag;
-            rs = rs * 37 + ((m_structureId == null) ? 0 : m_structureId.hashCode());
+            rs = (rs * 37) + m_propertyMappingType;
+            rs = (rs * 37) + ((m_propertyDefId == null) ? 0 : m_propertyDefId.hashCode());
+            rs = (rs * 37) + m_publishTag;
+            rs = (rs * 37) + ((m_structureId == null) ? 0 : m_structureId.hashCode());
             return rs;
         }
 
@@ -266,7 +268,7 @@ public class CmsDAOHistoryProperties {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -331,8 +333,8 @@ public class CmsDAOHistoryProperties {
 
     /**
      * A public constructor for generating a new history property object with an unique id.<p>
-     * 
-     * @param propertyMappingType the property mapping type 
+     *
+     * @param propertyMappingType the property mapping type
      * @param propertydefId  the property definition id
      * @param publishTag the publish tag
      * @param structureId the structure id

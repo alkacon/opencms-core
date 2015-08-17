@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,16 +67,16 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
     /**
      * Creates a new workflow notification mail object.<p>
-     * 
-     * @param adminCms the admin CMS context 
-     * @param userCms the user CMS context 
-     * @param receiver the mail recipient 
-     * @param notificationContent the file from which to read the notification configuration 
-     * @param project the workflow project 
-     * @param resources the workflow resources 
-     * @param link the link used for publishing the resources 
-     * 
-     * @throws EmailException if an email error occurs 
+     *
+     * @param adminCms the admin CMS context
+     * @param userCms the user CMS context
+     * @param receiver the mail recipient
+     * @param notificationContent the file from which to read the notification configuration
+     * @param project the workflow project
+     * @param resources the workflow resources
+     * @param link the link used for publishing the resources
+     *
+     * @throws EmailException if an email error occurs
      */
     public CmsWorkflowNotification(
         CmsObject adminCms,
@@ -86,7 +86,7 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         CmsProject project,
         List<CmsResource> resources,
         String link)
-    throws EmailException {
+        throws EmailException {
 
         super(userCms, receiver);
         m_notificationContent = notificationContent;
@@ -104,10 +104,10 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
     /**
      * Gets the fields which should be displayed for a single resource.<p>
-     * 
-     * @param resource the resource for which we should fetch the fields 
-     * 
-     * @return a string array containing the information for the given resource 
+     *
+     * @param resource the resource for which we should fetch the fields
+     *
+     * @return a string array containing the information for the given resource
      */
     public String[] getResourceInfo(CmsResource resource) {
 
@@ -115,20 +115,23 @@ public class CmsWorkflowNotification extends A_CmsNotification {
         String title = "-";
 
         try {
-            CmsProperty titleProp = m_adminCms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+            CmsProperty titleProp = m_adminCms.readPropertyObject(
+                resource,
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false);
             if (!titleProp.isNullProperty()) {
                 title = titleProp.getValue();
             }
         } catch (CmsException e) {
-            // ignore 
+            // ignore
         }
         return new String[] {rootPath, title};
     }
 
     /**
      * Gets the resource info headers.<p>
-     * 
-     * @return the resource info headers 
+     *
+     * @return the resource info headers
      */
     public String[] getResourceInfoHeaders() {
 
@@ -194,10 +197,10 @@ public class CmsWorkflowNotification extends A_CmsNotification {
 
     /**
      * Gets a message from the message bundle.<p>
-     * 
-     * @param key the message key 
-     * @param args the message parameters 
-     * 
+     *
+     * @param key the message key
+     * @param args the message parameters
+     *
      * @return the message from the message bundle
      */
     protected String getMessage(String key, String... args) {

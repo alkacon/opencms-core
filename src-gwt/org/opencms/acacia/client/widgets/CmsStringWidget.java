@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,7 +72,7 @@ public class CmsStringWidget extends A_CmsEditWidget {
 
     /**
      * Constructor wrapping a specific DOM element.<p>
-     * 
+     *
      * @param element the element to wrap
      */
     public CmsStringWidget(Element element) {
@@ -229,7 +229,7 @@ public class CmsStringWidget extends A_CmsEditWidget {
 
     /**
      * Returns the actual range of the courser.<p>
-     * 
+     *
      * @return the actual range of the courser
      */
     protected native JavaScriptObject getSelection()
@@ -248,7 +248,7 @@ public class CmsStringWidget extends A_CmsEditWidget {
     /**
      * Includes the new text into the text block.<p>
      * @param range the range where the text should be included
-     * @param text the text that should be included 
+     * @param text the text that should be included
      */
     protected native void setSelection(JavaScriptObject range, String text)
     /*-{

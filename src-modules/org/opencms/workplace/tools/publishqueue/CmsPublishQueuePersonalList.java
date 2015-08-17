@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides a list for finished publish reports of the current user.<p> 
- * 
+ * Provides a list for finished publish reports of the current user.<p>
+ *
  * @since 6.5.5
  */
 public class CmsPublishQueuePersonalList extends A_CmsListDialog {
@@ -155,7 +155,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishQueuePersonalList(CmsJspActionElement jsp) {
@@ -165,7 +165,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -177,7 +177,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the specialized list
      */
@@ -194,9 +194,10 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /**
      * Overrides the implementation to skip generation of gray header. <p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return new StringBuffer(getList().listJs()).append(dialogContentStart(getParamTitle())).toString();
@@ -205,6 +206,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -213,6 +215,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String publishJobId = getSelectedItem().get(LIST_COLUMN_ID).toString();
@@ -242,6 +245,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         //noop
@@ -250,6 +254,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -285,6 +290,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create view column
@@ -313,6 +319,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -329,6 +336,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -341,6 +349,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 Integer warns = (Integer)getItem().get(LIST_COLUMN_WARNINGS);
@@ -351,6 +360,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -377,11 +387,12 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition startCol = new CmsListColumnDefinition(LIST_COLUMN_STARTTIME);
         startCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STARTPUBLISHING_0));
         startCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        startCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
-            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
+        startCol.setFormatter(
+            new CmsListDateMacroFormatter(
+                Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1),
+                Messages.get().container(org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         startCol.setWidth("20%");
-        // add default action 
+        // add default action
         CmsListDefaultAction startAction = new CmsListDefaultAction(LIST_ACTION_START);
         startAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
         startAction.setHelpText(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_HELP_0));
@@ -392,9 +403,10 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListColumnDefinition endCol = new CmsListColumnDefinition(LIST_COLUMN_ENDTIME);
         endCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STOPPUBLISHING_0));
         endCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        endCol.setFormatter(new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1), Messages.get().container(
-            org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
+        endCol.setFormatter(
+            new CmsListDateMacroFormatter(
+                Messages.get().container(Messages.GUI_LIST_DATE_FORMAT_WITH_SECONDS_1),
+                Messages.get().container(org.opencms.workplace.list.Messages.GUI_LIST_DATE_FORMAT_NEVER_0)));
         endCol.setWidth("20%");
         // add default action
         CmsListDefaultAction endAction = new CmsListDefaultAction(LIST_ACTION_END);
@@ -453,6 +465,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         //noop
@@ -461,6 +474,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop
@@ -468,9 +482,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /**
      * Returns the state of the given publish job.<p>
-     * 
+     *
      * @param publishJob the publish job to get the state for
-     * 
+     *
      * @return the state of the given publish job
      */
     private Map getState(CmsPublishJobFinished publishJob) {
@@ -490,14 +504,17 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             // see org.opencms.report.CmsHtmlReport#print(String, int)
             if (report.indexOf("<span class='err'>") > -1) {
                 result.put(LIST_COLUMN_STATE, STATE_ERROR);
-                result.put(LIST_COLUMN_ERRORS, new Integer(
-                    CmsStringUtil.splitAsList(report, "<span class='err'>").size() - 1));
-                result.put(LIST_COLUMN_WARNINGS, new Integer(
-                    CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
+                result.put(
+                    LIST_COLUMN_ERRORS,
+                    new Integer(CmsStringUtil.splitAsList(report, "<span class='err'>").size() - 1));
+                result.put(
+                    LIST_COLUMN_WARNINGS,
+                    new Integer(CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
             } else if (report.indexOf("<span class='warn'>") > -1) {
                 result.put(LIST_COLUMN_STATE, STATE_WARNING);
-                result.put(LIST_COLUMN_WARNINGS, new Integer(
-                    CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
+                result.put(
+                    LIST_COLUMN_WARNINGS,
+                    new Integer(CmsStringUtil.splitAsList(report, "<span class='warn'>").size() - 1));
             } else {
                 result.put(LIST_COLUMN_STATE, STATE_OK);
             }

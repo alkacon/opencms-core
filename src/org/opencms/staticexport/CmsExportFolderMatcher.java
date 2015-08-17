@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,10 +34,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * This class provides a file name matcher to find out those resources which must be part of 
- * a static export.<p> 
- * 
- * @since 6.0.0 
+ * This class provides a file name matcher to find out those resources which must be part of
+ * a static export.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsExportFolderMatcher {
 
@@ -46,8 +46,8 @@ public class CmsExportFolderMatcher {
 
     /**
      * Creates a new CmsExportFolderMatcher.<p>
-     * 
-     * @param vfsFolders array of vfsFolder used for static export 
+     *
+     * @param vfsFolders array of vfsFolder used for static export
      * @param checkResource additional resource name to be added to the static export
      */
     public CmsExportFolderMatcher(List<String> vfsFolders, String checkResource) {
@@ -61,7 +61,7 @@ public class CmsExportFolderMatcher {
 
     /**
      * Checks if a vfsName matches the given static export folders.<p>
-     * 
+     *
      * @param vfsName the vfs name of a resource to check
      * @return true if the name matches one of the given static export folders
      */

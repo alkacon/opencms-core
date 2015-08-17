@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,15 +30,15 @@ package org.opencms.i18n;
 import java.util.Locale;
 
 /**
- * Convenience base class to access the localized messages of an OpenCms package.<p> 
- * 
+ * Convenience base class to access the localized messages of an OpenCms package.<p>
+ *
  * @since 6.0.0
  */
 public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
 
     /**
      * Returns an array of all messages bundles used by the OpenCms core.<p>
-     * 
+     *
      * @return an array of all messages bundles used by the OpenCms core
      */
     public static I_CmsMessageBundle[] getOpenCmsMessageBundles() {

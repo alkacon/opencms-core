@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,10 +37,10 @@ import java.util.Set;
 
 /**
  * Returns the constant Object the map was initialized with for all {@link #get(Object)} calls,
- * regardless of what the actual key is.<p> 
- * 
+ * regardless of what the actual key is.<p>
+ *
  * @since 7.0.2
- * 
+ *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
@@ -66,8 +66,8 @@ public class CmsConstantMap<K, V> implements Map<K, V> {
     private V m_constant;
 
     /**
-     * Creates a new constant Map.<p> 
-     * 
+     * Creates a new constant Map.<p>
+     *
      * @param constant the constant to return for all {@link #get(Object)} calls.<p>
      */
     public CmsConstantMap(V constant) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,41 +36,41 @@ import java.util.Map;
 
 /**
  * Parses the configuration for various select widgets, including multi-select and combo-box.<p>
- * 
+ *
  * Use following syntax for the configuration:<p>
- * 
+ *
  * <code>value='{text}' default='{true|false}' option='{text}' help='{text}|{more option definitions}</code><p>
- * 
- * For example:<p>  
- * 
+ *
+ * For example:<p>
+ *
  * <code>value='value1' default='true' option='option1' help='help1'|value='value2' option='option2' help='help2'</code><p>
- * 
- * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a 
- * <code>value</code> must be present in the input. 
+ *
+ * The elements <code>default</code>, <code>option</code> and <code>help</code> are all optional, only a
+ * <code>value</code> must be present in the input.
  * There should be only one <code>default</code> set to <code>true</code>
- * in the input, if more than one is detected, only the first <code>default</code> found is actually used. 
- * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>. 
- * If no <code>help</code> is given, the default is <code>null</code>.<p> 
- * 
+ * in the input, if more than one is detected, only the first <code>default</code> found is actually used.
+ * If no <code>option</code> is given, the value of <code>option</code> defaults to the value of the given <code>value</code>.
+ * If no <code>help</code> is given, the default is <code>null</code>.<p>
+ *
  * Shortcut syntax options:<p>
- * 
+ *
  * If you don't specify the <code>value</code> key, the value is assumed to start at the first position of an
- * option definition. In this case the value must not be surrounded by the <code>'</code> chars. 
+ * option definition. In this case the value must not be surrounded by the <code>'</code> chars.
  * Example: <code>value='some value' default='true'</code> can also be written as <code>some value default='true'</code>.<p>
- * 
+ *
  * Only if you use the short value definition as described above, a default value can be marked with a <code>*</code>
  * at the end of the value definition.
  * Example: <code>value='some value' default='true'</code> can also be written as <code>some value*</code>.<p>
- * 
+ *
  * Only if you use the short value definition as described above, you can also append the <code>option</code>
  * to the <code>value</code> using a <code>:</code>. In this case no <code>'</code> must surround the <code>option</code>.
- * Please keep in mind that in this case the value 
+ * Please keep in mind that in this case the value
  * itself can not longer contain a <code>:</code> char, since it would then be interpreted as a delimiter.
  * Example: <code>value='some value' option='some option'</code> can also be written as <code>some value:some option</code>.<p>
- * 
+ *
  * Any combinations of the above described shortcuts are allowed in the configuration option String.
  * Here are some more examples of valid configuration option Strings:<p>
- * 
+ *
  * <code>1*|2|3|4|5|6|7</code><br>
  * <code>1 default='true'|2|3|4|5|6|7</code><br>
  * <code>value='1' default='true'|value='2'|value='3'</code><br>
@@ -124,7 +124,7 @@ public class CmsSelectConfigurationParser {
 
     /**
      * Constructor. Will parse the given configuration string.<p>
-     * 
+     *
      * @param configuration the configuration
      */
     public CmsSelectConfigurationParser(String configuration) {
@@ -138,7 +138,7 @@ public class CmsSelectConfigurationParser {
 
     /**
      * Returns the default value.<p>
-     * 
+     *
      * @return the default value
      */
     public String getDefaultValue() {
@@ -152,7 +152,7 @@ public class CmsSelectConfigurationParser {
 
     /**
      * Returns the default value.<p>
-     * 
+     *
      * @return the default value
      */
     public List<String> getDefaultValues() {
@@ -162,7 +162,7 @@ public class CmsSelectConfigurationParser {
 
     /**
      * Returns the help texts.<p>
-     * 
+     *
      * @return the help texts
      */
     public Map<String, String> getHelpTexts() {
@@ -172,7 +172,7 @@ public class CmsSelectConfigurationParser {
 
     /**
      * Returns the options.<p>
-     * 
+     *
      * @return the options
      */
     public Map<String, String> getOptions() {
@@ -186,7 +186,7 @@ public class CmsSelectConfigurationParser {
     private void parseConfiguration() {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_configuration)) {
-            //split the configuration in single strings to handle every string single. 
+            //split the configuration in single strings to handle every string single.
             String[] selectOptions = m_configuration.split("\\" + INPUT_DELIMITER);
 
             for (int i = 0; i < selectOptions.length; i++) {
@@ -235,7 +235,7 @@ public class CmsSelectConfigurationParser {
                     else {
                         //check there are more parameters set.
                         if (test_short_option) {
-                            //transfer the separated value to the value array. 
+                            //transfer the separated value to the value array.
                             value = selectOptions[i].substring(0, selectOptions[i].indexOf(KEY_SHORT_OPTION));
                         }
                         //no parameters set.
@@ -271,7 +271,7 @@ public class CmsSelectConfigurationParser {
                         //transfer the extracted value to the option array.
                         label = selectOptions[i].substring(selectOptions[i].indexOf(KEY_SHORT_OPTION) + 1);
                     }
-                    //there are no options set in configuration. 
+                    //there are no options set in configuration.
                     else {
                         //option value is the same like the name value so the name value is transfered to the option array.
                         label = value;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ public interface I_CmsUploader {
 
     /**
      * Uploads the given files to the given URI.<p>
-     * 
+     *
      * @param uploadUri the upload URI
      * @param targetFolder the target folder
-     * @param isRootPath true if the target folder is given as a root path 
+     * @param isRootPath true if the target folder is given as a root path
      * @param filesToUpload the files to upload
      * @param filesToUnzip the files to unzip
      * @param dialog the dialog instance

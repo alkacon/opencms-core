@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Stores specific servlet container options, that might influence OpenCms behavior.<p>
- * 
- * @since 7.0.5 
+ *
+ * @since 7.0.5
  */
 public class CmsServletContainerSettings {
 
@@ -65,7 +65,7 @@ public class CmsServletContainerSettings {
 
         /**
          * Private constructor.<p>
-         * 
+         *
          * @param mode the remote command execution return type integer representation
          */
         private CmsServletContainerCfgMode(String mode) {
@@ -75,9 +75,9 @@ public class CmsServletContainerSettings {
 
         /**
          * Returns the parsed mode object if the string representation matches, or <code>null</code> if not.<p>
-         * 
+         *
          * @param mode the string representation to parse
-         * 
+         *
          * @return the parsed mode object
          */
         public static CmsServletContainerCfgMode valueOf(String mode) {
@@ -99,7 +99,7 @@ public class CmsServletContainerSettings {
 
         /**
          * Checks if this is the auto mode.<p>
-         * 
+         *
          * @return <code>true</code> if this is the auto mode
          */
         public boolean isAuto() {
@@ -109,7 +109,7 @@ public class CmsServletContainerSettings {
 
         /**
          * Checks if this is the manual mode.<p>
-         * 
+         *
          * @return <code>true</code> if this is the manual mode
          */
         public boolean isManual() {
@@ -119,7 +119,7 @@ public class CmsServletContainerSettings {
 
         /**
          * Checks if this is the none mode.<p>
-         * 
+         *
          * @return <code>true</code> if this is the none mode
          */
         public boolean isNone() {
@@ -143,8 +143,8 @@ public class CmsServletContainerSettings {
     /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
     private static boolean m_servletThrowsException = true;
 
-    /** 
-     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
+    /**
+     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method,
      * which is needed because this method is not properly implemented in BEA WLS 9.x.<p>
      */
     private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
@@ -180,9 +180,9 @@ public class CmsServletContainerSettings {
     /** If the tags need to be released after ending, this has to be prevented when running with Resin, for example. */
     private boolean m_releaseTagsAfterEnd = true;
 
-    /** 
+    /**
        * The request error page attribute to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
-       * is not working properly, like in BEA WLS 9.x. 
+       * is not working properly, like in BEA WLS 9.x.
        */
     private String m_requestErrorPageAttribute;
 
@@ -203,7 +203,7 @@ public class CmsServletContainerSettings {
 
     /**
      * Creates a new object.<p>
-     * 
+     *
      * @param context used to find out specifics of the servlet container
      */
     public CmsServletContainerSettings(ServletContext context) {
@@ -232,10 +232,11 @@ public class CmsServletContainerSettings {
             // read the servlet container name
             String servletContainerName = context.getServerInfo();
 
-            // web application context: 
+            // web application context:
             // read it from the servlet context parameters
             //      this is needed in case an application server specific deployment descriptor is used to changed the webapp context
-            String webApplicationContext = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
+            String webApplicationContext = context.getInitParameter(
+                OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(webApplicationContext)) {
                 try {
                     URL contextRelativeUrl = context.getResource("/");
@@ -255,18 +256,18 @@ public class CmsServletContainerSettings {
                 }
 
             }
-            // init values: 
+            // init values:
             init(webInfRfsPath, defaultWebApplication, servletMapping, servletContainerName, webApplicationContext);
-            // finally care for the speciality of different servlet containers: 
+            // finally care for the speciality of different servlet containers:
             initContainerSpecifics(context);
         }
     }
 
     /**
      * Creates an instance based on the given values.<p>
-     * 
+     *
      * This is intended for <code>{@link CmsShell}</code> access.<p>
-     * 
+     *
      * @param webInfRfsPath the OpenCms web application "WEB-INF" path in the "real" file system) to set
      * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
@@ -294,17 +295,17 @@ public class CmsServletContainerSettings {
     }
 
     /**
-     * Returns the web application context path, e.g. "" (empty String) if the web application 
-     * is the default web application (usually "ROOT"), or "/opencms" if the web application 
+     * Returns the web application context path, e.g. "" (empty String) if the web application
+     * is the default web application (usually "ROOT"), or "/opencms" if the web application
      * is called "opencms".<p>
-     * 
+     *
      * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Context Path:</b> The path prefix associated with the ServletContext that this
      * servlet is a part of. If this context is the "default" context rooted at the base of
      * the web server's URL name space, this path will be an empty string. Otherwise,
      * if the context is not rooted at the root of the server's name space, the path starts
      * with a "/" character but does not end with a "/" character.<p>
-     *  
+     *
      * @return the web application context path
      * @see #getWebApplicationName()
      * @see #getServletPath()
@@ -317,7 +318,7 @@ public class CmsServletContainerSettings {
 
     /**
      * Returns the default web application name (usually "ROOT").<p>
-     * 
+     *
      * @return the default web application name
      */
     public String getDefaultWebApplicationName() {
@@ -337,10 +338,10 @@ public class CmsServletContainerSettings {
 
     /**
      * Returns the OpenCms request context, e.g. "/opencms/opencms".<p>
-     * 
+     *
      * The OpenCms context will always start with a "/" and never have a trailing "/".
      * The OpenCms context is identical to <code>getContexPath() + getServletPath()</code>.<p>
-     * 
+     *
      * @return the OpenCms request context, e.g. "/opencms/opencms"
      * @see #getContextPath()
      * @see #getServletPath()
@@ -371,14 +372,14 @@ public class CmsServletContainerSettings {
     }
 
     /**
-     * Returns the OpenCms servlet path, e.g. "/opencms".<p> 
-     * 
+     * Returns the OpenCms servlet path, e.g. "/opencms".<p>
+     *
      * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Servlet Path:</b> The path section that directly corresponds to the mapping
      * which activated this request. This path starts with a?/? character except in the
      * case where the request is matched with the ?/*? pattern, in which case it is the
      * empty string.<p>
-     * 
+     *
      * @return the OpenCms servlet path
      * @see #getContextPath()
      * @see #getWebApplicationName()
@@ -389,13 +390,13 @@ public class CmsServletContainerSettings {
         return m_servletPath;
     }
 
-    /** 
-     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").<p> 
-     * 
+    /**
+     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").<p>
+     *
      * The web application name is stored for informational purposes only.
-     * If you want to construct an URI, use either {@link #getContextPath()} and 
+     * If you want to construct an URI, use either {@link #getContextPath()} and
      * {@link #getServletPath()}, or for links to the OpenCms VFS use {@link  #getOpenCmsContext()}.<p>
-     * 
+     *
      * @return the OpenCms web application name
      * @see #getContextPath()
      * @see #getServletPath()
@@ -408,7 +409,7 @@ public class CmsServletContainerSettings {
 
     /**
      * Returns the OpenCms web application folder in the servlet container.<p>
-     * 
+     *
      * @return the OpenCms web application folder in the servlet container
      */
     public String getWebApplicationRfsPath() {
@@ -416,7 +417,7 @@ public class CmsServletContainerSettings {
         return m_webApplicationRfsPath;
     }
 
-    /** 
+    /**
      * Returns the OpenCms web application "WEB-INF" directory path.<p>
      *
      * @return the OpenCms web application "WEB-INF" directory path
@@ -448,7 +449,7 @@ public class CmsServletContainerSettings {
 
     /**
      * Sets the mode from the configuration.<p>
-     * 
+     *
      * @param configValue the mode to set
      */
     public void setMode(String configValue) {
@@ -498,11 +499,11 @@ public class CmsServletContainerSettings {
 
     /**
      * Initialization code common to both constructors.<p>
-     * 
-     * While the "webapplication - mode" constructor obtains all values from the 
-     * <code>{@link ServletContext}</code> the <code>{@link CmsShell}</code> constructor 
-     * accepts them as arguments and passes them here. <p> 
-     * 
+     *
+     * While the "webapplication - mode" constructor obtains all values from the
+     * <code>{@link ServletContext}</code> the <code>{@link CmsShell}</code> constructor
+     * accepts them as arguments and passes them here. <p>
+     *
      * @param webInfRfsPath the OpenCms web application "WEB-INF" path in the "real" file system) to set
      * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
@@ -536,7 +537,7 @@ public class CmsServletContainerSettings {
         }
         m_defaultWebApplicationName = defaultWebApplication;
 
-        // servlet mapping 
+        // servlet mapping
         if (!servletMapping.startsWith("/")) {
             servletMapping = "/" + servletMapping;
         }
@@ -589,9 +590,9 @@ public class CmsServletContainerSettings {
 
     /**
      * Initializes these container settings with container specific settings.<p>
-     * 
-     * @param context 
-     *      the servlet context to find out information about the servlet container 
+     *
+     * @param context
+     *      the servlet context to find out information about the servlet container
      */
     private void initContainerSpecifics(ServletContext context) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,29 +34,29 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 
 /**
- * Provides access to a <code>{@link org.opencms.file.CmsResource}</code> object that was previously loaded by a parent tag.<p> 
- * 
- * @since 8.0 
+ * Provides access to a <code>{@link org.opencms.file.CmsResource}</code> object that was previously loaded by a parent tag.<p>
+ *
+ * @since 8.0
  */
 public interface I_CmsResourceContainer {
 
     /**
      * Returns the name of the currently used resource collector.<p>
-     * 
+     *
      * @return the name of the currently used resource collector
      */
     String getCollectorName();
 
     /**
      * Returns the parameters of the currently used resource collector.<p>
-     * 
+     *
      * @return the parameters of the currently used resource collector
      */
     String getCollectorParam();
 
     /**
      * Returns the list of all currently loaded resources (instances of <code>{@link org.opencms.file.CmsResource}</code>).<p>
-     * 
+     *
      * @return the list of all currently loaded resources
      */
     List<CmsResource> getCollectorResult();
@@ -77,34 +77,34 @@ public interface I_CmsResourceContainer {
 
     /**
      * Resource iteration method to be used by JSP scriptlet code.<p>
-     * 
+     *
      * Calling this method will insert "direct edit" HTML to the output page (if required).<p>
-     * 
+     *
      * @return <code>true</code> if more resources are to be iterated
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     boolean hasMoreResources() throws JspException;
 
     /**
      * Resource iteration method to be used by JSP scriptlet code.<p>
-     * 
+     *
      * Calling this method will insert "direct edit" HTML to the output page (if required).<p>
-     * 
+     *
      * @return <code>true</code> if more resources are to be iterated
-     * 
+     *
      * @deprecated use {@link #hasMoreResources()}
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Deprecated
     boolean hasMoreContent() throws JspException;
 
     /**
-     * Returns <code>true</code> if this container is used as a resource preloader.<p> 
-     * 
-     * A resource preloader is used to load resources without looping through it.<p> 
-     * 
+     * Returns <code>true</code> if this container is used as a resource preloader.<p>
+     *
+     * A resource preloader is used to load resources without looping through it.<p>
+     *
      * @return <code>true</code> if this container is used as a resource preloader
      */
     boolean isPreloader();

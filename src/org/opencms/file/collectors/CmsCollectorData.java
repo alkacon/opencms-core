@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,15 +41,15 @@ import org.apache.commons.logging.Log;
 
 /**
  * Data structure for the collector, parsed from the collector parameters.<p>
- * 
+ *
  * The input data String must have the following format:<br>
  * <code>"{VFS URI}|{Resource type}|{Count}|excludeTimerange"</code>.<br>
  * The <code>{Count}</code> and <code>excludeTimerange</code> values are optional.<br>
  * Example:<br>
  * <code>"/my/folder/|xmlcontent|5|excludeTimerange"</code>.<p>
- * 
+ *
  * @since 6.0.0
- * 
+ *
  * @see CmsExtendedCollectorData
  */
 public class CmsCollectorData {
@@ -74,11 +74,11 @@ public class CmsCollectorData {
 
     /**
      * Creates a new extended collector data set.<p>
-     * 
+     *
      * The input data String must have the following format:<br>
      * <code>"{VFS URI}|{Resource type}|{Count}|excludeTimerange"</code>, for example:<br>
      * <code>"/my/folder/|xmlcontent|5|excludeTimerange"</code>.<p>
-     * 
+     *
      * @param data the data to parse
      */
     public CmsCollectorData(String data) {
@@ -105,9 +105,8 @@ public class CmsCollectorData {
                 try {
                     m_count = Integer.parseInt(value);
                 } catch (NumberFormatException e) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_COLLECTOR_PARAM_INVALID_1,
-                        data));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1, data));
                 }
             }
             if ((args.size() == 4) && PARAM_EXCLUDETIMERANGE.equalsIgnoreCase(args.get(3))) {
@@ -127,10 +126,11 @@ public class CmsCollectorData {
                     I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeInt);
                     m_type = resourceType.getTypeId();
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_RESTYPE_INTID_2,
-                            resourceType.getTypeName(),
-                            new Integer(resourceType.getTypeId())));
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_RESTYPE_INTID_2,
+                                resourceType.getTypeName(),
+                                new Integer(resourceType.getTypeId())));
                     }
                 } catch (CmsLoaderException e1) {
                     // this resource type does not exist
@@ -147,12 +147,12 @@ public class CmsCollectorData {
      */
     protected CmsCollectorData() {
 
-        // NOOP       
+        // NOOP
     }
 
     /**
      * Returns the count.<p>
-     * 
+     *
      * @return the count
      */
     public int getCount() {
@@ -162,7 +162,7 @@ public class CmsCollectorData {
 
     /**
      * Returns the file name.<p>
-     * 
+     *
      * @return the file name
      */
     public String getFileName() {
@@ -172,7 +172,7 @@ public class CmsCollectorData {
 
     /**
      * Returns the type.<p>
-     * 
+     *
      * @return the type
      */
     public int getType() {
@@ -222,7 +222,7 @@ public class CmsCollectorData {
 
     /**
      * Sets the count.<p>
-     * 
+     *
      * @param count the count
      */
     protected void setCount(int count) {

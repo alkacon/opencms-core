@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import org.apache.log4j.Level;
 /**
  * Help function to select the comparator. <p>
  * Returns the comparator for the requested Column.<p>
- * 
+ *
  * */
 
 public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
@@ -85,8 +85,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "Debug"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
+                            // returns > 0 if the second rows have the loglevel "Debug"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(DEBUG)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -122,8 +122,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "INFO"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
+                            // returns > 0 if the second rows have the loglevel "INFO"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(INFO)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -159,8 +159,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "WARN"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
+                            // returns > 0 if the second rows have the loglevel "WARN"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(WARN)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -196,8 +196,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "ERROR"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
+                            // returns > 0 if the second rows have the loglevel "ERROR"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(ERROR)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -233,8 +233,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "FATAL"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
+                            // returns > 0 if the second rows have the loglevel "FATAL"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(FATAL)) {
                             test = 1;
                         } else {
                             // sort other values by level value
@@ -270,8 +270,8 @@ public class CmsLogLevelListItemComparator implements I_CmsListItemComparator {
                         if (o1.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
                             test = -1;
                         } else
-                        // returns > 0 if the second rows have the loglevel "Off"
-                        if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
+                            // returns > 0 if the second rows have the loglevel "Off"
+                            if (o2.get(CmsLog4JAdminDialog.COLUMN_LOG_LEVEL).equals(OFF)) {
                             test = 1;
                         } else {
                             // sort other values by level value

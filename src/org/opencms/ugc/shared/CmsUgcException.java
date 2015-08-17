@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.ugc.shared.CmsUgcConstants.ErrorCode;
 
 /**
  * Exception class for use in the org.opencms.editors.usergenerated module.<p>
- * 
+ *
  */
 public class CmsUgcException extends CmsRpcException {
 
@@ -47,9 +47,9 @@ public class CmsUgcException extends CmsRpcException {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param errorCode the error type  
-     * @param message the error message 
+     *
+     * @param errorCode the error type
+     * @param message the error message
      */
     public CmsUgcException(CmsUgcConstants.ErrorCode errorCode, String message) {
 
@@ -59,8 +59,8 @@ public class CmsUgcException extends CmsRpcException {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param t the wrapped exception 
+     *
+     * @param t the wrapped exception
      */
     public CmsUgcException(Throwable t) {
 
@@ -71,10 +71,10 @@ public class CmsUgcException extends CmsRpcException {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param t the original exception 
-     * @param errorCode the error type  
-     * @param message the error message 
+     *
+     * @param t the original exception
+     * @param errorCode the error type
+     * @param message the error message
      */
     public CmsUgcException(Throwable t, CmsUgcConstants.ErrorCode errorCode, String message) {
 
@@ -88,7 +88,7 @@ public class CmsUgcException extends CmsRpcException {
      */
     protected CmsUgcException() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -103,8 +103,8 @@ public class CmsUgcException extends CmsRpcException {
 
     /**
      * Gets the human-readable message.<p>
-     * 
-     * @return the human-readable message 
+     *
+     * @return the human-readable message
      */
     public String getUserMessage() {
 

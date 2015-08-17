@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Organizational unit selection dialog.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
@@ -85,7 +85,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsOrgUnitSelectionList(CmsJspActionElement jsp) {
@@ -101,7 +101,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -151,7 +151,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -171,7 +171,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -222,9 +222,9 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the list of organizational units for selection.<p>
-     * 
+     *
      * @return a list of organizational units
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsOrganizationalUnit> getOrgUnits() throws CmsException {
@@ -319,7 +319,7 @@ public class CmsOrgUnitSelectionList extends A_CmsListDialog {
     @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no-op     
+        // no-op
     }
 
     /**

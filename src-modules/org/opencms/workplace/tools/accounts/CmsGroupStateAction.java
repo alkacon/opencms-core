@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.List;
 
 /**
  * Show diferent states depending on user direct/indirect group assignment.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
 
@@ -52,7 +52,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param id the id of the action
      * @param direct the direct group flag
      */
@@ -64,12 +64,12 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param id the id of the action
      * @param cms the cms context
      * @param direct the direct group flag
-     * 
-     * @Deprecated cms object no longer needed 
+     *
+     * @Deprecated cms object no longer needed
      */
     public CmsGroupStateAction(String id, CmsObject cms, boolean direct) {
 

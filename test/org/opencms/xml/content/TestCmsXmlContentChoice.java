@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentChoice(String arg0) {
@@ -73,7 +73,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -108,7 +108,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Tests a simple XML file validation for a schema that contains xsd:choice.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testSimpleChoiceSchemaValidation() throws Exception {
@@ -140,10 +140,10 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Read the given file and cache it's contents as XML schema with the given system id.
-     * 
+     *
      * @param fileName the file name to read
      * @param systemId the XML schema system id to use
-     * 
+     *
      * @throws IOException in case of errors reading the file
      */
     private void cacheXmlSchema(String fileName, String systemId) throws IOException {
@@ -156,7 +156,7 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Tests XML content definition object generation for a schema that contains xsd:choice.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testChoiceXmlContentDefinitionCreation() throws Exception {
@@ -198,9 +198,9 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
             "Content definition sequence not of required type SEQUENCE",
             definition.getSequenceType(),
             CmsXmlContentDefinition.SequenceType.SEQUENCE);
-        assertTrue("Content definition sequence choice maxOccurs is "
-            + definition.getChoiceMaxOccurs()
-            + " but must be 0", definition.getChoiceMaxOccurs() == 0);
+        assertTrue(
+            "Content definition sequence choice maxOccurs is " + definition.getChoiceMaxOccurs() + " but must be 0",
+            definition.getChoiceMaxOccurs() == 0);
 
         // now read the XML content
         byte[] content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-choice-1.xml");
@@ -248,13 +248,13 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Tests XML content objects that contain a xsd:choice sequence definition.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testChoiceXmlContent() throws Exception {
 
-        // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test 
-        // to cache the required XSD    
+        // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test
+        // to cache the required XSD
 
         CmsObject cms = getCmsObject();
         echo("Testing XML content objects that contain a xsd:choice sequence definition");
@@ -334,19 +334,19 @@ public class TestCmsXmlContentChoice extends OpenCmsTestCase {
 
     /**
      * Tests advanced XML content definition object generation for a schema that contains xsd:choice.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testChoiceAdvancedXmlContentDefinitionCreation() throws Exception {
 
-        // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test 
-        // to cache the required XSD    
+        // please note: this test relies on the "testChoiceXmlContentDefinitionCreation" test
+        // to cache the required XSD
 
         CmsObject cms = getCmsObject();
         echo("Testing XML content definition object generation for a schema that contains xsd:choice");
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-        // now test a content definition where the root node already is a xsd:choice      
+        // now test a content definition where the root node already is a xsd:choice
         String schema = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-choice-definition-2.xsd",
             CmsEncoder.ENCODING_UTF_8);

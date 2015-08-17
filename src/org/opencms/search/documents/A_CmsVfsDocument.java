@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,12 +47,12 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
- * just requires a specialized implementation of 
+ * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>,
+ * just requires a specialized implementation of
  * <code>{@link I_CmsDocumentFactory#extractContent(CmsObject, CmsResource, CmsSearchIndex)}</code>
  * for text extraction from the binary document content.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
@@ -67,7 +67,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the documenttype
      */
     public A_CmsVfsDocument(String name) {
@@ -77,13 +77,13 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * Creates a document factory lookup key for the given resource type name / MIME type configuration.<p>
-     * 
-     * If the given <code>mimeType</code> is <code>null</code>, this indicates that the key should 
+     *
+     * If the given <code>mimeType</code> is <code>null</code>, this indicates that the key should
      * match all VFS resource of the given resource type regardless of the MIME type.<p>
-     * 
+     *
      * @param type the resource type name to use
      * @param mimeType the MIME type to use
-     * 
+     *
      * @return a document factory lookup key for the given resource id / MIME type configuration
      */
     public static String getDocumentKey(String type, String mimeType) {
@@ -101,7 +101,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsDocumentFactory#createDocument(CmsObject, CmsResource, CmsSearchIndex)
      */
     public I_CmsSearchDocument createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index)
@@ -117,7 +117,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             CmsExtractionResultCache cache = getCache();
             String cacheName = null;
             if ((cache != null) && (resource.getSiblingCount() > 1)) {
-                // hard drive based caching only makes sense for resources that have siblings, 
+                // hard drive based caching only makes sense for resources that have siblings,
                 // because the index will also store the content as a blob
                 cacheName = cache.getCacheName(
                     resource,
@@ -129,7 +129,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             if (content == null) {
                 // extraction result has not been found in the cache
                 // compare "date of last modification of content" from Lucene index and OpenCms VFS
-                // if this is identical, then the data from the Lucene index can be re-used 
+                // if this is identical, then the data from the Lucene index can be re-used
                 I_CmsSearchDocument oldDoc = index.getDocument(CmsSearchField.FIELD_PATH, resource.getRootPath());
                 // first check if the document is already in the index
                 if ((oldDoc != null) && (oldDoc.getFieldValueAsDate(CmsSearchField.FIELD_DATE_CONTENT) != null)) {
@@ -151,13 +151,16 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                         cache.saveCacheObject(cacheName, content);
                     }
                 } catch (CmsIndexNoContentException e) {
-                    // there was no content found for the resource 
-                    LOG.info(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath())
-                        + " "
-                        + e.getMessage());
+                    // there was no content found for the resource
+                    LOG.info(
+                        Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath())
+                            + " "
+                            + e.getMessage());
                 } catch (Exception e) {
                     // text extraction failed for document - continue indexing meta information only
-                    LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
+                        e);
                 }
             }
         }
@@ -226,38 +229,38 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * Logs content extraction for the specified resource and index.<p>
-     * 
+     *
      * @param resource the resource to log content extraction for
      * @param index the search index to log content extraction for
      */
     protected void logContentExtraction(CmsResource resource, CmsSearchIndex index) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_EXTRACT_CONTENT_2,
-                resource.getRootPath(),
-                index.getName()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_EXTRACT_CONTENT_2,
+                    resource.getRootPath(),
+                    index.getName()));
         }
     }
 
     /**
      * Upgrades the given resource to a {@link CmsFile} with content.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param resource the resource to upgrade
-     * 
+     *
      * @return the given resource upgraded to a {@link CmsFile} with content
-     * 
-     * @throws CmsException if the resource could not be read 
+     *
+     * @throws CmsException if the resource could not be read
      * @throws CmsIndexNoContentException if the resource has no content
      */
     protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException, CmsIndexNoContentException {
 
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
-            throw new CmsIndexNoContentException(Messages.get().container(
-                Messages.ERR_NO_CONTENT_1,
-                resource.getRootPath()));
+            throw new CmsIndexNoContentException(
+                Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }
         return file;
     }

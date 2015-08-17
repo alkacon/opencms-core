@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,11 +69,11 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
     /** The old tab index. */
     private int m_oldTabIndex;
 
-    /** 
+    /**
      * Creates a new widget instance.<p>
-     * 
-     * @param userSettings the current user settings 
-     * @param finishAction the action to execute when the user has edited the user settings 
+     *
+     * @param userSettings the current user settings
+     * @param finishAction the action to execute when the user has edited the user settings
      */
     public CmsUserSettingsDialog(CmsUserSettingsBean userSettings, Runnable finishAction) {
 
@@ -120,8 +120,8 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
 
     /**
      * Loads the user settings dialog.<p>
-     * 
-     * @param finishAction  the action to execute after the user has changed his preferences 
+     *
+     * @param finishAction  the action to execute after the user has changed his preferences
      */
     public static void loadAndShow(final Runnable finishAction) {
 
@@ -175,8 +175,8 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         action.execute();
     }
 
-    /** 
-     * Initializes the width of the dialog contents.<p> 
+    /**
+     * Initializes the width of the dialog contents.<p>
      */
     protected void initWidth() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Content of the tool-bar menu favorite tab.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFavoriteTab extends A_CmsClipboardTab {
@@ -91,7 +91,7 @@ public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param clipboard the clip-board menu
      */
     public CmsFavoriteTab(CmsToolbarClipboardMenu clipboard) {
@@ -151,7 +151,7 @@ public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /**
      * Returns the favorite list item iterator.<p>
-     * 
+     *
      * @return the iterator
      */
     public Iterator<Widget> iterator() {
@@ -174,7 +174,7 @@ public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /**
      * Cancels the editing.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_cancelButton")
@@ -187,7 +187,7 @@ public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /**
      * Starts the editing.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_editButton")
@@ -200,7 +200,7 @@ public class CmsFavoriteTab extends A_CmsClipboardTab {
 
     /**
      * Saves the favorite list.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_saveButton")

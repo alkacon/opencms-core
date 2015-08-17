@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,9 +48,9 @@ import org.apache.commons.logging.Log;
 /**
  * Main implementation of the content check. It maintains all configured content check
  * plugins and handles the check process.<p>
- * 
- * 
- * @since 6.1.2 
+ *
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheck {
 
@@ -81,7 +81,7 @@ public class CmsContentCheck {
 
     /**
      * Constructor, creates a new CmsContentCheck. <p>
-     * 
+     *
      * @param cms the CmsObject
      */
     public CmsContentCheck(CmsObject cms) {
@@ -100,7 +100,7 @@ public class CmsContentCheck {
 
     /**
      * Gets a list of all paths to be processed by the content check plugins.<p>
-     * 
+     *
      * @return list of vfs paths
      */
     public List getPaths() {
@@ -110,7 +110,7 @@ public class CmsContentCheck {
 
     /**
      * Gets a list of instances of all available content check plugins.<p>
-     * 
+     *
      * @return list of plugin instances.
      */
     public List getPlugins() {
@@ -120,7 +120,7 @@ public class CmsContentCheck {
 
     /**
      * Gets the number of installed plugins.<p>
-     * 
+     *
      * @return number of installed plugins
      */
     public int getPluginsCount() {
@@ -130,7 +130,7 @@ public class CmsContentCheck {
 
     /**
      * Gets the results of the content check.<p>
-     * 
+     *
      * @return CmsContentCheckResult object containing all resources that collected an error or warning
      */
     public CmsContentCheckResult getResults() {
@@ -149,7 +149,7 @@ public class CmsContentCheck {
 
     /**
      * Starts the content check.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param report StringBuffer for reporting
      * @throws Exception if something goes wrong
@@ -183,10 +183,12 @@ public class CmsContentCheck {
             String resourceName = (String)i.next();
             CmsContentCheckResource res = (CmsContentCheckResource)m_resources.get(resourceName);
             boolean errorWarning = false;
-            m_report.print(Messages.get().container(
-                Messages.RPT_CONTENT_PROCESS_2,
-                new Integer(count++),
-                new Integer(m_resources.size())), I_CmsReport.FORMAT_NOTE);
+            m_report.print(
+                Messages.get().container(
+                    Messages.RPT_CONTENT_PROCESS_2,
+                    new Integer(count++),
+                    new Integer(m_resources.size())),
+                I_CmsReport.FORMAT_NOTE);
             m_report.print(
                 Messages.get().container(Messages.RPT_CONTENT_PROCESS_RESOURCE_1, res.getResourceName()),
                 I_CmsReport.FORMAT_DEFAULT);
@@ -206,17 +208,16 @@ public class CmsContentCheck {
                     } catch (CmsException e) {
                         errorWarning = true;
                         m_report.println(Messages.get().container(Messages.RPT_EMPTY_0), I_CmsReport.FORMAT_DEFAULT);
-                        m_report.print(Messages.get().container(
-                            Messages.RPT_CONTENT_PROCESS_ERROR_2,
-                            plugin.getName(),
-                            e), I_CmsReport.FORMAT_ERROR);
+                        m_report.print(
+                            Messages.get().container(Messages.RPT_CONTENT_PROCESS_ERROR_2, plugin.getName(), e),
+                            I_CmsReport.FORMAT_ERROR);
                     }
                 }
             }
 
             // check if there are some errors
             List errors = res.getErrors();
-            if (errors != null && errors.size() > 0) {
+            if ((errors != null) && (errors.size() > 0)) {
                 errorWarning = true;
                 m_report.println(Messages.get().container(Messages.RPT_EMPTY_0), I_CmsReport.FORMAT_DEFAULT);
                 m_report.println(
@@ -234,7 +235,7 @@ public class CmsContentCheck {
 
             // check if there are some warnings
             List warnings = res.getWarnings();
-            if (warnings != null && warnings.size() > 0) {
+            if ((warnings != null) && (warnings.size() > 0)) {
                 errorWarning = true;
                 m_report.println(Messages.get().container(Messages.RPT_EMPTY_0), I_CmsReport.FORMAT_DEFAULT);
                 m_report.println(
@@ -272,9 +273,10 @@ public class CmsContentCheck {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
@@ -282,7 +284,7 @@ public class CmsContentCheck {
         for (int i = 0; i < m_paths.size(); i++) {
             String path = (String)m_paths.get(i);
             buf.append(path);
-            if (i < m_paths.size() - 1) {
+            if (i < (m_paths.size() - 1)) {
                 buf.append(",");
             }
         }
@@ -293,7 +295,7 @@ public class CmsContentCheck {
             buf.append(" (");
             buf.append(plugin.isActive());
             buf.append(")");
-            if (i < m_plugins.size() - 1) {
+            if (i < (m_plugins.size() - 1)) {
                 buf.append(",");
             }
         }
@@ -301,13 +303,13 @@ public class CmsContentCheck {
         return buf.toString();
     }
 
-    /** 
+    /**
      * Collects all resources required for the content checks and stores them in a Set.<p>
-     * 
-     * The collection of resources is build based on the vfs paths stored in this object. 
+     *
+     * The collection of resources is build based on the vfs paths stored in this object.
      * To prevent that resources are collected multiple times (in case of overlapping vfs paths),
      * the results will be stored as a map.
-     * 
+     *
      * @param cms the CmsObject
      * @return map of CmsContentCheckResources
      */
@@ -365,7 +367,7 @@ public class CmsContentCheck {
 
     /**
      * Initializes the CmsContent check and reads all available plugins.<p>
-     * 
+     *
      * @throws CmsException if somehting goes wrong
      */
     private void init() throws CmsException {

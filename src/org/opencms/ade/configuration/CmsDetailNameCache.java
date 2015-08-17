@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,10 +71,10 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
     /** The set of structure ids for which the URL names have to be updated. */
     private Set<CmsUUID> m_updateSet = Sets.newHashSet();
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      */
     public CmsDetailNameCache(CmsObject cms) {
 
@@ -92,9 +92,9 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Gets the structure id for a given URL name.<p>
-     * 
-     * @param name the URL name 
-     * @return the structure id for the URL name   
+     *
+     * @param name the URL name
+     * @return the structure id for the URL name
      */
     public CmsUUID getDetailId(String name) {
 
@@ -180,10 +180,10 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Checks if the cache needs to be updated for the resource, and if so, marks the structure id for updating.<p>
-     * 
-     * @param structureId the structure id for the resource 
-     * @param rootPath the path of the resource 
-     * @param typeId the resource type id 
+     *
+     * @param structureId the structure id for the resource
+     * @param rootPath the path of the resource
+     * @param typeId the resource type id
      */
     private void checkIfUpdateIsNeeded(CmsUUID structureId, String rootPath, int typeId) {
 
@@ -196,16 +196,16 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
                 markForUpdate(structureId);
             }
         } catch (CmsLoaderException e) {
-            // resource type not found, just log an error 
+            // resource type not found, just log an error
             LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
     /**
      * Reads the URL names for the id.<p>
-     * 
-     * @param id the structure id of a resource 
-     * @return the URL names for the resource 
+     *
+     * @param id the structure id of a resource
+     * @return the URL names for the resource
      */
     private Set<String> getUrlNames(CmsUUID id) {
 
@@ -219,8 +219,8 @@ public class CmsDetailNameCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Marks the structure id for updating.<p>
-     * 
-     * @param id the structure id to update 
+     *
+     * @param id the structure id to update
      */
     private synchronized void markForUpdate(CmsUUID id) {
 

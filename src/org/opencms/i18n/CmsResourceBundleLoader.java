@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,29 +43,29 @@ import java.util.ResourceBundle;
 
 /**
  * Resource bundle loader for property based resource bundles from OpenCms that has a flushable cache.<p>
- * 
- * The main reason for implementing this is that the Java default resource bundle loading mechanism 
- * provided by {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} uses a 
- * cache that can NOT be flushed by any standard means. This means for every simple change in a resource 
- * bundle, the Java VM (and the webapp container that runs OpenCms) must be restarted. 
+ *
+ * The main reason for implementing this is that the Java default resource bundle loading mechanism
+ * provided by {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} uses a
+ * cache that can NOT be flushed by any standard means. This means for every simple change in a resource
+ * bundle, the Java VM (and the webapp container that runs OpenCms) must be restarted.
  * This non-standard resource bundle loader avoids this by providing a flushable cache.<p>
- * 
- * In case the requested bundle can not be found, a fallback mechanism to 
- * {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} is used to look up 
+ *
+ * In case the requested bundle can not be found, a fallback mechanism to
+ * {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} is used to look up
  * the resource bundle with the Java default resource bundle loading mechanism.<p>
- * 
+ *
  * @see java.util.ResourceBundle
  * @see java.util.PropertyResourceBundle
  * @see org.opencms.i18n.CmsPropertyResourceBundle
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public final class CmsResourceBundleLoader {
 
-    /** 
+    /**
      * Cache key for the ResourceBundle cache.<p>
-     * 
-     * Resource bundles are keyed by the combination of bundle name, locale, and class loader. 
+     *
+     * Resource bundles are keyed by the combination of bundle name, locale, and class loader.
      */
     private static class BundleKey {
 
@@ -88,7 +88,7 @@ public final class CmsResourceBundleLoader {
 
         /**
          * Create an initialized bundle key.<p>
-         * 
+         *
          * @param s the base name
          * @param l the locale
          */
@@ -121,9 +121,9 @@ public final class CmsResourceBundleLoader {
 
         /**
          * Checks if the given base name is identical to the base name of this bundle key.<p>
-         * 
+         *
          * @param baseName the base name to compare
-         * 
+         *
          * @return <code>true</code> if the given base name is identical to the base name of this bundle key
          */
         public boolean isSameBase(String baseName) {
@@ -142,7 +142,7 @@ public final class CmsResourceBundleLoader {
 
         /**
          * Initialize this bundle key.<p>
-         * 
+         *
          * @param s the base name
          * @param l the locale
          */
@@ -179,7 +179,7 @@ public final class CmsResourceBundleLoader {
 
     /**
      * Adds the specified resource bundle to the permanent cache.<p>
-     * 
+     *
      * @param baseName the raw bundle name, without locale qualifiers
      * @param locale the locale
      * @param bundle the bundle to cache
@@ -202,19 +202,19 @@ public final class CmsResourceBundleLoader {
 
         // We are not flushing the permanent cache on clear!
         // Reason: It's not 100% clear if the cache would be filled correctly from the XML after a flush.
-        // For example if a reference to an XML content object is held, than after a clear cache, this 
+        // For example if a reference to an XML content object is held, than after a clear cache, this
         // object would not have a working localization since the schema and handler would not be initialized again.
         // For XML contents that are unmarshalled after the clear cache the localization would work, but it
         // seems likely that old references are held.
-        // On the other hand, if something is changed in the XML, the cache is updated anyway, so we won't be 
-        // stuck with "old" resource bundles that require a server restart. 
+        // On the other hand, if something is changed in the XML, the cache is updated anyway, so we won't be
+        // stuck with "old" resource bundles that require a server restart.
 
         // m_permanentCache.clear();
     }
 
     /**
      * Flushes all variations for the provided bundle from the cache.<p>
-     * 
+     *
      * @param baseName the bundle base name to flush the variations for
      * @param flushPermanent if true, the cache for additional message bundles will be flushed, too
      */
@@ -240,7 +240,8 @@ public final class CmsResourceBundleLoader {
                     m_permanentCache.size());
                 for (Map.Entry<String, I_CmsResourceBundle> entry : m_permanentCache.entrySet()) {
                     String key = entry.getKey();
-                    if (!(key.startsWith(baseName) && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
+                    if (!(key.startsWith(baseName)
+                        && ((key.length() == baseName.length()) || (key.charAt(baseName.length()) == '_')))) {
                         // entry has a different base name, keep it
                         permanentCacheNew.put(entry.getKey(), entry.getValue());
                     }
@@ -282,7 +283,7 @@ public final class CmsResourceBundleLoader {
      * ClassLoader.getResource(). If a file is found, then a
      * PropertyResourceBundle is created from the file's contents.</li>
      * </ul>
-     * 
+     *
      * <p>If no resource bundle was found, the default resource bundle loader
      * is used to look for the resource bundle. Class based resource bundles
      * will be found now.<p>
@@ -312,7 +313,9 @@ public final class CmsResourceBundleLoader {
 
         Object obj = m_bundleCache.get(m_lookupKey);
 
-        if (obj instanceof ResourceBundle) {
+        if (obj == NULL_ENTRY) {
+
+        } else if (obj instanceof ResourceBundle) {
             return (ResourceBundle)obj;
         } else if (obj == NULL_ENTRY) {
             // Lookup has failed previously. Fall through.
@@ -328,10 +331,7 @@ public final class CmsResourceBundleLoader {
             }
 
             BundleKey key = new BundleKey(baseName, locale);
-            if (bundle == null) {
-                // Cache the fact that this lookup has previously failed.
-                m_bundleCache.put(key, NULL_ENTRY);
-            } else {
+            if (bundle != null) {
                 // Cache the result and return it.
                 m_bundleCache.put(key, bundle);
                 return bundle;
@@ -367,7 +367,7 @@ public final class CmsResourceBundleLoader {
                     // try to load the resource bundle from a file, NOT with the resource loader first
                     // this is important since using #getResourceAsStream() may return cached results,
                     // for example Tomcat by default does cache all resources loaded by the class loader
-                    // this means a changed resource bundle file is not loaded 
+                    // this means a changed resource bundle file is not loaded
                     is = new FileInputStream(file);
                 } catch (IOException ex) {
                     // this will happen if the resource is contained for example in a .jar file

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,9 +49,9 @@ public class CmsRenameDialog extends CmsPopup {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param structureId the structure id of the resource to be renamed 
-     * @param renameHandler the handler which should be called when the resource has been renamed 
+     *
+     * @param structureId the structure id of the resource to be renamed
+     * @param renameHandler the handler which should be called when the resource has been renamed
      */
     public CmsRenameDialog(CmsUUID structureId, AsyncCallback<String> renameHandler) {
 

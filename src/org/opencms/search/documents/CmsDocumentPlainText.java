@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,22 +34,22 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 
 /**
- * Lucene document factory class to extract index data from a cms resource 
+ * Lucene document factory class to extract index data from a cms resource
  * containing plain text data.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDocumentPlainText extends A_CmsVfsDocument {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the documenttype
      */
     public CmsDocumentPlainText(String name) {
@@ -59,7 +59,7 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
 
     /**
      * Returns the raw text content of a given vfs resource containing plain text data.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     public I_CmsExtractionResult extractContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The attribute handler. Handles value changes, addition of new values, remove and move operations on values.<p> 
+ * The attribute handler. Handles value changes, addition of new values, remove and move operations on values.<p>
  */
 public class CmsAttributeHandler extends CmsRootHandler {
 
@@ -95,7 +95,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param entityBackEnd the entity back end instance
      * @param entity the entity
      * @param attributeName the attribute name
@@ -126,7 +126,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Clears the error styles on the given tabbed panel.<p>
-     * 
+     *
      * @param tabbedPanel the tabbed panel
      */
     public static void clearErrorStyles(CmsTabbedPanel<?> tabbedPanel) {
@@ -141,7 +141,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the global widget resize handler.<p>
-     * 
+     *
      * @return the global widget resize handler
      */
     public static ResizeHandler getResizeHandler() {
@@ -151,7 +151,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns <code>true</code> if a global widget resize handler is present.<p>
-     * 
+     *
      * @return <code>true</code> if a global widget resize handler is present
      */
     public static boolean hasResizeHandler() {
@@ -161,7 +161,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the global widget resize handler.<p>
-     * 
+     *
      * @param handler the resize handler
      */
     public static void setResizeHandler(ResizeHandler handler) {
@@ -171,7 +171,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the scroll element. To be used for automatic scrolling during drag and drop.<p>
-     * 
+     *
      * @param scrollElement the scroll element
      */
     public static void setScrollElement(Element scrollElement) {
@@ -181,7 +181,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new attribute value below the reference view.<p>
-     * 
+     *
      * @param reference the reference value view
      */
     public void addNewAttributeValue(CmsAttributeValueView reference) {
@@ -238,7 +238,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new attribute value and adds the required widgets to the editor DOM.<p>
-     * 
+     *
      * @param value the value entity
      */
     public void addNewAttributeValue(CmsEntity value) {
@@ -276,7 +276,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new attribute value and adds the required widgets to the editor DOM.<p>
-     * 
+     *
      * @param value the simple value
      */
     public void addNewAttributeValue(String value) {
@@ -288,7 +288,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
         if (mayHaveMore && getAttributeType().isSimpleType()) {
             I_CmsFormEditWidget widget = m_widgetService.getAttributeFormWidget(m_attributeName);
             m_entity.addAttributeValue(m_attributeName, value);
-            int valueCount = m_entity.getAttribute(m_attributeName).getValueCount(); 
+            int valueCount = m_entity.getAttribute(m_attributeName).getValueCount();
             String defaultValue = m_widgetService.getDefaultAttributeValue(
                 m_attributeName,
                 getSimplePath(valueCount - 1));
@@ -296,7 +296,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
             if ((m_attributeValueViews.size() == 1) && !m_attributeValueViews.get(0).hasValue()) {
                 valueView = m_attributeValueViews.get(0);
                 valueView.setActive();
-                // setActive may have reset the value, so we set it again 
+                // setActive may have reset the value, so we set it again
                 m_entity.setAttributeValue(m_attributeName, value, valueCount - 1);
                 valueView.getValueWidget().setValue(value);
             } else {
@@ -325,7 +325,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
     /**
      * Adds a new attribute value below the reference index.<p>
      * This will not execute any DOM manipulations.<p>
-     * 
+     *
      * @param referenceIndex the reference value index
      */
     public void addNewAttributeValueToEntity(int referenceIndex) {
@@ -360,9 +360,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new choice attribute value.<p>
-     * 
+     *
      * @param reference the reference value view
-     * @param choicePath the path of the selected (possibly nested) choice attribute, consisting of attribute names 
+     * @param choicePath the path of the selected (possibly nested) choice attribute, consisting of attribute names
      */
     public void addNewChoiceAttributeValue(CmsAttributeValueView reference, List<String> choicePath) {
 
@@ -382,7 +382,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Applies a value change to the entity data as well as to the value view widget.<p>
-     * 
+     *
      * @param value the value
      * @param valueIndex the value index
      */
@@ -413,9 +413,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Creates a sequence of nested entities according to a given path of choice attribute names.<p>
-     * 
-     * @param value the entity into which the new entities for the given path should be inserted 
-     * @param choicePath the path of choice attributes 
+     *
+     * @param value the entity into which the new entities for the given path should be inserted
+     * @param choicePath the path of choice attributes
      */
     public void createNestedEntitiesForChoicePath(CmsEntity value, List<String> choicePath) {
 
@@ -456,7 +456,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the attribute name.<p>
-     * 
+     *
      * @return the attribute name
      */
     @Override
@@ -467,7 +467,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the attribute type.<p>
-     * 
+     *
      * @return the attribute type
      */
     public CmsType getAttributeType() {
@@ -480,7 +480,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the drag and drop handler.<p>
-     * 
+     *
      * @return the drag and drop handler
      */
     public CmsDNDHandler getDNDHandler() {
@@ -496,7 +496,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the entity id.<p>
-     * 
+     *
      * @return the entity id
      */
     public String getEntityId() {
@@ -506,8 +506,8 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Gets the maximum occurrence of the attribute.<p>
-     * 
-     * @return the maximum occurrence 
+     *
+     * @return the maximum occurrence
      */
     public int getMaxOccurence() {
 
@@ -518,9 +518,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
      * Returns the simple value path for the given index.<p>
      * This will use the last fragment of the attribute name and concatenate it with the parent path.<p>
      * If the given index equals -1 no value index will be appended
-     * 
+     *
      * @param index the value index
-     * 
+     *
      * @return the simple path
      */
     public String getSimplePath(int index) {
@@ -535,8 +535,8 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Gets the widget service.<p>
-     * 
-     * @return the widget service 
+     *
+     * @return the widget service
      */
     public I_CmsWidgetService getWidgetService() {
 
@@ -545,7 +545,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Handles value changes from the view.<p>
-     * 
+     *
      * @param reference the attribute value reference
      * @param value the value
      */
@@ -556,7 +556,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Handles value changes from the view.<p>
-     * 
+     *
      * @param valueIndex the value index
      * @param value the value
      */
@@ -571,20 +571,21 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Return true if there is a single remaining value, which is optional.<p>
-     * 
+     *
      * @return true if this has only one optional value
      */
     public boolean hasSingleOptionalValue() {
 
         return ((getEntityType().getAttributeMinOccurrence(m_attributeName) == 0)
-            && (m_entity.getAttribute(m_attributeName) != null) && (m_entity.getAttribute(m_attributeName).getValueCount() == 1));
+            && (m_entity.getAttribute(m_attributeName) != null)
+            && (m_entity.getAttribute(m_attributeName).getValueCount() == 1));
     }
 
     /**
      * Returns if there is a value view widget registered for the given index.<p>
-     * 
+     *
      * @param valueIndex the value index
-     * 
+     *
      * @return <code>true</code> if there is a value view widget registered for the given index
      */
     public boolean hasValueView(int valueIndex) {
@@ -594,7 +595,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns if this is a choice handler.<p>
-     * 
+     *
      * @return <code>true</code> if this is a choice handler
      */
     public boolean isChoiceHandler() {
@@ -604,7 +605,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Moves the give attribute value from one position to another.<p>
-     * 
+     *
      * @param valueView the value to move
      * @param currentPosition the current position
      * @param targetPosition the target position
@@ -695,7 +696,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Moves the reference value down in the value list.<p>
-     * 
+     *
      * @param reference the reference value
      */
     public void moveAttributeValueDown(final CmsAttributeValueView reference) {
@@ -735,7 +736,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Moves the reference value up in the value list.<p>
-     * 
+     *
      * @param reference the reference value
      */
     public void moveAttributeValueUp(final CmsAttributeValueView reference) {
@@ -775,7 +776,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Registers an attribute value view.<p>
-     * 
+     *
      * @param attributeValue the attribute value view
      */
     public void registerAttributeValue(CmsAttributeValueView attributeValue) {
@@ -785,7 +786,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Removes the reference attribute value view.<p>
-     * 
+     *
      * @param reference the reference view
      */
     public void removeAttributeValue(CmsAttributeValueView reference) {
@@ -796,7 +797,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
         CmsEntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         if (isChoiceHandler() && attribute.isSingleValue()) {
-            // removing last choice value, so remove choice itself 
+            // removing last choice value, so remove choice itself
             parentHandler = (CmsAttributeHandler)m_parentHandler;
             parentView = reference.getParentView();
             removeParent = true;
@@ -836,7 +837,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Removes the attribute value from the given index, also manipulating the editor DOM to display the change.<p>
-     * 
+     *
      * @param valueIndex the value index
      */
     public void removeAttributeValue(int valueIndex) {
@@ -849,7 +850,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
     /**
      * Removes the attribute value with the given index.<p>
      * This will not execute any DOM manipulations.<p>
-     * 
+     *
      * @param valueIndex the index of the attribute value to remove
      */
     public void removeAttributeValueFromEntity(int valueIndex) {
@@ -874,7 +875,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the error message for the given value index.<p>
-     * 
+     *
      * @param valueIndex the value index
      * @param message the error message
      * @param tabbedPanel the forms tabbed panel if available
@@ -911,8 +912,8 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the parent attribute handler.<p>
-     * 
-     * @param handler the parent attribute handler 
+     *
+     * @param handler the parent attribute handler
      */
     public void setParentHandler(I_CmsAttributeHandler handler) {
 
@@ -921,7 +922,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the warning message for the given value index.<p>
-     * 
+     *
      * @param valueIndex the value index
      * @param message the warning message
      * @param tabbedPanel the forms tabbed panel if available
@@ -946,7 +947,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Updates the add, remove and sort button visibility on the given inline widget or all registered attribute value views.<p>
-     * 
+     *
      * @param inlineWidget the inline widget
      */
     public void updateButtonVisibilty(CmsInlineEntityWidget inlineWidget) {
@@ -962,7 +963,8 @@ public class CmsAttributeHandler extends CmsRootHandler {
         }
         CmsEntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = (maxOccurrence > minOccurrence)
-            && ((((attribute == null) && (!getAttributeType().isSimpleType() || (inlineWidget != null))) || ((attribute != null) && (attribute.getValueCount() < maxOccurrence))));
+            && ((((attribute == null) && (!getAttributeType().isSimpleType() || (inlineWidget != null)))
+                || ((attribute != null) && (attribute.getValueCount() < maxOccurrence))));
         boolean needsRemove = false;
         boolean needsSort = false;
         if ((isChoiceHandler() || !getEntityType().isChoice()) && m_entity.hasAttribute(m_attributeName)) {
@@ -990,7 +992,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns if the attribute handler is handling a single value only.<p>
-     * 
+     *
      * @return <code>true</code> if the attribute handler is handling a single value only
      */
     protected boolean isSingleValueHandler() {
@@ -1000,7 +1002,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Sets the single value index.<p>
-     * 
+     *
      * @param valueIndex the value index
      */
     protected void setSingleValueIndex(int valueIndex) {
@@ -1010,7 +1012,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Clears the inline styles used during move animation.<p>
-     * 
+     *
      * @param placeHolder the animation place holder
      * @param reference the moved attribute widget
      */
@@ -1026,7 +1028,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new choice option.<p>
-     * 
+     *
      * @param reference the reference view
      * @param choicePath the choice attribute path
      */
@@ -1075,9 +1077,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Adds a new complex value which corresponds to a choice element.<p>
-     * 
-     * @param reference the reference view  
-     * @param choicePath the path of choice attribute names 
+     *
+     * @param reference the reference view
+     * @param choicePath the path of choice attribute names
      */
     private void addComplexChoiceValue(CmsAttributeValueView reference, List<String> choicePath) {
 
@@ -1107,7 +1109,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Changes the attribute value.<p>
-     * 
+     *
      * @param valueIndex the attribute value index
      * @param value the value
      */
@@ -1126,9 +1128,9 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the attribute choice name for the given index.<p>
-     * 
+     *
      * @param valueIndex the value index
-     * 
+     *
      * @return the attribute choice name
      */
     private String getChoiceName(int valueIndex) {
@@ -1149,7 +1151,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Returns the entity type.<p>
-     * 
+     *
      * @return the entity type
      */
     private CmsType getEntityType() {
@@ -1162,7 +1164,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Inserts an entity value after the given reference.<p>
-     * 
+     *
      * @param value the entity value
      * @param reference the reference
      */
@@ -1197,10 +1199,10 @@ public class CmsAttributeHandler extends CmsRootHandler {
 
     /**
      * Creates a list consisting of all but the first element of another list.<p>
-     * 
-     * @param values the list 
-     * 
-     * @return the tail of the list 
+     *
+     * @param values the list
+     *
+     * @return the tail of the list
      */
     private List<String> tail(List<String> values) {
 

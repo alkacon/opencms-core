@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Widget used to select a formatter to add.<p>
- * 
+ *
  * Please note that this widget assumes the resource being edited is a sitemap configuration, and will not work correctly in a different context.
  */
 public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
@@ -61,7 +61,7 @@ public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
 
     /**
      * Constructor with a configuration parameter.<p>
-     * @param config the configuration string 
+     * @param config the configuration string
      */
     public CmsAddFormatterWidget(String config) {
 

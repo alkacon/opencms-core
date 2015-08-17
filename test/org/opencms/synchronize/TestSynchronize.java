@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,14 +51,14 @@ import junit.framework.TestSuite;
 
 /**
  * JUnit test cases for the VFS/RFS synchronization.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSynchronize(String arg0) {
@@ -68,7 +68,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -103,7 +103,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Tests loading and saving the user synchronize settings.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLoadSaveSynchronizeSettings() throws Exception {
@@ -153,10 +153,10 @@ public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Tests the synchronize function.<p>
-     * 
+     *
      * Synchronizes everything below "/" into the RFS, modifies .txt, .jsp and .html
      * files in the RFS, and synchronizes everything back into the VFS.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSynchronize() throws Exception {
@@ -243,7 +243,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Tests the synchronize function with more then one source folder.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSynchronizeSeveralFolders() throws Exception {
@@ -332,11 +332,11 @@ public class TestSynchronize extends OpenCmsTestCase {
 
     /**
      * Returns a rfs path for a given resource to be synchronized.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource to synchronize
      * @param syncSettings the synchronization settings
-     * 
+     *
      * @return the rfs path
      */
     private String getRfsPath(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
@@ -348,7 +348,7 @@ public class TestSynchronize extends OpenCmsTestCase {
     /**
      * "Touches" the last modification date of a resource the RFS so that it is
      * synchronized back to the VFS as a modified resource.<p>
-     * 
+     *
      * @param cms the current user's Cms object
      * @param resource the VFS resource to be modified in the RFS
      * @param syncSettings the synchronization settings

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,8 +59,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides a widget for a category based dependent select boxes.<p>
- * 
- * @since 7.0.3 
+ *
+ * @since 7.0.3
  */
 public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -108,7 +108,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a category widget with the specified options.<p>
-     * 
+     *
      * @param configuration the configuration for the widget
      */
     public CmsCategoryWidget(String configuration) {
@@ -291,25 +291,30 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                             continue;
                         }
                         if (level != (baseLevel + 1)) {
-                            result.append("new Array('"
-                                + cat.getId()
-                                + "', '"
-                                + CmsCategoryService.getInstance().readCategory(
-                                    cms,
-                                    CmsResource.getParentFolder(cat.getPath()),
-                                    referencePath).getId()
-                                + "', '"
-                                + titleJs
-                                + "'),\n");
+                            result.append(
+                                "new Array('"
+                                    + cat.getId()
+                                    + "', '"
+                                    + CmsCategoryService.getInstance().readCategory(
+                                        cms,
+                                        CmsResource.getParentFolder(cat.getPath()),
+                                        referencePath).getId()
+                                    + "', '"
+                                    + titleJs
+                                    + "'),\n");
                         }
                         if ((level == (baseLevel + 1))
-                            || ((selected != null) && selected.getPath().startsWith(
-                                CmsResource.getParentFolder(cat.getPath())))) {
+                            || ((selected != null)
+                                && selected.getPath().startsWith(CmsResource.getParentFolder(cat.getPath())))) {
                             if (levels.size() < (level - baseLevel)) {
                                 options = new ArrayList<CmsSelectWidgetOption>();
                                 levels.add(options);
-                                options.add(new CmsSelectWidgetOption("", true, Messages.get().getBundle(
-                                    widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
+                                options.add(
+                                    new CmsSelectWidgetOption(
+                                        "",
+                                        true,
+                                        Messages.get().getBundle(widgetDialog.getLocale()).key(
+                                            Messages.GUI_CATEGORY_SELECT_0)));
                             }
                             options.add(new CmsSelectWidgetOption(cat.getId().toString(), false, titleHtml));
                         }
@@ -325,13 +330,14 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append("</script>\n");
 
             result.append("<td class=\"xmlTd\" >");
-            result.append("<input id='"
-                + param.getId()
-                + "' name='"
-                + param.getId()
-                + "' type='hidden' value='"
-                + (selected != null ? selected.getId().toString() : "")
-                + "'>\n");
+            result.append(
+                "<input id='"
+                    + param.getId()
+                    + "' name='"
+                    + param.getId()
+                    + "' type='hidden' value='"
+                    + (selected != null ? selected.getId().toString() : "")
+                    + "'>\n");
 
             for (int i = 1; i < (level - baseLevel); i++) {
                 result.append("<span id='" + param.getId() + "cat" + i + "IdDisplay'");
@@ -340,22 +346,26 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
                 } else {
                     result.append(" style='display:none'");
                     options = new ArrayList<CmsSelectWidgetOption>();
-                    options.add(new CmsSelectWidgetOption(
-                        "",
-                        true,
-                        Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
+                    options.add(
+                        new CmsSelectWidgetOption(
+                            "",
+                            true,
+                            Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                 }
                 result.append(">");
-                result.append(buildSelectBox(
-                    param.getId(),
-                    i,
-                    options,
-                    (selected != null ? CmsCategoryService.getInstance().readCategory(
-                        cms,
-                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
-                        referencePath).getId().toString() : ""),
-                    param.hasError(),
-                    (i == (level - baseLevel - 1))));
+                result.append(
+                    buildSelectBox(
+                        param.getId(),
+                        i,
+                        options,
+                        (selected != null
+                        ? CmsCategoryService.getInstance().readCategory(
+                            cms,
+                            CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                            referencePath).getId().toString()
+                        : ""),
+                        param.hasError(),
+                        (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
             }
             result.append("</td>");
@@ -410,7 +420,7 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Check if only leaf selection is allowed.<p>
-     * 
+     *
      * @return <code>true</code>, if only leaf selection is allowed
      */
     public boolean isOnlyLeafs() {
@@ -510,14 +520,14 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Generates html code for the category selection.<p>
-     * 
+     *
      * @param baseId the widget id
      * @param level the category deep level
      * @param options the list of {@link CmsSelectWidgetOption} objects
      * @param selected the selected option
      * @param hasError if to display error message
      * @param last if it is the last level
-     * 
+     *
      * @return html code
      */
     protected String buildSelectBox(
@@ -568,10 +578,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Returns the default locale in the content of the given resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource path to get the default locale for
-     * 
+     *
      * @return the default locale of the resource
      */
     protected Locale getDefaultLocale(CmsObject cms, String resource) {
@@ -590,10 +600,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Returns the right resource, depending on the locale.<p>
-     * 
+     *
      * @param cms the cms context
      * @param param the widget parameter
-     * 
+     *
      * @return the resource to get/set the categories for
      */
     protected CmsResource getResource(CmsObject cms, I_CmsWidgetParameter param) {
@@ -633,10 +643,10 @@ public class CmsCategoryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Returns the starting category depending on the configuration options.<p>
-     * 
+     *
      * @param cms the cms context
      * @param referencePath the right resource path
-     * 
+     *
      * @return the starting category
      */
     protected String getStartingCategory(CmsObject cms, String referencePath) {

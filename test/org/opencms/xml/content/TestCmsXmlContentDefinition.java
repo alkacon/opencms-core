@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import org.dom4j.io.XMLWriter;
 
 /**
  * Tests for generating an XML content definition.<p>
- * 
+ *
  */
 public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
 
@@ -54,7 +54,7 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentDefinition(String arg0) {
@@ -63,8 +63,8 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
     }
 
     /**
-     * Basic test for xml content definitions.<p> 
-     * 
+     * Basic test for xml content definitions.<p>
+     *
      * @throws Exception in case an error occurred
      */
     public void testCmsXmlContentDefiniton() throws Exception {
@@ -84,7 +84,7 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
 
         XMLWriter writer;
 
-        // output the schema XML        
+        // output the schema XML
         writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
         writer.write(schema);
         writer.flush();
@@ -109,9 +109,9 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
         assertFalse(cd1.equals(cd2));
     }
 
-    /** 
+    /**
      * Tests creation of an XML content from a XML content definition.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCreateXmlContent() throws Exception {
@@ -166,9 +166,9 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
         System.out.println(content.toString());
     }
 
-    /** 
+    /**
      * Tests XML content definition with a different inner / outer sequence name.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testDifferentInnerOuterName() throws Exception {
@@ -190,7 +190,7 @@ public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
 
         XMLWriter writer;
 
-        // output the schema XML        
+        // output the schema XML
         writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
         writer.write(schema);
         writer.flush();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,9 +47,9 @@ public final class CmsWrapperUtils {
 
     /**
      * Creates an array of entity attribute wrappers for a list of entity attributes.<p>
-     * 
-     * @param attributes the list of attributes 
-     * @return the array of attribute wrappers 
+     *
+     * @param attributes the list of attributes
+     * @return the array of attribute wrappers
      */
     public static CmsEntityAttributeWrapper[] arrayFromEntityAttributeList(List<CmsEntityAttribute> attributes) {
 
@@ -61,10 +61,10 @@ public final class CmsWrapperUtils {
     }
 
     /**
-     * Creates an array of entity wrappers for a list of entities.<p> 
-     * 
-     * @param entities the list of entities 
-     * @return the array of entity wrappers 
+     * Creates an array of entity wrappers for a list of entities.<p>
+     *
+     * @param entities the list of entities
+     * @return the array of entity wrappers
      */
     public static CmsEntityWrapper[] arrayFromEntityList(List<CmsEntity> entities) {
 
@@ -77,10 +77,10 @@ public final class CmsWrapperUtils {
 
     /**
      * Converts a list of strings to an array.<p>
-     * 
-     * @param strings the string list 
-     * 
-     * @return the array of strings 
+     *
+     * @param strings the string list
+     *
+     * @return the array of strings
      */
     public static String[] arrayFromStringList(List<String> strings) {
 

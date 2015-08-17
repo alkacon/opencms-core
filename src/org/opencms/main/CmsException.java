@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.util.Locale;
 
 /**
  * Master exception type for all exceptions caused in OpenCms.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsException extends Exception implements I_CmsThrowable {
 
@@ -51,7 +51,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param message the localized message container to use
      */
     public CmsException(CmsMessageContainer message) {
@@ -62,7 +62,7 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /**
      * Creates a new localized Exception that also containers a root cause.<p>
-     * 
+     *
      * @param message the localized message container to use
      * @param cause the Exception root cause
      */
@@ -74,10 +74,10 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /**
      * Returns the HTML formatted error stack of a Throwable.<p>
-     * 
-     * The error stack is used by the common error screen 
+     *
+     * The error stack is used by the common error screen
      * that is displayed if an error occurs.<p>
-     * 
+     *
      * @param t the throwable to get the errorstack from
      * @return the formatted value of the errorstack parameter
      */
@@ -90,7 +90,8 @@ public class CmsException extends Exception implements I_CmsThrowable {
             stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
             stacktrace = CmsEncoder.escapeXml(stacktrace);
             StringBuffer result = new StringBuffer(256);
-            result.append("<html><body style='background-color: /*begin-color Window*/#ffffff/*end-color*/; overflow: scroll;'><pre>");
+            result.append(
+                "<html><body style='background-color: /*begin-color Window*/#ffffff/*end-color*/; overflow: scroll;'><pre>");
             result.append(stacktrace);
             result.append("</pre></body></html>");
             return result.toString();
@@ -99,10 +100,10 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /**
      * Returns the stack trace (including the message) of an exception as a String.<p>
-     * 
-     * If the exception is a CmsException, 
+     *
+     * If the exception is a CmsException,
      * also writes the root cause to the String.<p>
-     * 
+     *
      * @param e the exception to get the stack trace from
      * @return the stack trace of an exception as a String
      */
@@ -124,10 +125,10 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
     /**
      * Creates a copied instance of this localized exception.<p>
-     * 
+     *
      * @param container the message container
      * @param cause the root cause
-     * 
+     *
      * @return a copied instance of this localized exception
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {

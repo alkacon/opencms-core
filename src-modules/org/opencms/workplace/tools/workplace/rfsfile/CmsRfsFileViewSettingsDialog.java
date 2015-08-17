@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,11 +52,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that allows 
+ * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that allows
  * modification of the properties of the
  * <code>{@link org.opencms.util.CmsRfsFileViewer}</code> bean.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
@@ -73,7 +73,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -84,9 +84,9 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Commits the <code>{@link org.opencms.util.CmsRfsFileViewer}</code> to the 
+     * Commits the <code>{@link org.opencms.util.CmsRfsFileViewer}</code> to the
      * <code>{@link org.opencms.workplace.CmsWorkplaceManager}</code>. <p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
     @Override
@@ -110,9 +110,9 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -148,10 +148,14 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
         super.defineWidgets();
-        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(
-            CmsStringUtil.TRUE)));
-        addWidget(new CmsWidgetDialogParameter(m_logView, "filePath", "page1", new CmsComboWidget(
-            createComboConfigurationFileChoice())));
+        addWidget(
+            new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(CmsStringUtil.TRUE)));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_logView,
+                "filePath",
+                "page1",
+                new CmsComboWidget(createComboConfigurationFileChoice())));
 
         // options for windowsize combowidget:
         List<CmsSelectWidgetOption> comboOptions = new LinkedList<CmsSelectWidgetOption>();
@@ -163,21 +167,25 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_logView, "windowSize", "page1", new CmsComboWidget(comboOptions)));
 
         // file encoding combowidget;
-        addWidget(new CmsWidgetDialogParameter(m_logView, "fileEncoding", "page1", new CmsComboWidget(
-            createComboConfigurationEncodingChoice())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_logView,
+                "fileEncoding",
+                "page1",
+                new CmsComboWidget(createComboConfigurationEncodingChoice())));
 
         addWidget(new CmsWidgetDialogParameter(m_logView, "enabled", "page1", new CmsCheckboxWidget()));
 
     }
 
     /**
-     * Returns a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the  
-     * <code>{@link CmsComboWidget}</code> with the supported encodings of the 
-     * current system and the default encoding set as default combo option.<p> 
-     * 
-     * @return a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the  
-     *         <code>{@link CmsComboWidget}</code> with the supported encodings of the 
-     *         current system and the default encoding set as default combo option.<p>  
+     * Returns a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the
+     * <code>{@link CmsComboWidget}</code> with the supported encodings of the
+     * current system and the default encoding set as default combo option.<p>
+     *
+     * @return a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the
+     *         <code>{@link CmsComboWidget}</code> with the supported encodings of the
+     *         current system and the default encoding set as default combo option.<p>
      */
     private List<CmsSelectWidgetOption> createComboConfigurationEncodingChoice() {
 
@@ -192,18 +200,20 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
             cs = it.next();
             // default? no equals required: safety by design!
             if (cs == defaultCs) {
-                result.add(new CmsSelectWidgetOption(
-                    cs.name(),
-                    true,
-                    null,
-                    key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0)));
+                result.add(
+                    new CmsSelectWidgetOption(
+                        cs.name(),
+                        true,
+                        null,
+                        key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0)));
             } else {
                 if (!cs.name().startsWith("x")) {
-                    result.add(new CmsSelectWidgetOption(
-                        cs.name(),
-                        false,
-                        null,
-                        key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0)));
+                    result.add(
+                        new CmsSelectWidgetOption(
+                            cs.name(),
+                            false,
+                            null,
+                            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0)));
                 }
             }
         }
@@ -213,30 +223,31 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Returns a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the 
+     * Returns a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the
      *         <code>{@link CmsComboWidget}</code> with default file locations of OpenCms.<p>
-     * 
-     * @return a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the 
+     *
+     * @return a list of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> instances for the
      *         <code>{@link CmsComboWidget}</code> with default file locations of OpenCms
-     * 
+     *
      */
     private List<CmsSelectWidgetOption> createComboConfigurationFileChoice() {
 
         List<CmsSelectWidgetOption> result = new LinkedList<CmsSelectWidgetOption>();
         CmsSystemInfo sysInfo = OpenCms.getSystemInfo();
         // log file, default
-        result.add(new CmsSelectWidgetOption(
-            sysInfo.getLogFileRfsPath(),
-            true,
-            null,
-            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                sysInfo.getLogFileRfsPath(),
+                true,
+                null,
+                key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0)));
         // opencms.properties
         result.add(new CmsSelectWidgetOption(
             sysInfo.getConfigurationFileRfsPath(),
             false,
             null,
             key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0)));
-        // config xml 
+        // config xml
         String configPath = sysInfo.getConfigFolder();
         if (configPath != null) {
             File configFolder = new File(configPath);
@@ -246,11 +257,12 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
                 configFile = configFiles[i];
                 if (configFile.isFile()) {
                     if (configFile.getName().endsWith(".xml")) {
-                        result.add(new CmsSelectWidgetOption(
-                            configFile.getAbsolutePath(),
-                            false,
-                            null,
-                            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0)));
+                        result.add(
+                            new CmsSelectWidgetOption(
+                                configFile.getAbsolutePath(),
+                                false,
+                                null,
+                                key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0)));
                     }
                 }
             }

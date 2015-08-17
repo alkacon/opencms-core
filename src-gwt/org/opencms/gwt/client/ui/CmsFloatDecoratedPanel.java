@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,14 +40,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A widget used for laying out multiple widgets horizontally.<p>
- * 
+ *
  * It contains two panels, the "primary" (or main) panel and the "float" panel,
  * to which widgets can be added. The float panel is styled so as to
- * float left of the primary panel, and the primary panel's left margin is 
+ * float left of the primary panel, and the primary panel's left margin is
  * set to the width of the float panel. If the widget starts out as hidden,
  * the float panel width can not be measured, so you have to call the updateLayout
- * method  manually when the widget becomes visible. 
- * 
+ * method  manually when the widget becomes visible.
+ *
  * @since 8.0.0
  */
 public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable {
@@ -83,7 +83,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Adds a widget to the main panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     public void add(Widget widget) {
@@ -93,7 +93,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Adds a widget to the float panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     public void addToFloat(Widget widget) {
@@ -104,7 +104,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Adds a widget to the front of the float panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     public void addToFrontOfFloat(Widget widget) {
@@ -114,9 +114,9 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Returns the widget at the given position.<p>
-     * 
+     *
      * @param index the position
-     * 
+     *
      * @return  the widget at the given position
      */
     public Widget getWidget(int index) {
@@ -154,7 +154,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Automatically calls the updateLayout method after insertion into the DOM.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.Widget#onLoad()
      */
     @Override
@@ -177,7 +177,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
 
     /**
      * Returns the width of the float box.<p>
-     * 
+     *
      * @return a width
      */
     private int getFloatBoxWidth() {
@@ -186,7 +186,7 @@ public class CmsFloatDecoratedPanel extends Composite implements I_CmsTruncable 
     }
 
     /**
-     * Updates the vertical margin of the float box such that its vertical middle point coincides 
+     * Updates the vertical margin of the float box such that its vertical middle point coincides
      * with the vertical middle point of the primary panel.<p>
      */
     private void updateVerticalMargin() {

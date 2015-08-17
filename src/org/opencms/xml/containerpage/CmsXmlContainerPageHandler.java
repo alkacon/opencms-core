@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import java.util.Locale;
 
 /**
  * Container page handler to validate consistency.<p>
- * 
+ *
  * @since 7.6
  */
 public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
@@ -120,7 +120,7 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
             // validate the link for error
             cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
 
-            // we handle expiration in the cms:container tag, so don't validate it here 
+            // we handle expiration in the cms:container tag, so don't validate it here
 
         } catch (CmsException e) {
             if (errorHandler != null) {
@@ -137,11 +137,11 @@ public class CmsXmlContainerPageHandler extends CmsDefaultXmlContentHandler {
 
     /**
      * Validates container names, so that they are unique in the page.<p>
-     * 
+     *
      * @param cms the cms context
      * @param value the value to validate
      * @param content the container page to validate
-     * 
+     *
      * @throws CmsXmlException if there are duplicated names
      */
     protected void validateNames(CmsObject cms, I_CmsXmlContentValue value, CmsXmlContent content)

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "image".<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
 
@@ -77,13 +77,17 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
         /**
          * Creates a new image data container.<p>
-         * 
+         *
          * @param content the image byte content
          * @param rootPath the image root path
          * @param properties the image properties
          * @param downScaler the (optional) image scaler that contains the image downscale settings
          */
-        public CmsImageAdjuster(byte[] content, String rootPath, List<CmsProperty> properties, CmsImageScaler downScaler) {
+        public CmsImageAdjuster(
+            byte[] content,
+            String rootPath,
+            List<CmsProperty> properties,
+            CmsImageScaler downScaler) {
 
             m_content = content;
             m_rootPath = rootPath;
@@ -92,12 +96,12 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         }
 
         /**
-         * Calculates the image size and adjusts the image dimensions (if required) accoring to the configured 
+         * Calculates the image size and adjusts the image dimensions (if required) accoring to the configured
          * image downscale settings.<p>
-         * 
-         * The image dimensions are always calculated from the given image. The internal list of properties is updated 
-         * with a value for <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> that 
-         * contains the calculated image dimensions.<p> 
+         *
+         * The image dimensions are always calculated from the given image. The internal list of properties is updated
+         * with a value for <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> that
+         * contains the calculated image dimensions.<p>
          */
         public void adjust() {
 
@@ -109,7 +113,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
             // check if the image is to big and needs to be rescaled
             if (scaler.isDownScaleRequired(m_imageDownScaler)) {
-                // image is to big, perform rescale operation                    
+                // image is to big, perform rescale operation
                 CmsImageScaler downScaler = scaler.getDownScaler(m_imageDownScaler);
                 // perform the rescale using the adjusted size
                 m_content = downScaler.scaleImage(m_content, m_rootPath);
@@ -168,8 +172,8 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(CmsResourceTypeImage.class);
 
-    /** 
-     * The value for the {@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE} property if resources in 
+    /**
+     * The value for the {@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE} property if resources in
      * a folder should never be downscaled.<p>
      */
     public static final String PROPERTY_VALUE_UNLIMITED = "unlimited";
@@ -204,15 +208,15 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
     /**
      * Returns the image downscaler to use when writing an image resource to the given root path.<p>
-     * 
+     *
      * If <code>null</code> is returned, image downscaling must not be used for the resource with the given path.
-     * This may be the case if image downscaling is not configured at all, or if image downscaling has been disabled 
-     * for the parent folder by setting the folders property {@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE} 
+     * This may be the case if image downscaling is not configured at all, or if image downscaling has been disabled
+     * for the parent folder by setting the folders property {@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}
      * to the value {@link #PROPERTY_VALUE_UNLIMITED}.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param rootPath the root path of the resource to write
-     * 
+     *
      * @return the downscaler to use, or <code>null</code> if no downscaling is required for the resource
      */
     public static CmsImageScaler getDownScaler(CmsObject cms, String rootPath) {
@@ -253,7 +257,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
     /**
      * Returns the static type id of this (default) resource type.<p>
-     * 
+     *
      * @return the static type id of this (default) resource type
      */
     public static int getStaticTypeId() {
@@ -263,7 +267,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
     /**
      * Returns the static type name of this (default) resource type.<p>
-     * 
+     *
      * @return the static type name of this (default) resource type
      */
     public static String getStaticTypeName() {
@@ -361,27 +365,29 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
-                getStaticTypeName(),
-                new Integer(getStaticTypeId())));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_CONFIG_FROZEN_3,
+                    this.getClass().getName(),
+                    getStaticTypeName(),
+                    new Integer(getStaticTypeId())));
         }
 
         if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                    this.getClass().getName(),
+                    RESOURCE_TYPE_NAME,
+                    name));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
         super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-        // set static members with values from the configuration        
+        // set static members with values from the configuration
         m_staticTypeId = m_typeId;
 
         if (CmsImageLoader.isEnabled()) {
@@ -432,7 +438,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
             CmsImageAdjuster adjuster = new CmsImageAdjuster(content, resource.getRootPath(), properties, downScaler);
             // update the image scale adjuster - this will calculate the image dimensions and (optionally) adjust the size
             adjuster.adjust();
-            // continue with the updated content 
+            // continue with the updated content
             content = adjuster.getContent();
             if (adjuster.getProperties() != null) {
                 // write properties
@@ -469,7 +475,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
                 downScaler);
             // update the image scale adjuster - this will calculate the image dimensions and (optionally) adjust the size
             adjuster.adjust();
-            // continue with the updated content 
+            // continue with the updated content
             resource.setContents(adjuster.getContent());
             if (adjuster.getProperties() != null) {
                 // write properties

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  */
 public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
 
@@ -46,7 +46,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
 
     /**
      * Empty constructor.<p>
-     * 
+     *
      * Initializes with encoding {@link CmsEncoder#ENCODING_UTF_8} and with an empty String as mode.<p>
      */
     public A_CmsHtmlConverter() {
@@ -56,7 +56,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * @param encoding the encoding used for the HTML code conversion
      * @param modes the conversion modes to use
      */
@@ -66,7 +66,7 @@ public abstract class A_CmsHtmlConverter implements I_CmsHtmlConverter {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.util.I_CmsHtmlConverter#convertToString(java.lang.String)
      */
     public abstract String convertToString(String htmlInput) throws UnsupportedEncodingException;

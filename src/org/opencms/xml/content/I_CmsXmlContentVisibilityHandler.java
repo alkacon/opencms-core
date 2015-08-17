@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,14 +40,14 @@ public interface I_CmsXmlContentVisibilityHandler {
 
     /**
      * Returns if the given content value field should be visible to the current user.<p>
-     * 
+     *
      * @param cms the cms context
      * @param value the content value
      * @param elementPath the path to the element
      * @param params configuration parameters
      * @param resource the edited resource
      * @param contentLocale the locale being edited
-     * 
+     *
      * @return <code>true</code> if the given content value field should be visible to the current user
      */
     boolean isValueVisible(

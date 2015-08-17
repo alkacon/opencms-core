@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.Random;
 
 /**
  * Tests the permission on the target installation folders.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
 
@@ -88,9 +88,10 @@ public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
         }
         if (!success) {
             testResult.setRed();
-            testResult.setInfo("OpenCms cannot be installed without read and write privileges for path "
-                + basePath
-                + "! Please check you are running your servlet container with the right user and privileges.");
+            testResult.setInfo(
+                "OpenCms cannot be installed without read and write privileges for path "
+                    + basePath
+                    + "! Please check you are running your servlet container with the right user and privileges.");
             testResult.setHelp("Not enough permissions to create/read/write a file");
             testResult.setResult(RESULT_FAILED);
         } else {

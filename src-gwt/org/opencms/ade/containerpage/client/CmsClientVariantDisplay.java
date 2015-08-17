@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class CmsClientVariantDisplay {
 
-    /** 
+    /**
      * Popup subclass which exposes the getGlassElement method.<p>
      */
     class VariantPopup extends PopupPanel {
@@ -72,10 +72,10 @@ public class CmsClientVariantDisplay {
     /** The popup. */
     private VariantPopup m_popup;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param handler the container page handler 
+     *
+     * @param handler the container page handler
      */
     public CmsClientVariantDisplay(CmsContainerpageHandler handler) {
 
@@ -84,7 +84,7 @@ public class CmsClientVariantDisplay {
 
     /**
      * Clears a currently displayed popup.<p>
-     * 
+     *
      */
     public void clear() {
 
@@ -97,9 +97,9 @@ public class CmsClientVariantDisplay {
 
     /**
      * Shows the given context/variant combination.<p>
-     * 
-     * @param context the template context 
-     * @param info the client variant 
+     *
+     * @param context the template context
+     * @param info the client variant
      */
     public void show(String context, CmsClientVariantInfo info) {
 
@@ -131,11 +131,11 @@ public class CmsClientVariantDisplay {
 
     /**
      * Builds the URL for the client variant.<p>
-     * 
-     * @param context the template context name 
-     * @param info the client variant info 
-     * 
-     * @return the URL for the variant 
+     *
+     * @param context the template context name
+     * @param info the client variant info
+     *
+     * @return the URL for the variant
      */
     private String buildClientVariantUrl(String context, CmsClientVariantInfo info) {
 

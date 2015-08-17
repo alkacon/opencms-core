@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.dom4j.Document;
 
 /**
  * Skeleton for handling opencms-workplace.xml.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
 
@@ -50,7 +50,7 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new 'explorertype/newresource' node.<p>
-     * 
+     *
      * @param document the xml document to modify
      * @param xpath the xpath to the existing explorer type (ie <code>/opencms/workplace/explorertypes/explorertype[@name='${etype}']</code>)
      * @param uri the uri attribute value
@@ -89,7 +89,7 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new 'explorertype' node.<p>
-     * 
+     *
      * @param document the xml documento to modify
      * @param xpath the xpath to the non-existing explorer type (ie <code>/opencms/workplace/explorertypes/explorertype[@name='${etype}']</code>)
      * @param name the name attribute value
@@ -123,12 +123,12 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new access control entry node.<p>
-     * 
+     *
      * @param document the xml document to change
      * @param xpath the base xpath (ie <code>/opencms/workplace/explorertypes/explorertype[@name='${etype}']/accesscontrol</code>)
      * @param principal the principal
      * @param permissions the permissions string
-     * 
+     *
      * @return if a modification has been needed
      */
     protected boolean setAccessEntry(Document document, String xpath, String principal, String permissions) {
@@ -146,9 +146,8 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
             ret = true;
         }
         CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PRINCIPAL, principal);
-        if (!permissions.equals(CmsSetupXmlHelper.getValue(document, xp
-            + "/@"
-            + CmsWorkplaceConfiguration.A_PERMISSIONS))) {
+        if (!permissions.equals(
+            CmsSetupXmlHelper.getValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PERMISSIONS))) {
             CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PERMISSIONS, permissions);
             ret = true;
         }
@@ -157,7 +156,7 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
 
     /**
      * Creates a new context menu entry node.<p>
-     * 
+     *
      * @param document the xml document to change
      * @param xpath the base xpath
      * @param key the localization key name

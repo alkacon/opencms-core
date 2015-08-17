@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import org.opencms.acacia.client.CmsAttributeHandler;
 import org.opencms.acacia.client.CmsButtonBarHandler;
 import org.opencms.acacia.client.CmsChoiceMenuEntryBean;
 import org.opencms.acacia.client.CmsEditorBase;
+import org.opencms.acacia.client.CmsValueFocusHandler;
 import org.opencms.acacia.client.I_CmsEntityRenderer;
 import org.opencms.acacia.client.I_CmsWidgetService;
-import org.opencms.acacia.client.CmsValueFocusHandler;
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
@@ -121,7 +121,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param draggable the draggable
          */
         MoveHandle(CmsAttributeValueView draggable) {
@@ -267,7 +267,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the attribute handler
      * @param label the attribute label
      * @param help the attribute help information
@@ -299,10 +299,10 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
     }
 
     /**
-     * Adds a new choice  choice selection menu.<p> 
-     * 
-     * @param widgetService the widget service to use for labels  
-     * @param menuEntry the menu entry bean for the choice 
+     * Adds a new choice  choice selection menu.<p>
+     *
+     * @param widgetService the widget service to use for labels
+     * @param menuEntry the menu entry bean for the choice
      */
     public void addChoice(I_CmsWidgetService widgetService, final CmsChoiceMenuEntryBean menuEntry) {
 
@@ -310,7 +310,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
             public void onFailure(Throwable caught) {
 
-                // will not be called 
+                // will not be called
 
             }
 
@@ -373,7 +373,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns the attribute handler.<p>
-     * 
+     *
      * @return the attribute handler
      */
     public CmsAttributeHandler getHandler() {
@@ -404,8 +404,8 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Gets the parent attribute value view, or null if none exists.<p>
-     * 
-     * @return the parent attribute value view 
+     *
+     * @return the parent attribute value view
      */
     public CmsAttributeValueView getParentView() {
 
@@ -429,7 +429,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns the attribute value index.<p>
-     * 
+     *
      * @return the attribute value index
      */
     public int getValueIndex() {
@@ -445,7 +445,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns the editing widget.<p>
-     * 
+     *
      * @return the editing widget or <code>null</code> if not available
      */
     public I_CmsEditWidget getValueWidget() {
@@ -455,7 +455,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns if there is a value set for this attribute.<p>
-     * 
+     *
      * @return <code>true</code> if there is a value set for this attribute
      */
     public boolean hasValue() {
@@ -473,7 +473,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns if drag and drop is enabled for this attribute.<p>
-     * 
+     *
      * @return <code>true</code> if drag and drop is enabled for this attribute
      */
     public boolean isDragEnabled() {
@@ -483,7 +483,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns if this view represents a simple value.<p>
-     * 
+     *
      * @return <code>true</code> if this view represents a simple value
      */
     public boolean isSimpleValue() {
@@ -517,9 +517,9 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Checks if the attribute value view's widget "owns" the given element.<p>
-     * 
-     * @param element the element to check  
-     * @return true if the widget owns the element 
+     *
+     * @param element the element to check
+     * @return true if the widget owns the element
      */
     public boolean owns(Element element) {
 
@@ -597,8 +597,8 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Enables or disables the "collapsed" style, which is used for choice elements to reduce the nesting level visually.<p>
-     * 
-     * @param collapsed true if the view should be set to 'collapsed' 
+     *
+     * @param collapsed true if the view should be set to 'collapsed'
      */
     public void setCollapsed(boolean collapsed) {
 
@@ -607,7 +607,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Sets the compact view mode.<p>
-     * 
+     *
      * @param mode the mode to set
      */
     public void setCompactMode(int mode) {
@@ -633,7 +633,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Shows a validation error message.<p>
-     * 
+     *
      * @param message the error message
      */
     public void setErrorMessage(String message) {
@@ -645,7 +645,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Sets the value entity.<p>
-     * 
+     *
      * @param renderer the entity renderer
      * @param value the value entity
      */
@@ -666,7 +666,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Sets the value widget.<p>
-     * 
+     *
      * @param widget the widget
      * @param value the value
      * @param defaultValue the default attribute value
@@ -713,7 +713,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Shows a validation warning message.<p>
-     * 
+     *
      * @param message the warning message
      */
     public void setWarningMessage(String message) {
@@ -733,7 +733,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Tells the attribute value view to change its display state between focused/unfocused (this doesn't actually change the focus).<p>
-     * 
+     *
      * @param focusOn <code>true</code> to change the display state to 'focused'
      */
     public void toggleFocus(boolean focusOn) {
@@ -760,7 +760,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Updates the visibility of the add, remove, up and down buttons.<p>
-     * 
+     *
      * @param hasAddButton <code>true</code> if the add button should be visible
      * @param hasRemoveButton <code>true</code> if the remove button should be visible
      * @param hasSortButtons <code>true</code> if the sort buttons should be visible
@@ -835,7 +835,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Handles the click event to close the help bubble.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_helpBubbleClose")
@@ -846,7 +846,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns the attribute label.<p>
-     * 
+     *
      * @return the attribute label
      */
     protected String getLabel() {
@@ -856,7 +856,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Handles the click event to move the attribute value down.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_downButton")
@@ -867,7 +867,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Handles the click event to move the attribute value up.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_upButton")
@@ -909,7 +909,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Handles the click event to remove the attribute value.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_removeButton")
@@ -921,8 +921,8 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Selects the attribute choice.<p>
-     * 
-     * @param choicePath the choice attribute path 
+     *
+     * @param choicePath the choice attribute path
      */
     protected void selectChoice(List<String> choicePath) {
 
@@ -1000,8 +1000,8 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns the CSS bundle for the form editor.<p>
-     * 
-     * @return the form CSS bundle 
+     *
+     * @return the form CSS bundle
      */
     private I_CmsLayoutBundle.I_Style formCss() {
 
@@ -1013,13 +1013,14 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
      */
     private void generateLabel() {
 
-        HTML labelWidget = new HTML("<div title=\""
-            + SafeHtmlUtils.htmlEscape(stripHtml(m_help))
-            + "\" class=\""
-            + formCss().label()
-            + "\">"
-            + m_label
-            + "</div>");
+        HTML labelWidget = new HTML(
+            "<div title=\""
+                + SafeHtmlUtils.htmlEscape(stripHtml(m_help))
+                + "\" class=\""
+                + formCss().label()
+                + "\">"
+                + m_label
+                + "</div>");
         m_widgetHolder.add(labelWidget);
     }
 
@@ -1035,7 +1036,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
                 public void onFailure(Throwable caught) {
 
-                    // will not be called 
+                    // will not be called
 
                 }
 
@@ -1090,7 +1091,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Removes the drag helper styles from the given element.<p>
-     * 
+     *
      * @param helper the helper element
      */
     private void removeDragHelperStyles(Element helper) {
@@ -1105,7 +1106,7 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
     /**
      * Returns if the help bubble should be displayed above the value field.<p>
-     * 
+     *
      * @return <code>true</code> if the help bubble should be displayed above
      */
     private boolean shouldDisplayTooltipAbove() {

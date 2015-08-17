@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,15 +57,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the editor copy language dialog.<p> 
- * 
+ * Provides methods for the editor copy language dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/dialogs/copylanguage.html
  * </ul>
  * <p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsDialogCopyLanguage extends CmsDialog {
 
@@ -98,7 +98,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDialogCopyLanguage(CmsJspActionElement jsp) {
@@ -108,7 +108,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -120,7 +120,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Updates the languages of the current xmlcontent by copying from the current language.<p>
-     * 
+     *
      * @throws JspException if there is an error including the error page
      */
     public void actionUpdateLanguages() throws JspException {
@@ -144,11 +144,11 @@ public class CmsDialogCopyLanguage extends CmsDialog {
                 try {
                     file.setContents(decodedContent.getBytes(content.getEncoding()));
                 } catch (UnsupportedEncodingException e) {
-                    throw new CmsException(Messages.get().container(
-                        Messages.ERR_INVALID_CONTENT_ENC_1,
-                        getParamResource()), e);
+                    throw new CmsException(
+                        Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
+                        e);
                 }
-                // the file content might have been modified during the write operation   
+                // the file content might have been modified during the write operation
                 CmsObject cloneCms = OpenCms.initCmsObject(getCms());
                 CmsUUID tempProjectId = OpenCms.getWorkplaceManager().getTempFileProjectId();
                 cloneCms.getRequestContext().setCurrentProject(getCms().readProject(tempProjectId));
@@ -164,7 +164,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Builds the html String for a form list of all possible page elements.<p>
-     * 
+     *
      * @return the html String for a form list
      */
     public String buildLanguageList() {
@@ -207,8 +207,10 @@ public class CmsDialogCopyLanguage extends CmsDialog {
                 retValue.append(!content.hasLocale(curLocale) ? " [-]" : "");
                 retValue.append("</td>\n");
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">");
-                retValue.append(!content.hasLocale(curLocale) ? Messages.get().getBundle(getLocale()).key(
-                    Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0) : "");
+                retValue.append(
+                    !content.hasLocale(curLocale)
+                    ? Messages.get().getBundle(getLocale()).key(Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0)
+                    : "");
                 retValue.append("</td>\n");
 
                 retValue.append("</tr>\n");
@@ -228,7 +230,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Returns the current element locale.<p>
-     * 
+     *
      * @return the current element locale
      */
     public Locale getElementLocale() {
@@ -241,7 +243,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Returns the current element language.<p>
-     * 
+     *
      * @return the current element language
      */
     public String getParamElementLanguage() {
@@ -251,7 +253,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Returns the name of the temporary file.<p>
-     * 
+     *
      * @return the name of the temporary file
      */
     public String getParamTempfile() {
@@ -261,7 +263,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Sets the current language.<p>
-     * 
+     *
      * @param elementLanguage the current element language
      */
     public void setParamElementLanguage(String elementLanguage) {
@@ -271,7 +273,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Sets the list of selected languages.<p>
-     *  
+     *
      * @param language a selected language
      */
     public void setParamLanguage(String language) {
@@ -290,7 +292,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
 
     /**
      * Sets the name of the temporary file.<p>
-     * 
+     *
      * @param fileName the name of the temporary file
      */
     public void setParamTempfile(String fileName) {
@@ -308,19 +310,19 @@ public class CmsDialogCopyLanguage extends CmsDialog {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_UPDATE_LANGUAGES.equals(getParamAction())) {
             setAction(ACTION_UPDATE_LANGUAGES);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
+            // build title for delete dialog
             setParamTitle(key(Messages.GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0));
         }
     }
 
     /**
      * Copies the contents from a source locale to a number of destination locales by overwriting them.<p>
-     *  
+     *
      * @param content the xml content
      * @param sourceLocale the source locale
      * @param destLocales a list of destination locales

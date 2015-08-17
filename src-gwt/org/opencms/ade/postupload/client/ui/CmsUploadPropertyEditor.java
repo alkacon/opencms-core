@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ public class CmsUploadPropertyEditor extends CmsSimplePropertyEditor {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param propConfig the property configuration 
-     * @param handler the property editor handler to use 
+     *
+     * @param propConfig the property configuration
+     * @param handler the property editor handler to use
      */
     public CmsUploadPropertyEditor(Map<String, CmsXmlContentProperty> propConfig, I_CmsPropertyEditorHandler handler) {
 

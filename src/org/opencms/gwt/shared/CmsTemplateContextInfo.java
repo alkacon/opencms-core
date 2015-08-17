@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,18 +73,18 @@ public class CmsTemplateContextInfo implements IsSerializable {
     /** The setting definition for the templateContexts setting. */
     private CmsXmlContentProperty m_settingDefinition;
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsTemplateContextInfo() {
 
-        // default constructor 
+        // default constructor
     }
 
     /**
      * Gets the map of forbidden contexts for resource types.<p>
-     * 
-     * @return the map of forbidden contexts for resource types 
+     *
+     * @return the map of forbidden contexts for resource types
      */
     public Map<String, CmsDefaultSet<String>> getAllowedContexts() {
 
@@ -92,32 +92,32 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     }
 
-    /** 
+    /**
      * Gets the client variant information for a specific context.<p>
-     * 
+     *
      * @param context the context name
-     * 
-     * @return the client variant information for that context 
+     *
+     * @return the client variant information for that context
      */
     public Map<String, CmsClientVariantInfo> getClientVariants(String context) {
 
         return m_clientVariantInfo.get(context);
     }
 
-    /** 
+    /**
      * Gets the map of labels for the different template contexts.<p>
-     * 
-     * @return the map of template context labels 
+     *
+     * @return the map of template context labels
      */
     public Map<String, String> getContextLabels() {
 
         return m_contextLabels;
     }
 
-    /** 
+    /**
      * Gets the name of the context provider class.<p>
-     * 
-     * @return the name of the context provider class 
+     *
+     * @return the name of the context provider class
      */
     public String getContextProvider() {
 
@@ -126,8 +126,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Gets the name of the cookie used for overriding the template context.<p>
-     * 
-     * @return the cookie name 
+     *
+     * @return the cookie name
      */
     public String getCookieName() {
 
@@ -136,8 +136,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Gets the key of the currently active template context.<p>
-     *  
-     * @return the key of the currently active template context 
+     *
+     * @return the key of the currently active template context
      */
     public String getCurrentContext() {
 
@@ -146,8 +146,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Gets the key of the currently selected template context, using the cookie.<p>
-     * 
-     * @return the name of the currently selected template context 
+     *
+     * @return the name of the currently selected template context
      */
     public String getSelectedContext() {
 
@@ -156,8 +156,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Gets the property definition for the templateContexts setting.<p>
-     * 
-     * @return the property definition for the templateContexts setting 
+     *
+     * @return the property definition for the templateContexts setting
      */
     public CmsXmlContentProperty getSettingDefinition() {
 
@@ -166,9 +166,9 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Checks if client variants for the given context are present.<p>
-     * 
-     * @param context a context name 
-     * @return true if there are client variants for the context 
+     *
+     * @param context a context name
+     * @return true if there are client variants for the context
      */
     public boolean hasClientVariants(String context) {
 
@@ -177,8 +177,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Sets the allowed contexts.<p>
-     * 
-     * @param allowedContextMap the map of allowed contexts 
+     *
+     * @param allowedContextMap the map of allowed contexts
      */
     public void setAllowedContexts(Map<String, CmsDefaultSet<String>> allowedContextMap) {
 
@@ -187,9 +187,9 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Adds a client variant.<p>
-     * 
-     * @param context a context name 
-     * @param variant the variant name 
+     *
+     * @param context a context name
+     * @param variant the variant name
      * @param info the bean with the variant information
      */
     public void setClientVariant(String context, String variant, CmsClientVariantInfo info) {
@@ -203,8 +203,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Sets the map of labels for the contexts.<p>
-     * 
-     * @param contextLabels the map of context labels 
+     *
+     * @param contextLabels the map of context labels
      */
     public void setContextLabels(Map<String, String> contextLabels) {
 
@@ -213,28 +213,28 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Sets the context provider class name.<p>
-     * 
-     * @param contextProvider the context provider class name 
+     *
+     * @param contextProvider the context provider class name
      */
     public void setContextProvider(String contextProvider) {
 
         m_contextProvider = contextProvider;
     }
 
-    /** 
+    /**
      * Sets the name of the cookie used for overriding the template context.<p>
-     * 
-     * @param cookieName the name of the cookie used for overriding the template context 
+     *
+     * @param cookieName the name of the cookie used for overriding the template context
      */
     public void setCookieName(String cookieName) {
 
         m_cookieName = cookieName;
     }
 
-    /** 
+    /**
      * Sets the active context.<p>
-     * 
-     * @param context the active context 
+     *
+     * @param context the active context
      */
     public void setCurrentContext(String context) {
 
@@ -243,8 +243,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Sets the selected context.<p>
-     * 
-     * @param selectedContext the selected context 
+     *
+     * @param selectedContext the selected context
      */
     public void setSelectedContext(String selectedContext) {
 
@@ -253,8 +253,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Sets the property definition for the templateContexts setting.<p>
-     * 
-     * @param definition the property definition 
+     *
+     * @param definition the property definition
      */
     public void setSettingDefinition(CmsXmlContentProperty definition) {
 
@@ -263,8 +263,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Returns true if the template context selection should be shown for container elements.<p>
-     * 
-     * @return true if the template context selection for elements should be shown 
+     *
+     * @return true if the template context selection for elements should be shown
      */
     public boolean shouldShowElementTemplateContextSelection() {
 
@@ -273,8 +273,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Returns true if the template context selection context menu entry should be shown.<p>
-     * 
-     * @return true if the template context selection context menu entry should be shown 
+     *
+     * @return true if the template context selection context menu entry should be shown
      */
     public boolean shouldShowTemplateContextContextMenuEntry() {
 
@@ -284,8 +284,8 @@ public class CmsTemplateContextInfo implements IsSerializable {
 
     /**
      * Returns true if there is more than one template context to choose from.<p>
-     * 
-     * @return true if there is more than one template context 
+     *
+     * @return true if there is more than one template context
      */
     private boolean hasMoreThanOneOption() {
 

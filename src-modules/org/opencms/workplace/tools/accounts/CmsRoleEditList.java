@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * User roles overview view.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsRoleEditList extends A_CmsRolesList {
 
@@ -84,7 +84,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRoleEditList(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      */
@@ -105,7 +105,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -117,7 +117,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -192,28 +192,24 @@ public class CmsRoleEditList extends A_CmsRolesList {
                     OpenCms.getRoleManager().addUserToRole(getCms(), role, user.getName());
                     getCms().writeUser(user);
                 } catch (CmsException e) {
-                    throw new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_ACTIVATE_ROLE_2,
-                        roleName,
-                        user.getName()), e);
+                    throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_ACTIVATE_ROLE_2, roleName, user.getName()),
+                        e);
                 }
             } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
                 // execute the activate action
                 if (!OpenCms.getRoleManager().getRolesOfUser(getCms(), user.getName(), "", true, true, true).contains(
                     role)) {
-                    throw new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_DEACTIVATE_INDIRECT_ROLE_2,
-                        roleName,
-                        user.getName()));
+                    throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_DEACTIVATE_INDIRECT_ROLE_2, roleName, user.getName()));
                 }
                 try {
                     OpenCms.getRoleManager().removeUserFromRole(getCms(), role, user.getName());
                     getCms().writeUser(user);
                 } catch (CmsException e) {
-                    throw new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_DEACTIVATE_ROLE_2,
-                        roleName,
-                        user.getName()), e);
+                    throw new CmsRuntimeException(
+                        Messages.get().container(Messages.ERR_DEACTIVATE_ROLE_2, roleName, user.getName()),
+                        e);
                 }
             } else {
                 throwListUnsupportedActionException();
@@ -256,7 +252,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
 
     /**
      * Sets the User id parameter value.<p>
-     * 
+     *
      * @param userid the userid to set
      */
     public void setParamUserid(String userid) {
@@ -382,14 +378,14 @@ public class CmsRoleEditList extends A_CmsRolesList {
         CmsListItemDetails descriptionDetails = new CmsListItemDetails(LIST_DETAIL_DESCRIPTION);
         descriptionDetails.setAtColumn(LIST_COLUMN_NAME);
         descriptionDetails.setVisible(true);
-        descriptionDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_ROLEEDIT_DETAIL_SHOW_DESCRIPTION_NAME_0));
-        descriptionDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_ROLEEDIT_DETAIL_SHOW_DESCRIPTION_HELP_0));
-        descriptionDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_NAME_0));
-        descriptionDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_HELP_0));
+        descriptionDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_SHOW_DESCRIPTION_NAME_0));
+        descriptionDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_SHOW_DESCRIPTION_HELP_0));
+        descriptionDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_NAME_0));
+        descriptionDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_HIDE_DESCRIPTION_HELP_0));
         descriptionDetails.setName(Messages.get().container(Messages.GUI_ROLEEDIT_DETAIL_DESCRIPTION_NAME_0));
         descriptionDetails.setFormatter(new I_CmsListFormatter() {
 

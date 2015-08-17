@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report for importing zipped files or folder to the OpenCms VFS.<p> 
- * 
- * @since 6.0.0 
+ * Provides a report for importing zipped files or folder to the OpenCms VFS.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsDatabaseImportReport extends A_CmsListReport {
 
@@ -52,7 +52,7 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDatabaseImportReport(CmsJspActionElement jsp) {
@@ -62,7 +62,7 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -84,7 +84,7 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
 
     /**
      * Returns the request parameter value for the file name to import.<p>
-     * 
+     *
      * @return the request parameter value for the file name to import
      */
     public String getParamFile() {
@@ -92,10 +92,11 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
         return m_paramFile;
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         String importFile = OpenCms.getSystemInfo().getPackagesRfsPath() + getParamFile();
@@ -116,9 +117,9 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
         m_keepPermissions = keepPermissions;
     }
 
-    /** 
+    /**
      * Sets the request parameter value for the file name to import.<p>
-     * 
+     *
      * @param file the request parameter value for the file name to import
      */
     public void setParamFile(String file) {

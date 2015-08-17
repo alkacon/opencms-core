@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** 
+/**
  * Test cases for the OpenCms shell when used "inline".<p>
- * 
+ *
  * @since 9.5.0
  */
 public class TestCmsShellInline extends OpenCmsTestCase {
@@ -53,7 +53,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsShellInline(String arg0) {
@@ -63,7 +63,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -98,7 +98,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Tests creation of users using the shell.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testShellCreateUser() throws Exception {
@@ -111,7 +111,9 @@ public class TestCmsShellInline extends OpenCmsTestCase {
         shell.execute("addUserToGroup 'Editor' 'Users'");
         shell.execute("addUserToRole 'Editor' 'EDITOR'");
 
-        assertTrue("Editor does not have EDTITOR role", OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR));
+        assertTrue(
+            "Editor does not have EDTITOR role",
+            OpenCms.getRoleManager().hasRole(cms, "Editor", CmsRole.EDITOR));
         List<CmsGroup> groups = cms.getGroupsOfUser("Editor", true);
         boolean found = false;
         for (CmsGroup g : groups) {
@@ -125,7 +127,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Tests the shell without 'echo on'.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testShellEchoOff() throws Exception {
@@ -167,7 +169,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Tests basic inline shell invocation.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testShellInline() throws Exception {
@@ -210,7 +212,7 @@ public class TestCmsShellInline extends OpenCmsTestCase {
 
     /**
      * Tests setting some properties using the shell.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testShellSetProperties() throws Exception {

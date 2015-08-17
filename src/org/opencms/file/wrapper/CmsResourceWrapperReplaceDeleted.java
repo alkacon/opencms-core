@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,8 +40,8 @@ import java.util.List;
 
 /**
  * Resource wrapper which intercepts createResource calls and substitutes them with replaceResource if there is already a deleted file at the same path.<p>
- * 
- * This is useful because when accessing a repository, users can neither see nor publish deleted files, and thus can not re-create a file of state "deleted". 
+ *
+ * This is useful because when accessing a repository, users can neither see nor publish deleted files, and thus can not re-create a file of state "deleted".
  */
 public class CmsResourceWrapperReplaceDeleted extends A_CmsResourceWrapper {
 

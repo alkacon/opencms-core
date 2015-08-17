@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Scroll handler which executes an action when the user has scrolled to the bottom.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsScrollToBottomHandler implements ScrollHandler {
@@ -52,7 +52,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
      */
     protected boolean m_enabled = true;
 
-    /** 
+    /**
      * The action which is triggered when the user scrolls to the bottom.<p>
      */
     private Runnable m_callback;
@@ -65,7 +65,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
 
     /**
      * Constructs a new scroll handler.<p>
-     * 
+     *
      * @param callback the action which should be executed when the user scrolls to the bottom.
      */
     public CmsScrollToBottomHandler(Runnable callback) {
@@ -75,11 +75,11 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
 
     /**
      * Constructs a new scroll handler with a custom scroll threshold.
-     * 
+     *
      * The scroll threshold is the distance from the bottom edge of the scrolled content
      * such that when the distance from the bottom edge of the scroll viewport to the bottom
      * edge of the scrolled content becomes lower than the distance, the scroll action is triggered.
-     * 
+     *
      * @param callback the action which should be executed when the user scrolls to the bottom.
      * @param scrollThreshold the scroll threshold
      */
@@ -102,7 +102,7 @@ public class CmsScrollToBottomHandler implements ScrollHandler {
         Widget child = scrollPanel.getWidget();
         int childHeight = child.getOffsetHeight();
         int ownHeight = scrollPanel.getOffsetHeight();
-        boolean isBottom = scrollPos + ownHeight >= childHeight - m_scrollThreshold;
+        boolean isBottom = (scrollPos + ownHeight) >= (childHeight - m_scrollThreshold);
         if (isBottom) {
             m_callback.run();
             m_enabled = false;

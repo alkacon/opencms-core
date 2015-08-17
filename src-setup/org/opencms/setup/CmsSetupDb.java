@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,8 +55,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Helper class to call database setup scripts.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSetupDb extends Object {
 
@@ -83,7 +83,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates a new CmsSetupDb object.<p>
-     * 
+     *
      * @param basePath the location of the setup scripts
      */
     public CmsSetupDb(String basePath) {
@@ -94,10 +94,10 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Returns an optional warning message if needed, <code>null</code> if not.<p> 
-     * 
+     * Returns an optional warning message if needed, <code>null</code> if not.<p>
+     *
      * @param db the selected database key
-     * 
+     *
      * @return html warning, or <code>null</code> if no warning
      */
     public String checkVariables(String db) {
@@ -137,23 +137,28 @@ public class CmsSetupDb extends Object {
                     html.append(" Byte (");
                     html.append((maxAllowedPacket / megabyte) + "MB).</p>\n");
                 }
-                html.append("<p>Please note that it will not be possible for OpenCms to handle files bigger than this value in the VFS.</p>\n");
+                html.append(
+                    "<p>Please note that it will not be possible for OpenCms to handle files bigger than this value in the VFS.</p>\n");
                 int requiredMaxAllowdPacket = 16;
                 if (maxAllowedPacket < (requiredMaxAllowdPacket * megabyte)) {
-                    m_errors.add("<p><b>Your <code>'max_allowed_packet'</code> variable is set to less than "
-                        + (requiredMaxAllowdPacket * megabyte)
-                        + " Byte ("
-                        + requiredMaxAllowdPacket
-                        + "MB).</b></p>\n"
-                        + "<p>The required value for running OpenCms is at least "
-                        + requiredMaxAllowdPacket
-                        + "MB."
-                        + "Please change your MySQL configuration (in the <code>my.ini</code> or <code>my.cnf</code> file).</p>\n");
+                    m_errors.add(
+                        "<p><b>Your <code>'max_allowed_packet'</code> variable is set to less than "
+                            + (requiredMaxAllowdPacket * megabyte)
+                            + " Byte ("
+                            + requiredMaxAllowdPacket
+                            + "MB).</b></p>\n"
+                            + "<p>The required value for running OpenCms is at least "
+                            + requiredMaxAllowdPacket
+                            + "MB."
+                            + "Please change your MySQL configuration (in the <code>my.ini</code> or <code>my.cnf</code> file).</p>\n");
                 }
             } else {
-                html.append("<p><i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i></p>\n");
-                html.append("<p>Please note that it will not be possible for OpenCms to handle files bigger than this value.</p>\n");
-                html.append("<p><b>The recommended value for running OpenCms is 16MB, please set it in your MySQL configuration (in your <code>my.ini</code> or <code>my.cnf</code> file).</b></p>\n");
+                html.append(
+                    "<p><i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i></p>\n");
+                html.append(
+                    "<p>Please note that it will not be possible for OpenCms to handle files bigger than this value.</p>\n");
+                html.append(
+                    "<p><b>The recommended value for running OpenCms is 16MB, please set it in your MySQL configuration (in your <code>my.ini</code> or <code>my.cnf</code> file).</b></p>\n");
                 html.append(CmsException.getStackTraceAsString(exception));
             }
         }
@@ -188,7 +193,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the create database script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
@@ -200,7 +205,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the create database script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
@@ -213,7 +218,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the create tables script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
@@ -225,7 +230,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the create tables script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
@@ -238,7 +243,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the drop script for the given database.
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
@@ -250,7 +255,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the drop script for the given database.
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
@@ -263,7 +268,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the drop tables script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      */
     public void dropTables(String database) {
@@ -274,7 +279,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the drop tables script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      */
@@ -286,7 +291,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls the drop tables script for the given database.<p>
-     * 
+     *
      * @param database the name of the database
      * @param replacer the replacements to perform in the drop script
      * @param abortOnError indicates if the script is aborted if an error occurs
@@ -299,12 +304,12 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates and executes a database statement from a String returning the result set.<p>
-     * 
+     *
      * @param query the query to execute
      * @param replacer the replacements to perform in the script
-     * 
-     * @return the result set of the query 
-     * 
+     *
+     * @return the result set of the query
+     *
      * @throws SQLException if something goes wrong
      */
     public CmsSetupDBWrapper executeSqlStatement(String query, Map<String, String> replacer) throws SQLException {
@@ -327,13 +332,13 @@ public class CmsSetupDb extends Object {
     }
 
     /** Creates and executes a database statement from a String returning the result set.<p>
-     * 
+     *
      * @param query the query to execute
      * @param replacer the replacements to perform in the script
      * @param params the list of parameters for the statement
-     * 
-     * @return the result set of the query 
-     * 
+     *
+     * @return the result set of the query
+     *
      * @throws SQLException if something goes wrong
      */
     public CmsSetupDBWrapper executeSqlStatement(String query, Map<String, String> replacer, List<Object> params)
@@ -367,7 +372,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Returns a Vector of Error messages.<p>
-     * 
+     *
      * @return all error messages collected internally
      */
     public List<String> getErrors() {
@@ -377,10 +382,10 @@ public class CmsSetupDb extends Object {
 
     /**
      * Checks if the given table, column or combination of both is available in the database in case insensitive way.<P>
-     * 
+     *
      * @param table the sought table
      * @param column the sought column
-     * 
+     *
      * @return true if the requested table/column is available, false if not
      */
     public boolean hasTableOrColumn(String table, String column) {
@@ -403,10 +408,10 @@ public class CmsSetupDb extends Object {
 
     /**
      * Checks if the given table, column or combination of both is available in the database in a case sensitive way.<P>
-     * 
+     *
      * @param table the sought table
      * @param column the sought column
-     * 
+     *
      * @return true if the requested table/column is available, false if not
      */
     public boolean hasTableOrColumnCaseSensitive(String table, String column) {
@@ -425,7 +430,7 @@ public class CmsSetupDb extends Object {
                     }
                 }
             } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(table)) {
-                // Check the table 
+                // Check the table
                 set = m_con.getMetaData().getTables(null, null, table, null);
                 if (set.next()) {
                     String tablename = set.getString("TABLE_NAME");
@@ -451,7 +456,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Checks if internal errors occurred.<p>
-     * 
+     *
      * @return true if internal errors occurred
      */
     public boolean noErrors() {
@@ -461,7 +466,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Sets a new internal connection to the database.<p>
-     * 
+     *
      * @param conn the connection to use
      */
     public void setConnection(Connection conn) {
@@ -471,7 +476,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates a new internal connection to the database.<p>
-     * 
+     *
      * @param DbDriver JDBC driver class name
      * @param DbConStr JDBC connect URL
      * @param DbConStrParams JDBC connect URL params, or null
@@ -485,7 +490,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates a new internal connection to the database.<p>
-     * 
+     *
      * @param DbDriver JDBC driver class name
      * @param DbConStr JDBC connect URL
      * @param DbConStrParams JDBC connect URL params, or null
@@ -525,7 +530,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls an update script.<p>
-     * 
+     *
      * @param updateScript the update script code
      * @param replacers the replacers to use in the script code
      */
@@ -537,7 +542,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Calls an update script.<p>
-     * 
+     *
      * @param updateScript the update script code
      * @param replacers the replacers to use in the script code
      * @param abortOnError indicates if the script is aborted if an error occurs
@@ -550,13 +555,13 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates and executes a database statment from a String.<p>
-     * 
+     *
      * @param query the query to execute
      * @param replacer the replacements to perform in the script
      * @param params the list of parameters for the statement
-     * 
-     * @return the result set of the query 
-     * 
+     *
+     * @return the result set of the query
+     *
      * @throws SQLException if something goes wrong
      */
     public int updateSqlStatement(String query, Map<String, String> replacer, List<Object> params) throws SQLException {
@@ -617,7 +622,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Internal method to parse and execute a setup script.<p>
-     * 
+     *
      * @param inputReader an input stream reader on the setup script
      * @param replacers the replacements to perform in the script
      * @param abortOnError if a error occurs this flag indicates if to continue or to abort
@@ -628,7 +633,7 @@ public class CmsSetupDb extends Object {
         LineNumberReader reader = null;
         String line = null;
 
-        // parse the setup script 
+        // parse the setup script
         try {
             reader = new LineNumberReader(inputReader);
 
@@ -652,12 +657,12 @@ public class CmsSetupDb extends Object {
                         break;
                     }
 
-                    // add token to query 
+                    // add token to query
                     statement += " " + currentToken;
 
-                    // query complete (terminated by ';') 
+                    // query complete (terminated by ';')
                     if (currentToken.endsWith(";")) {
-                        // cut of ';' at the end 
+                        // cut of ';' at the end
                         statement = statement.substring(0, (statement.length() - 1));
 
                         // normal statement, execute it
@@ -709,7 +714,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Internal method to parse and execute a setup script.<p>
-     * 
+     *
      * @param databaseKey the database variant of the script
      * @param sqlScript the name of the script
      * @param replacers the replacements to perform in the script
@@ -738,9 +743,9 @@ public class CmsSetupDb extends Object {
 
     /**
      * Creates and executes a database statement from a String.<p>
-     * 
+     *
      * @param statement the database statement
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     private void executeStatement(String statement) throws SQLException {
@@ -759,7 +764,7 @@ public class CmsSetupDb extends Object {
 
     /**
      * Replaces tokens "${xxx}" in a specified SQL query.<p>
-     * 
+     *
      * @param sql a SQL query
      * @param replacers a Map with values keyed by "${xxx}" tokens
      * @return the SQl query with all "${xxx}" tokens replaced

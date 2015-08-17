@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,8 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
      */
     public String getDeviceType(HttpServletRequest req) {
 
-        CmsTemplateContext templateContext = (CmsTemplateContext)(req.getAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
+        CmsTemplateContext templateContext = (CmsTemplateContext)(req.getAttribute(
+            CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT));
         if ((templateContext != null) && isTemplateContextCompatible(templateContext)) {
             return templateContext.getKey();
         }
@@ -90,7 +91,7 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
 
     /**
      * Returns the User Agent info.<p>
-     * 
+     *
      * @return the information about the user agent
      */
     public UAgentInfo getUserAgentInfo() {
@@ -100,10 +101,10 @@ public class CmsJspDeviceSelectorDesktopMobileTablet implements I_CmsJspDeviceSe
 
     /**
      * Checks if a template context is compatible with this device selector.<p>
-     * 
-     * @param templateContext the template context to check 
-     * 
-     * @return true if the template context is compatible 
+     *
+     * @param templateContext the template context to check
+     *
+     * @return true if the template context is compatible
      */
     protected boolean isTemplateContextCompatible(CmsTemplateContext templateContext) {
 

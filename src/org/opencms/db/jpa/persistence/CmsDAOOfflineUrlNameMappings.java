@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a offline URL name mapping entry inside the table "cms_offline_urlname_mappings".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -63,7 +63,7 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -73,7 +73,7 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -116,7 +116,7 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOOfflineUrlNameMappingsPK(String str) {
@@ -150,7 +150,8 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
             return (m_dateChanged == other.m_dateChanged)
                 && (((m_name == null) && (other.m_name == null)) || ((m_name != null) && m_name.equals(other.m_name)))
                 && (m_state == other.m_state)
-                && (((m_structureId == null) && (other.m_structureId == null)) || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
+                && (((m_structureId == null) && (other.m_structureId == null))
+                    || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
         }
 
         /**
@@ -200,10 +201,10 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + (int)(m_dateChanged ^ (m_dateChanged >>> 32));
-            rs = rs * 37 + ((m_name == null) ? 0 : m_name.hashCode());
-            rs = rs * 37 + m_state;
-            rs = rs * 37 + ((m_structureId == null) ? 0 : m_structureId.hashCode());
+            rs = (rs * 37) + (int)(m_dateChanged ^ (m_dateChanged >>> 32));
+            rs = (rs * 37) + ((m_name == null) ? 0 : m_name.hashCode());
+            rs = (rs * 37) + m_state;
+            rs = (rs * 37) + ((m_structureId == null) ? 0 : m_structureId.hashCode());
             return rs;
         }
 
@@ -264,7 +265,7 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
         /**
          * Parses the given String into a PK.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -323,7 +324,7 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
 
     /**
      *  A public constructor for generating a new contents object with an unique id.<p>
-     *  
+     *
      * @param dateChanged the date changed
      * @param name the name
      * @param state the state
@@ -331,10 +332,10 @@ public class CmsDAOOfflineUrlNameMappings implements I_CmsDAOUrlNameMappings {
      */
     public CmsDAOOfflineUrlNameMappings(long dateChanged, String name, int state, String structureId) {
 
-        this.m_dateChanged = dateChanged;
-        this.m_name = name;
-        this.m_state = state;
-        this.m_structureId = structureId;
+        m_dateChanged = dateChanged;
+        m_name = name;
+        m_state = state;
+        m_structureId = structureId;
     }
 
     /**

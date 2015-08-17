@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,9 +76,9 @@ import org.apache.commons.logging.Log;
 /**
  * A list that displays resources and the existance of their language nodes.
  * <p>
- * 
+ *
  * @since 7.5.1
- * 
+ *
  */
 public class CmsLanguageCopySelectionList extends A_CmsListDialog {
 
@@ -139,11 +139,11 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * Public constructor.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * 
+     *
      * @throws CmsException if something goes wrong.
-     * 
+     *
      * @throws FileNotFoundException if something goes wrong.
      */
     public CmsLanguageCopySelectionList(final CmsJspActionElement jsp)
@@ -155,20 +155,20 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * Public constructor.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
-     * 
+     *
      * @throws CmsException if something goes wrong.
-     * 
+     *
      * @throws FileNotFoundException if something goes wrong.
      */
     public CmsLanguageCopySelectionList(
         final CmsJspActionElement jsp,
         final String listId,
         final CmsMessageContainer listName)
-    throws FileNotFoundException, CmsException {
+        throws FileNotFoundException, CmsException {
 
         this(jsp, listId, listName, LIST_COLUMN_ID, CmsListOrderEnum.ORDER_ASCENDING, null);
     }
@@ -176,14 +176,14 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * Public constructor.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
      * @param sortedColId the a priory sorted column
      * @param sortOrder the order of the sorted column
      * @param searchableColId the column to search into
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -195,7 +195,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
         final String sortedColId,
         final CmsListOrderEnum sortOrder,
         final String searchableColId)
-    throws FileNotFoundException, CmsException {
+        throws FileNotFoundException, CmsException {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
     }
@@ -203,11 +203,11 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -215,7 +215,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
         final PageContext context,
         final HttpServletRequest req,
         final HttpServletResponse res)
-    throws FileNotFoundException, CmsException {
+        throws FileNotFoundException, CmsException {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -230,7 +230,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
 
             // create absolute RFS path and store it in dialog object
             Map<String, String[]> params = new HashMap<String, String[]>();
-            List<CmsListItem> items = this.getSelectedItems();
+            List<CmsListItem> items = getSelectedItems();
             List<String> paths = new LinkedList<String>();
             for (CmsListItem item : items) {
                 paths.add(String.valueOf(item.get(LIST_COLUMN_PATH)));
@@ -271,7 +271,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
      */
     public String[] getCopyResources() {
 
-        List<CmsListItem> items = this.getSelectedItems();
+        List<CmsListItem> items = getSelectedItems();
         String paths = "";
         boolean initial = true;
         for (CmsListItem item : items) {
@@ -334,7 +334,7 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
      */
     public void setParamPaths(final String paths) {
 
-        this.m_paths = CmsStringUtil.splitAsArray(paths, ",");
+        m_paths = CmsStringUtil.splitAsArray(paths, ",");
     }
 
     /**
@@ -374,9 +374,9 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
         // get content
         CmsListItem item;
         int idCounter = 0;
-        for (CmsResource resource : this.getResources()) {
+        for (CmsResource resource : getResources()) {
             item = getList().newItem(resource.getRootPath());
-            this.fillItem(resource, item, idCounter);
+            fillItem(resource, item, idCounter);
             idCounter++;
             result.add(item);
         }
@@ -447,9 +447,10 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
         CmsListColumnDefinition langCol;
         for (Locale locale : sysLocales) {
             langCol = new CmsListColumnDefinition(locale.toString());
-            langCol.setName(Messages.get().container(
-                Messages.GUI_LIST_LANGUAGECOPY_COL_LANGUAGE_NAME_1,
-                new Object[] {locale.toString()}));
+            langCol.setName(
+                Messages.get().container(
+                    Messages.GUI_LIST_LANGUAGECOPY_COL_LANGUAGE_NAME_1,
+                    new Object[] {locale.toString()}));
             langCol.setHelpText(Messages.get().container(Messages.GUI_LIST_LANGUAGECOPY_COL_LANGUAGE_HELP_0));
             langCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
             langCol.setSorteable(false);
@@ -485,14 +486,14 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
     /**
      * Fills a single item.
      * <p>
-     * 
+     *
      * @param resource the corresponding resource.
      * @param item the item to fill.
      * @param id used for the ID column.
      */
     private void fillItem(final CmsResource resource, final CmsListItem item, final int id) {
 
-        CmsObject cms = this.getCms();
+        CmsObject cms = getCms();
         CmsXmlContent xmlContent;
 
         I_CmsResourceType type;
@@ -551,16 +552,16 @@ public class CmsLanguageCopySelectionList extends A_CmsListDialog {
 
     /**
      * Reads the resources available for processing based on the path parameters.<p>
-     * 
+     *
      * @return the resources available for processing based on the path parameters.
      */
     private List<CmsResource> getResources() {
 
         List<CmsResource> result = new LinkedList<CmsResource>();
-        CmsObject cms = this.getCms();
+        CmsObject cms = getCms();
         CmsResourceFilter filter = CmsResourceFilter.ALL;
         try {
-            for (String path : this.m_paths) {
+            for (String path : m_paths) {
                 List<CmsResource> resources = cms.readResources(path, filter, true);
                 // filter out any resource that is no XML content:
                 for (CmsResource resource : resources) {

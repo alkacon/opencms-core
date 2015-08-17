@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Recursive category tree entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCategoryTreeEntry extends CmsCategoryBean {
@@ -46,7 +46,7 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /**
      * Clone constructor.<p>
-     * 
+     *
      * @param category the category to clone
      */
     public CmsCategoryTreeEntry(CmsCategory category) {
@@ -64,7 +64,7 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /**
      * Adds a child entry.<p>
-     * 
+     *
      * @param child the child to add
      */
     public void addChild(CmsCategoryTreeEntry child) {
@@ -84,8 +84,8 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /**
      * Gets the title of the category, or the name if the title is not set.<p>
-     * 
-     * @return the title or name 
+     *
+     * @return the title or name
      */
     public Object getTitleOrName() {
 

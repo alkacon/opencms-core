@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,10 +62,10 @@ public class CmsInheritedContainerState {
 
     /**
      * Reads the configurations for a root path and its parents from a cache instance and adds them to this state.<p>
-     * 
-     * @param cache the cache instance 
-     * @param rootPath the root path 
-     * @param name the name of the container configuration 
+     *
+     * @param cache the cache instance
+     * @param rootPath the root path
+     * @param name the name of the container configuration
      */
     public void addConfigurations(CmsContainerConfigurationCache cache, String rootPath, String name) {
 
@@ -92,12 +92,12 @@ public class CmsInheritedContainerState {
 
     /**
      * Gets a list of container element beans which represent the state of the inherited container.<p>
-     * 
+     *
      * The container element beans returned will have additional information available via the getInheritanceInfo method.<p>
-     * 
+     *
      * @param includeHidden if true, hidden elements will be included in the result list
-     * 
-     * @return the elements for this container state   
+     *
+     * @return the elements for this container state
      */
     public List<CmsContainerElementBean> getElements(boolean includeHidden) {
 
@@ -132,7 +132,7 @@ public class CmsInheritedContainerState {
         if (ordering == null) {
             ordering = new ArrayList<String>();
         }
-        // STEP 2: Get elements which are referenced by the ordering  
+        // STEP 2: Get elements which are referenced by the ordering
         for (String key : ordering) {
             CmsContainerElementBean element = elementsByKey.get(key);
             if ((element != null) && !keysUsed.contains(key)) {
@@ -197,8 +197,8 @@ public class CmsInheritedContainerState {
 
     /**
      * Gets the keys of new elements.<p>
-     * 
-     * @return a set containing the keys of the new elements 
+     *
+     * @return a set containing the keys of the new elements
      */
     public Set<String> getNewElementKeys() {
 
@@ -211,10 +211,10 @@ public class CmsInheritedContainerState {
 
     /**
      * Checks whether an element with the given key is actually defined in this inherited container state.<p>
-     * 
-     * @param key the key for which the check should be performed 
-     * 
-     * @return true if an element with the key has been defined in this state 
+     *
+     * @param key the key for which the check should be performed
+     *
+     * @return true if an element with the key has been defined in this state
      */
     public boolean hasElementWithKey(String key) {
 
@@ -228,8 +228,8 @@ public class CmsInheritedContainerState {
 
     /**
      * Adds a configuration bean for a new tree level.<p>
-     * 
-     * @param configuration the configuration bean 
+     *
+     * @param configuration the configuration bean
      */
     protected void addConfiguration(CmsContainerConfiguration configuration) {
 
@@ -239,10 +239,10 @@ public class CmsInheritedContainerState {
 
     /**
      * Gets the list of visibilities for a given key in all the tree levels.<p>
-     * 
-     * @param key the key for which the visibilities should be returned 
-     * 
-     * @return the list of visibilities, from top to bottom 
+     *
+     * @param key the key for which the visibilities should be returned
+     *
+     * @return the list of visibilities, from top to bottom
      */
     protected List<Boolean> getVisibilities(String key) {
 
@@ -255,10 +255,10 @@ public class CmsInheritedContainerState {
 
     /**
      * Computes the visibility for an element.<p>
-     * 
+     *
      * @param visibilities the visibilities for the element in the sequence of parent configurations.<p>
-     * 
-     * @param info the object in which the visibility should be stored 
+     *
+     * @param info the object in which the visibility should be stored
      */
     void computeVisibility(List<Boolean> visibilities, CmsInheritanceInfo info) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a group users entry inside the table "cms_groupusers".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -64,7 +64,7 @@ public class CmsDAOGroupUsers {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -74,7 +74,7 @@ public class CmsDAOGroupUsers {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -111,7 +111,7 @@ public class CmsDAOGroupUsers {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOGroupUsersPK(String str) {
@@ -142,8 +142,10 @@ public class CmsDAOGroupUsers {
             }
 
             CmsDAOGroupUsersPK other = (CmsDAOGroupUsersPK)obj;
-            return (((m_groupId == null) && (other.m_groupId == null)) || ((m_groupId != null) && m_groupId.equals(other.m_groupId)))
-                && (((m_userId == null) && (other.m_userId == null)) || ((m_userId != null) && m_userId.equals(other.m_userId)));
+            return (((m_groupId == null) && (other.m_groupId == null))
+                || ((m_groupId != null) && m_groupId.equals(other.m_groupId)))
+                && (((m_userId == null) && (other.m_userId == null))
+                    || ((m_userId != null) && m_userId.equals(other.m_userId)));
         }
 
         /**
@@ -173,8 +175,8 @@ public class CmsDAOGroupUsers {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_groupId == null) ? 0 : m_groupId.hashCode());
-            rs = rs * 37 + ((m_userId == null) ? 0 : m_userId.hashCode());
+            rs = (rs * 37) + ((m_groupId == null) ? 0 : m_groupId.hashCode());
+            rs = (rs * 37) + ((m_userId == null) ? 0 : m_userId.hashCode());
             return rs;
         }
 
@@ -209,7 +211,7 @@ public class CmsDAOGroupUsers {
 
         /**
          * Parses the group id and the user id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -255,7 +257,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * A public constructor to create a group users entry.<p>
-     * 
+     *
      * @param groupId the group id
      * @param userId the user id
      */
@@ -267,7 +269,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Returns the group id.<p>
-     * 
+     *
      * @return the group id
      */
     public String getGroupId() {
@@ -277,7 +279,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Returns the group users flag.<p>
-     * 
+     *
      * @return the group users flag
      */
     public int getGroupUserFlags() {
@@ -287,7 +289,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Returns the user id.<p>
-     * 
+     *
      * @return the user id
      */
     public String getUserId() {
@@ -297,7 +299,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Sets the group id.<p>
-     * 
+     *
      * @param groupId the group id to set
      */
     public void setGroupId(String groupId) {
@@ -307,7 +309,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Sets the flag.<p>
-     * 
+     *
      * @param groupuserFlags the flag to set
      */
     public void setGroupUserFlags(int groupuserFlags) {
@@ -317,7 +319,7 @@ public class CmsDAOGroupUsers {
 
     /**
      * Sets the user id.<p>
-     * 
+     *
      * @param userId the user id to set
      */
     public void setUserId(String userId) {

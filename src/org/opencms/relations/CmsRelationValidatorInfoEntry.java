@@ -4,8 +4,8 @@ package org.opencms.relations;
 import java.util.List;
 
 /**
- * Relation validator entry information bean.<p> 
- * 
+ * Relation validator entry information bean.<p>
+ *
  * @since 6.5.5
  */
 public final class CmsRelationValidatorInfoEntry {
@@ -23,7 +23,7 @@ public final class CmsRelationValidatorInfoEntry {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param entryName the entry name
      * @param resourceName the resource name
      * @param siteName the site title
@@ -56,7 +56,7 @@ public final class CmsRelationValidatorInfoEntry {
 
     /**
      * Returns all the relations for this entry.<p>
-     * 
+     *
      * @return a list of {@link CmsRelation} objects
      */
     public List<CmsRelation> getRelations() {

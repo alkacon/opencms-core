@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,8 +72,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * JPA database server implementation of the subscription driver methods.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriver {
 
@@ -172,7 +172,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         try {
 
-            // compose statement 
+            // compose statement
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery(C_VISIT_DELETE_ENTRIES));
 
@@ -191,7 +191,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             // execute
             q.executeUpdate();
         } catch (PersistenceException e) {
-            throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_VISIT_DELETE_ENTRIES), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_VISIT_DELETE_ENTRIES),
+                e);
         }
     }
 
@@ -244,9 +246,10 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
         if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
-                    getClass().getName()));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                        getClass().getName()));
             }
         }
     }
@@ -307,9 +310,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                     }
                 }
             } catch (PersistenceException e) {
-                throw new CmsDbSqlException(Messages.get().container(
-                    Messages.ERR_GENERIC_SQL_1,
-                    C_VISITED_USER_DELETE_GETDATE_2), e);
+                throw new CmsDbSqlException(
+                    Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_VISITED_USER_DELETE_GETDATE_2),
+                    e);
             }
         }
     }
@@ -367,8 +370,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                 conditions.append(BEGIN_INCLUDE_CONDITION);
                 if (filter.isIncludeSubFolders()) {
                     conditions.append(m_sqlManager.readQuery(dbc.currentProject(), C_RESOURCES_SELECT_BY_PATH_PREFIX));
-                    params.add(CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath()))
-                        + "%");
+                    params.add(
+                        CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath())) + "%");
                 } else {
                     conditions.append(m_sqlManager.readQuery(dbc.currentProject(), C_RESOURCES_SELECT_BY_PARENT_UUID));
                     params.add(parent.getStructureId().toString());
@@ -470,7 +473,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                 historyIDs.add(new CmsUUID(id));
             }
         } catch (PersistenceException e) {
-            throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_SUBSCRIPTION_DELETED), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_SUBSCRIPTION_DELETED),
+                e);
         }
 
         // get the matching history resources from the found structure IDs
@@ -573,8 +578,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             conditions.append(BEGIN_INCLUDE_CONDITION);
             if (filter.isIncludeSubFolders()) {
                 conditions.append(m_sqlManager.readQuery(dbc.currentProject(), C_RESOURCES_SELECT_BY_PATH_PREFIX));
-                params.add(new CmsQueryStringParameter(
-                    CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath())) + "%"));
+                params.add(
+                    new CmsQueryStringParameter(
+                        CmsFileUtil.addTrailingSeparator(CmsVfsDriver.escapeDbWildcard(filter.getParentPath())) + "%"));
             } else {
                 conditions.append(m_sqlManager.readQuery(dbc.currentProject(), C_RESOURCES_SELECT_BY_PARENT_UUID));
                 params.add(new CmsQueryStringParameter(parent.getStructureId().toString()));
@@ -585,9 +591,8 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         // check from and to date
         if ((filter.getFromDate() > 0) || (filter.getToDate() < Long.MAX_VALUE)) {
             conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(
-                dbc.currentProject(),
-                C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED));
+            conditions.append(
+                m_sqlManager.readQuery(dbc.currentProject(), C_SUBSCRIPTION_FILTER_RESOURCES_DATE_MODIFIED));
             params.add(new CmsQueryLongParameter(filter.getFromDate()));
             params.add(new CmsQueryLongParameter(filter.getToDate()));
             conditions.append(END_CONDITION);
@@ -651,14 +656,14 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
     /**
      * Reads {@link CmsVisitEntry} objects from the database.<p>
-     * 
-     * @param dbc the database context to use 
-     * @param poolName the name of the pool which should be used for the database operation 
+     *
+     * @param dbc the database context to use
+     * @param poolName the name of the pool which should be used for the database operation
      * @param filter a filter for constraining the list of results
-     *  
-     * @return a list of visit entries 
-     * 
-     * @throws CmsDataAccessException if the database operation fails 
+     *
+     * @return a list of visit entries
+     *
+     * @throws CmsDataAccessException if the database operation fails
      */
     public List<CmsVisitEntry> readVisits(CmsDbContext dbc, String poolName, CmsVisitEntryFilter filter)
     throws CmsDataAccessException {
@@ -666,7 +671,7 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
         List<CmsVisitEntry> entries = new ArrayList<CmsVisitEntry>();
 
         try {
-            // compose statement 
+            // compose statement
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery(C_VISIT_READ_ENTRIES));
             CmsPair<String, List<I_CmsQueryParameter>> conditionsAndParameters = prepareVisitConditions(filter);
@@ -716,9 +721,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
             }
 
         } catch (PersistenceException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                C_SUBSCRIPTION_UPDATE_DATE_2), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_SUBSCRIPTION_UPDATE_DATE_2),
+                e);
         }
     }
 
@@ -748,7 +753,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
                 m_sqlManager.persist(dbc, sb);
             }
         } catch (PersistenceException e) {
-            throw new CmsDbSqlException(Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_SUBSCRIPTION_CHECK_2), e);
+            throw new CmsDbSqlException(
+                Messages.get().container(Messages.ERR_GENERIC_SQL_1, C_SUBSCRIPTION_CHECK_2),
+                e);
         }
     }
 
@@ -867,12 +874,12 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
     /**
      * Adds an entry to the table of visits.<p>
-     * 
-     * @param dbc the database context to use 
-     * @param poolName the name of the database pool to use 
+     *
+     * @param dbc the database context to use
+     * @param poolName the name of the database pool to use
      * @param visit the visit bean
-     *  
-     * @throws CmsDbSqlException if the database operation fails  
+     *
+     * @throws CmsDbSqlException if the database operation fails
      */
     protected void addVisit(CmsDbContext dbc, String poolName, CmsVisitEntry visit) throws CmsDbSqlException {
 
@@ -892,9 +899,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
     /**
      * Creates a new {@link CmsVisitEntry} object from the given result set entry.<p>
-     * 
-     * @param sv the result set 
-     *  
+     *
+     * @param sv the result set
+     *
      * @return the new {@link CmsVisitEntry} object
      */
     protected CmsVisitEntry internalReadVisitEntry(CmsDAOSubscriptionVisit sv) {
@@ -907,9 +914,9 @@ public class CmsSubscriptionDriver implements I_CmsDriver, I_CmsSubscriptionDriv
 
     /**
      * Build the whole WHERE SQL statement part for the given visit entry filter.<p>
-     * 
+     *
      * @param filter the filter
-     * 
+     *
      * @return a pair containing both the SQL and the parameters for it
      */
     protected CmsPair<String, List<I_CmsQueryParameter>> prepareVisitConditions(CmsVisitEntryFilter filter) {

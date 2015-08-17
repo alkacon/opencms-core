@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,18 +37,18 @@ import java.io.Serializable;
 
 /**
  * Represents a category, that is just a folder.<p>
- * 
- * The category can be centralized under <code>/system/categories/</code>, 
+ *
+ * The category can be centralized under <code>/system/categories/</code>,
  * or decentralized in every folder.<p>
- * 
- * For instance, you can have a category folder under <code>/sites/default/</code> 
- * so, any file under <code>/sites/default/</code> could be assigned to any 
- * category defined under <code>/system/categories/</code> or 
+ *
+ * For instance, you can have a category folder under <code>/sites/default/</code>
+ * so, any file under <code>/sites/default/</code> could be assigned to any
+ * category defined under <code>/system/categories/</code> or
  * <code>/sites/default/categories</code>.<p>
- * 
+ *
  * But a file under <code>/sites/othersite/</code> will only be assignable to
  * categories defined in <code>/system/categories/</code>.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class CmsCategory implements Comparable<CmsCategory>, Serializable {
@@ -76,13 +76,13 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource that this category represents
      * @param rootPath the root path of the category folder
      * @param title the title of the category
      * @param description the description of the category
-     * @param baseFolder the base categories folder 
-     * 
+     * @param baseFolder the base categories folder
+     *
      * @throws CmsException if the root path does not match the given base folder
      */
     public CmsCategory(CmsUUID structureId, String rootPath, String title, String description, String baseFolder)
@@ -106,12 +106,12 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
     /**
      * Returns the category path for the given root path.<p>
-     * 
+     *
      * @param rootPath the root path
      * @param baseFolder the categories base folder name
-     * 
+     *
      * @return the category path
-     * 
+     *
      * @throws CmsException if the root path does not match the given base folder
      */
     public static String getCategoryPath(String rootPath, String baseFolder) throws CmsException {
@@ -129,9 +129,8 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
             }
             int pos = rootPath.indexOf(base);
             if (pos < 0) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_CATEGORY_INVALID_LOCATION_1,
-                    rootPath));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_CATEGORY_INVALID_LOCATION_1, rootPath));
             }
             base = rootPath.substring(0, pos + base.length());
         }
@@ -143,10 +142,10 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
      */
     public int compareTo(CmsCategory cat) {
 
-        boolean thisGlobal = this.getBasePath().equals(CmsCategoryService.CENTRALIZED_REPOSITORY);
+        boolean thisGlobal = getBasePath().equals(CmsCategoryService.CENTRALIZED_REPOSITORY);
         boolean thatGlobal = cat.getBasePath().equals(CmsCategoryService.CENTRALIZED_REPOSITORY);
         if ((thisGlobal && thatGlobal) || (!thisGlobal && !thatGlobal)) {
-            return this.getPath().compareTo(cat.getPath());
+            return getPath().compareTo(cat.getPath());
         }
         return thisGlobal ? -1 : 1;
     }
@@ -189,7 +188,7 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
     /**
      * Returns the id.<p>
-     * 
+     *
      * @return the id
      */
     public CmsUUID getId() {
@@ -197,9 +196,9 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
         return m_structureId;
     }
 
-    /** 
+    /**
      * Returns the mere category name without it's complete path and without the trailing folder - slash.<p>
-     * 
+     *
      * @return the mere category name without it's complete path and without the trailing folder - slash
      */
     public String getName() {
@@ -217,7 +216,7 @@ public class CmsCategory implements Comparable<CmsCategory>, Serializable {
 
     /**
      * Returns the path.<p>
-     * 
+     *
      * @return the path
      */
     public String getPath() {

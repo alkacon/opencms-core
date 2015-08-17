@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,18 +37,18 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
 /**
- * Extends the default pattern layout of log4j by adding functionality for filtering the 
+ * Extends the default pattern layout of log4j by adding functionality for filtering the
  * stack traces output.<p>
- * 
+ *
  * CAUTION: Do not use classes which instantiate a logger in this class!!!<p>
- * 
+ *
  * Usage (log4j.properties):<br/>
  * log4j.appender.OC.layout=org.opencms.util.CmsPatternLayout<br/>
  * log4j.appender.OC.layout.ConversionPattern=%d{DATE} %5p [%30.30C:%4L] %m%n<br/>
  * log4j.appender.OC.layout.Filter=org.apache.tomcat,org.apache.catalina,org.apache.coyote<br/>
  * log4j.appender.OC.layout.Exclude=org.opencms.workplace.list.A_CmsListDialog<br/>
  * log4j.appender.OC.layout.MaxLength=5<p>
- * 
+ *
  * @since 7.0.5
  */
 public class CmsPatternLayout extends PatternLayout {
@@ -72,7 +72,7 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Constructs a PatternLayout using the supplied conversion pattern.
-     * 
+     *
      * @param pattern the pattern to use for the layout
      */
     CmsPatternLayout(String pattern) {
@@ -165,7 +165,7 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Sets an exclusion for preventing the stack trace output.<p>
-     * 
+     *
      * @param exclude the names of a classes (comma separated) which should prevent the stack trace output
      */
     public void setExclude(String exclude) {
@@ -184,7 +184,7 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Sets a filter for the stack trace output.<p>
-     * 
+     *
      * @param filter the names of a classes (comma separated) which should be filtered in the stack trace output
      */
     public void setFilter(String filter) {
@@ -203,7 +203,7 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Sets the maximum length of the stack trace.<p>
-     * 
+     *
      * @param len the maximum length (lines) of the stack trace
      */
     public void setMaxLength(String len) {
@@ -217,10 +217,10 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Creates a string with the count of filtered and truncated elements.<p>
-     * 
+     *
      * @param truncated the number of truncated elements
      * @param filtered the number of filtered elements
-     * 
+     *
      * @return a string with the count of filtered and truncated elements
      */
     private String createSummary(int truncated, int filtered) {
@@ -241,10 +241,10 @@ public class CmsPatternLayout extends PatternLayout {
 
     /**
      * Checks if the element in the stack trace is filtered.<p>
-     * 
+     *
      * @param element the element in the stack trace to check
      * @param list the list to check against
-     * 
+     *
      * @return true if filtered otherwise false
      */
     private boolean matches(String element, List<String> list) {

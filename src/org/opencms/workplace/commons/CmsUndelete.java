@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,15 +41,15 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the undelete resources dialog.<p> 
- * 
+ * Provides methods for the undelete resources dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/undelete.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUndelete extends CmsMultiDialog {
 
@@ -61,7 +61,7 @@ public class CmsUndelete extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUndelete(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsUndelete extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -83,7 +83,7 @@ public class CmsUndelete extends CmsMultiDialog {
 
     /**
      * Performs the undelete action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionUndelete() throws JspException {
@@ -106,7 +106,7 @@ public class CmsUndelete extends CmsMultiDialog {
 
     /**
      * Returns the HTML for the localized undelete confirmation message depending on single or multi operation.<p>
-     * 
+     *
      * @return the HTML for the localized undelete confirmation message
      */
     public String buildConfirmationMessage() {
@@ -127,7 +127,7 @@ public class CmsUndelete extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to undelete the resource       
+        // check the required permissions to undelete the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -135,7 +135,7 @@ public class CmsUndelete extends CmsMultiDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_UNDELETE);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
@@ -146,14 +146,14 @@ public class CmsUndelete extends CmsMultiDialog {
             setAction(ACTION_LOCKS_CONFIRMED);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
+            // build title for delete dialog
             setDialogTitle(Messages.GUI_UNDELETE_RESOURCE_1, Messages.GUI_UNDELETE_MULTI_2);
         }
     }
 
     /**
      * Performs the resource undeletion.<p>
-     * 
+     *
      * @return true, if the undelete operation is successful, otherwise false
      * @throws CmsException if undeletion is not successful
      */

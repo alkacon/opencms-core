@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,12 +31,12 @@ import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * This is a helper class for changing GWT UIObjects' styles between a set of given values.<p>
- * 
+ *
  * Every time a new value is set, the previous value of the style variable will be removed
  * from all associated UI objects, and the new style name will be added.
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsStyleVariable {
 
@@ -48,7 +48,7 @@ public class CmsStyleVariable {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param uis the list of UI objects to associate with this style variable
      */
     public CmsStyleVariable(UIObject... uis) {
@@ -58,7 +58,7 @@ public class CmsStyleVariable {
 
     /**
      * Returns the current style value.<p>
-     * 
+     *
      * @return the current style value, or <code>null</code> if non is set
      */
     public String getValue() {
@@ -69,7 +69,7 @@ public class CmsStyleVariable {
     /**
      * Removes the previous value of the style variable from all associated ui objects
      * and adds the new value as a style name to all of them.<p>
-     * 
+     *
      * @param newStyle the new style name
      */
     public void setValue(String newStyle) {

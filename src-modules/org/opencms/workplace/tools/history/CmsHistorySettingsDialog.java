@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to enter the settings for the history in the administration view.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistorySettingsDialog extends CmsWidgetDialog {
@@ -63,7 +63,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHistorySettingsDialog(CmsJspActionElement jsp) {
@@ -73,7 +73,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -86,6 +86,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -106,8 +107,9 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
                 if (enabled) {
                     versionsDeleted = versions;
                 } else {
-                    errors.add(new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.GUI_HISTORY_SETTINGS_INVALID_0)));
+                    errors.add(
+                        new CmsIllegalArgumentException(
+                            Messages.get().container(Messages.GUI_HISTORY_SETTINGS_INVALID_0)));
                 }
                 break;
             default:
@@ -124,6 +126,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -148,23 +151,22 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initHistorySettingsObject();
         setKeyPrefix(KEY_PREFIX);
 
-        addWidget(new CmsWidgetDialogParameter(m_historySettings, "versions", PAGES[0], new CmsSelectWidget(
-            getVersions())));
-        addWidget(new CmsWidgetDialogParameter(
-            m_historySettings,
-            "mode",
-            PAGES[0],
-            new CmsRadioSelectWidget(getModes())));
+        addWidget(
+            new CmsWidgetDialogParameter(m_historySettings, "versions", PAGES[0], new CmsSelectWidget(getVersions())));
+        addWidget(
+            new CmsWidgetDialogParameter(m_historySettings, "mode", PAGES[0], new CmsRadioSelectWidget(getModes())));
     }
 
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -198,6 +200,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -209,17 +212,18 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with the possible modes for the history to keep.<p>
-     * 
+     *
      * @return a list with the possible modes for the history to keep
      */
     private List getModes() {
 
         ArrayList ret = new ArrayList();
 
-        ret.add(new CmsSelectWidgetOption(
-            String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED),
-            m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED,
-            key(Messages.GUI_HISTORY_SETTINGS_MODE_DISABLED_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED),
+                m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_DISABLED,
+                key(Messages.GUI_HISTORY_SETTINGS_MODE_DISABLED_0)));
         ret.add(new CmsSelectWidgetOption(
             String.valueOf(CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS),
             m_historySettings.getMode() == CmsHistorySettings.MODE_DELETED_HISTORY_KEEP_NO_VERSIONS,
@@ -234,7 +238,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with the possible versions to choose from.<p>
-     * 
+     *
      * @return a list with the possible versions to choose from
      */
     private List getVersions() {
@@ -245,10 +249,11 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
         int historyVersions = 0;
 
         // Add the option for disabled version history
-        ret.add(new CmsSelectWidgetOption(
-            String.valueOf(-2),
-            defaultHistoryVersions == -2,
-            key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_DISABLED_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                String.valueOf(-2),
+                defaultHistoryVersions == -2,
+                key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_DISABLED_0)));
 
         // Iterate from 1 to 50 with a stepping of 1 for the first 10 entries and a stepping of five for the entries from 10 to 50
         while (historyVersions < 50) {
@@ -256,29 +261,32 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
             // increment the history version
             historyVersions++;
 
-            if (historyVersions % 5 == 0 || historyVersions <= 10) {
+            if (((historyVersions % 5) == 0) || (historyVersions <= 10)) {
 
                 boolean defaultValue = defaultHistoryVersions == historyVersions;
-                ret.add(new CmsSelectWidgetOption(
-                    String.valueOf(historyVersions),
-                    defaultValue,
-                    String.valueOf(historyVersions)));
+                ret.add(
+                    new CmsSelectWidgetOption(
+                        String.valueOf(historyVersions),
+                        defaultValue,
+                        String.valueOf(historyVersions)));
             }
         }
 
         // If the default setting for the version history is more than 50
         if (defaultHistoryVersions > historyVersions) {
-            ret.add(new CmsSelectWidgetOption(
-                String.valueOf(defaultHistoryVersions),
-                true,
-                String.valueOf(defaultHistoryVersions)));
+            ret.add(
+                new CmsSelectWidgetOption(
+                    String.valueOf(defaultHistoryVersions),
+                    true,
+                    String.valueOf(defaultHistoryVersions)));
         }
 
         // Add the option for unlimited version history
-        ret.add(new CmsSelectWidgetOption(
-            String.valueOf(-1),
-            defaultHistoryVersions == -1,
-            key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                String.valueOf(-1),
+                defaultHistoryVersions == -1,
+                key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0)));
 
         return ret;
     }

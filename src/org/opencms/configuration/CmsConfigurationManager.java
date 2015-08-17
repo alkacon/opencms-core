@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,10 +57,10 @@ import org.xml.sax.SAXException;
 
 /**
  * Configuration manager for digesting the OpenCms XML configuration.<p>
- * 
- * Reads the individual configuration class nodes first and creaes new 
+ *
+ * Reads the individual configuration class nodes first and creaes new
  * instances of the "base" configuration classes.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
@@ -115,7 +115,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Creates a new OpenCms configuration manager.<p>
-     * 
+     *
      * @param baseFolder base folder where XML configurations to load are located
      */
     public CmsConfigurationManager(String baseFolder) {
@@ -123,23 +123,27 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_baseFolder = new File(baseFolder);
         if (!m_baseFolder.exists()) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1,
-                    m_baseFolder.getAbsolutePath()));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1,
+                        m_baseFolder.getAbsolutePath()));
             }
         }
         m_backupFolder = new File(m_baseFolder.getAbsolutePath() + File.separatorChar + "backup");
         if (!m_backupFolder.exists()) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1,
-                    m_backupFolder.getAbsolutePath()));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1,
+                        m_backupFolder.getAbsolutePath()));
             }
             m_backupFolder.mkdirs();
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
         }
         cacheDtdSystemId(this);
         m_configurations = new ArrayList<I_CmsXmlConfiguration>();
@@ -147,7 +151,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Adds a configuration object to the configuration manager.<p>
-     * 
+     *
      * @param configuration the configuration to add
      */
     public void addConfiguration(I_CmsXmlConfiguration configuration) {
@@ -172,7 +176,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public void addXmlDigesterRules(Digester digester) {
 
-        // add rule for <configuration> node        
+        // add rule for <configuration> node
         digester.addObjectCreate(
             "*/" + N_CONFIGURATION + "/" + N_CONFIG,
             I_CmsXmlConfiguration.A_CLASS,
@@ -188,7 +192,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // add the <configuration> node
         Element configurationElement = parent.addElement(N_CONFIGURATION);
         for (int i = 0; i < m_configurations.size(); i++) {
-            // append the individual configuration 
+            // append the individual configuration
             I_CmsXmlConfiguration configuration = m_configurations.get(i);
             configurationElement.addElement(N_CONFIG).addAttribute(
                 I_CmsXmlConfiguration.A_CLASS,
@@ -199,7 +203,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Creates the XML document build from the provided configuration.<p>
-     * 
+     *
      * @param configuration the configuration to build the XML for
      * @return the XML document build from the provided configuration
      */
@@ -208,7 +212,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // create a new document
         Document result = DocumentHelper.createDocument();
 
-        // set the document type        
+        // set the document type
         DOMDocumentType docType = new DOMDocumentType();
         docType.setElementName(N_ROOT);
         docType.setSystemID(configuration.getDtdUrlPrefix() + configuration.getDtdFilename());
@@ -233,8 +237,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the properties read from <code>opencms.properties</code>.<p> 
-     * 
+     * Returns the properties read from <code>opencms.properties</code>.<p>
+     *
      * @see #setConfiguration(CmsParameterConfiguration)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
@@ -245,7 +249,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Returns a specific configuration from the list of initialized configurations.<p>
-     * 
+     *
      * @param clazz the configuration class that should be returned
      * @return the initialized configuration class instance, or <code>null</code> if this is not found
      */
@@ -262,7 +266,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Returns the list of all initialized configurations.<p>
-     * 
+     *
      * @return the list of all initialized configurations
      */
     public List<I_CmsXmlConfiguration> getConfigurations() {
@@ -315,7 +319,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Loads the OpenCms configuration from the given XML file.<p>
-     * 
+     *
      * @throws SAXException in case of XML parse errors
      * @throws IOException in case of file IO errors
      */
@@ -341,9 +345,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Sets the configuration read from the <code>opencms.properties</code>.<p>
-     * 
+     *
      * @param propertyConfiguration the configuration read from the <code>opencms.properties</code>
-     * 
+     *
      * @see #getConfiguration()
      */
     public void setConfiguration(CmsParameterConfiguration propertyConfiguration) {
@@ -353,7 +357,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Writes the XML configuration for the provided configuration instance.<p>
-     * 
+     *
      * @param clazz the configuration class to write the XML for
      * @throws IOException in case of I/O errors while writing
      * @throws CmsConfigurationException if the given class is not a valid configuration class
@@ -362,9 +366,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         I_CmsXmlConfiguration configuration = getConfiguration(clazz);
         if (configuration == null) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1,
-                clazz.getName()));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, clazz.getName()));
         }
 
         // generate the file URL for the XML input
@@ -373,7 +376,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITE_CONFIG_XMLFILE_1, file.getAbsolutePath()));
         }
 
-        // generate the XML document 
+        // generate the XML document
         Document config = generateXml(configuration);
 
         // output the document
@@ -395,16 +398,17 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_WRITE_CONFIG_SUCCESS_2,
-                file.getAbsolutePath(),
-                configuration.getClass().getName()));
+            LOG.info(
+                Messages.get().getBundle().key(
+                    Messages.LOG_WRITE_CONFIG_SUCCESS_2,
+                    file.getAbsolutePath(),
+                    configuration.getClass().getName()));
         }
     }
 
     /**
      * Creates a backup of the given XML configurations input file.<p>
-     * 
+     *
      * @param configuration the configuration for which the input file should be backed up
      */
     private void backupXmlConfiguration(I_CmsXmlConfiguration configuration) {
@@ -429,7 +433,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Adds a new DTD system id prefix mapping for internal resolution of external URLs.<p>
-     * 
+     *
      * @param configuration the configuration to add the mapping from
      */
     private void cacheDtdSystemId(I_CmsXmlConfiguration configuration) {
@@ -443,13 +447,14 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                     configuration.getDtdUrlPrefix() + configuration.getDtdFilename(),
                     file.getBytes(CmsEncoder.ENCODING_UTF_8));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_CACHE_DTD_SYSTEM_ID_1,
-                        configuration.getDtdUrlPrefix()
-                            + configuration.getDtdFilename()
-                            + " --> "
-                            + configuration.getDtdSystemLocation()
-                            + configuration.getDtdFilename()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_CACHE_DTD_SYSTEM_ID_1,
+                            configuration.getDtdUrlPrefix()
+                                + configuration.getDtdFilename()
+                                + " --> "
+                                + configuration.getDtdSystemLocation()
+                                + configuration.getDtdFilename()));
                 }
             } catch (IOException e) {
                 LOG.error(
@@ -463,7 +468,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /**
      * Loads the OpenCms configuration from the given XML URL.<p>
-     * 
+     *
      * @param url the base URL of the XML configuration to load
      * @param configuration the configuration to load
      * @throws SAXException in case of XML parse errors
@@ -493,13 +498,13 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         configuration.addXmlDigesterRules(m_digester);
 
-        // start the parsing process        
+        // start the parsing process
         m_digester.parse(fileUrl.openStream());
     }
 
     /**
      * Removes all backups that are older then the given number of days.<p>
-     * 
+     *
      * @param daysToKeep the days to keep the backups for
      */
     private void removeOldBackups(long daysToKeep) {
@@ -512,7 +517,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             if ((lastMod < maxAge) & (!file.getAbsolutePath().endsWith(CmsConfigurationManager.POSTFIX_ORI))) {
                 file.delete();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_REMOVE_CONFIG_FILE_1, file.getAbsolutePath()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(Messages.LOG_REMOVE_CONFIG_FILE_1, file.getAbsolutePath()));
                 }
             }
         }

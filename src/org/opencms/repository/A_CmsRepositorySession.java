@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 /**
  * Abstract implementation of the interface {@link I_CmsRepositorySession} to provide
  * the functionality of filtering items.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsRepositorySession implements I_CmsRepositorySession {
@@ -62,7 +62,7 @@ public abstract class A_CmsRepositorySession implements I_CmsRepositorySession {
 
     /**
      * Checks if a path is filtered out of the filter or not.<p>
-     * 
+     *
      * @param path the path of a resource to check
      * @return true if the name matches one of the given filter patterns
      */

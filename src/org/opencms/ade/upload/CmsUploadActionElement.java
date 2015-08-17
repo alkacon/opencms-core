@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Upload action element, used to generate the upload dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadActionElement extends CmsGwtActionElement {
@@ -53,7 +53,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param jsp the JSP Action Element
          */
         public Dialog(CmsJspActionElement jsp) {
@@ -80,10 +80,10 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsUploadActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -118,9 +118,9 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Special export for the button mode.<p>
-     * 
+     *
      * @return the data
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public String exportButton() throws Exception {
@@ -133,7 +133,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Returns the upload dialog title.<p>
-     * 
+     *
      * @return the upload dialog title
      */
     public String getTitle() {
@@ -143,7 +143,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Returns a javascript tag that contains a variable deceleration that has the close link as value.<p>
-     * 
+     *
      * @return a javascript tag that contains a variable deceleration that has the close link as value
      */
     private String exportCloseLink() {
@@ -165,7 +165,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Returns a javascript tag that contains a variable deceleration that has the close link as value.<p>
-     * 
+     *
      * @return a javascript tag that contains a variable deceleration that has the close link as value
      */
     private String exportDialogMode() {
@@ -178,7 +178,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
     /**
      * Returns a javascript tag that contains a variable deceleration that has the target folder as value.<p>
-     * 
+     *
      * @return a javascript tag that contains a variable deceleration that has the target folder as value
      */
     private String exportTargetFolder() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,10 +42,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Common methods shared among user and group principals, 
+ * Common methods shared among user and group principals,
  * also contains several utility functions to deal with principal instances.<p>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPrincipal> {
 
@@ -72,12 +72,12 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     /**
      * Filters out all principals that do not have the given flag set,
      * but leaving principals with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code> untouched.<p>
-     * 
+     *
      * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
-     * 
+     *
      * @param principals a list of <code>{@link CmsPrincipal}</code> objects
      * @param flag the flag for filtering
-     * 
+     *
      * @return the filtered principal list
      */
     public static List<? extends CmsPrincipal> filterCoreFlag(List<? extends CmsPrincipal> principals, int flag) {
@@ -94,11 +94,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Filters out all groups with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
+     *
      * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
-     * 
+     *
      * @param groups a list of <code>{@link CmsGroup}</code> objects
-     * 
+     *
      * @return the filtered principal list
      */
     public static List<CmsGroup> filterCoreGroups(List<CmsGroup> groups) {
@@ -115,11 +115,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
+     *
      * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
-     * 
+     *
      * @param users a list of <code>{@link CmsUser}</code> objects
-     * 
+     *
      * @return the filtered principal list
      */
     public static List<CmsUser> filterCoreUsers(List<CmsUser> users) {
@@ -136,12 +136,12 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Filters out all principals that do not have the given flag set.<p>
-     * 
+     *
      * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
-     * 
+     *
      * @param principals the list of <code>{@link CmsPrincipal}</code> objects
      * @param flag the flag for filtering
-     * 
+     *
      * @return the filtered principal list
      */
     public static List<? extends CmsPrincipal> filterFlag(List<? extends CmsPrincipal> principals, int flag) {
@@ -158,7 +158,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Returns the provided group name prefixed with <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code>.<p>
-     * 
+     *
      * @param name the name to add the prefix to
      * @return the provided group name prefixed with <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code>
      */
@@ -173,7 +173,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Returns the provided user name prefixed with <code>{@link I_CmsPrincipal#PRINCIPAL_USER}.</code>.<p>
-     * 
+     *
      * @param name the name to add the prefix to
      * @return the provided user name prefixed with <code>{@link I_CmsPrincipal#PRINCIPAL_USER}.</code>
      */
@@ -187,17 +187,17 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
-     * Utility function to read a prefixed principal from the OpenCms database using the 
+     * Utility function to read a prefixed principal from the OpenCms database using the
      * provided OpenCms user context.<p>
-     * 
+     *
      * The principal must be either prefixed with <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code> or
      * <code>{@link I_CmsPrincipal#PRINCIPAL_USER}.</code>.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use when reading the principal
      * @param name the prefixed principal name
-     * 
+     *
      * @return the principal read from the OpenCms database
-     * 
+     *
      * @throws CmsException in case the principal could not be read
      */
     public static I_CmsPrincipal readPrefixedPrincipal(CmsObject cms, String name) throws CmsException {
@@ -214,14 +214,14 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
-     * Utility function to read a principal by its id from the OpenCms database using the 
+     * Utility function to read a principal by its id from the OpenCms database using the
      * provided OpenCms user context.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use when reading the principal
      * @param id the id of the principal to read
-     * 
+     *
      * @return the principal read from the OpenCms database
-     * 
+     *
      * @throws CmsException in case the principal could not be read
      */
     public static I_CmsPrincipal readPrincipal(CmsObject cms, CmsUUID id) throws CmsException {
@@ -243,18 +243,18 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
-     * Utility function to read a principal of the given type from the OpenCms database using the 
+     * Utility function to read a principal of the given type from the OpenCms database using the
      * provided OpenCms user context.<p>
-     * 
+     *
      * The type must either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}</code> or
      * <code>{@link I_CmsPrincipal#PRINCIPAL_USER}</code>.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use when reading the principal
-     * @param type the principal type 
+     * @param type the principal type
      * @param name the principal name
-     * 
+     *
      * @return the principal read from the OpenCms database
-     * 
+     *
      * @throws CmsException in case the principal could not be read
      */
     public static I_CmsPrincipal readPrincipal(CmsObject cms, String type, String name) throws CmsException {
@@ -270,21 +270,19 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
             }
         }
         // invalid principal type was given
-        throw new CmsDbEntryNotFoundException(Messages.get().container(
-            Messages.ERR_INVALID_PRINCIPAL_TYPE_2,
-            type,
-            name));
+        throw new CmsDbEntryNotFoundException(
+            Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_TYPE_2, type, name));
     }
 
     /**
-     * Utility function to read a principal by its id from the OpenCms database using the 
+     * Utility function to read a principal by its id from the OpenCms database using the
      * provided OpenCms user context.<p>
-     * 
+     *
      * @param cms the OpenCms user context to use when reading the principal
      * @param id the id of the principal to read
-     * 
+     *
      * @return the principal read from the OpenCms database
-     * 
+     *
      * @throws CmsException in case the principal could not be read
      */
     public static I_CmsPrincipal readPrincipalIncludingHistory(CmsObject cms, CmsUUID id) throws CmsException {
@@ -316,7 +314,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
      */
     public int compareTo(I_CmsPrincipal obj) {
 
-        if ((this == obj) || this.equals(obj)) {
+        if ((this == obj) || equals(obj)) {
             return 0;
         }
         return getName().compareTo(obj.getName());
@@ -349,13 +347,13 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Returns the display name of this principal including the organizational unit.<p>
-     * 
+     *
      * @param cms the cms context
      * @param locale the locale
-     * 
+     *
      * @return the display name of this principal including the organizational unit
-     * 
-     * @throws CmsException if the organizational unit could not be read 
+     *
+     * @throws CmsException if the organizational unit could not be read
      */
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
 
@@ -367,14 +365,14 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
 
     /**
      * Returns the translated display name of this principal if it is a group and the display name otherwise.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param locale the locale 
+     *
+     * @param cms the current CMS context
+     * @param locale the locale
      * @param translation the group name translation to use
-     *  
-     * @return the translated display name 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the translated display name
+     *
+     * @throws CmsException if something goes wrong
      */
     public String getDisplayName(CmsObject cms, Locale locale, I_CmsGroupNameTranslation translation)
     throws CmsException {
@@ -408,7 +406,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
      * Returns the fully qualified name of this principal.<p>
      *
      * @return the fully qualified name of this principal
-     * 
+     *
      * @see java.security.Principal#getName()
      */
     public String getName() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,7 +27,7 @@
 
 package org.opencms.ade.contenteditor.widgetregistry.client;
 
-import org.opencms.acacia.client.widgets.I_CmsEditWidget;
+import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -42,14 +42,14 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Wrapper for a native widget.<p>
  */
-public final class WidgetWrapper extends Widget implements I_CmsEditWidget {
+public final class WidgetWrapper extends Widget implements I_CmsFormEditWidget {
 
     /** The wrapped native widget. */
     private NativeEditWidget m_nativeWidget;
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param nativeWidget the native widget
      */
     protected WidgetWrapper(NativeEditWidget nativeWidget) {
@@ -140,6 +140,14 @@ public final class WidgetWrapper extends Widget implements I_CmsEditWidget {
     public void setValue(String value, boolean fireEvents) {
 
         m_nativeWidget.setValue(value, fireEvents);
+    }
+
+    /**
+     * @see org.opencms.acacia.client.widgets.I_CmsFormEditWidget#setWidgetInfo(java.lang.String, java.lang.String)
+     */
+    public void setWidgetInfo(String label, String help) {
+
+        m_nativeWidget.setWidgetInfo(label, help);
     }
 
     /**

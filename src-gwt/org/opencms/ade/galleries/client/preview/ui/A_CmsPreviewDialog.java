@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,12 +53,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a widget skeleton for the preview dialog.<p>
- * 
+ *
  * This widget contains a panel with the resource preview and
  * a set of tabs with resource information under the preview panel.<p>
- * 
+ *
  * @param <T> the resource info bean type
- * 
+ *
  * @since 8.0.
  */
 public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends Composite {
@@ -118,11 +118,11 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param dialogMode the gallery dialog mode (view, widget, ade, editor, ...)
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set
-     * @param disableSelection true if selection should be disabled in the preview  
+     * @param disableSelection true if selection should be disabled in the preview
      */
     public A_CmsPreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
@@ -143,7 +143,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
         m_selectButton.setVisible(false);
         m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_BUTTON_0));
 
-        // buttons        
+        // buttons
         switch (m_galleryMode) {
             case editor:
                 m_selectButton.setVisible(CmsPreviewUtil.shouldShowSelectButton() && !disableSelection);
@@ -165,9 +165,9 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Displays a confirm save changes dialog with the given message.
-     * May insert individual message before the given one for further information.<p> 
+     * May insert individual message before the given one for further information.<p>
      * Will call the appropriate command after saving/cancel.<p>
-     * 
+     *
      * @param message the message to display
      * @param onConfirm the command executed after saving
      * @param onCancel the command executed on cancel
@@ -202,14 +202,14 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Fills the content of the tabs panel.<p>
-     * 
-     * @param resourceInfo the bean containing the parameter 
+     *
+     * @param resourceInfo the bean containing the parameter
      */
     public abstract void fillContent(T resourceInfo);
 
     /**
      * Returns the gallery mode.<p>
-     * 
+     *
      * @return the gallery mode
      */
     public GalleryMode getGalleryMode() {
@@ -219,14 +219,14 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Returns if there are any changes that need saving, before the preview may be closed.<p>
-     * 
+     *
      * @return <code>true</code> if changed
      */
     public abstract boolean hasChanges();
 
     /**
      * Will be triggered, when the select button is clicked.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_closePreview")
@@ -238,15 +238,15 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Will be triggered, when the select button is clicked.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_selectButton")
     public void onSelectClick(ClickEvent event) {
 
         if (m_galleryMode == GalleryMode.editor) {
-            // note: the select button isn't necessarily visible in editor mode (depending on the WYSIWYG editor), but 
-            // if it is, we want it to save the data and close the gallery dialog 
+            // note: the select button isn't necessarily visible in editor mode (depending on the WYSIWYG editor), but
+            // if it is, we want it to save the data and close the gallery dialog
             if (getHandler().setDataInEditor()) {
                 // do this after a delay, so we don't get ugly Javascript errors when the iframe is closed.
                 Timer timer = new Timer() {
@@ -276,14 +276,14 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
     /**
      * Saves the changes for this dialog.<p>
-     * 
-     * @param afterSaveCommand the command to execute after saving the changes 
+     *
+     * @param afterSaveCommand the command to execute after saving the changes
      */
     public abstract void saveChanges(Command afterSaveCommand);
 
     /**
      * Returns the preview handler.<p>
-     * 
+     *
      * @return the preview handler
      */
     protected abstract I_CmsPreviewHandler<T> getHandler();

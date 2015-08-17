@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,16 +38,16 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 
 /**
  * Stores information about a user that has authenticated himself the OpenCms security system.<p>
- * 
- * This object is used to provide information about all authenticated users in the system 
- * with the {@link org.opencms.main.CmsSessionManager}.<p> 
- * 
+ *
+ * This object is used to provide information about all authenticated users in the system
+ * with the {@link org.opencms.main.CmsSessionManager}.<p>
+ *
  * This object is available for all authenticated users after login.
  * If a user has not logged in, he may have a session on the servlet engine,
  * but he will have no session info object attached. For example the "Guest" user
- * may have multiple sessions, but no session info is created for him.<p> 
- * 
- * @since 6.0.0 
+ * may have multiple sessions, but no session info is created for him.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable {
 
@@ -89,7 +89,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Creates a new CmsSessionInfo object.<p>
-     * 
+     *
      * @param context the user context to create this session info for
      * @param sessionId OpenCms id of the (http) session this session info belongs to
      * @param maxInactiveInterval the maximum time, in seconds, this session info is allowed to be inactive
@@ -105,7 +105,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Allows sorting session info according to the user names.<p>
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(CmsSessionInfo obj) {
@@ -133,7 +133,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the broadcast queue of the user to which this session info belongs.<p>
-     * 
+     *
      * @return the broadcast queue of the user to which this session info belongs
      */
     public Buffer getBroadcastQueue() {
@@ -147,12 +147,12 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     /**
      * Returns the maximum time, in seconds, this session info is allowed to be inactive.<p>
      *
-     * The inactive time is the time since the last call to the {@link #update(CmsRequestContext)} 
+     * The inactive time is the time since the last call to the {@link #update(CmsRequestContext)}
      * method. If the inactive time is greater then the maximum allowed time, this
      * session info will be removed from the session manager.<p>
      *
      * @return the maximum time, in seconds, this session info is allowed to be inactive
-     * 
+     *
      * @see javax.servlet.http.HttpSession#getMaxInactiveInterval()
      */
     public int getMaxInactiveInterval() {
@@ -162,7 +162,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the fully qualified name of the organizational unit for this session.<p>
-     * 
+     *
      * @return the fully qualified name of the organizational unit for this session
      */
     public String getOrganizationalUnitFqn() {
@@ -172,7 +172,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the id of the project of the user.<p>
-     * 
+     *
      * @return the id of the project
      */
     public CmsUUID getProject() {
@@ -184,7 +184,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
      * Returns the id of the OpenCms (http) session this session info belongs to.<p>
      *
      * @return the id of the OpenCms (http) session this session info belongs to
-     * 
+     *
      * @see javax.servlet.http.HttpSession#getId()
      */
     public CmsUUID getSessionId() {
@@ -194,7 +194,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the current site root of the user.<p>
-     * 
+     *
      * @return the current site root of the user
      */
     public String getSiteRoot() {
@@ -204,8 +204,8 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the time, in milliseconds, this session has been active,
-     * that is the time of the last update minus the creation time.<p> 
-     * 
+     * that is the time of the last update minus the creation time.<p>
+     *
      * @return the time, in milliseconds, this session has been active
      */
     public long getTimeActive() {
@@ -235,7 +235,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Returns the id of the user to which this session info belongs.<p>
-     * 
+     *
      * @return the id of the user to which this session info belongs
      */
     public CmsUUID getUserId() {
@@ -253,9 +253,9 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     }
 
     /**
-     * Returns <code>true</code> if this session info has expired, that 
+     * Returns <code>true</code> if this session info has expired, that
      * is it has not been updated in the time set by the maximum inactivity interval.<p>
-     *  
+     *
      * @return <code>true</code> if this session info has expired
      */
     public boolean isExpired() {
@@ -285,7 +285,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
 
     /**
      * Sets the id of the current project of the user of this session info.<p>
-     * 
+     *
      * @param projectId the project id to set
      */
     protected void setProject(CmsUUID projectId) {
@@ -296,7 +296,7 @@ public class CmsSessionInfo implements Comparable<CmsSessionInfo>, Serializable 
     /**
      * Updates the session info object with the information from
      * the given request context.<p>
-     * 
+     *
      * @param context the request context to update the session with
      */
     protected void update(CmsRequestContext context) {

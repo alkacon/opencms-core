@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper constructor.<p>
-     * 
-     * @param entity the entity to be wrapped 
+     *
+     * @param entity the entity to be wrapped
      */
     public CmsEntityWrapper(CmsEntity entity) {
 
@@ -64,9 +64,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName argument for the wrapped method 
-     * @param value argument for the wrapped method 
+     *
+     * @param attributeName argument for the wrapped method
+     * @param value argument for the wrapped method
      */
     public void addAttributeValueEntity(String attributeName, CmsEntityWrapper value) {
 
@@ -75,9 +75,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName argument for the wrapped method 
-     * @param value argument for the wrapped method 
+     *
+     * @param attributeName argument for the wrapped method
+     * @param value argument for the wrapped method
      */
     public void addAttributeValueString(String attributeName, String value) {
 
@@ -86,9 +86,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @return the result of the wrapped method
      */
     public CmsEntityAttributeWrapper getAttribute(String attributeName) {
 
@@ -97,18 +97,18 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public CmsEntityAttributeWrapper[] getAttributes() {
 
         return CmsWrapperUtils.arrayFromEntityAttributeList(m_entity.getAttributes());
     }
 
-    /** 
+    /**
      * Gets the wrapped entity.<p>
-     * 
-     * @return the wrapped entity  
+     *
+     * @return the wrapped entity
      */
     public CmsEntity getEntity() {
 
@@ -117,8 +117,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String getId() {
 
@@ -127,8 +127,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String getTypeName() {
 
@@ -137,9 +137,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @return the result of the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @return the result of the wrapped method
      */
     public boolean hasAttribute(String attributeName) {
 
@@ -148,10 +148,10 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @param value parameter for the wrapped method 
-     * @param index parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @param value parameter for the wrapped method
+     * @param index parameter for the wrapped method
      */
     public void insertAttributeValueEntity(String attributeName, CmsEntityWrapper value, int index) {
 
@@ -160,10 +160,10 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @param value parameter for the wrapped method 
-     * @param index parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @param value parameter for the wrapped method
+     * @param index parameter for the wrapped method
      */
     public void insertAttributeValueString(String attributeName, String value, int index) {
 
@@ -172,8 +172,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
      */
     public void removeAttribute(String attributeName) {
 
@@ -182,8 +182,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
      */
     public void removeAttributeSilent(String attributeName) {
 
@@ -192,9 +192,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @param index parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @param index parameter for the wrapped method
      */
     public void removeAttributeValue(String attributeName, int index) {
 
@@ -203,9 +203,9 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @param attributeName parameter for the wrapped method 
-     * @param value parameter for the wrapped method 
+     *
+     * @param attributeName parameter for the wrapped method
+     * @param value parameter for the wrapped method
      */
     public void setAttributeValueEntity(String attributeName, CmsEntityWrapper value) {
 
@@ -225,7 +225,7 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
+     *
      * @param attributeName parameter for the wrapped method
      * @param value parameter for the wrapped method
      * @param index parameter for the wrapped method
@@ -237,8 +237,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Sets the wrapped entity.<p>
-     * 
-     * @param entity the entity to wrap 
+     *
+     * @param entity the entity to wrap
      */
     public void setEntity(CmsEntity entity) {
 
@@ -247,8 +247,8 @@ public class CmsEntityWrapper implements Exportable {
 
     /**
      * Wrapper method.<p>
-     * 
-     * @return the result of the wrapped method 
+     *
+     * @return the result of the wrapped method
      */
     public String toJSON() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,16 +31,16 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.test.OpenCmsTestCase;
 
-/** 
+/**
  * Test cases for file name validation.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestValidFilename extends OpenCmsTestCase {
 
     /**
      * Tests the file name validation method in the class CmsDriverManager.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCheckNameForResource() throws Exception {
@@ -66,7 +66,8 @@ public class TestValidFilename extends OpenCmsTestCase {
         // add some of the new valid chars
         assertFalse(checkName("Copy of abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~$"));
         assertFalse(checkName("Some German umlauts - \u00E4\u00F6\u00FC\u00C4\u00D6\u00DC\u00DF"));
-        assertFalse(checkName("Some more western European special chars - \u00E9\u00E8\u00F4\u00E1\u00E0\u00FB\u00ED\u00EC"));
+        assertFalse(
+            checkName("Some more western European special chars - \u00E9\u00E8\u00F4\u00E1\u00E0\u00FB\u00ED\u00EC"));
 
         assertFalse(checkName("my File"));
         // Window logic invalid chars
@@ -90,7 +91,7 @@ public class TestValidFilename extends OpenCmsTestCase {
         assertFalse(checkName("my]file"));
         assertFalse(checkName("my'file"));
 
-        // HTML reserved chars 
+        // HTML reserved chars
         assertFalse(checkName("my&file"));
         assertFalse(checkName("my=file"));
         assertFalse(checkName("my@file"));

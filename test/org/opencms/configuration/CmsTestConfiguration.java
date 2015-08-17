@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import org.dom4j.Element;
 
 /**
  * Dummy class for configuration testing.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsTestConfiguration extends A_CmsXmlConfiguration {
@@ -53,7 +53,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration {
     private String m_content2;
 
     /**
-     * The public contructor is hidden to prevent generation of instances of this class.<p> 
+     * The public contructor is hidden to prevent generation of instances of this class.<p>
      */
     public CmsTestConfiguration() {
 
@@ -65,7 +65,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Test method to add a value.<p>
-     * 
+     *
      * @param name the name of the test
      * @param value the value of the test
      */

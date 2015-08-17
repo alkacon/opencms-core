@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,16 +29,16 @@ package org.opencms.gwt.client.dnd;
 
 /**
  * Drag and drop controller.<p>
- * 
+ *
  * Implement and assign to the {@link CmsDNDHandler} to control the drag process as well as the underlying model.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsDNDController {
 
     /**
      * Executed when end animation starts.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
@@ -47,18 +47,18 @@ public interface I_CmsDNDController {
 
     /**
      * Executed before drop.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
-     * 
-     * @return <code>false</code> to cancel dropping 
+     *
+     * @return <code>false</code> to cancel dropping
      */
     boolean onBeforeDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed on drag cancel.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
@@ -67,18 +67,18 @@ public interface I_CmsDNDController {
 
     /**
      * Executed on drag start.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
-     * 
+     *
      * @return <code>false</code> to cancel dragging
      */
     boolean onDragStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed on drop.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
@@ -87,7 +87,7 @@ public interface I_CmsDNDController {
 
     /**
      * Executed after the placeholder has been positioned inside a drop target.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
@@ -96,18 +96,18 @@ public interface I_CmsDNDController {
 
     /**
      * Executed when the helper is dragged into a drop target.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance
-     * 
+     *
      * @return <code>false</code> to cancel entering target (placeholder will not positioned inside target)
      */
     boolean onTargetEnter(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler);
 
     /**
      * Executed when the helper is dragged out of a drop target.<p>
-     * 
+     *
      * @param draggable the draggable item
      * @param target the current drop target
      * @param handler the drag and drop handler instance

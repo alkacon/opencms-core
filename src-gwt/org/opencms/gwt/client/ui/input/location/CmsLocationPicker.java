@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -88,8 +88,8 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Constructor.<p>
-     *  
-     * @param configuration the widget configuration 
+     *
+     * @param configuration the widget configuration
      **/
     public CmsLocationPicker(String configuration) {
 
@@ -116,7 +116,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Returns the location value.<p>
-     * 
+     *
      * @return the location value
      */
     public CmsLocationValue getLocationValue() {
@@ -126,7 +126,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Returns the JSON string representation of the value.<p>
-     * 
+     *
      * @return the JSON string representation
      */
     public String getStringValue() {
@@ -144,7 +144,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Sets the picker enabled.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the picker
      */
     public void setEnabled(boolean enabled) {
@@ -154,7 +154,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Sets the widget value.<p>
-     * 
+     *
      * @param value the value
      */
     public void setValue(String value) {
@@ -164,7 +164,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Displays the given value.<p>
-     * 
+     *
      * @param value the value to display
      */
     protected void displayValue(String value) {
@@ -174,7 +174,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Returns the map preview element.<p>
-     * 
+     *
      * @return the map preview element
      */
     protected Element getMapPreview() {
@@ -184,7 +184,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Sets the location info to the info panel.<p>
-     * 
+     *
      * @param infos the location info items
      */
     protected void setLocationInfo(Map<String, String> infos) {
@@ -204,7 +204,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Sets the preview visible.<p>
-     * 
+     *
      * @param visible <code>true</code> to set the preview visible
      */
     protected void setPreviewVisible(boolean visible) {
@@ -218,7 +218,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
 
     /**
      * Opens the location popup.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_openerButton")

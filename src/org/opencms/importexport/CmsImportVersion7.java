@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -94,7 +94,7 @@ import com.google.common.collect.ComparisonChain;
 
 /**
  * Adds the XML handler rules for import and export of resources and accounts.<p>
- * 
+ *
  * @since 7.0.4
  */
 public class CmsImportVersion7 implements I_CmsImport {
@@ -469,7 +469,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     private int m_version;
 
     /**
-     * Public constructor.<p> 
+     * Public constructor.<p>
      */
     public CmsImportVersion7() {
 
@@ -478,14 +478,14 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds an ACE from the current xml data.<p>
-     * 
+     *
      * @see #addResourceAceRules(Digester, String)
      */
     public void addAccessControlEntry() {
 
         try {
             if ((m_resource == null) || !m_importACEs) {
-                // skip ace import if not intended or the import of the resource failed 
+                // skip ace import if not intended or the import of the resource failed
                 return;
             }
             if (m_throwable != null) {
@@ -506,12 +506,13 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // this list will be used and clean up in the importResource and importAccessControlEntries methods
                 m_aces = new ArrayList<CmsAccessControlEntry>();
             }
-            m_aces.add(new CmsAccessControlEntry(
-                m_resource.getResourceId(),
-                m_acePrincipalId,
-                m_acePermissionsAllowed,
-                m_acePermissionsDenied,
-                m_aceFlags));
+            m_aces.add(
+                new CmsAccessControlEntry(
+                    m_resource.getResourceId(),
+                    m_acePrincipalId,
+                    m_acePermissionsAllowed,
+                    m_acePermissionsDenied,
+                    m_aceFlags));
         } finally {
             m_acePrincipalId = null;
             m_acePermissionsAllowed = 0;
@@ -522,10 +523,10 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Registers a file whose contents are contained in the zip file.<p>
-     * 
-     * @param source the path in the zip file 
-     * 
-     * @param resourceId 
+     *
+     * @param source the path in the zip file
+     *
+     * @param resourceId
      */
     public void addContentFile(String source, String resourceId) {
 
@@ -541,7 +542,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds a new resource to be associated to the current organizational unit.<p>
-     * 
+     *
      * @param resourceName the resource name to add
      */
     public void addOrgUnitResource(String resourceName) {
@@ -562,7 +563,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds a new resource to be associated to the current project.<p>
-     * 
+     *
      * @param resourceName the resource name to add
      */
     public void addProjectResource(String resourceName) {
@@ -578,7 +579,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds a property from the current xml data, in case the type is implicit given.<p>
-     * 
+     *
      * @see #addResourcePropertyRules(Digester, String)
      */
     public void addProperty() {
@@ -588,9 +589,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds a property from the current xml data, in case the type is explicit given.<p>
-     * 
+     *
      * @param propertyType the type of the property to be added
-     * 
+     *
      * @see #addResourcePropertyRules(Digester, String)
      */
     public void addProperty(String propertyType) {
@@ -631,7 +632,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds a relation to be imported from the current xml data.<p>
-     * 
+     *
      * @see #addResourceRelationRules(Digester, String)
      */
     public void addRelation() {
@@ -641,7 +642,7 @@ public class CmsImportVersion7 implements I_CmsImport {
         }
         try {
             if (m_resource == null) {
-                // skip relation import if the import of the resource failed 
+                // skip relation import if the import of the resource failed
                 return;
             }
             if (m_throwable != null) {
@@ -663,12 +664,13 @@ public class CmsImportVersion7 implements I_CmsImport {
                 currentRelations = new ArrayList<CmsRelation>();
                 m_relations.put(m_resource.getRootPath(), currentRelations);
             }
-            currentRelations.add(new CmsRelation(
-                m_resource.getStructureId(),
-                m_resource.getRootPath(),
-                m_relationId,
-                m_relationPath,
-                m_relationType));
+            currentRelations.add(
+                new CmsRelation(
+                    m_resource.getStructureId(),
+                    m_resource.getRootPath(),
+                    m_relationId,
+                    m_relationPath,
+                    m_relationType));
         } finally {
             m_relationId = null;
             m_relationPath = null;
@@ -678,7 +680,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for a single import file.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      */
     public void addXmlDigesterRules(Digester digester) {
@@ -712,26 +714,29 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for pre-processing a single import file.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      */
     public void addXmlPreprocessingDigesterRules(Digester digester) {
 
         digester.addCallMethod(CmsImportExportManager.N_EXPORT + "/" + N_FILES + "/" + N_FILE, "increaseTotalFiles");
-        digester.addCallMethod(CmsImportExportManager.N_EXPORT
-            + "/"
-            + CmsImportExportManager.N_INFO
-            + "/"
-            + CmsImportExportManager.N_VERSION, "setVersion", 0);
+        digester.addCallMethod(
+            CmsImportExportManager.N_EXPORT
+                + "/"
+                + CmsImportExportManager.N_INFO
+                + "/"
+                + CmsImportExportManager.N_VERSION,
+            "setVersion",
+            0);
     }
 
     /**
      * Associates the stored resources to the created organizational units.<p>
-     * 
-     * This is a global process that occurs only once at the end of the import, 
+     *
+     * This is a global process that occurs only once at the end of the import,
      * after all resources have been imported, to make sure that the resources
      * of the organizational units are available.<p>
-     * 
+     *
      * @see #addAccountsOrgunitRules(Digester, String)
      * @see #addXmlDigesterRules(Digester)
      */
@@ -803,7 +808,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the ace Flags.<p>
      *
      * @return the ace Flags
-     * 
+     *
      * @see #N_FLAGS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -816,7 +821,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the ace Permissions Allowed.<p>
      *
      * @return the ace Permissions Allowed
-     * 
+     *
      * @see #N_ACCESSCONTROL_ALLOWEDPERMISSIONS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -829,7 +834,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the acePermissionsDenied.<p>
      *
      * @return the acePermissionsDenied
-     * 
+     *
      * @see #N_ACCESSCONTROL_DENIEDPERMISSIONS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -842,7 +847,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the acePrincipalId.<p>
      *
      * @return the acePrincipalId
-     * 
+     *
      * @see #N_ACCESSCONTROL_PRINCIPAL
      * @see #addResourceAceRules(Digester, String)
      */
@@ -865,7 +870,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the dateCreated.<p>
      *
      * @return the dateCreated
-     * 
+     *
      * @see #N_DATECREATED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -878,7 +883,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the dateExpired.<p>
      *
      * @return the dateExpired
-     * 
+     *
      * @see #N_DATEEXPIRED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -891,7 +896,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the dateLastModified.<p>
      *
      * @return the dateLastModified
-     * 
+     *
      * @see #N_DATELASTMODIFIED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -904,7 +909,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the dateReleased.<p>
      *
      * @return the dateReleased
-     * 
+     *
      * @see #N_DATERELEASED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -917,7 +922,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the destination.<p>
      *
      * @return the destination
-     * 
+     *
      * @see #N_DESTINATION
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -930,7 +935,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the flags.<p>
      *
      * @return the flags
-     * 
+     *
      * @see #N_FLAGS
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1053,7 +1058,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the propertyName.<p>
      *
      * @return the propertyName
-     * 
+     *
      * @see #N_NAME
      * @see #addResourcePropertyRules(Digester, String)
      */
@@ -1066,7 +1071,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the propertyValue.<p>
      *
      * @return the propertyValue
-     * 
+     *
      * @see #N_VALUE
      * @see #addResourcePropertyRules(Digester, String)
      */
@@ -1079,7 +1084,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the relationId.<p>
      *
      * @return the relationId
-     * 
+     *
      * @see #N_ID
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -1092,7 +1097,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the relationPath.<p>
      *
      * @return the relationPath
-     * 
+     *
      * @see #N_PATH
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -1105,7 +1110,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the relationType.<p>
      *
      * @return the relationType
-     * 
+     *
      * @see #N_TYPE
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -1128,7 +1133,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the resourceId.<p>
      *
      * @return the resourceId
-     * 
+     *
      * @see #N_UUIDRESOURCE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1141,7 +1146,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the source.<p>
      *
      * @return the source
-     * 
+     *
      * @see #N_SOURCE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1154,7 +1159,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the structureId.<p>
      *
      * @return the structureId
-     * 
+     *
      * @see #N_UUIDSTRUCTURE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1177,7 +1182,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the type.<p>
      *
      * @return the type
-     * 
+     *
      * @see #N_TYPE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1190,7 +1195,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the userCreated.<p>
      *
      * @return the userCreated
-     * 
+     *
      * @see #N_USERCREATED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1243,7 +1248,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Returns the userLastModified.<p>
      *
      * @return the userLastModified
-     * 
+     *
      * @see #N_USERLASTMODIFIED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -1292,7 +1297,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Imports an ACE from the current xml data.<p>
-     * 
+     *
      * @see #addResourceAceRules(Digester, String)
      */
     public void importAccessControlEntries() {
@@ -1501,7 +1506,7 @@ public class CmsImportVersion7 implements I_CmsImport {
             }
 
             // get the resources that already exist for the organizational unit
-            // if there are resources that does not exist jet, there will be a second try after importing resources       
+            // if there are resources that does not exist jet, there will be a second try after importing resources
             List<CmsResource> resources = new ArrayList<CmsResource>();
             String site = getCms().getRequestContext().getSiteRoot();
             try {
@@ -1533,9 +1538,10 @@ public class CmsImportVersion7 implements I_CmsImport {
             // if no resource available
             if (resources.isEmpty()) {
                 // meanwhile use the first one of the parent organizational unit
-                resources.add(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    getCms(),
-                    CmsOrganizationalUnit.getParentFqn(m_orgUnitName)).get(0));
+                resources.add(
+                    OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                        getCms(),
+                        CmsOrganizationalUnit.getParentFqn(m_orgUnitName)).get(0));
             }
 
             // create the organizational unit with a dummy resource, which will be corrected later
@@ -1559,7 +1565,8 @@ public class CmsImportVersion7 implements I_CmsImport {
             getReport().println(e);
             getReport().addError(e);
 
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_ORGUNITS_0);
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_ORGUNITS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
@@ -1643,7 +1650,8 @@ public class CmsImportVersion7 implements I_CmsImport {
             getReport().println(e);
             getReport().addError(e);
 
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_PROJECTS_0);
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_PROJECTS_0);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(message.key(), e);
             }
@@ -1660,11 +1668,11 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Imports all relations from the current xml data.<p>
-     * 
-     * This is a global process that occurs only once at the end of the import, 
+     *
+     * This is a global process that occurs only once at the end of the import,
      * after all resources have been imported, to make sure that both resources
      * of the relations are available.<p>
-     * 
+     *
      * @see #addResourceRelationRules(Digester, String)
      * @see #addXmlDigesterRules(Digester)
      */
@@ -1689,12 +1697,10 @@ public class CmsImportVersion7 implements I_CmsImport {
             if (checkImmutable(resourcePath)) {
                 continue;
             }
-            getReport().print(
-                org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(m_relations.size())),
-                I_CmsReport.FORMAT_NOTE);
+            getReport().print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i + 1),
+                String.valueOf(m_relations.size())), I_CmsReport.FORMAT_NOTE);
 
             getReport().print(
                 Messages.get().container(
@@ -1744,7 +1750,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Imports a resource from the current xml data.<p>
-     * 
+     *
      * @see #addResourceAttributesRules(Digester, String)
      * @see #addResourcePropertyRules(Digester, String)
      */
@@ -1769,7 +1775,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                 return;
             }
 
-            // apply name translation and import path   
+            // apply name translation and import path
             String translatedName = getCms().getRequestContext().addSiteRoot(
                 m_parameters.getDestinationPath() + m_destination);
 
@@ -1810,7 +1816,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     resourceIdWasNull = true;
                 }
 
-                // create a new CmsResource                         
+                // create a new CmsResource
                 CmsResource resource = new CmsResource(
                     m_structureId,
                     m_resourceId,
@@ -1852,18 +1858,20 @@ public class CmsImportVersion7 implements I_CmsImport {
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                         I_CmsReport.FORMAT_OK);
 
-                    if (OpenCms.getResourceManager().getResourceType(m_resource.getTypeId()) instanceof I_CmsLinkParseable) {
+                    if (OpenCms.getResourceManager().getResourceType(
+                        m_resource.getTypeId()) instanceof I_CmsLinkParseable) {
                         // store for later use
                         m_parseables.add(m_resource);
                     }
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().getBundle().key(
-                            Messages.LOG_IMPORTING_4,
-                            new Object[] {
-                                String.valueOf(m_fileCounter),
-                                String.valueOf(m_totalFiles),
-                                translatedName,
-                                m_destination}));
+                        LOG.info(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_IMPORTING_4,
+                                new Object[] {
+                                    String.valueOf(m_fileCounter),
+                                    String.valueOf(m_totalFiles),
+                                    translatedName,
+                                    m_destination}));
                     }
                 } else {
                     // resource import failed, since no CmsResource was created
@@ -1874,11 +1882,12 @@ public class CmsImportVersion7 implements I_CmsImport {
                             translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().getBundle().key(
-                            Messages.LOG_SKIPPING_3,
-                            String.valueOf(m_fileCounter),
-                            String.valueOf(m_totalFiles),
-                            translatedName));
+                        LOG.info(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_SKIPPING_3,
+                                String.valueOf(m_fileCounter),
+                                String.valueOf(m_totalFiles),
+                                translatedName));
                     }
                 }
             } else {
@@ -1891,11 +1900,12 @@ public class CmsImportVersion7 implements I_CmsImport {
                         translatedName));
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_SKIPPING_3,
-                        String.valueOf(m_fileCounter),
-                        String.valueOf(m_totalFiles),
-                        translatedName));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_SKIPPING_3,
+                            String.valueOf(m_fileCounter),
+                            String.valueOf(m_totalFiles),
+                            translatedName));
                 }
                 // do not import ACEs
                 m_importACEs = false;
@@ -1934,7 +1944,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
-     * 
+     *
      * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
     @Deprecated
@@ -2033,12 +2043,12 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Sets the current user as member of the given group.<p>
-     * 
+     *
      * It can happen that the organizational unit has not been imported jet,
      * in this case, the data is kept for later.<p>
-     * 
+     *
      * @param groupName the name of the group to set
-     * 
+     *
      * @see #setMembership()
      */
     public void importUserGroup(String groupName) {
@@ -2082,7 +2092,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Creates a new additional information entry for the current user.<p>
-     * 
+     *
      * @param infoName the name of the additional information entry
      * @param infoType the type of the additional information entry
      * @param infoValue the value of the additional information entry
@@ -2103,12 +2113,12 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Sets the current user as member of the given role.<p>
-     * 
+     *
      * It can happen that the organizational unit has not been imported jet,
      * in this case, the data is kept for later.<p>
-     * 
+     *
      * @param roleName the name of the role to set
-     * 
+     *
      * @see #setMembership()
      */
     public void importUserRole(String roleName) {
@@ -2221,11 +2231,11 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Rewrites all parseable files, to assure link check.<p>
-     * 
-     * This is a global process, that is executed only once at the 
-     * end of the import to be sure that all link targets are 
+     *
+     * This is a global process, that is executed only once at the
+     * end of the import to be sure that all link targets are
      * available.<p>
-     * 
+     *
      * @see #addXmlDigesterRules(Digester)
      */
     public void rewriteParseables() {
@@ -2247,7 +2257,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the aceFlags.<p>
      *
      * @param aceFlags the aceFlags to set
-     * 
+     *
      * @see #N_FLAGS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -2264,7 +2274,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the acePermissionsAllowed.<p>
      *
      * @param acePermissionsAllowed the acePermissionsAllowed to set
-     * 
+     *
      * @see #N_ACCESSCONTROL_ALLOWEDPERMISSIONS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -2281,7 +2291,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the acePermissionsDenied.<p>
      *
      * @param acePermissionsDenied the acePermissionsDenied to set
-     * 
+     *
      * @see #N_ACCESSCONTROL_DENIEDPERMISSIONS
      * @see #addResourceAceRules(Digester, String)
      */
@@ -2298,7 +2308,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the acePrincipalId.<p>
      *
      * @param acePrincipalId the acePrincipalId to set
-     * 
+     *
      * @see #N_ACCESSCONTROL_PRINCIPAL
      * @see #addResourceAceRules(Digester, String)
      */
@@ -2321,13 +2331,13 @@ public class CmsImportVersion7 implements I_CmsImport {
                 principalId = CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID;
             } else {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
-                        acePrincipalId));
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
+                            acePrincipalId));
                 }
-                throw new CmsIllegalStateException(Messages.get().container(
-                    Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
-                    acePrincipalId));
+                throw new CmsIllegalStateException(
+                    Messages.get().container(Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1, acePrincipalId));
             }
             m_acePrincipalId = principalId;
         } catch (Throwable e) {
@@ -2339,7 +2349,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the dateCreated.<p>
      *
      * @param dateCreated the dateCreated to set
-     * 
+     *
      * @see #N_DATECREATED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2360,7 +2370,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the dateExpired.<p>
      *
      * @param dateExpired the dateExpired to set
-     * 
+     *
      * @see #N_DATEEXPIRED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2381,7 +2391,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the dateLastModified.<p>
      *
      * @param dateLastModified the dateLastModified to set
-     * 
+     *
      * @see #N_DATELASTMODIFIED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2402,7 +2412,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the dateReleased.<p>
      *
      * @param dateReleased the dateReleased to set
-     * 
+     *
      * @see #N_DATERELEASED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2423,7 +2433,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the destination.<p>
      *
      * @param destination the destination to set
-     * 
+     *
      * @see #N_DESTINATION
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2436,7 +2446,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the flags.<p>
      *
      * @param flags the flags to set
-     * 
+     *
      * @see #N_FLAGS
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2495,7 +2505,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Sets the membership information that could not been set immediately,
-     * because of import order issues.<p> 
+     * because of import order issues.<p>
      */
     public void setMembership() {
 
@@ -2637,7 +2647,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the propertyName.<p>
      *
      * @param propertyName the propertyName to set
-     * 
+     *
      * @see #N_NAME
      * @see #addResourcePropertyRules(Digester, String)
      */
@@ -2650,7 +2660,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the propertyValue.<p>
      *
      * @param propertyValue the propertyValue to set
-     * 
+     *
      * @see #N_VALUE
      * @see #addResourcePropertyRules(Digester, String)
      */
@@ -2663,7 +2673,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the relationId.<p>
      *
      * @param relationId the relationId to set
-     * 
+     *
      * @see #N_ID
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -2680,7 +2690,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the relationPath.<p>
      *
      * @param relationPath the relationPath to set
-     * 
+     *
      * @see #N_PATH
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -2693,7 +2703,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the relationType.<p>
      *
      * @param relationType the relationType to set
-     * 
+     *
      * @see #N_TYPE
      * @see #addResourceRelationRules(Digester, String)
      */
@@ -2710,7 +2720,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the resourceId.<p>
      *
      * @param resourceId the resourceId to set
-     * 
+     *
      * @see #N_UUIDRESOURCE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2731,7 +2741,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the source.<p>
      *
      * @param source the source to set
-     * 
+     *
      * @see #N_SOURCE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2744,7 +2754,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the structureId.<p>
      *
      * @param structureId the structureId to set
-     * 
+     *
      * @see #N_UUIDSTRUCTURE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2771,7 +2781,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the type.<p>
      *
      * @param typeName the type to set
-     * 
+     *
      * @see #N_TYPE
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2784,7 +2794,8 @@ public class CmsImportVersion7 implements I_CmsImport {
                 // TODO: what happens if the resource type is a specialized folder and is not configured??
                 int plainId;
                 try {
-                    plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+                    plainId = OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypePlain.getStaticTypeName()).getTypeId();
                 } catch (CmsLoaderException e1) {
                     // this should really never happen
                     plainId = CmsResourceTypePlain.getStaticTypeId();
@@ -2816,7 +2827,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the userCreated.<p>
      *
      * @param userCreated the userCreated to set
-     * 
+     *
      * @see #N_USERCREATED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2896,7 +2907,7 @@ public class CmsImportVersion7 implements I_CmsImport {
      * Sets the userLastModified.<p>
      *
      * @param userLastModified the userLastModified to set
-     * 
+     *
      * @see #N_USERLASTMODIFIED
      * @see #addResourceAttributesRules(Digester, String)
      */
@@ -2946,7 +2957,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Sets the export version from the manifest file.<p>
-     * 
+     *
      * @param version the export version to set
      */
     public void setVersion(String version) {
@@ -2956,7 +2967,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for groups.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -2973,7 +2984,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for organizational units.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -2988,7 +2999,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for users.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3016,7 +3027,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for projects.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3032,7 +3043,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for resource access control entries.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3050,7 +3061,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for resource attributes.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3072,7 +3083,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for resource properties.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3092,7 +3103,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Adds the XML digester rules for resource relations.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      * @param xpath the base xpath for the rules
      */
@@ -3107,9 +3118,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Checks if the resources is in the list of immutable resources.<p>
-     * 
+     *
      * @param resourceName the name of the resource
-     * 
+     *
      * @return <code>true</code> or <code>false</code>
      */
     protected boolean checkImmutable(String resourceName) {
@@ -3117,9 +3128,8 @@ public class CmsImportVersion7 implements I_CmsImport {
         boolean resourceImmutable = false;
         if (getImmutableResources().contains(resourceName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1,
-                    resourceName));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1, resourceName));
             }
             // this resource must not be modified by an import if it already exists
             String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
@@ -3128,12 +3138,11 @@ public class CmsImportVersion7 implements I_CmsImport {
                 getCms().readResource(resourceName);
                 resourceImmutable = true;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1,
-                        resourceName));
+                    LOG.debug(
+                        Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1, resourceName));
                 }
             } catch (CmsException e) {
-                // resourceNotImmutable will be true 
+                // resourceNotImmutable will be true
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(
                         Messages.get().getBundle().key(
@@ -3150,9 +3159,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Converts a given digest to base64 encoding.<p>
-     * 
+     *
      * @param value the digest value in the legacy encoding
-     * 
+     *
      * @return the digest in the new encoding
      */
     protected String convertDigestEncoding(String value) {
@@ -3167,12 +3176,12 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Convert a given time stamp from a String format to a long value.<p>
-     * 
+     *
      * The time stamp is either the string representation of a long value (old export format)
      * or a user-readable string format.<p>
-     * 
+     *
      * @param timestamp time stamp to convert
-     * 
+     *
      * @return long value of the time stamp
      */
     protected long convertTimestamp(String timestamp) {
@@ -3196,8 +3205,8 @@ public class CmsImportVersion7 implements I_CmsImport {
     /**
      * This method goes through the manifest, records all files from the manifest for which the content also
      * exists in the zip file, and stores their resource ids in m_contentFiles.<p>
-     * 
-     * @throws CmsImportExportException 
+     *
+     * @throws CmsImportExportException
      * @throws IOException
      * @throws SAXException
      */
@@ -3228,8 +3237,8 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Gets the import helper instance.<p>
-     * 
-     * @return the import helper 
+     *
+     * @return the import helper
      */
     protected CmsImportHelper getHelper() {
 
@@ -3238,7 +3247,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Returns the list of properties to ignore during import.<p>
-     * 
+     *
      * @return the list of properties to ignore during import
      */
     protected List<String> getIgnoredProperties() {
@@ -3255,7 +3264,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Returns the list of immutable resources.<p>
-     * 
+     *
      * @return the list of immutable resources
      */
     protected List<String> getImmutableResources() {
@@ -3267,9 +3276,10 @@ public class CmsImportVersion7 implements I_CmsImport {
                 m_immutables = Collections.emptyList();
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
-                    Integer.toString(m_immutables.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
+                        Integer.toString(m_immutables.size())));
             }
         }
         return m_immutables;
@@ -3277,13 +3287,13 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Sorts the parsealble resources before we actually parse the links.<p>
-     * 
+     *
      * This is needed because we may, for example, have resources A and B such that A has a link to B, and B requires
-     * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name 
+     * the relation corresponding to that link to be present for some functionality (e.g. the page_title macro in gallery name
      * mappings), so we need to parse the links for A first to create the relation before B is processed.
-     * 
-     * @parameter parseables the list of parseable resources which should be sorted in place 
-     * 
+     *
+     * @parameter parseables the list of parseable resources which should be sorted in place
+     *
      */
     protected void sortParseableResources(List<CmsResource> parseables) {
 
@@ -3291,7 +3301,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
             public int compare(CmsResource a, CmsResource b) {
 
-                return ComparisonChain.start().compare(getRank(a), getRank(b)).compare(a.getRootPath(), b.getRootPath()).result();
+                return ComparisonChain.start().compare(getRank(a), getRank(b)).compare(
+                    a.getRootPath(),
+                    b.getRootPath()).result();
             }
 
             int getRank(CmsResource res) {
@@ -3308,10 +3320,10 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Checks whether the content for the resource being imported exists either in the VFS or in the import file.<p>
-     * 
-     * @param resource the resource which should be checked 
-     * 
-     * @return true if the content exists in the VFS or import file 
+     *
+     * @param resource the resource which should be checked
+     *
+     * @return true if the content exists in the VFS or import file
      */
     private boolean hasContentInVfsOrImport(CmsResource resource) {
 
@@ -3332,9 +3344,9 @@ public class CmsImportVersion7 implements I_CmsImport {
 
     /**
      * Parses the links.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param report the report 
+     *
+     * @param cms the CMS context to use
+     * @param report the report
      */
     private void parseLinks(CmsObject cms, I_CmsReport report) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,9 +29,9 @@ package org.opencms.db.db2;
 
 /**
  * DB2 implementation of the SQL Manager.<p>
- * 
+ *
  * @see org.opencms.db.CmsSqlManager
- * 
+ *
  * @since 7.0.3
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {

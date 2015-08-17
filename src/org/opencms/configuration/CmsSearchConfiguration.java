@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import org.dom4j.Element;
 
 /**
  * Lucene search configuration class.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
@@ -233,7 +233,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         // add finish rule
         digester.addCallMethod(XPATH_SEARCH, "initializeFinished");
 
-        // creation of the search manager        
+        // creation of the search manager
         digester.addObjectCreate(XPATH_SEARCH, A_CLASS, CmsSearchManager.class);
 
         // search manager finished
@@ -418,7 +418,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         // add <highlighter> element
         searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter().getClass().getName());
 
-        // <documenttypes> 
+        // <documenttypes>
         Element documenttypesElement = searchElement.addElement(N_DOCUMENTTYPES);
         for (CmsSearchDocumentType currSearchDocType : m_searchManager.getDocumentTypeConfigs()) {
             // add the next <documenttype> element
@@ -429,7 +429,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
             documenttypeElement.addElement(N_CLASS).addText(currSearchDocType.getClassName());
             // add <mimetypes> element
             Element mimetypesElement = documenttypeElement.addElement(N_MIMETYPES);
-            // get the list of mimetypes to trigger the document factory class 
+            // get the list of mimetypes to trigger the document factory class
             Iterator<String> mimeTypesIterator = currSearchDocType.getMimeTypes().iterator();
             while (mimeTypesIterator.hasNext()) {
                 // add <mimetype> element(s)
@@ -444,9 +444,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                 restypesElement.addElement(N_RESOURCETYPE).addText(resTypesIterator.next());
             }
         }
-        // </documenttypes> 
+        // </documenttypes>
 
-        // <analyzers> 
+        // <analyzers>
         Element analyzersElement = searchElement.addElement(N_ANALYZERS);
         ArrayList<Locale> analyzerLocaleList = new ArrayList<Locale>(m_searchManager.getAnalyzers().keySet());
         // sort Analyzers in ascending order
@@ -517,7 +517,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
                 N_CLASS,
                 searchIndexSource.getIndexerClassName());
             for (Entry<String, String> entry : searchIndexSource.getParams().entrySet()) {
-                // add <param name=""> element(s)                
+                // add <param name=""> element(s)
                 indexerElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(
                     I_CmsXmlConfiguration.A_NAME,
                     entry.getKey()).addText(entry.getValue());
@@ -633,7 +633,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Returns the generated search manager.<p>
-     * 
+     *
      * @return the generated search manager
      */
     public CmsSearchManager getSearchManager() {
@@ -642,7 +642,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Will be called when configuration of this object is finished.<p> 
+     * Will be called when configuration of this object is finished.<p>
      */
     public void initializeFinished() {
 
@@ -653,7 +653,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the generated search manager.<p>
-     * 
+     *
      * @param manager the search manager to set
      */
     public void setSearchManager(CmsSearchManager manager) {

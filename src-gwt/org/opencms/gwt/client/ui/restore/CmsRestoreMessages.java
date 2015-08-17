@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageConfirmRestore() {
@@ -55,7 +55,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageDateModified() {
@@ -65,7 +65,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageDateModifiedOnline() {
@@ -75,10 +75,10 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @param onlinePath the path of the resource in the online project 
-     * @param offlinePath the path of the resource in the offline path 
-     * 
+     *
+     * @param onlinePath the path of the resource in the online project
+     * @param offlinePath the path of the resource in the offline path
+     *
      * @return the message text
      */
     public static String messageMoved(String onlinePath, String offlinePath) {
@@ -88,7 +88,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageRestoreCancel() {
@@ -98,7 +98,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageRestoreDialogTitle() {
@@ -108,7 +108,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageRestoreOk() {
@@ -118,7 +118,7 @@ public final class CmsRestoreMessages {
 
     /**
      * Message accessor.<p>
-     * 
+     *
      * @return the message text
      */
     public static String messageUndoMove() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Implementation for a context menu entry.<p>
- * 
+ *
  * @since version 8.0.0
  */
 public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
@@ -57,12 +57,15 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the context menu handler
      * @param structureId the structure id
      * @param menuCommand the menu command
      */
-    public CmsContextMenuEntry(I_CmsContextMenuHandler handler, CmsUUID structureId, I_CmsContextMenuCommand menuCommand) {
+    public CmsContextMenuEntry(
+        I_CmsContextMenuHandler handler,
+        CmsUUID structureId,
+        I_CmsContextMenuCommand menuCommand) {
 
         m_menuCommand = menuCommand;
         m_handler = handler;
@@ -197,7 +200,7 @@ public class CmsContextMenuEntry implements I_CmsContextMenuEntry {
 
     /**
      * Sets the command.<p>
-     * 
+     *
      * @param command the command to set
      */
     public void setMenuCommand(I_CmsContextMenuCommand command) {

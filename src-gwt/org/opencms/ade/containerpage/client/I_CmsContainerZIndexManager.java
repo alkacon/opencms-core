@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,21 +31,21 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * The interface for the container z-index manager.<p>
- * 
+ *
  * We need this interface only because IE7's z index management doesn't work right,
  * so we need to manually change around z indices during container page drag and drop
  * operations.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public interface I_CmsContainerZIndexManager {
 
-    /** 
+    /**
      * Adds a container to handle.<p>
-     * 
+     *
      * @param name the name of the container
-     * @param element the container HTML element 
+     * @param element the container HTML element
      */
     void addContainer(String name, Element element);
 
@@ -54,28 +54,28 @@ public interface I_CmsContainerZIndexManager {
      */
     void clear();
 
-    /** 
+    /**
      * Called when the user drags an element over a container.<p>
-     * 
-     * @param containerName the name of the container 
+     *
+     * @param containerName the name of the container
      */
     void enter(String containerName);
 
     /**
      * Called when the user drags and element out of a container.<p>
-     * 
-     * @param containerName the name of the container 
+     *
+     * @param containerName the name of the container
      */
     void leave(String containerName);
 
     /**
      * Called when the user starts dragging an element from a container.<p>
-     * 
-     * @param containerName the name of the container 
+     *
+     * @param containerName the name of the container
      */
     void start(String containerName);
 
-    /** 
+    /**
      * Called when the drag operations is stopped.<p>
      */
     void stop();

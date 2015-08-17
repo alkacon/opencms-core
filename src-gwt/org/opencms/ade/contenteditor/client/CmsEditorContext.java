@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ public class CmsEditorContext {
     /** The parameters for the publish function in the Acacia editor. */
     private Map<String, String> m_publishParameters = new HashMap<String, String>();
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsEditorContext() {
@@ -61,8 +61,8 @@ public class CmsEditorContext {
 
     /**
      * Gets the additional publish parameters which should be used for the publish functionality in the Acacia editor.<p>
-     * 
-     * @return the additional publish parameters 
+     *
+     * @return the additional publish parameters
      */
     public Map<String, String> getPublishParameters() {
 
@@ -81,8 +81,8 @@ public class CmsEditorContext {
 
     /**
      * Sets the additional publish parameters for the publish functionality in the Acacia editor.<p>
-     * 
-     * @param publishParams the additional publish parameters 
+     *
+     * @param publishParams the additional publish parameters
      */
     public void setPublishParameters(Map<String, String> publishParams) {
 

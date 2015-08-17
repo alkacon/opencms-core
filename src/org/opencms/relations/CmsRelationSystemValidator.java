@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,15 +56,15 @@ import com.google.common.collect.HashMultimap;
 
 /**
  * Validates relations of resources in the OpenCms VFS.<p>
- *  
- * Relations are, for instance, href attribs in anchor tags and src attribs in 
+ *
+ * Relations are, for instance, href attribs in anchor tags and src attribs in
  * image tags, as well as OpenCmsVfsFile values in Xml Content.<p>
- * 
+ *
  * External links to targets outside the OpenCms VFS don't get validated.<p>
- * 
+ *
  * Objects using this class are responsible to handle detected broken links.<p>
- * 
- * @since 6.3.0 
+ *
+ * @since 6.3.0
  */
 public class CmsRelationSystemValidator {
 
@@ -76,7 +76,7 @@ public class CmsRelationSystemValidator {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param driverManager The Cms driver manager
      */
     public CmsRelationSystemValidator(CmsDriverManager driverManager) {
@@ -86,22 +86,22 @@ public class CmsRelationSystemValidator {
 
     /**
      * Validates the relations against the online project.<p>
-     * 
+     *
      * The result is printed to the given report.<p>
-     * 
-     * Validating references means to answer the question, whether 
-     * we would have broken links in the online project if the given 
+     *
+     * Validating references means to answer the question, whether
+     * we would have broken links in the online project if the given
      * publish list would get published.<p>
-     * 
+     *
      * @param dbc the database context
      * @param publishList the publish list to validate
      * @param report a report to print messages
-     * 
-     * @return a map with lists of invalid links 
-     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
+     *
+     * @return a map with lists of invalid links
+     *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects)
      *          keyed by root paths
-     *          
-     * @throws Exception if something goes wrong          
+     *
+     * @throws Exception if something goes wrong
      */
     public Map<String, List<CmsRelation>> validateResources(
         CmsDbContext dbc,
@@ -134,8 +134,9 @@ public class CmsRelationSystemValidator {
                 if (thread != null) {
 
                     if (thread.isInterrupted()) {
-                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                        throw new CmsIllegalStateException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
                     thread.setProgress((count * 10) / resTypes.size());
                 }
@@ -144,11 +145,12 @@ public class CmsRelationSystemValidator {
                 if (type instanceof I_CmsLinkParseable) {
                     filter = filter.addRequireType(type.getTypeId());
                     try {
-                        resources.addAll(m_driverManager.readResources(
-                            dbc,
-                            m_driverManager.readResource(dbc, "/", filter),
-                            filter,
-                            true));
+                        resources.addAll(
+                            m_driverManager.readResources(
+                                dbc,
+                                m_driverManager.readResource(dbc, "/", filter),
+                                filter,
+                                true));
                     } catch (CmsException e) {
                         LOG.error(
                             Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCES_1, type.getTypeName()),
@@ -160,7 +162,7 @@ public class CmsRelationSystemValidator {
             resources.addAll(publishList.getAllResources());
         }
 
-        // populate a lookup map with the project resources that 
+        // populate a lookup map with the project resources that
         // actually get published keyed by their resource names.
         // second, resources that don't get validated are ignored.
         Map<String, CmsResource> offlineFilesLookup = new HashMap<String, CmsResource>();
@@ -173,8 +175,9 @@ public class CmsRelationSystemValidator {
             if (thread != null) {
 
                 if (thread.isInterrupted()) {
-                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    throw new CmsIllegalStateException(
+                        org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
                 thread.setProgress(((count * 10) / resources.size()) + 10);
             }
@@ -199,8 +202,9 @@ public class CmsRelationSystemValidator {
             if (thread != null) {
 
                 if (thread.isInterrupted()) {
-                    throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                        org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                    throw new CmsIllegalStateException(
+                        org.opencms.workplace.commons.Messages.get().container(
+                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                 }
                 thread.setProgress(((index * 20) / resources.size()) + 20);
             }
@@ -216,9 +220,10 @@ public class CmsRelationSystemValidator {
                         new Integer(size)),
                     I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    dbc.removeSiteRoot(resourceName)));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        dbc.removeSiteRoot(resourceName)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
             }
             List<CmsRelation> brokenLinks = validateLinks(dbc, resource, offlineFilesLookup, project, report);
@@ -245,20 +250,22 @@ public class CmsRelationSystemValidator {
             }
         }
         if (report != null) {
-            report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.FORMAT_HEADLINE);
+            report.println(
+                Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0),
+                I_CmsReport.FORMAT_HEADLINE);
         }
         return invalidResources;
     }
 
     /**
      * Checks a link to a resource which has been deleted.<p>
-     * @param relation 
-     * 
-     * @param link the URI of the resource which has a link to the deleted resource  
-     * @param fileLookup a lookup table of files to be published  
-     * @param relationTargets 
-     * 
-     * @return true if the resource which has a link to the deleted resource is also going to be deleted  
+     * @param relation
+     *
+     * @param link the URI of the resource which has a link to the deleted resource
+     * @param fileLookup a lookup table of files to be published
+     * @param relationTargets
+     *
+     * @return true if the resource which has a link to the deleted resource is also going to be deleted
      */
     protected boolean checkLinkForDeletedLinkTarget(
         CmsRelation relation,
@@ -281,15 +288,15 @@ public class CmsRelationSystemValidator {
 
     /**
      * Checks a link from a resource which has changed.<p>
-     * 
+     *
      * @param dbc the current dbc
-     * @param resource the link source 
-     * @param relation the relation 
-     * @param link the link target 
-     * @param project the current project 
-     * @param fileLookup a lookup table which contains the files which are going to be published 
-     *   
-     * @return true if the link will be valid after publishing 
+     * @param resource the link source
+     * @param relation the relation
+     * @param link the link target
+     * @param project the current project
+     * @param fileLookup a lookup table which contains the files which are going to be published
+     *
+     * @return true if the link will be valid after publishing
      */
     protected boolean checkLinkForNewOrChangedLinkSource(
         CmsDbContext dbc,
@@ -311,7 +318,7 @@ public class CmsRelationSystemValidator {
                     relation.getTargetId(),
                     true).getRootPath();
             } catch (CmsVfsResourceNotFoundException e) {
-                // reading by id failed, this means that the link variable still equals relation.getTargetPath() 
+                // reading by id failed, this means that the link variable still equals relation.getTargetPath()
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(
                         Messages.get().getBundle().key(
@@ -352,14 +359,14 @@ public class CmsRelationSystemValidator {
 
     /**
      * Validates the links for the specified resource.<p>
-     * 
+     *
      * @param dbc the database context
      * @param resource the resource that will be validated
      * @param fileLookup a map for faster lookup with all resources keyed by their rootpath
      * @param project the project to validate
      * @param report the report to write to
-     * 
-     * @return a list with the broken links as {@link CmsRelation} objects for the specified resource, 
+     *
+     * @return a list with the broken links as {@link CmsRelation} objects for the specified resource,
      *          or an empty list if no broken links were found
      */
     protected List<CmsRelation> validateLinks(

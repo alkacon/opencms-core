@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Sitemap toolbar clipboard view.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarClipboardView {
@@ -65,7 +65,7 @@ public class CmsToolbarClipboardView {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param widget the widget
          * @param entry the entry
          */
@@ -78,7 +78,7 @@ public class CmsToolbarClipboardView {
 
         /**
          * Returns the underlying sitemap entry.<p>
-         * 
+         *
          * @return the sitemap entry
          */
         public CmsClientSitemapEntry getEntry() {
@@ -98,9 +98,9 @@ public class CmsToolbarClipboardView {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param clipboardButton the clipboard button
-     * @param controller the sitemap controller 
+     * @param controller the sitemap controller
      */
     public CmsToolbarClipboardView(CmsToolbarClipboardButton clipboardButton, final CmsSitemapController controller) {
 
@@ -122,7 +122,7 @@ public class CmsToolbarClipboardView {
 
     /**
      * Adds an deleted entry.<p>
-     * 
+     *
      * @param entry the deleted entry
      */
     public void addDeleted(CmsClientSitemapEntry entry) {
@@ -137,7 +137,7 @@ public class CmsToolbarClipboardView {
 
     /**
      * Adds a modified entry.<p>
-     * 
+     *
      * @param entry the entry
      * @param previousPath the previous path
      */
@@ -169,19 +169,20 @@ public class CmsToolbarClipboardView {
 
     /**
      * Creates a new deleted list item.<p>
-     * 
+     *
      * @param entry the sitemap entry
-     * 
-     * @return the new created (still orphan) list item 
+     *
+     * @return the new created (still orphan) list item
      */
     public CmsListItem createDeletedItem(final CmsClientSitemapEntry entry) {
 
         CmsListInfoBean infoBean = new CmsListInfoBean();
         infoBean.setTitle(entry.getTitle());
         infoBean.setSubTitle(entry.getSitePath());
-        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-        ? entry.getDefaultFileType()
-        : entry.getResourceTypeName());
+        infoBean.setResourceType(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+            ? entry.getDefaultFileType()
+            : entry.getResourceTypeName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
         final CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
@@ -208,10 +209,10 @@ public class CmsToolbarClipboardView {
 
     /**
      * Creates a new modified list item.<p>
-     * 
+     *
      * @param entry the sitemap entry
-     * 
-     * @return the new created (still orphan) list item 
+     *
+     * @return the new created (still orphan) list item
      */
     public CmsListItem createModifiedItem(final CmsClientSitemapEntry entry) {
 
@@ -220,9 +221,10 @@ public class CmsToolbarClipboardView {
         infoBean.setSubTitle(entry.getSitePath());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_NAME_0), entry.getName());
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), entry.getVfsPath());
-        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-        ? entry.getDefaultFileType()
-        : entry.getResourceTypeName());
+        infoBean.setResourceType(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+            ? entry.getDefaultFileType()
+            : entry.getResourceTypeName());
         CmsListItemWidget itemWidget = new CmsListItemWidget(infoBean);
 
         final CmsListItem listItem = new CmsListItem(itemWidget);
@@ -278,7 +280,7 @@ public class CmsToolbarClipboardView {
 
     /**
      * Removes an entry from the deleted list.<p>
-     * 
+     *
      * @param entryId the entry id
      */
     public void removeDeleted(String entryId) {
@@ -295,7 +297,7 @@ public class CmsToolbarClipboardView {
 
     /**
      * Removes an entry from the modified list.<p>
-     * 
+     *
      * @param entryId the entry id
      */
     public void removeModified(String entryId) {
@@ -312,7 +314,7 @@ public class CmsToolbarClipboardView {
 
     /**
      * Updates the clip board content.<p>
-     * 
+     *
      * @param data the clip board data
      */
     protected void updateContent(CmsSitemapClipboardData data) {

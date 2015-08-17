@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ public class CmsSitePreference extends CmsBuiltinPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the preference name 
+     *
+     * @param name the preference name
      */
     public CmsSitePreference(String name) {
 
@@ -62,7 +62,8 @@ public class CmsSitePreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             null, //widget
             null, //widgetconfig
@@ -85,7 +86,8 @@ public class CmsSitePreference extends CmsBuiltinPreference {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         SelectOptions options = CmsPreferences.getSiteSelectOptionsStatic(cms, "DUMMY SITE VALUE", locale);
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "select_notnull", //widget
             options.toClientSelectWidgetConfiguration(), //widgetconfig

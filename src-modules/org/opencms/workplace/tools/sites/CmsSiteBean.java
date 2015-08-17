@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Dialog object for a single site.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSiteBean {
@@ -108,7 +108,7 @@ public class CmsSiteBean {
 
     /**
      * Public constructor with a CmsSite as parameter.<p>
-     * 
+     *
      * @param site the site
      */
     public CmsSiteBean(CmsSite site) {
@@ -536,7 +536,7 @@ public class CmsSiteBean {
 
     /**
      * Creates a new site object based on the members.<p>
-     * 
+     *
      * @return a new site object based on the members
      */
     public CmsSite toCmsSite() {

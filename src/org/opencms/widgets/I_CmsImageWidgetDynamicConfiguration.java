@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,27 +34,27 @@ import java.util.List;
 
 /**
  * Enables a dynamic configuration of values for the {@link CmsVfsImageWidget}.<p>
- * 
+ *
  * The following values can be configured dynamically:
  * <ul>
  * <li>The list of image format values for the corresponding format names</li>
  * <li>The type of the preselected image list (gallery or category)</li>
  * <li>The preselected image list (i.e. a gallery folder or category)</li>
  * </ul>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 public interface I_CmsImageWidgetDynamicConfiguration {
 
     /**
      * Returns the matching format values for the given format select options.<p>
-     * 
+     *
      * A format value should look like this:
      * <ul>
      * <li>320x480: The width and height as fixed values</li>
      * <li>320x?: A fixed width and dynamic height</li>
      * </ul>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
@@ -71,10 +71,10 @@ public interface I_CmsImageWidgetDynamicConfiguration {
 
     /**
      * Returns the required information for the initial image list to load.<p>
-     * 
+     *
      * If a gallery should be shown, the path to the gallery must be specified,
      * for a category the category path.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for
@@ -84,7 +84,7 @@ public interface I_CmsImageWidgetDynamicConfiguration {
 
     /**
      * Returns the type of the initial image list to load, either gallery or category.<p>
-     * 
+     *
      * @param cms an initialized instance of a CmsObject
      * @param widgetDialog the dialog where the widget is used on
      * @param param the widget parameter to generate the widget for

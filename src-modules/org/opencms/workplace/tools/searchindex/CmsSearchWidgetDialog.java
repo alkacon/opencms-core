@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,14 +60,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that performs a 
- * search on the <code>{@link org.opencms.search.CmsSearchIndex}</code> identified 
- * by request parameter 
- * <code>{@link org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#PARAM_INDEXNAME}</code> 
- * using an instance of <code>{@link org.opencms.search.CmsSearchParameters}</code> 
- * as widget object to fill. 
+ * A <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> that performs a
+ * search on the <code>{@link org.opencms.search.CmsSearchIndex}</code> identified
+ * by request parameter
+ * <code>{@link org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#PARAM_INDEXNAME}</code>
+ * using an instance of <code>{@link org.opencms.search.CmsSearchParameters}</code>
+ * as widget object to fill.
  * <p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
@@ -86,7 +86,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSearchWidgetDialog(CmsJspActionElement jsp) {
@@ -97,7 +97,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -109,22 +109,22 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Overrides this action that is performed in case an element 
-     * has been added to a widget parameter 
-     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_ADD}</code>) 
-     * or removed 
-     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_REMOVE}</code>) 
-     * from a widget parameter to additionally commit these values to the 
+     * Overrides this action that is performed in case an element
+     * has been added to a widget parameter
+     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_ADD}</code>)
+     * or removed
+     * (<code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_ELEMENT_REMOVE}</code>)
+     * from a widget parameter to additionally commit these values to the
      * underlying lists.<p>
-     * 
-     * This is necessary because this dialog performs a search for every request 
-     * (not only if OK is pressed, also if a category or field is added/removed). 
-     * The search directly uses the underlying Lists of categories, fields,... . 
-     * More precise: The very same lists that are in the search parameter instance used 
-     * for search are contained as base collections of the widget parameters. 
-     * Therefore before every search the changes of categories, fields,... have to 
+     *
+     * This is necessary because this dialog performs a search for every request
+     * (not only if OK is pressed, also if a category or field is added/removed).
+     * The search directly uses the underlying Lists of categories, fields,... .
+     * More precise: The very same lists that are in the search parameter instance used
+     * for search are contained as base collections of the widget parameters.
+     * Therefore before every search the changes of categories, fields,... have to
      * be committed here.<p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#actionToggleElement()
      */
     @Override
@@ -135,11 +135,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Builds the standard javascript for submitting the dialog.<p> 
-     * 
-     * Overridden to allow additional validation and encoding of the 
+     * Builds the standard javascript for submitting the dialog.<p>
+     *
+     * Overridden to allow additional validation and encoding of the
      * search query. <p>
-     * 
+     *
      * @return the standard javascript for submitting the dialog
      */
     @Override
@@ -230,8 +230,8 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Returns the list of searchable fields used in the workplace search index.<p> 
-     * 
+     * Returns the list of searchable fields used in the workplace search index.<p>
+     *
      * @return the list of searchable fields used in the workplace search index
      */
     public List<CmsSearchField> getSearchFields() {
@@ -258,8 +258,9 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         String searchPage = getJsp().getRequest().getParameter("searchPage");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchPage) && CmsStringUtil.isEmptyOrWhitespaceOnly(fields)) {
-            throw new CmsIllegalStateException(org.opencms.workplace.search.Messages.get().container(
-                org.opencms.workplace.search.Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
+            throw new CmsIllegalStateException(
+                org.opencms.workplace.search.Messages.get().container(
+                    org.opencms.workplace.search.Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
         }
         m_searchParams.setFields(CmsStringUtil.splitAsList(fields, ","));
     }
@@ -321,11 +322,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * This dialog does not return on commit but stay for many search requests until it is 
+     * This dialog does not return on commit but stay for many search requests until it is
      * exited with cancel or up in the workplace. <p>
-     * 
+     *
      * @return false always to ensure the dialog is not left
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#closeDialogOnCommit()
      */
     @Override
@@ -377,11 +378,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the html code for the default action content.<p>
-     * 
-     * Overrides <code> {@link org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()}</code> 
-     * in order to put additional forms for page links and search results after OK - CANCEL buttons 
+     *
+     * Overrides <code> {@link org.opencms.workplace.CmsWidgetDialog#defaultActionHtml()}</code>
+     * in order to put additional forms for page links and search results after OK - CANCEL buttons
      * and outside the main form.<p>
-     * 
+     *
      * @return html code
      */
     @Override
@@ -400,28 +401,28 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             result.append("\n<input type=\"hidden\" name=\"").append(PARAM_FRAMENAME).append("\" value=\"\">\n");
         }
 
-        // add script for filtering categories 
+        // add script for filtering categories
         result.append(filterCategoryJS());
         result.append("</form>\n");
 
         // get search results if query was more than nothing
-        // we have to retrieve them before category search results are available because 
+        // we have to retrieve them before category search results are available because
         // those are collected as a side effect of search iteration.
         String searchResults = createSearchResults();
 
-        // append category search results if there... 
+        // append category search results if there...
         result.append(createCategorySearchResultHtml());
         result.append(searchResults);
 
         result.append(getWidgetHtmlEnd());
-        // Normalize the previous encoded query value on client side 
+        // Normalize the previous encoded query value on client side
         result.append(normalizePreviousQueryJS());
 
         return result.toString();
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
     @Override
@@ -432,8 +433,15 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         // first block "Query for search index..."
         addWidget(new CmsWidgetDialogParameter(m_searchParams, "index", "", PAGES[0], new CmsDisplayWidget(), 1, 1));
         addWidget(new CmsWidgetDialogParameter(m_searchParams, "query", "", PAGES[0], new CmsInputWidget(), 1, 1));
-        addWidget(new CmsWidgetDialogParameter(m_searchParams, "sortName", "", PAGES[0], new CmsSelectWidget(
-            getSortWidgetConfiguration()), 0, 1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_searchParams,
+                "sortName",
+                "",
+                PAGES[0],
+                new CmsSelectWidget(getSortWidgetConfiguration()),
+                0,
+                1));
         addWidget(new CmsWidgetDialogParameter(
             m_searchParams.getRoots(),
             "roots",
@@ -442,14 +450,15 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             new CmsVfsFileWidget(),
             1,
             10));
-        addWidget(new CmsWidgetDialogParameter(
-            m_searchParams.getCategories(),
-            "categories",
-            "",
-            PAGES[0],
-            new CmsInputWidget(),
-            0,
-            6));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_searchParams.getCategories(),
+                "categories",
+                "",
+                PAGES[0],
+                new CmsInputWidget(),
+                0,
+                6));
 
         addWidget(new CmsWidgetDialogParameter(m_searchParams, "calculateCategories", new CmsCheckboxWidget()));
 
@@ -460,13 +469,14 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         addWidget(new CmsWidgetDialogParameter(this, "maxDateLastModified", PAGES[0], new CmsCalendarWidget()));
 
         // 3rd block "fields to search in"
-        addWidget(new CmsWidgetDialogParameter(this, "fields", PAGES[0], new CmsMultiSelectWidget(getFieldList(), true)));
+        addWidget(
+            new CmsWidgetDialogParameter(this, "fields", PAGES[0], new CmsMultiSelectWidget(getFieldList(), true)));
     }
 
     /**
-     * Overridden to additionally get a hold on the widget object of type 
+     * Overridden to additionally get a hold on the widget object of type
      * <code>{@link CmsSearchParameters}</code>.<p>
-     * 
+     *
      * @see org.opencms.workplace.tools.searchindex.A_CmsEditSearchIndexDialog#initUserObject()
      */
     @SuppressWarnings("rawtypes")
@@ -496,8 +506,8 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Additionally saves <code>{@link #PARAM_SEARCH_PARAMS}</code> to the dialog object map.<p> 
-     * 
+     * Additionally saves <code>{@link #PARAM_SEARCH_PARAMS}</code> to the dialog object map.<p>
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -514,27 +524,28 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the hmtl for the category search results.<p>
-     * 
-     * Note that a valid search (<code>{@link CmsSearch#getSearchResult()}</code> with 
-     * correct settings and inited) has to be triggered before this call or an empty 
+     *
+     * Note that a valid search (<code>{@link CmsSearch#getSearchResult()}</code> with
+     * correct settings and inited) has to be triggered before this call or an empty
      * String will be returned. <p>
-     * 
+     *
      * @return the hmtl for the category search results
      */
     private String createCategorySearchResultHtml() {
 
         StringBuffer result = new StringBuffer();
         if (m_searchParams.isCalculateCategories()) {
-            // trigger calculation of categories, even if we don't need search results 
+            // trigger calculation of categories, even if we don't need search results
             // this is cached unless more set operation on CmsSearch are performed
             Map<String, Integer> categoryMap = m_search.getSearchResultCategories();
             if (categoryMap != null) {
                 result.append(dialogContentStart(null));
                 result.append(result.append(createWidgetTableStart()));
                 // first block "Query for index...."
-                result.append(dialogBlockStart(key(
-                    Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_CATEGORIES_1,
-                    new Object[] {m_searchParams.getQuery()})));
+                result.append(dialogBlockStart(
+                    key(
+                        Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_CATEGORIES_1,
+                        new Object[] {m_searchParams.getQuery()})));
                 result.append(createWidgetTableStart());
 
                 // categories:
@@ -559,7 +570,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the HTML for the search results.<p>
-     * 
+     *
      * @return the HTML for the search results
      */
     private String createSearchResults() {
@@ -568,14 +579,14 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         StringBuffer result = new StringBuffer();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && (query.length() > 3)) {
             CmsSearchResultView resultView = new CmsSearchResultView(getJsp());
-            // proprietary workplace admin link for pagelinks of search: 
+            // proprietary workplace admin link for pagelinks of search:
             resultView.setSearchRessourceUrl(getJsp().link(
                 "/system/workplace/views/admin/admin-main.jsp?path=/searchindex/singleindex/search&indexname="
                     + getSearchIndexIndex().getName()));
             m_search.init(getCms());
 
-            // custom parameters (non-widget controlled) 
-            // these are from generated search page links 
+            // custom parameters (non-widget controlled)
+            // these are from generated search page links
             String page = getJsp().getRequest().getParameter("searchPage");
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(page)) {
                 m_searchParams.setSearchPage(Integer.parseInt(page));
@@ -600,13 +611,13 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Generates the JavaScript to filter categories.<p>
-     * 
+     *
      * @return the JavaScript
      */
     private String filterCategoryJS() {
 
         StringBuffer result = new StringBuffer();
-        // fool the widget with a hidden categories input field 
+        // fool the widget with a hidden categories input field
         result.append("<input name=\"dummysearchcategory\" id=\"dummysearchcategory\" type=\"hidden\" value=\"\">\n");
         result.append("<input name=\"dummysearchpage\" id=\"dummysearchpage\" type=\"hidden\" value=\"\">\n");
         // delete all other chosen "cateogries.x" values and put a value here
@@ -620,8 +631,8 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         result.append("        inputFields[i].name='invalidsearchcategory';\n");
         result.append("      }\n");
         result.append("    }\n");
-        // if we found a category field use it, if not, set the name of our 
-        // fooling field to "categories.0" or the widget filling will fail 
+        // if we found a category field use it, if not, set the name of our
+        // fooling field to "categories.0" or the widget filling will fail
         result.append("    var categoryField = inputFields['dummysearchcategory'];\n");
         result.append("    categoryField.name = 'categories.0';\n");
         result.append("    categoryField.value = category;\n");
@@ -637,7 +648,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns a list of <code>{@link CmsSelectWidgetOption}</code> objects for field list selection.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
      */
     private List<CmsSelectWidgetOption> getFieldList() {
@@ -647,8 +658,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             Iterator<CmsSearchField> i = getSearchFields().iterator();
             while (i.hasNext()) {
                 CmsLuceneField field = (CmsLuceneField)i.next();
-                retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
-                    field.getDisplayName())));
+                retVal.add(
+                    new CmsSelectWidgetOption(
+                        field.getName(),
+                        true,
+                        getMacroResolver().resolveMacros(field.getDisplayName())));
             }
         } catch (Exception e) {
             // noop
@@ -657,9 +671,9 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
-     * Returns the different select options for sort search result criteria. <p> 
-     * 
-     * @return the different select options for sort search result criteria 
+     * Returns the different select options for sort search result criteria. <p>
+     *
+     * @return the different select options for sort search result criteria
      */
     private List<CmsSelectWidgetOption> getSortWidgetConfiguration() {
 
@@ -669,24 +683,27 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             CmsSearchParameters.SORT_NAMES[0],
             true,
             messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_SCORE_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchParameters.SORT_NAMES[1],
-            false,
-            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_CREATED_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchParameters.SORT_NAMES[2],
-            false,
-            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_LAST_MODIFIED_0)));
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchParameters.SORT_NAMES[3],
-            false,
-            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_TITLE_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsSearchParameters.SORT_NAMES[1],
+                false,
+                messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_CREATED_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsSearchParameters.SORT_NAMES[2],
+                false,
+                messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_LAST_MODIFIED_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                CmsSearchParameters.SORT_NAMES[3],
+                false,
+                messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_TITLE_0)));
         return result;
     }
 
     /**
      * Normalizes the JavaScript for the previous search query.<p>
-     * 
+     *
      * @return the normalized JavaScript
      */
     private String normalizePreviousQueryJS() {
@@ -707,7 +724,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
     /**
      * Returns the JavaScript for submitting the search form.<p>
-     *  
+     *
      * @return the JavaScript for submitting the search form
      */
     private String submitJS() {

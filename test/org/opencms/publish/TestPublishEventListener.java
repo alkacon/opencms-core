@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Test event listener implementation.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class TestPublishEventListener implements I_CmsPublishEventListener {
@@ -52,7 +52,7 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param resource the resource to track
      */
     public TestPublishEventListener(CmsResource resource) {
@@ -92,7 +92,7 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
 
     /**
      * Returns the jobs in history counters.<p>
-     * 
+     *
      * @return the jobs in history counters
      */
     public int[] getJobsInHistoryCounter() {
@@ -102,7 +102,7 @@ public class TestPublishEventListener implements I_CmsPublishEventListener {
 
     /**
      * Returns the jobs in queue counters.<p>
-     * 
+     *
      * @return the jobs in queue counters
      */
     public int[] getJobsInQueueCounter() {

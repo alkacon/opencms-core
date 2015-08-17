@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ public class TestXmlUtils extends OpenCmsTestCase {
 
     /**
      * Test case for the Xpath generation methods.
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testCreateXpath() throws Exception {
@@ -51,7 +51,7 @@ public class TestXmlUtils extends OpenCmsTestCase {
 
     /**
      * Test case for the Xpath index cut off.
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testGetXpathIndex() throws Exception {
@@ -65,7 +65,7 @@ public class TestXmlUtils extends OpenCmsTestCase {
 
     /**
      * Test case for the Xpath remove methods.
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testRemoveXpath() throws Exception {
@@ -80,7 +80,7 @@ public class TestXmlUtils extends OpenCmsTestCase {
 
     /**
      * Test case for the Xpath simplification.
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testSimplifyXpath() throws Exception {

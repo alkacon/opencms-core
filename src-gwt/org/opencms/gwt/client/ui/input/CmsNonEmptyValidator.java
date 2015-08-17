@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * A validator that checks whether a field is not empty.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsNonEmptyValidator implements I_CmsValidator {
@@ -42,10 +42,10 @@ public class CmsNonEmptyValidator implements I_CmsValidator {
     /** The error message to display if the validation fails. */
     private String m_errorMessage;
 
-    /** 
+    /**
      * Constructs a new validator with a given error message.<p>
-     * 
-     * @param errorMessage the error message to use when the validated field is empty 
+     *
+     * @param errorMessage the error message to use when the validated field is empty
      */
     public CmsNonEmptyValidator(String errorMessage) {
 

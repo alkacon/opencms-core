@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Describes the caching behaviour (or caching options) for a Flex request.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFlexRequestKey {
 
@@ -76,12 +76,12 @@ public class CmsFlexRequestKey {
 
     /**
      * This constructor is used when building a cache key from a request.<p>
-     * 
+     *
      * The request contains several data items that are neccessary to construct
      * the output. These items are e.g. the Query-String, the requested resource,
      * the current time etc. etc.
      * All required items are saved in the constructed cache - key.<p>
-     * 
+     *
      * @param req the request to construct the key for
      * @param target the requested resource in the OpenCms VFS
      * @param online must be true for an online resource, false for offline resources
@@ -122,7 +122,7 @@ public class CmsFlexRequestKey {
 
     /**
      * Returns the request attributes.<p>
-     * 
+     *
      * @return the request attributes
      */
     public Map<String, Object> getAttributes() {
@@ -240,9 +240,9 @@ public class CmsFlexRequestKey {
     }
 
     /**
-     * Returns the the current users session, or <code>null</code> if the current user 
+     * Returns the the current users session, or <code>null</code> if the current user
      * has no session.<p>
-     * 
+     *
      * @return the current users session, or <code>null</code> if the current user has no session
      */
     public HttpSession getSession() {

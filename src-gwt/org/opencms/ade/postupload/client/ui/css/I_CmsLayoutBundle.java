@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.resources.client.ClientBundle;
 
 /**
  * Resource bundle to access CSS and image resources.
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsLayoutBundle extends ClientBundle {
@@ -44,58 +44,58 @@ public interface I_CmsLayoutBundle extends ClientBundle {
     /** The dialog CSS classes. */
     public interface I_CmsDialogCss extends I_CmsPopupCss {
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String block();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String fieldsetSpacer();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inlineBlock();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inputCombination();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String inputLineHeight();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String labelColumn();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String popupOverlay();
 
-        /** 
+        /**
          * Access method.<p>
-         * 
+         *
          * @return the CSS class name
          */
         String propertyDialog();
@@ -107,14 +107,14 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * The CSS constants bundle.<p>
-     * 
-     * @return a bundle of CSS constants 
+     *
+     * @return a bundle of CSS constants
      */
     I_CmsConstantsBundle constants();
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the constants CSS
      */
     @Source("dialog.css")
@@ -122,7 +122,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image bundle for the gwt module
      */
     I_CmsImageBundle gwtImages();

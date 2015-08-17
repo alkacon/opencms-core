@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,12 +48,15 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to replace
      * @param handler the context menu handler
      * @param bean the menu entry bean
      */
-    protected CmsReplace(final CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    protected CmsReplace(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
 
         super(bean.getLabel());
         m_replaceHandler = new CmsReplaceHandler(structureId);
@@ -72,9 +75,9 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {

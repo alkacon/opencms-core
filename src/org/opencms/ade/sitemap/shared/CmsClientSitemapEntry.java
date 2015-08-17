@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Sitemap entry data.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsClientSitemapEntry implements IsSerializable {
 
@@ -54,10 +54,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
      */
     public enum EditStatus {
         /** edit status constant. */
-        created,
-        /** edit status constant. */
-        edited,
-        /** edit status constant. */
+        created, /** edit status constant. */
+        edited, /** edit status constant. */
         normal
     }
 
@@ -169,6 +167,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     /** The VFS path. */
     private String m_vfsPath;
 
+    /** The default file is released and not expired flag. */
+    private boolean m_defaultFileReleased;
+
     /**
      * Constructor.<p>
      */
@@ -176,12 +177,13 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
         m_subEntries = new ArrayList<CmsClientSitemapEntry>();
         m_entryType = EntryType.folder;
+        m_defaultFileReleased = true;
     }
 
     /**
      * Creates a copy without children of the given entry.<p>
-     * 
-     * @param clone the entry to clone 
+     *
+     * @param clone the entry to clone
      */
     public CmsClientSitemapEntry(CmsClientSitemapEntry clone) {
 
@@ -192,9 +194,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
     * Adds the given entry to the children.<p>
-    * 
+    *
     * @param entry the entry to add
-    * @param controller a sitemap controller instance 
+    * @param controller a sitemap controller instance
     */
     public void addSubEntry(CmsClientSitemapEntry entry, I_CmsSitemapController controller) {
 
@@ -216,7 +218,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns true if this item's children have been loaded initially.<p>
-     * 
+     *
      * @return true if this item's children have been loaded initially
      */
     public boolean getChildrenLoadedInitially() {
@@ -245,9 +247,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
-     * Gets the default file id.<p> 
-     *  
-     * @return the default file id, or null if there is no detail page 
+     * Gets the default file id.<p>
+     *
+     * @return the default file id, or null if there is no detail page
      */
     public CmsUUID getDefaultFileId() {
 
@@ -256,8 +258,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the properties for the default file.<p>
-     * 
-     * @return the properties for the default file 
+     *
+     * @return the properties for the default file
      */
     public Map<String, CmsClientProperty> getDefaultFileProperties() {
 
@@ -276,7 +278,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the detail resource type name.<p>
-     * 
+     *
      * @return the detail resource type name
      */
     public String getDetailpageTypeName() {
@@ -296,8 +298,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the cached export name for this entry.<p>
-     * 
-     * @return the cached export name for this entry 
+     *
+     * @return the cached export name for this entry
      */
     public String getExportName() {
 
@@ -346,8 +348,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the properties for the entry itself.<p>
-     * 
-     * @return the properties for the entry itself 
+     *
+     * @return the properties for the entry itself
      */
     public Map<String, CmsClientProperty> getOwnProperties() {
 
@@ -366,9 +368,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the property value or null if not set.<p>
-     * 
+     *
      * @param propertyName the property name
-     * 
+     *
      * @return the property value
      */
     public String getPropertyValue(String propertyName) {
@@ -401,7 +403,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the resource type id.<p>
-     * 
+     *
      * @return the resource type id
      */
     public int getResourceTypeId() {
@@ -411,8 +413,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the resource type name.<p>
-     * 
-     * @return the resource type name 
+     *
+     * @return the resource type name
      */
     public String getResourceTypeName() {
 
@@ -468,7 +470,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns if this entry has blocking locked children.<p>
-     * 
+     *
      * @return <code>true</code> if this entry has blocking locked children
      */
     public boolean hasBlockingLockedChildren() {
@@ -488,8 +490,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Initializes this sitemap entry.<p>
-     * 
-     * @param controller a sitemap controller instance 
+     *
+     * @param controller a sitemap controller instance
      */
     public void initialize(I_CmsSitemapController controller) {
 
@@ -500,8 +502,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Initializes this sitemap entry and its descendants.<p>
-     * 
-     * @param controller the controller instance with which to initialize the entries 
+     *
+     * @param controller the controller instance with which to initialize the entries
      */
     public void initializeAll(I_CmsSitemapController controller) {
 
@@ -513,10 +515,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Inserts the given entry at the given position.<p>
-     * 
+     *
      * @param entry the entry to insert
      * @param position the position
-     * @param controller a sitemap controller instance 
+     * @param controller a sitemap controller instance
      */
     public void insertSubEntry(CmsClientSitemapEntry entry, int position, I_CmsSitemapController controller) {
 
@@ -526,8 +528,18 @@ public class CmsClientSitemapEntry implements IsSerializable {
     }
 
     /**
+     * Returns the default file is released and not expired flag.<p>
+     *
+     * @return the default file is released and not expired flag
+     */
+    public boolean isDefaultFileReleased() {
+
+        return m_defaultFileReleased;
+    }
+
+    /**
      * Returns if the current lock state allows editing.<p>
-     * 
+     *
      * @return <code>true</code> if the resource is editable
      */
     public boolean isEditable() {
@@ -551,7 +563,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns if this entry is of type folder.<p>
-     * 
+     *
      * @return <code>true</code> if this entry is of type folder
      */
     public boolean isFolderType() {
@@ -582,7 +594,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns if this entry is of type leaf.<p>
-     * 
+     *
      * @return <code>true</code> if this entry is of type leaf
      */
     public boolean isLeafType() {
@@ -592,7 +604,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns if this entry is of type folder.<p>
-     * 
+     *
      * @return <code>true</code> if this entry is of type folder
      */
     public boolean isNavigationLevelType() {
@@ -602,7 +614,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns the "new" flag of the sitemap entry.<p>
-     * 
+     *
      * @return the "new" flag
      */
     public boolean isNew() {
@@ -622,8 +634,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns true if this entry is the root entry of the sitemap.<p>
-     * 
-     * @return true if this entry is the root entry of the sitemap 
+     *
+     * @return true if this entry is the root entry of the sitemap
      */
     public boolean isRoot() {
 
@@ -632,7 +644,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Returns if this entry is of type sub-sitemap.<p>
-     * 
+     *
      * @return <code>true</code> if this entry is of type sub-sitemap
      */
     public boolean isSubSitemapType() {
@@ -653,9 +665,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Removes the child at the given position.<p>
-     * 
+     *
      * @param entryId the id of the child to remove
-     * 
+     *
      * @return the removed child
      */
     public CmsClientSitemapEntry removeSubEntry(CmsUUID entryId) {
@@ -679,9 +691,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Removes the child at the given position.<p>
-     * 
+     *
      * @param position the index of the child to remove
-     * 
+     *
      * @return the removed child
      */
     public CmsClientSitemapEntry removeSubEntry(int position) {
@@ -703,7 +715,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets if the entry resource has blocking locked children that can not be locked by the current user.<p>
-     * 
+     *
      * @param hasBlockingLockedChildren <code>true</code> if the entry resource has blocking locked children
      */
     public void setBlockingLockedChildren(boolean hasBlockingLockedChildren) {
@@ -713,7 +725,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the 'children loaded initially' flag.<p>
-     * 
+     *
      * @param childrenLoaded <code>true</code> if children are loaded initially
      */
     public void setChildrenLoadedInitially(boolean childrenLoaded) {
@@ -741,10 +753,10 @@ public class CmsClientSitemapEntry implements IsSerializable {
         m_dateReleased = dateReleased;
     }
 
-    /** 
+    /**
      * Sets the default file id.
-     * 
-     * @param defaultFileId the new default file id 
+     *
+     * @param defaultFileId the new default file id
      **/
     public void setDefaultFileId(CmsUUID defaultFileId) {
 
@@ -753,12 +765,22 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the properties for the default file.<p>
-     * 
-     * @param properties the properties for the default file 
+     *
+     * @param properties the properties for the default file
      */
     public void setDefaultFileProperties(Map<String, CmsClientProperty> properties) {
 
         m_defaultFileProperties = properties;
+    }
+
+    /**
+     * Sets the default file is released and not expired flag.<p>
+     *
+     * @param defaultFileReleased the default file is released and not expired flag to set
+     */
+    public void setDefaultFileReleased(boolean defaultFileReleased) {
+
+        m_defaultFileReleased = defaultFileReleased;
     }
 
     /**
@@ -773,7 +795,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the detail resource type name.<p>
-     * 
+     *
      * @param detailpageTypeName the detail resource type name
      */
     public void setDetailpageTypeName(String detailpageTypeName) {
@@ -793,8 +815,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the export name for this entry.<p>
-     * 
-     * @param exportName the export name for this entry 
+     *
+     * @param exportName the export name for this entry
      */
     public void setExportName(String exportName) {
 
@@ -873,8 +895,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the properties for the entry itself.<p>
-     * 
-     * @param properties the properties for the entry itself 
+     *
+     * @param properties the properties for the entry itself
      */
     public void setOwnProperties(Map<String, CmsClientProperty> properties) {
 
@@ -933,7 +955,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the resource type id.<p>
-     * 
+     *
      * @param resourceTypeId the resource type id
      */
     public void setResourceTypeId(int resourceTypeId) {
@@ -943,8 +965,8 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Sets the resource type name.<p>
-     * 
-     * @param typeName the resource type name 
+     *
+     * @param typeName the resource type name
      */
     public void setResourceTypeName(String typeName) {
 
@@ -969,7 +991,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
      * Sets the children.<p>
      *
      * @param children the children to set
-     * @param controller a sitemap controller instance 
+     * @param controller a sitemap controller instance
      */
     public void setSubEntries(List<CmsClientSitemapEntry> children, I_CmsSitemapController controller) {
 
@@ -1013,7 +1035,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Updates all entry properties apart from it's position-info and sub-entries.<p>
-     * 
+     *
      * @param source the source entry to update from
      */
     public void update(CmsClientSitemapEntry source) {
@@ -1027,9 +1049,9 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Updates the entry's site path and the name accordingly.<p>
-     * 
+     *
      * @param sitepath the new site path to set
-     * @param controller a sitemap controller instance 
+     * @param controller a sitemap controller instance
      */
     public void updateSitePath(String sitepath, I_CmsSitemapController controller) {
 
@@ -1062,7 +1084,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Copies all member variables apart from sub-entries and position.<p>
-     * 
+     *
      * @param source the source to copy from
      */
     private void copyMembers(CmsClientSitemapEntry source) {
@@ -1096,6 +1118,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
         setDateExpired(source.getDateExpired());
         setDateReleased(source.getDateReleased());
         setResleasedAndNotExpired(source.isResleasedAndNotExpired());
+        setDefaultFileReleased(source.isDefaultFileReleased());
         setAliases(source.getAliases());
         setRedirectTarget(source.getRedirectTarget());
         setResourceState(source.getResourceState());
@@ -1104,7 +1127,7 @@ public class CmsClientSitemapEntry implements IsSerializable {
 
     /**
      * Updates all the children positions starting from the given position.<p>
-     * 
+     *
      * @param position the position to start with
      */
     private void updatePositions(int position) {

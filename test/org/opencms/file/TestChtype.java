@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,13 +41,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "chtype" method of the CmsObject.<p>
- * 
+ *
  */
 public class TestChtype extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestChtype(String arg0) {
@@ -57,7 +57,7 @@ public class TestChtype extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -90,7 +90,7 @@ public class TestChtype extends OpenCmsTestCase {
 
     /**
      * Test the chtype method on a new file.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
@@ -117,12 +117,12 @@ public class TestChtype extends OpenCmsTestCase {
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHTYPE);
         // date lastmodified must be new
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        // the type must be the new type                   
+        // the type must be the new type
     }
 
     /**
      * Test the chtype method on a new file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testChtypeNewFile() throws Throwable {
@@ -139,7 +139,7 @@ public class TestChtype extends OpenCmsTestCase {
 
     /**
     * Test the chtype method on a file to jsp without permissions.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testChtypeJspFile() throws Throwable {

@@ -3,9 +3,9 @@
 %><!DOCTYPE html>
 <html>
   <head>
+  <%= upload.exportAll() %>
   	<title><%= upload.getTitle() %></title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <%= upload.exportAll() %>
   </head>
   <body style="margin: 0px;">&nbsp;</body>
 </html>

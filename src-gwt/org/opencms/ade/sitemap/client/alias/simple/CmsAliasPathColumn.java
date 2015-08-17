@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Creates a new column instance.<p>
-     * 
-     * @param table the table in which this column is used 
+     *
+     * @param table the table in which this column is used
      */
     public CmsAliasPathColumn(CmsAliasCellTable table) {
 
@@ -69,8 +69,8 @@ public class CmsAliasPathColumn extends A_CmsAliasTableColumn<CmsAliasTableRow, 
 
     /**
      * Gets the comparator used for this column.<p>
-     * 
-     * @return the comparator to use for this row 
+     *
+     * @return the comparator to use for this row
      */
     public static Comparator<CmsAliasTableRow> getComparator() {
 

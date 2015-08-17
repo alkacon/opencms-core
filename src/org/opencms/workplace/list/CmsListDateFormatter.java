@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.util.Locale;
 
 /**
  * Simple formatter for dates.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListDateFormatter implements I_CmsListFormatter {
 
@@ -46,7 +46,7 @@ public class CmsListDateFormatter implements I_CmsListFormatter {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * Use medium style.<p>
      */
     public CmsListDateFormatter() {
@@ -57,10 +57,10 @@ public class CmsListDateFormatter implements I_CmsListFormatter {
 
     /**
      * Customizable constructor.<p>
-     * 
+     *
      * @param dateStyle the style for the date part
      * @param timeStyle the style for the time part
-     * 
+     *
      * @see DateFormat
      */
     public CmsListDateFormatter(int dateStyle, int timeStyle) {

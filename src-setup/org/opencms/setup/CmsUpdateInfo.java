@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ public class CmsUpdateInfo {
 
     /**
      * Gets the container page editor version.<p>
-     * 
-     * @return the module version 
+     *
+     * @return the module version
      */
     public CmsModuleVersion getAdeModuleVersion() {
 
@@ -52,8 +52,8 @@ public class CmsUpdateInfo {
 
     /**
      * Checks if the categoryfolder setting needs to be updated.
-     * 
-     * @return true if the categoryfolder setting needs to be updated 
+     *
+     * @return true if the categoryfolder setting needs to be updated
      */
     public boolean needToSetCategoryFolder() {
 
@@ -66,8 +66,8 @@ public class CmsUpdateInfo {
 
     /**
      * Sets the container page editor version.<p>
-     * 
-     * @param version the module version 
+     *
+     * @param version the module version
      */
     public void setAdeModuleVersion(CmsModuleVersion version) {
 

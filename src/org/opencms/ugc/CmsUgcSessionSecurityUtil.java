@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ public class CmsUgcSessionSecurityUtil {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUgcSessionSecurityUtil.class);
 
-    /** 
+    /**
      * Hidden default constructor.<p>
      */
     private CmsUgcSessionSecurityUtil() {
@@ -55,11 +55,11 @@ public class CmsUgcSessionSecurityUtil {
 
     /**
      * Checks whether a new XML content may be created and throws an exception if this is not the case.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param config the form configuration
-     * 
-     *  @throws CmsUgcException if something goes wrong 
+     *
+     *  @throws CmsUgcException if something goes wrong
      */
     public static void checkCreateContent(CmsObject cms, CmsUgcConfiguration config) throws CmsUgcException {
 
@@ -83,14 +83,14 @@ public class CmsUgcSessionSecurityUtil {
 
     /**
      * Checks whether an  uploaded file can be created in the VFS, and throws an exception otherwise.
-     * 
-     * @param cms the current CMS context 
-     * @param config the form configuration 
-     * @param name the file name of the uploaded file 
+     *
+     * @param cms the current CMS context
+     * @param config the form configuration
+     * @param name the file name of the uploaded file
      * @param size the size of the uploaded file
-     * 
-     *  @throws CmsUgcException if something goes wrong 
-     * 
+     *
+     *  @throws CmsUgcException if something goes wrong
+     *
      */
     public static void checkCreateUpload(CmsObject cms, CmsUgcConfiguration config, String name, long size)
     throws CmsUgcException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the decoration postprocessor.<p>
- * 
+ *
  * @since 6.1.3
  */
 public class TestCache extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCache(String arg0) {
@@ -54,7 +54,7 @@ public class TestCache extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -86,7 +86,7 @@ public class TestCache extends OpenCmsTestCase {
 
     /**
      * Tests the decoration postprocessor.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testVfsMemoryObjectCache() throws Exception {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import com.google.gwt.dom.client.InputElement;
 
 /**
  * The HTML5 file input implementation.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
@@ -41,8 +41,8 @@ public class CmsFileInputFileApiImpl implements I_CmsFileInputService {
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#getFiles(com.google.gwt.dom.client.InputElement)
      */
     public native JsArray<CmsFileInfo> getFiles(InputElement inputElement) /*-{
-        return inputElement.files;
-    }-*/;
+                                                                           return inputElement.files;
+                                                                           }-*/;
 
     /**
      * @see org.opencms.gwt.client.ui.input.upload.I_CmsFileInputService#isAllowMultipleFiles(com.google.gwt.dom.client.InputElement)

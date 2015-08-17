@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,13 +39,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
- * 
+ *
  */
 public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestReadResource(String arg0) {
@@ -55,7 +55,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -95,7 +95,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource of a file before its release date.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
@@ -135,7 +135,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource of a file after its expirationrelease date.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
@@ -175,7 +175,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource of a file in its valid time range.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
@@ -211,7 +211,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource of a file before its release date.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadBeforeReleaseDate() throws Throwable {
@@ -223,7 +223,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readFileHeader of a file after its expiration date.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadAfterExpirationDate() throws Throwable {
@@ -235,7 +235,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readFileHeader of a file in its valid time range.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadInValidTimeRange() throws Throwable {
@@ -248,7 +248,7 @@ public class TestReadResource extends OpenCmsTestCase {
     /**
      * Test readFileHeader of a file before its release date.<p>
      * The valid time range will be ignored.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadBeforeReleaseDateIgnore() throws Throwable {
@@ -261,7 +261,7 @@ public class TestReadResource extends OpenCmsTestCase {
     /**
      * Test readFileHeader of a file after its expiration date.<p>
      * The valid time range will be ignored.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadAfterExpirationDateIgnore() throws Throwable {
@@ -274,7 +274,7 @@ public class TestReadResource extends OpenCmsTestCase {
     /**
      * Test readFileHeader of a file in its valid time range.<p>
      * The valid time range will be ignored.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadInValidTimeRangeIgnore() throws Throwable {
@@ -286,7 +286,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource methods that use the structureId.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadWithResourceID() throws Throwable {
@@ -325,7 +325,7 @@ public class TestReadResource extends OpenCmsTestCase {
 
     /**
      * Test readResource whether an incorrect structureID throws an exception.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadWithWrongResourceID() throws Throwable {
@@ -350,7 +350,7 @@ public class TestReadResource extends OpenCmsTestCase {
         String path = "/folder1/subfolder11/index.html";
         CmsObject cms = getCmsObject();
         OpenCms.getPublishManager().waitWhileRunning();
-        assertTrue(cms.readFile(path).getState().isUnchanged());        
+        assertTrue(cms.readFile(path).getState().isUnchanged());
         cms.lockResource(path);
         cms.deleteResource(path, CmsResource.DELETE_PRESERVE_SIBLINGS);
         try {

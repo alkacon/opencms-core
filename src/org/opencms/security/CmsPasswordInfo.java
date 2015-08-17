@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Validating bean for changing the password.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPasswordInfo {
 
@@ -62,8 +62,8 @@ public class CmsPasswordInfo {
 
     /**
      * Use this Constructor if you need to check the old password of the current logged in user.<p>
-     * 
-     * @param cms the cms context 
+     *
+     * @param cms the cms context
      */
     public CmsPasswordInfo(CmsObject cms) {
 
@@ -77,7 +77,7 @@ public class CmsPasswordInfo {
 
     /**
      * Sets the new password for the current logged in user.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void applyChanges() throws CmsException {
@@ -146,7 +146,8 @@ public class CmsPasswordInfo {
         try {
             m_cms.readUser(m_userName, currentPwd);
         } catch (CmsException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_USER_PWD_1, m_userName));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_INVALID_USER_PWD_1, m_userName));
         }
         m_currentPwd = currentPwd;
     }

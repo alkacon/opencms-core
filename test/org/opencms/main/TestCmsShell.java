@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,16 +34,16 @@ import org.opencms.util.CmsFileUtil;
 import java.io.File;
 import java.io.FileInputStream;
 
-/** 
+/**
  * Test cases for the OpenCms shell.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsShell(String arg0) {
@@ -53,7 +53,7 @@ public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Tests the Junit OpenCms VFS test setup using the "base" test class.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSetup() throws Throwable {
@@ -80,7 +80,7 @@ public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Tests the CmsShell and setup procedure.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsShell() throws Throwable {
@@ -99,7 +99,7 @@ public class TestCmsShell extends OpenCmsTestCase {
             System.err,
             false);
 
-        // open the test script 
+        // open the test script
         File script;
         FileInputStream stream;
 

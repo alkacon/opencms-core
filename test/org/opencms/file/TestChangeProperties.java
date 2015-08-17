@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ public class TestChangeProperties extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestChangeProperties(String arg0) {
@@ -54,7 +54,7 @@ public class TestChangeProperties extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -89,11 +89,11 @@ public class TestChangeProperties extends OpenCmsTestCase {
      * Tries to change the "Description" property of the two files
      * "/folder1/index.html" and "/folder2/index.html" with the site-root
      * "/sites/default".
-     * 
+     *
      * The test fails, if the <code>recursive</code> parameter of
      * <code>changeResourcesInFolderWithProperty()</code> changes the
-     * semantics of the method call.<p> 
-     * 
+     * semantics of the method call.<p>
+     *
      * @throws Throwable if an error occurs while the test is running
      */
     public void testChangeResourcesRelativePath() throws Throwable {
@@ -109,11 +109,8 @@ public class TestChangeProperties extends OpenCmsTestCase {
         assertLock(cms, resource2);
 
         // Recursive semantics
-        System.out.println("Changing property of \""
-            + resource1
-            + "\" in \""
-            + cms.getRequestContext().getSiteRoot()
-            + "\"");
+        System.out.println(
+            "Changing property of \"" + resource1 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
 
         List l1 = cms.changeResourcesInFolderWithProperty(
             resource1,
@@ -123,11 +120,8 @@ public class TestChangeProperties extends OpenCmsTestCase {
             true);
 
         // Non-recursive semantics
-        System.out.println("Changing property of \""
-            + resource2
-            + "\" in \""
-            + cms.getRequestContext().getSiteRoot()
-            + "\"");
+        System.out.println(
+            "Changing property of \"" + resource2 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
 
         List l2 = cms.changeResourcesInFolderWithProperty(
             resource2,
@@ -144,11 +138,11 @@ public class TestChangeProperties extends OpenCmsTestCase {
      * Tries to change the "Description" property of the two files
      * "/sites/default/folder1/index.html" and
      * "/sites/default/folder2/index.html" with the site-root "".
-     * 
+     *
      * The test fails, if the <code>recursive</code> parameter of
      * <code>changeResourcesInFolderWithProperty()</code> changes the
-     * semantics of the method call.<p> 
-     * 
+     * semantics of the method call.<p>
+     *
      * @throws Throwable if an error occurs while the test is running
      */
     public void testChangeResourcesFullPath() throws Throwable {
@@ -167,11 +161,8 @@ public class TestChangeProperties extends OpenCmsTestCase {
         assertLock(cms, resource2);
 
         // Recursive semantics
-        System.out.println("Changing property of \""
-            + resource1
-            + "\" in \""
-            + cms.getRequestContext().getSiteRoot()
-            + "\"");
+        System.out.println(
+            "Changing property of \"" + resource1 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
 
         List l1 = cms.changeResourcesInFolderWithProperty(
             resource1,
@@ -181,11 +172,8 @@ public class TestChangeProperties extends OpenCmsTestCase {
             true);
 
         // Non-recursive semantics
-        System.out.println("Changing property of \""
-            + resource2
-            + "\" in \""
-            + cms.getRequestContext().getSiteRoot()
-            + "\"");
+        System.out.println(
+            "Changing property of \"" + resource2 + "\" in \"" + cms.getRequestContext().getSiteRoot() + "\"");
 
         List l2 = cms.changeResourcesInFolderWithProperty(
             resource2,

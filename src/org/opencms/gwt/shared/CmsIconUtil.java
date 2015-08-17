@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.gwt.shared;
 
 /**
  * Utility class for the resource icon CSS.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsIconUtil {
@@ -53,12 +53,12 @@ public class CmsIconUtil {
 
     /**
      * Returns the CSS classes of the resource icon for the given resource type name.<p>
-     * 
+     *
      * Use this function, if the resource type is known, but not the filename. If the filename is available use {@link CmsIconUtil#getResourceIconClasses(String, String, boolean)}<p>
-     * 
+     *
      * @param resourceTypeName the resource type name
-     * @param small if true, get the icon classes for the small icon, else for the biggest one available 
-     * 
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available
+     *
      * @return the CSS classes
      */
     public static String getResourceIconClasses(String resourceTypeName, boolean small) {
@@ -70,13 +70,13 @@ public class CmsIconUtil {
 
     /**
      * Returns the CSS classes of the resource icon for the given resource type and filename.<p>
-     * 
+     *
      * Use this the resource type and filename is known. Otherwise use {@link CmsIconUtil#getResourceIconClasses(String,boolean)}<p>
-     * 
+     *
      * @param resourceTypeName the resource type name
      * @param fileName the filename
-     * @param small if true, get the icon classes for the small icon, else for the biggest one available 
-     * 
+     * @param small if true, get the icon classes for the small icon, else for the biggest one available
+     *
      * @return the CSS classes
      */
     public static String getResourceIconClasses(String resourceTypeName, String fileName, boolean small) {
@@ -89,12 +89,12 @@ public class CmsIconUtil {
 
     /**
      * Returns the CSS class for a given resource type name and file name extension.<p>
-     * 
-     * @param resourceTypeName the resource type name 
+     *
+     * @param resourceTypeName the resource type name
      * @param suffix the file name extension
-     * @param small if true, get the icon class for the small icon, else for the biggest one available   
-     * 
-     * @return the CSS class for the type and extension 
+     * @param small if true, get the icon class for the small icon, else for the biggest one available
+     *
+     * @return the CSS class for the type and extension
      */
     public static String getResourceSubTypeIconClass(String resourceTypeName, String suffix, boolean small) {
 
@@ -108,10 +108,10 @@ public class CmsIconUtil {
 
     /**
      * Returns the CSS class for the given resource type.<p>
-     * 
+     *
      * @param resourceTypeName the resource type name
-     * @param small if true, get the icon class for the small icon, else for the biggest one available 
-     * 
+     * @param small if true, get the icon class for the small icon, else for the biggest one available
+     *
      * @return the CSS class
      */
     public static String getResourceTypeIconClass(String resourceTypeName, boolean small) {
@@ -126,11 +126,11 @@ public class CmsIconUtil {
 
     /**
      * Returns the CSS class for the given filename.<p>
-     * 
+     *
      * @param resourceTypeName the resource type name
      * @param fileName the filename
-     * @param small if true, get the CSS class for the small icon, else for the biggest one available 
-     * 
+     * @param small if true, get the CSS class for the small icon, else for the biggest one available
+     *
      * @return the CSS class
      */
     protected static String getFileTypeIconClass(String resourceTypeName, String fileName, boolean small) {

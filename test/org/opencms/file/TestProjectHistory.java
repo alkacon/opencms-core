@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,14 +39,14 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the project history function of the CmsObject.<p>
- * 
+ *
  * @since 6.0 alpha 2
  */
 public class TestProjectHistory extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestProjectHistory(String arg0) {
@@ -56,7 +56,7 @@ public class TestProjectHistory extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -88,7 +88,7 @@ public class TestProjectHistory extends OpenCmsTestCase {
 
     /**
      * Tests the project history function of the CmsObject.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testProjectHistory() throws Throwable {
@@ -101,7 +101,7 @@ public class TestProjectHistory extends OpenCmsTestCase {
 
     /**
      * Tests the project history function of the CmsObject.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @throws Throwable if something goes wrong
      */

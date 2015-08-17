@@ -67,7 +67,7 @@ public class CmsAliasEditor {
 
     /**
      * Checks whether the alias editor is finished.<p>
-     * 
+     *
      * @return true if the alias editor is finished
      */
     public boolean isFinished() {
@@ -77,9 +77,9 @@ public class CmsAliasEditor {
 
     /**
      * Opens the alias editor.<p>
-     * 
+     *
      * In addition to displaying the alias editor, this also sets up a timer which regularly informs the server
-     * that the alias table for the current site is being edited by the current user. This timer is deactivated 
+     * that the alias table for the current site is being edited by the current user. This timer is deactivated
      * when the dialog is closed.<p>
      */
     public void show() {
@@ -129,8 +129,8 @@ public class CmsAliasEditor {
 
     /**
      * Sets the 'finished' flag.<p>
-     * 
-     * @param finished the new value of the 'finished' flag 
+     *
+     * @param finished the new value of the 'finished' flag
      */
     protected void setFinished(boolean finished) {
 
@@ -139,8 +139,8 @@ public class CmsAliasEditor {
 
     /**
      * Asynchronously updates the alias editor status.<p>
-     * 
-     * @param editing the status we want to set 
+     *
+     * @param editing the status we want to set
      */
     protected void updateAliasEditorStatus(boolean editing) {
 
@@ -150,12 +150,12 @@ public class CmsAliasEditor {
 
                 public void onFailure(Throwable caught) {
 
-                    // do nothing 
+                    // do nothing
                 }
 
                 public void onSuccess(Void result) {
 
-                    // do nothing 
+                    // do nothing
                 }
 
             });

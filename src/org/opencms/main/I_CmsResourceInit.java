@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,27 +36,27 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * This interface checks the requested resource from the OpenCms request context
- * and returns it to the calling method, which will usually be 
+ * and returns it to the calling method, which will usually be
  * {@link OpenCms#initResource(CmsObject, String, HttpServletRequest, HttpServletResponse)}.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsResourceInit {
 
     /**
      * Possibility to modify or change the CmsFile with the CmsObject.<p>
-     * 
+     *
      * Caution: reading parameters from the request, destroys special characters in all
      * parameters, because the encoding for the request was not set yet.<p>
-     * 
+     *
      * @param resource the requested file
      * @param cms the current CmsObject
      * @param req the current request
      * @param res the current response
      * @return a resource in the OpenCms VFS
-     * 
+     *
      * @throws CmsResourceInitException if other implementations of the interface should not be executed
-     * @throws CmsSecurityException if other implementations of the interface should not be executed, 
+     * @throws CmsSecurityException if other implementations of the interface should not be executed,
      *      and the security exception should be escalated
      */
     CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)

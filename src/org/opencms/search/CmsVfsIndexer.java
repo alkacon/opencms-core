@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * An indexer indexing {@link CmsResource} based content from the OpenCms VFS.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsVfsIndexer implements I_CmsIndexer {
 
@@ -55,7 +55,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);
 
     // Note: The following member variables must all be "protected" (not "private") since
-    // in case the indexer is extended, the factory method "newInstance()" needs to set them. 
+    // in case the indexer is extended, the factory method "newInstance()" needs to set them.
 
     /** The OpenCms user context to use when reading resources from the VFS during indexing. */
     protected CmsObject m_cms;
@@ -96,7 +96,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Returns the OpenCms user context used by this indexer.<p>
-     *     
+     *
      * @return the OpenCms user context used by this indexer
      */
     public CmsObject getCms() {
@@ -106,8 +106,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Returns the OpenCms search index updated by this indexer.<p>
-     *     
-     * @return the OpenCms search index updated by this indexer 
+     *
+     * @return the OpenCms search index updated by this indexer
      */
     public CmsSearchIndex getIndex() {
 
@@ -116,7 +116,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Returns the report used by this indexer.<p>
-     *     
+     *
      * @return the report used by this indexer
      */
     public I_CmsReport getReport() {
@@ -152,7 +152,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * The default indexer is not able to resolve locale dependencies between documents.<p>
-     * 
+     *
      * @see org.opencms.search.I_CmsIndexer#isLocaleDependenciesEnable()
      */
     public boolean isLocaleDependenciesEnable() {
@@ -269,9 +269,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Adds a given published resource to the provided search index update data.<p>
-     * 
+     *
      * This method decides if the resource has to be included in the "update" or "delete" list.<p>
-     * 
+     *
      * @param pubRes the published resource to add
      * @param updateData the search index update data to add the resource to
      */
@@ -287,7 +287,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Deletes a resource with the given index writer.<p>
-     * 
+     *
      * @param indexWriter the index writer to resource the resource with
      * @param resource the root path of the resource to delete
      */
@@ -313,7 +313,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Checks if the published resource is inside the time window set with release and expiration date.<p>
-     * 
+     *
      * @param resource the published resource to check
      * @return true if the published resource is inside the time window, otherwise false
      */
@@ -326,11 +326,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
     /**
      * Updates (writes) a single resource in the index.<p>
-     * 
+     *
      * @param writer the index writer to use
      * @param threadManager the thread manager to use when extracting the document text
      * @param resource the resource to update
-     * 
+     *
      * @throws CmsIndexException if something goes wrong
      */
     protected void updateResource(I_CmsIndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
@@ -358,16 +358,17 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         m_index.getName()),
                     e);
             }
-            throw new CmsIndexException(Messages.get().container(
-                Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                resource.getRootPath(),
-                m_index.getName()));
+            throw new CmsIndexException(
+                Messages.get().container(
+                    Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                    resource.getRootPath(),
+                    m_index.getName()));
         }
     }
 
     /**
      * Updates a resource with the given index writer and the new document provided.<p>
-     * 
+     *
      * @param indexWriter the index writer to update the resource with
      * @param rootPath the root path of the resource to update
      * @param doc the new document for the resource
@@ -379,7 +380,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(
-                    Messages.get().getBundle().key(Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2, rootPath, m_index.getName()),
+                    Messages.get().getBundle().key(
+                        Messages.LOG_IO_INDEX_DOCUMENT_UPDATE_2,
+                        rootPath,
+                        m_index.getName()),
                     e);
             }
         }

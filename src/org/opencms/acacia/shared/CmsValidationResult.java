@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param errors the error messages by entity and attribute
      * @param warnings the warning messages by entity and attribute
      */
@@ -64,7 +64,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns all error messages by entity id and attribute.<p>
-     * 
+     *
      * @return the error messages by entity id and attribute
      */
     public Map<String, Map<String[], String>> getErrors() {
@@ -74,9 +74,9 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns the error messages for the given entity.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return the error messages for the given entity
      */
     public Map<String[], String> getErrors(String entityId) {
@@ -86,7 +86,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns all warning messages by entity id and attribute.<p>
-     * 
+     *
      * @return the warning messages by entity id and attribute
      */
     public Map<String, Map<String[], String>> getWarnings() {
@@ -96,9 +96,9 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns the warning messages for the given entity.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return the warning messages for the given entity
      */
     public Map<String[], String> getWarnings(String entityId) {
@@ -108,7 +108,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns if there are any errors.<p>
-     * 
+     *
      * @return <code>true</code> if there are any errors
      */
     public boolean hasErrors() {
@@ -118,9 +118,9 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns if the entity of the given id has errors.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return <code>true</code> if the entity of the given id has errors
      */
     public boolean hasErrors(String entityId) {
@@ -130,7 +130,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns if there are any warnings.<p>
-     * 
+     *
      * @return <code>true</code> if there are any warnings
      */
     public boolean hasWarnings() {
@@ -140,9 +140,9 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns if the entity of the given id has warnings.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return <code>true</code> if the entity of the given id has warnings
      */
     public boolean hasWarnings(String entityId) {

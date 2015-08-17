@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import java.util.Locale;
 
 /**
  * Class for writing detail page information to an XML configuration file.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDetailPageConfigurationWriter {
@@ -72,8 +72,8 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Creates a new detail page configuration writer.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param res the configuration file resource
      */
     public CmsDetailPageConfigurationWriter(CmsObject cms, CmsResource res) {
@@ -84,11 +84,11 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Writes the new detail page information to the configuration file.<p>
-     * 
+     *
      * @param infos the new detail page information
-     * @param newId the id to use for new pages  
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param newId the id to use for new pages
+     *
+     * @throws CmsException if something goes wrong
      */
     public void updateAndSave(List<CmsDetailPageInfo> infos, CmsUUID newId) throws CmsException {
 
@@ -106,10 +106,10 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Helper method for loading the XML content from the configuration file.<p>
-     * 
-     * @return the parsed XML document 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the parsed XML document
+     *
+     * @throws CmsException if something goes wrong
      */
     private I_CmsXmlDocument getDocument() throws CmsException {
 
@@ -123,10 +123,10 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Helper method for getting the locale from which to read the configuration data.<p>
-     * 
+     *
      * @return the locale from which to read the configuration data
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private Locale getLocale() throws CmsException {
 
@@ -140,8 +140,8 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Removes the old detail page information from the XML content.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void removeOldValues() throws CmsException {
 
@@ -157,9 +157,9 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Writes the detail page information to the XML content.<p>
-     * 
-     * @param infos the list of detail page information bean 
-     * @param newId the id to use for new pages 
+     *
+     * @param infos the list of detail page information bean
+     * @param newId the id to use for new pages
      */
     private void writeDetailPageInfos(List<CmsDetailPageInfo> infos, CmsUUID newId) {
 
@@ -176,10 +176,10 @@ public class CmsDetailPageConfigurationWriter {
 
     /**
      * Writes a single item of detail page information to the XML content.<p>
-     * 
-     * @param type the type which the detail page should render  
-     * @param id the page id of the detail page 
-     * @param index the position at which the detail page info should be added 
+     *
+     * @param type the type which the detail page should render
+     * @param id the page id of the detail page
+     * @param index the position at which the detail page info should be added
      */
     private void writeValue(String type, CmsUUID id, int index) {
 

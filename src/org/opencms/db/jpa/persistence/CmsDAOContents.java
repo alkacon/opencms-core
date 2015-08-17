@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a cms contents entry inside the table "cms_contents".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -65,7 +65,7 @@ public class CmsDAOContents {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -75,7 +75,7 @@ public class CmsDAOContents {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -112,7 +112,7 @@ public class CmsDAOContents {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOContentsPK(String str) {
@@ -144,12 +144,13 @@ public class CmsDAOContents {
 
             CmsDAOContentsPK other = (CmsDAOContentsPK)obj;
             return (m_publishTagFrom == other.m_publishTagFrom)
-                && (((m_resourceId == null) && (other.m_resourceId == null)) || ((m_resourceId != null) && m_resourceId.equals(other.m_resourceId)));
+                && (((m_resourceId == null) && (other.m_resourceId == null))
+                    || ((m_resourceId != null) && m_resourceId.equals(other.m_resourceId)));
         }
 
         /**
          * Returns the publish tag from.<p>
-         * 
+         *
          * @return the publish tag from
          */
         public int getPublishTagFrom() {
@@ -159,7 +160,7 @@ public class CmsDAOContents {
 
         /**
          * Returns the resource id.<p>
-         * 
+         *
          * @return the resource id
          */
         public String getResourceId() {
@@ -174,14 +175,14 @@ public class CmsDAOContents {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + m_publishTagFrom;
-            rs = rs * 37 + ((m_resourceId == null) ? 0 : m_resourceId.hashCode());
+            rs = (rs * 37) + m_publishTagFrom;
+            rs = (rs * 37) + ((m_resourceId == null) ? 0 : m_resourceId.hashCode());
             return rs;
         }
 
         /**
          * Sets the publish tag from.<p>
-         * 
+         *
          * @param publishTagFrom the publish tag to set
          */
         public void setPublishTagFrom(int publishTagFrom) {
@@ -191,7 +192,7 @@ public class CmsDAOContents {
 
         /**
          * Sets the resource id.<p>
-         * 
+         *
          * @param resourceId the resource id to set
          */
         public void setResourceId(String resourceId) {
@@ -210,7 +211,7 @@ public class CmsDAOContents {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -263,7 +264,7 @@ public class CmsDAOContents {
 
     /**
      * A public constructor for generating a new contents object with an unique id.<p>
-     *  
+     *
      * @param publishTagFrom the publish tag from
      * @param resourceId the resource id from
      */
@@ -275,7 +276,7 @@ public class CmsDAOContents {
 
     /**
      * Returns the file contents.<p>
-     * 
+     *
      * @return the file contents
      */
     public byte[] getFileContent() {
@@ -285,7 +286,7 @@ public class CmsDAOContents {
 
     /**
      * Returns the online flag.<p>
-     * 
+     *
      * @return the online flag
      */
     public int getOnlineFlag() {
@@ -295,7 +296,7 @@ public class CmsDAOContents {
 
     /**
      * Returns the publish tag from.<p>
-     * 
+     *
      * @return the publish tag from
      */
     public int getPublishTagFrom() {
@@ -305,7 +306,7 @@ public class CmsDAOContents {
 
     /**
      * Returns the publish tag to.<p>
-     * 
+     *
      * @return the publish flag to
      */
     public int getPublishTagTo() {
@@ -315,7 +316,7 @@ public class CmsDAOContents {
 
     /**
      * Returns the resource id.<p>
-     * 
+     *
      * @return the resource id
      */
     public String getResourceId() {
@@ -325,7 +326,7 @@ public class CmsDAOContents {
 
     /**
      * Sets the file contents.<p>
-     * 
+     *
      * @param fileContent the content to set
      */
     public void setFileContent(byte[] fileContent) {
@@ -335,7 +336,7 @@ public class CmsDAOContents {
 
     /**
      * Sets the online flag.<p>
-     * 
+     *
      * @param onlineFlag the flag to set
      */
     public void setOnlineFlag(int onlineFlag) {
@@ -345,7 +346,7 @@ public class CmsDAOContents {
 
     /**
      * Sets the publish tag from.<p>
-     * 
+     *
      * @param publishTagFrom the publish tag to set
      */
     public void setPublishTagFrom(int publishTagFrom) {
@@ -355,7 +356,7 @@ public class CmsDAOContents {
 
     /**
      * Sets the publish tag to.<p>
-     * 
+     *
      * @param publishTagTo the flag to set
      */
     public void setPublishTagTo(int publishTagTo) {
@@ -365,7 +366,7 @@ public class CmsDAOContents {
 
     /**
      * Sets the resource id.<p>
-     * 
+     *
      * @param resourceId the resource id to set
      */
     public void setResourceId(String resourceId) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.logging.Log;
 
 /**
- * Implements a memory cache, that stores objects related to VFS files, 
+ * Implements a memory cache, that stores objects related to VFS files,
  * providing a cache for the "online" and another for the "offline" project.<p>
- * 
+ *
  * @since 6.1.3
  */
 public class CmsVfsMemoryObjectCache extends CmsVfsCache {
@@ -69,7 +69,7 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /**
      * Returns the VFS memory Object cache.<p>
-     * 
+     *
      * @return the VFS memory Object cache
      */
     public static CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
@@ -82,9 +82,9 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /**
      * Return an object from the cache.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
-     * @param rootPath the rootPath of the VFS resource to get the object for 
+     * @param rootPath the rootPath of the VFS resource to get the object for
      * @return object form cache or null
      */
     public Object getCachedObject(CmsObject cms, String rootPath) {
@@ -95,12 +95,12 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /**
      * Uses a transformer for loading an object from a path if it has not already been cached, and then caches it.<p>
-     * 
-     * @param cms the CMS context 
-     * @param rootPath the root path from which the object should be loaded 
-     * @param function the function which should load the object from VFS if it isn't already cached 
-     * 
-     * @return the loaded object 
+     *
+     * @param cms the CMS context
+     * @param rootPath the root path from which the object should be loaded
+     * @param function the function which should load the object from VFS if it isn't already cached
+     *
+     * @return the loaded object
      */
     public Object loadVfsObject(CmsObject cms, String rootPath, Transformer function) {
 
@@ -114,9 +114,9 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /**
      * Puts an object into the cache.<p>
-     * 
+     *
      * @param cms the CmsObject
-     * @param rootPath the rootPath of the VFS resource to store the object for 
+     * @param rootPath the rootPath of the VFS resource to store the object for
      * @param value the object to store
      */
     public void putCachedObject(CmsObject cms, String rootPath, Object value) {
@@ -144,12 +144,12 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
     }
 
     /**
-     * Returns a cache key for the given system id (filename) based on the status 
+     * Returns a cache key for the given system id (filename) based on the status
      * of the given project flag.<p>
-     * 
+     *
      * @param systemId the system id (filename) to get the cache key for
      * @param online indicates if this key is generated for the online project
-     * 
+     *
      * @return the cache key for the system id
      */
     private String getCacheKey(String systemId, boolean online) {
@@ -161,12 +161,12 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
     }
 
     /**
-     * Returns a cache key for the given root path based on the status 
+     * Returns a cache key for the given root path based on the status
      * of the given CmsObject.<p>
-     * 
+     *
      * @param cms the cms context
      * @param rootPath the filename to get the cache key for
-     * 
+     *
      * @return the cache key for the system id
      */
     private String getCacheKeyForCurrentProject(CmsObject cms, String rootPath) {
@@ -178,9 +178,9 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
 
     /**
      * Uncaches a system id (filename) from the internal offline temporary and content definitions caches.<p>
-     * 
+     *
      * The online resources cached for the online project are only flushed when a project is published.<p>
-     * 
+     *
      * @param systemId the system id (filename) to uncache
      */
     private void uncacheSystemId(String systemId) {
@@ -189,9 +189,10 @@ public class CmsVfsMemoryObjectCache extends CmsVfsCache {
         Object o = OpenCms.getMemoryMonitor().getCachedVfsObject(key);
         OpenCms.getMemoryMonitor().uncacheVfsObject(key);
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(org.opencms.xml.Messages.get().getBundle().key(
-                org.opencms.xml.Messages.LOG_ERR_UNCACHED_SYS_ID_1,
-                key));
+            LOG.debug(
+                org.opencms.xml.Messages.get().getBundle().key(
+                    org.opencms.xml.Messages.LOG_ERR_UNCACHED_SYS_ID_1,
+                    key));
         }
     }
 }

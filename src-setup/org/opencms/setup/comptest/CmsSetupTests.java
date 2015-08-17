@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import java.util.List;
 
 /**
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSetupTests {
 
@@ -68,7 +68,7 @@ public class CmsSetupTests {
 
     /**
      * Returns a list of all available tests.<p>
-     * 
+     *
      * @return a list of all available tests
      */
     public List<I_CmsSetupTest> getAllTests() {
@@ -88,7 +88,7 @@ public class CmsSetupTests {
 
     /**
      * Returns the test results.<p>
-     * 
+     *
      * @return the test results
      */
     public List<CmsSetupTestResult> getTestResults() {
@@ -98,7 +98,7 @@ public class CmsSetupTests {
 
     /**
      * Returns true, if the conditions in all tests were fulfilled.<p>
-     * 
+     *
      * @return true, if the conditions in all tests were fulfilled
      */
     public boolean isGreen() {
@@ -109,7 +109,7 @@ public class CmsSetupTests {
     /**
      * Returns true if one of the tests found a violated condition.
      * It is assumed that it will be impossible to run OpenCms.<p>
-     * 
+     *
      * @return true if one of the tests violates a condition
      */
     public boolean isRed() {
@@ -120,7 +120,7 @@ public class CmsSetupTests {
     /**
      * Returns true if one of the tests found a questionable condition.
      * It is possible that OpenCms will not run.<p>
-     * 
+     *
      * @return true if one of the tests found a questionable condition
      */
     public boolean isYellow() {
@@ -130,7 +130,7 @@ public class CmsSetupTests {
 
     /**
      * Runs all tests.<p>
-     * 
+     *
      * @param setupBean the CmsSetup bean of the setup wizard
      */
     public void runTests(CmsSetupBean setupBean) {
@@ -140,7 +140,7 @@ public class CmsSetupTests {
 
     /**
      * Runs all tests.<p>
-     * 
+     *
      * @param setupBean the CmsSetup bean of the setup wizard
      * @param serverInfo optional server info, if not present the server info is retrieved from the bean
      */
@@ -254,8 +254,9 @@ public class CmsSetupTests {
             dOut = new PrintWriter(fOut);
             dOut.println();
             dOut.println("############### currently used configuration ################");
-            dOut.println("Date:                "
-                + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
+            dOut.println(
+                "Date:                "
+                    + DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
             dOut.println("Used JDK:            " + usedJDK);
             dOut.println("Used Servlet Engine: " + thisEngine);
             dOut.close();

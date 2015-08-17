@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,15 +30,15 @@ package org.opencms.ade.upload;
 /**
  * This exception makes it possible to handle expected upload errors in another way than
  * unexpected errors.<p>
- * 
+ *
  * It is supposed to be used when an expected upload exception occurred.<p>
- * 
- * For example we can send a message like "file size limit exceeded" so the user knows 
+ *
+ * For example we can send a message like "file size limit exceeded" so the user knows
  * that he selected a file is responsible for the error. In other cases it does not make
- * sense to confuse the user with error information he won't understand like an encoding 
+ * sense to confuse the user with error information he won't understand like an encoding
  * error, ...<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsUploadException extends RuntimeException {
 
@@ -47,7 +47,7 @@ public class CmsUploadException extends RuntimeException {
 
     /**
      * Public constructor that sets the error message.<p>
-     * 
+     *
      * @param message the message
      */
     public CmsUploadException(String message) {
@@ -57,7 +57,7 @@ public class CmsUploadException extends RuntimeException {
 
     /**
      * Public constructor that sets the error message and the cause.<p>
-     * 
+     *
      * @param message the message
      * @param cause the cause
      */

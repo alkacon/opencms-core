@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Sub organization units list.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
@@ -60,7 +60,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsOrgUnitsSubList(CmsJspActionElement jsp) {
@@ -70,7 +70,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -82,8 +82,8 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Deletes the given organizational unit.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void actionDelete() throws Exception {
 
@@ -93,8 +93,8 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Deletes the given organizational unit.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void actionParent() throws Exception {
 
@@ -109,7 +109,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
      */
     @Override
@@ -146,7 +146,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Checks if the user has more then one organizational unit to administrate.<p>
-     * 
+     *
      * @return true if the user has more then then one organizational unit to administrate
      *         otherwise false
      * @throws CmsException if the organizational units can not be read
@@ -168,7 +168,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -196,11 +196,8 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
-            item.set(
-                LIST_COLUMN_ADMIN,
-                Boolean.valueOf(OpenCms.getRoleManager().hasRole(
-                    getCms(),
-                    CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(
+                OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
             item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }

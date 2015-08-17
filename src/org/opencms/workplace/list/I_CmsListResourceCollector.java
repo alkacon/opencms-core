@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.Map;
 
 /**
  * Collector to provide {@link CmsResource} objects for a explorer List.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
 
@@ -65,35 +65,35 @@ public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
 
     /**
      * Returns a list of list items from a list of resources.<p>
-     * 
+     *
      * @param parameter the collector parameter or <code>null</code> for default.<p>
-     * 
+     *
      * @return a list of {@link CmsListItem} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     List<CmsListItem> getListItems(String parameter) throws CmsException;
 
     /**
      * Returns the resource for the given item.<p>
-     * 
+     *
      * @param cms the cms object
      * @param item the item
-     * 
+     *
      * @return the resource
      */
     CmsResource getResource(CmsObject cms, CmsListItem item);
 
     /**
      * Returns all, unsorted and unfiltered, resources.<p>
-     * 
+     *
      * Be sure to cache the resources.<p>
-     * 
+     *
      * @param cms the cms object
      * @param params the parameter map
-     * 
+     *
      * @return a list of {@link CmsResource} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException;
@@ -107,7 +107,7 @@ public interface I_CmsListResourceCollector extends I_CmsResourceCollector {
 
     /**
      * Sets the current display page.<p>
-     * 
+     *
      * @param page the new display page
      */
     void setPage(int page);

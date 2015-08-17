@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Internal link validation Dialog.<p>
- * 
- * @since 6.5.3 
+ *
+ * @since 6.5.3
  */
 public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
 
@@ -71,7 +71,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsInternalLinkValidationList(CmsJspActionElement jsp) {
@@ -81,7 +81,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -94,6 +94,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -102,6 +103,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -110,6 +112,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -123,14 +126,17 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
         if (getValidator().getNotVisibleResourcesCount() > 0) {
             result.append(dialogBlockStart(key(Messages.GUI_BROKENLINKS_NOTICE_0)));
             result.append("\n");
-            result.append(key(Messages.GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1, new Object[] {new Integer(
-                getValidator().getNotVisibleResourcesCount())}));
+            result.append(
+                key(
+                    Messages.GUI_BROKENLINKS_NOT_VISIBLE_RESOURCES_1,
+                    new Object[] {new Integer(getValidator().getNotVisibleResourcesCount())}));
             result.append("\n");
             result.append(dialogBlockEnd());
         }
@@ -140,6 +146,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -179,9 +186,9 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                             siteName = "/";
                         }
                         if (!getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                            link = key(org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
-                                siteName,
-                                link});
+                            link = key(
+                                org.opencms.workplace.commons.Messages.GUI_DELETE_SITE_RELATION_2,
+                                new Object[] {siteName, link});
                         }
                         html.append(link);
                         html.append("<br>");
@@ -195,6 +202,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -205,6 +213,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail for broken links
@@ -215,8 +224,8 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
         brokenLinks.setShowActionHelpText(Messages.get().container(Messages.GUI_BROKENLINKS_DETAIL_SHOW_LINKS_HELP_0));
         brokenLinks.setHideActionName(Messages.get().container(Messages.GUI_BROKENLINKS_DETAIL_HIDE_LINKS_NAME_0));
         brokenLinks.setHideActionHelpText(Messages.get().container(Messages.GUI_BROKENLINKS_DETAIL_HIDE_LINKS_HELP_0));
-        brokenLinks.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_BROKENLINKS_DETAIL_LINKS_NAME_0)));
+        brokenLinks.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_BROKENLINKS_DETAIL_LINKS_NAME_0)));
         metadata.addItemDetails(brokenLinks);
 
         super.setIndependentActions(metadata);
@@ -225,14 +234,15 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no LMA        
+        // no LMA
     }
 
     /**
      * Returns the link validator class.<p>
-     * 
+     *
      * @return the link validator class
      */
     private CmsInternalLinksValidator getValidator() {

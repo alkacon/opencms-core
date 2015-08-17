@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,7 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param list the list
      */
     public CmsListTab(CmsList<? extends I_CmsListItem> list) {
@@ -72,7 +72,8 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
         initWidget(m_panel);
         setStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().tabPanel());
         m_scrollPanel = GWT.create(CmsScrollPanel.class);
-        m_scrollPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_scrollPanel.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
         m_scrollPanel.addStyleName(I_CmsSitemapLayoutBundle.INSTANCE.clipboardCss().clipboardList());
         m_panel.add(m_scrollPanel);
         m_scrollPanel.add(m_list);
@@ -80,7 +81,7 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
 
     /**
      * Adds a clear list button to the tab.<p>
-     * 
+     *
      * @param clickHandler the button click handler
      */
     public void addClearListButton(ClickHandler clickHandler) {
@@ -95,7 +96,7 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the required height.<p>
-     * 
+     *
      * @return the height
      */
     public int getRequiredHeight() {
@@ -105,7 +106,7 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
 
     /**
      * Returns the scroll panel.<p>
-     * 
+     *
      * @return the scroll panel
      */
     public CmsScrollPanel getScrollPanel() {
@@ -115,7 +116,7 @@ public class CmsListTab extends Composite implements I_CmsTruncable {
 
     /**
      * Sets the clear list button enabled.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      */
     public void setClearButtonEnabled(boolean enabled) {

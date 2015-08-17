@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,8 +70,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Principal selection dialog.<p>
- * 
- * @since 6.5.6 
+ *
+ * @since 6.5.6
  */
 public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
@@ -192,7 +192,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPrincipalSelectionList(CmsJspActionElement jsp) {
@@ -208,7 +208,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -281,9 +281,9 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the right icon path for the given list item.<p>
-     * 
+     *
      * @param item the list item to get the icon path for
-     * 
+     *
      * @return the icon path for the given role
      */
     public String getIconPath(CmsListItem item) {
@@ -334,7 +334,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the use parent frame flag.<p>
-     * 
+     *
      * @return the use parent frame flag
      */
     public String getParamUseparent() {
@@ -344,7 +344,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Returns if the list of principals has principals of other organizational units.<p>
-     * 
+     *
      * @return if the list of principals has principals of other organizational units
      */
     public boolean hasPrincipalsInOtherOus() {
@@ -370,7 +370,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Checks if we are currently displaying users or groups.<p>
-     * 
+     *
      * @return <code>true</code> if we are currently displaying users
      */
     public boolean isShowingUsers() {
@@ -390,7 +390,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Sets the use parent frame flag.<p>
-     * 
+     *
      * @param useParent the use parent frame flag
      */
     public void setParamUseparent(String useParent) {
@@ -418,7 +418,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         boolean withOtherOus = hasPrincipalsInOtherOus()
             && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
 
-        // get content        
+        // get content
         Iterator<CmsPrincipal> itPrincipals = getPrincipals(withOtherOus).iterator();
         while (itPrincipals.hasNext()) {
             I_CmsPrincipal principal = itPrincipals.next();
@@ -449,11 +449,11 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
     /**
      * Returns the list of principals for selection.<p>
-     * 
-     * @param includeOtherOus if to include other ou's in the selection 
-     * 
+     *
+     * @param includeOtherOus if to include other ou's in the selection
+     *
      * @return a list of principals
-     * 
+     *
      * @throws CmsException if womething goes wrong
      */
     protected List<CmsPrincipal> getPrincipals(boolean includeOtherOus) throws CmsException {
@@ -740,8 +740,8 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
         });
         otherOuDetails.setName(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0));
-        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0)));
+        otherOuDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_PRINCIPALS_DETAIL_OTHEROU_NAME_0)));
         metadata.addItemDetails(otherOuDetails);
 
         CmsListIndependentAction usersAction = new CmsListIndependentAction(LIST_IACTION_USERS);
@@ -770,7 +770,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // no-op        
+        // no-op
     }
 
     /**

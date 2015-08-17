@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 /**
- * This data access object represents a offline resource relation entry 
+ * This data access object represents a offline resource relation entry
  * inside the table "cms_offline_resource_relations".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -47,7 +47,7 @@ import javax.persistence.Table;
 public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations {
 
     /**
-     * This class implements the primary key for a offline resource relation entry 
+     * This class implements the primary key for a offline resource relation entry
      * in the table "cms_offline_resource_relations".<p>
      */
     public static class CmsDAOOfflineResourceRelationsPK implements Serializable {
@@ -68,7 +68,7 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -78,7 +78,7 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -121,7 +121,7 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOOfflineResourceRelationsPK(String str) {
@@ -152,10 +152,14 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
             }
 
             CmsDAOOfflineResourceRelationsPK other = (CmsDAOOfflineResourceRelationsPK)obj;
-            return (((m_relationSourceId == null) && (other.m_relationSourceId == null)) || ((m_relationSourceId != null) && m_relationSourceId.equals(other.m_relationSourceId)))
-                && (((m_relationSourcePath == null) && (other.m_relationSourcePath == null)) || ((m_relationSourcePath != null) && m_relationSourcePath.equals(other.m_relationSourcePath)))
-                && (((m_relationTargetId == null) && (other.m_relationTargetId == null)) || ((m_relationTargetId != null) && m_relationTargetId.equals(other.m_relationTargetId)))
-                && (((m_relationTargetPath == null) && (other.m_relationTargetPath == null)) || ((m_relationTargetPath != null) && m_relationTargetPath.equals(other.m_relationTargetPath)))
+            return (((m_relationSourceId == null) && (other.m_relationSourceId == null))
+                || ((m_relationSourceId != null) && m_relationSourceId.equals(other.m_relationSourceId)))
+                && (((m_relationSourcePath == null) && (other.m_relationSourcePath == null))
+                    || ((m_relationSourcePath != null) && m_relationSourcePath.equals(other.m_relationSourcePath)))
+                && (((m_relationTargetId == null) && (other.m_relationTargetId == null))
+                    || ((m_relationTargetId != null) && m_relationTargetId.equals(other.m_relationTargetId)))
+                && (((m_relationTargetPath == null) && (other.m_relationTargetPath == null))
+                    || ((m_relationTargetPath != null) && m_relationTargetPath.equals(other.m_relationTargetPath)))
                 && (m_relationType == other.m_relationType);
         }
 
@@ -216,11 +220,11 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_relationSourceId == null) ? 0 : m_relationSourceId.hashCode());
-            rs = rs * 37 + ((m_relationSourcePath == null) ? 0 : m_relationSourcePath.hashCode());
-            rs = rs * 37 + ((m_relationTargetId == null) ? 0 : m_relationTargetId.hashCode());
-            rs = rs * 37 + ((m_relationTargetPath == null) ? 0 : m_relationTargetPath.hashCode());
-            rs = rs * 37 + m_relationType;
+            rs = (rs * 37) + ((m_relationSourceId == null) ? 0 : m_relationSourceId.hashCode());
+            rs = (rs * 37) + ((m_relationSourcePath == null) ? 0 : m_relationSourcePath.hashCode());
+            rs = (rs * 37) + ((m_relationTargetId == null) ? 0 : m_relationTargetId.hashCode());
+            rs = (rs * 37) + ((m_relationTargetPath == null) ? 0 : m_relationTargetPath.hashCode());
+            rs = (rs * 37) + m_relationType;
             return rs;
         }
 
@@ -293,7 +297,7 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
         /**
          * Parses the group id and the user id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -363,7 +367,7 @@ public class CmsDAOOfflineResourceRelations implements I_CmsDAOResourceRelations
 
     /**
      * A public constructor for generating a new offline resource relation object with an unique id.<p>
-     * 
+     *
      * @param relationSourceId
      * @param relationSourcePath
      * @param relationTargetId

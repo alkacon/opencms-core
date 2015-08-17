@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import org.htmlparser.util.ParserException;
  * Implements the <code>&lt;cms:parse&gt;&lt;/cms:parse&gt;</code> tag to allow parsing of nested
  * HTML with the {@link org.opencms.jsp.parse.A_CmsConfiguredHtmlParser}} implementation specified by the "parserClass" attribute.
  * <p>
- * 
+ *
  * @since 6.1.3
  */
 public class CmsJspTagParse extends BodyTagSupport {
@@ -84,9 +84,9 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
-     * 
+     *
      * @return EVAL_PAGE
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -101,9 +101,10 @@ public class CmsJspTagParse extends BodyTagSupport {
             try {
                 if (CmsStringUtil.isEmpty(m_configuredParserClassname)) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(
-                            Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
+                        LOG.error(
+                            Messages.get().getBundle().key(
+                                Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
+                                new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
                     }
 
                 }
@@ -158,12 +159,12 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Getter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
-     *  
-     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this
      * tag will not correct missing closing tags. <p>
-     * 
-     * @return a String that consists of the comma-separated upper case tag names for which this 
-     *      tag will not correct missing closing tags. 
+     *
+     * @return a String that consists of the comma-separated upper case tag names for which this
+     *      tag will not correct missing closing tags.
      */
     public String getNoAutoCloseTags() {
 
@@ -179,7 +180,7 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Returns the param.<p>
-     * 
+     *
      * @return the param
      */
     public String getParam() {
@@ -190,7 +191,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     /**
      * Returns the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use
      * for parsing.<p>
-     * 
+     *
      * @return the parserrClass
      */
     public String getParserClass() {
@@ -200,13 +201,13 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * Parses (and potentially transforms) a HTMl content block.<p>
-     * 
+     *
      * @param content the content to be parsed / transformed
      * @param context needed for getting the encoding / the locale
      * @param parser the visitor / parser to use
-     * 
+     *
      * @return the transformed content
      */
     public String parseTagAction(String content, PageContext context, A_CmsConfiguredHtmlParser parser) {
@@ -216,9 +217,10 @@ public class CmsJspTagParse extends BodyTagSupport {
 
         if (parser == null) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle(cmsContext.getLocale()).key(
-                    Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                    new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
+                LOG.error(
+                    Messages.get().getBundle(cmsContext.getLocale()).key(
+                        Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
+                        new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
             }
             result = content;
         } else {
@@ -275,11 +277,11 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Setter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
-     *  
-     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this
      * tag should not correct missing closing tags.<p>
-     * 
-     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this
      *      tag should not correct missing closing tags
      */
     public void setNoAutoCloseTags(String noAutoCloseTagList) {
@@ -290,7 +292,7 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Sets the param.<p>
-     * 
+     *
      * @param param the param to set
      */
     public void setParam(String param) {
@@ -301,7 +303,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     /**
      * Sets the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use for
      * parsing.<p>
-     * 
+     *
      * @param parserClass the fully qualified class name of the {@link A_CmsConfiguredHtmlParser}
      *            class to use for parsing
      */

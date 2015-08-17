@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * Provides a upload button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadButton extends Composite implements HasHorizontalAlignment {
@@ -114,12 +114,12 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * The default constructor.<p>
-     * 
+     *
      * Creates a new upload button. This upload button opens a new OS file selector on click.<p>
-     * 
+     *
      * On change the button handler passed into the constructor is notified.<p>
-     * 
-     * @param buttonHandler the buttonHandler 
+     *
+     * @param buttonHandler the buttonHandler
      */
     public CmsUploadButton(I_CmsUploadButtonHandler buttonHandler) {
 
@@ -140,9 +140,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Formats a given bytes value (file size).<p>
-     *  
+     *
      * @param filesize the file size to format
-     * 
+     *
      * @return the formated file size in KB
      */
     public static String formatBytes(long filesize) {
@@ -154,8 +154,8 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Creates and adds a file input.<p>
-     * 
-     * @return returns the previous file input widget 
+     *
+     * @return returns the previous file input widget
      */
     public CmsFileInput createFileInput() {
 
@@ -180,7 +180,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Disables the button and changes the button title attribute to the disabled reason.<p>
-     *   
+     *
      * @param disabledReason the disabled reason
      */
     public void disable(String disabledReason) {
@@ -211,8 +211,8 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Gets the upload button handler instance for this button.<p>
-     * 
-     * @return the upload button handler 
+     *
+     * @return the upload button handler
      */
     public I_CmsUploadButtonHandler getButtonHandler() {
 
@@ -221,7 +221,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
      */
     public HorizontalAlignmentConstant getHorizontalAlignment() {
@@ -272,7 +272,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Returns if the upload button is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the upload button is enabled
      */
     public boolean isEnabled() {
@@ -292,7 +292,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Reinitializes the button with a new button handler.<p>
-     * 
+     *
      * @param buttonHandler the button handler
      */
     public void reinitButton(I_CmsUploadButtonHandler buttonHandler) {
@@ -306,7 +306,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Sets the button style.<p>
-     * 
+     *
      * @param style the style to set
      * @param color the color to set
      */
@@ -334,7 +334,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * This is the alignment of the text in reference to the image, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
      */
     public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
@@ -395,7 +395,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Sets the up face text and image.<p>
-     * 
+     *
      * @param text the up face text to set, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
      */
@@ -425,10 +425,10 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Convenience method to assemble the HTML to use for a button face.<p>
-     * 
+     *
      * @param text text the up face text to set, set to <code>null</code> to not show any
      * @param imageClass the up face image class to use, set to <code>null</code> to not show any
-     * 
+     *
      * @return the HTML
      */
     protected String getFaceHtml(String text, String imageClass) {
@@ -438,9 +438,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Handles the mouse over event on the main panel.<p>
-     * 
+     *
      * @param event the event
-     * 
+     *
      * @see com.google.gwt.event.dom.client.MouseOutHandler#onMouseOut(com.google.gwt.event.dom.client.MouseOutEvent)
      */
     @UiHandler("m_main")
@@ -453,9 +453,9 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Handles the mouse over event on the main panel.<p>
-     * 
+     *
      * @param event the event
-     * 
+     *
      * @see com.google.gwt.event.dom.client.MouseOverHandler#onMouseOver(com.google.gwt.event.dom.client.MouseOverEvent)
      */
     @UiHandler("m_main")
@@ -468,7 +468,7 @@ public class CmsUploadButton extends Composite implements HasHorizontalAlignment
 
     /**
      * Updates the CSS classes according to the button state.<p>
-     * 
+     *
      * @param styleDependent the dependent style name
      */
     private void updateState(String styleDependent) {

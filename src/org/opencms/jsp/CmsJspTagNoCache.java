@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * A tag to prevent caching by the browser.<p>
- * 
+ *
  * This tag must be used before any other output is written by a JSP.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsJspTagNoCache extends TagSupport {

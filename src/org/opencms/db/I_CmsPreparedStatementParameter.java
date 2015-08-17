@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,17 +32,17 @@ import java.sql.SQLException;
 
 /**
  * An interface which represents a parameter value which is going to be used in an SQL prepared statement.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsPreparedStatementParameter {
 
     /**
      * Implementations of this interface should set the index-th parameter of the prepared statement.<p>
-     * 
-     * @param stmt the prepared statement in which to set the value of a bind variable 
-     * @param index the index of a bind variable  
-     * @throws SQLException if something goes wrong 
+     *
+     * @param stmt the prepared statement in which to set the value of a bind variable
+     * @param index the index of a bind variable
+     * @throws SQLException if something goes wrong
      */
     void insertIntoStatement(PreparedStatement stmt, int index) throws SQLException;
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * A class which contains filter criteria for reading or deleting URL name mapping entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUrlNameMappingFilter {
@@ -71,25 +71,25 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * The copy constructor.<p>
-     * 
-     * @param filter the filter to copy 
+     *
+     * @param filter the filter to copy
      */
     protected CmsUrlNameMappingFilter(CmsUrlNameMappingFilter filter) {
 
-        this.m_name = filter.m_name;
-        this.m_structureId = filter.m_structureId;
-        this.m_rejectStructureId = filter.m_rejectStructureId;
-        this.m_states = filter.m_states;
-        this.m_namePattern = filter.m_namePattern;
-        this.m_locale = filter.m_locale;
+        m_name = filter.m_name;
+        m_structureId = filter.m_structureId;
+        m_rejectStructureId = filter.m_rejectStructureId;
+        m_states = filter.m_states;
+        m_namePattern = filter.m_namePattern;
+        m_locale = filter.m_locale;
     }
 
     /**
      * Returns a new url name mapping filter based on the current one which also has to match a given locale.<p>
-     * 
-     * @param locale the locale to match 
-     * 
-     * @return the new filter 
+     *
+     * @param locale the locale to match
+     *
+     * @return the new filter
      */
     public CmsUrlNameMappingFilter filterLocale(String locale) {
 
@@ -103,10 +103,10 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Creates a new filter from the current filter which also has to match a given name.<p>
-     * 
-     * @param name the name to match 
-     * 
-     * @return a new filter 
+     *
+     * @param name the name to match
+     *
+     * @return a new filter
      */
     public CmsUrlNameMappingFilter filterName(String name) {
 
@@ -120,9 +120,9 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Creates a new filter from the current filter which also has to match a given name pattern.<p>
-     * 
-     * @param namePattern the name pattern which should be matched 
-     * 
+     *
+     * @param namePattern the name pattern which should be matched
+     *
      * @return a new filter
      */
     public CmsUrlNameMappingFilter filterNamePattern(String namePattern) {
@@ -137,10 +137,10 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Creates a new filter from the current filter which also must not match a given structure id.<p>
-     * 
-     * @param id the structure id to not match  
-     * 
-     * @return a new filter 
+     *
+     * @param id the structure id to not match
+     *
+     * @return a new filter
      */
     public CmsUrlNameMappingFilter filterRejectStructureId(CmsUUID id) {
 
@@ -157,10 +157,10 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Creates a new filter from the current filter which also has to match a given state.<p>
-     * 
-     * @param states the states to match 
-     * 
-     * @return the new filter 
+     *
+     * @param states the states to match
+     *
+     * @return the new filter
      */
     public CmsUrlNameMappingFilter filterStates(int... states) {
 
@@ -172,10 +172,10 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Creates a new filter from the current filter which also has to match a given structure id.<p>
-     * 
-     * @param structureId the structure id to match 
-     * 
-     * @return the new filter 
+     *
+     * @param structureId the structure id to match
+     *
+     * @return the new filter
      */
     public CmsUrlNameMappingFilter filterStructureId(CmsUUID structureId) {
 
@@ -189,18 +189,18 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Returns the locale which should be matched by the filter.<p>
-     * 
-     * @return the locale 
+     *
+     * @return the locale
      */
     public String getLocale() {
 
         return m_locale;
     }
 
-    /** 
+    /**
      * Returns the name which should be matched by the filter.<p>
-     * 
-     * @return the name which should be matched by the filter 
+     *
+     * @return the name which should be matched by the filter
      */
     public String getName() {
 
@@ -210,8 +210,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Returns the name pattern which should be matched by the filter.<p>
-     * 
-     * @return the name pattern which should be matched by the filter 
+     *
+     * @return the name pattern which should be matched by the filter
      */
     public String getNamePattern() {
 
@@ -220,8 +220,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Returns the structure id which should not be matched by the filter.<p>
-     * 
-     * @return a structure id 
+     *
+     * @return a structure id
      */
     public CmsUUID getRejectStructureId() {
 
@@ -230,8 +230,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Returns the state which should be matched by the filter.<p>
-     * 
-     * @return the state which should be matched by the filter 
+     *
+     * @return the state which should be matched by the filter
      */
     public int[] getStates() {
 
@@ -240,8 +240,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Returns the structure id which should be matched by the filter.<p>
-     * 
-     * @return the structure id which should be matched by the filter 
+     *
+     * @return the structure id which should be matched by the filter
      */
     public CmsUUID getStructureId() {
 
@@ -250,8 +250,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Checks whether this is a filter which only filters by structure id.<p>
-     * 
-     * @return true if this is a filter which only filters by structure id 
+     *
+     * @return true if this is a filter which only filters by structure id
      */
     public boolean isIdFilter() {
 
@@ -265,8 +265,8 @@ public class CmsUrlNameMappingFilter {
 
     /**
      * Checks whether this is a filter which only filters by name.<p>
-     * 
-     * @return true if this is a filter which only filters by name 
+     *
+     * @return true if this is a filter which only filters by name
      */
     public boolean isNameFilter() {
 

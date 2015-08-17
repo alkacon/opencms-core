@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,15 +31,15 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
 /**
  * Handler class for property updates which are caused by the user editing the properties of a sitemap entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsPropertyUpdateHandler {
 
     /**
      * This method is called when the properties of the entry are updated because the user edited this or another entry.<p>
-     * 
-     * @param entry the entry for whom the properties are being updated 
+     *
+     * @param entry the entry for whom the properties are being updated
      */
     void handlePropertyUpdate(CmsClientSitemapEntry entry);
 

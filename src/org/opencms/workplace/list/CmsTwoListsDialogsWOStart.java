@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,14 +29,14 @@ package org.opencms.workplace.list;
 
 /**
  * A <code>{@link org.opencms.workplace.list.CmsTwoListsDialog}</code> with no starting html for previous widget dialog display.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTwoListsDialogsWOStart extends CmsTwoListsDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param wp1 the workplace instance for the first list
      * @param wp2 the workplace instance for the second list
      */

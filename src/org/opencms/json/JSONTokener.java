@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * org.json.JSONTokener
  * from the JSON in Java implementation.
- * 
+ *
  * Copyright (c) 2002 JSON.org
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * The Software shall be used for Good, not Evil.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -61,10 +61,10 @@ import java.io.StringReader;
 /**
  * A JSONTokener takes a source string and extracts characters and tokens from
  * it.<p>
- * 
+ *
  * It is used by the JSONObject and JSONArray constructors to parse
  * JSON source strings.<p>
- * 
+ *
  */
 public class JSONTokener {
 
@@ -90,9 +90,9 @@ public class JSONTokener {
      */
     public JSONTokener(Reader reader) {
 
-        this.m_reader = reader.markSupported() ? reader : new BufferedReader(reader);
-        this.m_useLastChar = false;
-        this.m_index = 0;
+        m_reader = reader.markSupported() ? reader : new BufferedReader(reader);
+        m_useLastChar = false;
+        m_index = 0;
     }
 
     /**
@@ -107,7 +107,7 @@ public class JSONTokener {
 
     /**
      * Get the hex value of a character (base16).<p>
-     * 
+     *
      * @param c a character between '0' and '9' or between 'A' and 'F' or
      * between 'a' and 'f'
      * @return  an int between 0 and 15, or -1 if c was not a hex digit
@@ -128,11 +128,11 @@ public class JSONTokener {
 
     /**
      * Back up one character.<p>
-     * 
+     *
      * This provides a sort of lookahead capability,
      * so that you can test for a digit or letter before attempting to parse
      * the next number or identifier.<p>
-     * 
+     *
      * @throws JSONException if something goes wrong
      */
     public void back() throws JSONException {
@@ -147,7 +147,7 @@ public class JSONTokener {
     /**
      * Determine if the source string still contains characters that next()
      * can consume.<p>
-     * 
+     *
      * @return true if not yet at the end of the source
      * @throws JSONException if something goes wrong
      */
@@ -169,33 +169,33 @@ public class JSONTokener {
      */
     public char next() throws JSONException {
 
-        if (this.m_useLastChar) {
-            this.m_useLastChar = false;
-            if (this.m_lastChar != 0) {
-                this.m_index += 1;
+        if (m_useLastChar) {
+            m_useLastChar = false;
+            if (m_lastChar != 0) {
+                m_index += 1;
             }
-            return this.m_lastChar;
+            return m_lastChar;
         }
         int c;
         try {
-            c = this.m_reader.read();
+            c = m_reader.read();
         } catch (IOException exc) {
             throw new JSONException(exc);
         }
 
         if (c <= 0) { // End of stream
-            this.m_lastChar = 0;
+            m_lastChar = 0;
             return 0;
         }
-        this.m_index += 1;
-        this.m_lastChar = (char)c;
-        return this.m_lastChar;
+        m_index += 1;
+        m_lastChar = (char)c;
+        return m_lastChar;
     }
 
     /**
      * Consume the next character, and check that it matches a specified
      * character.<p>
-     * 
+     *
      * @param c the character to match
      * @return the character
      * @throws JSONException if the character does not match
@@ -214,7 +214,7 @@ public class JSONTokener {
      *
      * @param n the number of characters to take
      * @return a string of n characters
-     * 
+     *
      * @throws JSONException substring bounds error if there are not n characters remaining in the source string
      */
     public String next(int n) throws JSONException {
@@ -226,9 +226,9 @@ public class JSONTokener {
         char[] buffer = new char[n];
         int pos = 0;
 
-        if (this.m_useLastChar) {
-            this.m_useLastChar = false;
-            buffer[0] = this.m_lastChar;
+        if (m_useLastChar) {
+            m_useLastChar = false;
+            buffer[0] = m_lastChar;
             pos = 1;
         }
 
@@ -241,20 +241,20 @@ public class JSONTokener {
         } catch (IOException exc) {
             throw new JSONException(exc);
         }
-        this.m_index += pos;
+        m_index += pos;
 
         if (pos < n) {
             throw syntaxError("Substring bounds error");
         }
 
-        this.m_lastChar = buffer[n - 1];
+        m_lastChar = buffer[n - 1];
         return new String(buffer);
     }
 
     /**
      * Get the next char in the string, skipping whitespace
      * and comments (slashslash, slashstar, and hash).<p>
-     * 
+     *
      * @return  a character, or 0 if there are no more characters
      * @throws JSONException if something goes wrong
      */
@@ -299,11 +299,11 @@ public class JSONTokener {
 
     /**
      * Return the characters up to the next close quote character.<p>
-     * 
+     *
      * Backslash processing is done. The formal JSON format does not
      * allow strings in single quotes, but an implementation is allowed to
      * accept them.<p>
-     * 
+     *
      * @param quote The quoting character, either
      *      <code>"</code>&nbsp;<small>(double quote)</small> or
      *      <code>'</code>&nbsp;<small>(single quote)</small>
@@ -361,7 +361,7 @@ public class JSONTokener {
     /**
      * Get the text up but not including the specified character or the
      * end of line, whichever comes first.<p>
-     * 
+     *
      * @param  d a delimiter character
      * @return   a string
      * @throws JSONException if something goes wrong
@@ -384,7 +384,7 @@ public class JSONTokener {
     /**
      * Get the text up but not including one of the specified delimiter
      * characters or the end of line, whichever comes first.<p>
-     * 
+     *
      * @param delimiters a set of delimiter characters
      * @return a string, trimmed
      * @throws JSONException if something goes wrong
@@ -408,7 +408,7 @@ public class JSONTokener {
     /**
      * Get the next value. The value can be a Boolean, Double, Integer,
      * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.<p>
-     * 
+     *
      * @return an object
      * @throws JSONException if something goes wrong
      */
@@ -509,8 +509,8 @@ public class JSONTokener {
 
     /**
      * Sets a flag which makes JSONObjects created by this tokener ordered.<p>
-     * 
-     * @param ordered true if JSONObjects created by this should be ordered 
+     *
+     * @param ordered true if JSONObjects created by this should be ordered
      */
     public void setOrdered(boolean ordered) {
 
@@ -520,7 +520,7 @@ public class JSONTokener {
     /**
      * Skip characters until the next character is the requested character.
      * If the requested character is not found, no characters are skipped.<p>
-     * 
+     *
      * @param to a character to skip to
      * @return the requested character, or zero if the requested character
      * is not found
@@ -530,13 +530,13 @@ public class JSONTokener {
 
         char c;
         try {
-            int startIndex = this.m_index;
+            int startIndex = m_index;
             m_reader.mark(Integer.MAX_VALUE);
             do {
                 c = next();
                 if (c == 0) {
                     m_reader.reset();
-                    this.m_index = startIndex;
+                    m_index = startIndex;
                     return c;
                 }
             } while (c != to);

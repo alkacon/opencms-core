@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,42 +34,42 @@ import java.util.Locale;
 
 /**
  * This class represents a location in an XML content for a specific locale.<p>
- * 
+ *
  * It is used for conveniently retrieving configuration values from an XML content without manually
  * concatenating xpath strings.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public interface I_CmsXmlContentLocation {
 
     /**
      * Returns the XML document.<p>
-     * 
+     *
      * @return the XML document
      */
     I_CmsXmlDocument getDocument();
 
     /**
      * Returns the locale.<p>
-     * 
+     *
      * @return the locale
      */
     Locale getLocale();
 
     /**
      * Returns the location for an xpath relative to the current location.<p>
-     * 
-     * @param subPath the relative path 
-     * @return the location which the relative path points to 
+     *
+     * @param subPath the relative path
+     * @return the location which the relative path points to
      */
     I_CmsXmlContentValueLocation getSubValue(String subPath);
 
     /**
      * Returns the locations for an xpath relative to the current location.<p>
-     * 
-     * @param subPath the relative path 
-     * @return the locations which the relative path points to 
+     *
+     * @param subPath the relative path
+     * @return the locations which the relative path points to
      */
     List<I_CmsXmlContentValueLocation> getSubValues(String subPath);
 

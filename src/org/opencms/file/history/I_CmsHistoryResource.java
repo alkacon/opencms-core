@@ -35,16 +35,16 @@ import java.io.Serializable;
 /**
  * A historical version of a resource in the OpenCms VFS resource history.<p>
  *
- * History resources are resources that contain additional information 
+ * History resources are resources that contain additional information
  * used to describe the historical state.<p>
- * 
- * The historical resource object extends the resource object since it be 
+ *
+ * The historical resource object extends the resource object since it be
  * an history for a file as well as for a folder.<p>
- * 
- * History resources contain the names of the users that created or last 
- * modified the resource as string obejcts because a user id might have been 
+ *
+ * History resources contain the names of the users that created or last
+ * modified the resource as string obejcts because a user id might have been
  * deleted.<p>
- * 
+ *
  * @since 6.9.1
  */
 public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializable, Comparable<I_CmsResource> {

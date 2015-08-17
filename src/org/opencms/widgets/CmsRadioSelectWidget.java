@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,17 +35,17 @@ import java.util.List;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
- * 
- * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description 
+ *
+ * Please see the documentation of <code>{@link org.opencms.widgets.CmsSelectWidgetOption}</code> for a description
  * about the configuration String syntax for the select options.<p>
  *
  * The multi select widget does use the following select options:<ul>
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getValue()}</code> for the value of the option
- * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value 
+ * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#isDefault()}</code> for pre-selecting a specific value
  * <li><code>{@link org.opencms.widgets.CmsSelectWidgetOption#getOption()}</code> for the display name of the option
  * </ul>
  * <p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsRadioSelectWidget extends A_CmsSelectWidget {
@@ -61,11 +61,11 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a select widget with the select options specified in the given configuration List.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public CmsRadioSelectWidget(List<CmsSelectWidgetOption> configuration) {
@@ -75,7 +75,7 @@ public class CmsRadioSelectWidget extends A_CmsSelectWidget {
 
     /**
      * Creates a select widget with the specified select options.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select box
      */
     public CmsRadioSelectWidget(String configuration) {

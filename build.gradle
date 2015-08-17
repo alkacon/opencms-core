@@ -161,6 +161,11 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
+task copyDeps(type: Copy) {
+    from configurations.distribution
+    into "${buildDir}/deps"
+}
+
 task componentsJar(type: Jar) {
     from sourceSets.components.output
     baseName 'opencms-components'
@@ -255,6 +260,7 @@ javadoc {
         windowTitle="OpenCms Core API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+        use="true"
     }
 }
 
@@ -750,13 +756,24 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         exclude '**/*.html'
         exclude '**/*.properties'
         exclude '**/*.txt'
         exclude '**/*.xml'
     }
+    
+    // copy SOLR config files separately to avoid the replace filter corrupting them
+    from ("${projectDir}/webapp"){
+        include '**/solr/**'
+        include '**/spellcheck/**'
+    }
+    
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
@@ -798,15 +815,33 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
 
 task updater (dependsOn: setupJar, type: Zip){
     baseName 'opencms-upgrade-to'
+    
+    // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause 
     from ("${projectDir}/webapp"){
-        include 'update/**'
-        exclude 'update/empty.jar'
+        include 'update/**/*.ori'
+        include 'update/**/*.html'
+        include 'update/**/*.xml'
+        include 'update/**/*.txt'
+        include 'update/**/*.jsp'
         exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
             OPENCMS_VERSION: product_name+' '+version
         ])
     }
+    
+    from ("${projectDir}/webapp"){
+        include 'update/**'
+        exclude 'update/**/*.ori'
+        exclude 'update/**/*.html'
+        exclude 'update/**/*.xml'
+        exclude 'update/**/*.txt'
+        exclude 'update/**/*.jsp'
+        exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
+    }
+
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
         include 'conf/schema.xml'
@@ -1376,6 +1411,9 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
+    if (JavaVersion.current().isJava8Compatible()) {
+    	options.addStringOption("Xdoclint:none", "-quiet")
+    }
 }
 
 if (JavaVersion.current().isJava8Compatible()) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import com.lambdaworks.crypto.SCryptUtil;
 /**
  * Default implementation for OpenCms password validation,
  * just checks if a password is at last 4 characters long.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
 
@@ -116,7 +116,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
             try {
                 success = SCryptUtil.check(plainPassword, digestedPassword);
             } catch (IllegalArgumentException e) {
-                // hashed valued not right, check if we want to fall back to MD5 
+                // hashed valued not right, check if we want to fall back to MD5
                 if (useFallback) {
                     try {
                         success = digestedPassword.equals(digest(plainPassword, m_scryptFallback, m_inputEncoding));
@@ -316,9 +316,8 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     public void validatePassword(String password) throws CmsSecurityException {
 
         if ((password == null) || (password.length() < PASSWORD_MIN_LENGTH)) {
-            throw new CmsSecurityException(Messages.get().container(
-                Messages.ERR_PASSWORD_TOO_SHORT_1,
-                new Integer(PASSWORD_MIN_LENGTH)));
+            throw new CmsSecurityException(
+                Messages.get().container(Messages.ERR_PASSWORD_TOO_SHORT_1, new Integer(PASSWORD_MIN_LENGTH)));
         }
     }
 }

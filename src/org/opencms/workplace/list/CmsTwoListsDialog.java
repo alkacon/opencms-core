@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import javax.servlet.jsp.JspWriter;
 
 /**
  * Helper class for managing two lists on the same dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTwoListsDialog {
 
@@ -54,7 +54,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param wp1 the workplace instance for the first list
      * @param wp2 the workplace instance for the second list
      */
@@ -68,7 +68,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtml() {
@@ -82,7 +82,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Returns the html code for the default action content.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlContent() {
@@ -104,7 +104,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Generates the dialog ending html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlEnd() {
@@ -114,7 +114,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlStart() {
@@ -124,7 +124,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Display method for two list dialogs.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -136,7 +136,7 @@ public class CmsTwoListsDialog {
 
     /**
      * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
-     * 
+     *
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      */
     public void writeDialog() throws IOException {
@@ -151,10 +151,10 @@ public class CmsTwoListsDialog {
 
     /**
      * Display method for two list dialogs, executes actions, but only displays if needed.<p>
-     * 
-     * @param writeLater if <code>true</code> no output is written, 
+     *
+     * @param writeLater if <code>true</code> no output is written,
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page

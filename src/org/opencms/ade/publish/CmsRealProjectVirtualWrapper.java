@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
 
     /**
      * Creates a new wrapper instance.<p>
-     * 
-     * @param id the project id 
+     *
+     * @param id the project id
      */
     public CmsRealProjectVirtualWrapper(CmsUUID id) {
 
@@ -89,7 +89,9 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
     /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(CmsObject cmsObject, CmsPublishOptions options) {
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(
+        CmsObject cmsObject,
+        CmsPublishOptions options) {
 
         return CmsDummyRelatedResourceProvider.INSTANCE;
     }
@@ -105,7 +107,7 @@ public class CmsRealProjectVirtualWrapper implements I_CmsVirtualProject {
         try {
             project = cms.readProject(getProjectId());
         } catch (CmsException e) {
-            // ignore 
+            // ignore
         }
         // get the project publish list
         CmsProject originalProject = cms.getRequestContext().getCurrentProject();

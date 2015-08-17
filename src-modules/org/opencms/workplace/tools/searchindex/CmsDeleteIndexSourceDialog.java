@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,19 +38,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A <code>CmsWidgetDialog</code> that starts a (confirmed) delete dialog for 
- * an indexsource.<p> 
- * 
- * The constraint for allowing deletion of the indexsource: It must not be referenced by 
+ * A <code>CmsWidgetDialog</code> that starts a (confirmed) delete dialog for
+ * an indexsource.<p>
+ *
+ * The constraint for allowing deletion of the indexsource: It must not be referenced by
  * any searchindex.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsDeleteIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
 
@@ -62,7 +62,7 @@ public class CmsDeleteIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -87,8 +87,8 @@ public class CmsDeleteIndexSourceDialog extends A_CmsEditIndexSourceDialog {
             m_searchManager.removeSearchIndexSource(m_indexsource);
             clearDialogObject();
             writeConfiguration();
-            // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
-            // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will 
+            // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not
+            // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will
             // find null -> defineWidgets will provide null as bean...
             setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/indexsources"));
 
@@ -101,9 +101,9 @@ public class CmsDeleteIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -120,16 +120,15 @@ public class CmsDeleteIndexSourceDialog extends A_CmsEditIndexSourceDialog {
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_LIST_INDEXSOURCE_ACTION_DELETE_NAME_0)));
             result.append(createWidgetTableStart());
-            result.append(key(
-                Messages.GUI_LIST_INDEXSOURCE_ACTION_DELETE_CONF_1,
-                new Object[] {m_indexsource.getName()}));
+            result.append(
+                key(Messages.GUI_LIST_INDEXSOURCE_ACTION_DELETE_CONF_1, new Object[] {m_indexsource.getName()}));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
 
         result.append(createWidgetTableEnd());
 
-        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets, 
+        // See CmsWidgetDialog.dialogButtonsCustom(): if no widgets are defined that are non-display-only widgets,
         // no dialog buttons (Ok, Cancel) will be visible....
         result.append(dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]));
         return result.toString();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the name of the project 
+     *
+     * @param name the name of the project
      */
     public CmsProjectPreference(String name) {
 
@@ -61,7 +61,8 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             null, //widget
             null, //widgetconfig
@@ -83,7 +84,8 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(), //name
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
             "string", //type
             "select_notnull", //widget
             CmsPreferences.getProjectSelectOptionsStatic(cms, "", locale).toClientSelectWidgetConfiguration(), //widgetconfig
@@ -93,7 +95,7 @@ public class CmsProjectPreference extends CmsBuiltinPreference {
             NICE_NAME, //nicename
             null, //description
             null, //error
-            null//preferfolder) 
+            null//preferfolder)
         );
         return prop;
     }

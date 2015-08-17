@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,19 +37,19 @@ import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
 public interface I_CmsPropertiesCss extends CssResource {
 
     /** Access method.<p>
-     * 
+     *
      * @return the CSS class name
      */
     String navModePropertiesBox();
 
     /** Access method.<p>
-     * 
+     *
      * @return the CSS class name
      */
     String propertyDefinitionButton();
 
     /** Access method.<p>
-     * 
+     *
      * @return the CSS class name
      */
     String vfsModeSimplePropertiesBox();

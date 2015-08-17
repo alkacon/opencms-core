@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,10 +32,10 @@ import org.opencms.util.CmsUUID;
 import java.security.Principal;
 
 /**
- * Representation of an identity in the cms (currently user or group), 
+ * Representation of an identity in the cms (currently user or group),
  * used to define permissions on a resource.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsPrincipal extends Principal {
 
@@ -49,13 +49,13 @@ public interface I_CmsPrincipal extends Principal {
     int FLAG_ENABLED = 0;
 
     /** Flag to indicate a role group. */
-    int FLAG_GROUP_ROLE = 1048576; // 2^20 >> FLAG_CORE_LIMIT 
+    int FLAG_GROUP_ROLE = 1048576; // 2^20 >> FLAG_CORE_LIMIT
 
     /**
-     * Flag to indicate a virtual group role, after this bit we need to encode a number between 0 and 
-     * <code>{@link CmsRole#getSystemRoles()}.size()-1</code> so we will need up to 4 more bits. 
+     * Flag to indicate a virtual group role, after this bit we need to encode a number between 0 and
+     * <code>{@link CmsRole#getSystemRoles()}.size()-1</code> so we will need up to 4 more bits.
      */
-    int FLAG_GROUP_VIRTUAL = 1024; // 2^10 << FLAG_CORE_LIMIT 
+    int FLAG_GROUP_VIRTUAL = 1024; // 2^10 << FLAG_CORE_LIMIT
 
     /** Flag to indicate a user is not able to manage himself. */
     int FLAG_USER_MANAGED = 2;
@@ -70,16 +70,16 @@ public interface I_CmsPrincipal extends Principal {
     String PRINCIPAL_USER = "USER";
 
     /**
-     * Checks if the provided principal name is valid and can be used as an argument value 
-     * for {@link #setName(String)}.<p> 
-     * 
+     * Checks if the provided principal name is valid and can be used as an argument value
+     * for {@link #setName(String)}.<p>
+     *
      * @param name the principal name to check
      */
     void checkName(String name);
 
     /**
      * Compares the given object with this principal.<p>
-     * 
+     *
      * @param obj object to compare
      * @return true if the object is equal
      */
@@ -95,11 +95,11 @@ public interface I_CmsPrincipal extends Principal {
     /**
      * Returns the flags of this principal.<p>
      *
-     * The principal flags are used to store special information about the 
-     * principals state encoded bitwise. Usually the flags int value should not 
+     * The principal flags are used to store special information about the
+     * principals state encoded bitwise. Usually the flags int value should not
      * be directly accessed. Utility methods like <code>{@link #isEnabled()}</code>
      * provide a much easier way to access the information contained in the flags.<p>
-     * 
+     *
      * @return the flags of this principal
      */
     int getFlags();
@@ -127,10 +127,10 @@ public interface I_CmsPrincipal extends Principal {
 
     /**
      * Returns this principals unique name prefixed with it's type.<p>
-     * 
-     * The type prefix can either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code> 
+     *
+     * The type prefix can either be <code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}.</code>
      * (for groups) or <code>{@link I_CmsPrincipal#PRINCIPAL_USER}.</code> (for users).<p>
-     * 
+     *
      * @return this principals unique name prefixed with this principals type
      */
     String getPrefixedName();
@@ -144,46 +144,46 @@ public interface I_CmsPrincipal extends Principal {
 
     /**
      * Returns the hash code of this object.<p>
-     * 
+     *
      * @return the hash code
      */
     int hashCode();
 
     /**
      * Returns <code>true</code> if this principal is enabled.<p>
-     * 
+     *
      * A principal may be disabled in order to disable it, for example to prevent
-     * logins of a user. If a principal is just disabled but not deleted, 
+     * logins of a user. If a principal is just disabled but not deleted,
      * the credentials of the principal in the VFS are still valid.<p>
-     * 
+     *
      * @return <code>true</code> if this principal is enabled
      */
     boolean isEnabled();
 
     /**
      * Returns <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsGroup}</code>.<p>
-     * 
+     *
      * @return <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsGroup}</code>
      */
     boolean isGroup();
 
     /**
      * Returns <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsUser}</code>.<p>
-     * 
+     *
      * @return <code>true</code> if this principal is of type <code>{@link org.opencms.file.CmsUser}</code>
      */
     boolean isUser();
 
     /**
      * Sets the description of this principal.<p>
-     * 
+     *
      * @param description the principal description to set
      */
     void setDescription(String description);
 
     /**
      * Enables (or disables) this principal, depending on the given status.<p>
-     * 
+     *
      * @param enabled the principal status to set
      */
     void setEnabled(boolean enabled);
@@ -191,8 +191,8 @@ public interface I_CmsPrincipal extends Principal {
     /**
      * Sets this principals flags to the specified value.<p>
      *
-     * The principal flags are used to store special information about the 
-     * principals state encoded bitwise. Usually the flags integer value should not 
+     * The principal flags are used to store special information about the
+     * principals state encoded bitwise. Usually the flags integer value should not
      * be directly accessed. Utility methods like <code>{@link #setEnabled(boolean)}</code>
      * provide a much easier way to manipulate the information contained in the flags.<p>
      *

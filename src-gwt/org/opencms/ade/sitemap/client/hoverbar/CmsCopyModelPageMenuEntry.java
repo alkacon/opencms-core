@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/** 
+/**
  * Context menu entry for copying a model page.<p>
  */
 public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
@@ -51,8 +51,8 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Creates a new model page menu entry.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsCopyModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -63,8 +63,8 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Opens the confirmation dialog for editing a model page.<p>
-     * 
-     * @param resourceInfo the resource information bean which belongs to the model page to edit 
+     *
+     * @param resourceInfo the resource information bean which belongs to the model page to edit
      */
     public static void openEditConfirmDialog(final CmsNewResourceInfo resourceInfo) {
 
@@ -72,7 +72,7 @@ public class CmsCopyModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
             public void onClose() {
 
-                // noop 
+                // noop
             }
 
             public void onOk() {

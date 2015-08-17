@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,9 +32,9 @@ import org.opencms.xml.I_CmsXmlDocument;
 import java.util.Locale;
 
 /**
- * Provides access to a <code>{@link org.opencms.xml.I_CmsXmlDocument}</code> document that was previously loaded by a parent tag.<p> 
- * 
- * @since 6.2.0 
+ * Provides access to a <code>{@link org.opencms.xml.I_CmsXmlDocument}</code> document that was previously loaded by a parent tag.<p>
+ *
+ * @since 6.2.0
  */
 public interface I_CmsXmlContentContainer extends I_CmsResourceContainer {
 
@@ -47,14 +47,14 @@ public interface I_CmsXmlContentContainer extends I_CmsResourceContainer {
 
     /**
      * Returns the currently selected element name in the loaded XML content document.<p>
-     * 
+     *
      * @return the currently selected element name in the loaded XML content document
      */
     String getXmlDocumentElement();
 
     /**
      * Returns the currently selected locale used for acessing the content in the loaded XML content document.<p>
-     * 
+     *
      * @return the currently selected locale used for acessing the content in the loaded XML content document
      */
     Locale getXmlDocumentLocale();

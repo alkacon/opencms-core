@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * The class for the "logout" context menu entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsLogout implements I_CmsHasContextMenuCommand {
@@ -50,16 +50,19 @@ public final class CmsLogout implements I_CmsHasContextMenuCommand {
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
 
         return new I_CmsContextMenuCommand() {
 
-            public void execute(CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+            public void execute(
+                CmsUUID structureId,
+                final I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
 
                 CmsConfirmDialog dialog = new CmsConfirmDialog(
                     Messages.get().key(Messages.GUI_DIALOG_LOGOUT_TITLE_0),

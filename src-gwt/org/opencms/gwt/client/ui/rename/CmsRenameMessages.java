@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageCancel() {
 
@@ -52,8 +52,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageDialogTitle() {
 
@@ -62,8 +62,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageNewNameLabel() {
 
@@ -72,8 +72,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageOk() {
 
@@ -82,8 +82,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageOldNameLabel() {
 
@@ -92,8 +92,8 @@ public final class CmsRenameMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message text 
+     *
+     * @return the message text
      */
     public static String messageRenameMenuText() {
 

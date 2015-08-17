@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolbar the tool bar instance
      * @param controller the controller
      */
@@ -80,7 +80,7 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Sets the available gallery types.<p>
-     * 
+     *
      * @param galleryTypes the gallery types
      */
     protected void setGalleryTypes(Collection<CmsGalleryType> galleryTypes) {
@@ -94,9 +94,9 @@ public class CmsToolbarNewGalleryButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Creates a gallery type item.<p>
-     * 
+     *
      * @param galleryType the gallery type
-     * 
+     *
      * @return the type item
      */
     private I_CmsListItem makeGalleryTypeItem(final CmsGalleryType galleryType) {

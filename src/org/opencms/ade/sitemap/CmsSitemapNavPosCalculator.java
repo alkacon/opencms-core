@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
 /**
  * Helper class for recalculating navigation positions when a user has changed the order of navigation entries in the sitemap
  * editor.<p>
- * 
+ *
  *  This is harder than it sounds because we need to handle special cases like e.g. the user inserting an entry
  * between two existing entries with the same navigation position, which means we need to update the navigation positions
  * of multiple entries to force the ordering which the user wanted.<p>
@@ -62,10 +62,10 @@ public class CmsSitemapNavPosCalculator {
 
         /**
          * Creates a new position info bean.<p>
-         * 
-         * @param exists true if the position is not out of bounds 
-         * 
-         * @param navPos the navigation position 
+         *
+         * @param exists true if the position is not out of bounds
+         *
+         * @param navPos the navigation position
          */
         public PositionInfo(boolean exists, float navPos) {
 
@@ -73,8 +73,8 @@ public class CmsSitemapNavPosCalculator {
             m_navPos = navPos;
         }
 
-        /** 
-         * Gets the navigation position. 
+        /**
+         * Gets the navigation position.
          *
          * @return the navigation position
          */
@@ -85,8 +85,8 @@ public class CmsSitemapNavPosCalculator {
 
         /**
          * Checks whether there is a maximal nav pos value at the position.<p>
-         * 
-         * @return true if there is a maximal nav pos value at the position 
+         *
+         * @return true if there is a maximal nav pos value at the position
          */
         public boolean isMax() {
 
@@ -95,8 +95,8 @@ public class CmsSitemapNavPosCalculator {
 
         /**
          * Returns true if the position is neither out of bounds nor a position with a maximal nav pos value.<p>
-         * 
-         * @return true if the position is neither out of bounds nor a position with a maximal nav pos value 
+         *
+         * @return true if the position is neither out of bounds nor a position with a maximal nav pos value
          */
         public boolean isNormal() {
 
@@ -105,8 +105,8 @@ public class CmsSitemapNavPosCalculator {
 
         /**
          * Returns true if the position is not in the list of navigation entries.<p>
-         * 
-         * @return true if the position is not in the list of navigation entries 
+         *
+         * @return true if the position is not in the list of navigation entries
          */
         public boolean isOutOfBounds() {
 
@@ -129,17 +129,20 @@ public class CmsSitemapNavPosCalculator {
     /**
      * Creates a new sitemap navigation position calculator and performs the navigation position calculation for a given
      * insertion operation.<p>
-     * 
-     * @param navigation the existing navigation element list 
-     * @param movedElement the resource which should be inserted 
-     * @param insertPosition the insertion position in the list 
+     *
+     * @param navigation the existing navigation element list
+     * @param movedElement the resource which should be inserted
+     * @param insertPosition the insertion position in the list
      */
     public CmsSitemapNavPosCalculator(List<CmsJspNavElement> navigation, CmsResource movedElement, int insertPosition) {
 
         List<CmsJspNavElement> workList = new ArrayList<CmsJspNavElement>(navigation);
-        CmsJspNavElement dummyNavElement = new CmsJspNavElement(DUMMY_PATH, movedElement, new HashMap<String, String>());
+        CmsJspNavElement dummyNavElement = new CmsJspNavElement(
+            DUMMY_PATH,
+            movedElement,
+            new HashMap<String, String>());
 
-        // There may be another navigation element for the same resource in the navigation, so remove it 
+        // There may be another navigation element for the same resource in the navigation, so remove it
         for (int i = 0; i < workList.size(); i++) {
             CmsJspNavElement currentElement = workList.get(i);
             if ((i != insertPosition)
@@ -149,13 +152,13 @@ public class CmsSitemapNavPosCalculator {
             }
         }
         if (insertPosition > workList.size()) {
-            // could happen if the navigation was concurrently changed by another user 
+            // could happen if the navigation was concurrently changed by another user
             insertPosition = workList.size();
         }
         // First, insert the dummy element at the correct position in the list.
         workList.add(insertPosition, dummyNavElement);
 
-        // now remove elements which aren't actually part of the navigation 
+        // now remove elements which aren't actually part of the navigation
         Iterator<CmsJspNavElement> it = workList.iterator();
         while (it.hasNext()) {
             CmsJspNavElement nav = it.next();
@@ -171,9 +174,9 @@ public class CmsSitemapNavPosCalculator {
          * The block is the range of indices for which the navigation
          * positions need to be updated. This range only needs to contain
          * more than the inserted element if it was inserted either between two elements
-         * with the same navigation position or after an element with Float.MAX_VALUE 
+         * with the same navigation position or after an element with Float.MAX_VALUE
          * navigation position. In either of those two cases, the block will contain
-         * all elements with the same navigation position.  
+         * all elements with the same navigation position.
          */
 
         int blockStart = insertPosition;
@@ -201,7 +204,7 @@ public class CmsSitemapNavPosCalculator {
             }
         }
 
-        /* 
+        /*
          * Now calculate the new navigation positions for the elements in the block using the information
          * from the elements directly before and after the block, and set the positions in the nav element
          * instances.
@@ -218,10 +221,10 @@ public class CmsSitemapNavPosCalculator {
         m_resultList = Collections.unmodifiableList(workList);
     }
 
-    /** 
+    /**
      * Gets the insert position in the final result list.<p>
-     * 
-     * @return the insert position in the final result 
+     *
+     * @return the insert position in the final result
      */
     public int getInsertPositionInResult() {
 
@@ -230,8 +233,8 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Gets the changed navigation entries from the final result list.<p>
-     * 
-     * @return the changed navigation entries for the final result list 
+     *
+     * @return the changed navigation entries for the final result list
      */
     public List<CmsJspNavElement> getNavigationChanges() {
 
@@ -247,7 +250,7 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Gets the final result list.<p>
-     *  
+     *
      * @return the final  result list
      */
     public List<CmsJspNavElement> getResultList() {
@@ -257,11 +260,11 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Gets the position info bean for a given position.<p>
-     * 
-     * @param navigation the navigation element list 
-     * @param index the index in the navigation element list 
-     * 
-     * @return the position info bean for a given position  
+     *
+     * @param navigation the navigation element list
+     * @param index the index in the navigation element list
+     *
+     * @return the position info bean for a given position
      */
     private PositionInfo getPositionInfo(List<CmsJspNavElement> navigation, int index) {
 
@@ -274,12 +277,12 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Helper method to generate a list of floats between two given values.<p>
-     * 
-     * @param min the lower bound 
-     * @param max the upper bound  
+     *
+     * @param min the lower bound
+     * @param max the upper bound
      * @param steps the number of floats to generate
-     *  
-     * @return the generated floats 
+     *
+     * @return the generated floats
      */
     private List<Float> interpolateBetween(float min, float max, int steps) {
 
@@ -296,18 +299,18 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Helper method to generate an ascending list of floats below a given number.<p>
-     * 
-     * @param max the upper bound 
-     * @param steps the number of floats to generate 
-     * 
-     * @return the generated floats 
+     *
+     * @param max the upper bound
+     * @param steps the number of floats to generate
+     *
+     * @return the generated floats
      */
     private List<Float> interpolateDownwards(float max, int steps) {
 
         List<Float> result = new ArrayList<Float>();
         if (max > 0) {
             // We try to generate a "nice" descending list of non-negative floats
-            // where the step size is bigger for bigger "max" values. 
+            // where the step size is bigger for bigger "max" values.
             float base = (max > 1) ? (float)Math.floor(max) : max;
             float stepSize = 1000f;
 
@@ -315,7 +318,7 @@ public class CmsSitemapNavPosCalculator {
             while ((base - (steps * stepSize)) < (max / 10.0f)) {
                 stepSize = reduceStepSize(stepSize);
             }
-            // we have determined the step size, now we generate the actual numbers 
+            // we have determined the step size, now we generate the actual numbers
             for (int i = 0; i < steps; i++) {
                 result.add(new Float(base - ((i + 1) * stepSize)));
             }
@@ -332,10 +335,10 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Helper method to generate an ascending list of floats.<p>
-     * 
+     *
      * @param steps the number of floats to generate
-     * 
-     * @return the generated floats 
+     *
+     * @return the generated floats
      */
     private List<Float> interpolateEmpty(int steps) {
 
@@ -348,12 +351,12 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Generates the new navigation positions for a range of navigation items.<p>
-     * 
-     * @param left the position info for the navigation entry left of the range 
+     *
+     * @param left the position info for the navigation entry left of the range
      * @param right the position info for the navigation entry right of the range
-     * @param steps the number of entries in the range 
-     * 
-     * @return the list of new navigation positions 
+     * @param steps the number of entries in the range
+     *
+     * @return the list of new navigation positions
      */
     private List<Float> interpolatePositions(PositionInfo left, PositionInfo right, int steps) {
 
@@ -376,7 +379,7 @@ public class CmsSitemapNavPosCalculator {
                 assert false;
             }
         } else {
-            // can't happen 
+            // can't happen
             assert false;
         }
         return null;
@@ -385,11 +388,11 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Helper method for generating an ascending list of floats above a given number.<p>
-     * 
-     * @param min the lower bound 
-     * @param steps the number of floats to generate 
-     * 
-     * @return the generated floats 
+     *
+     * @param min the lower bound
+     * @param steps the number of floats to generate
+     *
+     * @return the generated floats
      */
     private List<Float> interpolateUpwards(float min, int steps) {
 
@@ -402,15 +405,15 @@ public class CmsSitemapNavPosCalculator {
 
     /**
      * Reduces the step size for generating descending navpos sequences.<p>
-     * 
+     *
      * @param oldStepSize the previous step size
-     *   
-     * @return the new (smaller) step size 
+     *
+     * @return the new (smaller) step size
      */
     private float reduceStepSize(float oldStepSize) {
 
         if (oldStepSize > 1) {
-            // try to reduce unnecessary digits after the decimal point 
+            // try to reduce unnecessary digits after the decimal point
             return oldStepSize / 10f;
         } else {
             return oldStepSize / 2f;

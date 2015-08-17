@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,11 +44,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A abstract implementation for a context menu item.<p>
- * 
+ *
  * @since version 8.0.0
  */
 public abstract class A_CmsContextMenuItem extends Composite
-implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, HasMouseOutHandlers, HasMouseOverHandlers {
+implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, HasMouseOutHandlers,
+HasMouseOverHandlers {
 
     /** Signals if the item should be disabled. */
     private boolean m_active;
@@ -73,7 +74,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param text the text for the menu item
      */
     protected A_CmsContextMenuItem(String text) {
@@ -120,7 +121,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Returns the parent menu of this menu item.<p>
-     *  
+     *
      * @return the parent menu
      */
     public CmsContextMenu getParentMenu() {
@@ -130,7 +131,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Returns the sub menu of this menu item.<p>
-     * 
+     *
      * @return the sub menu
      */
     public CmsContextMenu getSubMenu() {
@@ -140,7 +141,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Returns the text of this menu item.<p>
-     * 
+     *
      * @return the text
      */
     public String getText() {
@@ -150,7 +151,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Returns <code>true</code> if this menu item has a sub menu, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu item has a sub menu
      */
     public boolean hasSubmenu() {
@@ -163,7 +164,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Returns <code>true</code> if the item is active <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if the item is active <code>false</code> otherwise
      */
     public boolean isActive() {
@@ -172,9 +173,9 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
     }
 
     /**
-     * The action that is executed on click depends on the concrete implementation of a menu item. 
+     * The action that is executed on click depends on the concrete implementation of a menu item.
      * So the onClick Method has to be implemented in the sub class.<p>
-     * 
+     *
      * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
      */
     public abstract void onClick(ClickEvent event);
@@ -206,9 +207,9 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Makes the menu item active or inactive.<p>
-     * 
+     *
      * If the item is inactive all handlers are removed.<p>
-     * 
+     *
      * @param active <code>true</code> if the item should be active, <code>false</code> otherwise
      * @param reason the reason for de-activation
      */
@@ -231,7 +232,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Sets the text of the menu item.<p>
-     * 
+     *
      * @param text the text to set
      */
     public void setText(String text) {
@@ -253,10 +254,10 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Implements the hover over action for a item.<p>
-     * 
+     *
      * First closes all sub menus that are not required anymore.
      * And then reopens the necessary sub menus and activates the selected item.<p>
-     * 
+     *
      * @param event the mouse over event
      */
     protected void onHoverIn(MouseOverEvent event) {
@@ -276,9 +277,9 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Implements the hover out action for a item.<p>
-     * 
+     *
      * If a menu item has no sub menu it will be deselected.<p>
-     * 
+     *
      * @param event the mouse out event
      */
     protected void onHoverOut(MouseOutEvent event) {
@@ -290,7 +291,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Sets the parent menu of this menu item.<p>
-     * 
+     *
      * @param parentMenu the parent menu to set
      */
     protected void setParentMenu(CmsContextMenu parentMenu) {
@@ -300,7 +301,7 @@ implements ClickHandler, MouseOutHandler, MouseOverHandler, HasClickHandlers, Ha
 
     /**
      * Sets the sub menu for the menu item.<p>
-     * 
+     *
      * @param subMenu the sub menu to set
      */
     protected void setSubMenu(CmsContextMenu subMenu) {

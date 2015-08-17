@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
 /**
  * Widget dialog that collects the options for the property view.
  * <p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsPropertyviewDialog extends CmsWidgetDialog {
@@ -71,7 +71,7 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
     /**
      * The settings bean for this dialog.
      * <p>
-     * 
+     *
      */
     public class CmsPropertyviewDialogSettings {
 
@@ -212,12 +212,15 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsPropertyviewDialog(final PageContext context, final HttpServletRequest req, final HttpServletResponse res) {
+    public CmsPropertyviewDialog(
+        final PageContext context,
+        final HttpServletRequest req,
+        final HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
 
@@ -295,11 +298,23 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
             new CmsDisplayWidget(),
             1,
             1));
-        addWidget(new CmsWidgetDialogParameter(m_settings, "paths", "/", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
-        addWidget(new CmsWidgetDialogParameter(m_settings, "properties", "/", PAGES[0], new CmsSelectWidget(
-            getPropertySelectWidgetConfiguration()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(new CmsWidgetDialogParameter(
+            m_settings,
+            "paths",
+            "/",
+            PAGES[0],
+            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+            1,
+            CmsWidgetDialogParameter.MAX_OCCURENCES));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "properties",
+                "/",
+                PAGES[0],
+                new CmsSelectWidget(getPropertySelectWidgetConfiguration()),
+                1,
+                CmsWidgetDialogParameter.MAX_OCCURENCES));
         addWidget(new CmsWidgetDialogParameter(
             m_settings,
             "showSiblings",
@@ -347,7 +362,7 @@ public class CmsPropertyviewDialog extends CmsWidgetDialog {
     /**
      * Reads all available properties in the system and returns a config string for a select widget.
      * <p>
-     * 
+     *
      * @return a select widget configuration String for available properties in the system.
      */
     private String getPropertySelectWidgetConfiguration() {

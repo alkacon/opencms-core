@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A project bean.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean> {
 
@@ -57,11 +57,11 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
     /** The project type. */
     private int m_type;
 
-    /** 
-     * Creates a new project bean.<p> 
+    /**
+     * Creates a new project bean.<p>
      *
      * @param id the project id
-     * @param type the project type 
+     * @param type the project type
      * @param name the project name
      * @param description the project description
      **/
@@ -86,14 +86,16 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
      */
     public int compareTo(CmsProjectBean otherProject) {
 
-        return ComparisonChain.start().compare(m_rank, otherProject.getRank()).compare(m_name, otherProject.getName()).result();
+        return ComparisonChain.start().compare(m_rank, otherProject.getRank()).compare(
+            m_name,
+            otherProject.getName()).result();
 
     }
 
     /**
      * The default name to use for publish groups computed from this project, if no other name is available.<p>
-     * 
-     * @return the default publish group name 
+     *
+     * @return the default publish group name
      */
     public String getDefaultGroupName() {
 
@@ -102,7 +104,7 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Returns the project description.<p>
-     * 
+     *
      * @return the project description
      */
     public String getDescription() {
@@ -132,7 +134,7 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Gets the sorting rank.<p>
-     * 
+     *
      * @return the sorting rank
      */
     public int getRank() {
@@ -142,8 +144,8 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Returns the project type.<p>
-     * 
-     * @return the project type 
+     *
+     * @return the project type
      */
     public int getType() {
 
@@ -152,7 +154,7 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Returns if the project is of the type workflow project.<p>
-     * 
+     *
      * @return <code>true</code> if the project is of the type workflow project
      */
     public boolean isWorkflowProject() {
@@ -162,8 +164,8 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Sets the default publish group name.<p>
-     * 
-     * @param defaultGroupName the default publish group name 
+     *
+     * @param defaultGroupName the default publish group name
      */
     public void setDefaultGroupName(String defaultGroupName) {
 
@@ -172,8 +174,8 @@ public class CmsProjectBean implements IsSerializable, Comparable<CmsProjectBean
 
     /**
      * Sets the sorting rank.<p>
-     * 
-     * @param rank the sorting rank 
+     *
+     * @param rank the sorting rank
      */
     public void setRank(int rank) {
 

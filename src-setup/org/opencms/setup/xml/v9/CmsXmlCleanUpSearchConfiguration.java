@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -101,7 +101,8 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
         xp.append("/");
         xp.append(CmsSearchConfiguration.N_INDEXES);
         try {
-            Iterator<Node> it = CmsCollectionsGenericWrapper.<Node> list(document.selectNodes(xp.toString())).iterator();
+            Iterator<Node> it = CmsCollectionsGenericWrapper.<Node> list(
+                document.selectNodes(xp.toString())).iterator();
             while (it.hasNext()) {
                 Node node = it.next();
                 if (node.getNodeType() == Node.ELEMENT_NODE) {

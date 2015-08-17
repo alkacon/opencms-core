@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,14 +42,14 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The new resource pointer dialog handles the creation of a pointer (external link).<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_pointer.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewResourcePointer extends CmsNewResource {
 
@@ -61,7 +61,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourcePointer(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -83,7 +83,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
 
     /**
      * Creates the new pointer resource.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     @Override
@@ -105,7 +105,8 @@ public class CmsNewResourcePointer extends CmsNewResource {
                 linkTarget = "";
             }
             // create the pointer
-            int pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+            int pointerId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePointer.getStaticTypeName()).getTypeId();
             getCms().createResource(fullResourceName, pointerId, linkTarget.getBytes(), properties);
             setParamResource(fullResourceName);
             setResourceCreated(true);
@@ -119,7 +120,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
 
     /**
      * Returns the link target request parameter value.<p>
-     * 
+     *
      * @return the link target request parameter value
      */
     public String getParamLinkTarget() {
@@ -129,7 +130,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
 
     /**
      * Sets the link target request parameter value.<p>
-     * 
+     *
      * @param linkTarget the link target request parameter value
      */
     public void setParamLinkTarget(String linkTarget) {
@@ -147,14 +148,14 @@ public class CmsNewResourcePointer extends CmsNewResource {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
+            // build title for new resource dialog
             setParamTitle(key(Messages.GUI_NEWRESOURCE_POINTER_0));
         }
     }

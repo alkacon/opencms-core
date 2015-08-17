@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * Advanced image tag properties tab, use in editor mode only.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
@@ -51,7 +51,7 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param dialogMode the mode of the gallery
      * @param height the height of the tab
      * @param width the width of the height
@@ -67,7 +67,7 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
 
     /**
      * Displays the provided image information.<p>
-     * 
+     *
      * @param imageInfo the image information
      */
     public void fillContent(CmsImageInfoBean imageInfo) {
@@ -76,8 +76,9 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
         boolean inititalFill = false;
         // checking if selected image resource is the same as previewed resource
         if (imageAttributes.containsKey(Attribute.emptySelection.name())
-            || (imageAttributes.containsKey(Attribute.hash.name()) && !imageAttributes.getString(Attribute.hash.name()).equals(
-                String.valueOf(m_handler.getImageIdHash())))) {
+            || (imageAttributes.containsKey(Attribute.hash.name())
+                && !imageAttributes.getString(Attribute.hash.name()).equals(
+                    String.valueOf(m_handler.getImageIdHash())))) {
             imageAttributes = CmsJSONMap.createJSONMap();
             inititalFill = true;
         }
@@ -86,7 +87,7 @@ public class CmsImageAdvancedTab extends A_CmsPreviewDetailTab {
 
     /**
      * Adds necessary attributes to the map.<p>
-     * 
+     *
      * @param attributes the attribute map
      * @return the attribute map
      */

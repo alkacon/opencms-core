@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Gets the changed rows.<p>
-     * 
-     * @return the changed row list 
+     *
+     * @return the changed row list
      */
     public List<CmsAliasTableRow> getChangedRows() {
 
@@ -67,7 +67,7 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Gets the error message for the new entry alias path text box.<p>
-     * 
+     *
      * @return an error message
      */
     public String getNewEntryAliasError() {
@@ -77,8 +77,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Gets the error message for the new entry resource path text box.<p>
-     * 
-     * @return an error message 
+     *
+     * @return an error message
      */
     public String getNewEntryPathError() {
 
@@ -87,8 +87,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Gets the validated new entry.<p>
-     * 
-     * @return the validated new entry 
+     *
+     * @return the validated new entry
      */
     public CmsAliasTableRow getValidatedNewEntry() {
 
@@ -97,8 +97,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Check if this validation result has any errors.<p>
-     * 
-     * @return true if the validation result has errors 
+     *
+     * @return true if the validation result has errors
      */
     public boolean hasErrors() {
 
@@ -115,8 +115,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Sets the changed rows.<p>
-     * 
-     * @param changedRows the changed rows 
+     *
+     * @param changedRows the changed rows
      */
     public void setChangedRows(List<CmsAliasTableRow> changedRows) {
 
@@ -125,18 +125,18 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Sets the error message for the new entry alias path text box.<p>
-     * 
-     * @param newEntryAliasError the error message 
+     *
+     * @param newEntryAliasError the error message
      */
     public void setNewEntryAliasError(String newEntryAliasError) {
 
         m_newEntryAliasError = newEntryAliasError;
     }
 
-    /** 
+    /**
      * Sets the error message for the new entry resource path text box.<p>
-     * 
-     * @param newEntryPathError the error message 
+     *
+     * @param newEntryPathError the error message
      */
     public void setNewEntryPathError(String newEntryPathError) {
 
@@ -145,8 +145,8 @@ public class CmsAliasEditValidationReply implements IsSerializable {
 
     /**
      * Sets the validated new entry.<p>
-     * 
-     * @param validatedNewEntry the validated new entry 
+     *
+     * @param validatedNewEntry the validated new entry
      */
     public void setValidatedNewEntry(CmsAliasTableRow validatedNewEntry) {
 

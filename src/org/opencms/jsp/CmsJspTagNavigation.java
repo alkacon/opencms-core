@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import org.opencms.util.CmsStringUtil;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Implementation of the <code>&lt;cms:navigation var="..." /&gt;</code> tag, 
+ * Implementation of the <code>&lt;cms:navigation var="..." /&gt;</code> tag,
  * used to access OpenCms VFS navigation information on a JSP with the EL.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
@@ -46,23 +46,19 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     /** Constants for <code>type</code> attribute interpretation. */
     public enum Type {
         /** Bread crumb navigation. */
-        breadCrumb,
-        /** Navigation for folder. */
-        forFolder,
-        /** Navigation for resource. */
-        forResource,
-        /** Navigation for a site. */
-        forSite,
-        /** Navigation tree for folder. */
+        breadCrumb, /** Navigation for folder. */
+        forFolder, /** Navigation for resource. */
+        forResource, /** Navigation for a site. */
+        forSite, /** Navigation tree for folder. */
         treeForFolder;
 
         /**
          * Parses a string into an enumeration element.<p>
-         * 
+         *
          * @param name the name of the enumeration element
-         * 
+         *
          * @return the enumeration element with the given name
-         * 
+         *
          * @throws IllegalArgumentException in case of an invalid enumeration name
          */
         public static Type parse(String name) throws IllegalArgumentException {
@@ -93,7 +89,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     protected Type m_type;
 
     /**
-     * Empty constructor, required for JSP tags.<p> 
+     * Empty constructor, required for JSP tags.<p>
      */
     public CmsJspTagNavigation() {
 
@@ -101,8 +97,8 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * Constructor used for scriptlet code.<p> 
-     * 
+     * Constructor used for scriptlet code.<p>
+     *
      * @param context the JSP page context
      */
     public CmsJspTagNavigation(PageContext context) {
@@ -124,7 +120,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the (optional) end level for the navigation.<p>
-     * 
+     *
      * @return the (optional) end level for the navigation
      */
     public String getEndLevel() {
@@ -134,7 +130,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the optional parameter for the navigation.<p>
-     * 
+     *
      * @return the optional parameter for the navigation
      */
     public String getParam() {
@@ -144,7 +140,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the (optional) resource for the navigation.<p>
-     * 
+     *
      * @return the (optional) resource for the navigation
      */
     public String getResource() {
@@ -154,7 +150,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the (optional) start level for the navigation.<p>
-     * 
+     *
      * @return the (optional) start level for the navigation
      */
     public String getStartLevel() {
@@ -164,9 +160,9 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Returns the selected navigation type.<p>
-     * 
+     *
      * This must match one of the elements in {@link Type}.<p>
-     * 
+     *
      * @return the selected navigation type
      */
     public String getType() {
@@ -190,7 +186,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the (optional) end level for the navigation.<p>
-     * 
+     *
      * @param endLevel the (optional) end level for the navigation
      */
     public void setEndLevel(String endLevel) {
@@ -202,7 +198,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the optional parameter for the navigation.<p>
-     * 
+     *
      * @param param the optional parameter for the navigation to set
      */
     public void setParam(String param) {
@@ -214,7 +210,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the (optional) resource for the navigation.<p>
-     * 
+     *
      * @param resource the (optional) resource for the navigation
      */
     public void setResource(String resource) {
@@ -226,7 +222,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the (optional) start level for the navigation.<p>
-     * 
+     *
      * @param startLevel the (optional) start level for the navigation
      */
     public void setStartLevel(String startLevel) {
@@ -238,9 +234,9 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
 
     /**
      * Sets the selected navigation type.<p>
-     * 
+     *
      * This must match one of the elements in {@link Type}.<p>
-     * 
+     *
      * @param type the navigation type to set
      */
     public void setType(String type) {
@@ -251,7 +247,7 @@ public class CmsJspTagNavigation extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * Initializes this formatter tag.<p> 
+     * Initializes this formatter tag.<p>
      */
     protected void init() {
 

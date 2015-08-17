@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import java.util.List;
 
 /**
  * Generalized role users view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
@@ -96,11 +96,11 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
-     * @param listName the name of the list 
-     * @param searchable searchable flag 
+     * @param listName the name of the list
+     * @param searchable searchable flag
      */
     protected A_CmsRoleUsersList(
         CmsJspActionElement jsp,
@@ -108,19 +108,24 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
-        ? LIST_COLUMN_NAME
-        : null, false);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_LOGIN,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_NAME : null,
+            false);
     }
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
      * @param searchable searchable flag
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     protected A_CmsRoleUsersList(
         CmsJspActionElement jsp,
@@ -129,14 +134,19 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         boolean searchable,
         boolean lazy) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
-        ? LIST_COLUMN_NAME
-        : null, lazy);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_LOGIN,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_NAME : null,
+            lazy);
     }
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -146,7 +156,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Returns the role name parameter value.<p>
-     * 
+     *
      * @return the role name parameter value
      */
     public String getParamRole() {
@@ -156,13 +166,13 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Returns if the list of users has users of other organizational units.<p>
-     * 
+     *
      * @return if the list of users has users of other organizational units
      */
     public boolean hasUsersInOtherOus() {
 
         if (m_lazy) {
-            // if we use database-side paging, we have to assume that there may be users from other OUs 
+            // if we use database-side paging, we have to assume that there may be users from other OUs
             return true;
         }
         if (m_hasUsersInOtherOus == null) {
@@ -186,7 +196,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -199,7 +209,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Sets the role name parameter value.<p>
-     * 
+     *
      * @param roleName the role name parameter value
      */
     public void setParamRole(String roleName) {
@@ -218,8 +228,8 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Checks if other OUs are visible.<p>
-     * 
-     * @return true if other OUs are visible 
+     *
+     * @return true if other OUs are visible
      */
     protected boolean otherOrgUnitsVisible() {
 
@@ -236,7 +246,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
         boolean withOtherOus = hasUsersInOtherOus() && otherOrgUnitsVisible();
 
-        // get content        
+        // get content
         List<CmsUser> users = getUsers(withOtherOus);
         Iterator<CmsUser> itUsers = users.iterator();
         while (itUsers.hasNext()) {
@@ -251,10 +261,10 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Makes a list item from a user.<p>
-     * 
-     * @param user the user 
-     * 
-     * @return the list item 
+     *
+     * @param user the user
+     *
+     * @return the list item
      */
     protected CmsListItem makeUserItem(CmsUser user) {
 
@@ -268,11 +278,11 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
 
     /**
      * Returns a list of users to display.<p>
-     * 
+     *
      * @param withOtherOus if not set only users of the current ou should be returned
-     * 
+     *
      * @return a list of <code><{@link CmsUser}</code>s
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsUser> getUsers(boolean withOtherOus) throws CmsException;
@@ -522,8 +532,8 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
         otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_NAME_0));
         otherOuDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_OTHEROU_HELP_0));
         otherOuDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0));
-        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
+        otherOuDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_OTHEROU_NAME_0)));
         otherOuDetails.setVisible(true);
         metadata.addItemDetails(otherOuDetails);
     }

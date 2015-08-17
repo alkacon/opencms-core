@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * The toolbar button for jumping to the last visited container page.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarGoBackButton extends CmsPushButton {
@@ -56,9 +56,9 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolbar the toolbar instance
-     * @param controller the sitemap controller 
+     * @param controller the sitemap controller
      */
     public CmsToolbarGoBackButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
@@ -84,7 +84,7 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
 
     /**
      * Returns the return code.<p>
-     * 
+     *
      * @return the return code
      */
     protected String getReturnCode() {
@@ -115,8 +115,10 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
                         Window.Location.assign(result.getLink());
                     } else if (result.getStatus() == CmsReturnLinkInfo.Status.notfound) {
                         CmsMessages msg = org.opencms.ade.sitemap.client.Messages.get();
-                        String title = msg.key(org.opencms.ade.sitemap.client.Messages.GUI_RETURN_PAGE_NOT_FOUND_TITLE_0);
-                        String content = msg.key(org.opencms.ade.sitemap.client.Messages.GUI_RETURN_PAGE_NOT_FOUND_TEXT_0);
+                        String title = msg.key(
+                            org.opencms.ade.sitemap.client.Messages.GUI_RETURN_PAGE_NOT_FOUND_TITLE_0);
+                        String content = msg.key(
+                            org.opencms.ade.sitemap.client.Messages.GUI_RETURN_PAGE_NOT_FOUND_TEXT_0);
                         CmsAlertDialog alert = new CmsAlertDialog(title, content);
                         alert.center();
                     }

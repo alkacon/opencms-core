@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
 
         /**
          * Creates a instance.<p>
-         * 
+         *
          * @param service the service to wrap
          */
         public LoggingServiceProxy(CmisService service) {
@@ -85,7 +85,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
             try {
-                // CmisService defines some methods in addition to its base interfaces which don't correspond to CMIS service calls 
+                // CmisService defines some methods in addition to its base interfaces which don't correspond to CMIS service calls
 
                 boolean isServiceCall = m_serviceInterfaces.contains(method.getDeclaringClass());
                 if (isServiceCall) {
@@ -94,7 +94,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
                 Object result = method.invoke(m_service, args);
                 if (isServiceCall && LOG.isDebugEnabled()) {
                     // This can generate a *VERY LARGE AMOUNT* of data in the log file, don't activate the debug channel
-                    // unless you really need to  
+                    // unless you really need to
                     LOG.debug("Returned '" + result + "'");
                 }
                 return result;
@@ -105,13 +105,13 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
             }
         }
 
-        /** 
+        /**
          * Creates a string representation of a given method call, which is used for logging.<p>
-         *  
-         * @param method the method 
+         *
+         * @param method the method
          * @param args the method call arguments
-         *  
-         * @return a string representation of the method call 
+         *
+         * @return a string representation of the method call
          */
         private String getCallString(Method method, Object[] args) {
 
@@ -148,7 +148,7 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     @Override
     public void destroy() {
 
-        // do nothing for now 
+        // do nothing for now
     }
 
     /**
@@ -177,6 +177,6 @@ public class CmsCmisServiceFactory extends AbstractServiceFactory {
     @Override
     public void init(Map<String, String> parameters) {
 
-        // do nothing for now 
+        // do nothing for now
     }
 }

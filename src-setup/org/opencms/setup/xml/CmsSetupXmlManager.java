@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import java.util.Map;
 
 /**
  * Manages all changes to be made to xml configuration files.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupXmlManager {
 
@@ -65,9 +65,9 @@ public class CmsSetupXmlManager {
 
     /**
      * Executes all user selected plugins.<p>
-     * 
+     *
      * @param setupBean the setup bean
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void execute(CmsSetupBean setupBean) throws Exception {
@@ -87,7 +87,7 @@ public class CmsSetupXmlManager {
 
     /**
      * Returns the plugins.<p>
-     * 
+     *
      * @return a map of [filenames, list of plugins]
      */
     public Map<String, List<I_CmsSetupXmlUpdate>> getPlugins() {
@@ -97,11 +97,11 @@ public class CmsSetupXmlManager {
 
     /**
      * Returns html for displaying a plugin selection box.<p>
-     * 
+     *
      * @param setupBean the setup bean
-     * 
+     *
      * @return html code
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public String htmlAvailablePlugins(CmsSetupBean setupBean) throws Exception {
@@ -130,7 +130,7 @@ public class CmsSetupXmlManager {
 
     /**
      * Initializes the plug-ins.<p>
-     * 
+     *
      * @param detectedVersion detected mayor version
      */
     public void initialize(double detectedVersion) {
@@ -231,7 +231,7 @@ public class CmsSetupXmlManager {
 
     /**
      * Bean property setter method user from the <code>step_5_xmlupdate.jsp</code>.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setSelectedPlugins(String value) {
@@ -241,13 +241,13 @@ public class CmsSetupXmlManager {
 
     /**
      * Generates html code for the given plugin at the given position.<p>
-     * 
+     *
      * @param plugin the plugin
      * @param pos the position
      * @param setupBean the setup bean
-     * 
+     *
      * @return html code
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     private String htmlPlugin(CmsSetupBean setupBean, I_CmsSetupXmlUpdate plugin, int pos) throws Exception {

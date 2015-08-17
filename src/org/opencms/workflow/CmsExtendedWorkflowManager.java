@@ -90,7 +90,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
      * @see org.opencms.workflow.CmsDefaultWorkflowManager#createFormatter(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsWorkflow, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
     @Override
-    public I_CmsPublishResourceFormatter createFormatter(CmsObject cms, CmsWorkflow workflow, CmsPublishOptions options) {
+    public I_CmsPublishResourceFormatter createFormatter(
+        CmsObject cms,
+        CmsWorkflow workflow,
+        CmsPublishOptions options) {
 
         String workflowKey = workflow.getId();
         boolean release = WORKFLOW_RELEASE.equals(workflowKey);
@@ -110,10 +113,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         List<CmsResource> resources) throws CmsException {
 
         if (LOG.isInfoEnabled()) {
-            LOG.info("workflow action: "
-                + userCms.getRequestContext().getCurrentUser().getName()
-                + " "
-                + action.getAction());
+            LOG.info(
+                "workflow action: "
+                    + userCms.getRequestContext().getCurrentUser().getName()
+                    + " "
+                    + action.getAction());
             List<String> resourceNames = new ArrayList<String>();
             for (CmsResource resource : resources) {
                 resourceNames.add(resource.getRootPath());
@@ -181,7 +185,11 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         String workflowKey = workflow.getId();
         String overrideId = null;
         if (WORKFLOW_RELEASE.equals(workflowKey)) {
-            List<CmsResource> result = super.getWorkflowResources(cms, workflow, options, canOverrideWorkflow).getWorkflowResources();
+            List<CmsResource> result = super.getWorkflowResources(
+                cms,
+                workflow,
+                options,
+                canOverrideWorkflow).getWorkflowResources();
             if (canOverrideWorkflow) {
                 boolean override = false;
 
@@ -352,9 +360,10 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
                 if (parent == null) {
                     parent = rootCms.readResource(parentPath);
                     if (parent.getState().isNew()) {
-                        throw new CmsNewParentNotInWorkflowException(Messages.get().container(
-                            Messages.ERR_NEW_PARENT_NOT_IN_WORKFLOW_1,
-                            resource.getRootPath()));
+                        throw new CmsNewParentNotInWorkflowException(
+                            Messages.get().container(
+                                Messages.ERR_NEW_PARENT_NOT_IN_WORKFLOW_1,
+                                resource.getRootPath()));
                     }
                 }
             }
@@ -554,8 +563,12 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
 
         CmsWorkflowAction forcePublish = new CmsWorkflowAction(ACTION_FORCE_PUBLISH, forcePublishLabel, true, true);
         actions.add(forcePublish);
-        return new CmsWorkflowResponse(false, Messages.get().getBundle(getLocale(userCms)).key(
-            Messages.GUI_BROKEN_LINKS_0), publishResources, actions, null);
+        return new CmsWorkflowResponse(
+            false,
+            Messages.get().getBundle(getLocale(userCms)).key(Messages.GUI_BROKEN_LINKS_0),
+            publishResources,
+            actions,
+            null);
     }
 
     /**

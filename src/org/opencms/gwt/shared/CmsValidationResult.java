@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The result of a single field validation.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsValidationResult implements IsSerializable {
@@ -51,7 +51,7 @@ public class CmsValidationResult implements IsSerializable {
     /**
      * Creates a new validation result which doesn't replace the current field value.<p>
      *
-     * @param errorMessage the error message to display, or null if there 
+     * @param errorMessage the error message to display, or null if there
      */
     public CmsValidationResult(String errorMessage) {
 
@@ -61,9 +61,9 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Creates a new validation result which also replaces the current field value.<p>
-     * 
-     * @param errorMessage the error message to display, or null if there was no error 
-     * @param newValue the replacement for the field value 
+     *
+     * @param errorMessage the error message to display, or null if there was no error
+     * @param newValue the replacement for the field value
      */
     public CmsValidationResult(String errorMessage, String newValue) {
 
@@ -82,7 +82,7 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns the error message, or null if the validation has succeeded.<p>
-     * 
+     *
      * @return an error message or null the
      */
     public String getErrorMessage() {
@@ -92,8 +92,8 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns the replacement for the field value.<p>
-     * 
-     * @return the replacement for the field value 
+     *
+     * @return the replacement for the field value
      */
     public String getNewValue() {
 
@@ -102,8 +102,8 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns true if the field value should be replaced.<p>
-     * 
-     * @return true if the field value should be replaced 
+     *
+     * @return true if the field value should be replaced
      */
     public boolean hasNewValue() {
 
@@ -112,8 +112,8 @@ public class CmsValidationResult implements IsSerializable {
 
     /**
      * Returns true if the validation has succeeded.<p>
-     * 
-     * @return true if the validation has succeeded 
+     *
+     * @return true if the validation has succeeded
      */
     public boolean isOk() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.main.OpenCms;
 /**
  * Bean to store the entries made by the user in the History Clear form in the
  * administration view.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistoryClear {
@@ -88,7 +88,7 @@ public class CmsHistoryClear {
     /**
      * Sets the clear deleted mode.<p>
      *
-     * @param clearDeletedMode the clear deleted mode 
+     * @param clearDeletedMode the clear deleted mode
      */
     public void setClearDeletedMode(String clearDeletedMode) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Repairs XML content resources according to their XSD using the corresponding settings object.<p>
- * 
+ *
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
 
@@ -60,7 +60,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
 
     /**
      * Creates a repair XML content resources thread.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param settings the settings needed to perform the repair operation
      */
@@ -116,12 +116,12 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
 
     /**
      * Performs the correction of the XML content resources according to their XML schema definition.<p>
-     * 
+     *
      * @throws CmsException if reading the list of resources to repair fails
      */
     private void repairXmlContents() throws CmsException {
 
-        // set the resource filter to filter XML contents of the selected type        
+        // set the resource filter to filter XML contents of the selected type
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(m_settings.getResourceTypeId());
         String path = CmsResource.getFolderPath(m_settings.getVfsFolder());
         // get the list of resources to check
@@ -191,7 +191,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
                     if (canWrite) {
                         // enable "auto correction mode" - this is required or the XML structure will not be fully corrected
                         xmlContent.setAutoCorrectionEnabled(true);
-                        // now correct the XML        
+                        // now correct the XML
                         xmlContent.correctXmlStructure(getCms());
                         file.setContents(xmlContent.marshal());
                         // write the corrected file

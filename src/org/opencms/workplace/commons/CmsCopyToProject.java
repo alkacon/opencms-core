@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,15 +46,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the copy to project dialog.<p> 
- * 
+ * Provides methods for the copy to project dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/copytoproject.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsCopyToProject extends CmsDialog {
 
@@ -69,7 +69,7 @@ public class CmsCopyToProject extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsCopyToProject(CmsJspActionElement jsp) {
@@ -79,7 +79,7 @@ public class CmsCopyToProject extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -91,7 +91,7 @@ public class CmsCopyToProject extends CmsDialog {
 
     /**
      * Performs the copy to project action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionCopyToProject() throws JspException {
@@ -111,7 +111,7 @@ public class CmsCopyToProject extends CmsDialog {
 
     /**
      * Returns the HTML containing project information and confirmation question for the JSP.<p>
-     * 
+     *
      * @return the HTML containing project information and confirmation question for the JSP
      */
     public String buildProjectInformation() {
@@ -182,14 +182,14 @@ public class CmsCopyToProject extends CmsDialog {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_COPYTOPROJECT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for copy to project dialog     
+            // build title for copy to project dialog
             setParamTitle(key(Messages.GUI_COPYTOPROJECT_TITLE_0));
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,16 +39,16 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * This the error handler servlet of the OpenCms system.<p>
- * 
+ *
  * This almost 1:1 extends the "standard" {@link org.opencms.main.OpenCmsServlet}.
- * By default, all errors are handled by this servlet, which is controlled by the 
- * setting in the shipped <code>web.xml</code>.<p> 
- * 
- * This servlet is required because certain servlet containers (eg. BEA Weblogic) 
+ * By default, all errors are handled by this servlet, which is controlled by the
+ * setting in the shipped <code>web.xml</code>.<p>
+ *
+ * This servlet is required because certain servlet containers (eg. BEA Weblogic)
  * can not handler the error with the same servlet that produced the error.<p>
- * 
- * @since 6.2.0 
- * 
+ *
+ * @since 6.2.0
+ *
  * @see org.opencms.main.OpenCmsServlet
  * @see org.opencms.staticexport.CmsStaticExportManager
  */
@@ -59,7 +59,7 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
 
     /**
      * OpenCms servlet main request handling method.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -79,10 +79,11 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
                     errorMessage = "";
                 }
                 String output = "<html><body>"
-                    + CmsStringUtil.escapeHtml(Messages.get().getBundle().key(
-                        Messages.ERR_OPENCMS_NOT_INITIALIZED_2,
-                        errorStatus,
-                        errorMessage))
+                    + CmsStringUtil.escapeHtml(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_OPENCMS_NOT_INITIALIZED_2,
+                            errorStatus,
+                            errorMessage))
                     + "</body></html>";
                 res.setStatus(errorStatus.intValue());
                 res.getWriter().println(output);

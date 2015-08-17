@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,11 +39,11 @@ import java.util.Map;
 
 /**
  * The result of a document text extraction.<p>
- * 
- * This data structure contains the extracted text as well as (optional) 
+ *
+ * This data structure contains the extracted text as well as (optional)
  * meta information extracted from the document.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExtractionResult implements I_CmsExtractionResult, Serializable {
 
@@ -58,7 +58,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
 
     /**
      * Creates a new extraction result without meta information and without additional fields.<p>
-     * 
+     *
      * @param content the extracted content
      */
     public CmsExtractionResult(String content) {
@@ -69,7 +69,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
 
     /**
      * Creates a new extraction result.<p>
-     * 
+     *
      * @param content the extracted content
      * @param contentItems the individual extracted content items
      */
@@ -86,11 +86,11 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     }
 
     /**
-     * Creates an extraction result from a serialized byte array.<p> 
-     * 
+     * Creates an extraction result from a serialized byte array.<p>
+     *
      * @param bytes the serialized version of the extraction result
-     * 
-     * @return extraction result created from the serialized byte array  
+     *
+     * @return extraction result created from the serialized byte array
      */
     public static final CmsExtractionResult fromBytes(byte[] bytes) {
 

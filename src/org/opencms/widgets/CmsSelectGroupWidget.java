@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides a widget for group selection select boxes.<p>
- * 
+ *
  * This widget is configurable with the following options:<p>
  * <ul>
  * <li><code>groupfilter</code>: regular expression to filter available groups</li>
@@ -66,8 +66,8 @@ import org.apache.commons.logging.Log;
  * This means that the +r+v permission is written for the principal <code>GROUP</code> on the resource.
  * Additionally two permissions are written as default: for <code>ALL_OTHERS</code>, no allowed permission is set,
  * for <code>Projectmanagers</code>, "+r+v+w+c" is set.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsSelectGroupWidget extends CmsSelectWidget {
 
@@ -109,7 +109,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Creates a group select widget with the specified select options.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the group select box
      */
     public CmsSelectGroupWidget(String configuration) {
@@ -181,16 +181,16 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns the list of configured select options, parsing the configuration String if required.<p>
-     * 
+     *
      * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.
      * The configuration String is parsed only once and then stored internally.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param messages the messages of this dialog
      * @param param the widget parameter of this dialog
-     * 
+     *
      * @return the list of select options
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     protected List<CmsSelectWidgetOption> parseSelectOptions(
@@ -217,7 +217,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
                     }
                 }
             } else {
-                // read the groups from an optionally configured OU and filter them if configured 
+                // read the groups from an optionally configured OU and filter them if configured
                 try {
                     List<CmsGroup> groups = OpenCms.getOrgUnitManager().getGroups(cms, getOuFqn(), isIncludeSubOus());
                     for (Iterator<CmsGroup> i = groups.iterator(); i.hasNext();) {
@@ -254,7 +254,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns the configured group filter to match groups to show in the select box.<p>
-     * 
+     *
      * @return the configured group filter to match groups to show in the select box
      */
     private Pattern getGroupFilter() {
@@ -264,7 +264,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns the configured group names to show in the select box.<p>
-     * 
+     *
      * @return configured group names to show in the select box
      */
     private List<String> getGroupNames() {
@@ -274,7 +274,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns the fully qualified name of the OU to read the groups from.<p>
-     * 
+     *
      * @return the fully qualified name of the OU to read the groups from
      */
     private String getOuFqn() {
@@ -284,7 +284,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns if sub OUs should be considered when filtering the groups.<p>
-     * 
+     *
      * @return <code>true</code> if sub OUs should be considered, otherwise <code>false</code>
      */
     private boolean isIncludeSubOus() {
@@ -294,7 +294,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns if a group filter is configured to match groups to show in the select box.<p>
-     * 
+     *
      * @return <code>true</code> if a group filter is configured, otherwise <code>false</code>
      */
     private boolean isUseGroupFilter() {
@@ -304,7 +304,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Returns if group names are configured to show in the select box.<p>
-     * 
+     *
      * @return <code>true</code> if group names are configured, otherwise <code>false</code>
      */
     private boolean isUseGroupNames() {
@@ -314,7 +314,7 @@ public class CmsSelectGroupWidget extends CmsSelectWidget {
 
     /**
      * Parses the widget configuration string.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param widgetDialog the dialog of this widget
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The clip-board tool-bar menu.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
@@ -80,7 +80,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsToolbarClipboardMenu(CmsContainerpageHandler handler) {
@@ -130,7 +130,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /**
      * Adds an element to the favorite list widget.<p>
-     * 
+     *
      * @param listItem the item widget
      */
     public void addToFavorites(CmsListItem listItem) {
@@ -140,7 +140,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /**
      * Adds an element to the recent list widget.<p>
-     * 
+     *
      * @param listItem the item widget
      */
     public void addToRecent(CmsListItem listItem) {
@@ -232,7 +232,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /**
      * Replaces old versions of the given item with the new one.<p>
-     * 
+     *
      * @param listItem the list item
      */
     public void replaceFavoriteItem(CmsListItem listItem) {
@@ -242,7 +242,7 @@ public class CmsToolbarClipboardMenu extends A_CmsToolbarMenu<CmsContainerpageHa
 
     /**
      * Replaces old versions of the given item with the new one.<p>
-     * 
+     *
      * @param listItem the list item
      */
     public void replaceRecentItem(CmsListItem listItem) {

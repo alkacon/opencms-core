@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,11 +46,11 @@ import com.google.gwt.dom.client.Style.Unit;
 /**
  * Widget for selecting one of multiple items from a drop-down list which opens
  * after the user clicks on the widget.<p>
- * 
+ *
  * @since 8.5.0
- * 
+ *
  */
-public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
+public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell>implements I_CmsHasInit, I_CmsHasGhostValue {
 
     /** The key for the text which should be displayed in the opener if no option is available. */
     public static final String NO_SELECTION_OPENER_TEXT = "%NO_SELECTION_OPENER_TEXT%";
@@ -95,9 +95,9 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Creates a new select box, with the option of adding a "not selected" choice.<p>
-     * 
-     * @param items the map of select options 
-     * @param addNullOption if true, a "not selected" option will be added to the select box 
+     *
+     * @param items the map of select options
+     * @param addNullOption if true, a "not selected" option will be added to the select box
      */
     public CmsMultiSelectBox(Map<String, String> items, boolean addNullOption) {
 
@@ -154,7 +154,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Adds a new selection cell.<p>
-     * @param cell 
+     * @param cell
      */
     @Override
     public void addOption(CmsMultiSelectCell cell) {
@@ -252,7 +252,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
      */
     public void setGhostMode(boolean ghostMode) {
 
-        // do nothing for now 
+        // do nothing for now
 
     }
 
@@ -265,8 +265,9 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
             value = "";
         }
         String otherOptionText = m_items.get(value);
-        String message = m_noSelectionText != null ? m_noSelectionText : Messages.get().key(
-            Messages.GUI_SELECTBOX_EMPTY_SELECTION_1);
+        String message = m_noSelectionText != null
+        ? m_noSelectionText
+        : Messages.get().key(Messages.GUI_SELECTBOX_EMPTY_SELECTION_1);
         message = CmsMessages.formatMessage(message, otherOptionText);
         //setTextForNullSelection(message);
         m_ghostValue = value;
@@ -278,8 +279,8 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Sets the text that is used for the "not selected" option.<p>
-     * 
-     * @param text the text which should be used for the "not selected" option 
+     *
+     * @param text the text which should be used for the "not selected" option
      */
     public void setTextForNullSelection(String text) {
 
@@ -289,7 +290,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
             return;
         }
         cell.setTitle(text);
-        // if the null option is selected, we still need to update the opener 
+        // if the null option is selected, we still need to update the opener
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_selectedValue)) {
             selectValue("");
         }
@@ -297,11 +298,11 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Sets the title for a select option.<p>
-     * 
-     * Note: This will only affect select options added *after* calling this method! 
-     * 
-     * @param option the select option value 
-     * @param title the new title for the option 
+     *
+     * Note: This will only affect select options added *after* calling this method!
+     *
+     * @param option the select option value
+     * @param title the new title for the option
      */
     public void setTitle(String option, String title) {
 
@@ -319,12 +320,12 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Updates a single select cell.<p>
-     * 
-     * @param cell the select cell to update 
+     *
+     * @param cell the select cell to update
      */
     public void updateCell(CmsMultiSelectCell cell) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -352,11 +353,11 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
 
     /**
      * Helper method to get the title for a given select option.<p>
-     * 
-     * @param option the select option value 
+     *
+     * @param option the select option value
      * @param defaultValue the value to return when no title for the value was found
-     *  
-     * @return the title for the select option 
+     *
+     * @return the title for the select option
      */
     protected String getTitle(String option, String defaultValue) {
 
@@ -405,7 +406,7 @@ public class CmsMultiSelectBox extends A_CmsSelectBox<CmsMultiSelectCell> implem
      */
     protected void updateStyle() {
 
-        // do nothing 
+        // do nothing
     }
 
 }

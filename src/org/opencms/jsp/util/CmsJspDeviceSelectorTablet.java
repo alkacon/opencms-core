@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,15 +36,15 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Provides the detection for different devices, so that the
- * <code>&lt;cms:device type="..."&gt;</code>-Tag can detect 
+ * <code>&lt;cms:device type="..."&gt;</code>-Tag can detect
  * which kind of device type sends the HTTP request.<p>
- * 
+ *
  * This implementation <b>detects smart phones and tablets</b>
  * as mobile devices.<p>
- * 
+ *
  * @see CmsJspDeviceSelector CmsJspDeviceSelector <b>detects only
  * smart phones</b> as mobile devices
- * 
+ *
  * @since 8.5.0.4
  */
 public class CmsJspDeviceSelectorTablet implements I_CmsJspDeviceSelector {
@@ -85,7 +85,7 @@ public class CmsJspDeviceSelectorTablet implements I_CmsJspDeviceSelector {
 
     /**
      * Returns the User Agent info.<p>
-     * 
+     *
      * @return the information about the user agent
      */
     public UAgentInfo getUserAgentInfo() {

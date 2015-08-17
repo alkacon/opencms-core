@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The lock report dialog.<p>
- * 
+ *
  * @since 8.0.1
  */
 public final class CmsLockReportDialog extends CmsPopup {
@@ -110,7 +110,7 @@ public final class CmsLockReportDialog extends CmsPopup {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to unlock
      * @param onUnlock command to execute after unlocking
      */
@@ -156,7 +156,7 @@ public final class CmsLockReportDialog extends CmsPopup {
 
     /**
      * Opens the lock report dialog for the given resource.<p>
-     * 
+     *
      * @param structureId the structure id of the resource
      * @param onUnlock the command to execute after the has been unlocked
      */
@@ -207,7 +207,7 @@ public final class CmsLockReportDialog extends CmsPopup {
 
     /**
      * Returns the structure id of the resource to report on.<p>
-     * 
+     *
      * @return the structure id
      */
     protected CmsUUID getStructureId() {
@@ -217,7 +217,7 @@ public final class CmsLockReportDialog extends CmsPopup {
 
     /**
      * Initializes the dialog content with the give report info.<p>
-     * 
+     *
      * @param reportInfo the report info
      */
     protected void initContent(CmsLockReportInfo reportInfo) {
@@ -236,11 +236,13 @@ public final class CmsLockReportDialog extends CmsPopup {
         CmsList<CmsListItem> list = null;
         CmsMessageWidget message = new CmsMessageWidget();
         m_scrollPanel.add(message);
-        message.setMessageText(getMessageForLock(
-            reportInfo.getResourceInfo().getLockIcon(),
-            !reportInfo.getLockedResourceInfos().isEmpty()));
+        message.setMessageText(
+            getMessageForLock(
+                reportInfo.getResourceInfo().getLockIcon(),
+                !reportInfo.getLockedResourceInfos().isEmpty()));
         if (!reportInfo.getLockedResourceInfos().isEmpty()
-            || ((reportInfo.getResourceInfo().getLockIcon() != null) && (reportInfo.getResourceInfo().getLockIcon() != LockIcon.NONE))) {
+            || ((reportInfo.getResourceInfo().getLockIcon() != null)
+                && (reportInfo.getResourceInfo().getLockIcon() != LockIcon.NONE))) {
             m_unlockButton.setVisible(true);
         }
         // only show the unlock button if the resource or a descending resource is locked
@@ -257,7 +259,7 @@ public final class CmsLockReportDialog extends CmsPopup {
         }
 
         content.add(m_scrollPanel);
-        this.setMainContent(content);
+        setMainContent(content);
         if (isShowing()) {
             m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
             if (list != null) {
@@ -311,10 +313,10 @@ public final class CmsLockReportDialog extends CmsPopup {
 
     /**
      * Returns the dialog message for the given lock.<p>
-     * 
+     *
      * @param lockIcon the lock icon
      * @param hasLockedChildren <code>true</code> if the given resource has locked children
-     * 
+     *
      * @return the dialog message
      */
     private String getMessageForLock(LockIcon lockIcon, boolean hasLockedChildren) {

@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,16 +79,17 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
     @Override
     protected List<String> getXPathsToUpdate() {
 
-        return Arrays.asList("/"
-            + CmsConfigurationManager.N_ROOT
-            + "/"
-            + CmsWorkplaceConfiguration.N_WORKPLACE
-            + "/"
-            + CmsWorkplaceConfiguration.N_EXPLORERTYPES
-            + "/"
-            + CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL
-            + "/"
-            + CmsWorkplaceConfiguration.N_ACCESSCONTROL);
+        return Arrays.asList(
+            "/"
+                + CmsConfigurationManager.N_ROOT
+                + "/"
+                + CmsWorkplaceConfiguration.N_WORKPLACE
+                + "/"
+                + CmsWorkplaceConfiguration.N_EXPLORERTYPES
+                + "/"
+                + CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL
+                + "/"
+                + CmsWorkplaceConfiguration.N_ACCESSCONTROL);
 
     }
 }

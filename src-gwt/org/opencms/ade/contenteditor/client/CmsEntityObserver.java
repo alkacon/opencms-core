@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param entity the entity to observe
      */
     public CmsEntityObserver(CmsEntity entity) {
@@ -73,7 +73,7 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
 
     /**
      * Adds an entity change listener for the given scope.<p>
-     * 
+     *
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
@@ -84,7 +84,7 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
         }
         if (!m_changeListeners.containsKey(changeScope)) {
             m_changeListeners.put(changeScope, new ArrayList<I_CmsEntityChangeListener>());
-            // if changeScope==null, it is a global change listener, and we don't need a scope value 
+            // if changeScope==null, it is a global change listener, and we don't need a scope value
             if (changeScope != null) {
                 // save the current change scope value
                 m_scopeValues.put(changeScope, CmsContentDefinition.getValueForPath(m_observerdEntity, changeScope));
@@ -124,6 +124,7 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
             String previousValue = m_scopeValues.get(scope);
             if (((scopeValue != null) && !scopeValue.equals(previousValue))
                 || ((scopeValue == null) && (previousValue != null))) {
+                m_scopeValues.put(scope, scopeValue);
                 // the value within this scope has changed, notify all listeners
                 if (m_changeListeners.containsKey(scope)) {
                     System.out.println("calling listeners on changed scope " + scope);
@@ -131,16 +132,15 @@ public class CmsEntityObserver implements ValueChangeHandler<CmsEntity> {
                         safeExecuteChangeListener(entity, changeListener);
                     }
                 }
-                m_scopeValues.put(scope, scopeValue);
             }
         }
     }
 
     /**
      * Calls an entity change listener, catching any errors.<p>
-     * 
-     * @param entity the entity with  which the change listener should be called  
-     * @param listener the change listener 
+     *
+     * @param entity the entity with  which the change listener should be called
+     * @param listener the change listener
      */
     protected void safeExecuteChangeListener(CmsEntity entity, I_CmsEntityChangeListener listener) {
 

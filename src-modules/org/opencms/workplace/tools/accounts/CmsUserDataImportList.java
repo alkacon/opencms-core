@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main system user account management view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsUserDataImportList extends A_CmsUsersList {
@@ -122,7 +122,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserDataImportList(CmsJspActionElement jsp) {
@@ -133,7 +133,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -146,6 +146,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         switch (getAction()) {
@@ -192,8 +193,9 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 try {
                                     getCms().addUserToGroup(createdUser.getName(), (String)itGroups.next());
                                 } catch (CmsException e) {
-                                    throw new CmsRuntimeException(Messages.get().container(
-                                        Messages.ERR_ADD_USER_TO_GROUP_0), e);
+                                    throw new CmsRuntimeException(
+                                        Messages.get().container(Messages.ERR_ADD_USER_TO_GROUP_0),
+                                        e);
                                 }
                             }
                         }
@@ -208,8 +210,9 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                         CmsRole.valueOfGroupName((String)itRoles.next()),
                                         createdUser.getName());
                                 } catch (CmsException e) {
-                                    throw new CmsRuntimeException(Messages.get().container(
-                                        Messages.ERR_ADD_USER_TO_ROLE_0), e);
+                                    throw new CmsRuntimeException(
+                                        Messages.get().container(Messages.ERR_ADD_USER_TO_ROLE_0),
+                                        e);
                                 }
                             }
                         }
@@ -226,6 +229,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_SELECT)) {
@@ -326,9 +330,10 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
+    @Override
     public String getParamOufqn() {
 
         return m_paramOufqn;
@@ -386,9 +391,10 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
+    @Override
     public void setParamOufqn(String ouFqn) {
 
         if (ouFqn == null) {
@@ -430,6 +436,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(512);
@@ -455,6 +462,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -468,6 +476,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -493,6 +502,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
+    @Override
     protected String getGroupIcon() {
 
         return null;
@@ -501,6 +511,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -535,6 +546,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
+    @Override
     protected List getUsers() {
 
         String separator = null;
@@ -572,9 +584,9 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                         for (int i = 0; i < values.size(); i++) {
                             String curValue = (String)values.get(i);
                             try {
-                                Method method = CmsUser.class.getMethod("set"
-                                    + curValue.substring(0, 1).toUpperCase()
-                                    + curValue.substring(1), new Class[] {String.class});
+                                Method method = CmsUser.class.getMethod(
+                                    "set" + curValue.substring(0, 1).toUpperCase() + curValue.substring(1),
+                                    new Class[] {String.class});
                                 String value = "";
                                 if ((lineValues.size() > i) && (lineValues.get(i) != null)) {
                                     value = (String)lineValues.get(i);
@@ -652,6 +664,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -684,7 +697,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /**
      * Checks if the given user name is already available inside the current ou.<p>
-     * 
+     *
      * @param userName the user name to check
      * @return <code>true</code> if the user name is already available, otherwise return <code>false</code>
      */
@@ -708,6 +721,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
+    @Override
     protected CmsUser readUser(String name) {
 
         return null;
@@ -716,6 +730,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         initExportObject();
@@ -752,12 +767,13 @@ public class CmsUserDataImportList extends A_CmsUsersList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 String userName = getItem().getId();
 
-                if (((((CmsUserDataImportList)getWp()).getReasons() != null) && ((CmsUserDataImportList)getWp()).getReasons().containsKey(
-                    userName))
+                if (((((CmsUserDataImportList)getWp()).getReasons() != null)
+                    && ((CmsUserDataImportList)getWp()).getReasons().containsKey(userName))
                     || ((CmsUserDataImportList)getWp()).isAlreadyAvailable(userName)) {
                     return ICON_MULTI_DELETE;
                 }
@@ -774,6 +790,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         // noop
@@ -782,6 +799,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
@@ -794,6 +812,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add reason details
@@ -801,11 +820,11 @@ public class CmsUserDataImportList extends A_CmsUsersList {
         reasonDetails.setAtColumn(LIST_COLUMN_DISPLAY);
         reasonDetails.setVisible(true);
         reasonDetails.setShowActionName(Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_NAME_0));
-        reasonDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_HELP_0));
+        reasonDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_SHOW_REASON_HELP_0));
         reasonDetails.setHideActionName(Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_NAME_0));
-        reasonDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_HELP_0));
+        reasonDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_HIDE_REASON_HELP_0));
         reasonDetails.setName(Messages.get().container(Messages.GUI_IMPORTLISTCSV_DETAIL_REASON_NAME_0));
         reasonDetails.setFormatter(new I_CmsListFormatter() {
 
@@ -833,6 +852,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the select multi action

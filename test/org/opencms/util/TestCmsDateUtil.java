@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,19 +31,19 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.util.TimeZone;
 
-/** 
+/**
  * Test cases for the class "CmsDateUtil".<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsDateUtil extends OpenCmsTestCase {
 
     /**
      * Tests HTTP-Header date format generation.<p>
-     * 
-     * Issue: 
+     *
+     * Issue:
      * Http headers generated with bad formatting according to http spec.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testHttpDateGeneration() throws Exception {
@@ -57,10 +57,10 @@ public class TestCmsDateUtil extends OpenCmsTestCase {
 
     /**
      * Tests HTTP-Header time zone reuse.<p>
-     * 
-     * Issue: 
+     *
+     * Issue:
      * Time zone information in static formatting objects may be changed in the application.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testHttpDateTimeZoneUsage() throws Exception {

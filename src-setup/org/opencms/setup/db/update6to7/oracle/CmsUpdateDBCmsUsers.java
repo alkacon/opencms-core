@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import java.util.Map;
 
 /**
  * Oracle implementation of the generic update class for the Users.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpdateDBCmsUsers {
@@ -59,7 +59,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBCmsUsers()
@@ -143,7 +143,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.db.update6to7.CmsUpda
             db = dbCon.executeSqlStatement(stmt, null, params);
             if (db.getResultSet().next()) {
 
-                // write serialized user info 
+                // write serialized user info
                 OutputStream output = CmsUserDriver.getOutputStreamFromBlob(db.getResultSet(), "DATA_VALUE");
                 output.write(CmsDataTypeUtil.dataSerialize(value));
                 output.close();

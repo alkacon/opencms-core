@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,9 +28,9 @@
 package org.opencms.acacia.client;
 
 import org.opencms.acacia.client.widgets.CmsFormWidgetWrapper;
+import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
-import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.shared.CmsAttributeConfiguration;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsType;
@@ -99,8 +99,8 @@ public class CmsWidgetService implements I_CmsWidgetService {
 
     /**
      * Adds a renderer for the given type.<p>
-     * 
-     * @param typeName the type name 
+     *
+     * @param typeName the type name
      * @param renderer the renderer
      */
     public void addRenderer(String typeName, I_CmsEntityRenderer renderer) {
@@ -130,7 +130,7 @@ public class CmsWidgetService implements I_CmsWidgetService {
                 }
             }
         }
-        // no configuration or widget factory found, return default string widget 
+        // no configuration or widget factory found, return default string widget
         return new CmsFormWidgetWrapper(new CmsStringWidget());
     }
 
@@ -162,7 +162,7 @@ public class CmsWidgetService implements I_CmsWidgetService {
                 }
             }
         }
-        // no widget configured 
+        // no widget configured
         return null;
     }
 
@@ -191,10 +191,10 @@ public class CmsWidgetService implements I_CmsWidgetService {
 
     /**
      * Gets the renderer instance for a specific attribute.<p>
-     * 
-     * @param attributeName the attribute for which we want the renderer 
-     * 
-     * @return the renderer instance 
+     *
+     * @param attributeName the attribute for which we want the renderer
+     *
+     * @return the renderer instance
      */
     public I_CmsEntityRenderer getRendererForAttribute(String attributeName) {
 
@@ -226,7 +226,7 @@ public class CmsWidgetService implements I_CmsWidgetService {
 
     /**
      * Initializes the widget service with the given content definition.<p>
-     * 
+     *
      * @param definition the content definition
      */
     public void init(CmsContentDefinition definition) {
@@ -274,7 +274,7 @@ public class CmsWidgetService implements I_CmsWidgetService {
         return result;
     }
 
-    /** 
+    /**
      * @see org.opencms.acacia.client.I_CmsWidgetService#registerComplexWidgetAttribute(java.lang.String, java.lang.String, java.lang.String)
      */
     public void registerComplexWidgetAttribute(String attrName, String rendererName, String configuration) {
@@ -290,7 +290,7 @@ public class CmsWidgetService implements I_CmsWidgetService {
 
     /**
      * Adds the default complex type renderer.<p>
-     * 
+     *
      * @param renderer the renderer
      */
     public void setDefaultRenderer(I_CmsEntityRenderer renderer) {
@@ -314,10 +314,10 @@ public class CmsWidgetService implements I_CmsWidgetService {
         return false;
     }
 
-    /** 
+    /**
      * Log method for debugging.<p>
-     * 
-     * @param message the message to log 
+     *
+     * @param message the message to log
      */
     private native void log(String message) /*-{
                                             if ($wnd.console) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,9 +30,9 @@ package org.opencms.newsletter;
 /**
  * Simple implementation of interface {@link I_CmsNewsletterRecipient}, with
  * {@link I_CmsNewsletterRecipient#isSubscriber(org.opencms.newsletter.I_CmsNewsletterContent)} always returning true.<p>
- * 
+ *
  * @since 6.0.2
- * 
+ *
  */
 public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
 
@@ -50,7 +50,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
 
     /**
      * Creates a new CmsSimpleNewsletterRecipient.<p>
-     * 
+     *
      * @param email the email address to be sent
      * @param name the nicename of the recipient
      */
@@ -62,7 +62,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
 
     /**
      * Creates a new CmsSimpleNewsletterRecipient.<p>
-     * 
+     *
      * @param email the email address to be sent
      * @param firstname the firstname of the recipient
      * @param lastname the newsletter recipient's lastname
@@ -76,7 +76,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -129,7 +129,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
 
     /**
      * Returns the name of the recipient.<p>
-     * 
+     *
      * @return the name of the recipient.
      */
     public String getName() {
@@ -138,7 +138,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -157,7 +157,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
 
     /**
      * Set the email address of this recepient.<p>
-     * 
+     *
      * @param email the email address of this recepient to set.
      */
     protected void setEmail(String email) {

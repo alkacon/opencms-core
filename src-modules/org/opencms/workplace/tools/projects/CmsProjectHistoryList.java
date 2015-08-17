@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,8 +54,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main project management view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectHistoryList extends A_CmsListDialog {
 
@@ -97,7 +97,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsProjectHistoryList(CmsJspActionElement jsp) {
@@ -113,7 +113,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -125,12 +125,13 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -138,11 +139,12 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list single action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -151,6 +153,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -178,6 +181,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -224,6 +228,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -235,6 +240,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -310,21 +316,24 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add publishing info details
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
-        resourcesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0));
-        resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
-        resourcesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0));
+        resourcesDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0));
         resourcesDetails.setName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0));
-        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0)));
+        resourcesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0)));
         metadata.addItemDetails(resourcesDetails);
 
         // makes the list searchable
@@ -337,6 +346,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop

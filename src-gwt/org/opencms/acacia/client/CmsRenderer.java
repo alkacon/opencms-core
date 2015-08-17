@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
-     * Calls resize on tab selection on the tabs child hierarchy.<p> 
+     * Calls resize on tab selection on the tabs child hierarchy.<p>
      */
     protected class TabSelectionHandler implements SelectionHandler<Integer> {
 
@@ -76,7 +76,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param tabsPanel the tabbed panel
          */
         TabSelectionHandler(CmsTabbedPanel<FlowPanel> tabsPanel) {
@@ -118,7 +118,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param tabbedPanel the tabbed panel
          * @param context the context panel
          */
@@ -153,7 +153,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         }
 
         /**
-         * Adjusts the tabbed panel height to the height of the current tab content.<p> 
+         * Adjusts the tabbed panel height to the height of the current tab content.<p>
          */
         protected void adjustContextHeight() {
 
@@ -191,7 +191,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param attributeHandler the attribute handler
          * @param valueIndex the value index, only relevant for in-line rendering
          */
@@ -230,7 +230,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param entityBackEnd the entity back end instance
      * @param widgetService the widget service
      */
@@ -242,13 +242,15 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Gets the paths of nested choice attributes starting from a given type.<p>
-     *  
-     * @param attributeType the type from which to start 
+     *
+     * @param attributeType the type from which to start
      * @param startingAtChoiceAttribute true if the attribute is a synthetic CHOICE_ATTRIBUTE
-     * 
-     * @return the list of nested choice attribute name paths  
+     *
+     * @return the list of nested choice attribute name paths
      */
-    public static List<CmsChoiceMenuEntryBean> getChoiceEntries(CmsType attributeType, boolean startingAtChoiceAttribute) {
+    public static List<CmsChoiceMenuEntryBean> getChoiceEntries(
+        CmsType attributeType,
+        boolean startingAtChoiceAttribute) {
 
         CmsChoiceMenuEntryBean rootEntry = new CmsChoiceMenuEntryBean(null);
         collectChoiceEntries(attributeType, startingAtChoiceAttribute, rootEntry);
@@ -257,8 +259,8 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Sets the attribute choices if present.<p>
-     * 
-     * @param widgetService the widget service to use 
+     *
+     * @param widgetService the widget service to use
      * @param valueWidget the value widget
      * @param attributeType the attribute type
      */
@@ -277,10 +279,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Recursive helper method to create a tree structure of choice menu entries for a choice type.<p>
-     * 
+     *
      * @param startType the type from which to start
      * @param startingAtChoiceAttribute true if the recursion starts at a synthetic choice attribute
-     * @param currentEntry the current menu entry bean  
+     * @param currentEntry the current menu entry bean
      */
     private static void collectChoiceEntries(
         CmsType startType,
@@ -441,8 +443,8 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     if (currentTab.isCollapsed()) {
                         int currentIndex = attributeNames.indexOf(attributeName);
                         collapsed = ((currentIndex + 1) == attributeNames.size())
-                            || ((nextTab != null) && attributeNames.get(currentIndex + 1).endsWith(
-                                "/" + nextTab.getStartName()));
+                            || ((nextTab != null)
+                                && attributeNames.get(currentIndex + 1).endsWith("/" + nextTab.getStartName()));
                     }
                     if (lastCompactView != null) {
                         // previous widget was set to first column mode,
@@ -465,7 +467,9 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     && !attributeType.isSimpleType()
                     && (minOccurrence == 1)
                     && (entityType.getAttributeMaxOccurrence(attributeName) == 1)) {
-                    I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(attributeName, attributeType);
+                    I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(
+                        attributeName,
+                        attributeType);
                     renderer.renderForm(attribute.getComplexValue(), tabPanel, handler, 0);
                 } else {
                     CmsValuePanel attributeElement = new CmsValuePanel();
@@ -506,7 +510,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         CmsAttributeValueView lastCompactView = null;
         if (entityType.isChoice()) {
             CmsEntityAttribute attribute = entity.getAttribute(CmsType.CHOICE_ATTRIBUTE_NAME);
-            assert (attribute != null) && attribute.isComplexValue() : "a choice type must have a choice attribute";
+            assert(attribute != null) && attribute.isComplexValue() : "a choice type must have a choice attribute";
             CmsAttributeHandler handler = new CmsAttributeHandler(
                 m_entityBackEnd,
                 entity,
@@ -517,7 +521,9 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             for (CmsEntity choiceEntity : attribute.getComplexValues()) {
                 CmsType choiceType = m_entityBackEnd.getType(choiceEntity.getTypeName());
                 List<CmsEntityAttribute> choiceAttributes = choiceEntity.getAttributes();
-                assert (choiceAttributes.size() == 1) && choiceAttributes.get(0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
+                assert(choiceAttributes.size() == 1)
+                    && choiceAttributes.get(
+                        0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                 CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
                 CmsType attributeType = choiceType.getAttributeType(choiceAttribute.getAttributeName());
                 I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(
@@ -701,12 +707,12 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Creates an empty attribute.<p>
-     * 
+     *
      * @param parentEntity the parent entity
      * @param attributeName the attribute name
      * @param handler the attribute handler
      * @param minOccurrence the minimum occurrence of the attribute
-     * 
+     *
      * @return the entity attribute
      */
     protected CmsEntityAttribute createEmptyAttribute(
@@ -726,17 +732,19 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             result = parentEntity.getAttribute(attributeName);
         } else {
             for (int i = 0; i < minOccurrence; i++) {
-                parentEntity.addAttributeValue(attributeName, m_entityBackEnd.createEntity(null, attributeType.getId()));
+                parentEntity.addAttributeValue(
+                    attributeName,
+                    m_entityBackEnd.createEntity(null, attributeType.getId()));
             }
             result = parentEntity.getAttribute(attributeName);
         }
         return result;
     }
 
-    /** 
+    /**
      * Creates a tab.<p>
-     * 
-     * @return the created tab 
+     *
+     * @return the created tab
      */
     private FlowPanel createTab() {
 
@@ -750,15 +758,15 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Renders a single attribute.<p>
-     * 
-     * @param entityType the type of the entity containing the attribute 
+     *
+     * @param entityType the type of the entity containing the attribute
      * @param attributeType the attribute type
      * @param attribute the attribute, or null if not set
      * @param handler the attribute handler
      * @param attributeElement the attribute parent element
      * @param attributeName the attribute name
      * @param lastCompactView the previous attribute view that was rendered in compact mode if present
-     *  
+     *
      * @return the last attribute view that was rendered in compact mode if present
      */
     private CmsAttributeValueView renderAttribute(
@@ -875,7 +883,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
     /**
      * Sets the attribute choices if present.<p>
-     * 
+     *
      * @param valueWidget the value widget
      * @param attributeType the attribute type
      */

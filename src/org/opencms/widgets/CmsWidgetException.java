@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
 
 /**
  * Describes errors that occur in the context of the OpenCms widgets.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWidgetException extends CmsException {
 
@@ -46,7 +46,7 @@ public class CmsWidgetException extends CmsException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsWidgetException(CmsMessageContainer container) {
@@ -56,7 +56,7 @@ public class CmsWidgetException extends CmsException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param widget the widget that caused the error
      */
@@ -68,7 +68,7 @@ public class CmsWidgetException extends CmsException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
@@ -79,7 +79,7 @@ public class CmsWidgetException extends CmsException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      * @param widget the widget that caused the error

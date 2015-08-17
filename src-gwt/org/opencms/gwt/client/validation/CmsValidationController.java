@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class is responsible for coordinating the synchronous and asynchronous validation for 
+ * This class is responsible for coordinating the synchronous and asynchronous validation for
  * a set of form fields.<p>
  *
  * @since 8.0.0
@@ -80,9 +80,9 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Creates a new validation controller for a list of form fields.<p>
-     * 
+     *
      * @param fields the fields which should be validated
-     * @param handler the validation handler 
+     * @param handler the validation handler
      */
     public CmsValidationController(Collection<I_CmsFormField> fields, I_CmsValidationHandler handler) {
 
@@ -93,8 +93,8 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Creates a new validation controller for a single form field.<p>
-     * 
-     * @param field the form field 
+     *
+     * @param field the form field
      * @param handler the validation handler
      */
     public CmsValidationController(I_CmsFormField field, I_CmsValidationHandler handler) {
@@ -107,8 +107,8 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Returns the id of this validation controller.<p>
-     * 
-     * @return an id 
+     *
+     * @return an id
      */
     public int getId() {
 
@@ -116,9 +116,9 @@ public class CmsValidationController implements I_CmsValidationController {
     }
 
     /**
-     * Returns the set of fields which have been validated. 
-     * 
-     * @return the set of validated fields 
+     * Returns the set of fields which have been validated.
+     *
+     * @return the set of validated fields
      */
     public Set<String> getValidatedFields() {
 
@@ -139,8 +139,8 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Sets the form validator class name for this validation controller.<p>
-     * 
-     * @param formValidatorClass the class name of  the form validator 
+     *
+     * @param formValidatorClass the class name of  the form validator
      */
     public void setFormValidator(String formValidatorClass) {
 
@@ -150,7 +150,7 @@ public class CmsValidationController implements I_CmsValidationController {
     /**
      * Sets the form validator configuration string.<p>
      * a
-     * @param formValidatorConfig the form validator configuration string 
+     * @param formValidatorConfig the form validator configuration string
      */
     public void setFormValidatorConfig(String formValidatorConfig) {
 
@@ -160,7 +160,7 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Starts the validation.<p>
-     * 
+     *
      * This uses the {@link CmsValidationScheduler}, so the validation only starts after the currently running or scheduled
      * validations have finished running.<p>
      */
@@ -210,8 +210,8 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Internal method which is executed when the results of the asynchronous validation are received from the server.<p>
-     * 
-     * @param results the validation results 
+     *
+     * @param results the validation results
      */
     protected void onReceiveValidationResults(Map<String, CmsValidationResult> results) {
 
@@ -268,9 +268,9 @@ public class CmsValidationController implements I_CmsValidationController {
 
     /**
      * Starts the asynchronous validation.<p>
-     * 
-     * @param formValidationHandler the form validator class to use 
-     * @param config the form validator configuration string 
+     *
+     * @param formValidationHandler the form validator class to use
+     * @param config the form validator configuration string
      */
     private void startAsyncValidation(final String formValidationHandler, final String config) {
 

@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * org.json.XMLTokener
  * from the JSON in Java implementation.
- * 
+ *
  * Copyright (c) 2002 JSON.org
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * The Software shall be used for Good, not Evil.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,7 +56,7 @@ package org.opencms.json;
 /**
  * The XMLTokener extends the JSONTokener to provide additional methods
  * for the parsing of XML texts.<p>
- * 
+ *
  */
 public class XMLTokener extends JSONTokener {
 
@@ -67,7 +67,7 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Construct an XMLTokener from a string.<p>
-     * 
+     *
      * @param s a source string
      */
     public XMLTokener(String s) {
@@ -86,7 +86,7 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Get the text in the CDATA block.<p>
-     * 
+     *
      * @return the string up to the <code>]]&gt;</code>
      * @throws JSONException if the <code>]]&gt;</code> is not found
      */
@@ -111,7 +111,7 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Get the next XML outer token, trimming whitespace.<p>
-     * 
+     *
      * There are two kinds of tokens: the '<' character which begins a markup tag, and the content
      * text between markup tags.<p>
      *
@@ -149,7 +149,7 @@ public class XMLTokener extends JSONTokener {
     /**
      * Return the next ENTITY. These entities are translated to Characters:
      *     <code>&amp;  &apos;  &gt;  &lt;  &quot;</code>.<p>
-     *     
+     *
      * @param a an ampersand character
      * @return  a Character or an entity String if the entity is not recognized
      * @throws JSONException if missing ';' in XML entity
@@ -175,7 +175,7 @@ public class XMLTokener extends JSONTokener {
     /**
      * Returns the next XML meta token. This is used for skipping over <!...>
      * and <?...?> structures.<p>
-     * 
+     *
      * @return syntax characters (<code>< > / = ! ?</code>) are returned as
      *  Character, and strings and names are returned as Boolean. We don't care
      *  what the values actually are
@@ -242,12 +242,12 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Get the next XML Token.<p>
-     * 
+     *
      * These tokens are found inside of angle
      * brackets. It may be one of these characters: <code>/ > = ! ?</code> or it
      * may be a string wrapped in single quotes or double quotes, or it may be a
      * name.<p>
-     * 
+     *
      * @return a string or a Character
      * @throws JSONException if the XML is not well formed
      */
@@ -275,7 +275,7 @@ public class XMLTokener extends JSONTokener {
             case '?':
                 return XML.QUEST;
 
-                // Quoted string
+            // Quoted string
 
             case '"':
             case '\'':
@@ -330,9 +330,9 @@ public class XMLTokener extends JSONTokener {
 
     /**
      * Skip characters until past the requested string.<p>
-     * 
+     *
      * If it is not found, we are left at the end of the source with a result of false.<p>
-     * 
+     *
      * @param to a string to skip past
      * @return the truth
      * @throws JSONException if something goes wrong
@@ -366,7 +366,7 @@ public class XMLTokener extends JSONTokener {
             j = offset;
             b = true;
             /*
-             * Compare the circle buffer with the to string. 
+             * Compare the circle buffer with the to string.
              */
             for (i = 0; i < n; i += 1) {
                 if (circle[j] != to.charAt(i)) {
@@ -392,7 +392,7 @@ public class XMLTokener extends JSONTokener {
                 return false;
             }
             /*
-             * Shove the character in the circle buffer and advance the 
+             * Shove the character in the circle buffer and advance the
              * circle offset. The offset is mod n.
              */
             circle[offset] = c;

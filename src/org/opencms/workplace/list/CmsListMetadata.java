@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,28 +38,28 @@ import java.util.TreeSet;
 
 /**
  * This is class contains all the information for defining a whole html list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListMetadata {
 
-    /** 
+    /**
      * Interface used for formatting list data in text form.<p>
      */
     public interface I_CsvItemFormatter {
 
-        /** 
-         * Generates the CSV header. 
-         * 
-         * @return the CSV header line  
+        /**
+         * Generates the CSV header.
+         *
+         * @return the CSV header line
          **/
         String csvHeader();
 
-        /** 
-         * Generates a CSV line. 
-         * 
-         * @param item the list item to format 
-         * @return the formatted text line for the list item 
+        /**
+         * Generates a CSV line.
+         *
+         * @param item the list item to format
+         * @return the formatted text line for the list item
          * */
         String csvItem(CmsListItem item);
     }
@@ -107,8 +107,8 @@ public class CmsListMetadata {
 
     /**
      * Default Constructor.<p>
-     * 
-     * @param listId the id of the list 
+     *
+     * @param listId the id of the list
      */
     public CmsListMetadata(String listId) {
 
@@ -117,16 +117,16 @@ public class CmsListMetadata {
 
     /**
      * Adds a new column definition at the end.<p>
-     * 
+     *
      * By default a column is printable if it is the first column in the list,
      * or if it is sorteable.<p>
-     * 
-     * If you want to override this behaviour, use the 
+     *
+     * If you want to override this behaviour, use the
      * {@link CmsListColumnDefinition#setPrintable(boolean)}
      * method after calling this one.
-     * 
+     *
      * @param listColumn the column definition
-     * 
+     *
      * @see CmsIdentifiableObjectContainer
      */
     public void addColumn(CmsListColumnDefinition listColumn) {
@@ -136,17 +136,17 @@ public class CmsListMetadata {
 
     /**
      * Adds a new column definition at the given position.<p>
-     * 
+     *
      * By default a column is printable if it is the first column in the list,
      * or if it is sorteable.<p>
-     * 
-     * If you want to override this behaviour, use the 
+     *
+     * If you want to override this behaviour, use the
      * {@link CmsListColumnDefinition#setPrintable(boolean)}
      * method after calling this one.
-     * 
+     *
      * @param listColumn the column definition
      * @param position the position
-     * 
+     *
      * @see CmsIdentifiableObjectContainer
      */
     public void addColumn(CmsListColumnDefinition listColumn, int position) {
@@ -165,7 +165,7 @@ public class CmsListMetadata {
 
     /**
      * Adds a list item independent action.<p>
-     * 
+     *
      * @param action the action
      */
     public void addIndependentAction(I_CmsListAction action) {
@@ -176,9 +176,9 @@ public class CmsListMetadata {
 
     /**
      * Adds a new item detail definition at the end.<p>
-     * 
+     *
      * @param itemDetail the item detail definition
-     * 
+     *
      * @see CmsIdentifiableObjectContainer
      */
     public void addItemDetails(CmsListItemDetails itemDetail) {
@@ -189,10 +189,10 @@ public class CmsListMetadata {
 
     /**
      * Adds a new item detail definition at the given position.<p>
-     * 
+     *
      * @param itemDetail the item detail definition
      * @param position the position
-     * 
+     *
      * @see CmsIdentifiableObjectContainer
      */
     public void addItemDetails(CmsListItemDetails itemDetail, int position) {
@@ -203,9 +203,9 @@ public class CmsListMetadata {
 
     /**
      * Adds an action applicable to more than one list item at once.<p>
-     * 
-     * It will be executed with a list of <code>{@link CmsListItem}</code>s.<p> 
-     *  
+     *
+     * It will be executed with a list of <code>{@link CmsListItem}</code>s.<p>
+     *
      * @param multiAction the action
      */
     public void addMultiAction(CmsListMultiAction multiAction) {
@@ -216,7 +216,7 @@ public class CmsListMetadata {
 
     /**
      * Generates the csv output for an empty table.<p>
-     * 
+     *
      * @return csv output
      */
     public String csvEmptyList() {
@@ -228,7 +228,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the csv output for the header of the list.<p>
-     * 
+     *
      * @return csv output
      */
     public String csvHeader() {
@@ -253,9 +253,9 @@ public class CmsListMetadata {
 
     /**
      * Returns the csv output for a list item.<p>
-     * 
+     *
      * @param item the list item to render
-     * 
+     *
      * @return csv output
      */
     public String csvItem(CmsListItem item) {
@@ -280,9 +280,9 @@ public class CmsListMetadata {
 
     /**
      * Returns a column definition object for a given column id.<p>
-     * 
+     *
      * @param columnId the column id
-     * 
+     *
      * @return the column definition, or <code>null</code> if not present
      */
     public CmsListColumnDefinition getColumnDefinition(String columnId) {
@@ -292,7 +292,7 @@ public class CmsListMetadata {
 
     /**
      * Returns all columns definitions.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsListColumnDefinition}</code>s.
      */
     public List<CmsListColumnDefinition> getColumnDefinitions() {
@@ -302,9 +302,9 @@ public class CmsListMetadata {
 
     /**
      * Returns an independent action object for a given id.<p>
-     * 
+     *
      * @param actionId the id
-     * 
+     *
      * @return the independent action, or <code>null</code> if not present
      */
     public I_CmsListAction getIndependentAction(String actionId) {
@@ -314,7 +314,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the list of independent actions.<p>
-     * 
+     *
      * @return a list of <code>{@link I_CmsListAction}</code>s
      */
     public List<I_CmsListAction> getIndependentActions() {
@@ -324,9 +324,9 @@ public class CmsListMetadata {
 
     /**
      * Returns the item details definition object for a given id.<p>
-     * 
+     *
      * @param itemDetailId the id
-     * 
+     *
      * @return the item details definition, or <code>null</code> if not present
      */
     public CmsListItemDetails getItemDetailDefinition(String itemDetailId) {
@@ -336,7 +336,7 @@ public class CmsListMetadata {
 
     /**
      * Returns all detail definitions.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsListItemDetails}</code>.
      */
     public List<CmsListItemDetails> getItemDetailDefinitions() {
@@ -356,9 +356,9 @@ public class CmsListMetadata {
 
     /**
      * Returns a multi action object for a given id.<p>
-     * 
+     *
      * @param actionId the id
-     * 
+     *
      * @return the multi action, or <code>null</code> if not present
      */
     public CmsListMultiAction getMultiAction(String actionId) {
@@ -368,7 +368,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the list of multi actions.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsListMultiAction}</code>s
      */
     public List<CmsListMultiAction> getMultiActions() {
@@ -388,7 +388,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the total number of displayed columns.<p>
-     * 
+     *
      * @return the total number of displayed columns
      */
     public int getWidth() {
@@ -408,7 +408,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if the list definition contains an action.<p>
-     * 
+     *
      * @return <code>true</code> if the list definition contains an action
      */
     public boolean hasActions() {
@@ -418,7 +418,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if at least 'check' multiaction has been set.<p>
-     * 
+     *
      * @return <code>true</code> if at least 'check' multiaction has been set
      */
     public boolean hasCheckMultiActions() {
@@ -435,7 +435,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if the list definition contains a multi action.<p>
-     * 
+     *
      * @return <code>true</code> if the list definition contains a multi action
      */
     public boolean hasMultiActions() {
@@ -445,7 +445,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if any column definition contains a single action.<p>
-     * 
+     *
      * @return <code>true</code> if any column definition contains a single action
      */
     public boolean hasSingleActions() {
@@ -462,7 +462,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the html code for the action bar.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlActionBar() {
@@ -495,7 +495,7 @@ public class CmsListMetadata {
 
     /**
      * Generates the hml code for an empty table.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlEmptyTable() {
@@ -513,9 +513,9 @@ public class CmsListMetadata {
 
     /**
      * Returns the html code for the header of the list.<p>
-     * 
+     *
      * @param list the list to generate the code for
-     * 
+     *
      * @return html code
      */
     public String htmlHeader(CmsHtmlList list) {
@@ -535,7 +535,8 @@ public class CmsListMetadata {
         }
         if (!list.isPrintable() && hasCheckMultiActions()) {
             html.append("\t<th width='0' class='select'>\n");
-            html.append("\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
+            html.append(
+                "\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
             html.append(list.getId());
             html.append("')\">\n");
             html.append("\t</th>\n");
@@ -546,11 +547,11 @@ public class CmsListMetadata {
 
     /**
      * Returns the html code for a list item.<p>
-     * 
+     *
      * @param item the list item to render
      * @param odd if the position is odd or even
      * @param isPrintable if the list is to be printed
-     * 
+     *
      * @return html code
      */
     public String htmlItem(CmsListItem item, boolean odd, boolean isPrintable) {
@@ -661,7 +662,7 @@ public class CmsListMetadata {
 
     /**
      * Returns the html code for the multi action bar.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlMultiActionBar() {
@@ -686,7 +687,7 @@ public class CmsListMetadata {
 
     /**
      * Generates the html code for the search bar.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlSearchBar() {
@@ -697,9 +698,10 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
-        html.append("\t\t<input type='text' name='listSearchFilter' id='"
-            + SEARCH_BAR_INPUT_ID
-            + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
+        html.append(
+            "\t\t<input type='text' name='listSearchFilter' id='"
+                + SEARCH_BAR_INPUT_ID
+                + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
         html.append(m_searchAction.buttonHtml());
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
@@ -713,7 +715,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if the list is searchable.<p>
-     * 
+     *
      * @return  <code>true</code> if the list is searchable
      */
     public boolean isSearchable() {
@@ -733,7 +735,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if any column is sorteable.<p>
-     * 
+     *
      * @return <code>true</code> if any column is sorteable
      */
     public boolean isSorteable() {
@@ -750,7 +752,7 @@ public class CmsListMetadata {
 
     /**
      * Returns <code>true</code> if this metadata object should not be cached.<p>
-     * 
+     *
      * @return <code>true</code> if this metadata object should not be cached.<p>
      */
     public boolean isVolatile() {
@@ -760,8 +762,8 @@ public class CmsListMetadata {
 
     /**
      * Sets the CSV item formatter to use.<p>
-     * 
-     * @param formatter the CSV item formatter 
+     *
+     * @param formatter the CSV item formatter
      */
     public void setCsvItemFormatter(I_CsvItemFormatter formatter) {
 
@@ -788,7 +790,7 @@ public class CmsListMetadata {
      */
     public void setSelfManaged(boolean selfManaged) {
 
-        this.m_selfManaged = selfManaged;
+        m_selfManaged = selfManaged;
     }
 
     /**
@@ -837,7 +839,7 @@ public class CmsListMetadata {
     /**
      * Toggles the given item detail state from visible to hidden or
      * from hidden to visible.<p>
-     * 
+     *
      * @param itemDetailId the item detail id
      */
     public void toogleDetailState(String itemDetailId) {
@@ -847,8 +849,8 @@ public class CmsListMetadata {
     }
 
     /**
-     * Throws a runtime exception if there are 2 identical ids.<p> 
-     * 
+     * Throws a runtime exception if there are 2 identical ids.<p>
+     *
      * This includes:<p>
      * <ul>
      *      <li><code>{@link CmsListIndependentAction}</code>s</li>
@@ -902,9 +904,8 @@ public class CmsListMetadata {
             while (itDefaultActions.hasNext()) {
                 CmsListDefaultAction action = itDefaultActions.next();
                 if (ids.contains(action.getId())) {
-                    throw new CmsIllegalStateException(Messages.get().container(
-                        Messages.ERR_DUPLICATED_ID_1,
-                        action.getId()));
+                    throw new CmsIllegalStateException(
+                        Messages.get().container(Messages.ERR_DUPLICATED_ID_1, action.getId()));
                 }
                 ids.add(action.getId());
             }
@@ -913,9 +914,8 @@ public class CmsListMetadata {
             while (itDirectActions.hasNext()) {
                 I_CmsListDirectAction action = itDirectActions.next();
                 if (ids.contains(action.getId())) {
-                    throw new CmsIllegalStateException(Messages.get().container(
-                        Messages.ERR_DUPLICATED_ID_1,
-                        action.getId()));
+                    throw new CmsIllegalStateException(
+                        Messages.get().container(Messages.ERR_DUPLICATED_ID_1, action.getId()));
                 }
                 ids.add(action.getId());
             }
@@ -924,7 +924,7 @@ public class CmsListMetadata {
 
     /**
      * Sets the list id for all column single actions.<p>
-     * 
+     *
      * @param col the column to set the list id for
      */
     private void setListIdForColumn(CmsListColumnDefinition col) {

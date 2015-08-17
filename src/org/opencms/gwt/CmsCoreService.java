@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -111,9 +111,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides general core services.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.CmsCoreService
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreService
  * @see org.opencms.gwt.shared.rpc.I_CmsCoreServiceAsync
@@ -143,10 +143,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Builds the tree structure for the given categories.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param categories the categories
-     * 
+     *
      * @return the tree root element
      */
     public static List<CmsCategoryTreeEntry> buildCategoryTree(CmsObject cms, List<CmsCategory> categories) {
@@ -169,12 +169,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Helper method for getting the category beans for the given site path.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param sitePath the site path 
-     * @return the list of category beans 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param sitePath the site path
+     * @return the list of category beans
+     *
+     * @throws CmsException if something goes wrong
      */
     public static List<CmsCategoryTreeEntry> getCategoriesForSitePathStatic(CmsObject cms, String sitePath)
     throws CmsException {
@@ -189,12 +189,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Returns the context menu entries for the given URI.<p>
-     * 
+     *
      * @param cms the cms context
-     * @param structureId the currently requested structure id 
+     * @param structureId the currently requested structure id
      * @param context the ade context (sitemap or containerpage)
-     * 
-     * @return the context menu entries 
+     *
+     * @return the context menu entries
      */
     public static List<CmsContextMenuEntryBean> getContextMenuEntries(
         CmsObject cms,
@@ -217,7 +217,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
                 for (String currentType : lookupTypes) {
                     // the explorer type settings
-                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(currentType);
+                    CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                        currentType);
                     // only if the user has access to this resource type
                     if ((settings != null)) {
                         // get the context menu configuration for the given selection mode
@@ -243,21 +244,20 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Internal helper method for getting a validation service.<p>
-     * 
+     *
      * @param name the class name of the validation service
-     *  
-     * @return the validation service 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the validation service
+     *
+     * @throws CmsException if something goes wrong
      */
     public static I_CmsValidationService getValidationService(String name) throws CmsException {
 
         try {
             Class<?> cls = Class.forName(name, false, I_CmsValidationService.class.getClassLoader());
             if (!I_CmsValidationService.class.isAssignableFrom(cls)) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_VALIDATOR_INCORRECT_TYPE_1,
-                    name));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_VALIDATOR_INCORRECT_TYPE_1, name));
             }
             return (I_CmsValidationService)cls.newInstance();
         } catch (ClassNotFoundException e) {
@@ -271,16 +271,16 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Instantiates a class given its name using its default constructor.<p>
-     * 
+     *
      * Also checks whether the class with the given name is the subclass of another class/interface.<p>
-     * 
-     * 
+     *
+     *
      * @param <T> the type of the interface/class passed as a parameter
-     *  
-     * @param anInterface the interface or class against which the class should be checked 
-     * @param className the name of the class 
+     *
+     * @param anInterface the interface or class against which the class should be checked
+     * @param className the name of the class
      * @return a new instance of the class
-     * 
+     *
      * @throws CmsException if the instantiation fails
      */
     public static <T> T instantiate(Class<T> anInterface, String className) throws CmsException {
@@ -288,14 +288,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         try {
             Class<?> cls = Class.forName(className, false, anInterface.getClassLoader());
             if (!anInterface.isAssignableFrom(cls)) {
-                // class was found, but does not implement the interface 
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_INSTANTIATION_INCORRECT_TYPE_2,
-                    className,
-                    anInterface.getName()));
+                // class was found, but does not implement the interface
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(
+                        Messages.ERR_INSTANTIATION_INCORRECT_TYPE_2,
+                        className,
+                        anInterface.getName()));
             }
 
-            // we use another variable so we don't have to put the @SuppressWarnings on the method itself 
+            // we use another variable so we don't have to put the @SuppressWarnings on the method itself
             @SuppressWarnings("unchecked")
             Class<T> typedClass = (Class<T>)cls;
             return typedClass.newInstance();
@@ -310,9 +311,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Fetches the core data.<p>
-     * 
+     *
      * @param request the current request
-     * 
+     *
      * @return the core data
      */
     public static CmsCoreData prefetch(HttpServletRequest request) {
@@ -331,17 +332,17 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Filters the collection of menu entry beans.<p>
-     * 
+     *
      * <ul>
      * <li>removes unnecessary separators</li>
      * <li>filters sub menus also</li>
      * <li>adds visible entries to the result</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
-     * 
+     *
      * @param allEntries the entries to filter
-     * 
+     *
      * @return the filtered list of menu entries
      */
     private static List<CmsContextMenuEntryBean> filterEntries(List<CmsContextMenuEntryBean> allEntries) {
@@ -387,10 +388,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * FInds a category in the given tree.<p>
-     * 
+     *
      * @param tree the the tree to search in
      * @param path the path to search for
-     * 
+     *
      * @return the category with the given path or <code>null</code> if not found
      */
     private static CmsCategoryTreeEntry findCategory(List<CmsCategoryTreeEntry> tree, String path) {
@@ -424,7 +425,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Collects the matching rules of all sub items of a parent context menu entry.<p>
-     * 
+     *
      * @param cms the cms context
      * @param item the context menu item to check the sub items for
      * @param itemRules the collected rules for the sub items
@@ -457,10 +458,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Checks if the current user has view permissions on the given resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> if the current user has view permissions on the given resource
      */
     private static boolean hasViewPermissions(CmsObject cms, CmsResource resource) {
@@ -474,16 +475,16 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Returns a list of menu entry beans.<p>
-     * 
+     *
      * Takes the given List of explorer context menu items and converts them to context menu entry beans.<p>
-     * 
+     *
      * @see org.opencms.gwt.shared.CmsContextMenuEntryBean
      * @see org.opencms.workplace.explorer.CmsExplorerContextMenuItem
-     * 
+     *
      * @param cms the cms context
-     * @param items the menu items 
+     * @param items the menu items
      * @param resUtil a resource utility array
-     * 
+     *
      * @return a list of menu entries
      */
     private static List<CmsContextMenuEntryBean> transformToMenuEntries(
@@ -621,7 +622,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             return e.getMessageContainer().key(wpLocale);
         } catch (Exception e) {
             error(e);
-            return null; // will never be executed 
+            return null; // will never be executed
         }
     }
 
@@ -792,7 +793,10 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public String getUniqueFileName(String parentFolder, String baseName) {
 
-        return OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(getCmsObject(), parentFolder, baseName);
+        return OpenCms.getResourceManager().getNameGenerator().getUniqueFileName(
+            getCmsObject(),
+            parentFolder,
+            baseName);
     }
 
     /**
@@ -802,8 +806,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         String result = null;
         try {
-            String resourceRootFolder = structureId != null ? CmsResource.getFolderPath(getCmsObject().readResource(
-                structureId).getRootPath()) : getCmsObject().getRequestContext().getSiteRoot();
+            String resourceRootFolder = structureId != null
+            ? CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath())
+            : getCmsObject().getRequestContext().getSiteRoot();
             result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
         } catch (Throwable e) {
             error(e);
@@ -813,11 +818,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Implementation method for getting the link for a given return code.<p>
-     * 
-     * @param returnCode the return code 
-     * @return the link for the return code 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param returnCode the return code
+     * @return the link for the return code
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsReturnLinkInfo internalGetLinkForReturnCode(String returnCode) throws CmsException {
 
@@ -826,9 +831,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         if (CmsUUID.isValidUUID(returnCode)) {
             try {
                 CmsResource pageRes = cms.readResource(new CmsUUID(returnCode));
-                return new CmsReturnLinkInfo(CmsStringUtil.joinPaths(
-                    OpenCms.getSystemInfo().getOpenCmsContext(),
-                    cms.getSitePath(pageRes)), CmsReturnLinkInfo.Status.ok);
+                return new CmsReturnLinkInfo(
+                    CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), cms.getSitePath(pageRes)),
+                    CmsReturnLinkInfo.Status.ok);
             } catch (CmsVfsResourceNotFoundException e) {
                 return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
             }
@@ -850,9 +855,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                             cms.getRequestContext().getLocale(),
                             OpenCms.getLocaleManager().getDefaultLocales());
                         String uri = CmsStringUtil.joinPaths(pagePath, detailName);
-                        return new CmsReturnLinkInfo(CmsStringUtil.joinPaths(
-                            OpenCms.getSystemInfo().getOpenCmsContext(),
-                            uri), CmsReturnLinkInfo.Status.ok);
+                        return new CmsReturnLinkInfo(
+                            CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), uri),
+                            CmsReturnLinkInfo.Status.ok);
                     } catch (CmsVfsResourceNotFoundException e) {
                         return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
 
@@ -939,7 +944,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             } else {
                 // check if parent folder may be locked by the current user
                 String parentFolder = CmsResource.getParentFolder(sitePath);
-                while ((parentFolder != null) && !cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                while ((parentFolder != null)
+                    && !cms.existsResource(parentFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
                     parentFolder = CmsResource.getParentFolder(parentFolder);
                 }
                 if (parentFolder != null) {
@@ -1005,7 +1011,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public void ping() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -1193,14 +1199,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
      */
     public String unlock(String sitePath) throws CmsRpcException {
 
-        CmsObject cms = getCmsObject();
         try {
+            CmsObject cms = OpenCms.initCmsObject(getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
             if (cms.existsResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 CmsResource resource = cms.readResource(sitePath, CmsResourceFilter.IGNORE_EXPIRATION);
                 tryUnlock(resource);
             }
         } catch (CmsException e) {
-            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+            return e.getLocalizedMessage(OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
         } catch (Throwable e) {
             error(e);
         }
@@ -1247,8 +1254,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Collect GWT build ids from the different ADE modules.<p>
-     * 
-     * @return the map of GWT build ids 
+     *
+     * @return the map of GWT build ids
      */
     protected Map<String, String> getBuildIds() {
 
@@ -1264,13 +1271,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Helper method for locking a resource which returns some information on whether the locking 
+     * Helper method for locking a resource which returns some information on whether the locking
      * failed, and why.<p>
-     * 
-     * @param structureId the structure id of the resource 
+     *
+     * @param structureId the structure id of the resource
      * @return the locking information
-     *  
-     * @throws CmsException if something went wrong 
+     *
+     * @throws CmsException if something went wrong
      */
     protected CmsLockInfo getLock(CmsUUID structureId) throws CmsException {
 
@@ -1279,13 +1286,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Helper method for locking a resource which returns some information on whether the locking 
+     * Helper method for locking a resource which returns some information on whether the locking
      * failed, and why.<p>
-     * 
+     *
      * @param sitepath the site path of the resource to lock
      * @return the locking information
-     *  
-     * @throws CmsException if something went wrong 
+     *
+     * @throws CmsException if something went wrong
      */
     protected CmsLockInfo getLock(String sitepath) throws CmsException {
 
@@ -1305,7 +1312,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Returns the session cache.<p>
-     * 
+     *
      * @return the session cache
      */
     private CmsADESessionCache getSessionCache() {
@@ -1318,11 +1325,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Modifies the availability of the given resource.<p>
-     * 
-     * @param resource the resource whose availability should be modified 
+     *
+     * @param resource the resource whose availability should be modified
      * @param dateReleased the date released
      * @param dateExpired the date expired
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void modifyAvailability(CmsResource resource, long dateReleased, long dateExpired) throws CmsException {
@@ -1334,12 +1341,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Modifies the notification properties of the given resource.<p>
-     * 
-     * @param resource the resource whose notification properties should be modified 
+     *
+     * @param resource the resource whose notification properties should be modified
      * @param notificationInterval the modification interval
      * @param notificationEnabled signals whether the notification is enabled or disabled
      * @param modifySiblings signals whether siblings should be also modified
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void modifyNotification(
@@ -1373,13 +1380,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Modifies the publish scheduled.<p>
-     * 
+     *
      * Creates a temporary project and adds the given resource to it. Afterwards a scheduled job is created
      * and the project is assigned to it. Then the publish job is enqueued.<p>
-     * 
-     * @param resource the resource which should be scheduled for publishing  
+     *
+     * @param resource the resource which should be scheduled for publishing
      * @param pubDate the date when the resource should be published
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void modifyPublishScheduled(CmsResource resource, long pubDate) throws CmsException {
@@ -1480,15 +1487,15 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * Sets the availability of a resource by modifying the date release, date expired, 
+     * Sets the availability of a resource by modifying the date release, date expired,
      * setting a scheduled publish job according to the info bean.<p>
-     * 
+     *
      * Will also modify the notification settings of the resource.<p>
-     * 
+     *
      * @param resource the resource to modify
      * @param bean the bean with the information of the dialog
-     * 
-     * @throws CmsException if something goes wrong  
+     *
+     * @throws CmsException if something goes wrong
      */
     private void setAvailabilityInfo(CmsResource resource, CmsAvailabilityInfoBean bean) throws CmsException {
 
@@ -1505,14 +1512,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Internal helper method for validating a single value.<p>
-     * 
-     * @param validator the class name of the validation service 
-     * @param value the value to validate 
+     *
+     * @param validator the class name of the validation service
+     * @param value the value to validate
      * @param config the configuration for the validation service
-     *  
-     * @return the result of the validation 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @return the result of the validation
+     *
+     * @throws Exception if something goes wrong
      */
     private CmsValidationResult validate(String validator, String value, String config) throws Exception {
 
@@ -1522,11 +1529,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
     /**
      * Writes a property value for a resource.<p>
-     * 
+     *
      * @param resourcePath the path of the resource
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private void writeProperty(String resourcePath, String propertyName, String propertyValue) throws CmsException {
@@ -1574,7 +1581,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             newResourceValue = CmsProperty.DELETE_VALUE;
         }
 
-        // change property only if it has been changed            
+        // change property only if it has been changed
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
             getCmsObject().writePropertyObject(resourcePath, newProp);
         }

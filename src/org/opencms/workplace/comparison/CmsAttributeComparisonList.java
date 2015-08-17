@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * List for property comparison including columns for property name and the values. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
@@ -73,7 +73,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAttributeComparisonList(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -95,7 +95,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -116,7 +116,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
-        // forward to the edit module screen  
+        // forward to the edit module screen
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(CmsHistoryList.PARAM_VERSION_1, new String[] {getParamVersion1()});
         params.put(CmsHistoryList.PARAM_VERSION_2, new String[] {getParamVersion2()});
@@ -135,7 +135,10 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     protected List<CmsListItem> getListItems() {
 
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
-        Iterator<?> diffs = CmsResourceComparison.compareAttributes(getCms(), getResource1(), getResource2()).iterator();
+        Iterator<?> diffs = CmsResourceComparison.compareAttributes(
+            getCms(),
+            getResource1(),
+            getResource2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
@@ -167,20 +170,19 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
                 CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
-        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(
-                Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
 
         return ret;
     }
 
     /**
      * Returns the html code to display a file version.<p>
-     * 
+     *
      * @param structureId the structure id of the file to be displayed
      * @param version the version of the file to be displayed
-     * 
+     *
      * @return the html code to display a file version
      */
     protected String getViewVersionButtonHtml(CmsUUID structureId, String version) {
@@ -213,12 +215,14 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
                 CmsHistoryList.getDisplayVersion(version, getLocale())).key(getLocale());
             String iconPath = null;
             try {
-                String typeName = OpenCms.getResourceManager().getResourceType(getResource1().getTypeId()).getTypeName();
+                String typeName = OpenCms.getResourceManager().getResourceType(
+                    getResource1().getTypeId()).getTypeName();
                 iconPath = CmsWorkplace.RES_PATH_FILETYPES
                     + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
             } catch (CmsException e) {
                 iconPath = CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                        CmsResourceTypePlain.getStaticTypeName()).getIcon();
             }
             StringBuffer result = new StringBuffer(1024);
             result.append("<span class='link' onClick=\"");
@@ -243,13 +247,13 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /**
      * Returns either the historical file or the offline file, depending on the version number.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param structureId the structure id of the file
      * @param version the historical version number
-     * 
+     *
      * @return either the historical file or the offline file, depending on the version number
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {

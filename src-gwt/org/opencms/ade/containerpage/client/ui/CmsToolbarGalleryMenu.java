@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The gallery tool-bar menu.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHandler> {
@@ -71,7 +71,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param dndFilter the drag and drop filter
          */
         GalleryHandler(Predicate<CmsResultItemBean> dndFilter) {
@@ -138,7 +138,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      * @param dragHandler the container-page drag handler
      */
@@ -189,7 +189,7 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
     /**
      * Updates the gallery data.<p>
-     * 
+     *
      * @param galleryData the gallery data
      */
     public void updateGalleryData(CmsGalleryDataBean galleryData) {
@@ -203,8 +203,8 @@ public class CmsToolbarGalleryMenu extends A_CmsToolbarMenu<CmsContainerpageHand
 
     /**
      * Gets the drag handler.<p>
-     * 
-     * @return the drag handler 
+     *
+     * @return the drag handler
      */
     protected CmsDNDHandler getDragHandler() {
 

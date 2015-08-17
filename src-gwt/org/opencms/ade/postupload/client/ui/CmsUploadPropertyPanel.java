@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,7 +73,7 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
     /**
      * Public constructor.<p>
      *
-     * @param dialog the dialog which this panel is added to 
+     * @param dialog the dialog which this panel is added to
      * @param options the data to fill UI component options
      * @param values the bean with the current values
      */
@@ -98,8 +98,8 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
 
     /**
      * Gets the property editor instance.<p>
-     * 
-     * @return the property editor instance 
+     *
+     * @return the property editor instance
      */
     public CmsSimplePropertyEditor getPropertyEditor() {
 
@@ -118,7 +118,7 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
 
     /**
      * Returns the content bean (values) of the current dialog.<p>
-     * 
+     *
      * @return the content bean (values) of the current dialog
      */
     public CmsPostUploadDialogPanelBean getUpdatedValues() {
@@ -148,7 +148,7 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
      */
     public void onValidationResult(CmsForm form, boolean ok) {
 
-        // do nothing for now 
+        // do nothing for now
     }
 
     /**

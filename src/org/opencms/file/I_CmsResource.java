@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,10 +33,10 @@ import org.opencms.util.CmsUUID;
 import java.util.Comparator;
 
 /**
- * Common ancestor interface for {@link CmsFile} and {@link CmsFolder} 
+ * Common ancestor interface for {@link CmsFile} and {@link CmsFolder}
  * as well as for {@Link CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public interface I_CmsResource {
 
@@ -123,7 +123,7 @@ public interface I_CmsResource {
 
     /**
      * A comparator for the release date of two resources.<p>
-     * 
+     *
      * If the release date of a resource is not set, the
      * creation date is used instead.<p>
      */
@@ -286,7 +286,7 @@ public interface I_CmsResource {
     CmsUUID getResourceId();
 
     /**
-     * Returns the name of this resource with it's full path from the top level root folder, 
+     * Returns the name of this resource with it's full path from the top level root folder,
      * for example <code>/sites/default/myfolder/index.html</code>.<p>
      *
      * @return name of this resource with it's full path from the top level root folder
@@ -295,10 +295,10 @@ public interface I_CmsResource {
 
     /**
      * Returns the number of siblings of this resource, also counting this resource.<p>
-     * 
-     * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
-     * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
-     * 
+     *
+     * If a resource has no sibling, the total sibling count for this resource is <code>1</code>,
+     * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p>
+     *
      * @return the number of siblings of this resource, also counting this resource
      */
     int getSiblingCount();
@@ -312,7 +312,7 @@ public interface I_CmsResource {
 
     /**
      * Returns the id of the database structure record of this resource.<p>
-     * 
+     *
      * @return the id of the database structure record of this resource
      */
     CmsUUID getStructureId();
@@ -326,7 +326,7 @@ public interface I_CmsResource {
 
     /**
      * Returns the id of the {@link CmsUser} who created this resource.<p>
-     * 
+     *
      * @return the id of the {@link CmsUser} who created this resource
      */
     CmsUUID getUserCreated();
@@ -345,14 +345,14 @@ public interface I_CmsResource {
      */
     int getVersion();
 
-    /** 
-     * Returns <code>true</code> if this resource is expired at the given time according to the 
+    /**
+     * Returns <code>true</code> if this resource is expired at the given time according to the
      * information stored in {@link #getDateExpired()}.<p>
-     * 
+     *
      * @param time the time to check the expiration date against
-     * 
+     *
      * @return <code>true</code> if this resource is expired at the given time
-     *      
+     *
      * @see #isReleased(long)
      * @see #isReleasedAndNotExpired(long)
      */
@@ -374,9 +374,9 @@ public interface I_CmsResource {
 
     /**
      * Checks if the resource is internal.<p>
-     * 
+     *
      * This state is stored as bit 1 in the resource flags.<p>
-     * 
+     *
      * @return true if the resource is internal, otherwise false
      */
     boolean isInternal();
@@ -385,34 +385,34 @@ public interface I_CmsResource {
      * Checks if the link has to be labeled with a special icon in the explorer view.<p>
      *
      * This state is stored as bit 2 in the resource flags.<p>
-     * 
+     *
      * @return true if a link to the resource has to be labeled, otherwise false
      */
     boolean isLabeled();
 
-    /** 
-     * Returns <code>true</code> if this resource is released at the given time according to the 
+    /**
+     * Returns <code>true</code> if this resource is released at the given time according to the
      * information stored in {@link #getDateReleased()}.<p>
-     * 
+     *
      * @param time the time to check the release date against
-     * 
+     *
      * @return <code>true</code> if this resource is released at the given time
-     *      
+     *
      * @see #isExpired(long)
      * @see #isReleasedAndNotExpired(long)
      */
     boolean isReleased(long time);
 
-    /** 
-     * Returns <code>true</code> if this resource is valid at the given time according to the 
+    /**
+     * Returns <code>true</code> if this resource is valid at the given time according to the
      * information stored in {@link #getDateReleased()} and {@link #getDateExpired()}.<p>
-     * 
+     *
      * A resource is valid if it is released and not yet expired.<p>
-     * 
+     *
      * @param time the time to check the release and expiration date against
-     * 
+     *
      * @return <code>true</code> if this resource is valid at the given time
-     *      
+     *
      * @see #isExpired(long)
      * @see #isReleased(long)
      */
@@ -420,7 +420,7 @@ public interface I_CmsResource {
 
     /**
      * Returns true if this resource was touched.<p>
-     * 
+     *
      * @return boolean true if this resource was touched
      */
     boolean isTouched();

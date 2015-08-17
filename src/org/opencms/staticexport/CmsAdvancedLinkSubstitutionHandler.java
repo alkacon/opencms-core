@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,10 +47,10 @@ import org.apache.commons.logging.Log;
  * Advanced link substitution behavior.<p>
  * You can define additional paths that are always used as external links, even if
  * they point to the same configured site than the OpenCms itself.
- * 
+ *
  * @since 7.5.0
- * 
- * @see CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String, String, boolean) 
+ *
+ * @see CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String, String, boolean)
  *      for the method where this handler is used.
  */
 public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
@@ -113,7 +113,7 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
 
     /**
      * Reads the link exclude definition file and extracts all excluded links stored in it.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @return list of Strings, containing link exclude paths
      */

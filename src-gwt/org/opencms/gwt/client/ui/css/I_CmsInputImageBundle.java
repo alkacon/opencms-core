@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,176 +34,176 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Image bundle for this package.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsInputImageBundle extends ClientBundle {
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlackDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlackDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlackHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlackHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlackUpBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlackUpBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlueDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlueDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlueHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlueHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonBlueUpBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonBlueUpBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonDisabledBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonDisabledBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGrayDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGrayDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGrayHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGrayHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGrayUpBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGrayUpBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGreenDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGreenDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGreenHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGreenHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonGreenUpBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonGreenUpBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonRedDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonRedDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonRedHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonRedHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonRedUpBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonRedUpBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonYellowDownBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonYellowDownBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonYellowHoverBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Both)
     ImageResource buttonYellowHoverBackground();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/buttonYellowUpBackground.png")
@@ -212,7 +212,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxChecked.png")
@@ -220,7 +220,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxCheckedDisabled.png")
@@ -228,7 +228,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxCheckedHover.png")
@@ -236,7 +236,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxCheckedSome.png")
@@ -244,7 +244,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxCheckedSomeDisabled.png")
@@ -252,7 +252,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxCheckedSomeHover.png")
@@ -260,7 +260,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxUnchecked.png")
@@ -268,7 +268,7 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxUncheckedDisabled.png")
@@ -276,15 +276,15 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/checkboxUncheckedHover.png")
     ImageResource checkboxUncheckedHover();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioChecked.png")
@@ -292,39 +292,39 @@ public interface I_CmsInputImageBundle extends ClientBundle {
 
     /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioCheckedDisabled.png")
     ImageResource radioCheckedDisabled();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioCheckedHover.png")
     ImageResource radioCheckedHover();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioUnchecked.png")
     ImageResource radioUnchecked();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioUncheckedDisabled.png")
     ImageResource radioUncheckedDisabled();
 
-    /** 
+    /**
      * Image resource accessor.<p>
-     * 
+     *
      * @return an image resource
      */
     @Source("images/input/radioUncheckedHover.png")

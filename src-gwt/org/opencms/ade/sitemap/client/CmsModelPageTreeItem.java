@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,7 +61,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param infoBean the data to display
          */
         public CmsModelPageListItemWidget(CmsListInfoBean infoBean) {
@@ -92,7 +92,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param modelpage the model page
      */
     public CmsModelPageTreeItem(CmsModelPageEntry modelpage) {
@@ -104,8 +104,8 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Creates the fake model page tree item used as a root for the tree view.<p>
-     * 
-     * @return the root tree item 
+     *
+     * @return the root tree item
      */
     public static CmsModelPageTreeItem createRootItem() {
 
@@ -114,7 +114,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns the folder entry id.<p>
-     * 
+     *
      * @return the folder entry id
      */
     public CmsUUID getEntryId() {
@@ -124,7 +124,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Returns the site path.<p>
-     * 
+     *
      * @return the site path
      */
     public String getSitePath() {
@@ -135,7 +135,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Updates the site path info.<p>
-     * 
+     *
      * @param sitePath the new site path
      */
     public void updateSitePath(String sitePath) {
@@ -145,7 +145,7 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Handles direct editing of the gallery title.<p>
-     * 
+     *
      * @param editEntry the edit entry
      * @param newTitle the new title
      */
@@ -174,9 +174,9 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
 
     /**
      * Creates the list item widget for the given folder.<p>
-     * 
-     * @param modelPage the model page bean 
-     * 
+     *
+     * @param modelPage the model page bean
+     *
      * @return the list item widget
      */
     private CmsListItemWidget createListWidget(final CmsModelPageEntry modelPage) {

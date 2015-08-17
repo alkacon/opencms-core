@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Creates a new select cell.<p>
-     * 
+     *
      * @param value the value of the select option
      * @param text the text to display for the select option
      */
@@ -66,10 +66,10 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Creates a new select cell.<p>
-     * 
+     *
      * @param value the value of the select option
-     * @param text the text to display for the select option 
-     * @param title the title to display on mouseover 
+     * @param text the text to display for the select option
+     * @param title the title to display on mouseover
      */
     public CmsLabelSelectCell(String value, String text, String title) {
 
@@ -85,8 +85,8 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Gets the opener text.<p>
-     * 
-     * @return the opener text 
+     *
+     * @return the opener text
      */
     public String getOpenerText() {
 
@@ -95,7 +95,7 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Returns the text as which the select option should be displayed to the user.<p>
-     * 
+     *
      * @return the text of the select option
      */
     public String getText() {
@@ -114,8 +114,8 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Sets the opener text.<p>
-     *  
-     * @param openerText the new opener text 
+     *
+     * @param openerText the new opener text
      */
     public void setOpenerText(String openerText) {
 
@@ -124,8 +124,8 @@ public class CmsLabelSelectCell extends A_CmsSelectCell implements I_CmsTruncabl
 
     /**
      * Sets the text of the label.<p>
-     * 
-     * @param text the new text 
+     *
+     * @param text the new text
      */
     public void setText(String text) {
 

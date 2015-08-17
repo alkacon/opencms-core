@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,15 +61,15 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The new resource xmlcontent model file selection dialog handles the selection of a model file for a new xmlcontent.<p>
- * 
+ *
  * Creates a list of model files to choose from and forwards either to the new resource dialog or to the editor.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newresource_xmlcontent_modelfile.jsp</li>
  * </ul>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
@@ -107,7 +107,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewResourceXmlContentModel(CmsJspActionElement jsp) {
@@ -129,7 +129,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -141,7 +141,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Overrides the default action, parameters have to be set and the forward targets may be different.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
     @Override
@@ -195,19 +195,20 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * The buttons in the new resource dialog depend on various preconditions.<p>
-     * 
+     *
      * Variations:
      * <ul>
      * <li>dialog is opened in direct edit mode</li>
      * <li>"edit properties" has been selected or not</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#dialogButtons()
      */
     @Override
     public String dialogButtons() {
 
-        if (Boolean.valueOf(getParamNewResourceEditProps()).booleanValue() || CmsPreEditorAction.isPreEditorMode(this)) {
+        if (Boolean.valueOf(getParamNewResourceEditProps()).booleanValue()
+            || CmsPreEditorAction.isPreEditorMode(this)) {
             // show next button, after that the properties are edited
             return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {"", ""});
         }
@@ -274,7 +275,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Returns the parameter to check if a ".html" suffix should be added to the new resource name.<p>
-     * 
+     *
      * @return the parameter to check if a ".html" suffix should be added to the new resource name
      */
     public String getParamAppendSuffixHtml() {
@@ -284,7 +285,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Returns the back link URL used when displaying the dialog in pre editor mode.<p>
-     * 
+     *
      * @return the back link URL used when displaying the dialog in pre editor mode
      */
     public String getParamBackLink() {
@@ -294,7 +295,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Returns the parameter that specifies the model file name.<p>
-     * 
+     *
      * @return the parameter that specifies the model file name
      */
     public String getParamModelFile() {
@@ -304,7 +305,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Returns the new resource edit properties flag parameter.<p>
-     * 
+     *
      * @return the new resource edit properties flag parameter
      */
     public String getParamNewResourceEditProps() {
@@ -314,7 +315,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Returns the new resource type parameter.<p>
-     * 
+     *
      * @return the new resource type parameter
      */
     public String getParamNewResourceType() {
@@ -334,7 +335,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Sets the parameter to check if a ".html" suffix should be added to the new resource name.<p>
-     * 
+     *
      * @param paramAppendSuffixHtml the parameter to check if a ".html" suffix should be added to the new resource name
      */
     public void setParamAppendSuffixHtml(String paramAppendSuffixHtml) {
@@ -344,7 +345,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Sets the back link URL used when displaying the dialog in pre editor mode.<p>
-     * 
+     *
      * @param paramBackLink the back link URL used when displaying the dialog in pre editor mode
      */
     public void setParamBackLink(String paramBackLink) {
@@ -354,7 +355,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Sets the parameter that specifies the model file name.<p>
-     * 
+     *
      * @param paramMasterFile the parameter that specifies the model file name
      */
     public void setParamModelFile(String paramMasterFile) {
@@ -364,7 +365,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Sets the new resource edit properties flag parameter.<p>
-     * 
+     *
      * @param newResourceEditProps the new resource edit properties flag parameter
      */
     public void setParamNewResourceEditProps(String newResourceEditProps) {
@@ -374,7 +375,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Sets the new resource type parameter.<p>
-     * 
+     *
      * @param newResourceType the new resource type parameter
      */
     public void setParamNewResourceType(String newResourceType) {
@@ -384,8 +385,8 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Closes the dialog and forwards to the previed page in direct editor mode.<p>
-     * 
-     * @throws IOException if forwarding fails 
+     *
+     * @throws IOException if forwarding fails
      * @throws ServletException if forwarding fails
      */
     protected void actionClose() throws IOException, ServletException {
@@ -457,7 +458,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
 
     /**
      * Removes the default "preview file" action from the file name column.<p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     @Override
@@ -478,8 +479,9 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
                 colDefinition.setSorteable(false);
 
                 // remove column name
-                colDefinition.setName(org.opencms.workplace.list.Messages.get().container(
-                    org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_COLS_EMPTY_0));
+                colDefinition.setName(
+                    org.opencms.workplace.list.Messages.get().container(
+                        org.opencms.workplace.list.Messages.GUI_EXPLORER_LIST_COLS_EMPTY_0));
             }
         }
 
@@ -495,16 +497,16 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
         CmsListItemDetails modelFileDescription = new CmsListItemDetails(LIST_DETAIL_DESCRIPTION);
         modelFileDescription.setAtColumn(LIST_COLUMN_NAME);
         modelFileDescription.setVisible(false);
-        modelFileDescription.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_MODELFILES_LABEL_DESCRIPTION_0)));
-        modelFileDescription.setShowActionName(Messages.get().container(
-            Messages.GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0));
-        modelFileDescription.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0));
-        modelFileDescription.setHideActionName(Messages.get().container(
-            Messages.GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0));
-        modelFileDescription.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0));
+        modelFileDescription.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_MODELFILES_LABEL_DESCRIPTION_0)));
+        modelFileDescription.setShowActionName(
+            Messages.get().container(Messages.GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_NAME_0));
+        modelFileDescription.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_MODELFILES_DETAIL_SHOW_DESCRIPTION_HELP_0));
+        modelFileDescription.setHideActionName(
+            Messages.get().container(Messages.GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_NAME_0));
+        modelFileDescription.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_MODELFILES_DETAIL_HIDE_DESCRIPTION_HELP_0));
 
         metadata.addItemDetails(modelFileDescription);
 

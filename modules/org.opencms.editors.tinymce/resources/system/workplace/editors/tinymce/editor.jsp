@@ -692,7 +692,7 @@ if (toolbarButtons.indexOf("OcmsImageGallery")>0)
 if (toolbarButtons.indexOf("table")>0)
     contextmenu+=" inserttable | cell row column deletetable"
 
-var plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+var plugins = "anchor,charmap,code,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
 if (contextmenu!="")
     plugins+=",contextmenu"
 
@@ -703,9 +703,9 @@ tinyMCE.init({
     elements : "tinymce_content",
     theme : "modern",
     plugins : plugins,
+    importcss_append: true,
     contextmenu: contextmenu,
     file_browser_callback : cmsTinyMceFileBrowser,
-    entity_encoding: "raw",
 	toolbar: toolbarButtons,
 	toolbar_items_size: 'small',
     menubar:false,

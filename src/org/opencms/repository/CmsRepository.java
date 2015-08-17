@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,18 +45,18 @@ import org.apache.commons.logging.Log;
 
 /**
  * Creates a repository session to access OpenCms.<p>
- * 
+ *
  * The configuration of the used {@link I_CmsResourceWrapper} is done here.
- * This is the main class to get access to the resources in the VFS of 
+ * This is the main class to get access to the resources in the VFS of
  * OpenCms. The method {@link #login(String, String)} logs in to OpenCms
  * and returns a {@link CmsRepositorySession} to use for basic file and
  * folder operations.<p>
- * 
+ *
  * The project and the site to use for the access to OpenCms is read out
  * of the user settings.<p>
- * 
+ *
  * @see CmsObjectWrapper
- * 
+ *
  * @since 6.5.6
  */
 public class CmsRepository extends A_CmsRepository {
@@ -99,7 +99,7 @@ public class CmsRepository extends A_CmsRepository {
      */
     public void initializeCms(CmsObject cms) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**

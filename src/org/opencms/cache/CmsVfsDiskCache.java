@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Implements a RFS file based disk cache, that handles parameter based versions of VFS files, 
+ * Implements a RFS file based disk cache, that handles parameter based versions of VFS files,
  * providing a cache for the "online" and another for the "offline" project.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class CmsVfsDiskCache {
@@ -47,26 +47,26 @@ public class CmsVfsDiskCache {
 
     /**
      * Creates a new disk cache.<p>
-     * 
+     *
      * @param basepath the base path for the cache in the RFS
      * @param foldername the folder name for this cache, to be used a subfolder for the base folder
      */
     public CmsVfsDiskCache(String basepath, String foldername) {
 
-        // normalize the given folder name 
+        // normalize the given folder name
         m_rfsRepository = CmsFileUtil.normalizePath(basepath + foldername + File.separatorChar);
     }
 
     /**
-     * Saves the given file content to a RFS file of the given name (full path).<p> 
-     * 
+     * Saves the given file content to a RFS file of the given name (full path).<p>
+     *
      * If the required parent folders do not exists, they are also created.<p>
-     * 
+     *
      * @param rfsName the RFS name of the file to save the content in
      * @param content the content of the file to save
-     * 
+     *
      * @return a reference to the File that was saved
-     * 
+     *
      * @throws IOException in case of disk access errors
      */
     public static File saveFile(String rfsName, byte[] content) throws IOException {
@@ -87,11 +87,11 @@ public class CmsVfsDiskCache {
     /**
      * Returns the content of the requested file in the disk cache, or <code>null</code> if the
      * file is not found in the cache, or is found but outdated.<p>
-     * 
-     * @param rfsName the file RFS name to look up in the cache 
+     *
+     * @param rfsName the file RFS name to look up in the cache
      * @param dateLastModified the date of last modification for the cache
-     * 
-     * @return the content of the requested file in the VFS disk cache, or <code>null</code> 
+     *
+     * @return the content of the requested file in the VFS disk cache, or <code>null</code>
      */
     public byte[] getCacheContent(String rfsName, long dateLastModified) {
 
@@ -113,13 +113,13 @@ public class CmsVfsDiskCache {
     }
 
     /**
-     * Returns the RFS name to use for caching the given VFS resource with parameters in the disk cache.<p>  
-     * 
+     * Returns the RFS name to use for caching the given VFS resource with parameters in the disk cache.<p>
+     *
      * @param online if true, the online disk cache is used, the offline disk cache otherwise
      * @param rootPath the VFS resource root path to get the RFS cache name for
      * @param parameters the parameters of the request to the VFS resource
-     * 
-     * @return the RFS name to use for caching the given VFS resource with parameters 
+     *
+     * @return the RFS name to use for caching the given VFS resource with parameters
      */
     public String getCacheName(boolean online, String rootPath, String parameters) {
 
@@ -135,7 +135,7 @@ public class CmsVfsDiskCache {
 
     /**
      * Returns the absolute path of the cache repository in the RFS.<p>
-     * 
+     *
      * @return the absolute path of the cache repository in the RFS
      */
     public String getRepositoryPath() {
@@ -144,12 +144,12 @@ public class CmsVfsDiskCache {
     }
 
     /**
-     * Saves the given file content in the disk cache.<p> 
-     * 
+     * Saves the given file content in the disk cache.<p>
+     *
      * @param rfsName the RFS name of the file to save the content in
      * @param content the content of the file to save
      * @param dateLastModified the date of last modification to set for the save file
-     * 
+     *
      * @throws IOException in case of disk access errors
      */
     public void saveCacheFile(String rfsName, byte[] content, long dateLastModified) throws IOException {
@@ -161,11 +161,11 @@ public class CmsVfsDiskCache {
     }
 
     /**
-     * Simplifies the "date last modified" from the OpenCms VFS based milliseconds 
+     * Simplifies the "date last modified" from the OpenCms VFS based milliseconds
      * to just seconds, to support file systems that don't use milliseconds.<p>
-     * 
+     *
      * @param dateLastModified the date to simplify
-     * 
+     *
      * @return the simplified date last modified
      */
     private long simplifyDateLastModified(long dateLastModified) {

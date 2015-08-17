@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,13 +41,13 @@ import junit.framework.TestSuite;
 /**
  * Unit test for the "createPropertyDefinition", "readPropertyDefiniton" and
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
- * 
+ *
  */
 public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestPropertyDefinition(String arg0) {
@@ -57,7 +57,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -114,7 +114,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Test the createPropertyDefintion method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreatePropertyDefinition() throws Throwable {
@@ -126,7 +126,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Test to create, read and delete a property definition through the cache driver.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCreateReadDeletePropertyDefinition() throws Throwable {
@@ -139,7 +139,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Test to create, read and delete a property definition through the cache driver.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @throws Throwable if something goes wrong
      */
@@ -244,7 +244,7 @@ public class TestPropertyDefinition extends OpenCmsTestCase {
 
     /**
      * Tests reading all resources that have a specific property definition set.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testGetResourcesWithProperty() throws Exception {

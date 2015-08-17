@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to remove old publish locks.<p>
- * 
- * @since 7.0.2 
+ *
+ * @since 7.0.2
  */
 public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
 
@@ -67,7 +67,7 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRemovePubLocksDialog(CmsJspActionElement jsp) {
@@ -77,7 +77,7 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -90,10 +90,11 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.tools.modules.CmsModulesEditBase#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         try {
-            // forward to the report page 
+            // forward to the report page
             Map params = new HashMap();
             params.put(CmsRemovePubLocksReport.PARAM_RESOURCES, CmsStringUtil.collectionAsString(m_resources, ","));
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
@@ -147,11 +148,12 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -178,6 +180,7 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initObject();
@@ -188,6 +191,7 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -221,6 +225,7 @@ public class CmsRemovePubLocksDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

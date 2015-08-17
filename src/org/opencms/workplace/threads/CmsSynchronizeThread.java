@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
 
 /**
  * Synchronizes a VFS folder with a folder form the "real" file system.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
 
@@ -49,14 +49,16 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
 
     /**
      * Creates the synchronize Thread.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      */
     public CmsSynchronizeThread(CmsObject cms) {
 
-        super(cms, Messages.get().getBundle().key(
-            Messages.GUI_SYNCHRONIZE_THREAD_NAME_1,
-            cms.getRequestContext().getCurrentProject().getName()));
+        super(
+            cms,
+            Messages.get().getBundle().key(
+                Messages.GUI_SYNCHRONIZE_THREAD_NAME_1,
+                cms.getRequestContext().getCurrentProject().getName()));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = new CmsUserSettings(cms).getSynchronizeSettings();
     }

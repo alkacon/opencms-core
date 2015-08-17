@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,17 +58,17 @@ import org.apache.commons.logging.Log;
 
 /**
  * The new resource upload dialog handles the upload of CSV (Comma Separated Values) files.<p>
- * 
+ *
  * CSV files are converted in a first step to xml
  * and in a second step transformed using a xsl stylesheet.<p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/newcsvfile_upload.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNewCsvFile extends CmsNewResourceUpload {
 
@@ -107,7 +107,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNewCsvFile(CmsJspActionElement jsp) {
@@ -117,7 +117,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -130,7 +130,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /**
      * Embeds the given content as cdata if neccessary.<p>
      * Contents starting with "<" and ending with ">" are NOT embedded in order to allow content with tags.
-     * 
+     *
      * @param content the content
      * @return the embedded content
      */
@@ -152,7 +152,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Uploads the specified file and transforms it to HTML.<p>
-     * 
+     *
      * @throws JspException if inclusion of error dialog fails
      */
     @Override
@@ -216,7 +216,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Builds a html select for Delimiters.
-     * 
+     *
      * @return html select code with the possible available xslt files
      */
     public String buildDelimiterSelect() {
@@ -234,7 +234,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Builds a html select for the XSLT files.
-     * 
+     *
      * @return html select code with the possible available xslt files
      */
     public String buildXsltSelect() {
@@ -290,7 +290,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Returns the content of the file upload and sets the resource name.<p>
-     * 
+     *
      * @return the byte content of the uploaded file
      * @throws CmsWorkplaceException if the filesize if greater that maxFileSizeBytes or if the upload file cannot be found
      */
@@ -319,9 +319,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             long maxFileSizeBytes = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
             // check file size
             if ((maxFileSizeBytes > 0) && (size > maxFileSizeBytes)) {
-                throw new CmsWorkplaceException(Messages.get().container(
-                    Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
-                    new Long(maxFileSizeBytes / 1024)));
+                throw new CmsWorkplaceException(
+                    Messages.get().container(
+                        Messages.ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1,
+                        new Long(maxFileSizeBytes / 1024)));
             }
             content = fi.get();
             fi.delete();
@@ -335,7 +336,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Returns the height of the head frameset.<p>
-     * 
+     *
      * @return the height of the head frameset
      */
     public String getHeadFrameSetHeight() {
@@ -355,7 +356,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Returns the delimiter to separate the CSV values.<p>
-     * 
+     *
      * @return the delimiter to separate the CSV values
      */
     public String getParamDelimiter() {
@@ -365,7 +366,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Returns the xslt file to transform the xml with.<p>
-     * 
+     *
      * @return the path to the xslt file to transform the xml with or null if it is not set
      */
     public String getParamXsltFile() {
@@ -375,7 +376,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Returns a list of CmsResources with the xslt files in the modules folder.<p>
-     * 
+     *
      * @return a list of the available xslt files
      */
     public List<CmsResource> getXsltFiles() {
@@ -383,7 +384,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         List<CmsResource> result = new ArrayList<CmsResource>();
         try {
             // find all files of generic xmlcontent in the modules folder
-            int plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            int plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
             Iterator<CmsResource> xmlFiles = getCms().readResources(
                 CmsWorkplace.VFS_PATH_MODULES,
                 CmsResourceFilter.DEFAULT_FILES.addRequireType(plainId),
@@ -414,7 +416,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Sets the delimiter to separate the CSV values.<p>
-     * 
+     *
      * @param delimiter the delimiter to separate the CSV values.
      */
     public void setParamDelimiter(String delimiter) {
@@ -424,7 +426,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /**
      * Sets the path to the xslt file.<p>
-     * 
+     *
      * @param xsltFile the file to transform the xml with.
      */
     public void setParamXsltFile(String xsltFile) {

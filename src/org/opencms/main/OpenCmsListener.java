@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,15 +41,15 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides the OpenCms system with information from the servlet context.<p>
- * 
+ *
  * Used for the following purposes:<ul>
  * <li>Starting up OpenCms when the servlet container is started.</li>
  * <li>Shutting down OpenCms when the servlet container is shut down.</li>
  * <li>Informing the <code>{@link org.opencms.main.CmsSessionManager}</code> if a new session is created.</li>
  * <li>Informing the <code>{@link org.opencms.main.CmsSessionManager}</code> session is destroyed or invalidated.</li>
  * </ul>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class OpenCmsListener implements ServletContextListener, HttpSessionListener {
 
@@ -144,9 +144,10 @@ public class OpenCmsListener implements ServletContextListener, HttpSessionListe
             try {
                 DriverManager.deregisterDriver(driver);
             } catch (Throwable e) {
-                System.out.println(Messages.get().getBundle().key(
-                    Messages.ERR_DEREGISTERING_JDBC_DRIVER_1,
-                    driver.getClass().getName()));
+                System.out.println(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_DEREGISTERING_JDBC_DRIVER_1,
+                        driver.getClass().getName()));
                 e.printStackTrace(System.out);
             }
         }

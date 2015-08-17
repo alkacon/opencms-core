@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,16 +33,16 @@ import java.util.Locale;
 
 /**
  * Provides localized Exception handling based on the OpenCms default locale.<p>
- * 
+ *
  * Instances of this class are assumed to have full localized exception messages.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsThrowable {
 
     /**
      * Returns a localized exception message based on the OpenCms default locale.<p>
-     * 
+     *
      * @return a localized exception message based on the OpenCms default locale
      * @see Throwable#getLocalizedMessage()
      */
@@ -50,16 +50,16 @@ public interface I_CmsThrowable {
 
     /**
      * Returns a localized exception message based on the given Locale.<p>
-     * 
+     *
      * @param locale the Locale to get the message for
-     * 
+     *
      * @return a localized exception message based on the given Locale
      */
     String getLocalizedMessage(Locale locale);
 
     /**
      * Returns a localized exception message based on the OpenCms default locale.<p>
-     * 
+     *
      * @return a localized exception message based on the OpenCms default locale
      * @see Throwable#getMessage()
      */
@@ -67,7 +67,7 @@ public interface I_CmsThrowable {
 
     /**
      * Returns the localized message container used to build this localized exception.<p>
-     * 
+     *
      * @return the localized message container used to build this localized exception
      */
     CmsMessageContainer getMessageContainer();

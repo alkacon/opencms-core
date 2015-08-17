@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,11 +31,11 @@ import java.util.Map;
 
 /**
  * The result of a document text extraction.<p>
- * 
- * This data structure contains the extracted text as well as (optional) 
+ *
+ * This data structure contains the extracted text as well as (optional)
  * meta information extracted from the document.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsExtractionResult {
 
@@ -77,7 +77,7 @@ public interface I_CmsExtractionResult {
 
     /**
      * Returns this extraction result serialized as a byte array.<p>
-     * 
+     *
      * @return this extraction result serialized as a byte array
      */
     byte[] getBytes();
@@ -91,23 +91,23 @@ public interface I_CmsExtractionResult {
 
     /**
      * Returns the extracted content as individual items.<p>
-     * 
+     *
      * The result Map contains all content items extracted
      * by the extractor. The key is always a String, and contains the name of the item.
      * The value is also a String and contains the extracted text.<p>
-     * 
+     *
      * The detailed form will depend on the resource type indexed:
      * <ul>
-     * <li>For a <code>xmlpage</code>, the key will be the element name, and the value 
+     * <li>For a <code>xmlpage</code>, the key will be the element name, and the value
      * will be the text of the element.
-     * <li>For a <code>xmlcontent</code>, the key will be the xpath of the XML node, 
+     * <li>For a <code>xmlcontent</code>, the key will be the xpath of the XML node,
      * and the value will be the text of that XML node.
      * <li>In case the document contains meta information (for example PDF or MS Office documents),
      * the meta information is stored with the name of the meta field as key and the content as value.
      * <li>For all other resource types, there will be only ony key {@link #ITEM_CONTENT},
-     * which will contain the value of the complete content. 
+     * which will contain the value of the complete content.
      * </ul>
-     * 
+     *
      * @return the extracted content as individual items
      */
     Map<String, String> getContentItems();

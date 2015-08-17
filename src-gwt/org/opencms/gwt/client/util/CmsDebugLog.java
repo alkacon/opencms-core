@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A basic debug log, to print messages into the client window.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsDebugLog {
@@ -88,7 +88,7 @@ public final class CmsDebugLog {
 
     /**
      * Logs a message to the browser console if possible.<p>
-     * 
+     *
      * @param message the message to log
      */
     public static native void consoleLog(String message) /*-{
@@ -99,7 +99,7 @@ public final class CmsDebugLog {
 
     /**
      * Returns the debug log.<p>
-     * 
+     *
      * @return the debug log
      */
     public static CmsDebugLog getInstance() {
@@ -123,7 +123,7 @@ public final class CmsDebugLog {
 
     /**
      * Prints a new line into the log window by adding a p-tag including given text as HTML.<p>
-     * 
+     *
      * @param text the text to print
      */
     public void printLine(String text) {

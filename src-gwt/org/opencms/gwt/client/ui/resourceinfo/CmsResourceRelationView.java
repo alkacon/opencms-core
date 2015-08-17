@@ -76,8 +76,7 @@ public class CmsResourceRelationView extends Composite {
     /** Enum for the display mode. */
     public enum Mode {
         /** Display relation sources. */
-        sources,
-        /** Display relation targets. */
+        sources, /** Display relation targets. */
         targets
     }
 
@@ -194,7 +193,8 @@ public class CmsResourceRelationView extends Composite {
                     new CmsResourceInfoView.ContextMenuHandler());
                 item.getListItemWidget().addButton(button);
                 final CmsResourceStatusRelationBean currentRelationBean = relationBean;
-                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(relationBean.getInfoBean().getResourceType());
+                final boolean isContainerpage = CmsGwtConstants.TYPE_CONTAINERPAGE.equals(
+                    relationBean.getInfoBean().getResourceType());
                 final boolean isXmlContent = relationBean.isXmlContent();
                 final boolean isEditable = (isXmlContent || isContainerpage)
                     && relationBean.getPermissionInfo().hasWritePermission();
@@ -203,8 +203,9 @@ public class CmsResourceRelationView extends Composite {
                     m_editButton = new CmsPushButton();
                     m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
                     m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-                    m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-                        org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+                    m_editButton.setTitle(
+                        org.opencms.gwt.client.Messages.get().key(
+                            org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(relationBean.getPermissionInfo().getNoEditReason())) {
                         m_editButton.disable(relationBean.getPermissionInfo().getNoEditReason());
                     } else {
@@ -229,13 +230,13 @@ public class CmsResourceRelationView extends Composite {
                                     new DialogOptions(),
                                     new I_CmsContentEditorHandler() {
 
-                                        public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+                                    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
-                                            if (m_popup != null) {
-                                                m_popup.hide();
-                                            }
+                                        if (m_popup != null) {
+                                            m_popup.hide();
                                         }
-                                    });
+                                    }
+                                });
                                 ((CmsPushButton)event.getSource()).clearHoverState();
                             }
                         }

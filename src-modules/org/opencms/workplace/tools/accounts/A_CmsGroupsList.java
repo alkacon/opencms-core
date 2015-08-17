@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,8 +67,8 @@ import javax.servlet.ServletException;
 
 /**
  * Skeleton for a generic group list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
@@ -143,7 +143,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -155,11 +155,11 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
     @Override
     public void executeListMultiActions() throws CmsRuntimeException {
@@ -266,7 +266,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -276,7 +276,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -342,7 +342,10 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     try {
                         getCms().getRequestContext().setSiteRoot("/");
                         CmsGroup group = getCms().readGroup(groupName);
-                        Iterator<CmsResource> itRes = getCms().getResourcesForPrincipal(group.getId(), null, false).iterator();
+                        Iterator<CmsResource> itRes = getCms().getResourcesForPrincipal(
+                            group.getId(),
+                            null,
+                            false).iterator();
                         while (itRes.hasNext()) {
                             CmsResource resource = itRes.next();
                             html.append(resource.getRootPath());
@@ -353,7 +356,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                             while (itAces.hasNext()) {
                                 CmsAccessControlEntry ace = itAces.next();
                                 if (ace.getPrincipal().equals(group.getId())) {
-                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                                        ace.getPermissions().getPermissionString())) {
                                         html.append(" (" + ace.getPermissions().getPermissionString() + ")");
                                     }
                                     break;
@@ -380,9 +384,9 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * Returns a list of groups.<p>
-     * 
+     *
      * @return the list of all groups
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsGroup> getGroups() throws CmsException;
@@ -561,14 +565,14 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the needed delete action(s).<p>
-     * 
+     *
      * @param deleteCol the list column for deletion.
      */
     protected abstract void setDeleteAction(CmsListColumnDefinition deleteCol);
 
     /**
      * Sets the needed edit action(s).<p>
-     * 
+     *
      * @param editCol the list column for edition.
      */
     protected abstract void setEditAction(CmsListColumnDefinition editCol);
@@ -588,8 +592,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         usersDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_USERS_NAME_0));
         usersDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_USERS_HELP_0));
         usersDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_USERS_NAME_0));
-        usersDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
+        usersDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
         // add user children details
@@ -601,8 +605,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0));
         childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0));
         childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0));
-        childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
+        childDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
         metadata.addItemDetails(childDetails);
 
         // add parent group details
@@ -614,8 +618,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         parentDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_NAME_0));
         parentDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_PARENT_HELP_0));
         parentDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0));
-        parentDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0)));
+        parentDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_PARENT_NAME_0)));
         metadata.addItemDetails(parentDetails);
 
         // add folder permission details
@@ -627,8 +631,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         setPermDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_SET_PERM_NAME_0));
         setPermDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_SET_PERM_HELP_0));
         setPermDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0));
-        setPermDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0)));
+        setPermDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_SET_PERM_NAME_0)));
         metadata.addItemDetails(setPermDetails);
 
         // makes the list searchable
@@ -646,8 +650,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DELETE_NAME_0));
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DELETE_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_GROUPS_LIST_MACTION_DELETE_CONF_0));
+        deleteMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DELETE_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
 
@@ -663,8 +667,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
         CmsListMultiAction deactivateUser = new CmsListMultiAction(LIST_MACTION_DEACTIVATE);
         deactivateUser.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_NAME_0));
         deactivateUser.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_HELP_0));
-        deactivateUser.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_CONF_0));
+        deactivateUser.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
     }

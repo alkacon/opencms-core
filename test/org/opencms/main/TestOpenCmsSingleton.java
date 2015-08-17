@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,14 +50,14 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit test the static OpenCms singleton object.<p> 
- * 
+ * Unit test the static OpenCms singleton object.<p>
+ *
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestOpenCmsSingleton(String arg0) {
@@ -67,7 +67,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -102,7 +102,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Test case for the encoding.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testEncoding() throws Exception {
@@ -142,7 +142,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Test case for the initCmsObject methods.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testInitCmsObject() throws Exception {
@@ -229,7 +229,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Test case for the logger.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLog() throws Exception {
@@ -240,7 +240,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         CmsLog.getLog(this).info("This is a 'info' log message");
         CmsLog.getLog(this).warn("This is a 'warn' log message");
 
-        // is something is written to log level 'error' or 'fatal' 
+        // is something is written to log level 'error' or 'fatal'
         // a runtime exception must be thrown while unit tests are running
         boolean noException;
         noException = true;
@@ -265,7 +265,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
     /**
      * Test case for resource initialization.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testInitResource() throws Exception {

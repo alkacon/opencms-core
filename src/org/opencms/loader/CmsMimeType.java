@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import java.util.Locale;
 
 /**
  * Describes a MIME type configured in OpenCms.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsMimeType implements Comparable<CmsMimeType> {
 
@@ -47,10 +47,10 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * Default constructor for MIME types.<p>
-     * 
+     *
      * If the extension does not start with a dot '.', then a dot is automatically added
      * as a prefix.<p>
-     * 
+     *
      * @param extension the MIME type extension
      * @param type the MIME type description
      */
@@ -61,10 +61,10 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * Special constructor for "marked" MIME types.<p>
-     * 
+     *
      * If the extension does not start with a dot '.', then a dot is automatically added
      * as a prefix.<p>
-     * 
+     *
      * @param extension the MIME type extension
      * @param type the MIME type description
      * @param configured indicates if this a MIME type read from the OpenCms configuration
@@ -81,7 +81,7 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * MIME-types are compared according to the type first, and to the extension second.<p>
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(CmsMimeType obj) {
@@ -98,7 +98,7 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * MIME-types are equal is the extension is equal.<p>
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -135,7 +135,7 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * The hash code of MIME types is build only from the extension.<p>
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -146,7 +146,7 @@ public class CmsMimeType implements Comparable<CmsMimeType> {
 
     /**
      * Returns <code>true</code> if this MIME type has been read from the OpenCms configuration.<p>
-     * 
+     *
      * @return <code>true</code> if this MIME type has been read from the OpenCms configuration
      */
     public boolean isConfigured() {

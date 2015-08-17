@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import java.util.Map;
 
 /**
  * Generalized resource categories view.<p>
- * 
+ *
  * @since 6.9.2
  */
 public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
@@ -90,7 +90,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -102,9 +102,13 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_PATH, CmsListOrderEnum.ORDER_ASCENDING, searchable
-        ? LIST_COLUMN_NAME
-        : null);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_PATH,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_NAME : null);
         m_categoryService = CmsCategoryService.getInstance();
     }
 
@@ -149,9 +153,9 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /**
      * Returns a list of categories to display.<p>
-     * 
+     *
      * @return a list of categories
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsCategory> getCategories() throws CmsException;
@@ -225,10 +229,10 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /**
      * Returns a list of a categories related to the current request resource.<p>
-     * 
+     *
      * @return a list of a categories related to the current request resource
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsCategory> getResourceCategories() throws CmsException {
 
@@ -311,14 +315,14 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         CmsListItemDetails descriptionDetails = new CmsListItemDetails(LIST_DETAIL_DESCRIPTION);
         descriptionDetails.setAtColumn(LIST_COLUMN_NAME);
         descriptionDetails.setVisible(false);
-        descriptionDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_NAME_0));
-        descriptionDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_HELP_0));
-        descriptionDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_NAME_0));
-        descriptionDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_HELP_0));
+        descriptionDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_NAME_0));
+        descriptionDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_CATEGORIES_DETAIL_SHOW_DESCRIPTION_HELP_0));
+        descriptionDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_NAME_0));
+        descriptionDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_CATEGORIES_DETAIL_HIDE_DESCRIPTION_HELP_0));
         descriptionDetails.setName(Messages.get().container(Messages.GUI_CATEGORIES_DETAIL_DESCRIPTION_NAME_0));
         descriptionDetails.setFormatter(new I_CmsListFormatter() {
 
@@ -355,7 +359,7 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /**
      * Sets the optional state change action column.<p>
-     * 
+     *
      * @param metadata the list metadata object
      */
     protected abstract void setStateActionCol(CmsListMetadata metadata);

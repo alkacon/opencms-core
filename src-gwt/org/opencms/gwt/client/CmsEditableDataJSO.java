@@ -89,8 +89,8 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
 
     /**
      * Gets the element view.<p>
-     * 
-     * @return the element view 
+     *
+     * @return the element view
      */
     public CmsUUID getElementView() {
 

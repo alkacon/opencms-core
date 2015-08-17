@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,9 @@ import java.util.Locale;
 
 /**
  * Extended after publish static export handler, supporting multi-language exports.<p>
- * 
+ *
  * @since 7.0.3
- * 
+ *
  * @see CmsAfterPublishStaticExportHandler
  * @see I_CmsStaticExportHandler
  */
@@ -70,7 +70,7 @@ public class CmsAfterPublishMultiLanguageStaticExportHandler extends CmsAfterPub
                 }
             }
         }
-        // add paths for all possible locales 
+        // add paths for all possible locales
         Iterator<CmsStaticExportRfsRule> it = m_rules.iterator();
         while (it.hasNext()) {
             CmsStaticExportRfsRule rule = it.next();

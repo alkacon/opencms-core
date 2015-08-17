@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      */
     public CmsXmlGroupContainerHandler() {
 
@@ -60,13 +60,13 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
 
     /**
      * Helper method to load and prepare the elements of a group container.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the group container resource 
-     * 
+     *
+     * @param cms the current CMS context
+     * @param resource the group container resource
+     *
      * @return the elements which have been read from the group container
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected static List<CmsContainerElementBean> loadGroupContainerElements(CmsObject cms, CmsResource resource)
     throws CmsException {
@@ -95,15 +95,16 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
         List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
-                    resource.getRootPath(),
-                    elementBean.getResource().getRootPath()));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
+                        resource.getRootPath(),
+                        elementBean.getResource().getRootPath()));
             }
             CmsResource elementResource = elementBean.getResource();
-            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(cms, elementResource).getCSSHeadIncludes(
+            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                elementResource);
+                elementResource).getCSSHeadIncludes(cms, elementResource);
             result.addAll(elementIncludes);
         }
         return result;
@@ -119,15 +120,16 @@ public class CmsXmlGroupContainerHandler extends CmsDefaultXmlContentHandler {
         List<CmsContainerElementBean> containerElements = loadGroupContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
-                    resource.getRootPath(),
-                    elementBean.getResource().getRootPath()));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
+                        resource.getRootPath(),
+                        elementBean.getResource().getRootPath()));
             }
             CmsResource elementResource = elementBean.getResource();
-            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(cms, elementResource).getJSHeadIncludes(
+            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                elementResource);
+                elementResource).getJSHeadIncludes(cms, elementResource);
             result.addAll(elementIncludes);
         }
         return result;

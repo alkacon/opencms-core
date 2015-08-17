@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,30 +42,30 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Adds a new child widget.<p>
-     * 
+     *
      * @param w the widget
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
      */
     void add(Widget w);
 
     /**
      * Registers a child drop target.<p>
-     * 
+     *
      * @param child the child
      */
     void addDndChild(I_CmsDropTarget child);
 
     /**
-     * Adopts a container-page element registering it as a child of this container. 
+     * Adopts a container-page element registering it as a child of this container.
      * Used for elements that are already child nodes of the container-element node in DOM.<p>
-     * 
+     *
      * @param containerElement the element to adopt
      */
     void adoptElement(CmsContainerPageElementPanel containerElement);
 
     /**
-     * Checks the maximum number of allowed elements and hides overflowing elements.<p> 
+     * Checks the maximum number of allowed elements and hides overflowing elements.<p>
      */
     void checkMaxElementsOnEnter();
 
@@ -88,23 +88,23 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Returns the current position info.<p>
-     * 
+     *
      * @return the position info
      */
     CmsPositionBean getPositionInfo();
 
     /**
      * Gets the number of child widgets in this panel.<p>
-     * 
+     *
      * @return the number of child widgets
      */
     int getWidgetCount();
 
     /**
      * Gets the index of the specified child widget.<p>
-     * 
+     *
      * @param w the widget
-     * 
+     *
      * @return the index
      */
     int getWidgetIndex(Widget w);
@@ -121,7 +121,7 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Puts a highlighting border around the container content using the given dimensions.<p>
-     * 
+     *
      * @param positionInfo the highlighting position to use
      */
     void highlightContainer(CmsPositionBean positionInfo);
@@ -129,7 +129,7 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
     /**
      * Inserts a child widget before the specified index.
      * If the widget is already a child of this panel, it will be moved to the specified index.<p>
-     * 
+     *
      * @param w the new child
      * @param beforeIndex the before index
      */
@@ -137,29 +137,29 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Returns <code>true</code> if this container is a detail view only container.<p>
-     * 
+     *
      * @return <code>true</code> if this container is a detail view only container
      */
     boolean isDetailOnly();
 
     /**
      * Returns <code>true</code> if this container is being currently used to display a detail view.<p>
-     * 
+     *
      * @return <code>true</code> if this container is used to display a detail view
      */
     boolean isDetailView();
 
     /**
      * Returns if the container is editable by the current user.<p>
-     * 
+     *
      * @return <code>true</code> if the container is editable by the current user
      */
     boolean isEditable();
 
-    /** 
+    /**
      * This is called when the elements of this container/group have been processed into CmsContainerPageElementPanels.<p>
-     * 
-     * @param children the processed children 
+     *
+     * @param children the processed children
      */
     void onConsumeChildren(List<CmsContainerPageElementPanel> children);
 
@@ -170,7 +170,7 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Refreshes position and dimension of the highlighting border. Call when anything changed during the drag process.<p>
-     * 
+     *
      * @param positionInfo the position info to use
      */
     void refreshHighlighting(CmsPositionBean positionInfo);
@@ -182,8 +182,8 @@ public interface I_CmsDropContainer extends I_CmsNestedDropTarget {
 
     /**
      * Sets the placeholder visibility.<p>
-     * 
-     * @param visible <code>true</code> to set the place holder visible 
+     *
+     * @param visible <code>true</code> to set the place holder visible
      */
     void setPlaceholderVisibility(boolean visible);
 

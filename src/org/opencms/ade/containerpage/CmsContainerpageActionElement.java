@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Action element for container-page editor includes.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageActionElement extends CmsGwtActionElement {
@@ -59,10 +59,10 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsContainerpageActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -106,7 +106,7 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the needed server data for client-side usage.<p> 
+     * Returns the needed server data for client-side usage.<p>
      *
      * @return the needed server data for client-side usage
      */

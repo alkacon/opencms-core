@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,12 +38,12 @@ import org.xml.sax.Attributes;
 
 /**
  * Factory to create resource type instances from the XML configuration.<p>
- * 
- * This is required because the default digester implementation will cause an exception in case 
+ *
+ * This is required because the default digester implementation will cause an exception in case
  * a resource type class is missing. However, a missing class is common if a module with a new resource type
  * class is imported. In this case, the resource type class is changes to <code>{@link org.opencms.file.types.CmsResourceTypeUnknown}</code>,
  * so that the import of the resources can proceed.<p>
- * 
+ *
  * @since 6.0.2
  */
 public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreationFactory {
@@ -52,7 +52,7 @@ public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreati
     private static final Log LOG = CmsLog.getLog(CmsDigesterResourceTypeCreationFactory.class);
 
     /**
-     * Default constructor for the resource type configuration factory.<p> 
+     * Default constructor for the resource type configuration factory.<p>
      */
     public CmsDigesterResourceTypeCreationFactory() {
 
@@ -78,10 +78,12 @@ public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreati
             // resource type is unknown, use dummy class to import the module resources
             type = new CmsResourceTypeUnknown();
             // write an error to the log
-            LOG.error(Messages.get().getBundle().key(
-                Messages.ERR_UNKNOWN_RESTYPE_CLASS_2,
-                className,
-                type.getClass().getName()), e);
+            LOG.error(
+                Messages.get().getBundle().key(
+                    Messages.ERR_UNKNOWN_RESTYPE_CLASS_2,
+                    className,
+                    type.getClass().getName()),
+                e);
         }
         return type;
     }

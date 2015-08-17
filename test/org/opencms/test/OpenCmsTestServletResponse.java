@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Very incomplete implementation of <code>HttpServletResponse</code> for testing.<p>
- * 
+ *
  */
 public class OpenCmsTestServletResponse implements HttpServletResponse {
 
@@ -82,9 +82,10 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
-     * 
+     *
      * @deprecated deprecated in Java standard, but still required to implement
      */
+    @Deprecated
     public String encodeRedirectUrl(String arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -100,9 +101,10 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
-     * 
+     *
      * @deprecated deprecated in Java standard, but still required to implement
      */
+    @Deprecated
     public String encodeUrl(String arg0) {
 
         throw new RuntimeException("Not implemented");
@@ -294,9 +296,10 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
-     * 
+     *
      * @deprecated deprecated in Java standard, but still required to implement
      */
+    @Deprecated
     public void setStatus(int arg0, String arg1) {
 
         throw new RuntimeException("Not implemented");

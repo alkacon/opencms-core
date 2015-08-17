@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Handles all RPC services related to the gallery dialog.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.galleries.CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService
  * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryServiceAsync
@@ -54,7 +54,7 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Deletes the given resource.<p>
-     * 
+     *
      * @param resourcePath the resource path of the resource to delete
      * @param callback the callback
      */
@@ -62,14 +62,14 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Loads the gallery configuration for the adeView mode.<p>
-     * 
-     * @param callback the callback for the result 
+     *
+     * @param callback the callback for the result
      */
     void getAdeViewModeConfiguration(AsyncCallback<CmsGalleryConfiguration> callback);
 
     /**
      * Returns the available galleries depending on the given resource types.<p>
-     * 
+     *
      * @param resourceTypes the resource types
      * @param callback the callback
      */
@@ -77,7 +77,7 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Returns the resource info for a single resource.<p>
-     * 
+     *
      * @param path the resource path
      * @param locale the content locale
      * @param callback the callback
@@ -86,7 +86,7 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Returns the initial data for the given gallery mode.<p>
-     * 
+     *
      * @param conf the gallery configuration
      * @param callback the callback
      */
@@ -94,15 +94,15 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Performs an initial search based on the given data bean and the available parameters of the request.<p>
-     * 
+     *
      * @param data the data bean
      * @param callback the callback
      */
     void getSearch(CmsGalleryDataBean data, AsyncCallback<CmsGallerySearchBean> callback);
 
     /**
-     * Returns the gallery search object containing search results and the currant search parameter.<p>  
-     * 
+     * Returns the gallery search object containing search results and the currant search parameter.<p>
+     *
      * @param searchObj the current search object
      * @param callback the callback
      */
@@ -110,37 +110,37 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Returns the sub entries to the given sitemap path.<p>
-     * 
-     * @param rootPath the root path 
+     *
+     * @param rootPath the root path
      * @param isRoot <code>true</code> if the requested entry is the root entry
-     * @param callback the asynchronous callback 
+     * @param callback the asynchronous callback
      */
     void getSubEntries(String rootPath, boolean isRoot, AsyncCallback<List<CmsSitemapEntryBean>> callback);
 
     /**
      * Gets the sub-folders of a folder.<p>
-     * 
+     *
      * @param path the path of a folder
-     * @param callback the asynchronous callback 
+     * @param callback the asynchronous callback
      */
     void getSubFolders(String path, AsyncCallback<List<CmsVfsEntryBean>> callback);
 
     /**
      * Loads the root VFS entry bean for the given site root.<p>
-     * 
-     * @param path the site root  
-     * @param resultCallback the callback for the result 
+     *
+     * @param path the site root
+     * @param resultCallback the callback for the result
      * */
     void loadVfsEntryBean(String path, AsyncCallback<CmsVfsEntryBean> resultCallback);
 
     /**
      * Saves the tree open state.<p>
-     * 
-     * @param treeName the tree name 
-     * @param treeToken the tree token 
-     * @param siteRoot the site root 
-     * @param openItems the open items 
-     * @param callback the result callback 
+     *
+     * @param treeName the tree name
+     * @param treeToken the tree token
+     * @param siteRoot the site root
+     * @param openItems the open items
+     * @param callback the result callback
      */
     void saveTreeOpenState(
         String treeName,
@@ -151,7 +151,7 @@ public interface I_CmsGalleryServiceAsync {
 
     /**
      * Updates the offline indices.<p>
-     * 
+     *
      * @param callback  the callback
      */
     void updateIndex(AsyncCallback<Void> callback);

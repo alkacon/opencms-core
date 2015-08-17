@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
  * Defines a menu item rule for the sub menu generation that checks the visibility of the sub items to show.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirSubStandard extends A_CmsMenuItemRule {
@@ -65,7 +65,7 @@ public class CmsMirSubStandard extends A_CmsMenuItemRule {
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        // this rule always matches        
+        // this rule always matches
         return true;
     }
 

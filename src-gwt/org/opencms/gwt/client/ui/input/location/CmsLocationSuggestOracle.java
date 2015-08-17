@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param address the address
          */
         public LocationSuggestion(String address) {
@@ -82,7 +82,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the location controller
      */
     public CmsLocationSuggestOracle(CmsLocationController controller) {
@@ -92,7 +92,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
 
     /**
      * Adds a location suggestion to the list.<p>
-     * 
+     *
      * @param suggestions the suggestions list
      * @param address the address
      */
@@ -103,7 +103,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
 
     /**
      * Creates a location suggestions list.<p>
-     * 
+     *
      * @return the location suggestions list
      */
     private static List<LocationSuggestion> createSuggestList() {
@@ -113,7 +113,7 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
 
     /**
      * Executes the suggestions callback.<p>
-     * 
+     *
      * @param request the suggestions request
      * @param suggestions the suggestions
      * @param callback the callback
@@ -147,11 +147,11 @@ public class CmsLocationSuggestOracle extends SuggestOracle {
                                                                                           if (results
                                                                                           && (status == $wnd.google.maps.places.PlacesServiceStatus.OK)) {
                                                                                           for (var i = 0; i < results.length; i++) {
-                                                                                          var lat = 0; 
+                                                                                          var lat = 0;
                                                                                           //results[i].geometry.location.lat();
-                                                                                          var lng =0; 
+                                                                                          var lng =0;
                                                                                           //results[i].geometry.location.lng();
-                                                                                          var address = results[i].description; 
+                                                                                          var address = results[i].description;
                                                                                           //results[i].formatted_address;
                                                                                           @org.opencms.gwt.client.ui.input.location.CmsLocationSuggestOracle::addSuggestion(Ljava/util/List;Ljava/lang/String;)(suggestions, address);
                                                                                           }

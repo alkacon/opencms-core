@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,12 +34,12 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.apache.commons.logging.Log;
 
 /**
- * Visitor implementation that provides validation for all visited values.<p> 
- * 
- * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)} 
+ * Visitor implementation that provides validation for all visited values.<p>
+ *
+ * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)}
  * is called validate a XML content object.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
 
@@ -53,8 +53,8 @@ class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
     CmsXmlContentErrorHandler m_errorHandler;
 
     /**
-     * Creates a new validation node visitor.<p> 
-     * 
+     * Creates a new validation node visitor.<p>
+     *
      * @param cms the initialized OpenCms user context (required for VFS access)
      */
     public CmsXmlContentValidationVisitor(CmsObject cms) {
@@ -67,7 +67,7 @@ class CmsXmlContentValidationVisitor implements I_CmsXmlContentValueVisitor {
 
     /**
      * Returns the error handler instance that stores the errors and warnings found.<p>
-     * 
+     *
      * @return the error handler instance that stores the errors and warnings found
      */
     public CmsXmlContentErrorHandler getErrorHandler() {

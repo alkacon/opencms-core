@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import java.util.Set;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -61,7 +61,7 @@ public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new input widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsDisplayWidget(String configuration) {
@@ -185,7 +185,7 @@ public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
         }
         helpIdsShown.add(helpId);
 
-        // calculate the key        
+        // calculate the key
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
@@ -249,9 +249,9 @@ public class CmsDisplayWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Returns the localized help key for the provided widget parameter.<p>
-     * 
+     *
      * @param param the widget parameter to return the localized help key for
-     * 
+     *
      * @return the localized help key for the provided widget parameter
      */
     private String getDisabledHelpKey(I_CmsWidgetParameter param) {

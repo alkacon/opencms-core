@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,22 +31,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean for storing information about whether a resource could be locked or not, and if not, why.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsLockInfo implements IsSerializable {
 
-    /** 
+    /**
      * An enum indicating the success or type of failure of a locking operation.<p>
      */
     public enum State {
         /** The resource was already locked by another user. */
-        locked,
-        /** The resource has changed in the meantime. */
-        changed,
-        /** The resource was successfully locked. */
-        success,
-        /** Some other error occurred. */
+        locked, /** The resource has changed in the meantime. */
+        changed, /** The resource was successfully locked. */
+        success, /** Some other error occurred. */
         other;
     }
 
@@ -61,10 +58,10 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Creates a new lock info bean.<p>
-     * 
-     * @param state the state of the locking operation 
-     * @param user a user name 
-     * @param exceptionMessage an additional error message 
+     *
+     * @param state the state of the locking operation
+     * @param user a user name
+     * @param exceptionMessage an additional error message
      */
     public CmsLockInfo(State state, String user, String exceptionMessage) {
 
@@ -83,9 +80,9 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Creates a new info bean for a resource which has changed since it was opened.<p>
-     * 
-     * @param user the user by which it was changed 
-     * @return the new lock info bean 
+     *
+     * @param user the user by which it was changed
+     * @return the new lock info bean
      */
     public static CmsLockInfo forChangedResource(String user) {
 
@@ -94,10 +91,10 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Creates a new info bean for other types of errors.<p>
-     * 
-     * @param errorMessage the additional error message 
-     * 
-     * @return the new lock info bean 
+     *
+     * @param errorMessage the additional error message
+     *
+     * @return the new lock info bean
      */
     public static CmsLockInfo forError(String errorMessage) {
 
@@ -106,10 +103,10 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Returns a lock info bean for  a resource locked by another user.<p>
-     * 
-     * @param lockUser the other user 
-     * 
-     * @return the new lock info bean 
+     *
+     * @param lockUser the other user
+     *
+     * @return the new lock info bean
      */
     public static CmsLockInfo forLockedResource(String lockUser) {
 
@@ -118,8 +115,8 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Returns a lock info bean for a successful lock operation.<p>
-     * 
-     * @return the new lock info bean 
+     *
+     * @return the new lock info bean
      */
     public static CmsLockInfo forSuccess() {
 
@@ -128,7 +125,7 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Returns true if the locking succeeded.<p>
-     * 
+     *
      * @return true if the locking succeeded
      */
     public boolean couldLock() {
@@ -138,18 +135,18 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Returns the additional error message.<p>
-     *  
-     * @return the additional error message 
+     *
+     * @return the additional error message
      */
     public String getErrorMessage() {
 
         return m_exceptionMessage;
     }
 
-    /** 
+    /**
      * Returns the state of the locking operation.<p>
-     * 
-     * @return the state of the locking operation 
+     *
+     * @return the state of the locking operation
      */
     public State getState() {
 
@@ -158,8 +155,8 @@ public class CmsLockInfo implements IsSerializable {
 
     /**
      * Returns the user name.<p>
-     * 
-     * @return a user name 
+     *
+     * @return a user name
      */
     public String getUser() {
 

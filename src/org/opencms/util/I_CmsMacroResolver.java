@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,14 +30,14 @@ package org.opencms.util;
 /**
  * Describes a macro mapper, which is used to efficiently resolve macros
  * in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
- * 
- * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to 
+ *
+ * Starting with OpenCms 7.0, the preferred form of a macro is <code>%(key)</code>. This is to
  * avoid conflicts / confusion with the JSP EL, which also uses the <code>${key}</code> syntax.<p>
- * 
- * The macro replacement is pre-implemented in 
+ *
+ * The macro replacement is pre-implemented in
  * <code>{@link org.opencms.util.CmsMacroResolver#resolveMacros(String, I_CmsMacroResolver)}</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsMacroResolver {
 
@@ -60,30 +60,30 @@ public interface I_CmsMacroResolver {
     char MACRO_START_OLD = '{';
 
     /**
-     * Resolves a single macro to the macro value, returns <code>null</code> if the macro could not be resolved.<p> 
-     * 
+     * Resolves a single macro to the macro value, returns <code>null</code> if the macro could not be resolved.<p>
+     *
      * @param macro the macro to resolve
      * @return the resolved macro or <code>null</code> if the macro could not be resolved
      */
     String getMacroValue(String macro);
 
     /**
-     * Returns <code>true</code> if macros that could not be resolved are kept "as is" in the 
+     * Returns <code>true</code> if macros that could not be resolved are kept "as is" in the
      * input String, <code>false</code> if they are replaced by an empty String.<p>
-     * 
-     * @return <code>true</code> if macros that could not be resolved are kept "as is" in the 
+     *
+     * @return <code>true</code> if macros that could not be resolved are kept "as is" in the
      *      input String, <code>false</code> if they are replaced by an empty String
      */
     boolean isKeepEmptyMacros();
 
     /**
-     * Resolves all macros in the input, replacing them with the macro values.<p> 
-     * 
-     * The flag {@link #isKeepEmptyMacros()} controls how to deal with  
-     * macros found in the input that can not be resolved. 
-     * 
+     * Resolves all macros in the input, replacing them with the macro values.<p>
+     *
+     * The flag {@link #isKeepEmptyMacros()} controls how to deal with
+     * macros found in the input that can not be resolved.
+     *
      * @param input the input to resolve the macros in
-     * 
+     *
      * @return the input with all macros resolved
      */
     String resolveMacros(String input);

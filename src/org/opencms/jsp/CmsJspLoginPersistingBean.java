@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,10 +43,10 @@ import javax.servlet.http.Cookie;
 
 import org.apache.commons.logging.Log;
 
-/** 
+/**
  * Login bean which sets a cookie that can be used by {@link CmsPersistentLoginAuthorizationHandler} to automatically
- * log the user back in when his session has expired. 
- * 
+ * log the user back in when his session has expired.
+ *
  * The cookie's lifetime can be set using the setTokenLifetime method
  */
 public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
@@ -63,18 +63,18 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLoginPersistingBean.class);
 
-    /** 
+    /**
      * Gets the path to use for the authorization cookie, optionally resolving any macros used.<p>
-     * 
-     * @param resolveMacros if true, macros should be resolved 
-     * @return the authorization cookie path 
+     *
+     * @param resolveMacros if true, macros should be resolved
+     * @return the authorization cookie path
      */
     public String getCookiePath(boolean resolveMacros) {
 
         String result = m_cookiePath;
         if (resolveMacros) {
             CmsMacroResolver resolver = new CmsMacroResolver();
-            // add special mappings for macros 
+            // add special mappings for macros
             resolver.addMacro("CONTEXT_NAME", OpenCms.getSystemInfo().getContextPath());
             resolver.addMacro("SERVLET_NAME", OpenCms.getSystemInfo().getServletPath());
             result = resolver.resolveMacros(result);
@@ -82,9 +82,9 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
         return result;
     }
 
-    /** 
+    /**
      * Returns true if the token has been set.<p>
-     * 
+     *
      * @return true if the token has been set
      */
     public boolean isTokenSet() {
@@ -127,10 +127,10 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
 
     /**
      * Logs the user out and optionally invalidates their login token.<p>
-     *  
+     *
      * @param invalidateToken true if the token should be invalidated
-     *  
-     * @throws IOException if something goes wrong 
+     *
+     * @throws IOException if something goes wrong
      */
     public void logout(boolean invalidateToken) throws IOException {
 
@@ -142,9 +142,11 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
                 cookie.setMaxAge(0);
                 cookie.setPath(getCookiePath(true));
                 getResponse().addCookie(cookie);
-                tokenHandler.invalidateToken(user, CmsRequestUtil.getCookieValue(
-                    getRequest().getCookies(),
-                    CmsPersistentLoginAuthorizationHandler.COOKIE_NAME));
+                tokenHandler.invalidateToken(
+                    user,
+                    CmsRequestUtil.getCookieValue(
+                        getRequest().getCookies(),
+                        CmsPersistentLoginAuthorizationHandler.COOKIE_NAME));
             } catch (Exception e) {
                 LOG.error("Could not invalidate tokens for user " + user, e);
             }
@@ -156,21 +158,21 @@ public class CmsJspLoginPersistingBean extends CmsJspLoginBean {
 
     /**
      * Sets the path to use for the login token cookie.<p>
-     * 
-     * You can use the macros %(SERVLET_NAME) and %(CONTEXT_NAME) in the cookie path; the default 
+     *
+     * You can use the macros %(SERVLET_NAME) and %(CONTEXT_NAME) in the cookie path; the default
      * value is %(CONTEXT_NAME)%(SERVLET_NAME).<p>
-     * 
-     * @param cookiePath the cookie path, possibly including macros 
+     *
+     * @param cookiePath the cookie path, possibly including macros
      */
     public void setCookiePath(String cookiePath) {
 
         m_cookiePath = cookiePath;
     }
 
-    /** 
+    /**
      * Sets the number of milliseconds for which the tokens should be valid.<p>
-     * 
-     * @param lifetime the token life time 
+     *
+     * @param lifetime the token life time
      */
     public void setTokenLifetime(long lifetime) {
 

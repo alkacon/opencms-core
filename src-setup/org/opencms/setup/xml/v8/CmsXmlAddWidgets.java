@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,8 +42,8 @@ import org.dom4j.Document;
 
 /**
  * Updates the widget configuration.<p>
- * 
- * 
+ *
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddWidgets extends A_CmsXmlVfs {
@@ -51,7 +51,7 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
     /** List of xpaths to update. */
     private List<String> m_xpaths;
 
-    /** 
+    /**
      * The new widget definition data.<p>
      */
     private String[][] m_widgets = {
@@ -119,10 +119,10 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for a widget with a given alias.<p>
-     * 
+     *
      * @param alias the widget alias
-     * 
-     * @return the xpath for the widget with the given alias 
+     *
+     * @return the xpath for the widget with the given alias
      */
     protected String xpathForWidgetByAlias(String alias) {
 
@@ -139,10 +139,10 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath of the class attribute for a widget with a given alias.<p>
-     * 
-     * @param alias the widget alias 
-     * 
-     * @return the xpath of the widget's class attribute 
+     *
+     * @param alias the widget alias
+     *
+     * @return the xpath of the widget's class attribute
      */
     protected String xpathForWidgetClassAttribute(String alias) {
 
@@ -151,8 +151,8 @@ public class CmsXmlAddWidgets extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for the widgets node.<p>
-     * 
-     * @return the xpath for the widgets node 
+     *
+     * @return the xpath for the widgets node
      */
     protected String xpathForWidgets() {
 

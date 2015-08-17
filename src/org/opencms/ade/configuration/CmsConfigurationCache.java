@@ -20,7 +20,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,7 @@ import com.google.common.collect.Maps;
 /**
  * This is the internal cache class used for storing configuration data. It is not public because it is only meant
  * for internal use.<p>
- * 
+ *
  * It stores an instance of {@link CmsADEConfigData} for each active configuration file in the sitemap,
  * and a single instance which represents the merged configuration from all the modules. When a sitemap configuration
  * file is updated, only the single instance for that configuration file is updated, whereas if a module configuration file
@@ -106,22 +106,22 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         60,
         TimeUnit.MINUTES).maximumSize(30000).concurrencyLevel(8).build(new CacheLoader<CmsResource, Boolean>() {
 
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public Boolean load(CmsResource key) throws Exception {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public Boolean load(CmsResource key) throws Exception {
 
-            if (m_state == null) {
-                // this can only happen before the ADE manager is initialized  
-                return Boolean.FALSE;
+                if (m_state == null) {
+                    // this can only happen before the ADE manager is initialized
+                    return Boolean.FALSE;
+                }
+                try {
+                    return Boolean.valueOf(m_state.isDetailPage(m_cms, key));
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    return Boolean.FALSE;
+                }
             }
-            try {
-                return Boolean.valueOf(m_state.isDetailPage(m_cms, key));
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                return Boolean.FALSE;
-            }
-        }
-    });
+        });
 
     /** The element view resource type. */
     private I_CmsResourceType m_elementViewType;
@@ -137,20 +137,20 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      *  A set of IDs which represent the configuration updates to perform. The IDs in this set
-     * are either the structure IDs of sitemap configurations to reload, or special IDs which 
-     * are not structure IDs but signal e.g. that the complete configuration should be reloaded. 
+     * are either the structure IDs of sitemap configurations to reload, or special IDs which
+     * are not structure IDs but signal e.g. that the complete configuration should be reloaded.
      */
     private CmsSynchronizedUpdateSet<CmsUUID> m_updateSet = new CmsSynchronizedUpdateSet<CmsUUID>();
 
     /** A wait handle which is used for waiting until the update task has run (e.g. for testing purposes). */
     private CmsWaitHandle m_waitHandle = new CmsWaitHandle();
 
-    /** 
+    /**
      * Creates a new cache instance.<p>
-     * 
+     *
      * @param cms the CMS object used for reading the configuration data
-     * @param configType the sitemap configuration file type 
-     * @param moduleConfigType the module configuration file type 
+     * @param configType the sitemap configuration file type
+     * @param moduleConfigType the module configuration file type
      * @param elementViewType the element view resource type
      */
     public CmsConfigurationCache(
@@ -165,12 +165,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         m_elementViewType = elementViewType;
     }
 
-    /** 
+    /**
      * Gets the base path for a given sitemap configuration file.<p>
-     * 
+     *
      * @param siteConfigFile the root path of the sitemap configuration file
-     *  
-     * @return the base path for the sitemap configuration file 
+     *
+     * @return the base path for the sitemap configuration file
      */
     public static String getBasePath(String siteConfigFile) {
 
@@ -187,17 +187,18 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
         m_updateSet.add(ID_UPDATE_ALL);
         m_detailPageIdCache.invalidateAll();
+        m_pathCache.clear();
     }
 
     /**
      * Looks up the root path for a given structure id.<p>
      *
      * This is used for correcting the paths of cached resource objects.<p>
-     * 
-     * @param structureId the structure id 
+     *
+     * @param structureId the structure id
      * @return the root path for the structure id
-     * 
-     * @throws CmsException if the resource with the given id was not found or another error occurred 
+     *
+     * @throws CmsException if the resource with the given id was not found or another error occurred
      */
     public String getPathForStructureId(CmsUUID structureId) throws CmsException {
 
@@ -210,20 +211,20 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         return res.getRootPath();
     }
 
-    /** 
+    /**
      * Gets the currently cached configuration state.<p>
-     * 
-     * @return the currently cached configuration state 
+     *
+     * @return the currently cached configuration state
      */
     public CmsADEConfigCacheState getState() {
 
         return m_state;
     }
 
-    /** 
+    /**
      * Gets the wait handle which can be used to wait until the update task has run.<p>
-     * 
-     * @return the wait handle 
+     *
+     * @return the wait handle
      */
     public CmsWaitHandle getWaitHandleForUpdateTask() {
 
@@ -236,12 +237,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     public void initialize() {
 
         if (m_taskFuture != null) {
-            // in case initialize has been called before on this object, cancel the existing task 
+            // in case initialize has been called before on this object, cancel the existing task
             m_taskFuture.cancel(false);
             m_taskFuture = null;
         }
         m_state = readCompleteConfiguration();
-        // In debug mode, use a shorter delay to speed up the test cases 
+        // In debug mode, use a shorter delay to speed up the test cases
         long delay = DEBUG ? 500 : TASK_DELAY_MILLIS;
         m_taskFuture = OpenCms.getExecutor().scheduleWithFixedDelay(new Runnable() {
 
@@ -255,10 +256,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     /**
      * Checks if the given resource is a detail page.<p>
      * Delegates the actual work to the cache state, but also caches the result.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource to check 
-     * @return true if the given resource is a detail page 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource to check
+     * @return true if the given resource is a detail page
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
@@ -275,10 +276,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
-    /** 
+    /**
      * Reads the complete configuration (sitemap and module configurations).<p>
-     * 
-     * @return an object representing the currently active configuration 
+     *
+     * @return an object representing the currently active configuration
      */
     public CmsADEConfigCacheState readCompleteConfiguration() {
 
@@ -328,8 +329,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Removes a published resource from the cache.<p>
-     * 
-     * @param res the published resource 
+     *
+     * @param res the published resource
      */
     public void remove(CmsPublishedResource res) {
 
@@ -338,8 +339,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Removes a resource from the cache.<p>
-     * 
-     * @param res the resource to remove 
+     *
+     * @param res the resource to remove
      */
     public void remove(CmsResource res) {
 
@@ -348,7 +349,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Updates the cache entry for the given published resource.<p>
-     * 
+     *
      * @param res a published resource
      */
     public void update(CmsPublishedResource res) {
@@ -361,9 +362,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
-    /** 
+    /**
      * Updates the cache entry for the given resource.<p>
-     * 
+     *
      * @param res the resource for which the cache entry should be updated
      */
     public void update(CmsResource res) {
@@ -378,21 +379,21 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Checks whether the given path/type combination belongs to a module configuration file.<p>
-     * 
-     * @param rootPath the root path of the resource 
-     * @param type the type id of the resource 
-     * 
-     * @return true if the path/type combination belongs to a module configuration 
+     *
+     * @param rootPath the root path of the resource
+     * @param type the type id of the resource
+     *
+     * @return true if the path/type combination belongs to a module configuration
      */
     protected boolean isModuleConfiguration(String rootPath, int type) {
 
         return type == m_moduleConfigType.getTypeId();
     }
 
-    /** 
+    /**
      * Returns true if this an online configuration cache.<p>
-     * 
-     * @return true if this is an online cache, false if it is an offline cache 
+     *
+     * @return true if this is an online cache, false if it is an offline cache
      */
     protected boolean isOnline() {
 
@@ -400,12 +401,12 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
     }
 
     /**
-     * Checks whether the given path/type combination belongs to a sitemap configuration.<p> 
-     * 
-     * @param rootPath the root path 
-     * @param type the resource type id 
-     * 
-     * @return true if the path/type belong to an active sitemap configuration 
+     * Checks whether the given path/type combination belongs to a sitemap configuration.<p>
+     *
+     * @param rootPath the root path
+     * @param type the resource type id
+     *
+     * @return true if the path/type belong to an active sitemap configuration
      */
     protected boolean isSitemapConfiguration(String rootPath, int type) {
 
@@ -414,7 +415,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Loads the available element views.<p>
-     * 
+     *
      * @return the element views
      */
     protected Map<CmsUUID, CmsElementView> loadElementViews() {
@@ -422,7 +423,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         List<CmsElementView> views = new ArrayList<CmsElementView>();
         views.add(CmsElementView.DEFAULT_ELEMENT_VIEW);
         try {
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(m_elementViewType.getTypeId());
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                m_elementViewType.getTypeId());
             List<CmsResource> groups = m_cms.readResources("/", filter);
             for (CmsResource res : groups) {
                 try {
@@ -442,10 +444,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         return elementViews;
     }
 
-    /** 
+    /**
      * Loads a list of module configurations from the VFS.<p>
-     * 
-     * @return the module configurations 
+     *
+     * @return the module configurations
      */
     protected List<CmsADEConfigDataInternal> loadModuleConfiguration() {
 
@@ -458,33 +460,33 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
-    /** 
+    /**
      * Checks if any configuration updates are required, and performs them if necessary.<p>
-     * 
+     *
      * This should only be called from the scheduled update task.<p>
      */
     protected void performUpdate() {
 
-        // Wrap a try-catch around everything, because an escaping exception would cancel the task from which this is called 
+        // Wrap a try-catch around everything, because an escaping exception would cancel the task from which this is called
         try {
             Set<CmsUUID> updateIds = m_updateSet.removeAll();
             CmsADEConfigCacheState oldState = m_state;
             if (!updateIds.isEmpty() || (oldState == null)) {
                 try {
-                    // Although  the updates are performed in a scheduled task, it is still possible 
+                    // Although  the updates are performed in a scheduled task, it is still possible
                     // that the task is scheduled immediately after a configuration update event. So
-                    // here we ensure that there is at least a small delay between the event and the 
-                    // actual update. This is required to prevent problems with other caches. 
+                    // here we ensure that there is at least a small delay between the event and the
+                    // actual update. This is required to prevent problems with other caches.
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    // ignore 
+                    // ignore
                 }
                 if (updateIds.contains(ID_UPDATE_ALL) || (oldState == null)) {
                     m_state = readCompleteConfiguration();
                 } else {
                     boolean updateModules = updateIds.remove(ID_UPDATE_MODULES);
                     boolean updateElementViews = updateIds.remove(ID_UPDATE_ELEMENT_VIEWS);
-                    updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set 
+                    updateIds.remove(ID_UPDATE_FOLDERTYPES); // folder types are always updated when the update set is not empty, so at this point we don't care whether the id for folder type updates actually is in the update set
                     Map<CmsUUID, CmsADEConfigDataInternal> updateMap = Maps.newHashMap();
                     for (CmsUUID structureId : updateIds) {
                         CmsADEConfigDataInternal sitemapConfig = parseSitemapConfiguration(structureId);
@@ -510,10 +512,10 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Removes the cache entry for the given resource data.<p>
-     * 
-     * @param structureId the resource structure id 
-     * @param rootPath the resource root path 
-     * @param type the resource type 
+     *
+     * @param structureId the resource structure id
+     * @param rootPath the resource root path
+     * @param type the resource type
      */
     protected void remove(CmsUUID structureId, String rootPath, int type) {
 
@@ -534,11 +536,11 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Updates the cache entry for the given resource data.<p>
-     * 
-     * @param structureId the structure id of the resource  
-     * @param rootPath the root path of the resource 
-     * @param type the type id of the resource 
-     * @param resState the state of the resource 
+     *
+     * @param structureId the structure id of the resource
+     * @param rootPath the root path of the resource
+     * @param type the type id of the resource
+     * @param resState the state of the resource
      */
     protected void update(CmsUUID structureId, String rootPath, int type, CmsResourceState resState) {
 
@@ -558,19 +560,19 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
-    /** 
-     * Parses a sitemap configuration from a resource given its structure id, and either returns 
-     * the parsed sitemap configuration, or null if reading or parsing the resource fails or if 
+    /**
+     * Parses a sitemap configuration from a resource given its structure id, and either returns
+     * the parsed sitemap configuration, or null if reading or parsing the resource fails or if
      * the resource is not a valid sitemap configuration.<p>
-     * 
-     * @param id the structure id of a resource 
-     * @return the sitemap configuration parsed from the resource, or null on failure 
+     *
+     * @param id the structure id of a resource
+     * @return the sitemap configuration parsed from the resource, or null on failure
      */
     CmsADEConfigDataInternal parseSitemapConfiguration(CmsUUID id) {
 
         try {
             CmsResource configResource = m_cms.readResource(id);
-            // Path or type may have changed in the meantime, so need to check if it's still a sitemap configuration 
+            // Path or type may have changed in the meantime, so need to check if it's still a sitemap configuration
             if (isSitemapConfiguration(configResource.getRootPath(), configResource.getTypeId())) {
                 CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
                 String basePath = getBasePath(configResource.getRootPath());
@@ -593,9 +595,9 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
 
     /**
      * Checks if the given type id is of the element view type.<p>
-     * 
+     *
      * @param type the type id to check
-     * 
+     *
      * @return <code>true</code> if the given type id is of the element view type
      */
     private boolean isElementView(int type) {

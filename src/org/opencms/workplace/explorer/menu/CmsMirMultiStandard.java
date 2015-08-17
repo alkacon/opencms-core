@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 /**
  * Defines a menu item rule for the multi context menu that sets the visibility to active in the offline projects
  * and to inactive in the online project.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirMultiStandard extends A_CmsMenuItemRule {
@@ -48,7 +48,8 @@ public class CmsMirMultiStandard extends A_CmsMenuItemRule {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_ONLINEPROJECT_0);
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_ONLINEPROJECT_0);
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }

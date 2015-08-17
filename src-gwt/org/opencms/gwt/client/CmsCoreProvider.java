@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,9 +56,9 @@ import com.google.web.bindery.event.shared.SimpleEventBus;
 
 /**
  * Client side core data provider.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.CmsGwtActionElement
  */
 public final class CmsCoreProvider extends CmsCoreData {
@@ -88,9 +88,9 @@ public final class CmsCoreProvider extends CmsCoreData {
     private boolean m_isIe7;
 
     /**
-     * Prevent instantiation.<p> 
-     * 
-     * @throws SerializationException if deserialization failed 
+     * Prevent instantiation.<p>
+     *
+     * @throws SerializationException if deserialization failed
      */
     protected CmsCoreProvider()
     throws SerializationException {
@@ -104,7 +104,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the client message instance.<p>
-     * 
+     *
      * @return the client message instance
      */
     public static CmsCoreProvider get() {
@@ -113,9 +113,10 @@ public final class CmsCoreProvider extends CmsCoreData {
             try {
                 INSTANCE = new CmsCoreProvider();
             } catch (SerializationException e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of core data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of core data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
             }
         }
         return INSTANCE;
@@ -123,10 +124,10 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Gets the content attribute of a meta tag with a given name.<p>
-     * 
+     *
      * @param nameToFind the name of the meta tag
-     *  
-     * @return the content attribute value of the found meta tag, or null if no meta tag with the given name was found 
+     *
+     * @return the content attribute value of the found meta tag, or null if no meta tag with the given name was found
      */
     public static String getMetaElementContent(String nameToFind) {
 
@@ -143,7 +144,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the core service instance.<p>
-     * 
+     *
      * @return the core service instance
      */
     public static I_CmsCoreServiceAsync getService() {
@@ -158,7 +159,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the vfs service instance.<p>
-     * 
+     *
      * @return the vfs service instance
      */
     public static I_CmsVfsServiceAsync getVfsService() {
@@ -173,11 +174,11 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Adds the current site root of this context to the given resource name.<p>
-     * 
+     *
      * @param sitePath the resource name
-     * 
+     *
      * @return the translated resource name including site root
-     * 
+     *
      * @see #removeSiteRoot(String)
      */
     public String addSiteRoot(String sitePath) {
@@ -199,7 +200,7 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Creates a new CmsUUID.<p>
-     * 
+     *
      * @param callback the callback to execute
      */
     public void createUUID(final AsyncCallback<CmsUUID> callback) {
@@ -228,10 +229,10 @@ public final class CmsCoreProvider extends CmsCoreData {
         action.execute();
     }
 
-    /** 
+    /**
      * Fires a client side event.<p>
-     * 
-     * @param event the event to fire 
+     *
+     * @param event the event to fire
      */
     public void fireEvent(Event<?> event) {
 
@@ -240,14 +241,14 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the adjusted site root for a resource using the provided site root as a base.<p>
-     * 
+     *
      * Usually, this would be the site root for the current site.
      * However, if a resource from the <code>/system/</code> folder is requested,
      * this will be the empty String.<p>
-     * 
+     *
      * @param siteRoot the site root of the current site
      * @param resourcename the resource name to get the adjusted site root for
-     * 
+     *
      * @return the adjusted site root for the resource
      */
     public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
@@ -261,8 +262,8 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the approximate time on the server.<p>
-     * 
-     * @return the approximate server time  
+     *
+     * @return the approximate server time
      */
     public long getEstimatedServerTime() {
 
@@ -271,8 +272,8 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Gets the core event bus.<p>
-     * 
-     * @return the core event bus 
+     *
+     * @return the core event bus
      */
     public EventBus getEventBus() {
 
@@ -281,8 +282,8 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Gets the unique active item container which holds a reference to the currently active content element flyout menu.<p>
-     * 
-     * @return the unique active item container for flyout menus 
+     *
+     * @return the unique active item container for flyout menus
      */
     public CmsUniqueActiveItemContainer getFlyoutMenuContainer() {
 
@@ -292,9 +293,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Fetches the state of a resource from the server.<p>
-     * 
-     * @param structureId the structure id of the resource 
-     * @param callback the callback which should receive the result 
+     *
+     * @param structureId the structure id of the resource
+     * @param callback the callback which should receive the result
      */
     public void getResourceState(final CmsUUID structureId, final AsyncCallback<CmsResourceState> callback) {
 
@@ -325,9 +326,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the resource type name for a given filename.<p>
-     * 
+     *
      * @param file the file info
-     * 
+     *
      * @return the resource type name
      */
     public String getResourceType(CmsFileInfo file) {
@@ -352,9 +353,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns an absolute link given a site path.<p>
-     * 
+     *
      * @param sitePath the site path
-     * 
+     *
      * @return the absolute link
      */
     public String link(String sitePath) {
@@ -364,9 +365,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Locks the given resource with a temporary lock, synchronously.<p>
-     * 
-     * @param structureId the resource structure id 
-     * 
+     *
+     * @param structureId the resource structure id
+     *
      * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
     public boolean lock(final CmsUUID structureId) {
@@ -405,10 +406,10 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Tries to lock a resource with a given structure id and returns an error if the locking fails.<p>
-     * 
-     * @param structureId the structure id of the resource to lock 
-     * 
-     * @return the error message or null if the locking succeeded 
+     *
+     * @param structureId the structure id of the resource to lock
+     *
+     * @return the error message or null if the locking succeeded
      */
     public String lockOrReturnError(final CmsUUID structureId) {
 
@@ -447,10 +448,10 @@ public final class CmsCoreProvider extends CmsCoreData {
     /**
      * Tries to lock a resource with a given site path and returns an error if the locking fails.<p>
      * If the resource does not exist yet, the next existing ancestor folder will be checked if it is lockable.<p>
-     * 
-     * @param sitePath the site path of the resource to lock 
-     * 
-     * @return the error message or null if the locking succeeded 
+     *
+     * @param sitePath the site path of the resource to lock
+     *
+     * @return the error message or null if the locking succeeded
      */
     public String lockOrReturnError(final String sitePath) {
 
@@ -487,12 +488,12 @@ public final class CmsCoreProvider extends CmsCoreData {
     }
 
     /**
-     * Locks the given resource with a temporary lock, synchronously and additionally checking that 
+     * Locks the given resource with a temporary lock, synchronously and additionally checking that
      * the given resource has not been modified after the given timestamp.<p>
-     * 
-     * @param structureId the resource structure id 
+     *
+     * @param structureId the resource structure id
      * @param modification the timestamp to check
-     * 
+     *
      * @return <code>null</code> if successful, else an error message
      */
     public CmsLockInfo lockTempAndCheckModification(final CmsUUID structureId, final long modification) {
@@ -525,15 +526,15 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Removes the current site root prefix from the given root path,
-     * that is adjusts the resource name for the current site root.<p> 
-     * 
+     * that is adjusts the resource name for the current site root.<p>
+     *
      * If the resource name does not start with the current site root,
      * it is left untouched.<p>
-     * 
+     *
      * @param rootPath the resource name
-     * 
+     *
      * @return the resource name adjusted for the current site root
-     * 
+     *
      * @see #addSiteRoot(String)
      */
     public String removeSiteRoot(String rootPath) {
@@ -580,9 +581,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Returns the absolute link to the given root path.<p>
-     * 
+     *
      * @param rootPath the root path
-     * 
+     *
      * @return the absolute link
      */
     public String substituteLinkForRootPath(final String rootPath) {
@@ -606,9 +607,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Unlocks the current resource.<p>
-     * 
+     *
      * @return <code>true</code> if succeeded
-     * 
+     *
      * @see #unlock(CmsUUID)
      */
     public boolean unlock() {
@@ -618,9 +619,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Unlocks the given resource, synchronously.<p>
-     * 
-     * @param structureId the resource structure id 
-     * 
+     *
+     * @param structureId the resource structure id
+     *
      * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
     public boolean unlock(final CmsUUID structureId) {
@@ -660,9 +661,9 @@ public final class CmsCoreProvider extends CmsCoreData {
 
     /**
      * Unlocks the given resource, synchronously.<p>
-     * 
+     *
      * @param sitePath the resource site path
-     * 
+     *
      * @return <code>true</code> if succeeded, if not a a warning is already shown to the user
      */
     public boolean unlock(final String sitePath) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,9 +51,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the delete property definition dialog.<p> 
- * 
- * @since 6.0.0 
+ * Provides methods for the delete property definition dialog.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsPropertyDelete extends CmsDialog {
 
@@ -73,7 +73,7 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyDelete(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -95,7 +95,7 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Deletes the property definition.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDelete() throws JspException {
@@ -114,7 +114,7 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Deletes the property definition by cascading the properties on resources.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionDeleteCascade() throws JspException {
@@ -143,7 +143,7 @@ public class CmsPropertyDelete extends CmsDialog {
                             getParamPropertyName(),
                             false);
                         // try to delete the property if it is not the NULL PROPERTY
-                        // if the property is the NULL PROPERTY, it only had a shared 
+                        // if the property is the NULL PROPERTY, it only had a shared
                         // value which was deleted at a sibling which was already processed
                         if (!property.isNullProperty()) {
                             CmsLock lock = getCms().getLock(resource);
@@ -173,9 +173,8 @@ public class CmsPropertyDelete extends CmsDialog {
                 reason.append(dialogWhiteBoxStart());
                 reason.append(buildResourceList(resourcesLockedByOtherUser, true));
                 reason.append(dialogWhiteBoxEnd());
-                throw new CmsVfsException(Messages.get().container(
-                    Messages.ERR_DEL_PROP_RESOURCES_LOCKED_1,
-                    reason.toString()));
+                throw new CmsVfsException(
+                    Messages.get().container(Messages.ERR_DEL_PROP_RESOURCES_LOCKED_1, reason.toString()));
             }
         } catch (Throwable e) {
             // error while deleting property definition, show error dialog
@@ -185,9 +184,9 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Builds a HTML list of Resources that use the specified property.<p>
-     *  
+     *
      * @throws CmsException if operation was not successful
-     * 
+     *
      * @return the HTML String for the Resource list
      */
     public String buildResourceList() throws CmsException {
@@ -199,13 +198,13 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Builds a HTML list of Resources.<p>
-     * 
+     *
      * Columns: Type, Name, Uri, Value of the property, locked by(optional).<p>
-     *  
+     *
      * @param resourceList a list of resources
      * @param lockInfo a boolean to decide if the locked info should be shown or not
      * @throws CmsException if operation was not successful
-     * 
+     *
      * @return the HTML String for the Resource list
      */
     public String buildResourceList(List resourceList, boolean lockInfo) throws CmsException {
@@ -216,7 +215,7 @@ public class CmsPropertyDelete extends CmsDialog {
         StringBuffer result = new StringBuffer();
         result.append("<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">\n");
         result.append("<tr>\n");
-        // Type        
+        // Type
         result.append("\t<td style=\"width:5%;\" class=\"textbold\">");
         result.append(messages.key(Messages.GUI_INPUT_TYPE_0));
         result.append("</td>\n");
@@ -293,14 +292,17 @@ public class CmsPropertyDelete extends CmsDialog {
 
     /**
      * Builds the html for the property definition select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the property definition select box
      */
     public String buildSelectProperty(String attributes) {
 
-        return CmsPropertyChange.buildSelectProperty(getCms(), Messages.get().getBundle(getLocale()).key(
-            Messages.GUI_PLEASE_SELECT_0), attributes, "");
+        return CmsPropertyChange.buildSelectProperty(
+            getCms(),
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_PLEASE_SELECT_0),
+            attributes,
+            "");
     }
 
     /**
@@ -326,13 +328,14 @@ public class CmsPropertyDelete extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
             setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0)
@@ -344,16 +347,16 @@ public class CmsPropertyDelete extends CmsDialog {
             setAction(ACTION_DELETE_CASCADE);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for change property value dialog     
+            // build title for change property value dialog
             setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0));
         }
     }
 
     /**
      * Returns a list of resources that are locked by another user as the current user.<p>
-     * 
+     *
      * @param resourceList the list of all (mixed) resources
-     * 
+     *
      * @return a list of resources that are locked by another user as the current user
      * @throws CmsException if the getLock operation fails
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.dom4j.Node;
 
 /**
  * Adds the auto set features in new dialog.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
 
@@ -86,7 +86,8 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/explorertypes
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -107,64 +108,91 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
             xp.append("/@");
             m_xpaths = new ArrayList<String>();
             // ${etype}: folder, imagegallery, downloadgallery, xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate, link, upload, extendedfolder, structurecontent
-            // ${attr}: autosetnavigation, autosettitle 
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "link")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "upload")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "extendedfolder")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "structurecontent")
-                + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            // ${attr}: autosetnavigation, autosettitle
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "link")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "upload")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "extendedfolder")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "structurecontent")
+                    + CmsWorkplaceConfiguration.A_AUTOSETNAVIGATION);
 
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName())
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "link")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "upload")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "extendedfolder")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "structurecontent")
-                + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName())
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "link") + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "upload")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "extendedfolder")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", "structurecontent")
+                    + CmsWorkplaceConfiguration.A_AUTOSETTITLE);
         }
         return m_xpaths;
     }

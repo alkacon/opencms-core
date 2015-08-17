@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,13 +35,13 @@ import java.util.List;
 
 /**
  * Implementation of an administration tool.<p>
- * 
- * An admin tool can be a link to itself through 
+ *
+ * An admin tool can be a link to itself through
  * the <code>{@link #buttonHtml(CmsWorkplace)}</code> method,
- * as also a group of <code>{@link CmsToolGroup}</code>s through the 
+ * as also a group of <code>{@link CmsToolGroup}</code>s through the
  * <code>{@link #groupHtml(CmsWorkplace)}</code> method.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTool {
 
@@ -57,8 +57,8 @@ public class CmsTool {
     private final String m_id;
 
     /**
-     * Default Constructor.<p> 
-     * 
+     * Default Constructor.<p>
+     *
      * @param id a unique id
      * @param handler the handler that represents this tool
      */
@@ -71,9 +71,9 @@ public class CmsTool {
 
     /**
      * Adds a group.<p>
-     * 
+     *
      * @param group the group
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addToolGroup(CmsToolGroup group) {
@@ -83,10 +83,10 @@ public class CmsTool {
 
     /**
      * Adds a group at the given position.<p>
-     * 
+     *
      * @param group the group
      * @param position the position
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addToolGroup(CmsToolGroup group, float position) {
@@ -96,9 +96,9 @@ public class CmsTool {
 
     /**
      * Returns the necessary html code for a link to this tool.<p>
-     * 
+     *
      * @param wp the jsp page to write the code to
-     * 
+     *
      * @return html code
      */
     public String buttonHtml(CmsWorkplace wp) {
@@ -124,9 +124,9 @@ public class CmsTool {
 
     /**
      * Compares two tools by name.<p>
-     * 
+     *
      * @param obj the other tool
-     * 
+     *
      * @return <code>true</code> if the tools have the same name
      */
     @Override
@@ -163,11 +163,11 @@ public class CmsTool {
 
     /**
      * Returns the requested group.<p>
-     * 
+     *
      * @param name the name of the group
-     * 
+     *
      * @return the group
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#getObject(String)
      */
     public CmsToolGroup getToolGroup(String name) {
@@ -177,7 +177,7 @@ public class CmsTool {
 
     /**
      * Returns a list of groups.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsToolGroup}</code>
      */
     public List<CmsToolGroup> getToolGroups() {
@@ -187,9 +187,9 @@ public class CmsTool {
 
     /**
      * Returns the necessary html code for the tool subgroups.<p>
-     * 
+     *
      * @param wp the jsp page to write the code to
-     * 
+     *
      * @return html code
      */
     public String groupHtml(CmsWorkplace wp) {

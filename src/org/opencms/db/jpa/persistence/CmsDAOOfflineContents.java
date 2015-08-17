@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a offline contents entry inside the table "cms_offline_contents".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -64,7 +64,7 @@ public class CmsDAOOfflineContents {
 
     /**
      * A public constructor for generating a new contents object with an unique id.<p>
-     * 
+     *
      * @param resourceId the resource id
      */
     public CmsDAOOfflineContents(String resourceId) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 /**
- * Wraps the GWT suggest box to enhance the layout.<p> 
+ * Wraps the GWT suggest box to enhance the layout.<p>
  */
 public class CmsSuggestBox extends Composite
 implements HasValueChangeHandlers<String>, HasSelectionHandlers<SuggestOracle.Suggestion> {
@@ -54,7 +54,7 @@ implements HasValueChangeHandlers<String>, HasSelectionHandlers<SuggestOracle.Su
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param oracle the suggestion oracle
      */
     public CmsSuggestBox(SuggestOracle oracle) {
@@ -87,7 +87,7 @@ implements HasValueChangeHandlers<String>, HasSelectionHandlers<SuggestOracle.Su
 
     /**
      * Sets the text value.<p>
-     * 
+     *
      * @param textValue he text value
      */
     public void setTextValue(String textValue) {

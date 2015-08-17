@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,12 +36,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public enum CmsAliasMode implements IsSerializable {
 
     /** The request will be forwarded internally to the given resource. */
-    page(0),
-    /** Pass the new path along to the next resource handler. */
-    passthrough(3),
-    /** A 'moved permanently' status with a link to the aliased resource will be sent to the browser. */
-    permanentRedirect(2),
-    /** A 'moved temporarily' status with a link to the aliased resource will be sent to the browser. */
+    page(0), /** Pass the new path along to the next resource handler. */
+    passthrough(3), /** A 'moved permanently' status with a link to the aliased resource will be sent to the browser. */
+    permanentRedirect(
+    2), /** A 'moved temporarily' status with a link to the aliased resource will be sent to the browser. */
     redirect(1);
 
     /** The id used for storing alias modes in the database. */
@@ -49,8 +47,8 @@ public enum CmsAliasMode implements IsSerializable {
 
     /**
      * Creates a new enum constant.<p>
-     * 
-     * @param id the id used in the database 
+     *
+     * @param id the id used in the database
      */
     CmsAliasMode(int id) {
 
@@ -59,9 +57,9 @@ public enum CmsAliasMode implements IsSerializable {
 
     /**
      * Gets the enum constant for a given integer id.<p>
-     * 
-     * @param id the integer id 
-     * @return the enum constant matching that id 
+     *
+     * @param id the integer id
+     * @return the enum constant matching that id
      */
     public static CmsAliasMode fromInt(int id) {
 
@@ -80,8 +78,8 @@ public enum CmsAliasMode implements IsSerializable {
 
     /**
      * Checks whether this is a mode that requires a redirect.<p>
-     * 
-     * @return true if this mode requires a redirect 
+     *
+     * @return true if this mode requires a redirect
      */
     public boolean isRedirect() {
 
@@ -90,8 +88,8 @@ public enum CmsAliasMode implements IsSerializable {
 
     /**
      * Converts an enum constant to the id used for storing alias modes in the database.<p>
-     * 
-     * @return the enum constant id 
+     *
+     * @return the enum constant id
      */
     public int toInt() {
 

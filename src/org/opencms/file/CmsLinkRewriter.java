@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -105,10 +105,10 @@ public class CmsLinkRewriter {
 
     /**
      * Creates a link rewriter for use after a multi-copy operation.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param sources the list of source root paths 
-     * @param target the target parent folder root path 
+     *
+     * @param cms the current CMS context
+     * @param sources the list of source root paths
+     * @param target the target parent folder root path
      */
     public CmsLinkRewriter(CmsObject cms, List<String> sources, String target) {
 
@@ -124,9 +124,9 @@ public class CmsLinkRewriter {
 
     /**
      * Creates a new link rewriter for a list of sources and corresponding targets.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param targetPath the target root path 
+     *
+     * @param cms the current CMS context
+     * @param targetPath the target root path
      * @param sourceTargetPairs the list of source-target pairs
      */
     public CmsLinkRewriter(CmsObject cms, String targetPath, List<CmsPair<String, String>> sourceTargetPairs) {
@@ -138,9 +138,9 @@ public class CmsLinkRewriter {
 
     /**
      * Creates a link rewriter for use after a single copy operation.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param source the source folder root path 
+     *
+     * @param cms the current CMS context
+     * @param source the source folder root path
      * @param target the target folder root path
      */
     public CmsLinkRewriter(CmsObject cms, String source, String target) {
@@ -155,9 +155,9 @@ public class CmsLinkRewriter {
 
     /**
      * Checks whether a given resource is a folder and throws an exception otherwise.<p>
-     * 
-     * @param resource the resource to check 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource to check
+     * @throws CmsException if something goes wrong
      */
     protected static void checkIsFolder(CmsResource resource) throws CmsException {
 
@@ -170,11 +170,11 @@ public class CmsLinkRewriter {
 
     /**
      * Helper method to check whether a given resource is a folder.<p>
-     * 
+     *
      * @param resource the resouce to check
      * @return true if the resource is a folder
-     * 
-     * @throws CmsLoaderException if the resource type couldn't be found 
+     *
+     * @throws CmsLoaderException if the resource type couldn't be found
      */
     protected static boolean isFolder(CmsResource resource) throws CmsLoaderException {
 
@@ -184,30 +184,31 @@ public class CmsLinkRewriter {
 
     /**
      * Starts the link rewriting process.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void rewriteLinks() throws CmsException {
 
         init();
         List<CmsRelation> relationsToCorrect = findRelationsFromTargetToSource();
-        // group relations by the structure id of their source 
+        // group relations by the structure id of their source
         Multimap<CmsUUID, CmsRelation> relationsBySourceId = ArrayListMultimap.create();
         for (CmsRelation relation : relationsToCorrect) {
-            LOG.info("Found relation which needs to be corrected: "
-                + relation.getSourcePath()
-                + " -> "
-                + relation.getTargetPath()
-                + " ["
-                + relation.getType().getName()
-                + "]");
+            LOG.info(
+                "Found relation which needs to be corrected: "
+                    + relation.getSourcePath()
+                    + " -> "
+                    + relation.getTargetPath()
+                    + " ["
+                    + relation.getType().getName()
+                    + "]");
             relationsBySourceId.put(relation.getSourceId(), relation);
         }
 
         // make sure we have a lock on the target folder before doing any write operations
         CmsLock lock = m_cms.getLock(m_targetPath);
         if (lock.isUnlocked() || !lock.isOwnedBy(m_cms.getRequestContext().getCurrentUser())) {
-            // fail if locked by another user 
+            // fail if locked by another user
             m_cms.lockResource(m_targetPath);
         }
 
@@ -230,7 +231,7 @@ public class CmsLinkRewriter {
             CmsResource resource = entry.getValue();
             if (isInTargets(resource.getRootPath()) && !m_rewrittenContent.contains(key)) {
                 I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
-                // rewrite content for other files so 
+                // rewrite content for other files so
                 if (resType instanceof A_CmsResourceTypeLinkParseable) {
                     try {
                         CmsFile file = m_cms.readFile(resource);
@@ -247,8 +248,8 @@ public class CmsLinkRewriter {
     /**
      * Sets the 'rewriteAllContents' flag, which controls whether all XML contents will be rewritten
      * or just those whose links need to be corrected.<p>
-     * 
-     * @param rewriteAllContents if true, all contents will be rewritten 
+     *
+     * @param rewriteAllContents if true, all contents will be rewritten
      */
     public void setRewriteAllContents(boolean rewriteAllContents) {
 
@@ -257,29 +258,30 @@ public class CmsLinkRewriter {
 
     /**
      * Checks that the target path is not a subfolder of the source path.<p>
-     * 
-     * @param source the source path 
-     * @param target the target path 
+     *
+     * @param source the source path
+     * @param target the target path
      */
     protected void checkNotSubPath(String source, String target) {
 
         source = CmsStringUtil.joinPaths("/", source, "/");
         target = CmsStringUtil.joinPaths("/", target, "/");
         if (target.startsWith(source)) {
-            throw new CmsIllegalArgumentException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_REWRITE_LINKS_ROOTS_DEPENDENT_2,
-                source,
-                target));
+            throw new CmsIllegalArgumentException(
+                org.opencms.file.Messages.get().container(
+                    org.opencms.file.Messages.ERR_REWRITE_LINKS_ROOTS_DEPENDENT_2,
+                    source,
+                    target));
         }
     }
 
     /**
      * Decodes a byte array into a string with a given encoding, or the default encoding if that fails.<p>
-     * 
+     *
      * @param bytes the byte array
      * @param encoding the encoding to use
-     *  
-     * @return the decoded string 
+     *
+     * @return the decoded string
      */
     protected String decode(byte[] bytes, String encoding) {
 
@@ -291,12 +293,12 @@ public class CmsLinkRewriter {
     }
 
     /**
-     * Decodes a file's contents and return the content string and the encoding to use for writing the file 
+     * Decodes a file's contents and return the content string and the encoding to use for writing the file
      * back to the VFS.<p>
-     * 
+     *
      * @param file the file to decode
      * @return a pair (content, encoding)
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     protected CmsPair<String, String> decode(CmsFile file) throws CmsException {
 
@@ -308,11 +310,11 @@ public class CmsLinkRewriter {
         } else {
             try {
                 CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(m_cms);
-                // parse the XML and serialize it back to  a string with the configured encoding 
+                // parse the XML and serialize it back to  a string with the configured encoding
                 Document doc = CmsXmlUtils.unmarshalHelper(file.getContents(), resolver);
                 content = CmsXmlUtils.marshal(doc, encoding);
             } catch (Exception e) {
-                // invalid xml structure, just use the configured encoding 
+                // invalid xml structure, just use the configured encoding
                 content = decode(file.getContents(), encoding);
             }
         }
@@ -321,14 +323,15 @@ public class CmsLinkRewriter {
 
     /**
      * Finds relations from the target root folder or its children to the source root folder or its children.<p>
-     * 
-     * @return the list of relations from the target to the source 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the list of relations from the target to the source
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsRelation> findRelationsFromTargetToSource() throws CmsException {
 
-        List<CmsRelation> relations = m_cms.readRelations(CmsRelationFilter.SOURCES.filterPath(m_targetPath).filterIncludeChildren());
+        List<CmsRelation> relations = m_cms.readRelations(
+            CmsRelationFilter.SOURCES.filterPath(m_targetPath).filterIncludeChildren());
         List<CmsRelation> result = new ArrayList<CmsRelation>();
         for (CmsRelation rel : relations) {
             if (isInTargets(rel.getSourcePath()) && isInSources(rel.getTargetPath())) {
@@ -340,12 +343,12 @@ public class CmsLinkRewriter {
 
     /**
      * Gets the encoding which is configured at the location of a given resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource for which the configured encoding should be retrieved 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource for which the configured encoding should be retrieved
      * @return the configured encoding for the resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected String getConfiguredEncoding(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -356,16 +359,15 @@ public class CmsLinkRewriter {
                 CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
                 true).getValue();
         } catch (CmsException e) {
-            // encoding will be null 
+            // encoding will be null
         }
         if (encoding == null) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         } else {
             encoding = CmsEncoder.lookupEncoding(encoding, null);
             if (encoding == null) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_XMLCONTENT_INVALID_ENC_1,
-                    resource.getRootPath()));
+                throw new CmsXmlException(
+                    Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, resource.getRootPath()));
             }
         }
         return encoding;
@@ -373,13 +375,13 @@ public class CmsLinkRewriter {
 
     /**
      * Gets a list of resource pairs whose paths relative to the source/target roots passed match.<p>
-     * 
-     * @param source the source root 
-     * @param target the target root 
-     * 
-     * @return the list of matching resources 
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @param source the source root
+     * @param target the target root
+     *
+     * @return the list of matching resources
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsPair<CmsResource, CmsResource>> getMatchingResources(String source, String target)
     throws CmsException {
@@ -403,11 +405,11 @@ public class CmsLinkRewriter {
 
     /**
      * Computes the relative path given an ancestor folder path.<p>
-     *  
-     * @param ancestor the ancestor folder 
-     * @param rootPath the path for which the relative path should be computed 
-     * 
-     * @return the relative path 
+     *
+     * @param ancestor the ancestor folder
+     * @param rootPath the path for which the relative path should be computed
+     *
+     * @return the relative path
      */
     protected String getRelativePath(String ancestor, String rootPath) {
 
@@ -418,11 +420,11 @@ public class CmsLinkRewriter {
 
     /**
      * Accesses a resource by structure id.<p>
-     * 
-     * @param structureId the structure id of the resource  
-     * @return the resource with the given structure id 
-     * 
-     * @throws CmsException if the resource couldn't be read 
+     *
+     * @param structureId the structure id of the resource
+     * @return the resource with the given structure id
+     *
+     * @throws CmsException if the resource couldn't be read
      */
     protected CmsResource getResource(CmsUUID structureId) throws CmsException {
 
@@ -434,11 +436,11 @@ public class CmsLinkRewriter {
 
     /**
      * Collects a list of resources in a map where the key for each resource is the path relative to a given folder.<p>
-     * 
-     * @param resources the resources to put in the map 
+     *
+     * @param resources the resources to put in the map
      * @param basePath the path relative to which the keys of the resulting map should be computed
-     *  
-     * @return a map from relative paths to resources 
+     *
+     * @return a map from relative paths to resources
      */
     protected Map<String, CmsResource> getResourcesByRelativePath(List<CmsResource> resources, String basePath) {
 
@@ -454,13 +456,13 @@ public class CmsLinkRewriter {
 
     /**
      * Reads the data needed for rewriting the relations from the VFS.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void init() throws CmsException {
 
         m_cms = OpenCms.initCmsObject(m_cms);
-        // we want to use autocorrection when writing XML contents back 
+        // we want to use autocorrection when writing XML contents back
         //m_cms.getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
         m_cms.getRequestContext().setSiteRoot("");
         List<CmsPair<CmsResource, CmsResource>> allMatchingResources = Lists.newArrayList();
@@ -480,10 +482,10 @@ public class CmsLinkRewriter {
 
     /**
      * Checks if a path belongs to one of the sources.<p>
-     * 
-     * @param path a root path 
-     * 
-     * @return true if the path belongs to the sources 
+     *
+     * @param path a root path
+     *
+     * @return true if the path belongs to the sources
      */
     protected boolean isInSources(String path) {
 
@@ -498,10 +500,10 @@ public class CmsLinkRewriter {
 
     /**
      * Checks if a path belongs to one of the targets.<p>
-     * 
-     * @param path a root path 
-     * 
-     * @return true if the path belongs to the targets  
+     *
+     * @param path a root path
+     *
+     * @return true if the path belongs to the targets
      */
     protected boolean isInTargets(String path) {
 
@@ -516,12 +518,12 @@ public class CmsLinkRewriter {
 
     /**
      * Reads the resources in a subtree.<p>
-     *  
+     *
      * @param rootPath the root of the subtree
-     *  
+     *
      * @return the list of resources from the subtree
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> readTree(String rootPath) throws CmsException {
 
@@ -547,11 +549,11 @@ public class CmsLinkRewriter {
 
     /**
      * Rewrites the links included in the content itself.<p>
-     * 
-     * @param file the file for which the links should be replaced 
+     *
+     * @param file the file for which the links should be replaced
      * @param relations the original relations
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void rewriteContent(CmsFile file, Collection<CmsRelation> relations) throws CmsException {
 
@@ -571,12 +573,12 @@ public class CmsLinkRewriter {
     }
 
     /**
-     * Replaces structure ids of resources in the source subtree with the structure ids of the corresponding 
+     * Replaces structure ids of resources in the source subtree with the structure ids of the corresponding
      * resources in the target subtree inside a content string.<p>
-     *  
-     * @param originalContent the original content 
-     * 
-     * @return the content with the new structure ids 
+     *
+     * @param originalContent the original content
+     *
+     * @return the content with the new structure ids
      */
     protected String rewriteContentString(String originalContent) {
 
@@ -597,13 +599,13 @@ public class CmsLinkRewriter {
         return CmsStringUtil.substitute(uuidPattern, originalContent, substitution);
     }
 
-    /** 
+    /**
      * Rewrites the links for a single resource.<p>
-     * 
-     * @param resource the resource for which the links should be rewritten 
-     * @param relations the relations to the source folder which have this resource as its source 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource for which the links should be rewritten
+     * @param relations the relations to the source folder which have this resource as its source
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void rewriteLinks(CmsResource resource, Collection<CmsRelation> relations) throws CmsException {
 
@@ -640,11 +642,11 @@ public class CmsLinkRewriter {
 
     /**
      * Rewrites relations which are not derived from links in the content itself.<p>
-     * 
-     * @param res the resource for which to rewrite the relations 
-     * @param relations the original relations 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param res the resource for which to rewrite the relations
+     * @param relations the original relations
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void rewriteOtherRelations(CmsResource res, Collection<CmsRelation> relations) throws CmsException {
 
@@ -658,7 +660,10 @@ public class CmsLinkRewriter {
                     m_cms.deleteRelationsFromResource(
                         rel.getSourcePath(),
                         CmsRelationFilter.TARGETS.filterStructureId(rel.getTargetId()).filterType(relType));
-                    m_cms.addRelationToResource(rel.getSourcePath(), newTargetResource.getRootPath(), relType.getName());
+                    m_cms.addRelationToResource(
+                        rel.getSourcePath(),
+                        newTargetResource.getRootPath(),
+                        relType.getName());
                 }
             }
         }

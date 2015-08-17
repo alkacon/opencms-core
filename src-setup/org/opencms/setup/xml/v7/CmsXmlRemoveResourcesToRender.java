@@ -13,13 +13,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * Removes a wrong resources to render in the static export configuration, from 6.2.3 to 7.0.x.<p>
- * 
+ *
  * @since 6.9.2
  */
 public class CmsXmlRemoveResourcesToRender extends A_CmsSetupXmlUpdate {

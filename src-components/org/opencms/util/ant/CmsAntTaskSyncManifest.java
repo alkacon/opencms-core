@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import org.xml.sax.InputSource;
 
 /**
  * Ant task for synchronizing local directory into a manifest xml file.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAntTaskSyncManifest extends Task {
@@ -77,7 +77,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Test case.<p>
-     * 
+     *
      * @param args not used
      */
     public static void main(String[] args) {
@@ -93,12 +93,12 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Run the task.<p>
-     * 
+     *
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
      * modules if not.<p>
-     * 
+     *
      * @throws BuildException if something goes wrong
-     * 
+     *
      * @see org.apache.tools.ant.Task#execute()
      */
     @SuppressWarnings("unchecked")
@@ -142,7 +142,9 @@ public class CmsAntTaskSyncManifest extends Task {
             }
 
             // delete superfluous entries
-            String prefix = m_prefix != null ? m_prefix : new File(directory).getAbsolutePath().substring(
+            String prefix = m_prefix != null
+            ? m_prefix
+            : new File(directory).getAbsolutePath().substring(
                 new File(getBase()).getAbsolutePath().length() + 1).replace('\\', '/');
 
             List<Node> xmlFiles = doc.selectNodes("export/files/file/destination[starts-with(.,'" + prefix + "/')]");
@@ -189,7 +191,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required base path.<p>
-     * 
+     *
      * @return for example,
      *         <tt>modules/org.opencms.ade.containerpage/resources</tt>
      */
@@ -200,7 +202,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the required directory path.<p>
-     * 
+     *
      * @return for example,
      *         <tt>modules/org.opencms.ade.containerpage/resources/system/modules/org.opencms.ade.containerpage/resources/containerpage</tt>
      */
@@ -211,7 +213,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the absolute path where the synched manifest will be written.<p>
-     * 
+     *
      * @return absolute path where the synched manifest will be written
      */
     public String getDstManifestFile() {
@@ -231,7 +233,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Returns the absolute path to the source manifest file.<p>
-     * 
+     *
      * @return absolute path to the source manifest file
      */
     public String getSrcManifestFile() {
@@ -241,7 +243,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Sets the required base path.<p>
-     * 
+     *
      * @param base the required base path to set
      */
     public void setBase(String base) {
@@ -251,7 +253,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Sets the required directory path.<p>
-     * 
+     *
      * @param directory the required directory path to set
      */
     public void setDirectory(String directory) {
@@ -261,7 +263,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Sets the absolute path where the synched manifest will be written.<p>
-     * 
+     *
      * @param dstManifestFile absolute path where the synched manifest will be written
      */
     public void setDstManifestFile(String dstManifestFile) {
@@ -281,7 +283,7 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Sets the absolute path to the source manifest file.<p>
-     * 
+     *
      * @param srcManifestFile absolute path to the source manifest file
      */
     public void setSrcManifestFile(String srcManifestFile) {
@@ -291,9 +293,9 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Creates a new XML entry for the given destination path.<p>
-     * 
+     *
      * The node will be created just after the given previous destination path.<p>
-     * 
+     *
      * @param doc the xml document to modify
      * @param prevDest the previous destination
      * @param destination the destination path
@@ -327,9 +329,9 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Retrieves the xpath for the given destination path.<p>
-     * 
+     *
      * @param destination the destination path
-     * 
+     *
      * @return the xpath for the given destination path
      */
     private String getFileXpath(String destination) {
@@ -339,9 +341,9 @@ public class CmsAntTaskSyncManifest extends Task {
 
     /**
      * Retrieves the type for the given destination path.<p>
-     * 
+     *
      * @param destination the destination path
-     * 
+     *
      * @return the type for the given destination path
      */
     private String getType(String destination) {

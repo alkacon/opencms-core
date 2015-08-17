@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
 
 /**
  * Tests for the CmsEncoder.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsEncoder extends OpenCmsTestCase {
@@ -46,7 +46,7 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     private static final String ENC_UTF_8 = CmsEncoder.ENCODING_UTF_8;
     private static final String ENC_WINDOWS_1252 = "Cp1252";
 
-    // working around encoding issues (e.g. of CVS) by using unicode values 
+    // working around encoding issues (e.g. of CVS) by using unicode values
     // the values of C_STRING_1 are: ae oe ue Ae Oe Ue scharfes-s euro-symbol
     private static final String STRING_1 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
     private static final String STRING_2 = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df&#8364;";
@@ -72,7 +72,7 @@ public class TestCmsEncoder extends OpenCmsTestCase {
         {STRING_4, STRING_5, ENC_US_ASCII}};
 
     /**
-     * @see CmsEncoder#decodeHtmlEntities(String, String) 
+     * @see CmsEncoder#decodeHtmlEntities(String, String)
      */
     public void testDecodeHtmlEntities() {
 
@@ -101,9 +101,9 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
-     * Tests wether two subsequent calls to 
-     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code> 
-     * lead to an expected result and ensures that the 2nd call does not  
+     * Tests wether two subsequent calls to
+     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code>
+     * lead to an expected result and ensures that the 2nd call does not
      * do any further modifications. <p>
      *
      */
@@ -132,7 +132,7 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
-     * @see CmsEncoder#encodeJavaEntities(String, String) 
+     * @see CmsEncoder#encodeJavaEntities(String, String)
      */
     public void testEncodeNonIsoEntities() {
 
@@ -143,8 +143,8 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
-     * Encodes a single '%' and ensures that it is transformed. Encodes 
-     * a sequence that is already an encoded special character (e.g.: "%25") 
+     * Encodes a single '%' and ensures that it is transformed. Encodes
+     * a sequence that is already an encoded special character (e.g.: "%25")
      * and ensures that this sequence is not encoded several times. <p>
      *
      */
@@ -215,8 +215,8 @@ public class TestCmsEncoder extends OpenCmsTestCase {
     }
 
     /**
-     * Tests wether two subsequent calls to 
-     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code> 
+     * Tests wether two subsequent calls to
+     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code>
      * are undone by onde decode call (the 2nd encode call must not modify anything.<p>
      *
      */

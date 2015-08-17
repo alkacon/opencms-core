@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,15 +63,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the resource availability/notification dialog.<p> 
- * 
+ * Provides methods for the resource availability/notification dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/availability.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAvailability extends CmsMultiDialog {
 
@@ -140,7 +140,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAvailability(CmsJspActionElement jsp) {
@@ -150,7 +150,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -161,7 +161,7 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
     @Override
@@ -174,7 +174,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Performs the resource operation, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionUpdate() throws JspException {
@@ -184,7 +184,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
         try {
             if (performDialogOperation()) {
-                // if no exception is caused and "true" is returned the dialog operation was successful          
+                // if no exception is caused and "true" is returned the dialog operation was successful
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
@@ -197,7 +197,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Creates the check box to enable content notification for a resource.<p>
-     *  
+     *
      * @return HTML code for the enable_notification check box.
      */
     public String buildCheckboxEnableNotification() {
@@ -232,9 +232,9 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Creates an the check box to modify all siblings.<p>
-     *  
+     *
      * If no siblings exist for this resource, an empty string will be returned.
-     * 
+     *
      * @return HTML code for the modify siblings check box.
      */
     public String buildCheckboxModifySiblings() {
@@ -259,7 +259,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Creates the "recursive" check box for touching subresources of folders.<p>
-     *  
+     *
      * @return the String with the check box input field or an empty String for folders.
      */
     public String buildCheckRecursive() {
@@ -272,7 +272,8 @@ public class CmsAvailability extends CmsMultiDialog {
             result.append("<table border=\"0\">");
             result.append("<tr>\n\t<td style=\"white-space:nowrap;\">");
             result.append(key(Messages.GUI_TOUCH_MODIFY_SUBRESOURCES_0));
-            result.append("</td><td class=\"maxwidth\" style=\"padding-left: 5px;\"><input type=\"checkbox\" style=\"text-align:left\" name=\"");
+            result.append(
+                "</td><td class=\"maxwidth\" style=\"padding-left: 5px;\"><input type=\"checkbox\" style=\"text-align:left\" name=\"");
             result.append(PARAM_RECURSIVE);
             result.append("\" value=\"true\">&nbsp;</td>\n<td>&nbsp</td></tr>\n");
             result.append("</table>");
@@ -284,7 +285,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Creates an input field for the notification interval.<p>
-     *  
+     *
      * @return HTML code for the notification interval input field.
      */
     public String buildInputNotificationInterval() {
@@ -317,7 +318,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Builds a String with HTML code to display the responsibles of a resource.<p>
-     * 
+     *
      * @return HTML code for the responsibles of the current resource
      */
     public String buildResponsibleList() {
@@ -420,18 +421,18 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the current date and time as String formatted in localized pattern.<p>
-     * 
+     *
      * @return the current date and time as String formatted in localized pattern
      */
     public String getCurrentDateTime() {
 
-        // get the current date & time 
+        // get the current date & time
         return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), System.currentTimeMillis());
     }
 
     /**
      * Returns the current expire date as String formatted in localized pattern.<p>
-     * 
+     *
      * @return the current expire date as String formatted in localized pattern
      */
     public String getCurrentExpireDate() {
@@ -458,7 +459,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the current release date as String formatted in localized pattern.<p>
-     * 
+     *
      * @return the current release date as String formatted in localized pattern
      */
     public String getCurrentReleaseDate() {
@@ -472,7 +473,10 @@ public class CmsAvailability extends CmsMultiDialog {
                 if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
                     return CmsTouch.DEFAULT_DATE_STRING;
                 } else {
-                    return CmsCalendarWidget.getCalendarLocalizedTime(getLocale(), getMessages(), res.getDateReleased());
+                    return CmsCalendarWidget.getCalendarLocalizedTime(
+                        getLocale(),
+                        getMessages(),
+                        res.getDateReleased());
                 }
             } catch (CmsException e) {
                 return CmsCalendarWidget.getCalendarLocalizedTime(
@@ -485,9 +489,9 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the value of the enable_notification parameter.<p>
-     * 
+     *
      * The enable_notification parameter if content notification is enabled for this resource.<p>
-     * 
+     *
      * @return the value of the enable_notification parameter
      */
     public String getParamEnablenotification() {
@@ -496,9 +500,9 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the new expire date parameter, 
+     * Returns the value of the new expire date parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * @return the value of the new expire date parameter
      */
     public String getParamExpiredate() {
@@ -508,7 +512,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the value of the leave expire parameter.<p>
-     * 
+     *
      * @return the value of the leave expire parameter
      */
     public String getParamLeaveexpire() {
@@ -517,9 +521,9 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the modify siblings parameter, 
+     * Returns the value of the modify siblings parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * @return the value of the modify siblings
      */
     public String getParamModifysiblings() {
@@ -528,9 +532,9 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the notification interval parameter, 
+     * Returns the value of the notification interval parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * @return the value of the notification interval parameter
      */
     public String getParamNotificationinterval() {
@@ -539,12 +543,12 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the recursive parameter, 
+     * Returns the value of the recursive parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The recursive parameter on folders decides if all subresources
      * of the folder should be touched, too.<p>
-     * 
+     *
      * @return the value of the recursive parameter
      */
     public String getParamRecursive() {
@@ -553,11 +557,11 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the new release date parameter, 
+     * Returns the value of the new release date parameter,
      * or null if this parameter was not provided.<p>
-     * 
+     *
      * The release date parameter stores the new release date as String.<p>
-     * 
+     *
      * @return the value of the new release date parameter
      */
     public String getParamReleasedate() {
@@ -567,7 +571,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the value of the reset expire parameter.<p>
-     * 
+     *
      * @return the value of the reset expire parameter
      */
     public String getParamResetexpire() {
@@ -577,7 +581,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns the value of the reset release parameter.<p>
-     * 
+     *
      * @return the value of the reset release parameter
      */
     public String getParamResetrelease() {
@@ -587,7 +591,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the enable notification parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamEnablenotification(String value) {
@@ -597,7 +601,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the expire date.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamExpiredate(String value) {
@@ -607,7 +611,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the leave expire parameter.<p>
-     * 
+     *
      * @param paramLeaveexpire the value of the leave expire parameter
      */
     public void setParamLeaveexpire(String paramLeaveexpire) {
@@ -617,7 +621,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the modify siblings parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamModifysiblings(String value) {
@@ -627,7 +631,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the new time stamp parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamNotificationinterval(String value) {
@@ -637,7 +641,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the recursive parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamRecursive(String value) {
@@ -647,7 +651,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the release date parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamReleasedate(String value) {
@@ -657,7 +661,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the reset expire parameter.<p>
-     * 
+     *
      * @param paramResetexpire the value of the reset expire parameter
      */
     public void setParamResetexpire(String paramResetexpire) {
@@ -667,7 +671,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Sets the value of the reset release parameter.<p>
-     * 
+     *
      * @param paramResetrelease the value of the reset release parameter
      */
     public void setParamResetrelease(String paramResetrelease) {
@@ -677,9 +681,9 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
-     * 
+     *
      * @param flags the flags of the ACE
-     * 
+     *
      * @return localization for "Group", if the flag belongs to a group ACE
      */
     protected String getLocalizedType(int flags) {
@@ -700,7 +704,7 @@ public class CmsAvailability extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to modify the resource       
+        // check the required permissions to modify the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -709,7 +713,7 @@ public class CmsAvailability extends CmsMultiDialog {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_OK);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
@@ -729,7 +733,7 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Modifies the release and expire date of a resource, and changes the notification interval. <p>
-     * 
+     *
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if modification is not successful
      */
@@ -832,14 +836,14 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Performs the availability operations on a single resource.<p>
-     * 
+     *
      * @param resName the VFS path of the resource
      * @param releaseDate the new release date
      * @param expireDate the new expiration date
      * @param leaveRelease if the release date should be left untouched
      * @param leaveExpire if the expiration date should be left untouched
      * @param modifyRecursive flag indicating if the operation is recursive for folders
-     * 
+     *
      * @throws CmsException if the availability and notification operations fail
      */
     protected void performSingleResourceAvailability(
@@ -874,12 +878,12 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Performs the notification operations on a single resource.<p>
-     * 
+     *
      * @param resName the VFS path of the resource
      * @param enableNotification if the notification is activated
      * @param notificationInterval the notification interval in days
      * @param modifySiblings flag indicating to include resource siblings
-     * 
+     *
      * @throws CmsException if the availability and notification operations fail
      */
     protected void performSingleResourceNotification(
@@ -916,11 +920,11 @@ public class CmsAvailability extends CmsMultiDialog {
 
     /**
      * Writes a property value for a resource.<p>
-     * 
+     *
      * @param resourcePath the path of the resource
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void writeProperty(String resourcePath, String propertyName, String propertyValue) throws CmsException {
@@ -968,7 +972,7 @@ public class CmsAvailability extends CmsMultiDialog {
             newResourceValue = CmsProperty.DELETE_VALUE;
         }
 
-        // change property only if it has been changed            
+        // change property only if it has been changed
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
             getCms().writePropertyObject(resourcePath, newProp);
         }

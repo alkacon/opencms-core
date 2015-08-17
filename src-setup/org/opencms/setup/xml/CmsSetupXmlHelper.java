@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,14 +60,14 @@ import org.xml.sax.InputSource;
 
 /**
  * Helper class to modify xml files.<p>
- * 
+ *
  * For more info about xpath see: <br>
  * <ul>
  * <li>http://www.w3.org/TR/xpath.html</li>
  * <li>http://www.zvon.org/xxl/XPathTutorial/General/examples.html</li>
  * </ul><p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsSetupXmlHelper {
 
@@ -94,17 +94,17 @@ public class CmsSetupXmlHelper {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * Uses no base path.<p>
      */
     public CmsSetupXmlHelper() {
 
-        // ignore        
+        // ignore
     }
 
     /**
      * Uses an optional base file path.<p>
-     * 
+     *
      * @param basePath the base file path to use;
      */
     public CmsSetupXmlHelper(String basePath) {
@@ -114,11 +114,11 @@ public class CmsSetupXmlHelper {
 
     /**
      * Unmarshals (reads) an XML string into a new document.<p>
-     * 
+     *
      * @param xml the XML code to unmarshal
-     * 
+     *
      * @return the generated document
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static String format(String xml) throws CmsXmlException {
@@ -128,10 +128,10 @@ public class CmsSetupXmlHelper {
 
     /**
      * Returns the value in the given xpath of the given xml file.<p>
-     * 
+     *
      * @param document the xml document
      * @param xPath the xpath to read (should select a single node or attribute)
-     * 
+     *
      * @return the value in the given xpath of the given xml file, or <code>null</code> if no matching node
      */
     public static String getValue(Document document, String xPath) {
@@ -147,12 +147,12 @@ public class CmsSetupXmlHelper {
 
     /**
      * Replaces a attibute's value in the given node addressed by the xPath.<p>
-     * 
+     *
      * @param document the document to replace the node attribute
      * @param xPath the xPath to the node
      * @param attribute the attribute to replace the value of
      * @param value the new value to set
-     * 
+     *
      * @return <code>true</code> if successful <code>false</code> otherwise
      */
     public static boolean setAttribute(Document document, String xPath, String attribute, String value) {
@@ -172,16 +172,16 @@ public class CmsSetupXmlHelper {
 
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
-     * 
+     *
      * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
-     * 
+     *
      * If the node identified by the given xpath does not exists, the missing nodes will be created
      * (if <code>value</code> not <code>null</code>).<p>
-     * 
+     *
      * @param document the xml document
      * @param xPath the xpath to set
      * @param value the value to set (can be <code>null</code> for deletion)
-     * 
+     *
      * @return the number of successful changed or deleted nodes
      */
     public static int setValue(Document document, String xPath, String value) {
@@ -191,17 +191,17 @@ public class CmsSetupXmlHelper {
 
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
-     * 
+     *
      * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
-     * 
+     *
      * If the node identified by the given xpath does not exists, the missing nodes will be created
      * (if <code>value</code> not <code>null</code>).<p>
-     * 
+     *
      * @param document the xml document
      * @param xPath the xpath to set
      * @param value the value to set (can be <code>null</code> for deletion)
      * @param nodeToInsert optional, if given it will be inserted after xPath with the given value
-     * 
+     *
      * @return the number of successful changed or deleted nodes
      */
     public static int setValue(Document document, String xPath, String value, String nodeToInsert) {
@@ -260,7 +260,7 @@ public class CmsSetupXmlHelper {
             itNodes = CmsCollectionsGenericWrapper.<Node> list(document.selectNodes(xPath)).iterator();
         }
 
-        // if found 
+        // if found
         while (itNodes.hasNext()) {
             Node node = itNodes.next();
             if (nodeToInsert == null) {
@@ -294,10 +294,10 @@ public class CmsSetupXmlHelper {
 
     /**
      * Handles the xpath name, by creating the given node and its children.<p>
-     * 
+     *
      * @param parent the parent node to use
      * @param xpathName the xpathName, ie <code>a[@b='c'][d='e'][text()='f']</code>
-     * 
+     *
      * @return the new created element
      */
     private static Element handleNode(Element parent, String xpathName) {
@@ -350,7 +350,7 @@ public class CmsSetupXmlHelper {
 
     /**
      * Discards the changes in the given file.<p>
-     * 
+     *
      * @param xmlFilename the xml config file (could be relative to the base path)
      */
     public void flush(String xmlFilename) {
@@ -379,12 +379,12 @@ public class CmsSetupXmlHelper {
     /**
      * Returns the document for the given filename.<p>
      * It can be new read or come from the document cache.<p>
-     * 
+     *
      * @param xmlFilename the filename to read
-     * 
+     *
      * @return the document for the given filename
-     * 
-     * @throws CmsXmlException if something goes wrong while reading 
+     *
+     * @throws CmsXmlException if something goes wrong while reading
      */
     public Document getDocument(String xmlFilename) throws CmsXmlException {
 
@@ -407,13 +407,13 @@ public class CmsSetupXmlHelper {
 
     /**
      * Returns the value in the given xpath of the given xml file.<p>
-     * 
+     *
      * @param xmlFilename the xml config file (could be relative to the base path)
      * @param xPath the xpath to read (should select a single node or attribute)
-     * 
+     *
      * @return the value in the given xpath of the given xml file, or <code>null</code> if no matching node
-     * 
-     * @throws CmsXmlException if something goes wrong while reading 
+     *
+     * @throws CmsXmlException if something goes wrong while reading
      */
     public String getValue(String xmlFilename, String xPath) throws CmsXmlException {
 
@@ -422,14 +422,14 @@ public class CmsSetupXmlHelper {
 
     /**
      * Replaces a attibute's value in the given node addressed by the xPath.<p>
-     * 
+     *
      * @param xmlFilename the xml file name to get the document from
      * @param xPath the xPath to the node
      * @param attribute the attribute to replace the value of
      * @param value the new value to set
-     * 
+     *
      * @return <code>true</code> if successful <code>false</code> otherwise
-     * 
+     *
      * @throws CmsXmlException if the xml document coudn't be read
      */
     public boolean setAttribute(String xmlFilename, String xPath, String attribute, String value)
@@ -440,19 +440,19 @@ public class CmsSetupXmlHelper {
 
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
-     * 
+     *
      * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
-     * 
+     *
      * If the node identified by the given xpath does not exists, the missing nodes will be created
      * (if <code>value</code> not <code>null</code>).<p>
-     * 
+     *
      * @param xmlFilename the xml config file (could be relative to the base path)
      * @param xPath the xpath to set
      * @param value the value to set (can be <code>null</code> for deletion)
-     * 
+     *
      * @return the number of successful changed or deleted nodes
-     * 
-     * @throws CmsXmlException if something goes wrong 
+     *
+     * @throws CmsXmlException if something goes wrong
      */
     public int setValue(String xmlFilename, String xPath, String value) throws CmsXmlException {
 
@@ -461,20 +461,20 @@ public class CmsSetupXmlHelper {
 
     /**
      * Sets the given value in all nodes identified by the given xpath of the given xml file.<p>
-     * 
+     *
      * If value is <code>null</code>, all nodes identified by the given xpath will be deleted.<p>
-     * 
+     *
      * If the node identified by the given xpath does not exists, the missing nodes will be created
      * (if <code>value</code> not <code>null</code>).<p>
-     * 
+     *
      * @param xmlFilename the xml config file (could be relative to the base path)
      * @param xPath the xpath to set
      * @param value the value to set (can be <code>null</code> for deletion)
      * @param nodeToInsert optional, if given it will be inserted after xPath with the given value
-     * 
+     *
      * @return the number of successful changed or deleted nodes
-     * 
-     * @throws CmsXmlException if something goes wrong 
+     *
+     * @throws CmsXmlException if something goes wrong
      */
     public int setValue(String xmlFilename, String xPath, String value, String nodeToInsert) throws CmsXmlException {
 
@@ -483,10 +483,10 @@ public class CmsSetupXmlHelper {
 
     /**
      * Writes the given file back to disk.<p>
-     * 
+     *
      * @param xmlFilename the xml config file (could be relative to the base path)
-     * 
-     * @throws CmsXmlException if something wrong while writing 
+     *
+     * @throws CmsXmlException if something wrong while writing
      */
     public void write(String xmlFilename) throws CmsXmlException {
 
@@ -502,12 +502,12 @@ public class CmsSetupXmlHelper {
             } catch (FileNotFoundException e) {
                 throw new CmsXmlException(new CmsMessageContainer(null, e.toString()));
             } catch (CmsXmlException e) {
-                // write invalid config files to the file system with a prefix of "invalid-" so they can be inspected for errors 
+                // write invalid config files to the file system with a prefix of "invalid-" so they can be inspected for errors
                 try {
                     OutputStream invalidOut = new FileOutputStream(getFile("invalid-" + xmlFilename));
                     CmsXmlUtils.marshal(document, invalidOut, CmsEncoder.ENCODING_UTF_8);
                 } catch (IOException e2) {
-                    // ignore 
+                    // ignore
 
                 }
                 throw e;
@@ -517,8 +517,8 @@ public class CmsSetupXmlHelper {
 
     /**
      * Flushes all cached documents.<p>
-     * 
-     * @throws CmsXmlException if something wrong while writing 
+     *
+     * @throws CmsXmlException if something wrong while writing
      */
     public void writeAll() throws CmsXmlException {
 
@@ -531,9 +531,9 @@ public class CmsSetupXmlHelper {
 
     /**
      * Returns a file from a given filename.<p>
-     * 
+     *
      * @param xmlFilename the file name
-     * 
+     *
      * @return the file
      */
     private File getFile(String xmlFilename) {

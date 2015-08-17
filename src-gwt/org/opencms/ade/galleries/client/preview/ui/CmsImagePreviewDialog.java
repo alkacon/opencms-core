@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Image;
 
 /**
  * Provides a widget for the image preview dialog .<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> {
@@ -82,11 +82,11 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param dialogMode the dialog mode
      * @param dialogHeight the dialog height to set
      * @param dialogWidth the dialog width to set
-     * @param disableSelection true if selection from the preview should be disabled      
+     * @param disableSelection true if selection from the preview should be disabled
      */
     public CmsImagePreviewDialog(GalleryMode dialogMode, int dialogHeight, int dialogWidth, boolean disableSelection) {
 
@@ -97,8 +97,8 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Fills the content of the tabs panel.<p>
-     * 
-     * @param infoBean the bean containing the parameter 
+     *
+     * @param infoBean the bean containing the parameter
      */
     @Override
     public void fillContent(CmsImageInfoBean infoBean) {
@@ -122,7 +122,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Fills the preview panel.<p>
-     * 
+     *
      * @param infoBean the image info
      */
     public void fillPreviewPanel(CmsImageInfoBean infoBean) {
@@ -131,8 +131,9 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
         panel.addStyleName(I_CmsLayoutBundle.INSTANCE.previewDialogCss().imagePanel());
         m_previewImage = new Image();
         StringBuffer urlScaled = new StringBuffer(128);
-        String src = infoBean.getViewLink() != null ? infoBean.getViewLink() : CmsCoreProvider.get().link(
-            infoBean.getResourcePath());
+        String src = infoBean.getViewLink() != null
+        ? infoBean.getViewLink()
+        : CmsCoreProvider.get().link(infoBean.getResourcePath());
         urlScaled.append(src).append("?").append(
             m_handler.getPreviewScaleParam(infoBean.getHeight(), infoBean.getWidth()));
         // add time stamp to override image caching
@@ -144,7 +145,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Returns the dialog width.<p>
-     * 
+     *
      * @return the dialog width
      */
     public int getDialogWidth() {
@@ -154,7 +155,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Adds necessary attributes to the map.<p>
-     * 
+     *
      * @param attributes the attribute map
      * @return the attribute map
      */
@@ -169,7 +170,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Returns the preview height.<p>
-     * 
+     *
      * @return the preview height
      */
     public int getPreviewHeight() {
@@ -188,7 +189,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Initializes the preview.<p>
-     * 
+     *
      * @param handler the preview handler
      */
     public void init(CmsImagePreviewHandler handler) {
@@ -220,7 +221,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
     /**
      * Resets the image displayed in the preview.<p>
-     * 
+     *
      * @param path the image path including scale parameter
      */
     public void resetPreviewImage(String path) {

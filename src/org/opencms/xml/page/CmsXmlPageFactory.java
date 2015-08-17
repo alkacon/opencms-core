@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,9 +58,9 @@ import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
 
 /**
- * Provides factory methods to unmarshal (read) an XML page object.<p> 
- * 
- * @since 6.0.0 
+ * Provides factory methods to unmarshal (read) an XML page object.<p>
+ *
+ * @since 6.0.0
  */
 public final class CmsXmlPageFactory {
 
@@ -68,7 +68,7 @@ public final class CmsXmlPageFactory {
     private static final Log LOG = CmsLog.getLog(CmsXmlPageFactory.class);
 
     /**
-     * No instances of this class should be created.<p> 
+     * No instances of this class should be created.<p>
      */
     private CmsXmlPageFactory() {
 
@@ -78,9 +78,9 @@ public final class CmsXmlPageFactory {
     /**
      * Creates a valid XML page document,
      * containing one empty element in the given locale.<p>
-     * 
+     *
      * @param locale the locale to create the XML page for
-     * 
+     *
      * @return a valid XML page document
      */
     public static Document createDocument(Locale locale) {
@@ -101,10 +101,10 @@ public final class CmsXmlPageFactory {
     /**
      * Creates a valid XML page String representation,
      * containing one empty element in the given locale.<p>
-     * 
+     *
      * @param locale the locale to create the XML page for
-     * @param encoding the encoding to use when creating the String from the XML 
-     * 
+     * @param encoding the encoding to use when creating the String from the XML
+     *
      * @return a valid XML page document as a String
      */
     public static String createDocument(Locale locale, String encoding) {
@@ -121,19 +121,20 @@ public final class CmsXmlPageFactory {
     /**
      * Factory method to unmarshal (read) a XML page instance from a byte array
      * that contains XML data.<p>
-     * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
+     *
+     * When unmarshalling, the encoding is read directly from the XML header.
      * The given encoding is used only when marshalling the XML again later.<p>
-     * 
+     *
      * @param xmlData the XML data in a byte array
      * @param encoding the encoding to use when marshalling the XML page later
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML page instance unmarshalled from the byte array
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {
+    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding, EntityResolver resolver)
+    throws CmsXmlException {
 
         return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
     }
@@ -141,12 +142,12 @@ public final class CmsXmlPageFactory {
     /**
      * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
      * that contains XML data.<p>
-     * 
+     *
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
-     * 
+     *
      * @return a XML page instance unmarshalled from the provided file
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file) throws CmsXmlException {
@@ -158,17 +159,17 @@ public final class CmsXmlPageFactory {
      * Factory method to unmarshal (read) a XML page instance from a OpenCms VFS file
      * that contains XML data, using wither the encoding set
      * in the XML file header, or the encoding set in the VFS file property.<p>
-     * 
-     * If you are not sure about the implications of the encoding issues, 
+     *
+     * If you are not sure about the implications of the encoding issues,
      * use {@link #unmarshal(CmsObject, CmsFile)} instead.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param file the file with the XML data to unmarshal
-     * @param keepEncoding if true, the encoding spefified in the XML header is used, 
+     * @param keepEncoding if true, the encoding spefified in the XML header is used,
      *    otherwise the encoding from the VFS file property is used
-     *    
+     *
      * @return a XML page instance unmarshalled from the provided file
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlPage unmarshal(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlException {
@@ -186,9 +187,12 @@ public final class CmsXmlPageFactory {
 
         String encoding = null;
         try {
-            encoding = cms.readPropertyObject(fileName, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+            encoding = cms.readPropertyObject(
+                fileName,
+                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                true).getValue();
         } catch (CmsException e) {
-            // encoding will be null 
+            // encoding will be null
         }
         if (encoding == null) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
@@ -207,15 +211,15 @@ public final class CmsXmlPageFactory {
                 newPage = unmarshal(content, encoding, new CmsXmlEntityResolver(cms));
             } else {
                 // use the encoding from the file property
-                // this usually only triggered by a save operation                
+                // this usually only triggered by a save operation
                 try {
                     String contentStr = new String(content, encoding);
                     newPage = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms));
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
-                    throw new CmsXmlException(Messages.get().container(
-                        Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1,
-                        fileName), e);
+                    throw new CmsXmlException(
+                        Messages.get().container(Messages.ERR_XML_PAGE_FACT_INVALID_ENC_1, fileName),
+                        e);
                 }
             }
         } else {
@@ -232,13 +236,13 @@ public final class CmsXmlPageFactory {
     /**
      * Factory method to unmarshal (read) a XML page instance from
      * a resource, using the request attributes as cache.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param resource the resource to unmarshal
      * @param req the current request
-     * 
+     *
      * @return the unmarshaled XML page, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}
-     * 
+     *
      * @throws CmsException in something goes wrong
      */
     public static CmsXmlPage unmarshal(CmsObject cms, CmsResource resource, ServletRequest req) throws CmsException {
@@ -247,12 +251,11 @@ public final class CmsXmlPageFactory {
 
         if (!CmsResourceTypeXmlPage.isXmlPage(resource)) {
             // sanity check: resource must be of type XML page
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XML_PAGE_FACT_NO_XMLPAGE_TYPE_1,
-                cms.getSitePath(resource)));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XML_PAGE_FACT_NO_XMLPAGE_TYPE_1, cms.getSitePath(resource)));
         }
 
-        // try to get the requested page form the current request attributes 
+        // try to get the requested page form the current request attributes
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(rootPath);
 
         if (page == null) {
@@ -268,13 +271,13 @@ public final class CmsXmlPageFactory {
     /**
      * Factory method to unmarshal (read) a XML document instance from
      * a filename in the VFS, using the request attributes as cache.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param filename the filename of the resource to unmarshal
      * @param req the current request
-     * 
+     *
      * @return the unmarshaled XML document, or <code>null</code> if the given resource was not of type {@link I_CmsXmlDocument}
-     * 
+     *
      * @throws CmsException in something goes wrong
      */
     public static I_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
@@ -312,19 +315,20 @@ public final class CmsXmlPageFactory {
     /**
      * Factory method to unmarshal (read) a XML page instance from a String
      * that contains XML data.<p>
-     * 
-     * When unmarshalling, the encoding is read directly from the XML header. 
+     *
+     * When unmarshalling, the encoding is read directly from the XML header.
      * The given encoding is used only when marshalling the XML again later.<p>
-     * 
+     *
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML page later
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML page instance unmarshalled from the String
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage unmarshal(String xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {
+    public static CmsXmlPage unmarshal(String xmlData, String encoding, EntityResolver resolver)
+    throws CmsXmlException {
 
         return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
     }

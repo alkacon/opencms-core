@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import org.antlr.stringtemplate.StringTemplate;
 
 /**
  * Executes a script file.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSitesWebserverThread extends A_CmsReportThread {
@@ -88,7 +88,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param cms the cms object
      * @param targetPath the target path
      * @param templatePath the template path
@@ -143,7 +143,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Creates the new web server configuration files from the given template file.<p>
-     * 
+     *
      * @throws IOException if something goes wrong
      */
     private void createAllWebserverConfigs() throws IOException {
@@ -178,10 +178,10 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Performs the template handling and returns the content.<p>
-     * 
+     *
      * @param site the site
      * @param templateContent the configuration template content
-     * 
+     *
      * @return the file content for the configuration as String
      */
     private String createConfigForSite(CmsSite site, String templateContent) {
@@ -234,7 +234,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Deletes all web server's configuration files with the given prefix.<p>
-     * 
+     *
      * @param prefix a prefix used for the webserver configuration files
      */
     private void deleteAllWebserverConfigs(final String prefix) {
@@ -263,7 +263,7 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Executes the webserver script.<p>
-     * 
+     *
      * @throws IOException if something goes wrong
      * @throws InterruptedException if something goes wrong
      */
@@ -290,10 +290,10 @@ public class CmsSitesWebserverThread extends A_CmsReportThread {
 
     /**
      * Generates the web server configuration filename for the given site.<p>
-     * 
+     *
      * @param macther the site matcher of the site to get the web server configuration filename for
-     * @param separator for the generated file name 
-     * 
+     * @param separator for the generated file name
+     *
      * @return the web server configuration filename
      */
     private String generateWebserverConfigName(CmsSiteMatcher macther, String separator) {

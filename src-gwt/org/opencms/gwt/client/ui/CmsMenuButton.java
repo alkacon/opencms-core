@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a menu button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsMenuButton extends Composite implements HasClickHandlers {
@@ -83,7 +83,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param buttonText the menu button text
      * @param imageClass the menu button image sprite class
      */
@@ -107,7 +107,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
         m_button.setButtonStyle(ButtonStyle.MENU, null);
         m_isOpen = false;
 
-        m_popup = new CmsToolbarPopup(m_button, false, this.getElement());
+        m_popup = new CmsToolbarPopup(m_button, false, getElement());
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
@@ -148,7 +148,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Disables the menu button.<p>
-     * 
+     *
      * @param disabledReason the reason to set in the button title
      */
     public void disable(String disabledReason) {
@@ -176,7 +176,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Returns if the menu is open.<p>
-     * 
+     *
      * @return <code>true</code> if the menu is opened
      */
     public boolean isOpen() {
@@ -228,7 +228,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Enables or disables the button.<p>
-     * 
+     *
      * @param enabled if true, enables the button, else disables it
      */
     public void setEnabled(boolean enabled) {
@@ -243,8 +243,8 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * This will set the menu content widget.<p>
-     * 
-     * @param widget the widget to set as content 
+     *
+     * @param widget the widget to set as content
      */
     public void setMenuWidget(Widget widget) {
 
@@ -290,7 +290,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Returns the popup content.<p>
-     * 
+     *
      * @return the popup content
      */
     protected CmsPopup getPopup() {
@@ -312,7 +312,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
 
     /**
      * Returns if this button is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if the button is enabled
      */
     protected boolean isEnabled() {

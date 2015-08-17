@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report for checking the content of resources in the OpenCms VFS.<p> 
- * 
- * @since 6.1.2 
+ * Provides a report for checking the content of resources in the OpenCms VFS.<p>
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckReport extends A_CmsListReport {
 
@@ -58,7 +58,7 @@ public class CmsContentCheckReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsContentCheckReport(CmsJspActionElement jsp) {
@@ -68,7 +68,7 @@ public class CmsContentCheckReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -80,9 +80,10 @@ public class CmsContentCheckReport extends A_CmsListReport {
 
     /**
      * Performs the dialog actions depending on the initialized action.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      */
+    @Override
     public void displayReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
@@ -120,7 +121,7 @@ public class CmsContentCheckReport extends A_CmsListReport {
 
     /**
      * Returns the request parameter value for the class name to get the dialog object from.<p>
-     * 
+     *
      * @return the request parameter value for the class name to get the dialog object from
      */
     public String getParamClassname() {
@@ -128,10 +129,11 @@ public class CmsContentCheckReport extends A_CmsListReport {
         return m_paramClassname;
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         m_contentCheck = (CmsContentCheck)((Map)getSettings().getDialogObject()).get(getParamClassname());
@@ -142,8 +144,8 @@ public class CmsContentCheckReport extends A_CmsListReport {
     }
 
     /**
-     * Stores the given object as "dialog object" for this widget dialog in the current users session.<p> 
-     * 
+     * Stores the given object as "dialog object" for this widget dialog in the current users session.<p>
+     *
      * @param dialogObject the object to store
      */
     public void setDialogObject(Object dialogObject) {
@@ -157,9 +159,9 @@ public class CmsContentCheckReport extends A_CmsListReport {
         }
     }
 
-    /** 
+    /**
      * Sets the request parameter value for the class name to get the dialog object from.<p>
-     * 
+     *
      * @param className the request parameter value for the class name to get the dialog object from
      */
     public void setParamClassname(String className) {
@@ -169,8 +171,8 @@ public class CmsContentCheckReport extends A_CmsListReport {
 
     /**
      * Returns the (internal use only) map of dialog objects.<p>
-     * 
-     * @return the (internal use only) map of dialog objects 
+     *
+     * @return the (internal use only) map of dialog objects
      */
     private Map getDialogObjectMap() {
 

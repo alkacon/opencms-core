@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,19 +59,19 @@ import org.apache.commons.logging.Log;
 /**
  * Keeps track of the sessions running on the OpenCms server and
  * provides a session info storage which is used to get an overview
- * about currently authenticated OpenCms users, as well as sending broadcasts between users.<p> 
- *  
+ * about currently authenticated OpenCms users, as well as sending broadcasts between users.<p>
+ *
  * For each authenticated OpenCms user, a {@link org.opencms.main.CmsSessionInfo} object
  * holds the information about the users status.<p>
  *
  * When a user session is invalidated, the user info will be removed.
  * This happens when a user log out, or when his session times out.<p>
- * 
+ *
  * <b>Please Note:</b> The current implementation does not provide any permission checking,
  * so all users can access the methods of this manager. Permission checking
  * based on the current users OpenCms context may be added in a future OpenCms release.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSessionManager {
 
@@ -104,17 +104,18 @@ public class CmsSessionManager {
 
     /**
      * Checks whether a new session can be created for the user, and throws an exception if not.<p>
-     * 
-     * @param user the user to check 
-     * @throws CmsException if no new session for the user can't be created 
+     *
+     * @param user the user to check
+     * @throws CmsException if no new session for the user can't be created
      */
     public void checkCreateSessionForUser(CmsUser user) throws CmsException {
 
         if (getUserSessionMode() == UserSessionMode.single) {
             List<CmsSessionInfo> infos = getSessionInfos(user.getId());
             if (!infos.isEmpty()) {
-                throw new CmsCustomLoginException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_ALREADY_LOGGED_IN_0));
+                throw new CmsCustomLoginException(
+                    org.opencms.security.Messages.get().container(
+                        org.opencms.security.Messages.ERR_ALREADY_LOGGED_IN_0));
             }
         }
 
@@ -122,9 +123,9 @@ public class CmsSessionManager {
 
     /**
      * Returns the broadcast queue for the given OpenCms session id.<p>
-     * 
+     *
      * @param sessionId the OpenCms session id to get the broadcast queue for
-     * 
+     *
      * @return the broadcast queue for the given OpenCms session id
      */
     public Buffer getBroadcastQueue(String sessionId) {
@@ -154,7 +155,7 @@ public class CmsSessionManager {
 
     /**
      * Returns the number of current sessions, including the sessions of not authenticated guest users.<p>
-     * 
+     *
      * @return the number of current sessions, including the sessions of not authenticated guest users
      */
     public int getSessionCountCurrent() {
@@ -164,7 +165,7 @@ public class CmsSessionManager {
 
     /**
      * Returns the number of total sessions generated so far, including already destroyed sessions.<p>
-     * 
+     *
      * @return the number of total sessions generated so far, including already destroyed sessions
      */
     public int getSessionCountTotal() {
@@ -177,7 +178,7 @@ public class CmsSessionManager {
      * or <code>null</code> if this session id has no session info attached.<p>
      *
      * @param sessionId the OpenCms session id to return the session info for
-     * 
+     *
      * @return the complete user session info of a user from the session storage
      */
     public CmsSessionInfo getSessionInfo(CmsUUID sessionId) {
@@ -191,11 +192,11 @@ public class CmsSessionManager {
     }
 
     /**
-     * Returns the OpenCms user session info for the given request, 
+     * Returns the OpenCms user session info for the given request,
      * or <code>null</code> if no user session is available.<p>
-     * 
+     *
      * @param req the current request
-     * 
+     *
      * @return the OpenCms user session info for the given request, or <code>null</code> if no user session is available
      */
     public CmsSessionInfo getSessionInfo(HttpServletRequest req) {
@@ -210,11 +211,11 @@ public class CmsSessionManager {
     }
 
     /**
-     * Returns the OpenCms user session info for the given http session, 
+     * Returns the OpenCms user session info for the given http session,
      * or <code>null</code> if no user session is available.<p>
-     * 
+     *
      * @param session the current http session
-     * 
+     *
      * @return the OpenCms user session info for the given http session, or <code>null</code> if no user session is available
      */
     public CmsSessionInfo getSessionInfo(HttpSession session) {
@@ -232,9 +233,9 @@ public class CmsSessionManager {
      *
      * @param sessionId the OpenCms session id to return the session info for,
      * this must be a String representation of a {@link CmsUUID}
-     * 
+     *
      * @return the complete user session info of a user from the session storage
-     * 
+     *
      * @see #getSessionInfo(CmsUUID)
      */
     public CmsSessionInfo getSessionInfo(String sessionId) {
@@ -244,7 +245,7 @@ public class CmsSessionManager {
 
     /**
      * Returns all current session info objects.<p>
-     *  
+     *
      * @return all current session info objects
      */
     public List<CmsSessionInfo> getSessionInfos() {
@@ -259,14 +260,14 @@ public class CmsSessionManager {
 
     /**
      * Returns a list of all active session info objects for the specified user.<p>
-     * 
-     * An OpenCms user can have many active sessions. 
+     *
+     * An OpenCms user can have many active sessions.
      * This is e.g. possible when two people have logged in to the system using the
      * same username. Even one person can have multiple sessions if he
      * is logged in to OpenCms with several browser windows at the same time.<p>
-     * 
+     *
      * @param userId the id of the user
-     *  
+     *
      * @return a list of all active session info objects for the specified user
      */
     public List<CmsSessionInfo> getSessionInfos(CmsUUID userId) {
@@ -281,8 +282,8 @@ public class CmsSessionManager {
 
     /**
      * Gets the user session mode.<p>
-     * 
-     * @return the user session mode 
+     *
+     * @return the user session mode
      */
     public UserSessionMode getUserSessionMode() {
 
@@ -291,11 +292,11 @@ public class CmsSessionManager {
 
     /**
      * Kills all sessions for the given user.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param user the user for whom the sessions should be killed 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param user the user for whom the sessions should be killed
+     *
+     * @throws CmsException if something goes wrong
      */
     public void killSession(CmsObject cms, CmsUser user) throws CmsException {
 
@@ -308,11 +309,11 @@ public class CmsSessionManager {
 
     /**
      * Destroys a session given the session id. Only allowed for users which have the "account manager" role.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param sessionid the session id
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void killSession(CmsObject cms, CmsUUID sessionid) throws CmsException {
 
@@ -323,9 +324,9 @@ public class CmsSessionManager {
 
     /**
      * Sends a broadcast to all sessions of all currently authenticated users.<p>
-     * 
+     *
      * @param cms the OpenCms user context of the user sending the broadcast
-     * 
+     *
      * @param message the message to broadcast
      */
     @SuppressWarnings("unchecked")
@@ -350,9 +351,9 @@ public class CmsSessionManager {
 
     /**
      * Sends a broadcast to the specified user session.<p>
-     * 
+     *
      * @param cms the OpenCms user context of the user sending the broadcast
-     * 
+     *
      * @param message the message to broadcast
      * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      */
@@ -373,11 +374,11 @@ public class CmsSessionManager {
 
     /**
      * Sends a broadcast to all sessions of a given user.<p>
-     * 
-     * The user sending the message may be a real user like 
+     *
+     * The user sending the message may be a real user like
      * <code>cms.getRequestContext().currentUser()</code> or
      * <code>null</code> for a system message.<p>
-     * 
+     *
      * @param fromUser the user sending the broadcast
      * @param message the message to broadcast
      * @param toUser the target (receiver) of the broadcast
@@ -406,11 +407,11 @@ public class CmsSessionManager {
     /**
      * Switches the current user to the given user. The session info is rebuild as if the given user
      * performs a login at the workplace.
-     * 
+     *
      * @param cms the current CmsObject
      * @param req the current request
      * @param user the user to switch to
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void switchUser(CmsObject cms, HttpServletRequest req, CmsUser user) throws CmsException {
@@ -430,8 +431,8 @@ public class CmsSessionManager {
         // get the user settings for the given user and set the start project and the site root
         CmsUserSettings settings = new CmsUserSettings(user);
         String ouFqn = user.getOuFqn();
-        CmsProject userProject = cms.readProject(ouFqn
-            + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
+        CmsProject userProject = cms.readProject(
+            ouFqn + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
         try {
             userProject = cms.readProject(settings.getStartProject());
         } catch (Exception e) {
@@ -483,9 +484,9 @@ public class CmsSessionManager {
     }
 
     /**
-     * Updates all session info objects, so that invalid projects 
+     * Updates all session info objects, so that invalid projects
      * are replaced by the Online project.<p>
-     * 
+     *
      * @param cms the cms context
      */
     public void updateSessionInfos(CmsObject cms) {
@@ -531,9 +532,9 @@ public class CmsSessionManager {
 
     /**
      * Returns the UUID representation for the given session id String.<p>
-     * 
+     *
      * @param sessionId the session id String to return the  UUID representation for
-     * 
+     *
      * @return the UUID representation for the given session id String
      */
     protected CmsUUID getSessionUUID(String sessionId) {
@@ -543,7 +544,7 @@ public class CmsSessionManager {
 
     /**
      * Sets the storage provider.<p>
-     * 
+     *
      * @param sessionStorageProvider the storage provider implementation
      */
     protected void initialize(I_CmsSessionStorageProvider sessionStorageProvider) {
@@ -554,9 +555,9 @@ public class CmsSessionManager {
 
     /**
      * Called by the {@link OpenCmsListener} when a http session is created.<p>
-     * 
+     *
      * @param event the http session event
-     * 
+     *
      * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionCreated(HttpSessionEvent)
      */
@@ -566,10 +567,11 @@ public class CmsSessionManager {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_SESSION_CREATED_2,
-                    new Integer(m_sessionCountTotal),
-                    new Integer(m_sessionCountCurrent)));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SESSION_CREATED_2,
+                        new Integer(m_sessionCountTotal),
+                        new Integer(m_sessionCountCurrent)));
             }
         }
 
@@ -580,9 +582,9 @@ public class CmsSessionManager {
 
     /**
      * Called by the {@link OpenCmsListener} when a http session is destroyed.<p>
-     * 
+     *
      * @param event the http session event
-     * 
+     *
      * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
      * @see OpenCmsListener#sessionDestroyed(HttpSessionEvent)
      */
@@ -591,10 +593,11 @@ public class CmsSessionManager {
         synchronized (m_lockSessionCount) {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 0 : (m_sessionCountCurrent - 1);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_SESSION_DESTROYED_2,
-                    new Integer(m_sessionCountTotal),
-                    new Integer(m_sessionCountCurrent)));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SESSION_DESTROYED_2,
+                        new Integer(m_sessionCountTotal),
+                        new Integer(m_sessionCountCurrent)));
             }
         }
 
@@ -631,8 +634,8 @@ public class CmsSessionManager {
 
     /**
      * Sets the user session mode.<p>
-     * 
-     * @param userSessionMode the user session mode 
+     *
+     * @param userSessionMode the user session mode
      */
     protected void setUserSessionMode(UserSessionMode userSessionMode) {
 
@@ -641,8 +644,8 @@ public class CmsSessionManager {
 
     /**
      * Removes all stored session info objects.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     protected void shutdown() throws Exception {
 
@@ -672,7 +675,7 @@ public class CmsSessionManager {
 
         if (cms.getRequestContext().getUri().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION)) {
             // this request must not update the user session info
-            // if not the switch user feature would not work 
+            // if not the switch user feature would not work
             return;
         }
 
@@ -687,7 +690,7 @@ public class CmsSessionManager {
                 addSessionInfo(sessionInfo);
             } else {
                 HttpSession session = req.getSession(false);
-                // only create session info if a session is already available 
+                // only create session info if a session is already available
                 if (session != null) {
                     // create a new session info for the user
                     sessionInfo = new CmsSessionInfo(
@@ -704,7 +707,7 @@ public class CmsSessionManager {
     }
 
     /**
-     * Validates the sessions stored in this manager and removes 
+     * Validates the sessions stored in this manager and removes
      * any sessions that have become invalidated.<p>
      */
     protected void validateSessionInfos() {

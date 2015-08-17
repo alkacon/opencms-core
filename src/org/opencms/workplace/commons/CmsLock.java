@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Creates the dialogs for locking, unlocking or steal lock operations on a resource.<p> 
+ * Creates the dialogs for locking, unlocking or steal lock operations on a resource.<p>
  *
  * The following files use this class:
  * <ul>
@@ -76,8 +76,8 @@ import org.apache.commons.logging.Log;
  * <li>/commons/locks.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
@@ -175,7 +175,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsLock(CmsJspActionElement jsp) {
@@ -185,7 +185,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -197,7 +197,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Determines if the resource should be locked, unlocked or if the lock should be stolen.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @return the dialog action: lock, change lock (steal) or unlock
      */
@@ -224,7 +224,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Performs the lock/unlock operation, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionToggleLock() throws JspException {
@@ -234,7 +234,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         try {
             if (performDialogOperation()) {
-                // if no exception is caused and "true" is returned the lock/unlock operation was successful          
+                // if no exception is caused and "true" is returned the lock/unlock operation was successful
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
@@ -258,7 +258,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html code to build the dialogs default confirmation message js.<p>
-     * 
+     *
      * @return html code
      */
     public String buildDefaultConfirmationJS() {
@@ -304,7 +304,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html code to include the needed js code.<p>
-     * 
+     *
      * @return html code
      */
     public String buildIncludeJs() {
@@ -390,7 +390,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html code to build the lock request.<p>
-     * 
+     *
      * @return html code
      */
     public String buildLockRequest() {
@@ -400,10 +400,10 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the html code to build the lock request.<p>
-     * 
+     *
      * @param hiddenTimeout the maximal number of millis the dialog will be hidden
      * @param includeRelated indicates if the report should include related resources
-     * 
+     *
      * @return html code
      */
     public String buildLockRequest(int hiddenTimeout, boolean includeRelated) {
@@ -436,9 +436,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the report of all locked subresources.<p>
-     * 
+     *
      * @return the report of all locked subresources
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException in case of errros forwarding to the required result page
      * @throws ServletException in case of errros forwarding to the required result page
@@ -489,8 +489,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Builds the necessary button row.<p>
-     * 
-     * @return the button row 
+     *
+     * @return the button row
      */
     public String dialogButtons() {
 
@@ -517,7 +517,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns locked resources that do not belong to the current user.<p>
-     * 
+     *
      * @return the locked Resources
      */
     public Set<String> getBlockingLockedResources() {
@@ -567,9 +567,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns the confirmation message.<p>
-     * 
+     *
      * @param state if <code>true</code> everything is ok
-     * 
+     *
      * @return the confirmation message
      */
     public String getConfirmationMessage(boolean state) {
@@ -677,7 +677,8 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         if (m_nonBlockingFilter == null) {
             m_nonBlockingFilter = CmsLockFilter.FILTER_ALL;
-            m_nonBlockingFilter = m_nonBlockingFilter.filterLockableByUser(getCms().getRequestContext().getCurrentUser());
+            m_nonBlockingFilter = m_nonBlockingFilter.filterLockableByUser(
+                getCms().getRequestContext().getCurrentUser());
             m_nonBlockingFilter = m_nonBlockingFilter.filterSharedExclusive();
         }
         return m_nonBlockingFilter;
@@ -781,9 +782,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Determines whether to show the lock dialog depending on the users settings and the dilaog type.<p>
-     * 
+     *
      * In case of locking a folder, a confirmation dialog is needed if any sub resources are already locked.<p>
-     * 
+     *
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showConfirmation() {
@@ -805,7 +806,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
@@ -856,7 +857,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Performs the lock/unlock/steal lock operation.<p>
-     * 
+     *
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if operation is not successful
      */
@@ -895,14 +896,14 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Performs the lock state operation on a single resource.<p>
-     * 
+     *
      * @param resourceName the resource name to perform the operation on
      * @param dialogAction the lock action: lock, unlock or change lock
      * @throws CmsException if the operation fails
      */
     protected void performSingleResourceOperation(String resourceName, int dialogAction) throws CmsException {
 
-        // store original name to use for lock action 
+        // store original name to use for lock action
         String originalResourceName = resourceName;
         CmsResource res = getCms().readResource(resourceName, CmsResourceFilter.ALL);
         if (res.isFolder() && !resourceName.endsWith("/")) {
@@ -932,7 +933,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /**
      * Returns a set of locked unpublished related resources.<p>
-     * 
+     *
      * @param resName the resource to check the related resources for
      * @param filter the lock filter to use
      * @param lockedResources a set of site relative paths, of locked resources to exclude

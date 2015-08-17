@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Describes a configured site in OpenCms.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
@@ -88,7 +88,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /**
      * Constructs a new site object without title and id information,
      * this is to be used for lookup purposes only.<p>
-     * 
+     *
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteMatcher the site matcher for this site
      */
@@ -100,7 +100,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /**
      * Constructs a new site object with a default (wildcard) a site matcher,
      * this is to be used for display purposes only.<p>
-     * 
+     *
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
      * @param title display name of this site
@@ -112,7 +112,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Constructs a new site object.<p>
-     * 
+     *
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
      * @param title display name of this site
@@ -138,7 +138,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Constructs a new site object.<p>
-     * 
+     *
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
      * @param title display name of this site
@@ -186,9 +186,9 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /**
      * Constructs a new site object without title and id information,
      * with a site matcher generated from the provided URL.<p>
-     * 
+     *
      * This is to be used for test purposes only.<p>
-     * 
+     *
      * @param siteRoot root directory of this site in the OpenCms VFS
      * @param siteURL the URL to create the site matcher for this site from
      */
@@ -199,7 +199,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -256,7 +256,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the aliases for this site.<p>
-     * 
+     *
      * @return a ArrayList with the aliases
      */
     public List<CmsSiteMatcher> getAliases() {
@@ -296,7 +296,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the secure server url of this site root.<p>
-     * 
+     *
      * @return the secure server url
      */
     public String getSecureUrl() {
@@ -304,26 +304,26 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         if (m_secureServer != null) {
             return m_secureServer.getUrl();
         } else {
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, this.toString()));
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_SECURESERVER_MISSING_1, toString()));
             return getUrl();
         }
     }
 
     /**
-     * Returns the server prefix for the given resource in this site, used to distinguish between 
+     * Returns the server prefix for the given resource in this site, used to distinguish between
      * secure (https) and non-secure (http) sites.<p>
-     * 
+     *
      * This is required since a resource may have an individual "secure" setting using the property
      * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
-     * 
-     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
-     * 
+     *
+     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p>
+     *
      * @param cms the current users OpenCms context
      * @param resource the resource to use
-     * 
+     *
      * @return the server prefix for the given resource in this site
-     * 
+     *
      * @see #getServerPrefix(CmsObject, String)
      */
     public String getServerPrefix(CmsObject cms, CmsResource resource) {
@@ -332,20 +332,20 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
-     * Returns the server prefix for the given resource in this site, used to distinguish between 
+     * Returns the server prefix for the given resource in this site, used to distinguish between
      * secure (https) and non-secure (http) sites.<p>
-     * 
+     *
      * This is required since a resource may have an individual "secure" setting using the property
      * {@link org.opencms.file.CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
      * must be delivered only using a secure protocol.<p>
-     * 
-     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
-     * 
+     *
+     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p>
+     *
      * @param cms the current users OpenCms context
      * @param resourceName the resource name
-     * 
+     *
      * @return the server prefix for the given resource in this site
-     * 
+     *
      * @see #getSecureUrl()
      * @see #getUrl()
      */
@@ -365,7 +365,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the site matcher that describes the URL of this site.<p>
-     * 
+     *
      * @return the site matcher that describes the URL of this site
      */
     public CmsSiteMatcher getSiteMatcher() {
@@ -375,13 +375,13 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the site path for the given root path in case the root path
-     * actually starts with this site root, or <code>null</code> in case 
-     * the root path does not.<p> 
+     * actually starts with this site root, or <code>null</code> in case
+     * the root path does not.<p>
      *
      * @param rootPath the root path to get the site path for
      *
      * @return the site path for the given root path in case the root path
-     *      actually starts with this site root, or <code>null</code> in case 
+     *      actually starts with this site root, or <code>null</code> in case
      *      the root path does not
      */
     public String getSitePath(String rootPath) {
@@ -398,7 +398,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     /**
      * Returns the path of this site's root directory in the OpenCms VFS without tailing slash.<p>
      * <ul><li><code>e.g. /sites/default</code></li></ul>
-     * 
+     *
      * @return the path of this site's root directory in the OpenCms VFS without tailing slash
      */
     public String getSiteRoot() {
@@ -408,7 +408,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the UUID of this site's root directory in the OpenCms VFS.<p>
-     * 
+     *
      * @return the UUID of this site's root directory in the OpenCms VFS
      */
     public CmsUUID getSiteRootUUID() {
@@ -418,7 +418,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the display title of this site.<p>
-     * 
+     *
      * @return the display title of this site
      */
     public String getTitle() {
@@ -428,7 +428,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the server url of this site root.<p>
-     * 
+     *
      * @return the server url
      */
     public String getUrl() {
@@ -447,7 +447,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns true, if the site has a secure server.<p>
-     * 
+     *
      * @return true, if the site has a secure server
      */
     public boolean hasSecureServer() {
@@ -457,8 +457,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the exclusive error flag.<p>
-     * 
-     * @return <code>true</code> will generate a 404 error, 
+     *
+     * @return <code>true</code> will generate a 404 error,
      *      or <code>false</code> will redirect to secure url.
      */
     public boolean isExclusiveError() {
@@ -468,8 +468,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the exclusive protocol flag.<p>
-     * 
-     * @return <code>true</code> secure resources will only be available using the configured secure url, 
+     *
+     * @return <code>true</code> secure resources will only be available using the configured secure url,
      *      or <code>false</code> if the uri (protocol + servername) does not really matter.
      */
     public boolean isExclusiveUrl() {
@@ -499,7 +499,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the exclusive error flag.<p>
-     * 
+     *
      * @param error the exclusive error flag
      */
     public void setExclusiveError(boolean error) {
@@ -509,7 +509,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the exclusive protocol flag.<p>
-     * 
+     *
      * @param exclusive the exclusive protocol flag
      */
     public void setExclusiveUrl(boolean exclusive) {
@@ -519,8 +519,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Enables use of permanent redirects instead of temporary redirects to the secure site.<p>
-     * 
-     * @param usePermanentRedirects true if permanent redirects should be used  
+     *
+     * @param usePermanentRedirects true if permanent redirects should be used
      */
     public void setUsePermanentRedirects(boolean usePermanentRedirects) {
 
@@ -562,10 +562,10 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
         return result.toString();
     }
 
-    /** 
+    /**
      * Returns true if permanent redirects should be used for redirecting to the secure URL for this site.<p>
-     * 
-     * @return true if permanent redirects should be used 
+     *
+     * @return true if permanent redirects should be used
      */
     public boolean usesPermanentRedirects() {
 
@@ -574,7 +574,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Adds an alias for the site.<p>
-     *      
+     *
      * @param aliasServer the sitematcher for the alias
      */
     protected void addAlias(CmsSiteMatcher aliasServer) {
@@ -584,8 +584,8 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Returns the site matcher for the secure site, or null if no secure site is defined.<p>
-     * 
-     * @return the site matcher for the secure site 
+     *
+     * @return the site matcher for the secure site
      */
     protected CmsSiteMatcher getSecureServerMatcher() {
 
@@ -594,7 +594,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the aliases for the site.<p>
-     *      
+     *
      * @param aliases the aliases for the site
      */
     protected void setAliases(List<CmsSiteMatcher> aliases) {
@@ -604,7 +604,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the display title of this site.<p>
-     * 
+     *
      * @param position the display title of this site
      */
     protected void setPosition(float position) {
@@ -614,7 +614,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the secure server.<p>
-     * 
+     *
      * @param secureServer the sitematcher of the secure server
      */
     protected void setSecureServer(CmsSiteMatcher secureServer) {
@@ -624,7 +624,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the site matcher that describes the URL of this site.<p>
-     * 
+     *
      * @param siteMatcher the site matcher that describes the URL of this site
      */
     protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
@@ -634,7 +634,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the server URL prefix to which this site is mapped.<p>
-     * 
+     *
      * @param siteRoot the server URL prefix to which this site is mapped
      */
     protected void setSiteRoot(String siteRoot) {
@@ -649,7 +649,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the UUID of this site's root directory in the OpenCms VFS.<p>
-     * 
+     *
      * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
      */
     protected void setSiteRootUUID(CmsUUID siteRootUUID) {
@@ -659,7 +659,7 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /**
      * Sets the display title of this site.<p>
-     * 
+     *
      * @param name the display title of this site
      */
     protected void setTitle(String name) {

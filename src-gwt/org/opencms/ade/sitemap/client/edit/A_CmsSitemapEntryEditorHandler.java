@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.gwt.client.property.I_CmsPropertyEditorHandler;
 
 /**
  * The skeleton for the sitemap entry editor handlers.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsPropertyEditorHandler {
@@ -46,9 +46,9 @@ public abstract class A_CmsSitemapEntryEditorHandler implements I_CmsPropertyEdi
 
     /**
      * Creates a new instance of this class.<p>
-     * 
-     * @param controller the sitemap controller for this mode 
-     * @param entry the sitemap entry for this mode 
+     *
+     * @param controller the sitemap controller for this mode
+     * @param entry the sitemap entry for this mode
      */
     public A_CmsSitemapEntryEditorHandler(CmsSitemapController controller, CmsClientSitemapEntry entry) {
 

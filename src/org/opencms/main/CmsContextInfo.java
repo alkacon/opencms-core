@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,10 +38,10 @@ import org.opencms.security.CmsOrganizationalUnit;
 import java.util.Locale;
 
 /**
- * Contains user information for automated creation of a  
+ * Contains user information for automated creation of a
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsContextInfo {
 
@@ -101,7 +101,7 @@ public class CmsContextInfo {
 
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
-     * 
+     *
      * The default values are:<dl>
      * <dt>User name</dt><dd>(configured default guest user)</dd>
      * <dt>Project name</dt><dd>Online</dd>
@@ -187,11 +187,11 @@ public class CmsContextInfo {
     }
 
     /**
-     * Creates a new instance, initializing the user name as provided and 
+     * Creates a new instance, initializing the user name as provided and
      * all other vaiables with the same default values as in {@link #CmsContextInfo()}.<p>
-     * 
+     *
      * @param userName the user name to create the context with
-     * 
+     *
      * @see #CmsContextInfo()
      */
     public CmsContextInfo(String userName) {
@@ -202,7 +202,7 @@ public class CmsContextInfo {
 
     /**
      * Creates a clone of this context info object.<p>
-     * 
+     *
      * @see java.lang.Object#clone()
      */
     @Override
@@ -227,10 +227,10 @@ public class CmsContextInfo {
 
     /**
      * Finalizes (freezes) the configuration of this context information.<p>
-     * 
-     * After this entry has been frozen, any attempt to change the 
+     *
+     * After this entry has been frozen, any attempt to change the
      * configuration of this context info with one of the "set..." methods
-     * will lead to a <code>RuntimeException</code>.<p> 
+     * will lead to a <code>RuntimeException</code>.<p>
      */
     public void freeze() {
 
@@ -239,8 +239,8 @@ public class CmsContextInfo {
 
     /**
      * Gets the detail content resource.<p>
-     * 
-     * @return the detail content resource 
+     *
+     * @return the detail content resource
      */
     public CmsResource getDetailResource() {
 
@@ -251,7 +251,7 @@ public class CmsContextInfo {
      * Returns the encoding.<p>
      *
      * @return the encoding
-     * 
+     *
      * @see CmsRequestContext#getEncoding()
      */
     public String getEncoding() {
@@ -263,7 +263,7 @@ public class CmsContextInfo {
      * Returns the locale.<p>
      *
      * @return the locale
-     * 
+     *
      * @see CmsRequestContext#getLocale()
      */
     public Locale getLocale() {
@@ -275,7 +275,7 @@ public class CmsContextInfo {
      * Returns the locale name.<p>
      *
      * @return the locale name
-     * 
+     *
      * @see CmsRequestContext#getLocale()
      */
     public String getLocaleName() {
@@ -285,7 +285,7 @@ public class CmsContextInfo {
 
     /**
      * Returns the fully qualified name of the organizational unit.<p>
-     * 
+     *
      * @return the fully qualified name of the organizational unit
      */
     public String getOuFqn() {
@@ -294,14 +294,14 @@ public class CmsContextInfo {
     }
 
     /**
-     * Returns the project, or <code>null</code> if the project 
+     * Returns the project, or <code>null</code> if the project
      * has not been configured.<p>
-     * 
-     * If the project has not been configured, at last the 
-     * project name will be available.<p> 
-     * 
+     *
+     * If the project has not been configured, at last the
+     * project name will be available.<p>
+     *
      * @return the project
-     * 
+     *
      * @see #getProjectName()
      * @see CmsRequestContext#getCurrentProject()
      */
@@ -314,7 +314,7 @@ public class CmsContextInfo {
      * Returns the project name.<p>
      *
      * @return the project name
-     * 
+     *
      * @see #getProject()
      * @see CmsRequestContext#getCurrentProject()
      */
@@ -327,7 +327,7 @@ public class CmsContextInfo {
      * Returns the remote ip address.<p>
      *
      * @return the remote ip address
-     * 
+     *
      * @see CmsRequestContext#getRemoteAddress()
      */
     public String getRemoteAddr() {
@@ -339,7 +339,7 @@ public class CmsContextInfo {
      * Returns the requested uri.<p>
      *
      * @return the requested uri
-     * 
+     *
      * @see CmsRequestContext#getUri()
      */
     public String getRequestedUri() {
@@ -351,7 +351,7 @@ public class CmsContextInfo {
      * Returns the request time used for validation of resource publication and expiration dates.<p>
      *
      * @return the request time used for validation of resource publication and expiration dates
-     * 
+     *
      * @see CmsRequestContext#getRequestTime()
      */
     public long getRequestTime() {
@@ -363,7 +363,7 @@ public class CmsContextInfo {
      * Returns the siteroot.<p>
      *
      * @return the siteroot
-     * 
+     *
      * @see CmsRequestContext#getSiteRoot()
      */
     public String getSiteRoot() {
@@ -372,14 +372,14 @@ public class CmsContextInfo {
     }
 
     /**
-     * Returns the user, or <code>null</code> if the user 
+     * Returns the user, or <code>null</code> if the user
      * has not been configured.<p>
-     * 
-     * If the user has not been configured, at last the 
-     * user name will be available.<p> 
-     * 
+     *
+     * If the user has not been configured, at last the
+     * user name will be available.<p>
+     *
      * @return the user
-     * 
+     *
      * @see #getUserName()
      * @see CmsRequestContext#getCurrentUser()
      */
@@ -392,7 +392,7 @@ public class CmsContextInfo {
      * Returns the username.<p>
      *
      * @return the username
-     * 
+     *
      * @see #getUser()
      * @see CmsRequestContext#getCurrentUser()
      */
@@ -403,7 +403,7 @@ public class CmsContextInfo {
 
     /**
      * Returns true if this a secure request.<p>
-     * 
+     *
      * @return true if this is a secure request
      */
     public boolean isSecureRequest() {
@@ -413,8 +413,8 @@ public class CmsContextInfo {
 
     /**
      * Sets the detail content resource.<p>
-     * 
-     * @param detailResource the detail content resource to set 
+     *
+     * @param detailResource the detail content resource to set
      */
     public void setDetailResource(CmsResource detailResource) {
 
@@ -425,7 +425,7 @@ public class CmsContextInfo {
      * Sets the encoding.<p>
      *
      * @param encoding the encoding to set
-     * 
+     *
      * @see CmsRequestContext#setEncoding(String)
      */
     public void setEncoding(String encoding) {
@@ -436,7 +436,7 @@ public class CmsContextInfo {
 
     /**
      * Sets the 'isSecureRequest' attribute.<p>
-     * 
+     *
      * @param isSecureRequest  true if this a secure request
      */
     public void setIsSecureRequest(boolean isSecureRequest) {
@@ -451,7 +451,7 @@ public class CmsContextInfo {
      * and vice-versa. The locale name and the locale will always match.<p>
      *
      * @param locale the locale to set
-     * 
+     *
      * @see #setLocaleName(String)
      * @see CmsRequestContext#getLocale()
      */
@@ -464,12 +464,12 @@ public class CmsContextInfo {
 
     /**
      * Sets the locale name.<p>
-     * 
+     *
      * Setting the locale name will override the currently selected locale
      * and vice-versa. The locale name and the locale will always match.<p>
      *
      * @param localeName the locale name to set
-     * 
+     *
      * @see #setLocale(Locale)
      * @see CmsRequestContext#getLocale()
      */
@@ -482,7 +482,7 @@ public class CmsContextInfo {
 
     /**
      * Sets the fully qualified name of the organizational unit.<p>
-     * 
+     *
      * @param ouFqn the fully qualified name of the organizational unit to set
      */
     public void setOuFqn(String ouFqn) {
@@ -495,7 +495,7 @@ public class CmsContextInfo {
      * Sets the project name.<p>
      *
      * @param projectName the project name to set
-     * 
+     *
      * @see CmsRequestContext#getCurrentProject()
      */
     public void setProjectName(String projectName) {
@@ -508,7 +508,7 @@ public class CmsContextInfo {
      * Sets the remote ip address.<p>
      *
      * @param remoteAddr the remote ip address
-     * 
+     *
      * @see CmsRequestContext#getRemoteAddress()
      */
     public void setRemoteAddr(String remoteAddr) {
@@ -521,7 +521,7 @@ public class CmsContextInfo {
      * Sets the requested uri.<p>
      *
      * @param requestedUri the requested uri to set
-     * 
+     *
      * @see CmsRequestContext#setUri(String)
      */
     public void setRequestedUri(String requestedUri) {
@@ -534,7 +534,7 @@ public class CmsContextInfo {
      * Sets the request time used for validation of resource publication and expiration dates.<p>
      *
      * @param requestTime the request time to set
-     * 
+     *
      * @see CmsRequestContext#getRequestTime()
      */
     public void setRequestTime(long requestTime) {
@@ -551,7 +551,7 @@ public class CmsContextInfo {
      * Sets the siteroot.<p>
      *
      * @param siteRoot the siteroot to set
-     * 
+     *
      * @see CmsRequestContext#setSiteRoot(String)
      */
     public void setSiteRoot(String siteRoot) {
@@ -564,7 +564,7 @@ public class CmsContextInfo {
      * Sets the username.<p>
      *
      * @param userName the username to set
-     * 
+     *
      * @see CmsRequestContext#getCurrentUser()
      */
     public void setUserName(String userName) {
@@ -576,7 +576,7 @@ public class CmsContextInfo {
 
     /**
      * Checks if this context info configuration is frozen.<p>
-     * 
+     *
      * @throws CmsRuntimeException in case the configuration is already frozen
      */
     protected void checkFrozen() throws CmsRuntimeException {

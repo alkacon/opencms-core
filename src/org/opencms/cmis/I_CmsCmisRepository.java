@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,68 +63,73 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Adds an object to a folder (multifiling). <p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param folderId the folder id 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param folderId the folder id
      * @param allVersions flag to include all versions
      */
     void addObjectToFolder(CmsCmisCallContext context, String objectId, String folderId, boolean allVersions);
 
     /**
      * Applies ACL to an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * @param aclPropagation the ACL propagation 
-     *  
-     * @return the new ACL 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param addAces the ACEs to add
+     * @param removeAces the ACEs to remove
+     * @param aclPropagation the ACL propagation
+     *
+     * @return the new ACL
      */
-    Acl applyAcl(CmsCmisCallContext context, String objectId, Acl addAces, Acl removeAces, AclPropagation aclPropagation);
+    Acl applyAcl(
+        CmsCmisCallContext context,
+        String objectId,
+        Acl addAces,
+        Acl removeAces,
+        AclPropagation aclPropagation);
 
     /**
      * Changes the ACL for an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param aces the access control entries 
-     * @param aclPropagation the propagation mode 
-     * 
-     * @return the new ACL 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param aces the access control entries
+     * @param aclPropagation the propagation mode
+     *
+     * @return the new ACL
      */
     Acl applyAcl(CmsCmisCallContext context, String objectId, Acl aces, AclPropagation aclPropagation);
 
     /**
      * Applies a policy to an object.<p>
-     * 
-     * @param context the call context 
-     * @param policyId the policy id 
-     * @param objectId the object id 
+     *
+     * @param context the call context
+     * @param policyId the policy id
+     * @param objectId the object id
      */
     void applyPolicy(CmsCmisCallContext context, String policyId, String objectId);
 
     /**
      * Cancels a checkout.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
+     *
+     * @param context the call context
+     * @param objectId the object id
      */
     void cancelCheckOut(CmsCmisCallContext context, String objectId);
 
     /**
      * Checks in a document.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param major the major version flag 
-     * @param properties the properties 
-     * @param contentStream the content stream 
-     * @param checkinComment the check-in comment 
-     * @param policies the policies 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param major the major version flag
+     * @param properties the properties
+     * @param contentStream the content stream
+     * @param checkinComment the check-in comment
+     * @param policies the policies
      * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
+     * @param removeAces the ACEs to remove
      */
     void checkIn(
         CmsCmisCallContext context,
@@ -139,25 +144,25 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Checks out an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
+     *
+     * @param context the call context
+     * @param objectId the object id
      * @param contentCopied indicator whether the content was copied
      */
     void checkOut(CmsCmisCallContext context, Holder<String> objectId, Holder<Boolean> contentCopied);
 
     /**
      * Creates a new document.<p>
-     *  
-     * @param context the call context 
-     * @param propertiesObj the properties 
-     * @param folderId the parent folder id 
-     * @param contentStream the content stream 
-     * @param versioningState the versioning state 
-     * @param policies the policies 
-     * @param addAces the access control entries 
+     *
+     * @param context the call context
+     * @param propertiesObj the properties
+     * @param folderId the parent folder id
+     * @param contentStream the content stream
+     * @param versioningState the versioning state
+     * @param policies the policies
+     * @param addAces the access control entries
      * @param removeAces the access control entries to remove
-     *  
+     *
      * @return the object id of the new document
      */
     String createDocument(
@@ -172,17 +177,17 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Copies a document.<p>
-     * 
-     * @param context the call context 
-     * @param sourceId the source object id 
-     * @param propertiesObj the properties 
-     * @param folderId the target folder id 
-     * @param versioningState the versioning state 
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACES to remove 
-     * 
-     * @return the object id of the new document 
+     *
+     * @param context the call context
+     * @param sourceId the source object id
+     * @param propertiesObj the properties
+     * @param folderId the target folder id
+     * @param versioningState the versioning state
+     * @param policies the policies
+     * @param addAces the ACEs to add
+     * @param removeAces the ACES to remove
+     *
+     * @return the object id of the new document
      */
     String createDocumentFromSource(
         CmsCmisCallContext context,
@@ -196,15 +201,15 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Creates a new folder.<p>
-     *  
-     * @param context the call context 
-     * @param propertiesObj the properties 
+     *
+     * @param context the call context
+     * @param propertiesObj the properties
      * @param folderId the parent folder id
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the object id of the created folder 
+     * @param policies the policies
+     * @param addAces the ACEs to add
+     * @param removeAces the ACEs to remove
+     *
+     * @return the object id of the created folder
      */
     String createFolder(
         CmsCmisCallContext context,
@@ -216,14 +221,14 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Creates a policy.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param folderId the folder id 
-     * @param policies the policies 
-     * @param addAces the ACEs to add 
-     * @param removeAces the ACEs to remove 
-     * 
+     *
+     * @param context the call context
+     * @param properties the properties
+     * @param folderId the folder id
+     * @param policies the policies
+     * @param addAces the ACEs to add
+     * @param removeAces the ACEs to remove
+     *
      * @return the new object id
      */
     String createPolicy(
@@ -236,14 +241,14 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Creates a relationship.<p>
-     * 
-     * @param context the call context 
-     * @param properties the properties 
-     * @param policies the policies 
+     *
+     * @param context the call context
+     * @param properties the properties
+     * @param policies the policies
      * @param addAces the ACEs to add
-     * @param removeAces the ACEs to remove 
-     * 
-     * @return the new relationship id 
+     * @param removeAces the ACEs to remove
+     *
+     * @return the new relationship id
      */
     String createRelationship(
         CmsCmisCallContext context,
@@ -254,32 +259,32 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Deletes the content stream of an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param changeToken the change token 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param changeToken the change token
      */
     void deleteContentStream(CmsCmisCallContext context, Holder<String> objectId, Holder<String> changeToken);
 
     /**
      * Deletes a CMIS object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the id of the object to delete 
-     * @param allVersions flag to delete all version 
+     *
+     * @param context the call context
+     * @param objectId the id of the object to delete
+     * @param allVersions flag to delete all version
      */
     void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions);
 
     /**
      * Deletes a whole file tree.<p>
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param allVersions flag to include all versions 
-     * @param unfileObjects flag to unfile objects 
-     * @param continueOnFailure flag to continue on failure 
-     * 
-     * @return data containing the objects which weren'T deleted successfully 
+     *
+     * @param context the call context
+     * @param folderId the folder id
+     * @param allVersions flag to include all versions
+     * @param unfileObjects flag to unfile objects
+     * @param continueOnFailure flag to continue on failure
+     *
+     * @return data containing the objects which weren'T deleted successfully
      */
     FailedToDeleteData deleteTree(
         CmsCmisCallContext context,
@@ -290,34 +295,34 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the ACL for an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param objectId the object id 
-     * @param onlyBasicPermissions flag to only get basic permissions 
-     * 
-     * @return the ACL for the object 
+     * @param objectId the object id
+     * @param onlyBasicPermissions flag to only get basic permissions
+     *
+     * @return the ACL for the object
      */
     Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions);
 
     /**
      * Gets the allowable actions for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @return the allowable actions 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @return the allowable actions
      */
     AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId);
 
     /**
      * Gets all versions of an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param filter the property filter string 
+     * @param objectId the object id
+     * @param versionSeriesId the version series id
+     * @param filter the property filter string
      * @param includeAllowableActions the flag to include allowable actions
-     * 
-     * @return the list of versions 
+     *
+     * @return the list of versions
      */
     List<ObjectData> getAllVersions(
         CmsCmisCallContext context,
@@ -328,18 +333,18 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the policies for an object.<p>
-     * 
-     * @param context the call context 
+     *
+     * @param context the call context
      * @param objectId the object id
      * @param filter the property filter
-     *  
-     * @return the policies for the object 
+     *
+     * @return the policies for the object
      */
     List<ObjectData> getAppliedPolicies(CmsCmisCallContext context, String objectId, String filter);
 
     /**
      * Corresponds to CMIS getCheckedOutDocs service method.<p>
-     *  
+     *
      * @param context
      * @param folderId
      * @param filter
@@ -349,8 +354,8 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
      * @param renditionFilter
      * @param maxItems
      * @param skipCount
-     * 
-     * @return a list of CMIS objects 
+     *
+     * @return a list of CMIS objects
      */
     ObjectList getCheckedOutDocs(
         CmsCmisCallContext context,
@@ -365,19 +370,19 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the children of a folder.<p>
-     *  
-     * @param context the call context 
-     * @param folderId the parent folder id 
-     * @param filter the property filter 
+     *
+     * @param context the call context
+     * @param folderId the parent folder id
+     * @param filter the property filter
      * @param orderBy the ordering clause
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relations 
-     * @param renditionFilter the rendition filter string 
-     * @param includePathSegment flag to include the path segment 
-     * @param maxItems the maximum number of items 
-     * @param skipCount the index from which to start 
-     *  
-     * @return the object information 
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relations
+     * @param renditionFilter the rendition filter string
+     * @param includePathSegment flag to include the path segment
+     * @param maxItems the maximum number of items
+     * @param skipCount the index from which to start
+     *
+     * @return the object information
      */
     ObjectInFolderList getChildren(
         CmsCmisCallContext context,
@@ -398,16 +403,16 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets content changes from the repository.<p>
-     * 
-     * @param context the call context 
-     * @param changeLogToken the change log token 
-     * @param includeProperties flag to include properties 
-     * @param filter filter string for properties 
-     * @param includePolicyIds flag to include policy ids  
-     * @param includeAcl flag to include ACLs 
+     *
+     * @param context the call context
+     * @param changeLogToken the change log token
+     * @param includeProperties flag to include properties
+     * @param filter filter string for properties
+     * @param includePolicyIds flag to include policy ids
+     * @param includeAcl flag to include ACLs
      * @param maxItems maximum number of items to return
-     *  
-     * @return the list of content changes 
+     *
+     * @return the list of content changes
      */
     ObjectList getContentChanges(
         CmsCmisCallContext context,
@@ -420,14 +425,14 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the content stream for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param streamId the rendition stream id 
-     * @param offset 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param streamId the rendition stream id
+     * @param offset
      * @param length
-     * 
-     * @return the content stream 
+     *
+     * @return the content stream
      */
     ContentStream getContentStream(
         CmsCmisCallContext context,
@@ -437,16 +442,16 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
         BigInteger length);
 
     /**
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param depth the maximum depth 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includePathSegment flag to include path segments 
+     *
+     * @param context the call context
+     * @param folderId the folder id
+     * @param depth the maximum depth
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includePathSegment flag to include path segments
      * @param foldersOnly flag to ignore documents and only return folders
-     * 
-     * @return the list of descendants 
+     *
+     * @return the list of descendants
      */
     List<ObjectInFolderContainer> getDescendants(
         CmsCmisCallContext context,
@@ -459,54 +464,54 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the description of the repository.<p>
-     * 
-     * @return the repository description 
+     *
+     * @return the repository description
      */
     String getDescription();
 
-    /** 
+    /**
      * @see org.opencms.repository.I_CmsRepository#getFilter()
      */
     CmsRepositoryFilter getFilter();
 
     /**
      * Corresponds to CMIS getFolderParent service method.<p>
-     * 
-     * @param context the call context 
-     * @param folderId the folder id 
-     * @param filter the property filter 
-     * 
-     * @return the parent object data 
+     *
+     * @param context the call context
+     * @param folderId the folder id
+     * @param filter the property filter
+     *
+     * @return the parent object data
      */
     ObjectData getFolderParent(CmsCmisCallContext context, String folderId, String filter);
 
     /**
      * Gets the repository id.<p>
-     * 
-     * @return the repository id 
+     *
+     * @return the repository id
      */
     String getId();
 
     /**
      * Gets the name of the repository.<p>
-     * 
-     * @return the name of the repository 
+     *
+     * @return the name of the repository
      */
     String getName();
 
     /**
      * Gets the data for a CMIS object.<p>
-     *  
-     * @param context the CMIS call context 
-     * @param objectId the id of the object 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * 
-     * @return the CMIS object data 
+     *
+     * @param context the CMIS call context
+     * @param objectId the id of the object
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter the rendition filter string
+     * @param includePolicyIds flag to include policy ids
+     * @param includeAcl flag to include ACLs
+     *
+     * @return the CMIS object data
      */
     ObjectData getObject(
         CmsCmisCallContext context,
@@ -520,17 +525,17 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Reads a CMIS object by path.<p>
-     * 
-     * @param context the call context 
-     * @param path the repository path 
-     * @param filter the property filter string 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * 
-     * @return the object data 
+     *
+     * @param context the call context
+     * @param path the repository path
+     * @param filter the property filter string
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter the rendition filter string
+     * @param includePolicyIds flag to include policy ids
+     * @param includeAcl flag to include ACLs
+     *
+     * @return the object data
      */
     ObjectData getObjectByPath(
         CmsCmisCallContext context,
@@ -544,19 +549,19 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the object of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to get the latest major version 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter filter string for renditions 
-     * @param includePolicyIds flag to include policies 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param versionSeriesId the version series id
+     * @param major flag to get the latest major version
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter filter string for renditions
+     * @param includePolicyIds flag to include policies
      * @param includeAcl flag to include ACLs
-     * 
-     * @return the data for the latest version 
+     *
+     * @return the data for the latest version
      */
     ObjectData getObjectOfLatestVersion(
         CmsCmisCallContext context,
@@ -572,14 +577,14 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the parents of an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
+     *
+     * @param context the call context
+     * @param objectId the object id
      * @param filter
      * @param includeAllowableActions
      * @param includeRelativePathSegment
-     * 
-     * @return the data for the object parents 
+     *
+     * @return the data for the object parents
      */
     List<ObjectParentData> getObjectParents(
         CmsCmisCallContext context,
@@ -590,17 +595,17 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the relationships for an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param objectId the object id 
-     * @param includeSubRelationshipTypes flag to include relationship subtypes 
-     * @param relationshipDirection the direction for the relations 
-     * @param typeId the relation type id 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions  
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
+     * @param objectId the object id
+     * @param includeSubRelationshipTypes flag to include relationship subtypes
+     * @param relationshipDirection the direction for the relations
+     * @param typeId the relation type id
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param maxItems the maximum number of items to return
+     * @param skipCount the number of items to skip
+     *
      * @return the relationships for the object
      */
     ObjectList getObjectRelationships(
@@ -616,25 +621,25 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the properties for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the CMIS object id 
-     * @param filter the property filter string 
-     * 
-     * @return the set of properties 
+     *
+     * @param context the call context
+     * @param objectId the CMIS object id
+     * @param filter the property filter string
+     *
+     * @return the set of properties
      */
     Properties getProperties(CmsCmisCallContext context, String objectId, String filter);
 
     /**
      * Gets the properties of the latest version.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param versionSeriesId the version series id 
-     * @param major flag to access the latest major version 
-     * @param filter the property filter string 
-     * 
-     * @return the properties from the latest version 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param versionSeriesId the version series id
+     * @param major flag to access the latest major version
+     * @param filter the property filter string
+     *
+     * @return the properties from the latest version
      */
     Properties getPropertiesOfLatestVersion(
         CmsCmisCallContext context,
@@ -645,14 +650,14 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the renditions for a CMIS object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the  object id 
-     * @param renditionFilter the rendition filter 
-     * @param maxItems the maximum number of renditions 
-     * @param skipCount the number of renditions to skip 
-     * 
-     * @return the list of renditions 
+     *
+     * @param context the call context
+     * @param objectId the  object id
+     * @param renditionFilter the rendition filter
+     * @param maxItems the maximum number of renditions
+     * @param skipCount the number of renditions to skip
+     *
+     * @return the list of renditions
      */
     List<RenditionData> getRenditions(
         CmsCmisCallContext context,
@@ -663,21 +668,21 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets the repository information for this repository.<p>
-     * 
+     *
      * @return the repository info
      */
     RepositoryInfo getRepositoryInfo();
 
     /**
      * Gets the children of a given type.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the parent type id 
-     * @param includePropertyDefinitions flag to include property definitions 
-     * @param maxItems the maximum number of items to return 
-     * @param skipCount the number of items to skip 
-     * 
-     * @return the list of child type definitions 
+     *
+     * @param context the call context
+     * @param typeId the parent type id
+     * @param includePropertyDefinitions flag to include property definitions
+     * @param maxItems the maximum number of items to return
+     * @param skipCount the number of items to skip
+     *
+     * @return the list of child type definitions
      */
     TypeDefinitionList getTypeChildren(
         CmsCmisCallContext context,
@@ -688,23 +693,23 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Gets a type definition by id.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the type id 
-     * 
-     * @return the type definition for the given id 
+     *
+     * @param context the call context
+     * @param typeId the type id
+     *
+     * @return the type definition for the given id
      */
     TypeDefinition getTypeDefinition(CmsCmisCallContext context, String typeId);
 
     /**
      * Gets the type descendants.<p>
-     * 
-     * @param context the call context 
-     * @param typeId the parent type id 
-     * @param depth the maximum type depth 
-     * @param includePropertyDefinitions flag to include the property definitions for types 
-     * 
-     * @return the list of type definitions 
+     *
+     * @param context the call context
+     * @param typeId the parent type id
+     * @param depth the maximum type depth
+     * @param includePropertyDefinitions flag to include the property definitions for types
+     *
+     * @return the list of type definitions
      */
     List<TypeDefinitionContainer> getTypeDescendants(
         CmsCmisCallContext context,
@@ -714,26 +719,26 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Moves an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param targetFolderId source source folder id 
-     * @param sourceFolderId the target folder id 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param targetFolderId source source folder id
+     * @param sourceFolderId the target folder id
      */
     void moveObject(CmsCmisCallContext context, Holder<String> objectId, String targetFolderId, String sourceFolderId);
 
     /**
      * Performs a query on the repository.<p>
-     * 
+     *
      * @param context the call context
-     * @param statement the query 
-     * @param searchAllVersions flag to search all versions 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the filter string for renditions 
-     * @param maxItems the maximum number of items to return 
+     * @param statement the query
+     * @param searchAllVersions flag to search all versions
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter the filter string for renditions
+     * @param maxItems the maximum number of items to return
      * @param skipCount the number of items to skip
-     *  
+     *
      * @return the query result objects
      */
     ObjectList query(
@@ -748,30 +753,30 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Unfiles an object from a folder.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the id of the object to unfile 
-     * @param folderId the folder from which the object should be unfiled  
+     *
+     * @param context the call context
+     * @param objectId the id of the object to unfile
+     * @param folderId the folder from which the object should be unfiled
      */
     void removeObjectFromFolder(CmsCmisCallContext context, String objectId, String folderId);
 
     /**
      * Removes a policy from an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param policyId the policy id 
+     * @param policyId the policy id
      * @param objectId the object id
      */
     void removePolicy(CmsCmisCallContext context, String policyId, String objectId);
 
     /**
      * Sets the content stream of an object.<p>
-     *  
-     * @param context the call context 
-     * @param objectId the id of the object 
-     * @param overwriteFlag flag to overwrite the content stream 
-     * @param changeToken the change token 
-     * @param contentStream the new content stream 
+     *
+     * @param context the call context
+     * @param objectId the id of the object
+     * @param overwriteFlag flag to overwrite the content stream
+     * @param changeToken the change token
+     * @param contentStream the new content stream
      */
     void setContentStream(
         CmsCmisCallContext context,
@@ -782,11 +787,11 @@ public interface I_CmsCmisRepository extends I_CmsRepository {
 
     /**
      * Updates the properties for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @param changeToken the change token 
-     * @param properties the properties 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @param changeToken the change token
+     * @param properties the properties
      */
     void updateProperties(
         CmsCmisCallContext context,

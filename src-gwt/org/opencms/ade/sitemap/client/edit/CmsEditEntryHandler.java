@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import java.util.Map;
 
 /**
  * The mode handler for the 'edit entry' mode of the sitemap entry editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
@@ -60,10 +60,10 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Creates a new instance of this class.<p>
-     * 
-     * @param controller the sitemap controller for this mode 
+     *
+     * @param controller the sitemap controller for this mode
      * @param entry the sitemap entry for this mode
-     * @param isSimpleMode true if the sitemap entry editor is in simple mode  
+     * @param isSimpleMode true if the sitemap entry editor is in simple mode
      */
     public CmsEditEntryHandler(CmsSitemapController controller, CmsClientSitemapEntry entry, boolean isSimpleMode) {
 
@@ -138,9 +138,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Gets the property object which would be inherited by a sitemap entry.<p>
-     * 
-     * @param name the name of the property 
-     * @return the property object which would be inherited 
+     *
+     * @param name the name of the property
+     * @return the property object which would be inherited
      */
     public CmsClientProperty getInheritedProperty(String name) {
 
@@ -243,7 +243,7 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Sets the page info bean.<p>
-     * 
+     *
      * @param pageInfo the page info bean
      */
     public void setPageInfo(CmsListInfoBean pageInfo) {
@@ -261,8 +261,8 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Gets the edited sitemap entry.<p>
-     * 
-     * @return the edited sitemap entry 
+     *
+     * @return the edited sitemap entry
      */
     protected CmsClientSitemapEntry getEntry() {
 
@@ -271,9 +271,9 @@ public class CmsEditEntryHandler extends A_CmsSitemapEntryEditorHandler {
 
     /**
      * Returns the path for the given URL name.<p>
-     * 
+     *
      * @param urlName the URL name to create the path for
-     * 
+     *
      * @return the new path for the given URL name
      */
     protected String getPath(String urlName) {

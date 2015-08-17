@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Default implementation of the locale handler.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -94,7 +94,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 res = adminCms.readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
-                // unable to read the resource - maybe we need the init handlers                
+                // unable to read the resource - maybe we need the init handlers
             }
             if (res == null) {
                 try {
@@ -109,7 +109,10 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             if (res != null) {
                 // the resource may not exist at all (e.g. if an unknown resource was requested by the user in the browser)
                 try {
-                    defaultNames = adminCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+                    defaultNames = adminCms.readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_LOCALE,
+                        true).getValue();
                 } catch (CmsException e) {
                     LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
                 }
@@ -119,8 +122,10 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
                 // get the encoding
                 try {
-                    encoding = adminCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
-                        OpenCms.getSystemInfo().getDefaultEncoding());
+                    encoding = adminCms.readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                        true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
                         LOG.info(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
@@ -148,7 +153,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
         }
 
         Locale locale;
-        // return the first default locale name 
+        // return the first default locale name
         if ((defaultLocales != null) && (defaultLocales.size() > 0)) {
             locale = defaultLocales.get(0);
         } else {

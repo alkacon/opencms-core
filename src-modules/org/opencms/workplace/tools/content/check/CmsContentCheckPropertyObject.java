@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,10 +31,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class encapsulates the configuration of one property check used by the 
+ * This class encapsulates the configuration of one property check used by the
  * property content check.<p>
- * 
- * @since 6.1.2 
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckPropertyObject {
 
@@ -65,7 +65,7 @@ public class CmsContentCheckPropertyObject {
     /** The property value to check for. */
     private List m_value;
 
-    /** 
+    /**
      * Constructor, creates a new empty CmsContentCheckProperetyObject.<p>     *
      */
     public CmsContentCheckPropertyObject() {
@@ -199,9 +199,10 @@ public class CmsContentCheckPropertyObject {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();

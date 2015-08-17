@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Generates a CSV file for a given list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
@@ -63,7 +63,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRfsFileDisposalDialog(CmsJspActionElement jsp) {
@@ -73,7 +73,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -103,8 +103,8 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /**
      * Generates the output.<p>
-     * 
-     * @throws IOException if something goes wrong 
+     *
+     * @throws IOException if something goes wrong
      */
     public void generateOutput() throws IOException {
 
@@ -115,7 +115,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
             new StringBuffer("attachment; filename=\"").append(getDownloadFile().getName()).append("\"").toString());
         res.setContentLength((int)getDownloadFile().length());
 
-        // getOutputStream() throws IllegalStateException if the jsp directive buffer="none" is set. 
+        // getOutputStream() throws IllegalStateException if the jsp directive buffer="none" is set.
         ServletOutputStream outStream = res.getOutputStream();
         InputStream in = new BufferedInputStream(new FileInputStream(getDownloadFile()));
 
@@ -127,7 +127,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
                 bit = in.read();
             }
         } catch (SocketException soe) {
-            // this is the case for ie if cancel in download window is chosen: 
+            // this is the case for ie if cancel in download window is chosen:
             // "Connection reset by peer: socket write error". But not for firefox -> don't care
         } finally {
             if (outStream != null) {
@@ -153,9 +153,9 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -176,9 +176,11 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
             result.append("}\n");
             result.append("window.setTimeout(\"download()\",500);\n");
             result.append("</script>\n");
-            result.append(dialogBlockStart(key(
-                Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1,
-                new Object[] {getDownloadFile().getName()})));
+            result.append(
+                dialogBlockStart(
+                    key(
+                        Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1,
+                        new Object[] {getDownloadFile().getName()})));
             result.append(key(Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0));
             result.append(" <a href='javascript:download()'>");
             result.append(key(Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0));
@@ -200,12 +202,12 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the file that will be downloaded upon clicking the download button 
+     * Returns the file that will be downloaded upon clicking the download button
      * generated in this form by <code>{@link #dialogButtonsOkCancel()}</code>.<p>
-     * 
-     * @return the file that will be downloaded upon clicking the download button 
+     *
+     * @return the file that will be downloaded upon clicking the download button
      *         generated in this form by <code>{@link #dialogButtonsOkCancel()}</code>
-     *         
+     *
      * @throws CmsRuntimeException if access to the chosen file to download fails
      */
     protected File getDownloadFile() throws CmsRuntimeException {
@@ -215,7 +217,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
             CmsRfsFileViewer fileView = OpenCms.getWorkplaceManager().getFileViewSettings();
             m_downloadFile = new File(fileView.getFilePath());
             try {
-                // 2nd check: it is impossible to set an invalid path to that class. 
+                // 2nd check: it is impossible to set an invalid path to that class.
                 m_downloadFile = m_downloadFile.getCanonicalFile();
             } catch (IOException ioex) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_FILE_ACCESS_0), ioex);
@@ -226,7 +228,7 @@ public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /**
      * Returns the download path.<p>
-     * 
+     *
      * @return the download path
      */
     protected String getDownloadPath() {

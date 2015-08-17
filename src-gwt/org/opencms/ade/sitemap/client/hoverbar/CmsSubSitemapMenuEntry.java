@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * Sitemap context menu create sub sitemap entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
@@ -55,13 +55,15 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param itemInfos the list info beans for the different sitemap types 
+         *
+         * @param itemInfos the list info beans for the different sitemap types
          */
         public SitemapTypeDialog(List<CmsListInfoBean> itemInfos) {
 
-            super(itemInfos, Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TITLE_0), Messages.get().key(
-                Messages.GUI_SITEMAP_TYPE_CHOICE_TEXT_0));
+            super(
+                itemInfos,
+                Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TITLE_0),
+                Messages.get().key(Messages.GUI_SITEMAP_TYPE_CHOICE_TEXT_0));
 
         }
 
@@ -81,8 +83,8 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsSubSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -153,9 +155,10 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
         }
         infoBean.addAdditionalInfo(Messages.get().key(Messages.GUI_VFS_PATH_0), shownPath);
         // showing the resource type icon of the default file in navigation mode
-        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-        ? entry.getDefaultFileType()
-        : entry.getResourceTypeName());
+        infoBean.setResourceType(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+            ? entry.getDefaultFileType()
+            : entry.getResourceTypeName());
         confirmDialog.addTopWidget(new CmsListItemWidget(infoBean));
         confirmDialog.setHandler(new I_CmsConfirmDialogHandler() {
 
@@ -190,7 +193,7 @@ public class CmsSubSitemapMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Checks if new folders should be created for subsitemaps.<p>
-     * 
+     *
      * @return true if new folders should be created for subsitemaps
      */
     private boolean isCreateFolderMode() {

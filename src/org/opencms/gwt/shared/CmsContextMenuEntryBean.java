@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,10 +78,10 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param active signals if this menu entry is active
      * @param visible signals if this menu entry is visible
-     * @param jspPath the JSP path for the command 
+     * @param jspPath the JSP path for the command
      * @param label the label for the menu entry
      * @param name the name for the menu entry
      * @param reason the reason why this item is deactivated
@@ -108,10 +108,10 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         m_subMenu = subMenu;
     }
 
-    /** 
+    /**
      * Gets the CSS class used to display an item.<p>
-     * 
-     * @return the CSS class for the icon 
+     *
+     * @return the CSS class for the icon
      */
     public String getIconClass() {
 
@@ -120,7 +120,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns the jsp path of the menu entry.<p>
-     * 
+     *
      * @return the jsp path
      */
     public String getJspPath() {
@@ -130,7 +130,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns the label of the menu entry.<p>
-     * 
+     *
      * @return the label
      */
     public String getLabel() {
@@ -140,7 +140,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns the name of the entry.<p>
-     * 
+     *
      * @return the name of the entry
      */
     public String getName() {
@@ -148,10 +148,10 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         return m_name;
     }
 
-    /** 
+    /**
      * Gets the parameters for the context menu command.<p>
-     * 
-     * @return the parameters 
+     *
+     * @return the parameters
      */
     public Map<String, String> getParams() {
 
@@ -160,7 +160,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns the reason for de-activation of the menu entry.<p>
-     *  
+     *
      * @return the reason
      */
     public String getReason() {
@@ -170,7 +170,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns the sub menu entries.<p>
-     * 
+     *
      * @return the entries of the sub menu
      */
     public List<CmsContextMenuEntryBean> getSubMenu() {
@@ -180,7 +180,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu entry has a sub menu <code>false</code> otherwise
      */
     public boolean hasSubMenu() {
@@ -190,7 +190,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns <code>true</code> if this menu entry is active, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu entry is active, <code>false</code> otherwise
      */
     public boolean isActive() {
@@ -200,7 +200,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns <code>true</code> if this menu entry is a separator, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu entry is a separator, <code>false</code> otherwise
      */
     public boolean isSeparator() {
@@ -210,7 +210,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Returns <code>true</code> if this menu entry is visible, <code>false</code> otherwise.<p>
-     * 
+     *
      * @return <code>true</code> if this menu entry is visible, <code>false</code> otherwise
      */
     public boolean isVisible() {
@@ -228,10 +228,10 @@ public class CmsContextMenuEntryBean implements IsSerializable {
         m_active = active;
     }
 
-    /** 
+    /**
      * Sets CSS class to display an icon.<p>
-     * 
-     * @param iconClass the CSS class for the icon 
+     *
+     * @param iconClass the CSS class for the icon
      */
     public void setIconClass(String iconClass) {
 
@@ -260,7 +260,7 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Sets the name of the entry.<p>
-     * 
+     *
      * @param name the name to set
      */
     public void setName(String name) {
@@ -270,8 +270,8 @@ public class CmsContextMenuEntryBean implements IsSerializable {
 
     /**
      * Sets the parameters for the context menu command.<p>
-     * 
-     * @param params the parameters for the context menu command 
+     *
+     * @param params the parameters for the context menu command
      */
     public void setParams(Map<String, String> params) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Provides a method to open the workplace.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
@@ -50,9 +50,9 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -81,8 +81,8 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
     /**
      * Opens the workplace.<p>
-     * 
-     * @param structureId the structure id of the resource for which the workplace should be opened 
+     *
+     * @param structureId the structure id of the resource for which the workplace should be opened
      */
     protected static void openWorkplace(final CmsUUID structureId) {
 
@@ -118,34 +118,39 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
     /**
      * Opens the workplace.<p>
-     * 
+     *
      * @param path the workplace path to open
      * @param winWidth the width of the window
      * @param winHeight the height of the window
      * @param winLeft the left space of the window
      * @param winTop the top space of the window
      */
-    protected static native void openWorkplace(String path, int winWidth, int winHeight, int winLeft, int winTop) /*-{
+    protected static native void openWorkplace(
+        String path,
+        int winWidth,
+        int winHeight,
+        int winLeft,
+        int winTop) /*-{
 
-                                                                                                                  if ($wnd.opener && $wnd.opener != self) {
-                                                                                                                  $wnd.opener.location.href = path;
-                                                                                                                  $wnd.opener.focus();
-                                                                                                                  } else {
-                                                                                                                  var openerStr = 'width='
-                                                                                                                  + winWidth
-                                                                                                                  + ',height='
-                                                                                                                  + winHeight
-                                                                                                                  + ',left='
-                                                                                                                  + winLeft
-                                                                                                                  + ',top='
-                                                                                                                  + winTop
-                                                                                                                  + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-                                                                                                                  var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-                                                                                                                  if (deWindow) {
-                                                                                                                  deWindow.focus();
-                                                                                                                  } else {
-                                                                                                                  @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-                                                                                                                  }
-                                                                                                                  }
-                                                                                                                  }-*/;
+                    if ($wnd.opener && $wnd.opener != self) {
+                    $wnd.opener.location.href = path;
+                    $wnd.opener.focus();
+                    } else {
+                    var openerStr = 'width='
+                    + winWidth
+                    + ',height='
+                    + winHeight
+                    + ',left='
+                    + winLeft
+                    + ',top='
+                    + winTop
+                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+                    var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+                    if (deWindow) {
+                    deWindow.focus();
+                    } else {
+                    @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+                    }
+                    }
+                    }-*/;
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,8 +49,8 @@ import java.util.Locale;
 
 /**
  * Changes the element Locales of resources using the corresponding settings object.<p>
- * 
- * @since 6.0.1 
+ *
+ * @since 6.0.1
  */
 public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
@@ -58,7 +58,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
     /**
      * Creates a change element Locale Thread.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param settings the settings needed to perform the operation
      */
@@ -72,6 +72,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -80,6 +81,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(
@@ -108,7 +110,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
     /**
      * Performs the changing of the element Locales.<p>
-     * 
+     *
      * @throws CmsException if reading the list of resources to change fails
      */
     private void changeElementLocales() throws CmsException {
@@ -118,8 +120,9 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
         Locale newLocale = CmsLocaleManager.getLocale(m_settings.getNewLocale());
         boolean checkTemplate = CmsStringUtil.isNotEmpty(m_settings.getTemplate());
 
-        // set the resource filter to filter xml pages        
-        int xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+        // set the resource filter to filter xml pages
+        int xmlPageId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(xmlPageId);
         String path = CmsResource.getFolderPath(m_settings.getVfsFolder());
         // get the list of resources to change
@@ -154,8 +157,10 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
                 if (checkTemplate) {
                     // check the template property
-                    String template = getCms().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
-                        "");
+                    String template = getCms().readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                        true).getValue("");
                     if (!m_settings.getTemplate().equals(template)) {
                         // template property does not match, report and continue with next resource
                         getReport().println(

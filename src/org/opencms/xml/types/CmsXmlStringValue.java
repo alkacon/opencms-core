@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.dom4j.Element;
 
 /**
  * Describes the XML content type "OpenCmsString".<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
 
@@ -53,7 +53,7 @@ public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
 
     /**
      * Creates a new XML content value of type "OpenCmsString".<p>
-     * 
+     *
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
@@ -66,7 +66,7 @@ public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
 
     /**
      * Creates a new schema type descriptor for the type "OpenCmsString".<p>
-     * 
+     *
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
      * @param maxOccurs maximum number of occurrences of this type according to the XML schema

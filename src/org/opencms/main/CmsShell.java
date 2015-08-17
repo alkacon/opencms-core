@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,28 +58,28 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A command line interface to access OpenCms functions which 
+ * A command line interface to access OpenCms functions which
  * is used for the initial setup and also can be used for scripting access to the OpenCms
  * repository without the Workplace.<p>
- * 
+ *
  * The CmsShell has direct access to all methods in the "command objects".
  * Currently the following classes are used as command objects:
  * <code>{@link org.opencms.main.CmsShellCommands}</code>,
  * <code>{@link org.opencms.file.CmsRequestContext}</code> and
  * <code>{@link org.opencms.file.CmsObject}</code>.<p>
- * 
+ *
  * It is also possible to add a custom command object when calling the script API,
  * like in {@link CmsShell#CmsShell(String, String, String, String, I_CmsShellCommands, PrintStream, PrintStream, boolean)}.<p>
- * 
- * Only public methods in the command objects that use supported data types 
+ *
+ * Only public methods in the command objects that use supported data types
  * as parameters can be called from the shell. Supported data types are:
  * <code>String, {@link org.opencms.util.CmsUUID}, boolean, int, long, double, float</code>.<p>
  *
- * If a method name is ambiguous, i.e. the method name with the same number of parameter exist 
+ * If a method name is ambiguous, i.e. the method name with the same number of parameter exist
  * in more then one of the command objects, the method is only executed on the first matching method object.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -99,7 +99,7 @@ public class CmsShell {
 
         /**
          * Creates a new command object.<p>
-         * 
+         *
          * @param object the object to execute the methods on
          */
         protected CmsCommandObject(Object object) {
@@ -110,10 +110,10 @@ public class CmsShell {
 
         /**
          * Tries to execute a method for the provided parameters on this command object.<p>
-         * 
+         *
          * If methods with the same name and number of parameters exist in this command object,
          * the given parameters are tried to be converted from String to matching types.<p>
-         * 
+         *
          * @param command the command entered by the user in the shell
          * @param parameters the parameters entered by the user in the shell
          * @return true if a method was executed, false otherwise
@@ -129,7 +129,7 @@ public class CmsShell {
                 return false;
             }
 
-            // a match for the method name was found, now try to figure out if the parameters are ok 
+            // a match for the method name was found, now try to figure out if the parameters are ok
             Method onlyStringMethod = null;
             Method foundMethod = null;
             Object[] params = null;
@@ -221,14 +221,16 @@ public class CmsShell {
                     }
                 }
             } catch (InvocationTargetException ite) {
-                m_out.println(Messages.get().getBundle(getLocale()).key(
-                    Messages.GUI_SHELL_EXEC_METHOD_1,
-                    new Object[] {foundMethod.getName()}));
+                m_out.println(
+                    Messages.get().getBundle(getLocale()).key(
+                        Messages.GUI_SHELL_EXEC_METHOD_1,
+                        new Object[] {foundMethod.getName()}));
                 ite.getTargetException().printStackTrace(m_out);
             } catch (Throwable t) {
-                m_out.println(Messages.get().getBundle(getLocale()).key(
-                    Messages.GUI_SHELL_EXEC_METHOD_1,
-                    new Object[] {foundMethod.getName()}));
+                m_out.println(
+                    Messages.get().getBundle(getLocale()).key(
+                        Messages.GUI_SHELL_EXEC_METHOD_1,
+                        new Object[] {foundMethod.getName()}));
                 t.printStackTrace(m_out);
             }
 
@@ -237,11 +239,11 @@ public class CmsShell {
 
         /**
          * Returns a signature overview of all methods containing the given search String.<p>
-         * 
+         *
          * If no method name matches the given search String, the empty String is returned.<p>
-         * 
+         *
          * @param searchString the String to search for, if null all methods are shown
-         * 
+         *
          * @return a signature overview of all methods containing the given search String
          */
         protected String getMethodHelp(String searchString) {
@@ -276,7 +278,7 @@ public class CmsShell {
 
         /**
          * Returns the object to execute the methods on.<p>
-         * 
+         *
          * @return the object to execute the methods on
          */
         protected Object getObject() {
@@ -286,10 +288,10 @@ public class CmsShell {
 
         /**
          * Builds a method lookup String.<p>
-         * 
+         *
          * @param methodName the name of the method
          * @param paramCount the parameter count of the method
-         * 
+         *
          * @return a method lookup String
          */
         private String buildMethodLookup(String methodName, int paramCount) {
@@ -400,7 +402,7 @@ public class CmsShell {
 
     /**
      * Creates a new CmsShell.<p>
-     * 
+     *
      * @param cms the user context to run the shell from
      * @param prompt the prompt format to set
      * @param additionalShellCommands optional object for additional shell commands, or null
@@ -431,7 +433,7 @@ public class CmsShell {
 
     /**
      * Creates a new CmsShell using System.out and System.err for output of the messages.<p>
-     * 
+     *
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
      * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
@@ -458,7 +460,7 @@ public class CmsShell {
 
     /**
      * Creates a new CmsShell.<p>
-     * 
+     *
      * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      * @param servletMapping the mapping of the servlet (or <code>null</code> to use the default <code>"/opencms/*"</code>)
      * @param defaultWebAppName the name of the default web application (or <code>null</code> to use the default <code>"ROOT"</code>)
@@ -486,9 +488,9 @@ public class CmsShell {
             defaultWebAppName = "ROOT";
         }
         try {
-            // first initialize runlevel 1 
+            // first initialize runlevel 1
             m_opencms = OpenCmsCore.getInstance();
-            // Externalization: get Locale: will be the System default since no CmsObject is up  before 
+            // Externalization: get Locale: will be the System default since no CmsObject is up  before
             // runlevel 2
             Locale locale = getLocale();
             m_messages = Messages.get().getBundle(locale);
@@ -580,9 +582,8 @@ public class CmsShell {
                     Class<?> commandClass = Class.forName(additional);
                     additionalCommands = (I_CmsShellCommands)commandClass.newInstance();
                 } catch (Exception e) {
-                    System.out.println(Messages.get().getBundle().key(
-                        Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1,
-                        additional));
+                    System.out.println(
+                        Messages.get().getBundle().key(Messages.GUI_SHELL_ERR_ADDITIONAL_COMMANDS_1, additional));
                     e.printStackTrace();
                     return;
                 }
@@ -621,13 +622,13 @@ public class CmsShell {
 
     /**
      * Executes the commands from the given input stream in this shell.<p>
-     * 
+     *
      * <ul>
      * <li>Commands in the must be separated with a line break '\n'.
      * <li>Only one command per line is allowed.
      * <li>String parameters must be quoted like this: <code>'string value'</code>.
-     * </ul> 
-     * 
+     * </ul>
+     *
      * @param inputStream the input stream from which the commands are read
      */
     public void execute(InputStream inputStream) {
@@ -637,13 +638,13 @@ public class CmsShell {
 
     /**
      * Executes the commands from the given reader in this shell.<p>
-     * 
+     *
      * <ul>
      * <li>Commands in the must be separated with a line break '\n'.
      * <li>Only one command per line is allowed.
      * <li>String parameters must be quoted like this: <code>'string value'</code>.
-     * </ul> 
-     * 
+     * </ul>
+     *
      * @param reader the reader from which the commands are read
      */
     public void execute(Reader reader) {
@@ -708,13 +709,13 @@ public class CmsShell {
 
     /**
      * Executes the commands from the given string in this shell.<p>
-     * 
+     *
      * <ul>
      * <li>Commands in the must be separated with a line break '\n'.
      * <li>Only one command per line is allowed.
      * <li>String parameters must be quoted like this: <code>'string value'</code>.
-     * </ul> 
-     * 
+     * </ul>
+     *
      * @param commands the string from which the commands are read
      */
     public void execute(String commands) {
@@ -752,7 +753,7 @@ public class CmsShell {
 
     /**
      * Returns the stream this shell writes its error messages to.<p>
-     * 
+     *
      * @return the stream this shell writes its error messages to
      */
     public PrintStream getErr() {
@@ -761,9 +762,9 @@ public class CmsShell {
     }
 
     /**
-     * Private internal helper for localization to the current user's locale 
+     * Private internal helper for localization to the current user's locale
      * within OpenCms. <p>
-     * 
+     *
      * @return the current user's <code>Locale</code>.
      */
     public Locale getLocale() {
@@ -776,7 +777,7 @@ public class CmsShell {
 
     /**
      * Returns the localized messages object for the current user.<p>
-     *  
+     *
      * @return the localized messages object for the current user
      */
     public CmsMessages getMessages() {
@@ -786,7 +787,7 @@ public class CmsShell {
 
     /**
      * Returns the stream this shell writes its regular messages to.<p>
-     * 
+     *
      * @return the stream this shell writes its regular messages to
      */
     public PrintStream getOut() {
@@ -796,7 +797,7 @@ public class CmsShell {
 
     /**
      * Obtain the additional settings related to the current user.
-     * 
+     *
      * @return the additional settings related to the current user.
      */
     public CmsUserSettings getSettings() {
@@ -806,7 +807,7 @@ public class CmsShell {
 
     /**
      * Initializes the CmsShell.<p>
-     * 
+     *
      * @param additionalShellCommands optional object for additional shell commands, or null
      * @param out stream to write the regular output messages to
      * @param err stream to write the error messages output to
@@ -848,7 +849,7 @@ public class CmsShell {
 
     /**
      * If <code>true</code> this is an interactive session with a user sitting on a console.<p>
-     * 
+     *
      * @return <code>true</code> if this is an interactive session with a user sitting on a console
      */
     public boolean isInteractive() {
@@ -878,10 +879,10 @@ public class CmsShell {
 
     /**
      * Set <code>true</code> if this is an interactive session with a user sitting on a console.<p>
-     * 
-     * This controls the output of the prompt and some other info that is valuable 
+     *
+     * This controls the output of the prompt and some other info that is valuable
      * on the console, but not required in an automatic session.<p>
-     * 
+     *
      * @param interactive if <code>true</code> this is an interactive session with a user sitting on a console
      */
     public void setInteractive(boolean interactive) {
@@ -891,9 +892,9 @@ public class CmsShell {
 
     /**
      * Sets the locale of the current user.<p>
-     * 
+     *
      * @param locale the locale to set
-     * 
+     *
      * @throws CmsException in case the locale of the current user can not be stored
      */
     public void setLocale(Locale locale) throws CmsException {
@@ -908,7 +909,7 @@ public class CmsShell {
 
     /**
      * Reads the given stream and executes the commands in this shell.<p>
-     * 
+     *
      * @param inputStream an input stream from which commands are read
      * @deprecated use {@link #execute(InputStream)} instead
      */
@@ -936,9 +937,8 @@ public class CmsShell {
             CmsCommandObject cmdObj = i.next();
             commandList = cmdObj.getMethodHelp(searchString);
             if (!CmsStringUtil.isEmpty(commandList)) {
-                m_out.println(m_messages.key(
-                    Messages.GUI_SHELL_AVAILABLE_METHODS_1,
-                    cmdObj.getObject().getClass().getName()));
+                m_out.println(
+                    m_messages.key(Messages.GUI_SHELL_AVAILABLE_METHODS_1, cmdObj.getObject().getClass().getName()));
                 m_out.println(commandList);
                 foundSomething = true;
             }
@@ -950,14 +950,14 @@ public class CmsShell {
     }
 
     /**
-     * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
-     * information) important information additional information about the current user 
+     * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other
+     * information) important information additional information about the current user
      * (an instance of {@link CmsUserSettings}).<p>
-     * 
-     * This step is performed within the <code>CmsShell</code> constructor directly after 
-     * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
+     *
+     * This step is performed within the <code>CmsShell</code> constructor directly after
+     * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as
      * well as when invoking the CmsShell command <code>login</code>.<p>
-     * 
+     *
      * @return the user settings for the current user.
      */
     protected CmsUserSettings initSettings() {
@@ -968,7 +968,7 @@ public class CmsShell {
 
     /**
      * Sets the echo status.<p>
-     * 
+     *
      * @param echo the echo status to set
      */
     protected void setEcho(boolean echo) {
@@ -978,13 +978,13 @@ public class CmsShell {
 
     /**
      * Sets the current shell prompt.<p>
-     * 
+     *
      * To set the prompt, the following variables are available:<p>
-     * 
+     *
      * <code>$u</code> the current user name<br>
      * <code>$s</code> the current site root<br>
      * <code>$p</code> the current project name<p>
-     * 
+     *
      * @param prompt the prompt to set
      */
     protected void setPrompt(String prompt) {
@@ -994,7 +994,7 @@ public class CmsShell {
 
     /**
      * Executes all commands read from the given reader.<p>
-     * 
+     *
      * @param reader a Reader from which the commands are read
      */
 

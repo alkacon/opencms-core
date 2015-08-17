@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to display the current running publish job.<p> 
- * 
- * @since 6.5.5 
+ * Dialog to display the current running publish job.<p>
+ *
+ * @since 6.5.5
  */
 public class CmsPublishQueueLiveReportDialog extends CmsReport {
 
@@ -52,7 +52,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPublishQueueLiveReportDialog(CmsJspActionElement jsp) {
@@ -62,7 +62,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -74,7 +74,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
 
     /**
      * Performs the publish report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void displayReport() throws JspException {
@@ -110,6 +110,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -138,7 +139,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
             return;
         }
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (REPORT_UPDATE.equals(getParamAction())) {
             setAction(ACTION_REPORT_UPDATE);
         } else if (REPORT_BEGIN.equals(getParamAction())) {
@@ -153,12 +154,12 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
             CmsPublishJobRunning publishJob = OpenCms.getPublishManager().getCurrentPublishJob();
             // set parameters depending on publishing type
             if (publishJob.isDirectPublish()) {
-                // add the title for the direct publish dialog 
+                // add the title for the direct publish dialog
                 setDialogTitle(
                     org.opencms.workplace.commons.Messages.GUI_PUBLISH_RESOURCE_1,
                     org.opencms.workplace.commons.Messages.GUI_PUBLISH_MULTI_2);
             } else {
-                // add the title for the publish project dialog 
+                // add the title for the publish project dialog
                 setParamTitle(key(org.opencms.workplace.commons.Messages.GUI_PUBLISH_PROJECT_0));
             }
         }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,11 +37,11 @@ import java.util.Locale;
 
 /**
  * A multi exception is a container for several exception messages that may be caused by an internal operation.<p>
- * 
+ *
  * This is provided so that the user can see a full picture of all the issues that have been caused in an operation,
  * rather then only one (usually the first) issue.
- * 
- * @since 2.0.0 
+ *
+ * @since 2.0.0
  */
 public class CmsMultiException extends CmsException {
 
@@ -64,7 +64,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Creates a new multi exception using the given base message.<p>
-     * 
+     *
      * @param message the basic message to use
      */
     public CmsMultiException(CmsMessageContainer message) {
@@ -76,7 +76,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Creates a new multi exception for the given list of <code>{@link CmsException}</code> instances.<p>
-     * 
+     *
      * @param exceptions a list of <code>{@link CmsException}</code> instances
      */
     public CmsMultiException(List<CmsException> exceptions) {
@@ -87,7 +87,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Adds an Exception to the list of Exceptions kept in this multi Exception.<p>
-     * 
+     *
      * @param exception the Exception to add
      */
     public void addException(CmsException exception) {
@@ -98,7 +98,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Adds all Exceptions in the given List to the list of Exceptions kept in this multi Exception.<p>
-     * 
+     *
      * @param exceptions the Exceptions to add
      */
     public void addExceptions(List<CmsException> exceptions) {
@@ -107,7 +107,7 @@ public class CmsMultiException extends CmsException {
         updateMessage();
     }
 
-    /** 
+    /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     @Override
@@ -123,7 +123,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Returns the (unmodifiable) List of exceptions that are stored in this multi exception.<p>
-     * 
+     *
      * @return the (unmodifiable) List of exceptions that are stored in this multi exception
      */
     public List<CmsException> getExceptions() {
@@ -132,8 +132,8 @@ public class CmsMultiException extends CmsException {
     }
 
     /**
-     * Returns a localized message composed of all contained exceptions.<p> 
-     * 
+     * Returns a localized message composed of all contained exceptions.<p>
+     *
      * @see java.lang.Throwable#getLocalizedMessage()
      */
     @Override
@@ -156,7 +156,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Returns a localized message for the given locale composed of all contained exceptions.<p>
-     *  
+     *
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage(java.util.Locale)
      */
     @Override
@@ -179,7 +179,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Returns the individual message (if set) or an empty String.<p>
-     * 
+     *
      * @param locale the locale for the message to generate
      * @return the individual message (if set) or an empty String
      */
@@ -193,7 +193,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Returns <code>true</code> if this multi exceptions contains at last one individual Exception.<p>
-     * 
+     *
      * @return <code>true</code> if this multi exceptions contains at last one individual Exception
      */
     public boolean hasExceptions() {
@@ -203,9 +203,9 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Returns <code>true</code> if this multi message has an individual base message set.<p>
-     * 
+     *
      * @return <code>true</code> if this multi message has an individual base message set
-     * 
+     *
      * @see #setMessage(CmsMessageContainer)
      */
     public boolean hasIndividualMessage() {
@@ -215,13 +215,13 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Sets an individual message for the multi exception base message.<p>
-     * 
+     *
      * If no individual message has been set, a default message using the key
      * <code>{@link org.opencms.main.Messages#ERR_MULTI_EXCEPTION_1}</code> will be used.<p>
-     * 
-     * If <code>null</code> is given as parameter, any individual message that 
+     *
+     * If <code>null</code> is given as parameter, any individual message that
      * has been set is reset to the default message.<p>
-     * 
+     *
      * @param message the message to set
      */
     public void setMessage(CmsMessageContainer message) {
@@ -238,7 +238,7 @@ public class CmsMultiException extends CmsException {
 
     /**
      * Updates the internal list of stored exceptions.<p>
-     * 
+     *
      * @param exceptions the exceptions to use (will replace the current exception list)
      */
     protected void setExceptions(List<CmsException> exceptions) {

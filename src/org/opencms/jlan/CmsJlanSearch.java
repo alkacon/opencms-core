@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import org.alfresco.jlan.server.filesys.FileInfo;
 import org.alfresco.jlan.server.filesys.SearchContext;
 
 /**
- * This class represents the state of a search operation in a JLAN repository. It just contains 
+ * This class represents the state of a search operation in a JLAN repository. It just contains
  * the list of all search results and an index into that list which points to the next result
  * which hasn't been fetched yet.<p>
  */
@@ -49,15 +49,15 @@ public class CmsJlanSearch extends SearchContext {
 
     /**
      * Creates a new instance based on a given result list.<p>
-     * 
-     * @param files the result list 
+     *
+     * @param files the result list
      */
     public CmsJlanSearch(List<CmsJlanNetworkFile> files) {
 
         m_files = new ArrayList<CmsJlanNetworkFile>(files);
     }
 
-    /** 
+    /**
      * @see org.alfresco.jlan.server.filesys.SearchContext#getResumeId()
      */
     @Override
@@ -89,7 +89,7 @@ public class CmsJlanSearch extends SearchContext {
             info.copyFrom(file.getFileInfo());
             return true;
         } catch (IOException e) {
-            // shouldn't normally happen 
+            // shouldn't normally happen
             throw new RuntimeException(e);
         }
     }
@@ -123,8 +123,8 @@ public class CmsJlanSearch extends SearchContext {
 
     /**
      * Returns the next file object in the search result.<p>
-     * 
-     * @return the next file object 
+     *
+     * @return the next file object
      */
     protected CmsJlanNetworkFile nextFile() {
 

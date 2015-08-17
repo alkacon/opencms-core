@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -101,8 +101,8 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param repository the underlying repository 
+     *
+     * @param repository the underlying repository
      */
     public CmsCmisResourceHelper(CmsCmisRepository repository) {
 
@@ -111,10 +111,10 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Deletes a CMIS object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the id of the object to delete 
-     * @param allVersions flag to delete all version 
+     *
+     * @param context the call context
+     * @param objectId the id of the object to delete
+     * @param allVersions flag to delete all version
      */
     public synchronized void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions) {
 
@@ -137,12 +137,12 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Gets the ACL for an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param objectId the object id 
-     * @param onlyBasicPermissions flag to only get basic permissions 
-     * 
-     * @return the ACL for the object 
+     * @param objectId the object id
+     * @param onlyBasicPermissions flag to only get basic permissions
+     *
+     * @return the ACL for the object
      */
     public synchronized Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions) {
 
@@ -161,10 +161,10 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Gets the allowable actions for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @return the allowable actions 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @return the allowable actions
      */
     public synchronized AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId) {
 
@@ -181,17 +181,17 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Gets the data for a CMIS object.<p>
-     *  
-     * @param context the CMIS call context 
-     * @param objectId the id of the object 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * 
-     * @return the CMIS object data 
+     *
+     * @param context the CMIS call context
+     * @param objectId the id of the object
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter the rendition filter string
+     * @param includePolicyIds flag to include policy ids
+     * @param includeAcl flag to include ACLs
+     *
+     * @return the CMIS object data
      */
     public synchronized ObjectData getObject(
         CmsCmisCallContext context,
@@ -237,11 +237,11 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
     /**
      * Compiles the ACL for a file or folder.
      * @param cms the CMS context
-     * @param resource the resource for which to collect the ACLs 
-     * @param onlyBasic flag to only include basic ACEs   
-     * 
+     * @param resource the resource for which to collect the ACLs
+     * @param onlyBasic flag to only include basic ACEs
+     *
      * @return the ACL for the resource
-     * @throws CmsException if something goes wrong  
+     * @throws CmsException if something goes wrong
      */
     protected Acl collectAcl(CmsObject cms, CmsResource resource, boolean onlyBasic) throws CmsException {
 
@@ -267,11 +267,11 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Compiles the allowable actions for a file or folder.
-     *  
-     * @param cms the current CMS context 
-     * @param file the resource for which we want the allowable actions 
-     * 
-     * @return the allowable actions for the given resource 
+     *
+     * @param cms the current CMS context
+     * @param file the resource for which we want the allowable actions
+     *
+     * @return the allowable actions for the given resource
      */
     protected AllowableActions collectAllowableActions(CmsObject cms, CmsResource file) {
 
@@ -319,18 +319,18 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Fills in an ObjectData record.<p>
-     * 
+     *
      * @param context the call context
      * @param cms the CMS context
      * @param resource the resource for which we want the ObjectData
      * @param filter the property filter
-     * @param renditionFilter the rendition filter string 
-     * @param includeAllowableActions true if the allowable actions should be included  
+     * @param renditionFilter the rendition filter string
+     * @param includeAllowableActions true if the allowable actions should be included
      * @param includeAcl true if the ACL entries should be included
-     * @param includeRelationships true if relationships should be included 
-     * 
-     * @return the object data 
-     * @throws CmsException if something goes wrong 
+     * @param includeRelationships true if relationships should be included
+     *
+     * @return the object data
+     * @throws CmsException if something goes wrong
      */
     protected ObjectData collectObjectData(
         CmsCmisCallContext context,
@@ -385,14 +385,14 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
     }
 
     /**
-     * Gathers all base properties of a file or folder. 
-     * 
-     * @param cms the current CMS context 
-     * @param resource the file for which we want the properties 
-     * @param orgfilter the property filter 
-     * @param objectInfo the object info handler 
-     * 
-     * @return the properties for the given resource 
+     * Gathers all base properties of a file or folder.
+     *
+     * @param cms the current CMS context
+     * @param resource the file for which we want the properties
+     * @param orgfilter the property filter
+     * @param objectInfo the object info handler
+     *
+     * @return the properties for the given resource
      */
     protected Properties collectProperties(
         CmsObject cms,
@@ -487,7 +487,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 CmsUser user = cms.readUser(creatorId);
                 creatorName = user.getName();
             } catch (CmsException e) {
-                // ignore, use id as name 
+                // ignore, use id as name
             }
             try {
                 CmsUser user = cms.readUser(modifierId);
@@ -516,7 +516,13 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
             if (resource.isFolder()) {
                 // base type and type name
                 addPropertyId(tm, result, typeId, filter, PropertyIds.BASE_TYPE_ID, BaseTypeId.CMIS_FOLDER.value());
-                addPropertyId(tm, result, typeId, filter, PropertyIds.OBJECT_TYPE_ID, CmsCmisTypeManager.FOLDER_TYPE_ID);
+                addPropertyId(
+                    tm,
+                    result,
+                    typeId,
+                    filter,
+                    PropertyIds.OBJECT_TYPE_ID,
+                    CmsCmisTypeManager.FOLDER_TYPE_ID);
                 String path = resource.getRootPath();
                 addPropertyString(tm, result, typeId, filter, PropertyIds.PATH, (path.length() == 0 ? "/" : path));
 
@@ -574,16 +580,18 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                         CmsResourceManager.MIMETYPE_TEXT));
                 addPropertyString(tm, result, typeId, filter, PropertyIds.CONTENT_STREAM_FILE_NAME, resource.getName());
                 objectInfo.setHasContent(true);
-                objectInfo.setContentType(OpenCms.getResourceManager().getMimeType(
-                    resource.getRootPath(),
-                    null,
-                    CmsResourceManager.MIMETYPE_TEXT));
+                objectInfo.setContentType(
+                    OpenCms.getResourceManager().getMimeType(
+                        resource.getRootPath(),
+                        null,
+                        CmsResourceManager.MIMETYPE_TEXT));
                 objectInfo.setFileName(resource.getName());
                 addPropertyId(tm, result, typeId, filter, PropertyIds.CONTENT_STREAM_ID, null);
             }
-            // normal OpenCms properties 
+            // normal OpenCms properties
             List<CmsProperty> props = cms.readPropertyObjects(resource, false);
-            Set<String> propertiesToAdd = new LinkedHashSet<String>(m_repository.getTypeManager().getCmsPropertyNames());
+            Set<String> propertiesToAdd = new LinkedHashSet<String>(
+                m_repository.getTypeManager().getCmsPropertyNames());
             for (CmsProperty prop : props) {
                 addPropertyString(
                     tm,
@@ -598,7 +606,7 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
                 addPropertyString(tm, result, typeId, filter, CmsCmisTypeManager.PROPERTY_PREFIX + propName, null);
             }
 
-            // inherited OpenCms properties 
+            // inherited OpenCms properties
             List<CmsProperty> inheritedProps = cms.readPropertyObjects(resource, true);
             Set<String> inheritedPropertiesToAdd = new LinkedHashSet<String>(
                 m_repository.getTypeManager().getCmsPropertyNames());
@@ -637,12 +645,12 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
 
     /**
      * Collects renditions for a resource.<p>
-     * 
+     *
      * @param cms the CMS context
-     * @param resource the resource for which we want the renditions 
-     * @param renditionFilterString the filter string for the renditions 
+     * @param resource the resource for which we want the renditions
+     * @param renditionFilterString the filter string for the renditions
      * @param objectInfo the object info in which the renditions should be saved
-     *  
+     *
      * @return the rendition data for the given resource
      */
     protected List<RenditionData> collectRenditions(
@@ -651,8 +659,8 @@ public class CmsCmisResourceHelper implements I_CmsCmisObjectHelper {
         String renditionFilterString,
         ObjectInfoImpl objectInfo) {
 
-        List<I_CmsCmisRenditionProvider> providers = m_repository.getRenditionProviders(new CmsCmisRenditionFilter(
-            renditionFilterString));
+        List<I_CmsCmisRenditionProvider> providers = m_repository.getRenditionProviders(
+            new CmsCmisRenditionFilter(renditionFilterString));
         List<RenditionData> result = new ArrayList<RenditionData>();
         List<RenditionInfo> renditionInfos = new ArrayList<RenditionInfo>();
         for (I_CmsCmisRenditionProvider provider : providers) {

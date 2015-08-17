@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,9 +59,9 @@ public class CmsResourceInfoDialog extends CmsPopup {
 
     /**
      * Creates the dialog for the given resource information.<p>
-     * 
-     * @param statusBean the resource information to bean 
-     * @param includeTargets true if relation targets should be displayed 
+     *
+     * @param statusBean the resource information to bean
+     * @param includeTargets true if relation targets should be displayed
      */
     public CmsResourceInfoDialog(final CmsResourceStatusBean statusBean, boolean includeTargets) {
 
@@ -122,12 +122,12 @@ public class CmsResourceInfoDialog extends CmsPopup {
     }
 
     /**
-     * Loads the resource information for a resource and displays it in a dialog.<p>   
-     * 
+     * Loads the resource information for a resource and displays it in a dialog.<p>
+     *
      * @param structureId the structure id of the resource for which the resource info should be loaded
-     * @param includeTargets true if relation targets should also be displayed 
+     * @param includeTargets true if relation targets should also be displayed
      * @param targetIds the structure ids of additional resources to include with the relation targets
-     * @param closeHandler the close handler for the dialog (may be null if no close handler is needed) 
+     * @param closeHandler the close handler for the dialog (may be null if no close handler is needed)
      */
     public static void load(
         final CmsUUID structureId,
@@ -189,8 +189,8 @@ public class CmsResourceInfoDialog extends CmsPopup {
 
     /**
      * Sets the minimum height for a tab content widget.<p>
-     * 
-     * @param w the minimum height for a tab content widget 
+     *
+     * @param w the minimum height for a tab content widget
      */
     private void setTabMinHeight(Widget w) {
 

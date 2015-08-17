@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,30 +31,30 @@ import org.opencms.file.CmsRequestContext;
 
 /**
  * This interface defines a factory to create runtime info objects.<p>
- * 
+ *
  * @since 6.0.0
  */
 public interface I_CmsDbContextFactory {
 
     /**
      * Initializes the runtime info factory with the OpenCms driver manager.<p>
-     * 
+     *
      * @param driverManager the initialized OpenCms driver manager
      */
     void initialize(CmsDriverManager driverManager);
 
     /**
      * Returns a new database context based on the given user request context.<p>
-     * 
+     *
      * @param context the user request context to initialize the database context with
-     * 
+     *
      * @return a new database context based on the given user request context
      */
     CmsDbContext getDbContext(CmsRequestContext context);
 
     /**
      * Returns a new database context.<p>
-     * 
+     *
      * @return a new database context
      */
     CmsDbContext getDbContext();

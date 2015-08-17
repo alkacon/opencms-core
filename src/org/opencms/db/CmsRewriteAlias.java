@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import org.opencms.gwt.shared.alias.CmsAliasMode;
 import org.opencms.util.CmsUUID;
 
 /**
- * This class represents an alias which does not just map a fixed path to a fixed resource, but instead uses 
+ * This class represents an alias which does not just map a fixed path to a fixed resource, but instead uses
  * a regular expression substitution to determine the target path.<p>
  */
 public class CmsRewriteAlias {
@@ -53,12 +53,12 @@ public class CmsRewriteAlias {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param id the id of the alias 
-     * @param siteRoot the site root inside which the alias is valid  
-     * @param patternString the regular expression used for matching the URI 
+     *
+     * @param id the id of the alias
+     * @param siteRoot the site root inside which the alias is valid
+     * @param patternString the regular expression used for matching the URI
      * @param replacementString the replacement string used when the URI is matched
-     * @param mode the alias mode   
+     * @param mode the alias mode
      */
     public CmsRewriteAlias(
         CmsUUID id,
@@ -76,8 +76,8 @@ public class CmsRewriteAlias {
 
     /**
      * Gets the id of the alias.<p>
-     * 
-     * @return the id of the alias 
+     *
+     * @return the id of the alias
      */
     public CmsUUID getId() {
 
@@ -86,8 +86,8 @@ public class CmsRewriteAlias {
 
     /**
      * Gets the alias mode.<p>
-     * 
-     * @return the alias mode 
+     *
+     * @return the alias mode
      */
     public CmsAliasMode getMode() {
 
@@ -96,8 +96,8 @@ public class CmsRewriteAlias {
 
     /**
      * Gets the regular expression string.<p>
-     * 
-     * @return the regular expression string 
+     *
+     * @return the regular expression string
      */
     public String getPatternString() {
 
@@ -106,8 +106,8 @@ public class CmsRewriteAlias {
 
     /**
      * Gets the string used to replace the string matching the regex.<p>
-     * 
-     * @return the replacement string 
+     *
+     * @return the replacement string
      */
     public String getReplacementString() {
 
@@ -116,7 +116,7 @@ public class CmsRewriteAlias {
 
     /**
      * Gets the root of the site in which this alias is valid.<p>
-     * 
+     *
      * @return the site root
      */
     public String getSiteRoot() {

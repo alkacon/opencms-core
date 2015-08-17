@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ public class CmsDroppedElementModeSelectionDialog extends CmsCreateModeSelection
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param info the file information 
-     * 
-     * @param createModeCallback the callback to call with the result 
+     *
+     * @param info the file information
+     *
+     * @param createModeCallback the callback to call with the result
      */
     public CmsDroppedElementModeSelectionDialog(CmsListInfoBean info, AsyncCallback<String> createModeCallback) {
 
@@ -57,9 +57,9 @@ public class CmsDroppedElementModeSelectionDialog extends CmsCreateModeSelection
 
     /**
      * Shows the dialog.<p>
-     * 
-     * @param referenceId the  structure id of the resource for which to load the dialog 
-     * @param createModeCallback the callback to call with the result 
+     *
+     * @param referenceId the  structure id of the resource for which to load the dialog
+     * @param createModeCallback the callback to call with the result
      */
     public static void showDialog(final CmsUUID referenceId, final AsyncCallback<String> createModeCallback) {
 

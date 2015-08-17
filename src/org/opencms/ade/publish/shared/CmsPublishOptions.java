@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import java.util.Map;
 
 /**
  * Bean encapsulating all ADE publish options.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsPublishOptions implements Serializable {
 
@@ -81,8 +81,8 @@ public class CmsPublishOptions implements Serializable {
     /** The id of the project to publish. */
     private CmsUUID m_projectId;
 
-    /** 
-     * Creates a new publish options bean.<p> 
+    /**
+     * Creates a new publish options bean.<p>
      **/
     public CmsPublishOptions() {
 
@@ -90,8 +90,8 @@ public class CmsPublishOptions implements Serializable {
     }
 
     /**
-     * Creates a new publish options bean.<p> 
-     * 
+     * Creates a new publish options bean.<p>
+     *
      * @param includeRelated Flag to include related resources
      * @param includeSiblings Flag to include siblings
      * @param projectId The id of the project to publish
@@ -105,8 +105,8 @@ public class CmsPublishOptions implements Serializable {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param params the additional publish parameters 
+     *
+     * @param params the additional publish parameters
      */
     public CmsPublishOptions(Map<String, String> params) {
 
@@ -114,10 +114,10 @@ public class CmsPublishOptions implements Serializable {
         m_params = params;
     }
 
-    /** 
+    /**
      * Gets the additional publish parameters.<p>
-     * 
-     * @return the additional publish parameters 
+     *
+     * @return the additional publish parameters
      */
     public Map<String, String> getParameters() {
 
@@ -174,10 +174,10 @@ public class CmsPublishOptions implements Serializable {
         m_includeSiblings = includeSiblings;
     }
 
-    /** 
+    /**
      * Sets the additional publish parameters.<p>
-     * 
-     * @param params the additional parameters to set 
+     *
+     * @param params the additional parameters to set
      */
     public void setParameters(Map<String, String> params) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * Creates a new cell table with the given controller.<p>
-     * 
-     * @param controller the alias editor controller which should be used by the cell table 
+     *
+     * @param controller the alias editor controller which should be used by the cell table
      */
     public CmsAliasCellTable(CmsAliasTableController controller) {
 
@@ -113,8 +113,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * Gets the alias editor controller used by this table.<p>
-     * 
-     * @return the alias editor controller 
+     *
+     * @return the alias editor controller
      */
     public CmsAliasTableController getController() {
 
@@ -123,8 +123,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * Gets the error column.<p>
-     * 
-     * @return the error column 
+     *
+     * @return the error column
      */
     public CmsAliasErrorColumn getErrorColumn() {
 
@@ -133,8 +133,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * Gets the list of rows internally used by the data provider for this table.<p>
-     * 
-     * @return the internal data list 
+     *
+     * @return the internal data list
      */
     public List<CmsAliasTableRow> getLiveDataList() {
 
@@ -143,8 +143,8 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * Gets the list of selected rows.<p>
-     * 
-     * @return the list of selected rows 
+     *
+     * @return the list of selected rows
      */
     public List<CmsAliasTableRow> getSelectedRows() {
 
@@ -154,7 +154,7 @@ public class CmsAliasCellTable extends CellTable<CmsAliasTableRow> {
 
     /**
      * @see com.google.gwt.user.cellview.client.AbstractHasData#getSelectionModel()
-     * 
+     *
      * (Overridden to use a less general return type)
      */
     @SuppressWarnings("unchecked")

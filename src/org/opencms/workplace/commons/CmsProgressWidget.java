@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,18 +50,18 @@ import org.apache.commons.logging.Log;
 /**
  * This is a widget to be used in a dialog which should show a progress bar based
  * on a list.<p>
- * 
+ *
  * The progress bar uses Ajax to not reload the whole page. The code which runs
- * inside the thread has to update the progress in the current thread.<p> 
- * 
+ * inside the thread has to update the progress in the current thread.<p>
+ *
  * The progress to be displayed is the progress of building large lists which can
  * take some time until they are finished.<p>
- * 
+ *
  * There is a progress bar shown with the percentages on the left. Additionaly it
  * is possible to show a description above the progress bar.<p>
- * 
+ *
  * @see A_CmsListDialog
- * 
+ *
  * @since 7.0.0
  */
 public class CmsProgressWidget {
@@ -108,7 +108,7 @@ public class CmsProgressWidget {
     /** The time interval the progress gets refreshed (in ms). */
     private int m_refreshRate;
 
-    /** The time period the show the wait symbol before the progress bar is shown.<p> 
+    /** The time period the show the wait symbol before the progress bar is shown.<p>
      *  Set to 0 (zero) to disable this.<p> */
     private int m_showWaitTime;
 
@@ -117,7 +117,7 @@ public class CmsProgressWidget {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsProgressWidget(CmsJspActionElement jsp) {
@@ -150,7 +150,7 @@ public class CmsProgressWidget {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -162,9 +162,9 @@ public class CmsProgressWidget {
 
     /**
      * Returns the thread for the progress with the given key.<p>
-     * 
+     *
      * @param key the key of the thread
-     * 
+     *
      * @return the thread for the progress with the given key
      */
     public static CmsProgressThread getProgressThread(String key) {
@@ -174,7 +174,7 @@ public class CmsProgressWidget {
 
     /**
      * Removes the thread for the progress with the given key from the list with the actual threads.<p>
-     * 
+     *
      * @param key the key of the thread for the progress to remove from the list
      */
     public static void removeProgressThread(String key) {
@@ -184,16 +184,16 @@ public class CmsProgressWidget {
 
     /**
      * Returns the actual progress in percent.<p>
-     * 
+     *
      * The return value depends on the state of the progress/thread. This can be
      * <ul>
      * <li>the actual progress in percent with an optional description.</li>
      * <li>the result as the html code for the list.</li>
      * <li>an error message.</li>
      * </ul><p>
-     * 
+     *
      * The result will be interpreted by the JavaScript method "updateProgressbar()".<p>
-     * 
+     *
      * @return the actual progress as a String
      */
     public String getActualProgress() {
@@ -284,7 +284,7 @@ public class CmsProgressWidget {
 
     /**
      * Generates the necessary JavaScript inclusion code for this widget.<p>
-     * 
+     *
      * @return the JavaScript inclusion code
      */
     public String getJsIncludes() {
@@ -375,16 +375,18 @@ public class CmsProgressWidget {
         result.append("\t\t} else if (state == 'fatal') {\n");
         result.append("\t\t\tprogressState = 0;\n");
         result.append("\t\t\tsetProgressBarError(\"");
-        result.append(org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-            org.opencms.workplace.Messages.GUI_AJAX_REPORT_GIVEUP_0));
+        result.append(
+            org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                org.opencms.workplace.Messages.GUI_AJAX_REPORT_GIVEUP_0));
         result.append("\");\n");
 
         // error returned by ajax
         result.append("\t\t} else if (state == 'error') {\n");
         result.append("\t\t\tprogressState = 0;\n");
         result.append("\t\t\tsetProgressBarError(\"");
-        result.append(org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-            org.opencms.workplace.Messages.GUI_AJAX_REPORT_ERROR_0));
+        result.append(
+            org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                org.opencms.workplace.Messages.GUI_AJAX_REPORT_ERROR_0));
         result.append(" \" + msg);\n");
 
         // wait returned by ajax -> display wait symbol
@@ -511,7 +513,7 @@ public class CmsProgressWidget {
 
     /**
      * Generates the widget HTML for the progress bar.<p>
-     * 
+     *
      * @return the widget HTML for the progress bar
      */
     public String getWidget() {
@@ -563,15 +565,17 @@ public class CmsProgressWidget {
             result.append(showWait ? "none" : "inline");
             result.append(";\" >0%</div>\n");
 
-            result.append("<div id=\"progressbar_error\" style=\"display:none;color:#B40000;font-weight:bold;\"></div>\n");
+            result.append(
+                "<div id=\"progressbar_error\" style=\"display:none;color:#B40000;font-weight:bold;\"></div>\n");
 
             result.append("<div id=\"progressbar_wait\" style=\"display:");
             result.append(showWait ? "block" : "none");
             result.append(";color:#000099;font-weight:bold;\"><img src=\"");
             result.append(CmsWorkplace.getSkinUri());
             result.append("commons/wait.gif\" width='32' height='32' alt='' align='absmiddle' />");
-            result.append(org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
-                org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
+            result.append(
+                org.opencms.workplace.Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
+                    org.opencms.workplace.Messages.GUI_AJAX_REPORT_WAIT_0));
             result.append("</div>\n");
 
             result.append("<script type=\"text/javascript\">\n");
@@ -644,7 +648,7 @@ public class CmsProgressWidget {
 
     /**
      * Starts a thread for the progress on the given list.<p>
-     * 
+     *
      * @param list the list to use for the progress bar
      */
     public void startProgress(A_CmsListDialog list) {
@@ -654,7 +658,7 @@ public class CmsProgressWidget {
 
     /**
      * Starts a thread for the progress on the given list.<p>
-     * 
+     *
      * @param list the list to use for the progress bar
      * @param abortExisting if true then an already existing thread will be killed
      */
@@ -714,9 +718,9 @@ public class CmsProgressWidget {
 
     /**
      * Creates the html code for the given error message.<p>
-     * 
+     *
      * @param errorMsg the error message to place in the html code
-     * 
+     *
      * @return the html code for the error message
      */
     private String createError(String errorMsg) {
@@ -732,10 +736,10 @@ public class CmsProgressWidget {
     /**
      * Creates the html code for the given error message and the
      * provided Exception.<p>
-     * 
+     *
      * @param errorMsg the error message to place in the html code
      * @param t the exception to add to the error message
-     * 
+     *
      * @return the html code for the error message
      */
     private String createError(String errorMsg, Throwable t) {

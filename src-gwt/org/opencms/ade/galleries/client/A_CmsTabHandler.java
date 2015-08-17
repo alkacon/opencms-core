@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,10 +40,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The abstract class for the tab handler.<p>
- * 
- * This class receives event information from the gallery dialog and 
+ *
+ * This class receives event information from the gallery dialog and
  * delegates it to the gallery controller.
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
@@ -53,7 +53,7 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the controller
      */
     public A_CmsTabHandler(CmsGalleryController controller) {
@@ -63,9 +63,9 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Adds a change handler for the gallery search bean.<p>
-     * 
+     *
      * @param handler the handler
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addSearchChangeHandler(ValueChangeHandler<CmsGallerySearchBean> handler) {
@@ -80,9 +80,9 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Returns the gallery folder info to the given path.<p>
-     * 
+     *
      * @param galleryPath the gallery folder path
-     * 
+     *
      * @return the gallery folder info
      */
     public CmsGalleryFolderBean getGalleryInfo(String galleryPath) {
@@ -92,9 +92,9 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Returns the resource type info for the given resource type name.<p>
-     * 
+     *
      * @param typeName the resource type name
-     * 
+     *
      * @return the type info
      */
     public CmsResourceTypeBean getTypeInfo(String typeName) {
@@ -103,9 +103,9 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
     }
 
     /**
-     * Execute when the upload dialog is closed.<p> 
-     * 
-     * @param event the close event 
+     * Execute when the upload dialog is closed.<p>
+     *
+     * @param event the close event
      */
     public void onClose(CloseEvent<PopupPanel> event) {
 
@@ -113,7 +113,7 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
     }
 
     /**
-     * Will be triggered when the tab is deselected.<p> 
+     * Will be triggered when the tab is deselected.<p>
      */
     public void onDeselection() {
 
@@ -125,9 +125,9 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
      */
     public abstract void onSelection();
 
-    /** 
+    /**
      * Sorts the list, if present.<p>
-     * 
+     *
      * @param sortParams the sort parameters
      * @param filter the filter phrase
      */
@@ -135,15 +135,15 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Removes the search parameter with the given key from the search object.<p>
-     * 
+     *
      * @param paramKey the parameter key
      */
     public abstract void removeParam(String paramKey);
 
     /**
      * Selects the given resource and sets its path into the xml-content field or editor link.<p>
-     * 
-     * @param resourcePath the item resource path 
+     *
+     * @param resourcePath the item resource path
      * @param structureId the structure id
      * @param title the resource title
      * @param resourceType the item resource type
@@ -163,7 +163,7 @@ public abstract class A_CmsTabHandler implements CloseHandler<PopupPanel> {
 
     /**
      * Delegates the clear input action (click on the clear button) to the controller.<p>
-     * 
+     *
      * @param searchQuery the search query
      */
     public void setSearchQuery(String searchQuery) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsGallerySearchBasic(String arg0) {
@@ -75,7 +75,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
-     * 
+     *
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      */
@@ -86,7 +86,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
-     * 
+     *
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      * @param showExcerpt if <code>true</code>, the generated excerpt is also displayed
@@ -128,9 +128,10 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(
-                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
-                    17));
+                System.out.print(
+                    CmsStringUtil.padRight(
+                        "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                        17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {
@@ -141,7 +142,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -176,7 +177,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Creates the configured search indexes for all other test cases in this class.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testGallerySearchIndexCreation() throws Exception {
@@ -195,7 +196,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Tests sorting of search results.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testGallerySortSearchResults() throws Exception {
@@ -357,7 +358,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Tests searching documents by their structure ID.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testSearchById() throws Exception {
@@ -375,7 +376,7 @@ public class TestCmsGallerySearchBasic extends OpenCmsTestCase {
 
     /**
      * Test that search results don't get "duplicated" after moving a resource.
-     * 
+     *
      * @throws Exception
      */
     public void testSearchForMovedFiles() throws Exception {

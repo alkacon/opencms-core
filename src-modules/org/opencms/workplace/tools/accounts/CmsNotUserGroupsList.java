@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,8 +52,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Not Usergroups view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
@@ -74,7 +74,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsNotUserGroupsList(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -96,7 +96,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      */

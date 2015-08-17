@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import java.util.Map;
 
 /**
  * A Solr collector.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrCollector extends A_CmsResourceCollector {
@@ -94,9 +94,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
                 }
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -119,9 +118,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
                 }
                 return null;
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
@@ -161,7 +159,8 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
         Map<String, String> paramsAsMap = getParamsAsMap(param);
         Map<String, String[]> pm = CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART));
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
-        boolean excludeTimerange = Boolean.valueOf(paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
+        boolean excludeTimerange = Boolean.valueOf(
+            paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
         if (excludeTimerange) {
             q.removeExpiration();
         }
@@ -174,9 +173,9 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
 
     /**
      * Splits the given parameter String into the query part and the cms specific arguments.<p>
-     *  
+     *
      * @param param the parameter String to parse
-     * 
+     *
      * @return a map containing the arguments
      */
     private Map<String, String> getParamsAsMap(String param) {

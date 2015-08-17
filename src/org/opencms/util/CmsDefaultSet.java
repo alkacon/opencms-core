@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A utility class used for keeping track of a set of objects. You can explicitly include or exclude objects,
  * and define a default membership value for those objects whose membership hasn't been explicitly set.<p>
- * 
+ *
  * @param <T> the element type
  */
 public class CmsDefaultSet<T> implements IsSerializable {
@@ -62,9 +62,9 @@ public class CmsDefaultSet<T> implements IsSerializable {
 
     /**
      * Returns true if the given object is a member of this set.<p>
-     * 
-     * @param value the value to check 
-     * 
+     *
+     * @param value the value to check
+     *
      * @return true  if the value is a member
      */
     public boolean contains(T value) {
@@ -87,8 +87,8 @@ public class CmsDefaultSet<T> implements IsSerializable {
 
     /**
      * Gets the map internally used for storing the membership statuses.<p>
-     * 
-     * @return the membership map 
+     *
+     * @return the membership map
      */
     public Map<T, Boolean> getBaseMap() {
 
@@ -97,8 +97,8 @@ public class CmsDefaultSet<T> implements IsSerializable {
 
     /**
      * Gets the default membership value.<p>
-     * 
-     * @return the default membership value 
+     *
+     * @return the default membership value
      */
     public boolean getDefaultMembership() {
 
@@ -107,9 +107,9 @@ public class CmsDefaultSet<T> implements IsSerializable {
 
     /***
      * Sets the membership of an object.<p>
-     * 
+     *
      * @param value the object
-     * @param isMember true if the object should be a member, otherwise false 
+     * @param isMember true if the object should be a member, otherwise false
      */
     public void setContains(T value, boolean isMember) {
 
@@ -119,8 +119,8 @@ public class CmsDefaultSet<T> implements IsSerializable {
 
     /**
      * Sets the default membership value.<p>
-     * 
-     * @param defaultMembership the new value 
+     *
+     * @param defaultMembership the new value
      */
     public void setDefaultMembership(boolean defaultMembership) {
 

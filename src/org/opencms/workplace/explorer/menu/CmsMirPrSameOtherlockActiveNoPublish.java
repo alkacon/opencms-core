@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 /**
  * Defines a menu item rule that sets the visibility to active
  * if the current resource is not exclusively locked by the current user and no publish lock is set.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsMirPrSameOtherlockActiveNoPublish extends A_CmsMenuItemRule {
@@ -50,7 +50,8 @@ public class CmsMirPrSameOtherlockActiveNoPublish extends A_CmsMenuItemRule {
             && !resourceUtil[0].getLock().isInherited()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         } else if (resourceUtil[0].getLock().isInherited()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_LOCK_INHERITED_0);
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_LOCK_INHERITED_0);
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
@@ -63,9 +64,10 @@ public class CmsMirPrSameOtherlockActiveNoPublish extends A_CmsMenuItemRule {
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
             return resourceUtil[0].getProjectState().isLockedForPublishing()
-                || !(!lock.isNullLock() && lock.isExclusiveOwnedInProjectBy(
-                    cms.getRequestContext().getCurrentUser(),
-                    cms.getRequestContext().getCurrentProject()));
+                || !(!lock.isNullLock()
+                    && lock.isExclusiveOwnedInProjectBy(
+                        cms.getRequestContext().getCurrentUser(),
+                        cms.getRequestContext().getCurrentProject()));
         }
         // resource is not in current project, rule does not match
         return false;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,8 +70,8 @@ implements FieldUpdater<CmsRewriteAliasTableRow, String> {
 
     /**
      * Creates a new column instance.<p>
-     * 
-     * @param table the cell table for this column 
+     *
+     * @param table the cell table for this column
      */
     public CmsRewriteAliasModeColumn(CmsRewriteAliasTable table) {
 
@@ -90,8 +90,8 @@ implements FieldUpdater<CmsRewriteAliasTableRow, String> {
 
     /**
      * Creates the options for the select box.<p>
-     * 
-     * @return the list of options 
+     *
+     * @return the list of options
      */
     protected static List<String> createOptions() {
 

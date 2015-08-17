@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,12 +57,12 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * A list that displays the document types of a request parameter given 
- * <code>{@link org.opencms.search.CmsSearchIndexSource}</code> ("indexsource"). 
- * 
- * This list is no stand-alone page but has to be embedded in another dialog 
+ * A list that displays the document types of a request parameter given
+ * <code>{@link org.opencms.search.CmsSearchIndexSource}</code> ("indexsource").
+ *
+ * This list is no stand-alone page but has to be embedded in another dialog
  * (see <code> {@link org.opencms.workplace.tools.searchindex.A_CmsEmbeddedListDialog}</code>. <p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
@@ -99,7 +99,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDocumentTypeList(CmsJspActionElement jsp) {
@@ -109,7 +109,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
@@ -121,7 +121,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -143,9 +143,9 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -161,7 +161,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     @Override
     public void executeListMultiActions() {
 
-        // view only 
+        // view only
     }
 
     /**
@@ -175,7 +175,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Returns the request parameter "indexsource".<p>
-     *  
+     *
      * @return the request parameter "indexsource"
      */
     public String getParamIndexsource() {
@@ -185,11 +185,11 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
 
     /**
      * Sets the request parameter "indexsource". <p>
-     * 
-     * Method intended for workplace-properietary automatic filling of 
+     *
+     * Method intended for workplace-properietary automatic filling of
      * request parameter values to dialogs, not for manual invocation. <p>
-     *  
-     * @param indexsource the request parameter "indexsource" to set 
+     *
+     * @param indexsource the request parameter "indexsource" to set
      */
     public void setParamIndexsource(String indexsource) {
 
@@ -288,7 +288,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         nameCol.setWidth("50%");
         metadata.addColumn(nameCol);
 
-        // add column for document implementation class 
+        // add column for document implementation class
         CmsListColumnDefinition docclassCol = new CmsListColumnDefinition(LIST_COLUMN_DOCCLASS);
         docclassCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         docclassCol.setName(Messages.get().container(Messages.GUI_LIST_DOCTYPE_COL_DOCCLASS_0));
@@ -308,31 +308,33 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         mimetypeDetails.setAtColumn(LIST_COLUMN_NAME);
         mimetypeDetails.setVisible(false);
         mimetypeDetails.setShowActionName(Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_SHOW_0));
-        mimetypeDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_SHOW_HELP_0));
+        mimetypeDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_SHOW_HELP_0));
         mimetypeDetails.setHideActionName(Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_HIDE_0));
-        mimetypeDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_HIDE_HELP_0));
+        mimetypeDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_HIDE_HELP_0));
         mimetypeDetails.setName(Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_NAME_0));
-        mimetypeDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_NAME_0)));
+        mimetypeDetails.setFormatter(
+            new CmsListItemDetailsFormatter(
+                Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_MIMETYPES_NAME_0)));
         metadata.addItemDetails(mimetypeDetails);
 
         // add resources of index source detail help
         CmsListItemDetails resourceDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCETYPES);
         resourceDetails.setAtColumn(LIST_COLUMN_NAME);
         resourceDetails.setVisible(false);
-        resourceDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_SHOW_0));
-        resourceDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_SHOW_HELP_0));
-        resourceDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_HIDE_0));
-        resourceDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_HIDE_HELP_0));
+        resourceDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_SHOW_0));
+        resourceDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_SHOW_HELP_0));
+        resourceDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_HIDE_0));
+        resourceDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_HIDE_HELP_0));
         resourceDetails.setName(Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_NAME_0));
-        resourceDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_NAME_0)));
+        resourceDetails.setFormatter(
+            new CmsListItemDetailsFormatter(
+                Messages.get().container(Messages.GUI_LIST_DOCTYPE_DETAIL_RESOURCETYPES_NAME_0)));
         metadata.addItemDetails(resourceDetails);
 
     }
@@ -361,9 +363,9 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Writes the updated search configuration back to the XML 
+     * Writes the updated search configuration back to the XML
      * configuration file and refreshes the complete list.<p>
-     * 
+     *
      * @param refresh if true, the list items are refreshed
      */
     protected void writeConfiguration(boolean refresh) {
@@ -376,8 +378,8 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Returns the configured document types of the current indexsource. 
-     * 
+     * Returns the configured document types of the current indexsource.
+     *
      * @return the configured document types of the current indexsource
      */
     private List<CmsSearchDocumentType> documentTypes() {
@@ -387,7 +389,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         List<CmsSearchDocumentType> result;
         if (indexsource != null) {
             List<String> doctypes = indexsource.getDocumentTypes();
-            // transform these mere names to real document types... 
+            // transform these mere names to real document types...
             result = new ArrayList<CmsSearchDocumentType>(doctypes.size());
             Iterator<String> it = doctypes.iterator();
             String doctypename = "";
@@ -404,20 +406,21 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         } else {
             result = Collections.emptyList();
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
+                        A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE));
             }
         }
         return result;
     }
 
     /**
-     * Fills details about configured mime types of the document type into the given item. <p> 
-     * 
-     * @param item the list item to fill 
+     * Fills details about configured mime types of the document type into the given item. <p>
+     *
+     * @param item the list item to fill
      * @param detailId the id for the detail to fill
-     * 
+     *
      */
     private void fillDetailMimetypes(CmsListItem item, String detailId) {
 
@@ -440,11 +443,11 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     }
 
     /**
-     * Fills details about resource types of the document type into the given item. <p> 
-     * 
-     * @param item the list item to fill 
+     * Fills details about resource types of the document type into the given item. <p>
+     *
+     * @param item the list item to fill
      * @param detailId the id for the detail to fill
-     * 
+     *
      */
     private void fillDetailResourceTypes(CmsListItem item, String detailId) {
 

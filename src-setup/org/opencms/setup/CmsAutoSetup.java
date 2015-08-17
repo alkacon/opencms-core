@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A bean to perform a OpenCms setup automatically.<p>
- * 
+ *
  * @since 9.0
  */
 public class CmsAutoSetup {
@@ -68,7 +68,7 @@ public class CmsAutoSetup {
 
     /**
      * A bean for a automatically performed setup of OpenCms.<p>
-     * 
+     *
      * @param props the properties to use
      */
     public CmsAutoSetup(CmsAutoSetupProperties props) {
@@ -125,7 +125,8 @@ public class CmsAutoSetup {
             }
         } else {
             System.out.println("");
-            System.err.println("Config file not found, please specify a path where to find the setup properties to use.");
+            System.err.println(
+                "Config file not found, please specify a path where to find the setup properties to use.");
             System.out.println("Usage example (Unix): setup.sh  -path /path/to/setup.properties");
             System.out.println("Usage example (Win):  setup.bat -path C:\\setup.properties");
             System.out.println("");
@@ -137,7 +138,7 @@ public class CmsAutoSetup {
 
     /**
      * Performs the setup.<p>
-     * 
+     *
      * @throws Exception in case the setup fails
      */
     public void run() throws Exception {
@@ -173,9 +174,10 @@ public class CmsAutoSetup {
 
             m_bean.setServerName(m_props.getServerName());
             m_bean.setWorkplaceSite(m_props.getServerUrl());
-            m_bean.setEthernetAddress(m_props.getEthernetAddress() == null
-            ? CmsStringUtil.getEthernetAddress()
-            : m_props.getEthernetAddress());
+            m_bean.setEthernetAddress(
+                m_props.getEthernetAddress() == null
+                ? CmsStringUtil.getEthernetAddress()
+                : m_props.getEthernetAddress());
 
             // initialize the available modules
             m_bean.getAvailableModules();
@@ -373,9 +375,10 @@ public class CmsAutoSetup {
             m_bean.prepareStep10();
             System.out.println();
             System.out.println(HR);
-            System.out.println("OpenCms setup finished successfully in "
-                + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
-                + " seconds.");
+            System.out.println(
+                "OpenCms setup finished successfully in "
+                    + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
+                    + " seconds.");
             System.out.println(HR);
         } else {
             throw new Exception("Error starting Alkacon OpenCms setup wizard.");

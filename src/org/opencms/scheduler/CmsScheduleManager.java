@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,20 +59,20 @@ import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * Manages the OpenCms scheduled jobs.<p>
- * 
- * Please see the documentation of the class {@link org.opencms.scheduler.CmsScheduledJobInfo} 
+ *
+ * Please see the documentation of the class {@link org.opencms.scheduler.CmsScheduledJobInfo}
  * for a full description of the OpenCms scheduling capabilities.<p>
- * 
+ *
  * The OpenCms scheduler implementation internally uses the
  * <a href="http://www.opensymphony.com/quartz/">Quartz scheduler</a> from
  * the <a href="http://www.opensymphony.com/">OpenSymphony project</a>.<p>
- * 
+ *
  * This manager class implements the <code>org.quartz.Job</code> interface
- * and wraps all calls to the {@link org.opencms.scheduler.I_CmsScheduledJob} implementing 
+ * and wraps all calls to the {@link org.opencms.scheduler.I_CmsScheduledJob} implementing
  * classes.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.scheduler.CmsScheduledJobInfo
  */
 public class CmsScheduleManager implements Job {
@@ -96,18 +96,18 @@ public class CmsScheduleManager implements Job {
     private Scheduler m_scheduler;
 
     /**
-     * Default constructor for the scheduler manager, 
+     * Default constructor for the scheduler manager,
      * used only when a new job is scheduled.<p>
      */
     public CmsScheduleManager() {
 
-        // important: this constructor is always called when a new job is 
+        // important: this constructor is always called when a new job is
         // generated, so it _must_ remain empty
     }
 
     /**
      * Used by the configuration to create a new Scheduler during system startup.<p>
-     * 
+     *
      * @param configuredJobs the jobs from the configuration
      */
     public CmsScheduleManager(List<CmsScheduledJobInfo> configuredJobs) {
@@ -125,12 +125,12 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Implementation of the Quartz job interface.<p>
-     * 
+     *
      * The architecture is that this scheduler manager generates
-     * a new (empty) instance of itself for every OpenCms job scheduled with Quartz. 
-     * When the Quartz job is executed, the configured 
+     * a new (empty) instance of itself for every OpenCms job scheduled with Quartz.
+     * When the Quartz job is executed, the configured
      * implementation of {@link I_CmsScheduledJob} will be called from this method.<p>
-     * 
+     *
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
     public void execute(JobExecutionContext context) {
@@ -149,8 +149,8 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Given a job ID, this directly executes the corresponding job.<p>
-     * 
-     * @param jobId the job id 
+     *
+     * @param jobId the job id
      */
     public void executeDirectly(String jobId) {
 
@@ -175,9 +175,9 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Returns the currently scheduled job description identified by the given id.
-     * 
+     *
      * @param id the job id
-     * 
+     *
      * @return a job or <code>null</code> if not found
      */
     public CmsScheduledJobInfo getJob(String id) {
@@ -206,10 +206,10 @@ public class CmsScheduleManager implements Job {
     }
 
     /**
-     * Initializes the OpenCms scheduler.<p> 
-     * 
+     * Initializes the OpenCms scheduler.<p>
+     *
      * @param adminCms an OpenCms context object that must have been initialized with "Admin" permissions
-     * 
+     *
      * @throws CmsRoleViolationException if the user has insufficient role permissions
      */
     public synchronized void initialize(CmsObject adminCms) throws CmsRoleViolationException {
@@ -283,10 +283,10 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Adds a new job to the scheduler.<p>
-     *  
+     *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @param jobInfo the job info describing the job to schedule
-     * 
+     *
      * @throws CmsRoleViolationException if the user has insufficient role permissions
      * @throws CmsSchedulerException if the job could not be scheduled for any reason
      */
@@ -373,12 +373,14 @@ public class CmsScheduleManager implements Job {
 
         CmsScheduledJobInfo oldJob = null;
         if (!idCreated) {
-            // this job is already scheduled, remove the currently scheduled instance and keep the id     
-            // important: since the new job may have errors, it's required to make sure the old job is only unscheduled 
+            // this job is already scheduled, remove the currently scheduled instance and keep the id
+            // important: since the new job may have errors, it's required to make sure the old job is only unscheduled
             // if the new job info is o.k.
             oldJob = unscheduleJob(cms, jobId);
             if (oldJob == null) {
-                CmsMessageContainer message = Messages.get().container(Messages.ERR_JOB_WITH_ID_DOES_NOT_EXIST_1, jobId);
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.ERR_JOB_WITH_ID_DOES_NOT_EXIST_1,
+                    jobId);
                 LOG.warn(message.key());
                 // can not continue
                 throw new CmsSchedulerException(message);
@@ -405,19 +407,21 @@ public class CmsScheduleManager implements Job {
             try {
                 m_scheduler.scheduleJob(jobDetail, trigger);
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_JOB_SCHEDULED_4,
-                        new Object[] {
-                            new Integer(m_jobs.size()),
-                            jobInfo.getJobName(),
-                            jobInfo.getClassName(),
-                            jobInfo.getContextInfo().getUserName()}));
+                    LOG.info(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_JOB_SCHEDULED_4,
+                            new Object[] {
+                                new Integer(m_jobs.size()),
+                                jobInfo.getJobName(),
+                                jobInfo.getClassName(),
+                                jobInfo.getContextInfo().getUserName()}));
                     Date nextExecution = jobInfo.getExecutionTimeNext();
                     if (nextExecution != null) {
-                        LOG.info(Messages.get().getBundle().key(
-                            Messages.LOG_JOB_NEXT_EXECUTION_2,
-                            jobInfo.getJobName(),
-                            nextExecution));
+                        LOG.info(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_JOB_NEXT_EXECUTION_2,
+                                jobInfo.getJobName(),
+                                nextExecution));
                     }
                 }
             } catch (Exception e) {
@@ -432,7 +436,7 @@ public class CmsScheduleManager implements Job {
                     jobInfo.getJobName(),
                     jobInfo.getClassName());
                 if (oldJob != null) {
-                    // make sure an old job is re-scheduled 
+                    // make sure an old job is re-scheduled
                     jobDetail = new JobDetail(oldJob.getId(), Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
                     jobDetail.setJobDataMap(jobData);
                     try {
@@ -464,7 +468,7 @@ public class CmsScheduleManager implements Job {
 
     }
 
-    /** 
+    /**
      * Shuts down this instance of the OpenCms scheduler manager.<p>
      */
     public synchronized void shutDown() {
@@ -488,16 +492,17 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Removes a currently scheduled job from the scheduler.<p>
-     *  
+     *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @param jobId the id of the job to unschedule, obtained with <code>{@link CmsScheduledJobInfo#getId()}</code>
-     * 
-     * @return the <code>{@link CmsScheduledJobInfo}</code> of the sucessfully unscheduled job, 
+     *
+     * @return the <code>{@link CmsScheduledJobInfo}</code> of the sucessfully unscheduled job,
      *      or <code>null</code> if the job could not be unscheduled
-     * 
+     *
      * @throws CmsRoleViolationException if the user has insufficient role permissions
      */
-    public synchronized CmsScheduledJobInfo unscheduleJob(CmsObject cms, String jobId) throws CmsRoleViolationException {
+    public synchronized CmsScheduledJobInfo unscheduleJob(CmsObject cms, String jobId)
+    throws CmsRoleViolationException {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
@@ -539,8 +544,8 @@ public class CmsScheduleManager implements Job {
 
     /**
      * Executes the given job.<p>
-     * 
-     * @param jobInfo the job info bean 
+     *
+     * @param jobInfo the job info bean
      */
     protected void executeJob(CmsScheduledJobInfo jobInfo) {
 
@@ -559,18 +564,16 @@ public class CmsScheduleManager implements Job {
                 jobInfo.updateContextRequestTime();
                 // some simple test cases might run below this runlevel
                 if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                    // generate a CmsObject for the job context                    
-                    // must access the scheduler manager instance from the OpenCms singleton 
+                    // generate a CmsObject for the job context
+                    // must access the scheduler manager instance from the OpenCms singleton
                     // to get the initialized CmsObject
                     cms = OpenCms.initCmsObject(OpenCms.getScheduleManager().getAdminCms(), jobInfo.getContextInfo());
                 }
 
                 String result = job.launch(cms, jobInfo.getParameters());
                 if (CmsStringUtil.isNotEmpty(result) && LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_JOB_EXECUTION_OK_2,
-                        jobInfo.getJobName(),
-                        result));
+                    LOG.info(
+                        Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTION_OK_2, jobInfo.getJobName(), result));
                 }
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
@@ -581,17 +584,18 @@ public class CmsScheduleManager implements Job {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTED_1, jobInfo.getJobName()));
             Date nextExecution = jobInfo.getExecutionTimeNext();
             if (nextExecution != null) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_JOB_NEXT_EXECUTION_2,
-                    jobInfo.getJobName(),
-                    nextExecution));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_JOB_NEXT_EXECUTION_2,
+                        jobInfo.getJobName(),
+                        nextExecution));
             }
         }
     }
 
     /**
      * Returns the {@link CmsObject} this Scheduler Manager was initialized with.<p>
-     * 
+     *
      * @return the {@link CmsObject} this Scheduler Manager was initialized with
      */
     private synchronized CmsObject getAdminCms() {

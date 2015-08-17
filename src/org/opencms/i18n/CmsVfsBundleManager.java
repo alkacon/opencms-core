@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,9 +65,9 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param name the base name 
-         * @param locale the locale 
+         *
+         * @param name the base name
+         * @param locale the locale
          */
         public NameAndLocale(String name, Locale locale) {
 
@@ -77,8 +77,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
         /**
          * Gets the locale.<p>
-         * 
-         * @return the locale 
+         *
+         * @return the locale
          */
         public Locale getLocale() {
 
@@ -87,8 +87,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
         /**
          * Gets the base name.<p>
-         * 
-         * @return the base name 
+         *
+         * @return the base name
          */
         public String getName() {
 
@@ -119,8 +119,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Creates a new instance.<p>
-     *  
-     * @param cms the CMS  context to use 
+     *
+     * @param cms the CMS  context to use
      */
     public CmsVfsBundleManager(CmsObject cms) {
 
@@ -136,8 +136,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Collects all locales possibly used in the system.<p>
-     * 
-     * @return the collection of all locales 
+     *
+     * @return the collection of all locales
      */
     private static Collection<Locale> getAllLocales() {
 
@@ -152,7 +152,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
      */
     public void cmsEvent(CmsEvent event) {
 
-        // wrap in try-catch so that errors don't affect other handlers 
+        // wrap in try-catch so that errors don't affect other handlers
         try {
             handleEvent(event);
         } catch (Throwable t) {
@@ -162,7 +162,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Indicates if a reload thread is currently scheduled.
-     * 
+     *
      * @return <code>true</code> if a reload is currently scheduled
      */
     public boolean isReloadScheduled() {
@@ -172,8 +172,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Re-initializes the resource bundles.<p>
-     * 
-     * @param isStartup true when this is called during startup 
+     *
+     * @param isStartup true when this is called during startup
      */
     public synchronized void reload(boolean isStartup) {
 
@@ -208,7 +208,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Sets the information if a reload thread is currently scheduled.
-     * 
+     *
      * @param reloadIsScheduled if <code>true</code> there is a reload currently scheduled
      */
     public void setReloadScheduled(boolean reloadIsScheduled) {
@@ -218,7 +218,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Shuts down the VFS bundle manager.<p>
-     * 
+     *
      * This will cause the internal reloading Thread not reload in case it is still running.<p>
      */
     public void shutDown() {
@@ -227,16 +227,17 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
         OpenCms.getEventManager().removeCmsEventListener(this);
         setReloadScheduled(false);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(org.opencms.staticexport.Messages.get().getBundle().key(
-                org.opencms.staticexport.Messages.INIT_SHUTDOWN_1,
-                this.getClass().getName()));
+            CmsLog.INIT.info(
+                org.opencms.staticexport.Messages.get().getBundle().key(
+                    org.opencms.staticexport.Messages.INIT_SHUTDOWN_1,
+                    this.getClass().getName()));
         }
     }
 
     /**
      * Logs an exception that occurred.<p>
-     * 
-     * @param e the exception to log 
+     *
+     * @param e the exception to log
      * @param logToErrorChannel if true erros should be written to the error channel instead of the info channel
      */
     protected void logError(Exception e, boolean logToErrorChannel) {
@@ -252,10 +253,10 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Internal method for adding a resource bundle to the internal cache.<p>
-     * 
-     * @param baseName the base name of the resource bundle 
-     * @param locale the locale of the resource bundle 
-     * @param bundle the resource bundle to add 
+     *
+     * @param baseName the base name of the resource bundle
+     * @param locale the locale of the resource bundle
+     * @param bundle the resource bundle to add
      */
     private void addBundle(String baseName, Locale locale, I_CmsResourceBundle bundle) {
 
@@ -264,8 +265,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Adds a resource bundle based on a properties file in the VFS.<p>
-     * 
-     * @param bundleResource the properties file 
+     *
+     * @param bundleResource the properties file
      */
     private void addPropertyBundle(CmsResource bundleResource) {
 
@@ -274,11 +275,12 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
         String baseName = nameAndLocale.getName();
         m_bundleBaseNames.add(baseName);
-        LOG.info(String.format(
-            "Adding property VFS bundle (path=%s, name=%s, locale=%s)",
-            bundleResource.getRootPath(),
-            baseName,
-            "" + locale));
+        LOG.info(
+            String.format(
+                "Adding property VFS bundle (path=%s, name=%s, locale=%s)",
+                bundleResource.getRootPath(),
+                baseName,
+                "" + locale));
         Locale paramLocale = locale != null ? locale : CmsLocaleManager.getDefaultLocale();
         CmsVfsBundleParameters params = new CmsVfsBundleParameters(
             nameAndLocale.getName(),
@@ -292,8 +294,8 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Adds an XML based message bundle.<p>
-     * 
-     * @param xmlBundle the XML content containing the message bundle data 
+     *
+     * @param xmlBundle the XML content containing the message bundle data
      */
     private void addXmlBundle(CmsResource xmlBundle) {
 
@@ -339,9 +341,9 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Extracts the locale and base name from a resource's file name.<p>
-     * 
-     * @param bundleRes the resource for which to get the base name and locale 
-     * @return a bean containing the base name and locale 
+     *
+     * @param bundleRes the resource for which to get the base name and locale
+     * @return a bean containing the base name and locale
      */
     private NameAndLocale getNameAndLocale(CmsResource bundleRes) {
 
@@ -363,9 +365,9 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
     }
 
     /**
-     * This actually handles the event.<p> 
-     * 
-     * @param event the received event 
+     * This actually handles the event.<p>
+     *
+     * @param event the received event
      */
     private void handleEvent(CmsEvent event) {
 
@@ -423,7 +425,7 @@ public class CmsVfsBundleManager implements I_CmsEventListener {
                     try {
                         Thread.sleep(1000);
                     } catch (Exception e) {
-                        // ignore 
+                        // ignore
                     }
                     if (isReloadScheduled()) {
                         reload(false);

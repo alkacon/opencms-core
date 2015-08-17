@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 /**
  * A resource type wrapper for jsp files, which adds the correct file extension "jsp"
  * to the resources.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsResourceExtensionWrapperJsp extends A_CmsResourceExtensionWrapper {

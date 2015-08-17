@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A schedulable OpenCms job that clear the image cache for the scaled images created by the <code>{@link org.opencms.loader.CmsImageLoader}</code>.<p>
- * 
+ *
  * Job parameters:<p>
  * <dl>
  * <dt><code>maxage={time in hours}</code></dt>
@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
  * Any image in the image cache folder that has a RFS date of last modification older than this time is considered
  * expired and is therefore deleted.</dd>
  * </dl>
- * 
- * @since 6.2.0 
+ *
+ * @since 6.2.0
  */
 public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
 
@@ -60,11 +60,11 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
 
     /**
      * Removes all expired image cache entries from the RFS cache.<p>
-     * 
+     *
      * Empty directories are removed as well.<p>
-     * 
+     *
      * @param maxAge the maximum age of the image cache files in hours (or fractions of hours)
-     * 
+     *
      * @return the total number of deleted resources
      */
     public static int cleanImageCache(float maxAge) {
@@ -78,10 +78,10 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
 
     /**
      * Removes all expired image cache entries from the given RFS directory, including recursion to subdirectories.<p>
-     * 
+     *
      * @param maxAge the maximum age of the image cache files
      * @param directory the directory to remove the cache files in
-     * 
+     *
      * @return the total number of deleted resources
      */
     private static int cleanImageCache(long maxAge, File directory) {
@@ -100,9 +100,10 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
                             f.delete();
                             count++;
                         } catch (Exception e) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
-                                f.getAbsolutePath()));
+                            LOG.error(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
+                                    f.getAbsolutePath()));
                         }
                     }
                 }
@@ -112,9 +113,10 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
                     directory.delete();
                     count++;
                 } catch (Exception e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
-                        directory.getAbsolutePath()));
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
+                            directory.getAbsolutePath()));
                 }
             }
         }
@@ -138,10 +140,8 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
         } catch (NumberFormatException e) {
             // in case of an error, use maxage of one week
             maxAge = 24f * 7f;
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2,
-                maxAgeStr,
-                new Float(maxAge)));
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2, maxAgeStr, new Float(maxAge)));
         }
 
         // now perform the image cache cleanup

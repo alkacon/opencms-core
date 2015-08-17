@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,13 +31,13 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 
 /**
  * Defines methods for OpenCms password validation.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler {
 
-    /** 
-     * Flag for conversion of the password encoding.<p> 
+    /**
+     * Flag for conversion of the password encoding.<p>
      */
     String CONVERT_DIGEST_ENCODING = "compatibility.convert.digestencoding";
 
@@ -67,25 +67,25 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
     String DIGEST_TYPE_SCRYPT = "scrypt";
 
     /**
-     * This method checks if the given plain text password is equal to the given 
+     * This method checks if the given plain text password is equal to the given
      * digested password.<p>
-     * 
-     * Use this to check salted passwords. If the password is salted, it needs to be checked with 
+     *
+     * Use this to check salted passwords. If the password is salted, it needs to be checked with
      * the salt (and possible other parameters) stored in the digested password.
-     * Just digesting the password again and comparing the result to a previous digest won't 
-     * work because the salt will usually be different.<p> 
+     * Just digesting the password again and comparing the result to a previous digest won't
+     * work because the salt will usually be different.<p>
      *
      * @param plainPassword the plain text password to check
      * @param digestedPassword the digested password to compare with the plain password
      * @param useFallback if <code>true</code>, then use a fall back hashing algorithm in case first validation fails
-     * 
+     *
      * @return <code>false</code> if the validation of the password failed
      */
     boolean checkPassword(String plainPassword, String digestedPassword, boolean useFallback);
 
     /**
      * Creates an OpenCms password digest according to the default setting for method/encodings.<p>
-     * 
+     *
      * @param password the password to encrypt
      * @return the password digest
      * @throws CmsPasswordEncryptionException if something goes wrong
@@ -105,41 +105,41 @@ public interface I_CmsPasswordHandler extends I_CmsConfigurationParameterHandler
 
     /**
      * Returns the default digest type.<p>
-     * 
+     *
      * @return the default digest type
      */
     String getDigestType();
 
     /**
      * Returns the default password encoding.<p>
-     * 
+     *
      * @return the default password encoding
      */
     String getInputEncoding();
 
     /**
      * Sets the default digest type.<p>
-     * 
+     *
      * @param digestType the digest type used
      */
     void setDigestType(String digestType);
 
     /**
      * Sets the default input encoding.<p>
-     * 
+     *
      * @param inputEncoding the encoding used for translation the password string to bytes
      */
     void setInputEncoding(String inputEncoding);
 
     /**
      * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in 
+     * new passwords, which are defined by a Class configured in
      * the opencms.properties file.<p>
-     * 
+     *
      * If this method throws no exception the password is valid.<p>
      *
      * @param password the password to check
-     * 
+     *
      * @throws CmsSecurityException if validation of the password failed
      */
     void validatePassword(String password) throws CmsSecurityException;

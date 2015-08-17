@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,14 +34,14 @@ public interface I_CmsUploadDialog {
 
     /**
      * Parses the upload response.<p>
-     * 
+     *
      * @param response the upload response
      */
     void parseResponse(String response);
 
     /**
      * Displays an error dialog.<p>
-     * 
+     *
      * @param message the error message
      * @param stacktrace the error stack trace
      */

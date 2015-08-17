@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 
 /**
  * Provides the upload dialog for file API support.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
@@ -83,7 +83,8 @@ public class CmsUploadDialogFileApiImpl extends CmsUploadDialogFormDataImpl {
             disableOKButton(message);
             StringBuffer buffer = new StringBuffer(64);
             buffer.append("<p class=\"");
-            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessageImportant());
+            buffer.append(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().dialogMessageImportant());
             buffer.append("\">");
             buffer.append(message);
             buffer.append("</p>");

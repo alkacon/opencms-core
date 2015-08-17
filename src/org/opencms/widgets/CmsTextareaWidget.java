@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,10 +39,10 @@ import java.util.Locale;
 
 /**
  * Provides a standard HTML form textarea widget, for use on a widget dialog.<p>
- * 
+ *
  * Displays a textarea with 4 rows to enter String values conveniently.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -60,7 +60,7 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new textarea widget with the given number of rows.<p>
-     * 
+     *
      * @param rows the number of rows to display
      */
     public CmsTextareaWidget(int rows) {
@@ -70,7 +70,7 @@ public class CmsTextareaWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new textarea widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsTextareaWidget(String configuration) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * The class for the "edit properties" context menu entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
@@ -56,9 +56,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -87,7 +87,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
     /**
      * Starts the property editor for the resource with the given structure id.<p>
-     * 
+     *
      * @param structureId the structure id of a resource
      * @param contextMenuHandler the context menu handler
      */
@@ -107,7 +107,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
                 handler.setPropertiesBean(result);
-                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
+                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(
+                    result.getPropertyDefinitions(),
+                    handler);
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
                 final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());

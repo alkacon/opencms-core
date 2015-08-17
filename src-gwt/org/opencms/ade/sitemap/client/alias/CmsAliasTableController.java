@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This is the controller class for the alias editor which is responsible for reacting to edit operations on the client 
+ * This is the controller class for the alias editor which is responsible for reacting to edit operations on the client
  * by triggering the corresponding validation or save actions on the server.<p>
  */
 public class CmsAliasTableController {
@@ -73,8 +73,8 @@ public class CmsAliasTableController {
 
     /**
      * Gets the service to use for validating/saving aliases.<p>
-     * 
-     * @return the service used for validating/saving aliases 
+     *
+     * @return the service used for validating/saving aliases
      */
     protected static I_CmsSitemapServiceAsync getService() {
 
@@ -83,8 +83,8 @@ public class CmsAliasTableController {
 
     /**
      * Method which should be called when the selection of the rewrite table has been changed.<p>
-     * 
-     * @param selectedSet the set of selected rewrite table entries 
+     *
+     * @param selectedSet the set of selected rewrite table entries
      */
     public void changeRewriteSelection(Set<CmsRewriteAliasTableRow> selectedSet) {
 
@@ -95,8 +95,8 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the selection of the alias table changes.<p>
-     * 
-     * @param selectedSet the set of selected rows 
+     *
+     * @param selectedSet the set of selected rows
      */
     public void changeSelection(Set<CmsAliasTableRow> selectedSet) {
 
@@ -106,8 +106,8 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user wants to delete rewrites aliases.<p>
-     * 
-     * @param rowsToDelete the rows the user wants to delete 
+     *
+     * @param rowsToDelete the rows the user wants to delete
      */
     public void deleteRewrites(List<CmsRewriteAliasTableRow> rowsToDelete) {
 
@@ -119,8 +119,8 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user deletes a set of rows.<p>
-     * 
-     * @param rowsToDelete the list of rows which should be deleted 
+     *
+     * @param rowsToDelete the list of rows which should be deleted
      */
     public void deleteRows(List<CmsAliasTableRow> rowsToDelete) {
 
@@ -131,7 +131,7 @@ public class CmsAliasTableController {
                 m_deletedIds.add(row.getStructureId());
             }
         }
-        // prevent selection model from going out of synch 
+        // prevent selection model from going out of synch
         m_view.getTable().getSelectionModel().clear();
         liveData.removeAll(rowsToDelete);
         updateValidationStatus();
@@ -147,9 +147,9 @@ public class CmsAliasTableController {
 
     /**
      * This method is called after the mode of an alias has been edited.<p>
-     * 
+     *
      * @param row the edited row
-     * @param mode the new alias mode 
+     * @param mode the new alias mode
      */
     public void editAliasMode(CmsAliasTableRow row, CmsAliasMode mode) {
 
@@ -159,9 +159,9 @@ public class CmsAliasTableController {
 
     /**
      * This method is called after the alias path of an alias has been edited.<p>
-     * 
+     *
      * @param row the edited row
-     * @param path the new alias path 
+     * @param path the new alias path
      */
     public void editAliasPath(CmsAliasTableRow row, String path) {
 
@@ -173,10 +173,10 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user wants to add a new alias entry.<p>
-     * 
+     *
      * @param aliasPath the alias path
-     * @param resourcePath the resource site path 
-     * @param mode the alias mode 
+     * @param resourcePath the resource site path
+     * @param mode the alias mode
      */
     public void editNewAlias(String aliasPath, String resourcePath, CmsAliasMode mode) {
 
@@ -190,11 +190,11 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user adds a new rewrite alias.<p>
-     * 
-     * @param rewriteRegex the rewrite pattern 
-     * @param rewriteReplacement the rewrite replacement string 
-     * 
-     * @param mode the rewrite mode 
+     *
+     * @param rewriteRegex the rewrite pattern
+     * @param rewriteReplacement the rewrite replacement string
+     *
+     * @param mode the rewrite mode
      */
     public void editNewRewrite(String rewriteRegex, String rewriteReplacement, CmsAliasMode mode) {
 
@@ -210,9 +210,9 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user has edited the resource path of an alias.<p>
-     * 
-     * @param row the alias the table row 
-     * @param path the new path 
+     *
+     * @param row the alias the table row
+     * @param path the new path
      */
     public void editResourcePath(CmsAliasTableRow row, String path) {
 
@@ -223,7 +223,7 @@ public class CmsAliasTableController {
 
     /**
      * This method is called when the user has edited a rewrite alias.<p>
-     * 
+     *
      * @param object the edited rewrite alias
      */
     public void editRewriteAlias(CmsRewriteAliasTableRow object) {
@@ -233,8 +233,8 @@ public class CmsAliasTableController {
 
     /**
      * Loads the initial data from the server.<p>
-     * 
-     * @param afterLoad the action that should be executed after loading 
+     *
+     * @param afterLoad the action that should be executed after loading
      */
     public void load(final Runnable afterLoad) {
 
@@ -320,8 +320,8 @@ public class CmsAliasTableController {
 
     /**
      * Sets the alias editor view.<p>
-     * 
-     * @param view the view object 
+     *
+     * @param view the view object
      */
     public void setView(CmsAliasView view) {
 
@@ -380,8 +380,8 @@ public class CmsAliasTableController {
 
     /**
      * Triggers server-side validation of the alias table and of a new entry which should be added to it.<p>
-     * 
-     * @param newEntry the new entry 
+     *
+     * @param newEntry the new entry
      */
     protected void validateNew(final CmsAliasTableRow newEntry) {
 
@@ -451,10 +451,10 @@ public class CmsAliasTableController {
 
     /**
      * Copies a list of rows.<p>
-     * 
-     * @param data the original data 
-     * 
-     * @return the copied data 
+     *
+     * @param data the original data
+     *
+     * @return the copied data
      */
     List<CmsAliasTableRow> copyData(List<CmsAliasTableRow> data) {
 

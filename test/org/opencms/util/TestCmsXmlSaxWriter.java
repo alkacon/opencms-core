@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXWriter;
 
-/** 
+/**
  * Test cases for the class <code>{@link org.opencms.util.CmsXmlSaxWriter}</code>.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
@@ -60,7 +60,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlSaxWriter(String arg0) {
@@ -70,7 +70,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Test HTML escaping in XML using the <code>{@link org.opencms.util.CmsXmlSaxWriter}</code>.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testEntityExcapeInXml() throws Exception {
@@ -102,7 +102,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Test if disabling escaping in <code>{@link org.opencms.util.CmsXmlSaxWriter}</code> causes expected issues.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testWithoutEntityEscaping() throws Exception {
@@ -135,7 +135,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Test round-trip generation of an XML using the <code>{@link org.opencms.util.CmsXmlSaxWriter}</code>.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testXmlRoundtrip() throws Exception {
@@ -154,12 +154,12 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
         String result1 = saxHandler.getWriter().toString();
         System.out.println(result1);
-        // generate document from String        
+        // generate document from String
         Document doc1 = CmsXmlUtils.unmarshalHelper(result1, null);
         // check doc1 values
         docTestCheck(doc1);
 
-        // generate another document 
+        // generate another document
         CmsXmlSaxWriter saxHandler2 = new CmsXmlSaxWriter(new StringWriter(4096), CmsEncoder.ENCODING_ISO_8859_1);
         saxHandler.setEscapeXml(true);
         saxHandler.setEscapeUnknownChars(false);
@@ -179,7 +179,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Asserts all values in the given focument match.<p>
-     * 
+     *
      * @param doc the document to check
      */
     private void docTestCheck(Document doc) {
@@ -196,7 +196,7 @@ public class TestCmsXmlSaxWriter extends OpenCmsTestCase {
 
     /**
      * Returns a test XML document.<p>
-     * 
+     *
      * @return a test XML document
      */
     private Document docTestGenerate() {

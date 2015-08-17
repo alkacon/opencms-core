@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,26 +55,26 @@ public interface I_CmsNewsletter {
     /** Macro for the lastname. */
     String MACRO_USER_LASTNAME = "lastname";
 
-    /** 
+    /**
      * Adds a OpenCms resource as an attachment to the newsletter.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param resource the resource to attach
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     void addAttachment(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
      * Adds content to the newsletter.<p>
-     * 
+     *
      * @param content the content to add
      */
     void addContent(I_CmsNewsletterContent content);
 
     /**
      * Returns the newsletter as an e-mail to be sent.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param recipient the recipient to which the newsletter will be sent
      * @return the newsletter as an e-mail
@@ -85,7 +85,7 @@ public interface I_CmsNewsletter {
 
     /**
      * Sets the subject.<p>
-     * 
+     *
      * @param subject the subject to set
      */
     void setSubject(String subject);

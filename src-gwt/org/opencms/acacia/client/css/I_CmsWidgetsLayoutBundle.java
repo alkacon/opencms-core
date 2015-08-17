@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,119 +52,119 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String calendarStyle();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String categoryPanel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String checkboxlabel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String checkBoxStyle();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String colorPicker();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String colorpickerpopup();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String colorPickerValue();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String comboBoxInput();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String displayTextBox();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String displayTextBoxPanel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String inputField();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String passwordTextBox();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String radioButtonlabel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String radioButtonPanel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String selectBoxPanel();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String textBox();
 
         /**
          * Css class reader.<p>
-         * 
+         *
          * @return the css class
          */
         String vfsInputBox();
@@ -175,7 +175,7 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the gallery widgets CSS
      */
     @Source("galleryWidgets.css")
@@ -183,7 +183,7 @@ public interface I_CmsWidgetsLayoutBundle extends org.opencms.gwt.client.ui.css.
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the XML content widget CSS
      */
     @Source("widget.css")

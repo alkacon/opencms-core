@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -86,11 +86,11 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param rootResource the root resource for the sitemap 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param rootResource the root resource for the sitemap
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsModelPageHelper(CmsObject cms, CmsResource rootResource)
     throws CmsException {
@@ -109,12 +109,12 @@ public class CmsModelPageHelper {
 
     /**
      * Adds a model page to the sitemap config.<p>
-     * 
-     * @param sitemapConfig the sitemap configuration resource 
-     * @param modelPage the model page to add 
-     * @param disabled true if the model page should be added as 'disabled' 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param sitemapConfig the sitemap configuration resource
+     * @param modelPage the model page to add
+     * @param disabled true if the model page should be added as 'disabled'
+     *
+     * @throws CmsException if something goes wrong
      */
     public void addModelPageToSitemapConfiguration(CmsResource sitemapConfig, CmsResource modelPage, boolean disabled)
     throws CmsException {
@@ -152,13 +152,13 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a new potential model page in the default folder for new model pages.<p>+
-     * 
-     * @param name the title for the model page 
-     * @param description the description for the model page 
+     *
+     * @param name the title for the model page
+     * @param description the description for the model page
      * @param copyId structure id of the resource to use as a model for the model page, if any (may be null)
-     *  
-     * @return the created resource 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the created resource
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createPageInModelFolder(String name, String description, CmsUUID copyId) throws CmsException {
 
@@ -189,13 +189,13 @@ public class CmsModelPageHelper {
         return newPage;
     }
 
-    /** 
+    /**
      * Tries to either read or create the default folder for model pages in the current sitemap, and returns it.<p>
-     * 
-     * @param rootResource the root of the sitemap 
+     *
+     * @param rootResource the root of the sitemap
      * @return the folder resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsResource ensureModelFolder(CmsResource rootResource) throws CmsException {
 
@@ -216,10 +216,10 @@ public class CmsModelPageHelper {
 
     }
 
-    /** 
+    /**
      * Reads the model pages from the ADE configuration.<p>
-     * 
-     * @return the list of model pages 
+     *
+     * @return the list of model pages
      */
     public List<CmsModelPageEntry> getModelPages() {
 
@@ -243,13 +243,13 @@ public class CmsModelPageHelper {
         return result;
     }
 
-    /** 
+    /**
      * Removes a model page from the sitemap configuration.<p>
-     * 
-     * @param sitemapConfig the sitemap configuration resource 
+     *
+     * @param sitemapConfig the sitemap configuration resource
      * @param structureId the structure id of the model page to remove
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void removeModelPage(CmsResource sitemapConfig, CmsUUID structureId) throws CmsException {
 
@@ -274,10 +274,10 @@ public class CmsModelPageHelper {
 
     /**
      * Creates a model page entry bean from a model page resource.<p>
-     * 
+     *
      * @param resource the model page resource
-     *  
-     * @return the model page entry bean 
+     *
+     * @return the model page entry bean
      */
     CmsModelPageEntry createModelPageEntry(CmsResource resource) {
 
@@ -316,10 +316,10 @@ public class CmsModelPageHelper {
 
     /**
      * Gets the type id for a type name.<p>
-     * 
-     * @param name the type name 
-     * @return the type id 
-     * @throws CmsLoaderException if something goes wrong 
+     *
+     * @param name the type name
+     * @return the type id
+     * @throws CmsLoaderException if something goes wrong
      */
     private int getType(String name) throws CmsLoaderException {
 
@@ -328,8 +328,8 @@ public class CmsModelPageHelper {
 
     /**
      * Tries to unlock a resource.<p>
-     * 
-     * @param resource the resource to unlock 
+     *
+     * @param resource the resource to unlock
      */
     private void tryUnlock(CmsResource resource) {
 
@@ -342,12 +342,12 @@ public class CmsModelPageHelper {
 
     /**
      * Writes a sitemap configuration back to the VFS.<p>
-     * 
-     * @param content the content to write 
+     *
+     * @param content the content to write
      * @param sitemapConfigFile the file to which the sitemap config should be written
-     *  
-     * @throws CmsXmlException if an XML processing error occurs 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsXmlException if an XML processing error occurs
+     * @throws CmsException if something goes wrong
      */
     private void writeSitemapConfig(CmsXmlContent content, CmsFile sitemapConfigFile)
     throws CmsXmlException, CmsException {

@@ -23,7 +23,7 @@
 *
 * For further information about OpenCms, please see the
 * project website: http://www.opencms.org
-* 
+*
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,18 +51,18 @@ import org.apache.solr.common.params.CommonParams;
 
 /**
  * The OpenCms Solr handler.<p>
- * 
+ *
  * Reachable under: "/opencms/opencms/handleSolrSelect".<p>
- * 
+ *
  * Usage example:<p>
  * <code>http://localhost:8080/opencms/opencms/handleSolrSelect?fq=parent-folders:/sites/+type=v8article&fl=path&rows=10&sort=path%20asc</code>
- * 
+ *
  * @since 8.5.0
  */
 public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandler {
 
     /**
-     * Encapsulate each request with an inner class in order to make OpenCmsSolrHander thread-safe. 
+     * Encapsulate each request with an inner class in order to make OpenCmsSolrHander thread-safe.
      */
     private class Context {
 
@@ -84,13 +84,13 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
      */
     private static enum HANDLER_NAMES {
 
-        /** 
+        /**
          * A constant for the '/select' request handler of the embedded Solr server.
          * This handler is reachable under "/opencms/opencms/handleSolrSelect".<p>
          */
         SolrSelect,
 
-        /** 
+        /**
          * A constant for the '/spell' request handler of the embedded Solr server.
          * This handler is reachable under "/opencms/opencms/handleSolrSpell".<p>
          */
@@ -114,7 +114,7 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /**
      * OpenCms servlet main request handling method.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -124,9 +124,9 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
     }
 
     /**
-     * OpenCms servlet POST request handling method, 
+     * OpenCms servlet POST request handling method,
      * will just call {@link #doGet(HttpServletRequest, HttpServletResponse)}.<p>
-     * 
+     *
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -176,11 +176,11 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /**
      * Returns the CMS object.<p>
-     * 
+     *
      * @param req the request
-     * 
+     *
      * @return the CMS object
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsObject getCmsObject(HttpServletRequest req) throws CmsException {
@@ -201,10 +201,10 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /**
      * Initialized the search request and sets the local parameter.<p>
-     * 
+     *
      * @param req the servlet request
      * @param res the servlet response
-     * 
+     *
      * @throws CmsException if something goes wrong
      * @throws Exception if something goes wrong
      * @throws CmsSearchException if something goes wrong
@@ -235,10 +235,10 @@ public class OpenCmsSolrHandler extends HttpServlet implements I_CmsRequestHandl
 
     /**
      * Returns the base URI.<p>
-     * 
+     *
      * @param req the servlet request
      * @param cms the CmsObject
-     * 
+     *
      * @return the base URI
      */
     private String getBaseUri(HttpServletRequest req, CmsObject cms) {

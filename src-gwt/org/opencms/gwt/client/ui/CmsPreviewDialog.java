@@ -60,8 +60,8 @@ public final class CmsPreviewDialog extends CmsPopup {
 
         /**
          * Loads the preview information for the given locale.<p>
-         * 
-         * @param locale the locale for which to load the preview 
+         *
+         * @param locale the locale for which to load the preview
          * @param resultCallback the callback to call with the result
          */
         void loadPreviewForLocale(String locale, AsyncCallback<CmsPreviewInfo> resultCallback);
@@ -117,12 +117,12 @@ public final class CmsPreviewDialog extends CmsPopup {
         addDialogClose(null);
     }
 
-    /** 
+    /**
      * Creates a new preview dialog instance.<p>
-     * 
+     *
      * @param previewInfo the preview information
-     * 
-     * @return the new preview dialog instance 
+     *
+     * @return the new preview dialog instance
      */
     public static CmsPreviewDialog createPreviewDialog(CmsPreviewInfo previewInfo) {
 
@@ -162,7 +162,7 @@ public final class CmsPreviewDialog extends CmsPopup {
             public void execute() {
 
                 CmsCoreProvider.getVfsService().getPreviewInfo(structureId, CmsCoreProvider.get().getLocale(), this);
-                this.start(0, true);
+                start(0, true);
             }
 
             @Override
@@ -188,7 +188,7 @@ public final class CmsPreviewDialog extends CmsPopup {
             public void execute() {
 
                 CmsCoreProvider.getVfsService().getPreviewInfo(sitePath, CmsCoreProvider.get().getLocale(), this);
-                this.start(0, true);
+                start(0, true);
             }
 
             @Override
@@ -216,8 +216,8 @@ public final class CmsPreviewDialog extends CmsPopup {
 
     /**
      * Sets the preview info provider.<p>
-     * 
-     * @param provider the preview info provider instance 
+     *
+     * @param provider the preview info provider instance
      */
     public void setPreviewInfoProvider(I_PreviewInfoProvider provider) {
 
@@ -252,7 +252,7 @@ public final class CmsPreviewDialog extends CmsPopup {
                 } else {
                     CmsCoreProvider.getVfsService().getPreviewInfo(getSitePath(), locale, this);
                 }
-                this.start(0, true);
+                start(0, true);
             }
 
             @Override
@@ -299,7 +299,8 @@ public final class CmsPreviewDialog extends CmsPopup {
             RootPanel.get().add(content);
             height = content.getOffsetHeight();
         } else {
-            content.setHTML("<iframe src=\"" + previewInfo.getPreviewUrl() + "\" style=\"height:100%; width:100%;\" />");
+            content.setHTML(
+                "<iframe src=\"" + previewInfo.getPreviewUrl() + "\" style=\"height:100%; width:100%;\" />");
         }
         if (previewInfo.hasDimensions()) {
             height = previewInfo.getHeight();

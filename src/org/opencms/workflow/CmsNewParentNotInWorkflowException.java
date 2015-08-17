@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.main.CmsException;
 
 /**
  * An exception which indicates that the user tried to trigger a workflow action for a set of resources for which some parent folder
- * is not included in the set, but has the resource state 'new'. 
+ * is not included in the set, but has the resource state 'new'.
  */
 public class CmsNewParentNotInWorkflowException extends CmsException {
 
@@ -41,8 +41,8 @@ public class CmsNewParentNotInWorkflowException extends CmsException {
 
     /**
      * Creates a new exception instance.<p>
-     * 
-     * @param container the message container 
+     *
+     * @param container the message container
      */
     public CmsNewParentNotInWorkflowException(CmsMessageContainer container) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -91,8 +91,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param existingProperties the names of already existing properties 
+     *
+     * @param existingProperties the names of already existing properties
      */
     public CmsPropertyDefinitionView(Collection<String> existingProperties) {
 
@@ -128,7 +128,7 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Gets the cancel button.<p>
-     * 
+     *
      * @return the cancel button
      */
     public CmsPushButton getCancelButton() {
@@ -139,8 +139,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Gets the OK button.<p>
-     * 
-     * @return the OK button 
+     *
+     * @return the OK button
      */
     public CmsPushButton getOkButton() {
 
@@ -149,8 +149,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Sets the popup which contains this widget.<p>
-     * 
-     * @param popup the popup 
+     *
+     * @param popup the popup
      */
     public void setPopup(CmsPopup popup) {
 
@@ -159,8 +159,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Button handler for the cancel button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     void onClickCancel(ClickEvent e) {
@@ -170,8 +170,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Button handler for the OK button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_okButton")
     void onClickOk(ClickEvent e) {
@@ -195,10 +195,10 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Checks whether the property name is valid.<p>
-     * 
-     * @param normalizedName the property name to check 
-     * 
-     * @return true if the name is valid 
+     *
+     * @param normalizedName the property name to check
+     *
+     * @return true if the name is valid
      */
     private boolean isValidName(String normalizedName) {
 
@@ -207,8 +207,8 @@ public class CmsPropertyDefinitionView extends Composite {
 
     /**
      * Saves the property definition and closes the dialog.<p>
-     * 
-     * @param normalizedName the property name 
+     *
+     * @param normalizedName the property name
      */
     private void savePropertyDefinitionAndQuit(final String normalizedName) {
 

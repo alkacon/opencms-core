@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import org.apache.solr.schema.IndexSchema;
 
 /**
  * An individual field for the Solr search index.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrField extends CmsSearchField {
@@ -62,7 +62,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param luceneField
      */
     public CmsSolrField(CmsLuceneField luceneField) {
@@ -91,7 +91,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param targetField the target field name
      * @param copyFields the field names to copy this field's value to
      * @param locale the locale
@@ -108,7 +108,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Returns the copy fields.<p>
-     * 
+     *
      * @return the copy fields.<p>
      */
     public List<String> getCopyFields() {
@@ -118,7 +118,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Returns the locale of this field or <code>null</code> if the field does not have a locale.<p>
-     * 
+     *
      * @return the locale of this field
      */
     public Locale getLocale() {
@@ -128,7 +128,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Returns the target field name.<p>
-     * 
+     *
      * @return the target field name
      */
     public String getTargetField() {
@@ -138,7 +138,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Sets the copy field names.<p>
-     * 
+     *
      * @param copyFields the field name to use as copy fields
      */
     public void setCopyFields(List<String> copyFields) {
@@ -148,7 +148,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Sets the locale.<p>
-     * 
+     *
      * @param locale the locale to set
      */
     public void setLocale(Locale locale) {
@@ -158,7 +158,7 @@ public class CmsSolrField extends CmsSearchField {
 
     /**
      * Sets the target field name.<p>
-     * 
+     *
      * @param targetField the name to set
      */
     public void setTargetField(String targetField) {

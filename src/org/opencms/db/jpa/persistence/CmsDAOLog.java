@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a log entry inside the table "cms_log".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -64,7 +64,7 @@ public class CmsDAOLog {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -74,7 +74,7 @@ public class CmsDAOLog {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -114,7 +114,7 @@ public class CmsDAOLog {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOLogPK(String str) {
@@ -147,7 +147,8 @@ public class CmsDAOLog {
             CmsDAOLogPK other = (CmsDAOLogPK)obj;
             return (m_logDate == other.m_logDate)
                 && (m_logType == other.m_logType)
-                && (((m_userId == null) && (other.m_userId == null)) || ((m_userId != null) && m_userId.equals(other.m_userId)));
+                && (((m_userId == null) && (other.m_userId == null))
+                    || ((m_userId != null) && m_userId.equals(other.m_userId)));
         }
 
         /**
@@ -187,9 +188,9 @@ public class CmsDAOLog {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + (int)(m_logDate ^ (m_logDate >>> 32));
-            rs = rs * 37 + m_logType;
-            rs = rs * 37 + ((m_userId == null) ? 0 : m_userId.hashCode());
+            rs = (rs * 37) + (int)(m_logDate ^ (m_logDate >>> 32));
+            rs = (rs * 37) + m_logType;
+            rs = (rs * 37) + ((m_userId == null) ? 0 : m_userId.hashCode());
             return rs;
         }
 
@@ -234,7 +235,7 @@ public class CmsDAOLog {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -288,7 +289,7 @@ public class CmsDAOLog {
 
     /**
      * A public constructor for generating a new log object with an unique id.<p>
-     * 
+     *
      * @param logDate the log date
      * @param logType the log type
      * @param userId the user id

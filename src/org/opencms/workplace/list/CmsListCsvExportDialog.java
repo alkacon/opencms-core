@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Generates a CSV file for a given list.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListCsvExportDialog extends CmsDialog {
 
@@ -49,7 +49,7 @@ public class CmsListCsvExportDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsListCsvExportDialog(CmsJspActionElement jsp) {
@@ -59,9 +59,9 @@ public class CmsListCsvExportDialog extends CmsDialog {
 
     /**
      * Generates the CSV file for the given list.<p>
-     * 
+     *
      * @return CSV file
-     * 
+     *
      * @throws ClassNotFoundException if the list dialog class is not found
      */
     public String generateCsv() throws ClassNotFoundException {
@@ -72,7 +72,7 @@ public class CmsListCsvExportDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response

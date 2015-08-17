@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ import org.alfresco.jlan.smb.SeekType;
 import org.alfresco.jlan.util.WildCard;
 
 /**
- * This class represents a file for use by the JLAN server component. It currently just 
+ * This class represents a file for use by the JLAN server component. It currently just
  * wraps an OpenCms resource.<p>
  */
 public class CmsJlanNetworkFile extends NetworkFile {
@@ -76,10 +76,10 @@ public class CmsJlanNetworkFile extends NetworkFile {
     private CmsResource m_resource;
 
     /** Creates a new network file instance.<p>
-     * 
-     * @param cms the CMS object wrapper to use 
-     * @param resource the actual CMS resource 
-     * @param fullName the raw repository path 
+     *
+     * @param cms the CMS object wrapper to use
+     * @param resource the actual CMS resource
+     * @param fullName the raw repository path
      */
     public CmsJlanNetworkFile(CmsObjectWrapper cms, CmsResource resource, String fullName) {
 
@@ -156,10 +156,10 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Gets the file information record.<p>
-     * 
+     *
      * @return the file information for this file
-     *  
-     * @throws IOException if reading the file information fails 
+     *
+     * @throws IOException if reading the file information fails
      */
     public FileInfo getFileInfo() throws IOException {
 
@@ -213,9 +213,9 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Moves this file to a different path.<p>
-     * 
-     * @param cmsNewPath the new path 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cmsNewPath the new path
+     * @throws CmsException if something goes wrong
      */
     public void moveTo(String cmsNewPath) throws CmsException {
 
@@ -233,7 +233,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
     @Override
     public void openFile(boolean arg0) {
 
-        // not needed 
+        // not needed
 
     }
 
@@ -254,12 +254,12 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Collects all files matching the given name pattern and search attributes.<p>
-     * 
-     * @param name the name pattern 
+     *
+     * @param name the name pattern
      * @param searchAttributes the search attributes
-     * 
-     * @return the list of file objects which match the given parameters 
-     * 
+     *
+     * @return the list of file objects which match the given parameters
+     *
      * @throws IOException if something goes wrong
      */
     public List<CmsJlanNetworkFile> search(String name, int searchAttributes) throws IOException {
@@ -303,7 +303,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
             load(true);
             switch (typ) {
 
-            //  From current position
+                //  From current position
 
                 case SeekType.CurrentPos:
                     m_buffer.seek(m_buffer.getPosition() + pos);
@@ -331,8 +331,8 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Sets the file information.<p>
-     *  
-     * @param info the file information to set 
+     *
+     * @param info the file information to set
      */
     public void setFileInformation(FileInfo info) {
 
@@ -378,7 +378,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Make sure that this resource is locked.<p>
-     * 
+     *
      * @throws CmsException
      */
     protected void ensureLock() throws CmsException {
@@ -391,8 +391,8 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Gets the CmsFile instance for this file, or null if the file contents haven'T been loaded already.<p>
-     * 
-     * @return the CmsFile instance 
+     *
+     * @return the CmsFile instance
      */
     protected CmsFile getFile() {
 
@@ -404,10 +404,10 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Adds the name of a child resource to this file's path.<p>
-     * 
+     *
      * @param child the child resource
-     *  
-     * @return the path of the child 
+     *
+     * @return the path of the child
      */
     protected String getFullChildPath(CmsResource child) {
 
@@ -418,11 +418,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Loads the file data from the VFS.<p>
-     * 
-     * @param needContent true if we need the file content to be loaded 
-     * 
-     * @throws IOException if an IO error happens 
-     * @throws CmsException if a CMS operation fails 
+     *
+     * @param needContent true if we need the file content to be loaded
+     *
+     * @throws IOException if an IO error happens
+     * @throws CmsException if a CMS operation fails
      */
     protected void load(boolean needContent) throws IOException, CmsException {
 
@@ -435,7 +435,7 @@ public class CmsJlanNetworkFile extends NetworkFile {
             }
             if (!m_bufferInitialized && (getFile() != null)) {
                 // readResource may already have returned a CmsFile, this is why we need to initialize the buffer
-                // here and not in the if-block above 
+                // here and not in the if-block above
                 m_buffer.init(getFile().getContents());
                 m_bufferInitialized = true;
             }
@@ -446,10 +446,10 @@ public class CmsJlanNetworkFile extends NetworkFile {
 
     /**
      * Checks if this file matches the given search attributes.<p>
-     * 
-     * @param attributes the search attributes 
-     * 
-     * @return true if this file matches the search attributes given 
+     *
+     * @param attributes the search attributes
+     *
+     * @return true if this file matches the search attributes given
      */
     protected boolean matchesSearchAttributes(int attributes) {
 
@@ -475,11 +475,11 @@ public class CmsJlanNetworkFile extends NetworkFile {
         setAttributes(m_resource.isFile() ? FileAttribute.Normal : FileAttribute.Directory);
     }
 
-    /** 
+    /**
      * Replace sequences of consecutive slashes/backslashes to a single backslash.<p>
-     * 
-     * @param fullName the path to normalize 
-     * @return the normalized path 
+     *
+     * @param fullName the path to normalize
+     * @return the normalized path
      */
     private String normalizeName(String fullName) {
 

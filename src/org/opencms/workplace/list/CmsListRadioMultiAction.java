@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.List;
 
 /**
  * Default implementation of a list radio multi action.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListRadioMultiAction extends CmsListMultiAction {
 
@@ -47,7 +47,7 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param relatedActionIds the ids of the related item selection actions
      */
@@ -104,7 +104,7 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
 
     /**
      * Returns a comma separated list of related list item selection action ids.<p>
-     * 
+     *
      * @return a comma separated list of related list item selection action ids
      */
     private String getRelatedActionIds() {

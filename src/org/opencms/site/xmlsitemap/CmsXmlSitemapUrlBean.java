@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,11 +62,11 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param url the URL
-     * @param lastModified the last modification date 
-     * @param changeFrequency the change frequency string 
-     * @param priority the priority 
+     * @param lastModified the last modification date
+     * @param changeFrequency the change frequency string
+     * @param priority the priority
      */
     public CmsXmlSitemapUrlBean(String url, long lastModified, String changeFrequency, double priority) {
 
@@ -80,22 +80,22 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Helper method to format a date in the W3C datetime format.<p>
-     * 
-     * @param date the date to format 
-     * 
-     * @return the formatted date 
+     *
+     * @param date the date to format
+     *
+     * @return the formatted date
      */
     private static String formatDate(Date date) {
 
         String dateStr = dateFormat.format(date);
-        // insert colon into timezone 
+        // insert colon into timezone
         return dateStr.substring(0, 22) + ":" + dateStr.substring(22);
     }
 
-    /** 
+    /**
      * Gets the change frequency string.<p>
-     * 
-     * @return the change frequency string 
+     *
+     * @return the change frequency string
      */
     public String getChangeFrequency() {
 
@@ -104,18 +104,18 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Gets the last modification date.<p>
-     * 
-     * @return the last modification date 
+     *
+     * @return the last modification date
      */
     public Date getDateLastModified() {
 
         return m_lastModified;
     }
 
-    /** 
+    /**
      * Gets the detail page resource in case the link is the link to a detail page, else returns null.<p>
-     * 
-     * @return the container page used as the detail page 
+     *
+     * @return the container page used as the detail page
      */
     public CmsResource getDetailPageResource() {
 
@@ -124,20 +124,20 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Gets the last modification date formatted as W3C datetime.<p>
-     * 
-     * @return the formatted last modification date 
+     *
+     * @return the formatted last modification date
      */
     public String getFormattedDate() {
 
         return formatDate(m_lastModified);
     }
 
-    /** 
+    /**
      * Gets the original resource belonging to the link.<p>
-     * 
-     * In case this is a link to a detail page, the resource will be the resource displayed on the detail page 
-     * 
-     * @return the original resource 
+     *
+     * In case this is a link to a detail page, the resource will be the resource displayed on the detail page
+     *
+     * @return the original resource
      */
     public CmsResource getOriginalResource() {
 
@@ -146,8 +146,8 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Gets the priority for the page.<p>
-     * 
-     * @return the priority 
+     *
+     * @return the priority
      */
     public double getPriority() {
 
@@ -156,15 +156,15 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Gets the page URL.<p>
-     * 
-     * @return the page URL 
+     *
+     * @return the page URL
      */
     public String getUrl() {
 
         return m_url;
     }
 
-    /** 
+    /**
      * Sets the detail page resource.<p>
      *
      * @param detailPageResource the detail page resource
@@ -174,9 +174,9 @@ public class CmsXmlSitemapUrlBean {
         m_detailPageResource = detailPageResource;
     }
 
-    /** 
+    /**
      * Sets the original resource.<p>
-     * 
+     *
      * @param resource the original resource
      */
     public void setOriginalResource(CmsResource resource) {
@@ -184,9 +184,9 @@ public class CmsXmlSitemapUrlBean {
         m_origResource = resource;
     }
 
-    /** 
+    /**
      * Writes the changefreq node to the buffer.<p>
-     * 
+     *
      * @param buffer the buffer to write to
      */
     public void writeChangefreq(StringBuffer buffer) {
@@ -198,10 +198,10 @@ public class CmsXmlSitemapUrlBean {
 
     /**
      * Writes a single XML element with text content to a string buffer.<p>
-     * 
-     * @param buffer the string buffer to write to 
-     * @param tag the XML tag name 
-     * @param content the content of the XML element 
+     *
+     * @param buffer the string buffer to write to
+     * @param tag the XML tag name
+     * @param content the content of the XML element
      */
     public void writeElement(StringBuffer buffer, String tag, String content) {
 
@@ -210,9 +210,9 @@ public class CmsXmlSitemapUrlBean {
         buffer.append("</" + tag + ">");
     }
 
-    /** 
+    /**
      * Writes the lastmod node to the buffer.<p>
-     * 
+     *
      * @param buffer the buffer to write to
      */
     public void writeLastmod(StringBuffer buffer) {
@@ -222,9 +222,9 @@ public class CmsXmlSitemapUrlBean {
         }
     }
 
-    /** 
+    /**
      * Writes the priority node to the buffer.<p>
-     * 
+     *
      * @param buffer the buffer to write to
      */
     public void writePriority(StringBuffer buffer) {

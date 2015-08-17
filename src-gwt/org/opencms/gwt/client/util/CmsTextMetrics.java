@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,13 +39,13 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Provides precise pixel measurements for blocks of text so that you can
  * determine exactly how high and wide, in pixels, a given block of text will
  * be.<p>
- * 
+ *
  * Normal usage would be:
  * <pre>
  * for(Element e: elements) {
  *   CmsTextMetrics tm = CmsTextMetrics.get(e, "TextMetricsKey");
- *   
- *   // measure text 
+ *
+ *   // measure text
  *   if (r.getWidth(text) > 500) {
  *      // do something
  *   }
@@ -53,9 +53,9 @@ import com.google.gwt.user.client.ui.RootPanel;
  *   tm.release();
  * }
  * </pre>
- * 
- * Based on <a href="http://code.google.com/p/my-gwt/source/browse/trunk/user/src/net/mygwt/ui/client/util/TextMetrics.java">my-gwt TextMetrics</a>.<p> 
- * 
+ *
+ * Based on <a href="http://code.google.com/p/my-gwt/source/browse/trunk/user/src/net/mygwt/ui/client/util/TextMetrics.java">my-gwt TextMetrics</a>.<p>
+ *
  * @since 8.0.0
  */
 public final class CmsTextMetrics {
@@ -92,7 +92,7 @@ public final class CmsTextMetrics {
 
     /**
      * Internal constructor for creating a text metrics object with a given key.<p>
-     * 
+     *
      * @param key the key identifying the text metrics.
      */
     private CmsTextMetrics(String key) {
@@ -102,15 +102,15 @@ public final class CmsTextMetrics {
 
     /**
      * Gets the text metrics object for a given DOM element and key.<p>
-     * 
-     * If the key is null, or the method has been never called with the same key 
+     *
+     * If the key is null, or the method has been never called with the same key
      * before, a new text metrics object will be created, with its style taken from
      * the element parameter. Otherwise, the text metrics object for the given key will
-     * be returned, and the element parameter will be ignored. 
-     * 
+     * be returned, and the element parameter will be ignored.
+     *
      * @param element the element from which to take the style
      * @param key the text metrics key
-     *  
+     *
      * @return a text metrics object
      */
     public static CmsTextMetrics get(Element element, String key) {
@@ -133,7 +133,7 @@ public final class CmsTextMetrics {
     /**
      * Returns the measured height of the specified text. For multiline text, be
      * sure to call {@link #setFixedWidth} if necessary.<p>
-     * 
+     *
      * @param text the text to be measured
      * @return the height in pixels
      */
@@ -145,7 +145,7 @@ public final class CmsTextMetrics {
 
     /**
      * Returns the measured width of the specified text.<p>
-     * 
+     *
      * @param text the text to measure
      * @return the width in pixels
      */
@@ -172,7 +172,7 @@ public final class CmsTextMetrics {
      * Sets a fixed width on the internal measurement element. If the text will be
      * multiline, you have to set a fixed width in order to accurately measure the
      * text height.<p>
-     * 
+     *
      * @param width the width to set on the element
      */
     public void setFixedWidth(int width) {
@@ -183,7 +183,7 @@ public final class CmsTextMetrics {
     /**
      * Binds this text metrics instance to an element from which to copy existing
      * CSS styles that can affect the size of the rendered text.<p>
-     * 
+     *
      * @param element the element
      */
     protected void bind(Element element) {
@@ -194,7 +194,7 @@ public final class CmsTextMetrics {
     /**
      * Binds this text metrics instance to an element from which to copy existing
      * CSS styles that can affect the size of the rendered text.<p>
-     * 
+     *
      * @param element the element
      * @param attributes the attributes to bind
      */

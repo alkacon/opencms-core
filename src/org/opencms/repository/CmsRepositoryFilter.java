@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,9 +39,9 @@ import java.util.regex.Pattern;
 
 /**
  * This class is a filter for the repositories.<p>
- * 
+ *
  * It filters path names, depending on the configuration made.<p>
- * 
+ *
  * @since 6.2.4
  */
 public class CmsRepositoryFilter {
@@ -68,7 +68,7 @@ public class CmsRepositoryFilter {
 
     /**
      * Adds a new filter rule (regex) to the filter.<p>
-     * 
+     *
      * @param rule the rule (regex) to add
      */
     public void addFilterRule(String rule) {
@@ -98,7 +98,7 @@ public class CmsRepositoryFilter {
 
     /**
      * Initializes a configuration after all parameters have been added.<p>
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     public void initConfiguration() throws CmsConfigurationException {
@@ -113,7 +113,8 @@ public class CmsRepositoryFilter {
             while (iter.hasNext()) {
                 Pattern rule = iter.next();
 
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_FILTER_RULE_2, m_type, rule.pattern()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(Messages.INIT_ADD_FILTER_RULE_2, m_type, rule.pattern()));
             }
         }
 
@@ -122,7 +123,7 @@ public class CmsRepositoryFilter {
 
     /**
      * Checks if a path is filtered out of the filter or not.<p>
-     * 
+     *
      * @param path the path of a resource to check
      * @return true if the name matches one of the given filter patterns
      */
@@ -160,14 +161,14 @@ public class CmsRepositoryFilter {
 
     /**
      * Returns if the given path matches or partially matches the pattern.<p>
-     * 
+     *
      * For example the regex "/system/modules/" should match the path "/system/".
      * That's not working with Java 1.4. Starting with Java 1.5 there are possiblities
      * to do that. Until then you have to configure all parent paths as a regex filter.<p>
-     * 
+     *
      * @param pattern the pattern to use
      * @param path the path to test if the pattern matches (partially)
-     * 
+     *
      * @return true if the path matches (partially) the pattern
      */
     private boolean isPartialMatch(Pattern pattern, String path) {

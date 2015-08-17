@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.Locale;
 
 /**
  * Reference to an container inheritance configuration.<p>
- * 
+ *
  */
 public class CmsInheritanceReference {
 
@@ -58,12 +58,12 @@ public class CmsInheritanceReference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the container configuration name 
-     * @param title the title 
+     *
+     * @param name the container configuration name
+     * @param title the title
      * @param description the description
-     * @param res the resource 
-     * @param locale the locale 
+     * @param res the resource
+     * @param locale the locale
      */
     public CmsInheritanceReference(String name, String title, String description, CmsResource res, Locale locale) {
 
@@ -86,8 +86,8 @@ public class CmsInheritanceReference {
 
     /**
      * Gets the locale.<p>
-     * 
-     * @return the locale 
+     *
+     * @return the locale
      */
     public Locale getLocale() {
 
@@ -96,8 +96,8 @@ public class CmsInheritanceReference {
 
     /**
      * Gets the configuration name.<p>
-     * 
-     * @return the configuration name 
+     *
+     * @return the configuration name
      */
     public String getName() {
 
@@ -106,8 +106,8 @@ public class CmsInheritanceReference {
 
     /**
      * Gets the reference resource.<p>
-     * 
-     * @return the reference resource 
+     *
+     * @return the reference resource
      */
     public CmsResource getResource() {
 
@@ -116,8 +116,8 @@ public class CmsInheritanceReference {
 
     /**
      * Gets the title.<p>
-     * 
-     * @return the title 
+     *
+     * @return the title
      */
     public String getTitle() {
 

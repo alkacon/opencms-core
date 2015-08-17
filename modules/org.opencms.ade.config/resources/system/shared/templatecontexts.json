@@ -1,6 +1,10 @@
 {
 	"desktop": {
-		"niceName": "Desktop",
+		"niceName": { 
+			"en": "Desktop",
+			"de": "Desktop",
+			"ru": "Компьютер"
+		},
 		"path": "%(template)",
 		"variants": {
 			"small": {
@@ -17,7 +21,11 @@
 	},	
 
 	"tablet": {
-		"niceName": "Tablet", 
+		"niceName": { 
+			"en": "Tablet",
+			"de": "Tablet",
+			"ru": "Планшет"
+		},
 		"path": "%(template)",
 		"variants": {
 			"ipad": {
@@ -66,7 +74,8 @@
 	"mobile": {
 		"niceName": { 
 			"en": "Mobile",
-			"de": "Mobil"
+			"de": "Mobil",
+			"ru": "Смартфон"
 		},
 		"path": "%(template)",
 		"variants": {

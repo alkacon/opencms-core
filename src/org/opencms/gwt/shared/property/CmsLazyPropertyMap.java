@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A lazy initialized map of properties. Will return a property object for any key.<p> 
+ * A lazy initialized map of properties. Will return a property object for any key.<p>
  */
 public class CmsLazyPropertyMap extends HashMap<String, CmsClientProperty> {
 
@@ -40,7 +40,7 @@ public class CmsLazyPropertyMap extends HashMap<String, CmsClientProperty> {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param original properties that will be added to this map
      */
     public CmsLazyPropertyMap(Map<String, CmsClientProperty> original) {
@@ -50,9 +50,9 @@ public class CmsLazyPropertyMap extends HashMap<String, CmsClientProperty> {
 
     /**
      * Returns the property with the given name.<p>
-     * 
+     *
      * @param key the property name
-     * 
+     *
      * @return the property
      */
     @Override

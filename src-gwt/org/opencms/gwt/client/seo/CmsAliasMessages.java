@@ -19,15 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.gwt.client.seo;
-
-
 
 /**
  * Message accessor class for the alias dialog.<p>
@@ -36,8 +34,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String addAlias() {
 
@@ -46,8 +44,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String aliases() {
 
@@ -56,8 +54,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String enterAlias() {
 
@@ -66,8 +64,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String existingAliases() {
 
@@ -76,8 +74,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String movedDescription() {
 
@@ -86,8 +84,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String newAlias() {
 
@@ -96,8 +94,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String optionMoved() {
 
@@ -106,8 +104,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String optionPage() {
 
@@ -117,8 +115,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String optionRedirect() {
 
@@ -127,8 +125,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String pageDescription() {
 
@@ -137,8 +135,8 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String redirectDescription() {
 
@@ -147,18 +145,18 @@ public class CmsAliasMessages {
 
     /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String removeAlias() {
 
         return Messages.get().key(Messages.GUI_REMOVE_ALIAS_0);
     }
 
-    /** 
+    /**
      * Message accessor.<p>
-     * 
-     * @return the message string 
+     *
+     * @return the message string
      */
     public String seoOptions() {
 

@@ -49,14 +49,14 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
 
     /**
      * Calls the editor change handlers.<p>
-     * 
+     *
      * @param entityId the edited entity id
      * @param editedLocaleEntity the edited entity
      * @param skipPaths the locale synchronization value paths to skip
      * @param changedScopes the changed content value paths
-     * 
+     *
      * @return the changed content
-     * 
+     *
      * @throws CmsRpcException in case anything goes wrong
      */
     CmsContentDefinition callEditorChangeHandlers(
@@ -68,33 +68,33 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
     /**
      * Cancels the editing session.<p>
      * Will unlock the resource and delete it if required.<p>
-     * 
+     *
      * @param structureId the resource structure id
      * @param delete <code>true</code> to delete the edited resource
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     void cancelEdit(CmsUUID structureId, boolean delete) throws CmsRpcException;
 
     /**
      * Copies the given source locale to the target locales.<p>
-     * 
+     *
      * @param locales the target locales
      * @param sourceLocale the source locale
-     * 
+     *
      * @throws CmsRpcException if something goes wrong
      */
     void copyLocale(Collection<String> locales, CmsEntity sourceLocale) throws CmsRpcException;
 
     /**
      * Loads the content definition for a given entity.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws Exception if something goes wrong processing the request
      */
     CmsContentDefinition loadDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)
@@ -102,16 +102,16 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
 
     /**
      * Loads the content definition for a given entity.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param newLink the new link
      * @param modelFileId  the optional model file id
      * @param editContext the container page currently being edited (may be null)
      * @param mode the content creation mode
      * @param postCreateHandler the post-create handler class name
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsContentDefinition loadInitialDefinition(
@@ -125,13 +125,13 @@ public interface I_CmsContentService extends org.opencms.acacia.shared.rpc.I_Cms
     /**
      * Loads new entity definition.<p>
      * This will load the entity representation of a new locale node.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param editedLocaleEntity the edited locale entity
      * @param skipPaths the paths to skip during locale synchronization
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws CmsRpcException if something goes wrong processing the request
      */
     CmsContentDefinition loadNewDefinition(String entityId, CmsEntity editedLocaleEntity, Collection<String> skipPaths)

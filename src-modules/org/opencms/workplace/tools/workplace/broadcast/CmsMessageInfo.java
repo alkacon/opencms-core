@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import javax.mail.internet.InternetAddress;
 
 /**
  * Bean class for message information.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsMessageInfo {
@@ -73,7 +73,7 @@ public class CmsMessageInfo {
 
     /**
      * Returns the cc string.<p>
-     * 
+     *
      * @return the cc string
      */
     public String getCc() {
@@ -83,7 +83,7 @@ public class CmsMessageInfo {
 
     /**
      * Returns the from string.<p>
-     * 
+     *
      * @return the from string
      */
     public String getFrom() {
@@ -93,7 +93,7 @@ public class CmsMessageInfo {
 
     /**
      * Returns the message string.<p>
-     * 
+     *
      * @return the message string
      */
     public String getMsg() {
@@ -103,7 +103,7 @@ public class CmsMessageInfo {
 
     /**
      * Returns the subject string.<p>
-     * 
+     *
      * @return the subject string
      */
     public String getSubject() {
@@ -113,7 +113,7 @@ public class CmsMessageInfo {
 
     /**
      * Returns the to string.<p>
-     * 
+     *
      * @return the to string
      */
     public String getTo() {
@@ -123,9 +123,9 @@ public class CmsMessageInfo {
 
     /**
      * Sends the given message to the given addresses.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void sendEmail(CmsObject cms) throws Exception {
@@ -146,7 +146,7 @@ public class CmsMessageInfo {
 
     /**
      * Sets the cc string.<p>
-     * 
+     *
      * @param cc the cc string
      */
     public void setCc(String cc) {
@@ -158,7 +158,7 @@ public class CmsMessageInfo {
 
     /**
      * Sets the from string.<p>
-     * 
+     *
      * @param from the from string
      */
     public void setFrom(String from) {
@@ -169,7 +169,7 @@ public class CmsMessageInfo {
 
     /**
      * Sets the message string.<p>
-     * 
+     *
      * @param msg the message string
      */
     public void setMsg(String msg) {
@@ -180,7 +180,7 @@ public class CmsMessageInfo {
 
     /**
      * Sets the subject string.<p>
-     * 
+     *
      * @param subject the subject string
      */
     public void setSubject(String subject) {
@@ -191,10 +191,10 @@ public class CmsMessageInfo {
 
     /**
      * Sets the to string.<p>
-     * 
+     *
      * This has to be a ';' separated string of email-addresses.<p>
-     * 
-     * 
+     *
+     *
      * @param to the to string
      */
     public void setTo(String to) {
@@ -204,7 +204,7 @@ public class CmsMessageInfo {
 
     /**
      * Throws a runtime exception if the string is null, empty or contains JavaScript.<p>
-     * 
+     *
      * @param string the string to check
      */
     private void checkString(String string) {
@@ -216,7 +216,7 @@ public class CmsMessageInfo {
 
     /**
      * Creates a list of internet addresses (email) from a semicolon separated String.<p>
-     * 
+     *
      * @param mailAddresses a semicolon separated String with email addresses
      * @return list of internet addresses (email)
      * @throws AddressException if an email address is not correct

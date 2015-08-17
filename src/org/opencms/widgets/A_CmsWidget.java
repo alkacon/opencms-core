@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,8 +39,8 @@ import java.util.Set;
 
 /**
  * Base class for XML editor widgets.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsWidget implements I_CmsWidget {
 
@@ -56,7 +56,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         /** The resource being edited. */
         private CmsResource m_resource;
 
-        /** Constructor.<p> 
+        /** Constructor.<p>
          * @param locale the locale of the dialog
          * @param message the message of the dialog
          */
@@ -154,10 +154,10 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             return m_message;
         }
 
-        /** 
+        /**
          * Gets the resource being edited.
-         * 
-         * @return the resource being edited 
+         *
+         * @return the resource being edited
          */
         public CmsResource getResource() {
 
@@ -174,8 +174,8 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
         /**
          * Sets the resource being edited.<p>
-         * 
-         * @param resource the resource being edited 
+         *
+         * @param resource the resource being edited
          */
         public void setResource(CmsResource resource) {
 
@@ -209,10 +209,10 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         setConfiguration("");
     }
 
-    /** 
+    /**
      * Constructor for preprocessing the configuration string.<p>
-     * 
-     * @param configuration the configuration string 
+     *
+     * @param configuration the configuration string
      */
     protected A_CmsWidget(String configuration) {
 
@@ -222,7 +222,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * Returns the localized help key for the provided widget parameter.<p>
      * @param param the widget parameter to return the localized help key for
-     * 
+     *
      * @return the localized help key for the provided widget parameter
      */
     public static String getHelpKey(I_CmsWidgetParameter param) {
@@ -239,7 +239,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * Returns the localized label key for the provided widget parameter.<p>
      * @param param the widget parameter to return the localized label key for
-     * 
+     *
      * @return the localized label key for the provided widget parameter
      */
     public static String getLabelKey(I_CmsWidgetParameter param) {
@@ -269,7 +269,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
     /**
      * Returns the configuration string.<p>
-     * 
+     *
      * @return the configuration string
      */
     public String getConfiguration() {
@@ -358,7 +358,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         }
         helpIdsShown.add(helpId);
 
-        // calculate the key        
+        // calculate the key
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
@@ -434,14 +434,14 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     }
 
     /**
-     * Returns the HTML for the JavaScript mouse handlers that show / hide the help text.<p> 
-     * 
+     * Returns the HTML for the JavaScript mouse handlers that show / hide the help text.<p>
+     *
      * This is required since the handler differs between the "Dialog" and the "Administration" mode.<p>
-     * 
+     *
      * @param widgetDialog the dialog where the widget is displayed on
      * @param key the key for the help bubble
      * @param value the localized help text, has to be an escaped String for JS usage, is only used in XML content editor
-     * 
+     *
      * @return the HTML for the JavaScript mouse handlers that show / hide the help text
      */
     protected String getJsHelpMouseHandler(I_CmsWidgetDialog widgetDialog, String key, String value) {
@@ -480,7 +480,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
 
     /**
      * Creates the tags to include external javascript files.<p>
-     *  
+     *
      * @param fileName the absolute path to the javascript file
      * @return the tags to include external javascript files
      */

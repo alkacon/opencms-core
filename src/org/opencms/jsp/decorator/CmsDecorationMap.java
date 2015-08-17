@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,12 +45,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * The CmsDecorationMap is the object representation of a single decoartion file.<p>
- * 
+ *
  * The semicolon seperated elements of the decoartion file are stored in a map. <p>
  * The map uses the decoration as keys and CmsDecorationObjects as values.<p>
  * Multiple CmsDecorationMaps form a CmsDecorationBundle.
- * 
- * @since 6.1.3 
+ *
+ * @since 6.1.3
  */
 public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
 
@@ -74,7 +74,7 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
 
     /**
      * Constructor, creates a new, empty CmsDecorationMap.<p>
-     * 
+     *
      * @param decDef the CmsDecorationDefintion to be used in this decoration map
      * @param name The name of the decoration map
      * @param locale the locale for this decoration map
@@ -89,7 +89,7 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
 
     /**
      * Constructor, creates a new CmsDecorationMap.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param res the resource to extrace the decorations from
      * @param decDef the CmsDecorationDefintion to be used in this decoration map
@@ -197,7 +197,7 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
 
     /**
      * Extracts the locale from the decoration filename.<p>
-     * 
+     *
      *@return locale extraced form filename or null
      */
     private Locale extractLocale() {
@@ -217,7 +217,7 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
 
     /**
      *  Fills the decoration map with values from the decoation file.<p>
-     *  
+     *
      * @param cms the CmsObject
      * @param res the decoration file
      * @return decoration map, using decoration as key and decoration description as value
@@ -226,10 +226,8 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
     private Map<String, CmsDecorationObject> fillMap(CmsObject cms, CmsResource res) throws CmsException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DECORATION_MAP_FILL_MAP_2,
-                m_name,
-                m_decoratorDefinition));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_DECORATION_MAP_FILL_MAP_2, m_name, m_decoratorDefinition));
         }
 
         Map<String, CmsDecorationObject> decMap = new HashMap<String, CmsDecorationObject>();
@@ -248,19 +246,21 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DECORATION_MAP_FILL_MAP_DELIMITER_2,
-                res.getName(),
-                CmsStringUtil.escapeJavaScript(delimiter)));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_DECORATION_MAP_FILL_MAP_DELIMITER_2,
+                    res.getName(),
+                    CmsStringUtil.escapeJavaScript(delimiter)));
         }
 
         List<String> entries = CmsStringUtil.splitAsList(unparsedContent, delimiter);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_DECORATION_MAP_FILL_MAP_SPLIT_LIST_2,
-                res.getName(),
-                entries));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_DECORATION_MAP_FILL_MAP_SPLIT_LIST_2,
+                    res.getName(),
+                    entries));
         }
         Iterator<String> i = entries.iterator();
         while (i.hasNext()) {
@@ -280,10 +280,11 @@ public class CmsDecorationMap implements Comparable<CmsDecorationMap> {
                                 m_locale);
                             decMap.put(key, decObj);
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
-                                    Messages.LOG_DECORATION_MAP_ADD_DECORATION_OBJECT_2,
-                                    decObj,
-                                    key));
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_DECORATION_MAP_ADD_DECORATION_OBJECT_2,
+                                        decObj,
+                                        key));
                             }
                         }
                     }

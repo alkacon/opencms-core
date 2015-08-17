@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public final class CmsTinyMceToolbarHelper {
         "|",
         ":");
 
-    /** 
+    /**
      * Hidden constructor.<p>
      */
     private CmsTinyMceToolbarHelper() {
@@ -74,10 +74,10 @@ public final class CmsTinyMceToolbarHelper {
 
     /**
      * Helper method to generate a TinyMCE-specific toolbar configuration string from a list of generic toolbar button names.<p>
-     * 
-     * @param barItems the generic toolbar items 
-     * 
-     * @return the TinyMCE toolbar configuration string 
+     *
+     * @param barItems the generic toolbar items
+     *
+     * @return the TinyMCE toolbar configuration string
      */
     public static String createTinyMceToolbarStringFromGenericToolbarItems(List<String> barItems) {
 
@@ -86,7 +86,7 @@ public final class CmsTinyMceToolbarHelper {
         String lastItem = null;
         List<String> processedItems = new ArrayList<String>();
 
-        // translate buttons and eliminate adjacent separators 
+        // translate buttons and eliminate adjacent separators
         for (String barItem : barItems) {
             String translated = CmsTinyMceToolbarHelper.translateButton(barItem);
             if (translated != null) {
@@ -108,7 +108,7 @@ public final class CmsTinyMceToolbarHelper {
             lastItem = barItem;
         }
 
-        // remove leading or trailing '|' 
+        // remove leading or trailing '|'
         if ((processedItems.size() > 0) && processedItems.get(0).equals("|")) {
             processedItems.remove(0);
         }
@@ -118,7 +118,7 @@ public final class CmsTinyMceToolbarHelper {
         }
         Set<String> writtenItems = new HashSet<String>();
 
-        // transform flat list into list of groups 
+        // transform flat list into list of groups
         for (String processedItem : processedItems) {
             if (!writtenItems.contains(processedItem)) {
                 blocks.get(blocks.size() - 1).add(processedItem);
@@ -133,7 +133,7 @@ public final class CmsTinyMceToolbarHelper {
         // produce the TinyMCE toolbar options from the groups
         // we use TinyMCE's button rows as groups instead of rows and fix the layout using CSS.
         // This is because we want the button bars to wrap automatically when there is not enough space.
-        // Using this method, the wraps can only occur between different blocks/rows. 
+        // Using this method, the wraps can only occur between different blocks/rows.
         String toolbar = "";
         for (List<String> block : blocks) {
             toolbar += CmsStringUtil.listAsString(block, " ") + " ";
@@ -143,9 +143,9 @@ public final class CmsTinyMceToolbarHelper {
 
     /**
      * Returns the context menu entries according to the configured tool-bar items.<p>
-     * 
+     *
      * @param barItems the tool-bar items
-     * 
+     *
      * @return the context menu entries
      */
     public static String getContextMenuEntries(List<String> barItems) {
@@ -168,8 +168,8 @@ public final class CmsTinyMceToolbarHelper {
 
     /**
      * Translates a generic button name to a TinyMCE-specific button name (or a comma-separated list of button names).<p>
-     * 
-     * @param cmsButtonName the generic button name 
+     *
+     * @param cmsButtonName the generic button name
      * @return the TinyMCE button name(s)
      */
     public static String translateButton(String cmsButtonName) {

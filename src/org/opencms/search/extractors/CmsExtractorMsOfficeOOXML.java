@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,13 +33,13 @@ import org.apache.tika.parser.microsoft.ooxml.OOXMLParser;
 
 /**
  * Extracts text data from a VFS resource that is an OOXML MS Office document.<p>
- * 
+ *
  * Supported formats are MS Word (.docx), MS PowerPoint (.pptx) and MS Excel (.xlsx).<p>
- * 
- * The OLE 2 format was introduced in Microsoft Office version 97 and was the default format until Office version 2007 
- * and the new XML-based OOXML format.<p> 
- * 
- * @since 8.0.1 
+ *
+ * The OLE 2 format was introduced in Microsoft Office version 97 and was the default format until Office version 2007
+ * and the new XML-based OOXML format.<p>
+ *
+ * @since 8.0.1
  */
 public final class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
 
@@ -47,7 +47,7 @@ public final class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
     private static final CmsExtractorMsOfficeOOXML INSTANCE = new CmsExtractorMsOfficeOOXML();
 
     /**
-     * Hide the public constructor.<p> 
+     * Hide the public constructor.<p>
      */
     private CmsExtractorMsOfficeOOXML() {
 
@@ -55,8 +55,8 @@ public final class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
     }
 
     /**
-     * Returns an instance of this text extractor.<p> 
-     * 
+     * Returns an instance of this text extractor.<p>
+     *
      * @return an instance of this text extractor
      */
     public static I_CmsTextExtractor getExtractor() {
@@ -64,7 +64,7 @@ public final class CmsExtractorMsOfficeOOXML extends A_CmsTextExtractor {
         return INSTANCE;
     }
 
-    /** 
+    /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
     @Override

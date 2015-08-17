@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ public class TestRepository extends OpenCmsTestCase {
 
     /**
      * Create test instance.<p>
-     * 
-     * @param name the test name 
+     *
+     * @param name the test name
      */
     public TestRepository(String name) {
 
@@ -56,7 +56,7 @@ public class TestRepository extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -86,7 +86,7 @@ public class TestRepository extends OpenCmsTestCase {
 
     /**
      * Test for a bug with property caching caused by CmsResourceWrapperSystemFolder.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testPropertyCachingBug() throws Exception {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,9 +46,9 @@ import org.quartz.SchedulerFactory;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-/** 
+/**
  * Test cases for the OpenCms scheduler thread pool.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsScheduler extends OpenCmsTestCase {
@@ -61,7 +61,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests activating and deactivating of scheduled jobs.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testActivateAndDeactivateJob() throws Exception {
@@ -173,7 +173,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests adding and removing a job to the OpenCms schedule manager.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testAddAndRemoveJobFromScheduler() throws Exception {
@@ -230,7 +230,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests adding an existing job again to the OpenCms scheduler.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testAddExistingJobAgainToScheduler() throws Exception {
@@ -313,7 +313,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests execution of jobs using CmsSchedulerThreadPool.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testBasicJobExecution() throws Exception {
@@ -355,7 +355,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests launching of an OpenCms job.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testCmsJobLaunch() throws Exception {
@@ -404,7 +404,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests launching of an OpenCms job with the OpenCms schedule manager.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testJobInOpenCmsScheduler() throws Exception {
@@ -456,7 +456,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Tests launching of a persistent OpenCms job with the OpenCms schedule manager.<p>
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     public void testPersitentJobInOpenCmsScheduler() throws Exception {
@@ -507,7 +507,7 @@ public class TestCmsScheduler extends OpenCmsTestCase {
 
     /**
      * Initializes a Quartz scheduler.<p>
-     * 
+     *
      * @return the initialized scheduler
      * @throws Exception in case something goes wrong
      */

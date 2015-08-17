@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class encapsulates the filter logic for CMIS rendition filters.<p> 
+ * This class encapsulates the filter logic for CMIS rendition filters.<p>
  */
 public class CmsCmisRenditionFilter {
 
@@ -49,8 +49,8 @@ public class CmsCmisRenditionFilter {
 
     /**
      * Creates a new filter from the given filter string.<p>
-     * 
-     * @param filterStr the CMIS rendition filter string 
+     *
+     * @param filterStr the CMIS rendition filter string
      */
     public CmsCmisRenditionFilter(String filterStr) {
 
@@ -79,10 +79,10 @@ public class CmsCmisRenditionFilter {
 
     /**
      * Checks whether this filter accepts a given kind/mimetype combination.<p>
-     * 
-     * @param kind the kind 
-     * @param mimetype the mime type 
-     * 
+     *
+     * @param kind the kind
+     * @param mimetype the mime type
+     *
      * @return true if the filter accepts the combination
      */
     public boolean accept(String kind, String mimetype) {

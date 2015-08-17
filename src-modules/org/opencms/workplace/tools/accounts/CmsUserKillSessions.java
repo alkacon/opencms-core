@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
-/** 
+/**
  * Workplace dialog to kill user sessions.<p>
  */
 public class CmsUserKillSessions extends CmsDialog {
@@ -47,10 +47,10 @@ public class CmsUserKillSessions extends CmsDialog {
 
     /**
      * Creates a new dialog instance.<p>
-     * 
-     * @param context the page context 
-     * @param req the current request 
-     * @param res the current response 
+     *
+     * @param context the page context
+     * @param req the current request
+     * @param res the current response
      */
     public CmsUserKillSessions(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -60,8 +60,8 @@ public class CmsUserKillSessions extends CmsDialog {
 
     /**
      * Unlocks the user.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void actionKillUserSessions() throws Exception {
 
@@ -74,8 +74,8 @@ public class CmsUserKillSessions extends CmsDialog {
 
     /**
      * Sets the user id parameter.<p>
-     * 
-     * @param userId the user id 
+     *
+     * @param userId the user id
      */
     public void setParamUserId(String userId) {
 

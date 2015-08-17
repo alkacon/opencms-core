@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,21 +43,21 @@ import java.util.Set;
 
 /**
  * Provides access to the localized messages for the OpenCms workplace.<p>
- * 
+ *
  * The workplace messages are collected from the workplace resource bundles of all installed modules,
  * plus all the OpenCms core packages.<p>
- * 
+ *
  * To be recognized as a workplace module resource bundle,
  * the workplace property file must follow the naming convention <code>${module_package_name}.workplace${locale}.properties</code>,
  * or <code>${module_package_name}.messages${locale}.properties</code>
- * for example like <code>com.mycompany.module.workplace_en.properties</code> or 
+ * for example like <code>com.mycompany.module.workplace_en.properties</code> or
  * <code>com.mycompany.module.messages_en.properties</code>.<p>
- * 
+ *
  * Workplace messages are cached for faster lookup. If a localized key is contained in more then one module,
- * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
+ * it will be used only from the module where it was first found in. The module order is undefined. It is therefore
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceMessages extends CmsMultiMessages {
 
@@ -76,8 +76,8 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     /**
      * Constructor for creating a new messages object
      * initialized with the provided locale.<p>
-     * 
-     * @param locale the locale to initialize 
+     *
+     * @param locale the locale to initialize
      */
     public CmsWorkplaceMessages(Locale locale) {
 
@@ -88,16 +88,16 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Returns the title for the "new resource" dialog.<p>
-     * 
-     * It will look up a key with the prefix {@link #GUI_NEW_RESOURCE_TITLE_PREFIX} 
+     *
+     * It will look up a key with the prefix {@link #GUI_NEW_RESOURCE_TITLE_PREFIX}
      * and the given name appended (converted to lower case).<p>
-     * 
-     * If this key is not found, the value of 
+     *
+     * If this key is not found, the value of
      * {@link org.opencms.workplace.explorer.Messages#GUI_TITLE_NEWFILEOTHER_0} will be returned.<p>
-     * 
+     *
      * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
      * @param name the type to generate the title for
-     * 
+     *
      * @return the title for the "new resource" dialog
      */
     public static String getNewResourceTitle(CmsWorkplace wp, String name) {
@@ -113,12 +113,12 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Returns the description of the given resource type name.<p>
-     * 
+     *
      * If this key is not found, the value of the name input will be returned.<p>
-     * 
+     *
      * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
      * @param name the resource type name to generate the nice name for
-     * 
+     *
      * @return the description of the given resource type name
      */
     public static String getResourceTypeDescription(CmsWorkplace wp, String name) {
@@ -130,12 +130,12 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Returns the description of the given resource type name.<p>
-     * 
+     *
      * If this key is not found, the value of the name input will be returned.<p>
-     * 
+     *
      * @param locale the right locale to use
      * @param name the resource type name to generate the nice name for
-     * 
+     *
      * @return the description of the given resource type name
      */
     public static String getResourceTypeDescription(Locale locale, String name) {
@@ -150,12 +150,12 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Returns the localized name of the given resource type name.<p>
-     * 
+     *
      * If this key is not found, the value of the name input will be returned.<p>
-     * 
+     *
      * @param wp an instance of a {@link CmsWorkplace} to resolve the key name with
      * @param name the resource type name to generate the nice name for
-     * 
+     *
      * @return the localized name of the given resource type name
      */
     public static String getResourceTypeName(CmsWorkplace wp, String name) {
@@ -171,12 +171,12 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Returns the localized name of the given resource type name.<p>
-     * 
+     *
      * If this key is not found, the value of the name input will be returned.<p>
-     * 
+     *
      * @param locale the right locale to use
      * @param name the resource type name to generate the nice name for
-     * 
+     *
      * @return the localized name of the given resource type name
      */
     public static String getResourceTypeName(Locale locale, String name) {
@@ -188,13 +188,13 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
     /**
      * Gathers all localization files for the workplace from the different modules.<p>
-     * 
-     * For a module named "my.module.name" the locale file must be named 
-     * "my.module.name.workplace" or "my.module.name.messages" and 
+     *
+     * For a module named "my.module.name" the locale file must be named
+     * "my.module.name.workplace" or "my.module.name.messages" and
      * be located in the classpath so that the resource loader can find it.<p>
-     * 
+     *
      * @param locale the selected locale
-     * 
+     *
      * @return an initialized set of module messages
      */
     private static List<CmsMessages> collectModuleMessages(Locale locale) {
@@ -202,7 +202,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
         // create a new list and add the base bundle
         ArrayList<CmsMessages> result = new ArrayList<CmsMessages>();
 
-        //////////// iterate over all registered modules ////////////////        
+        //////////// iterate over all registered modules ////////////////
         Set<String> names = OpenCms.getModuleManager().getModuleNames();
         if (names != null) {
             // iterate all module names

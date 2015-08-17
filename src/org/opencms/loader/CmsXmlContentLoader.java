@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import javax.servlet.ServletRequest;
 
 /**
  * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeXmlContent}</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContentLoader extends A_CmsXmlDocumentLoader {
 
@@ -57,8 +57,8 @@ public class CmsXmlContentLoader extends A_CmsXmlDocumentLoader {
     /**
      * Returns a String describing this resource loader, which is (localized to the system default locale)
      * <code>"The OpenCms default resource loader for xml content"</code>.<p>
-     * 
-     * @return a describing String for the ResourceLoader 
+     *
+     * @return a describing String for the ResourceLoader
      */
     public String getResourceLoaderInfo() {
 

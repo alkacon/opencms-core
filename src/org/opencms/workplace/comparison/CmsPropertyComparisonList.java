@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * List for property comparison including columns for property name and the values. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPropertyComparisonList extends A_CmsListDialog {
 
@@ -132,7 +132,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPropertyComparisonList(CmsJspActionElement jsp) {
@@ -142,7 +142,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -154,7 +154,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -175,7 +175,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -205,7 +205,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
-        // forward to the edit module screen  
+        // forward to the edit module screen
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put(CmsHistoryList.PARAM_VERSION_1, new String[] {getParamVersion1()});
         params.put(CmsHistoryList.PARAM_VERSION_2, new String[] {getParamVersion2()});
@@ -375,15 +375,14 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
                 CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
-        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(
-                Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         return ret;
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     @Override
@@ -513,9 +512,10 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add column for first value
         CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
-        version1Col.setName(Messages.get().container(
-            Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+        version1Col.setName(
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -523,9 +523,10 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add column for second value
         CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
-        version2Col.setName(Messages.get().container(
-            Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+        version2Col.setName(
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);
@@ -533,7 +534,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     @Override

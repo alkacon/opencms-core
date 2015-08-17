@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * Reads and manages the configuration file for the OpenCms auto-setup.<p>
  * Note that each property set in the file is overwritten if the identical property is set as Java system property (what is used, e.g., by the setup wizard).
  * Moreover, the property <code>setup.install.components</code> can be set via an accordingly named environment variable.
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsAutoSetupProperties {
@@ -50,8 +50,8 @@ public final class CmsAutoSetupProperties {
     /** The log object for this class. */
     public static final Log LOG = CmsLog.getLog(CmsAutoSetupProperties.class);
 
-    /** The property key <code>db.connection.url</code> for providing the JDBC connection string, 
-     * e.g., <code>jdbc:mysql://localhost:3306/</code> for the default MySQL installation. 
+    /** The property key <code>db.connection.url</code> for providing the JDBC connection string,
+     * e.g., <code>jdbc:mysql://localhost:3306/</code> for the default MySQL installation.
      */
     public static final String PROP_DB_CONNECTION_URL = "db.connection.url";
 
@@ -69,7 +69,7 @@ public final class CmsAutoSetupProperties {
      */
     public static final String PROP_DB_CREATE_TABLES = "db.create.tables";
 
-    /** The property key <code>db.create.user</code> for specifying the name of the database user that is used during the setup connection. 
+    /** The property key <code>db.create.user</code> for specifying the name of the database user that is used during the setup connection.
      *  NOTE: The user must have administration permissions. The user data is deleted, when the setup is finished.
      * */
     public static final String PROP_DB_CREATE_USER = "db.create.user";
@@ -112,7 +112,7 @@ public final class CmsAutoSetupProperties {
     */
     public static final String PROP_DB_WORKER_PWD = "db.worker.pwd";
 
-    /** The property key <code>db.worker.user</code> for providing the name of the database user that is used for the connection when running OpenCms after the setup.     
+    /** The property key <code>db.worker.user</code> for providing the name of the database user that is used for the connection when running OpenCms after the setup.
      *  CAUTION: For security reasons, the user should not have administration permissions.
      *  The user data is stored in the <code>opencms.properties</code> file after the setup.
     . */
@@ -226,9 +226,9 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param propertiesFile the path to the setup properties file
-     *  
+     *
      * @throws IOException if the property file could not be read
      * @throws SecurityException if the environment variables could not be read
      */
@@ -407,7 +407,7 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Returns the setup configuration object.<p>
-     * 
+     *
      * @return the setup configuration object
      */
     public CmsParameterConfiguration getSetupConfiguration() {
@@ -427,7 +427,7 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Returns the setupWebappPath.<p>
-     * 
+     *
      * @return the setupWebappPath
      */
     public String getSetupWebappPath() {
@@ -527,7 +527,7 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Converts and returns this object as map.<p>
-     * 
+     *
      * @return this object as map
      */
     public Map<String, String[]> toParameterMap() {
@@ -560,9 +560,9 @@ public final class CmsAutoSetupProperties {
 
     /**
      * Adds and returns the property for the given key.<p>
-     * 
+     *
      * @param key the key to add the property
-     * 
+     *
      * @return the value of that property
      */
     private String addProperty(String key) {

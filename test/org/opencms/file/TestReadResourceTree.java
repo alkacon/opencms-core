@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,13 +40,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
- * 
+ *
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestReadResourceTree(String arg0) {
@@ -56,7 +56,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -94,7 +94,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
     /**
      * Test readResources for reading immediate child resources below a given path.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadChildren() throws Throwable {
@@ -123,12 +123,12 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 
     /**
      * Test readResources for reading file resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadFiles() throws Throwable {
@@ -168,12 +168,12 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 
     /**
      * Test readResources for reading folder resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadFolders() throws Throwable {
@@ -202,12 +202,12 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 
     /**
      * Test readResources for reading modified resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadModifiedResources() throws Throwable {
@@ -245,7 +245,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
 
         // store all resources of the expected result
         storeResources(cms, path + "/subfolder21/subsubfolder211/jsp1.jsp", false);
@@ -261,12 +261,12 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 
     /**
      * Test the method that read the direct sub-resources of a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadResources() throws Throwable {
@@ -292,7 +292,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
     /**
      * Test readResources for reading resources modified within a timerange.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadResourcesInTimerange() throws Throwable {
@@ -334,7 +334,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
 
         // ensure no resource was modified after timestamp2
         result = cms.readResources("/", CmsResourceFilter.ALL.addRequireLastModifiedAfter(timestamp2));
@@ -359,12 +359,12 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 
     /**
      * Test readResources for reading a subtree below a given path.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReadSubtree() throws Throwable {
@@ -396,6 +396,6 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         }
 
         // check the number of resources
-        assertEquals(this.m_currentResourceStrorage.size(), i);
+        assertEquals(m_currentResourceStrorage.size(), i);
     }
 }

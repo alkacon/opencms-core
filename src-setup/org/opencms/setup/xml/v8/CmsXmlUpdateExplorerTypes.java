@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import org.dom4j.Element;
 
 /**
  * XML updater for adding icon rules to opencms-workplace.xml.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
@@ -71,7 +71,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         {"xmlcontent", "bigicon", "xmlcontent_big.png"}};
 
     /** The order data to update. */
-    private String[][] m_orders = { {"link", "90"}, {"extendedfolder", "5"}, {"structurecontent", "10"}};
+    private String[][] m_orders = {{"link", "90"}, {"extendedfolder", "5"}, {"structurecontent", "10"}};
 
     /** The page data to update. */
     private String[][] m_pages = {{"link", "otheroptions"}};
@@ -93,11 +93,11 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
         return CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCodeToChange(setupBean));
     }
 
-    /** 
-     * Creates the 'otheroptions' page.<p> 
-     *  
+    /**
+     * Creates the 'otheroptions' page.<p>
+     *
      * @param doc the XML document
-     * @return true if the value was updated 
+     * @return true if the value was updated
      */
     protected boolean createOtherOptionsPage(Document doc) {
 
@@ -243,7 +243,8 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
                         parent.elements().add(0, elementToInsert);
                         if (forReal) {
                             for (String referencingType : new String[] {"linkgallery"}) {
-                                Element referencingTypeElement = (Element)(doc.selectSingleNode(xpathForType(referencingType)));
+                                Element referencingTypeElement = (Element)(doc.selectSingleNode(
+                                    xpathForType(referencingType)));
                                 if (referencingTypeElement != null) {
                                     referencingTypeElement.attribute("reference").setValue("classicgallery");
                                 }
@@ -269,7 +270,7 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
                 m_actions.put(orderPath, new CmsSetValueAction(order));
             }
 
-            // page updates 
+            // page updates
             for (int i = 0; i < m_pages.length; i++) {
                 String type = m_pages[i][0];
                 String page = m_pages[i][1];
@@ -287,10 +288,10 @@ public class CmsXmlUpdateExplorerTypes extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a given explorer type.<p>
-     * 
-     * @param explorerType the explorer type 
-     * 
-     * @return the xpath for that explorer type 
+     *
+     * @param explorerType the explorer type
+     *
+     * @return the xpath for that explorer type
      */
     String xpathForType(String explorerType) {
 

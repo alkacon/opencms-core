@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 
 /**
  * Permission handler interface.<p>
- * 
+ *
  * @since 7.0.2
- * 
+ *
  * @see org.opencms.db.CmsSecurityManager#hasPermissions(org.opencms.file.CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
  */
 public interface I_CmsPermissionHandler {
@@ -66,7 +66,7 @@ public interface I_CmsPermissionHandler {
 
         /**
          * Private constructor.<p>
-         * 
+         *
          * @param mode the copy mode integer representation
          */
         private CmsPermissionCheckResult(int mode) {
@@ -76,7 +76,7 @@ public interface I_CmsPermissionHandler {
 
         /**
          * Checks if this permission is allowed or not.<p>
-         * 
+         *
          * @return <code>true</code> if allowed
          */
         public boolean isAllowed() {
@@ -96,28 +96,28 @@ public interface I_CmsPermissionHandler {
 
     /**
      * Performs a non-blocking permission check on a resource.<p>
-     * 
+     *
      * This test will not throw an exception in case the required permissions are not
-     * available for the requested operation. Instead, it will return one of the 
+     * available for the requested operation. Instead, it will return one of the
      * following values:<ul>
      * <li><code>{@link #PERM_ALLOWED}</code></li>
      * <li><code>{@link #PERM_FILTERED}</code></li>
      * <li><code>{@link #PERM_DENIED}</code></li></ul><p>
-     * 
+     *
      * Despite of the fact that the results of this method are cached, this method should
      * be as fast as possible since it is called really often.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required for the operation
-     * @param checkLock if true, a lock for the current user is required for 
+     * @param checkLock if true, a lock for the current user is required for
      *      all write operations, if false it's ok to write as long as the resource
      *      is not locked by another user
      * @param filter the resource filter to use
-     * 
+     *
      * @return <code>{@link #PERM_ALLOWED}</code> if the user has sufficient permissions on the resource
      *      for the requested operation
-     * 
+     *
      * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
      */
     CmsPermissionCheckResult hasPermissions(
@@ -129,7 +129,7 @@ public interface I_CmsPermissionHandler {
 
     /**
      * Initializes internal variables needed to work.<p>
-     * 
+     *
      * @param driverManager the driver manager
      * @param systemConfiguration the system configuration instance
      */

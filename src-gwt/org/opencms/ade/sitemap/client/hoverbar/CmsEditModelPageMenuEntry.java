@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param hoverbar the hover bar 
+     *
+     * @param hoverbar the hover bar
      */
     public CmsEditModelPageMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -54,11 +54,11 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
         setActive(true);
     }
 
-    /** 
+    /**
      * Chesks if the model page menu entry should be visible.<p>
-     * 
-     * @param id the id of the model page 
-     * @return true if the entry should be visible 
+     *
+     * @param id the id of the model page
+     * @return true if the entry should be visible
      */
     public static boolean checkVisible(CmsUUID id) {
 
@@ -69,8 +69,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Opens the editor for a model page menu entry.<p>
-     * 
-     * @param id the model page menu entry 
+     *
+     * @param id the model page menu entry
      */
     public static void editModelPage(CmsUUID id) {
 
@@ -80,8 +80,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Opens the confirmation dialog for editing a model page.<p>
-     * 
-     * @param resourceInfo the resource information bean which belongs to the model page to edit 
+     *
+     * @param resourceInfo the resource information bean which belongs to the model page to edit
      */
     public static void openEditConfirmDialog(final CmsNewResourceInfo resourceInfo) {
 
@@ -89,7 +89,7 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
 
             public void onClose() {
 
-                // noop 
+                // noop
             }
 
             public void onOk() {

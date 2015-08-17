@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,7 +50,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 
 /**
  * A widget for selecting a resource from an ADE gallery dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsImageGalleryField extends CmsGalleryField {
@@ -82,9 +82,9 @@ public class CmsImageGalleryField extends CmsGalleryField {
     /** The selected format. */
     private String m_selectedFormat;
 
-    /** 
+    /**
      * Constructs a new gallery widget.<p>
-     * 
+     *
      * @param configuration the gallery configuration
      * @param allowUploads states if the upload button should be enabled for this widget
      */
@@ -94,16 +94,19 @@ public class CmsImageGalleryField extends CmsGalleryField {
         setHasImage(true);
         m_descriptionArea = new CmsTextArea();
 
-        m_descriptionArea.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryFieldCss().descriptionField());
+        m_descriptionArea.addStyleName(
+            org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryFieldCss().descriptionField());
         m_descriptionArea.getTextArea().setStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBox());
         m_descriptionArea.getTextAreaContainer().addStyleName(
             I_CmsLayoutBundle.INSTANCE.globalWidgetCss().textAreaBoxPanel());
         m_descriptionArea.setRows(3);
         m_descriptionArea.getTextAreaContainer().onResizeDescendant();
         m_formatSelection = new CmsSelectBox();
-        m_formatSelection.addStyleName(org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryFieldCss().formats());
+        m_formatSelection.addStyleName(
+            org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle.INSTANCE.galleryFieldCss().formats());
         m_formatSelection.getOpener().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxSelected());
-        m_formatSelection.getSelectorPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
+        m_formatSelection.getSelectorPopup().addStyleName(
+            I_CmsLayoutBundle.INSTANCE.globalWidgetCss().selectBoxPopup());
         ValueChangeHandler<String> changeHandler = new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -150,7 +153,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * On select box value change.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_formatSelection")
@@ -161,7 +164,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * On textarea box value change.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_descriptionArea")
@@ -172,7 +175,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * On textarea box resize.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_descriptionArea")
@@ -183,7 +186,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     @Override
@@ -196,7 +199,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * Sets the widget value.<p>
-     * 
+     *
      * @param value the value to set
      * @param fireEvent if the change event should be fired
      */
@@ -212,7 +215,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * Handles the focus event on the opener.<p>
-     * 
+     *
      * @param event the focus event
      */
     @UiHandler("m_descriptionArea")
@@ -223,8 +226,8 @@ public class CmsImageGalleryField extends CmsGalleryField {
 
     /**
      * Handles the focus event on the opener.<p>
-     * 
-     * @param event the focus event 
+     *
+     * @param event the focus event
      */
     @UiHandler("m_formatSelection")
     protected void onFocusSelect(FocusEvent event) {
@@ -236,7 +239,10 @@ public class CmsImageGalleryField extends CmsGalleryField {
      * @see org.opencms.ade.galleries.client.ui.CmsGalleryField#setValueFromGallery(java.lang.String, org.opencms.util.CmsUUID, org.opencms.ade.galleries.client.preview.CmsCroppingParamBean)
      */
     @Override
-    protected void setValueFromGallery(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+    protected void setValueFromGallery(
+        String resourcePath,
+        CmsUUID structureId,
+        CmsCroppingParamBean croppingParameter) {
 
         m_croppingParam = new CmsCroppingParamBean(croppingParameter);
         String path = resourcePath + "?";
@@ -247,7 +253,7 @@ public class CmsImageGalleryField extends CmsGalleryField {
     }
 
     /**
-     * Generates the format select box.<p> 
+     * Generates the format select box.<p>
      **/
     private void generatesFormatSelection() {
 
@@ -267,9 +273,9 @@ public class CmsImageGalleryField extends CmsGalleryField {
      * Parses the value and all its informations.<p>
      * First part is the URL of the image. The second one describes the scale of this image.<p>
      * The last one sets the selected format.<p>
-     * 
+     *
      * @param value that should be parsed
-     * 
+     *
      * @return the URL of the image without any parameters
      */
 

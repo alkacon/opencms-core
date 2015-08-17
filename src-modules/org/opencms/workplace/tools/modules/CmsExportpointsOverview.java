@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Class to show the module exportpoint overview.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExportpointsOverview extends CmsWidgetDialog {
 
@@ -69,7 +69,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsExportpointsOverview(CmsJspActionElement jsp) {
@@ -79,7 +79,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -89,9 +89,10 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /** 
+    /**
      * Commits the edited module.<p>
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -99,9 +100,10 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
     /**
      * Builds the HTML for the dialog form.<p>
-     * 
+     *
      * @return the HTML for the dialog form
      */
+    @Override
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -120,17 +122,18 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
-        setParamPage((String)getPages().get(0));
+        setParamPage(getPages().get(0));
 
         return DIALOG_SET;
     }
 
     /**
      * Gets the module exportpoint parameter.<p>
-     * 
+     *
      * @return the module exportpoint parameter
      */
     public String getParamExportpoint() {
@@ -140,7 +143,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -148,7 +151,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module exportpoint parameter.<p>
      * @param paramExportpoint the module exportpoint parameter
      */
@@ -157,7 +160,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
         m_paramExportpoint = paramExportpoint;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -167,11 +170,12 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -199,12 +203,14 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initModule();
 
         addWidget(new CmsWidgetDialogParameter(m_exportpoint, "uri", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportpoint, "configuredDestination", PAGES[0], new CmsDisplayWidget()));
+        addWidget(
+            new CmsWidgetDialogParameter(m_exportpoint, "configuredDestination", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportpoint, "destinationPath", PAGES[0], new CmsDisplayWidget()));
 
     }
@@ -212,6 +218,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -220,6 +227,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -261,7 +269,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
 
         List exportpoints = module.getExportPoints();
         m_exportpoint = new CmsExportPoint();
-        if (exportpoints != null && exportpoints.size() > 0) {
+        if ((exportpoints != null) && (exportpoints.size() > 0)) {
             Iterator i = exportpoints.iterator();
             while (i.hasNext()) {
                 CmsExportPoint exportpoint = (CmsExportPoint)i.next();
@@ -276,6 +284,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -291,6 +300,7 @@ public class CmsExportpointsOverview extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         String moduleName = getParamModule();

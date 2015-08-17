@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import java.util.List;
  * Resource type descriptor for sub site map folder types.<p>
  *
  * This type extends an extended folder with a configurable type id and type name.<p>
- * 
- * @since 8.5.0 
+ *
+ * @since 8.5.0
  */
 public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtended {
 
@@ -50,7 +50,7 @@ public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtend
 
     /**
      * Returns the registered sub site map resource type id's.<p>
-     * 
+     *
      * @return the resource type id's
      */
     public static List<Integer> getSubSitemapResourceTypeIds() {
@@ -60,13 +60,13 @@ public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtend
 
     /**
      * Returns <code>true</code> in case the given resource is a sub site map.<p>
-     * 
+     *
      * Internally this checks if the given resource type has an id that is registered as a sub site map resource type.<p>
-     * 
+     *
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> in case the given resource is a sub site map
-     * 
+     *
      * @since 8.0.0
      */
     public static boolean isSubSitemap(CmsResource resource) {
@@ -76,13 +76,13 @@ public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtend
 
     /**
      * Returns <code>true</code> in case the given resource type id is a sub site map type.<p>
-     * 
+     *
      * Internally this checks if the given resource type id is registered as a sub site map resource type.<p>
-     * 
+     *
      * @param typeId the resource type id to check
-     * 
+     *
      * @return <code>true</code> in case the given resource type id is a sub site map type
-     * 
+     *
      * @since 8.0.0
      */
     public static boolean isSubSitemapTypeId(int typeId) {
@@ -97,13 +97,13 @@ public class CmsResourceTypeFolderSubSitemap extends CmsResourceTypeFolderExtend
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         super.initConfiguration(name, id, className);
-        // set static members with values from the configuration      
+        // set static members with values from the configuration
         addTypeId(m_typeId);
     }
 
     /**
      * Adds another resource type id to the registered sub site map resource type id's.<p>
-     * 
+     *
      * @param typeId the resource type id to add
      */
     private void addTypeId(int typeId) {

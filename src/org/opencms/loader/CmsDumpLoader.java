@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,11 +50,11 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
- * 
- * This loader is also used to deliver static sub-elements of pages processed 
+ *
+ * This loader is also used to deliver static sub-elements of pages processed
  * by other loaders.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
@@ -83,7 +83,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         m_configuration.put(paramName, paramValue);
     }
 
-    /** 
+    /**
      * Destroy this ResourceLoder, this is a NOOP so far.<p>
      */
     public void destroy() {
@@ -133,9 +133,9 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * Will always return <code>null</code> since this loader does not 
+     * Will always return <code>null</code> since this loader does not
      * need to be configured.<p>
-     * 
+     *
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public CmsParameterConfiguration getConfiguration() {
@@ -154,10 +154,10 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
     /**
      * Return a String describing the ResourceLoader,
-     * which is (localized to the system default locale) 
+     * which is (localized to the system default locale)
      * <code>"The OpenCms default resource loader for unprocessed files"</code>.<p>
-     * 
-     * @return a describing String for the ResourceLoader 
+     *
+     * @return a describing String for the ResourceLoader
      */
     public String getResourceLoaderInfo() {
 
@@ -180,9 +180,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             if (maxAge != null) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOADER_INITIALIZED_1,
-                this.getClass().getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
 
@@ -252,7 +251,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                     expireTime--;
                     // flex controller will automatically reduce this to a reasonable value
                 }
-                // now set "Expires" header        
+                // now set "Expires" header
                 CmsFlexController.setDateExpiresHeader(res, expireTime, m_clientCacheMaxAge);
             }
         }
@@ -271,28 +270,28 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
     /**
      * Checks if the requested resource must be send to the client by checking the "If-Modified-Since" http header.<p>
-     * 
-     * If the resource has not been modified, the "304 - not modified" 
+     *
+     * If the resource has not been modified, the "304 - not modified"
      * header is send to the client and <code>true</code>
      * is returned, otherwise nothing is send and <code>false</code> is returned.<p>
-     * 
+     *
      * @param resource the resource to check
      * @param req the current request
      * @param res the current response
-     * 
+     *
      * @return <code>true</code> if the "304 - not modified" header has been send to the client
      */
     protected boolean canSendLastModifiedHeader(CmsResource resource, HttpServletRequest req, HttpServletResponse res) {
 
         // resource state must be unchanged
         if (resource.getState().isUnchanged()
-        // the request must not have been send by a workplace user (we can't use "304 - not modified" in workplace
+            // the request must not have been send by a workplace user (we can't use "304 - not modified" in workplace
             && !CmsWorkplaceManager.isWorkplaceUser(req)
             // last modified header must match the time form the resource
             && CmsFlexController.isNotModifiedSince(req, resource.getDateLastModified())) {
             long now = System.currentTimeMillis();
             if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
-                // resource is available and not expired 
+                // resource is available and not expired
                 CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
                 // set status 304 - not modified
                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Base dialog to edit a message info object.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
@@ -70,7 +70,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsMessageDialog(CmsJspActionElement jsp) {
@@ -80,7 +80,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Returns the list of session ids parameter value.<p>
-     * 
+     *
      * @return the list of session ids parameter value
      */
     public String getParamSessionids() {
@@ -90,7 +90,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Sets the list of session ids parameter value.<p>
-     * 
+     *
      * @param sessionIds the list of session ids parameter value
      */
     public void setParamSessionids(String sessionIds) {
@@ -109,7 +109,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Returns a semicolon separated list of user names.<p>
-     * 
+     *
      * @return a semicolon separated list of user names
      */
     protected String getToNames() {
@@ -143,7 +143,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Returns the list of session ids.<p>
-     * 
+     *
      * @return the list of session ids
      */
     protected List<String> idsList() {
@@ -188,7 +188,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
         Object o = null;
 
         try {
-            // this is not the initial call, get the message info object from session            
+            // this is not the initial call, get the message info object from session
             o = getDialogObject();
             m_msgInfo = (CmsMessageInfo)o;
             // test
@@ -229,7 +229,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
 
     /**
      * Checks if the edited message has to be sent to all sessions.<p>
-     * 
+     *
      * @return <code>true</code> if the edited message has to be sent to all sessions
      */
     protected boolean isForAll() {

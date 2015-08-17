@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,12 +31,12 @@ import org.opencms.file.CmsUser;
 
 /**
  * A single broadcast message, send from one OpenCms user to another.<p>
- * 
+ *
  * To addess a broadcast to another user, it must be placed in the
- * broadcast queue of that user using for example 
+ * broadcast queue of that user using for example
  * {@link org.opencms.main.CmsSessionManager#sendBroadcast(CmsUser, String, CmsUser)}.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsBroadcast {
 
@@ -50,8 +50,8 @@ public class CmsBroadcast {
     private long m_sendTime;
 
     /**
-     * Creates a new broadcast, with the current system time set as send time.<p> 
-     * 
+     * Creates a new broadcast, with the current system time set as send time.<p>
+     *
      * @param sender the sender of the broadcast
      * @param message the message to send
      */
@@ -86,7 +86,7 @@ public class CmsBroadcast {
      * Returns the user that was the sender of this broadcast.<p>
      *
      * It could be <code>null</code> to signalize a system message.<p>
-     * 
+     *
      * @return the user that was the sender of this broadcast
      */
     public CmsUser getUser() {

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog for showing the sites details.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSiteDetailDialog extends CmsWidgetDialog {
@@ -136,7 +136,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSiteDetailDialog(CmsJspActionElement jsp) {
@@ -146,7 +146,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -195,7 +195,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     int containerId = OpenCms.getResourceManager().getResourceType(
                         org.opencms.file.types.CmsResourceTypeXmlContainerPage.RESOURCE_TYPE_NAME).getTypeId();
                     CmsResource modelPage = cms.createResource(newFolder.getRootPath() + BLANK_HTML, containerId);
-                    String defTitle = Messages.get().container(Messages.GUI_DEFAULT_MODEL_TITLE_1, m_site.getTitle()).getKey();
+                    String defTitle = Messages.get().container(
+                        Messages.GUI_DEFAULT_MODEL_TITLE_1,
+                        m_site.getTitle()).getKey();
                     String defDes = Messages.get().container(
                         Messages.GUI_DEFAULT_MODEL_DESCRIPTION_1,
                         m_site.getTitle()).getKey();
@@ -382,10 +384,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        String title = m_site.getTitle() != null ? m_site.getTitle() : Messages.get().getBundle(
-            getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
+        String title = m_site.getTitle() != null
+        ? m_site.getTitle()
+        : Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(Messages.GUI_SITES_NEW_SITE_TITLE_0);
 
-        // only show the position if editing a site or creating a new site 
+        // only show the position if editing a site or creating a new site
         int count = getParamEditaction() == null ? 4 : 5;
         // +1 if favicon present
         count = m_site.getFavicon() != null ? ++count : count;
@@ -395,18 +398,22 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         }
 
         // site info
-        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-            Messages.GUI_SITES_DETAIL_INFO_1,
-            title)));
+        result.append(
+            dialogBlockStart(
+                Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                    Messages.GUI_SITES_DETAIL_INFO_1,
+                    title)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, count));
         result.append(createWidgetTableEnd());
         result.append(dialogBlockEnd());
         if ((getParamEditaction() != null) || CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_site.getSecureUrl())) {
             // secure site
-            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-                Messages.GUI_SITES_DETAIL_SECURE_1,
-                title)));
+            result.append(
+                dialogBlockStart(
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_DETAIL_SECURE_1,
+                        title)));
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(++count, count + 2));
             result.append(createWidgetTableEnd());
@@ -417,9 +424,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         // site aliases
         if ((DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction()))
             || !m_site.getAliases().isEmpty()) {
-            result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-                Messages.GUI_SITES_DETAIL_ALIASES_1,
-                title)));
+            result.append(
+                dialogBlockStart(
+                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                        Messages.GUI_SITES_DETAIL_ALIASES_1,
+                        title)));
             result.append(createWidgetTableStart());
             if (DIALOG_EDIT.equals(getParamEditaction()) || DIALOG_NEW.equals(getParamEditaction())) {
                 result.append(createDialogRowsHtml(++count, count));
@@ -450,21 +459,23 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "title", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "sitename", PAGES[0], new CmsInputWidget()));
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsInputWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsVfsFileWidget(
-                true,
-                "",
-                true,
-                false)));
-            addWidget(new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(
-                createNavOpts(m_site))));
+            addWidget(
+                new CmsWidgetDialogParameter(
+                    m_site,
+                    "errorPage",
+                    PAGES[0],
+                    new CmsVfsFileWidget(true, "", true, false)));
+            addWidget(
+                new CmsWidgetDialogParameter(m_site, "position", PAGES[0], new CmsSelectWidget(createNavOpts(m_site))));
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
             if (DIALOG_NEW.equals(getParamEditaction())) {
                 addWidget(new CmsWidgetDialogParameter(this, "createou", PAGES[0], new CmsCheckboxWidget()));
-                addWidget(new CmsWidgetDialogParameter(this, "template", PAGES[0], new CmsVfsFileWidget(
-                    true,
-                    "",
-                    true,
-                    false)));
+                addWidget(
+                    new CmsWidgetDialogParameter(
+                        this,
+                        "template",
+                        PAGES[0],
+                        new CmsVfsFileWidget(true, "", true, false)));
             }
 
             if (m_site.getFavicon() != null) {
@@ -472,9 +483,10 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     CmsObject clone = OpenCms.initCmsObject(getCms());
                     clone.getRequestContext().setSiteRoot("");
 
-                    CmsDisplayWidget dis = new CmsDisplayWidget("<img src='"
-                        + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
-                        + "' border='0' width='16' height='16' />");
+                    CmsDisplayWidget dis = new CmsDisplayWidget(
+                        "<img src='"
+                            + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
+                            + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
                 } catch (Exception e) {
                     // noop
@@ -495,9 +507,13 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "server", PAGES[0], new CmsDisplayWidget()));
             CmsWidgetDialogParameter errorPage;
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_site.getErrorPage())) {
-                errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget(
-                    Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-                        Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0)));
+                errorPage = new CmsWidgetDialogParameter(
+                    m_site,
+                    "errorPage",
+                    PAGES[0],
+                    new CmsDisplayWidget(
+                        Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                            Messages.GUI_SITES_ERROR_PAGE_NOT_AVAILABLE_0)));
             } else {
                 errorPage = new CmsWidgetDialogParameter(m_site, "errorPage", PAGES[0], new CmsDisplayWidget());
             }
@@ -509,9 +525,10 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     CmsObject clone = OpenCms.initCmsObject(getCms());
                     clone.getRequestContext().setSiteRoot("");
 
-                    CmsDisplayWidget dis = new CmsDisplayWidget("<img src='"
-                        + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
-                        + "' border='0' width='16' height='16' />");
+                    CmsDisplayWidget dis = new CmsDisplayWidget(
+                        "<img src='"
+                            + OpenCms.getLinkManager().getOnlineLink(clone, m_site.getFavicon())
+                            + "' border='0' width='16' height='16' />");
                     addWidget(new CmsWidgetDialogParameter(m_site, "favicon", PAGES[0], dis));
                 } catch (Exception e) {
                     // noop
@@ -529,10 +546,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                     aliasUrl,
                     aliasUrl,
                     Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-                        Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0)
-                        + " ["
-                        + (count + 1)
-                        + "]",
+                        Messages.GUI_SITES_DETAIL_LABEL_ALIAS_0) + " [" + (count + 1) + "]",
                     new CmsDisplayWidget(),
                     PAGES[0],
                     1,
@@ -567,9 +581,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /**
      * Build select options for the position.<p>
-     * 
-     * @param currSite the current selected site 
-     * 
+     *
+     * @param currSite the current selected site
+     *
      * @return the select options
      */
     private List<CmsSelectWidgetOption> createNavOpts(CmsSiteBean currSite) {
@@ -628,9 +642,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             }
             // if the element is the current file, mark it in select box
             if ((currSite != null) && (currSite.getSiteRoot() != null) && currSite.getSiteRoot().equals(siteRoot)) {
-                options.add(CmsEncoder.escapeHtml(getMessages().key(
-                    org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
-                    new Object[] {sites.get(i).getSiteRoot()})));
+                options.add(
+                    CmsEncoder.escapeHtml(
+                        getMessages().key(
+                            org.opencms.workplace.commons.Messages.GUI_CHNAV_POS_CURRENT_1,
+                            new Object[] {sites.get(i).getSiteRoot()})));
                 values.add("-1");
             } else {
                 options.add(CmsEncoder.escapeHtml(navText + " [" + sites.get(i).getSiteRoot() + "/]"));
@@ -662,13 +678,13 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /**
      * Helper method for creating the .content folder of a sub-sitemap.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param subSitemapFolder the sub-sitemap folder in which the .content folder should be created
-     *  
+     *
      * @return the created folder
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      * @throws CmsLoaderException
      */
     private CmsResource createSitemapContentFolder(CmsObject cms, CmsResource subSitemapFolder)
@@ -687,10 +703,11 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
         if (cms.existsResource(sitemapConfigName)) {
             configFile = cms.readResource(sitemapConfigName);
             if (configFile.getTypeId() != configType.getTypeId()) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
-                    sitemapConfigName,
-                    CmsADEManager.CONFIG_TYPE));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_CREATING_SUB_SITEMAP_WRONG_CONFIG_FILE_TYPE_2,
+                        sitemapConfigName,
+                        CmsADEManager.CONFIG_TYPE));
             }
         } else {
             configFile = cms.createResource(
@@ -705,17 +722,16 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
      * also ensures that it starts and ends with a '/'.<p>
      *
      * @param resourcename folder name to check (complete path)
-     * 
+     *
      * @return the validated folder name
-     * 
+     *
      * @throws CmsIllegalArgumentException if the folder name is empty or <code>null</code>
      */
     private String ensureFoldername(String resourcename) throws CmsIllegalArgumentException {
 
         if (CmsStringUtil.isEmpty(resourcename)) {
-            throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-                org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1,
-                resourcename));
+            throw new CmsIllegalArgumentException(
+                org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_BAD_RESOURCENAME_1, resourcename));
         }
         if (!CmsResource.isFolder(resourcename)) {
             resourcename = resourcename.concat("/");
@@ -784,7 +800,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /**
      * Validates the dialog before the commit action is performed.<p>
-     * 
+     *
      * @throws Exception if sth. goes wrong
      */
     private void validateDialog() throws Exception {

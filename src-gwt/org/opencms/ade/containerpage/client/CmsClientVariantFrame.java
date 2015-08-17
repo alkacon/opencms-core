@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ public class CmsClientVariantFrame extends Composite {
 
     /** UiBinder interface for this class. */
     interface I_CmsClientVariantFrameUiBinder extends UiBinder<Widget, CmsClientVariantFrame> {
-        // empty, for uibinder 
+        // empty, for uibinder
     }
 
     /** UiBinder for this class. */
@@ -63,13 +63,17 @@ public class CmsClientVariantFrame extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param url the URL for the client variant 
-     * @param width the width 
-     * @param height the height 
-     * @param containerpageHandler the container page handler 
+     *
+     * @param url the URL for the client variant
+     * @param width the width
+     * @param height the height
+     * @param containerpageHandler the container page handler
      */
-    public CmsClientVariantFrame(String url, int width, int height, final CmsContainerpageHandler containerpageHandler) {
+    public CmsClientVariantFrame(
+        String url,
+        int width,
+        int height,
+        final CmsContainerpageHandler containerpageHandler) {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_iframe = new Frame();
@@ -92,10 +96,10 @@ public class CmsClientVariantFrame extends Composite {
         m_iframeContainer.add(m_iframe);
     }
 
-    /** 
+    /**
      * Gets the iframe container.<p>
-     * 
-     * @return the iframe container 
+     *
+     * @return the iframe container
      */
     public Panel getIframeContainer() {
 

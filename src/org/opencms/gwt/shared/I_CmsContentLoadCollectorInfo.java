@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,17 +60,17 @@ public interface I_CmsContentLoadCollectorInfo {
      */
     public void setCollectorParams(String collectorParams);
 
-    /** 
+    /**
      * Gets the id.<p>
-     * 
-     * @return the id 
+     *
+     * @return the id
      */
     String getId();
 
-    /** 
+    /**
      * Sets the id.<p>
-     * 
-     * @param id the id 
+     *
+     * @param id the id
      */
     void setId(String id);
 

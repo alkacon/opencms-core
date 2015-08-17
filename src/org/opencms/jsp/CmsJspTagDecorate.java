@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,10 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 
 /**
- * Implements the <code>&lt;cms:decorate&gt;&lt;/cms:decorate&gt;</code> 
+ * Implements the <code>&lt;cms:decorate&gt;&lt;/cms:decorate&gt;</code>
  * tag to decorate HTML content with configurated decoration maps.<p>
- * 
- * @since 6.1.3 
+ *
+ * @since 6.1.3
  */
 public class CmsJspTagDecorate extends BodyTagSupport {
 
@@ -76,14 +76,14 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * DEcorates a HTMl content block.<p>
-     * 
+     *
      * @param content the content to be decorated
      * @param configFile the config file
      * @param locale the locale to use for decoration or NOLOCALE if not locale should be used
      * @param req the current request
-     * 
+     *
      * @return the decorated content
      */
     public String decorateTagAction(String content, String configFile, String locale, ServletRequest req) {
@@ -109,7 +109,8 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
             String encoding = controller.getCmsObject().getRequestContext().getEncoding();
             // use the correct decorator configurator and initialize it
-            I_CmsDecoratorConfiguration config = (I_CmsDecoratorConfiguration)Class.forName(decoratorClassName).newInstance();
+            I_CmsDecoratorConfiguration config = (I_CmsDecoratorConfiguration)Class.forName(
+                decoratorClassName).newInstance();
             config.init(controller.getCmsObject(), configFile, loc);
 
             CmsHtmlDecorator decorator = new CmsHtmlDecorator(controller.getCmsObject(), config);
@@ -134,7 +135,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
             try {
                 String content = decorateTagAction(getBodyContent().getString(), getFile(), getLocale(), req);
@@ -154,7 +155,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Returns the file name.<p>
-     * 
+     *
      * @return the file name
      */
     public String getFile() {
@@ -164,7 +165,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Returns the locale name.<p>
-     * 
+     *
      * @return the locale name
      */
     public String getLocale() {
@@ -174,13 +175,13 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Getter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
-     *  
-     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this
      * tag will not correct missing closing tags. <p>
-     * 
-     * 
-     * @return a String that consists of the comma-separated upper case tag names for which this 
-     *      tag will not correct missing closing tags. 
+     *
+     *
+     * @return a String that consists of the comma-separated upper case tag names for which this
+     *      tag will not correct missing closing tags.
      */
     public String getNoAutoCloseTags() {
 
@@ -196,7 +197,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Sets the file name.<p>
-     * 
+     *
      * @param file the file name
      */
     public void setFile(String file) {
@@ -210,7 +211,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Sets the locale name.<p>
-     * 
+     *
      * @param locale the locale name
      */
     public void setLocale(String locale) {
@@ -220,11 +221,11 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
     /**
      * Setter for the attribute "noAutoCloseTags" of the &lt;cms:parse&gt; tag.<p>
-     *  
-     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * Awaits a <code>String</code> that consists of the comma-separated upper case tag names for which this
      * tag should not correct missing closing tags.<p>
-     * 
-     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this 
+     *
+     * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this
      *      tag should not correct missing closing tags.
      */
     public void setNoAutoCloseTags(String noAutoCloseTagList) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This bean holding the gallery dialog information required for displaying the content of the gallery tabs.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGalleryDataBean implements IsSerializable {
@@ -70,8 +70,8 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The gallery mode. */
     private GalleryMode m_mode;
 
-    /** 
-     * The gallery reference site-path. 
+    /**
+     * The gallery reference site-path.
      * In widget, editor and containerpage mode this will be the edited resource, otherwise the opened gallery folder.
      */
     private String m_referenceSitePath;
@@ -117,7 +117,7 @@ public class CmsGalleryDataBean implements IsSerializable {
      */
     public CmsGalleryDataBean() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -142,7 +142,7 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Gets the default search scope.<p>
-     * 
+     *
      * @return the default search scope
      */
     public CmsGallerySearchScope getDefaultScope() {
@@ -163,8 +163,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Gets the prefix for the key used to store the last selected gallery.<p>
-     * 
-     * @return the gallery key prefix 
+     *
+     * @return the gallery key prefix
      */
     public String getGalleryStoragePrefix() {
 
@@ -173,8 +173,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Gets the default value for the "include expired" option.<p>
-     * 
-     * @return the default value 
+     *
+     * @return the default value
      */
     public boolean getIncludeExpiredDefault() {
 
@@ -224,7 +224,7 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Returns the search scope.<p>
-     * 
+     *
      * @return the search scope
      */
     public CmsGallerySearchScope getScope() {
@@ -234,8 +234,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Returns the site selector options for the sitemap.<p>
-     * 
-     * @return the site selector options for the sitemap 
+     *
+     * @return the site selector options for the sitemap
      */
     public List<CmsSiteSelectorOption> getSitemapSiteSelectorOptions() {
 
@@ -272,10 +272,10 @@ public class CmsGalleryDataBean implements IsSerializable {
         return m_startTab;
     }
 
-    /** 
+    /**
      * Gets the tab configuration.<p>
-     * 
-     * @return the tab configuration 
+     *
+     * @return the tab configuration
      */
     public CmsGalleryTabConfiguration getTabConfiguration() {
 
@@ -294,8 +294,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Gets the tree token, which is used to  determine which tree state is loaded from the session.<p>
-     * 
-     * @return the tree token 
+     *
+     * @return the tree token
      */
     public String getTreeToken() {
 
@@ -324,8 +324,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Gets the list of site selector options for the VFS tab.<p>
-     * 
-     * @return the list of site selector options for the VFS tab  
+     *
+     * @return the list of site selector options for the VFS tab
      */
     public List<CmsSiteSelectorOption> getVfsSiteSelectorOptions() {
 
@@ -352,10 +352,10 @@ public class CmsGalleryDataBean implements IsSerializable {
         m_currentElement = currentElement;
     }
 
-    /** 
+    /**
      * Sets the default search scope.<p>
-     * 
-     * @param scope the default search scope 
+     *
+     * @param scope the default search scope
      */
     public void setDefaultScope(CmsGallerySearchScope scope) {
 
@@ -374,8 +374,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the prefix for the key used to store the last selected gallery.<p>
-     * 
-     * @param prefix the prefix for the gallery key 
+     *
+     * @param prefix the prefix for the gallery key
      */
     public void setGalleryStoragePrefix(String prefix) {
 
@@ -384,8 +384,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the default value for the 'include expired' option.<p>
-     * 
-     * @param includeExpiredDefault the default value to set 
+     *
+     * @param includeExpiredDefault the default value to set
      */
     public void setIncludeExpiredDefault(boolean includeExpiredDefault) {
 
@@ -430,12 +430,12 @@ public class CmsGalleryDataBean implements IsSerializable {
      */
     public void setReferenceSitePath(String referenceSitePath) {
 
-        this.m_referenceSitePath = referenceSitePath;
+        m_referenceSitePath = referenceSitePath;
     }
 
     /**
      * Sets the search scope.<p>
-     * 
+     *
      * @param scope the search scope
      */
     public void setScope(CmsGallerySearchScope scope) {
@@ -445,8 +445,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the site selector options for the sitemap tab.<p>
-     * 
-     * @param options  the site selector options for the sitemap tab 
+     *
+     * @param options  the site selector options for the sitemap tab
      */
     public void setSitemapSiteSelectorOptions(List<CmsSiteSelectorOption> options) {
 
@@ -485,8 +485,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the tab configuration.<p>
-     * 
-     * @param tabConfiguration the tab configuration 
+     *
+     * @param tabConfiguration the tab configuration
      */
     public void setTabConfiguration(CmsGalleryTabConfiguration tabConfiguration) {
 
@@ -506,8 +506,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the tree token.<p>
-     * 
-     * @param treeToken the new tree token 
+     *
+     * @param treeToken the new tree token
      */
     public void setTreeToken(String treeToken) {
 
@@ -526,8 +526,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the root folders to be displayed in the VFS folder tab.<p>
-     * 
-     * @param rootFolders beans representing the root folders 
+     *
+     * @param rootFolders beans representing the root folders
      */
     public void setVfsRootFolders(List<CmsVfsEntryBean> rootFolders) {
 
@@ -536,8 +536,8 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /**
      * Sets the available site selector options.<p>
-     * 
-     * @param siteSelectorOptions the available site selector options 
+     *
+     * @param siteSelectorOptions the available site selector options
      */
     public void setVfsSiteSelectorOptions(List<CmsSiteSelectorOption> siteSelectorOptions) {
 

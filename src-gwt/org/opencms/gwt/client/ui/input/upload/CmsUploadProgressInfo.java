@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides the upload progress information.<p>
- * 
+ *
  * Has a progressbar and a table for showing details.<p>
  */
 public class CmsUploadProgressInfo extends FlowPanel {
@@ -61,8 +61,8 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
     /**
      * Default constructor.<p>
-     * 
-     * @param orderedFilenamesToUpload the files 
+     *
+     * @param orderedFilenamesToUpload the files
      */
     public CmsUploadProgressInfo(List<String> orderedFilenamesToUpload) {
 
@@ -84,7 +84,7 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
     /**
      * Sets the upload content length.<p>
-     * 
+     *
      * @param contentLength the upload content length
      */
     public void setContentLength(long contentLength) {
@@ -115,7 +115,7 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
     /**
      * Sets the progress information.<p>
-     * 
+     *
      * @param info the progress info bean
      */
     public void setProgress(CmsUploadProgessInfo info) {
@@ -124,7 +124,7 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
         int currFileIndex = 0;
         if (currFile == 0) {
-            // no files read so far 
+            // no files read so far
         } else {
             currFileIndex = currFile - 1;
             if (currFileIndex >= m_orderedFilenamesToUpload.size()) {
@@ -173,15 +173,15 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
     /**
      * Returns the bytes that are read so far.<p>
-     * 
+     *
      * The total request size is larger than the sum of all file sizes that are uploaded.
      * Because boundaries and the target folder or even some other information than only
      * the plain file contents are submited to the server.<p>
-     * 
+     *
      * This method calculates the bytes that are read with the help of the file sizes.<p>
-     *  
+     *
      * @param percent the server side determined percentage
-     * 
+     *
      * @return the bytes that are read so far
      */
     private long getBytesRead(long percent) {
@@ -191,7 +191,7 @@ public class CmsUploadProgressInfo extends FlowPanel {
 
     /**
      * Returns the file text.<p>
-     * 
+     *
      * @return the file text
      */
     private String getFileText() {

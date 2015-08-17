@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -99,7 +99,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * A widget for selecting a resource from an ADE gallery dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGalleryField extends Composite
@@ -203,10 +203,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     /** The previous field value. */
     private String m_previousValue;
 
-    /** 
+    /**
      * Constructs a new gallery widget.<p>
-     * 
-     * @param configuration the gallery configuration 
+     *
+     * @param configuration the gallery configuration
      * @param allowUploads states if the upload button should be enabled for this widget
      */
     public CmsGalleryField(I_CmsGalleryConfiguration configuration, boolean allowUploads) {
@@ -233,7 +233,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         buttonHandler.setIsTargetRootPath(false);
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
-        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
+        m_uploadButton.setTitle(
+            Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -264,7 +265,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             @Override
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(
+                    widgetParams.get("configuration"));
                 CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }
@@ -273,7 +275,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Adds a style name to the DIV carrying the input field.<p>
-     * 
+     *
      * @param styleName the style name to add
      */
     public void addFieldStyleName(String styleName) {
@@ -345,7 +347,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Returns the gallery popup.<p>
-     * 
+     *
      * @return the gallery popup
      */
     public CmsGalleryPopup getPopup() {
@@ -378,12 +380,12 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @Override
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Sets the upload drop zone element.<p>
-     * 
+     *
      * @param dropZone the upload drop zone element
      */
     public void setDropZoneElement(Element dropZone) {
@@ -412,7 +414,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
     @Override
     public void setErrorMessage(String errorMessage) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -426,7 +428,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Sets the gallery opener button title.<p>
-     * 
+     *
      * @param openerTitle the gallery opener button title
      */
     public void setGalleryOpenerTitle(String openerTitle) {
@@ -434,9 +436,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         m_opener.setTitle(openerTitle);
     }
 
-    /** 
+    /**
      * Sets the has image flag.<p>
-     * 
+     *
      * @param hasImage the has image flag
      **/
     public void setHasImage(boolean hasImage) {
@@ -446,7 +448,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     public void setName(String name) {
@@ -457,7 +459,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Adds a widget to the main panel.<p>
-     * 
+     *
      * @param widget the widget to add
      */
     protected void addToMain(IsWidget widget) {
@@ -467,7 +469,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Fires the value change event if the value has changed.<p>
-     * 
+     *
      * @param force <code>true</code> to force firing the event in any case
      */
     protected void fireChange(boolean force) {
@@ -489,7 +491,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Returns the currently set resource path.<p>
-     * 
+     *
      * @return the currently set resource path
      */
     protected String getCurrentElement() {
@@ -499,7 +501,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Returns the gallery service instance.<p>
-     * 
+     *
      * @return the gallery service instance
      */
     protected I_CmsGalleryServiceAsync getGalleryService() {
@@ -514,7 +516,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Handles the focus event on the opener.<p>
-     * 
+     *
      * @param event  the focus event
      */
     @UiHandler("m_textbox")
@@ -542,9 +544,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Removes the given widget from the main panel.<p>
-     * 
+     *
      * @param widget the widget to remove
-     * 
+     *
      * @return <code>true</code> if the widget was a child of the main panel
      */
     protected boolean removeFromMain(IsWidget widget) {
@@ -554,7 +556,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Sets the image preview.<p>
-     * 
+     *
      * @param imagePath the image path
      */
     protected void setImagePreview(String imagePath) {
@@ -580,7 +582,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Sets the widget value.<p>
-     * 
+     *
      * @param value the value to set
      * @param fireEvent if the change event should be fired
      */
@@ -597,12 +599,15 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Sets the widget value. To be called from the gallery dialog.<p>
-     * 
+     *
      * @param resourcePath the selected resource path
      * @param structureId the resource structure id
      * @param croppingParameter the selected cropping
      */
-    protected void setValueFromGallery(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+    protected void setValueFromGallery(
+        String resourcePath,
+        CmsUUID structureId,
+        CmsCroppingParamBean croppingParameter) {
 
         m_croppingParam = croppingParameter;
         String path = resourcePath;
@@ -616,7 +621,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Updates the upload target folder path.<p>
-     * 
+     *
      * @param uploadTarget the upload target folder
      */
     protected void updateUploadTarget(String uploadTarget) {
@@ -628,8 +633,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
             // disable the upload button as no target folder is available
-            m_uploadButton.disable(org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
+            m_uploadButton.disable(
+                org.opencms.ade.upload.client.Messages.get().key(
+                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
         } else {
             // make sure the upload button is available
             m_uploadButton.enable();
@@ -648,7 +654,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Displays the resource info.<p>
-     * 
+     *
      * @param info the resource info
      */
     void displayResourceInfo(CmsResultItemBean info) {
@@ -673,7 +679,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * On text box blur.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_textbox")
@@ -703,7 +709,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * On fader click.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_fader")
@@ -714,7 +720,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * On opener click.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_opener")
@@ -726,7 +732,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * On text box change.<p>
-     * 
+     *
      * @param event the event
      */
     @UiHandler("m_textbox")
@@ -751,7 +757,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Toggles the fading element.<p>
-     * 
+     *
      * @param faded <code>true</code> to show the fading element.<p>
      */
     void setFaded(boolean faded) {
@@ -761,7 +767,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Updates the resource info.<p>
-     * 
+     *
      * @param path the resource path
      */
     void updateResourceInfo(final String path) {
@@ -799,7 +805,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Creates the gallery pop-up.<p>
-     * 
+     *
      * @return the gallery pop-up
      */
     private CmsGalleryPopup createPopup() {
@@ -807,7 +813,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
 
             @Override
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+            public void setWidgetValue(
+                String resourcePath,
+                CmsUUID structureId,
+                CmsCroppingParamBean croppingParameter) {
 
                 setValueFromGallery(resourcePath, structureId, croppingParameter);
             }
@@ -818,7 +827,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Initializes the upload drop zone event handlers.<p>
-     * 
+     *
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
@@ -859,7 +868,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
 
     /**
      * Opens the upload dialog with the given file references to upload.<p>
-     * 
+     *
      * @param files the file references
      */
     private void openUploadWithFiles(JavaScriptObject files) {

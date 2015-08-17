@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,9 +57,9 @@ implements I_CmsContainerpageEventHandler, I_CmsPublishEventHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
-     * @param controller the container page controller 
+     * @param controller the container page controller
      */
     public CmsToolbarElementInfoButton(CmsContainerpageHandler handler, CmsContainerpageController controller) {
 
@@ -95,7 +95,7 @@ implements I_CmsContainerpageEventHandler, I_CmsPublishEventHandler {
             }
         };
         // wait 5 seconds, which should be enough for small publish jobs
-        // (if it's not enough, the user can still reload the page) 
+        // (if it's not enough, the user can still reload the page)
         timer.schedule(5000);
     }
 
@@ -119,14 +119,15 @@ implements I_CmsContainerpageEventHandler, I_CmsPublishEventHandler {
 
     /**
      * Changes the "changed" state of the button.<p>
-     * 
+     *
      * @param changed the new value for the "changed" state
      */
     public void setChanged(boolean changed) {
 
-        m_changedStyleVar.setValue(changed
-        ? I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().elementInfoChanged()
-        : I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().elementInfoUnchanged());
+        m_changedStyleVar.setValue(
+            changed
+            ? I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().elementInfoChanged()
+            : I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().elementInfoUnchanged());
     }
 
     /**

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event to be fired by a widget being activated or deactivated.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsToggleEvent extends GwtEvent<I_CmsToggleHandler> {
 
@@ -45,7 +45,7 @@ public class CmsToggleEvent extends GwtEvent<I_CmsToggleHandler> {
 
     /**
      * Creates a new open event.<p>
-     * 
+     *
      * @param isActivated if the source has been activated
      */
     protected CmsToggleEvent(boolean isActivated) {
@@ -56,7 +56,7 @@ public class CmsToggleEvent extends GwtEvent<I_CmsToggleHandler> {
     /**
      * Fires a toggle event on all registered handlers in the handler manager.If no
      * such handlers exist, this method will do nothing.<p>
-     * 
+     *
      * @param source the event source
      * @param isActivated if the source has been activated
      */
@@ -70,7 +70,7 @@ public class CmsToggleEvent extends GwtEvent<I_CmsToggleHandler> {
 
     /**
      * Gets the type associated with this event.
-     * 
+     *
      * @return returns the handler type
      */
     public static com.google.gwt.event.shared.GwtEvent.Type<I_CmsToggleHandler> getType() {
@@ -92,7 +92,7 @@ public class CmsToggleEvent extends GwtEvent<I_CmsToggleHandler> {
 
     /**
      * Returns if the source has been activated.<p>
-     * 
+     *
      * @return if the source has been activated
      */
     public boolean isActivated() {

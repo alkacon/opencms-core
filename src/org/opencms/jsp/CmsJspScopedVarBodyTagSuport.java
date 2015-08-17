@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Parent for body tags that require support for setting scoped variables to the JSP page context.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
@@ -60,9 +60,9 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Returns the int value of the specified scope string.<p>
-     * 
+     *
      * The default value is {@link PageContext#PAGE_SCOPE}.<p>
-     * 
+     *
      * @param scope the string name of the desired scope, e.g. "application", "request"
      * @return the int value of the specified scope string
      */
@@ -92,11 +92,11 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Returns the String value of the specified scope integer.<p>
-     * 
+     *
      * Valid values for the scope int parameter are 1 to 4 only.<p>
-     * 
+     *
      * @param scope integer that describes the scope according to {@link #getScopeInt()}.<p>
-     * 
+     *
      * @return the String value of the specified scope integer
      */
     protected static String getScopeAsString(int scope) {
@@ -110,7 +110,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Returns the scope under which the content access bean is saved in the page context.<p>
-     * 
+     *
      * @return the scope under which the content access bean is saved in the page context
      */
     public String getScope() {
@@ -120,7 +120,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Returns the name of the variable under which the content access bean is saved in the page context.<p>
-     * 
+     *
      * @return the name of the variable under which the content access bean is saved in the page context
      */
     public String getVar() {
@@ -141,7 +141,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Sets the scope under which the content access bean is saved in the page context.<p>
-     * 
+     *
      * @param scope the scope under which the content access bean is saved in the page context
      */
     public void setScope(String scope) {
@@ -157,7 +157,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Sets the name of the variable under which the content access bean is saved in the page context.<p>
-     * 
+     *
      * @param var the name of the variable under which the content access bean is saved in the page context
      */
     public void setVar(String var) {
@@ -168,9 +168,9 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
     }
 
     /**
-     * Returns the scope as int usable for setting the JSP page context 
+     * Returns the scope as int usable for setting the JSP page context
      * with {@link PageContext#setAttribute(String, Object, int)}.<p>
-     * 
+     *
      * @return the scope as int usable for setting the JSP page context
      */
     protected int getScopeInt() {
@@ -180,7 +180,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Returns <code>true</code> in case the scoped variable has been set for this Tag.<p>
-     * 
+     *
      * @return <code>true</code> in case the scoped variable has been set for this Tag
      */
     protected boolean isScopeVarSet() {
@@ -190,9 +190,9 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Stores the provided Object as attribute in the JSP page context.<p>
-     * 
+     *
      * The values of {@link  #getVar()} and {@link #getScope()} are used to determine how the Object is stored.<p>
-     *  
+     *
      * @param obj the Object to store in the JSP page context
      */
     protected void storeAttribute(Object obj) {
@@ -202,9 +202,9 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
 
     /**
      * Stores the provided Object as attribute with the provided name in the JSP page context.<p>
-     * 
+     *
      * The value of {@link #getScope()} is used to determine how the Object is stored.<p>
-     *  
+     *
      * @param name the name of the attribute to store the Object in
      * @param obj the Object to store in the JSP page context
      */

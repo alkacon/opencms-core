@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Validator class for the URL name field in the property editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUrlNameValidator implements I_CmsValidator {
@@ -52,9 +52,9 @@ public class CmsUrlNameValidator implements I_CmsValidator {
 
     /**
      * Creates a new URL name validator.<p>
-     * 
-     * @param parentPath the parent path of the resource for which the URL name is being validated 
-     * @param id the id of the resource whose URL name is being validated 
+     *
+     * @param parentPath the parent path of the resource for which the URL name is being validated
+     * @param id the id of the resource whose URL name is being validated
      */
     public CmsUrlNameValidator(String parentPath, CmsUUID id) {
 
@@ -74,10 +74,11 @@ public class CmsUrlNameValidator implements I_CmsValidator {
             controller.provideValidationResult(field.getId(), new CmsValidationResult(message));
             return;
         }
-        controller.validateAsync(field.getId(), value, SERVER_VALIDATOR, "parent:"
-            + m_parentPath
-            + "|id:"
-            + m_structureId);
+        controller.validateAsync(
+            field.getId(),
+            value,
+            SERVER_VALIDATOR,
+            "parent:" + m_parentPath + "|id:" + m_structureId);
     }
 
 }

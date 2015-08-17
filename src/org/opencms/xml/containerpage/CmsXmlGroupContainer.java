@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,9 +73,9 @@ import org.xml.sax.EntityResolver;
 
 /**
  * Implementation of a object used to access and manage the xml data of a group container.<p>
- * 
+ *
  * In addition to the XML content interface. It also provides access to more comfortable beans.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlGroupContainer extends CmsXmlContent {
@@ -84,16 +84,11 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
     public enum XmlNode {
 
         /** Container description node name. */
-        Description,
-        /** Container elements node name. */
-        Element,
-        /** Main node name. */
-        GroupContainers,
-        /** Container title node name. */
-        Title,
-        /** Container type node name. */
-        Type,
-        /** File list URI node name. */
+        Description, /** Container elements node name. */
+        Element, /** Main node name. */
+        GroupContainers, /** Container title node name. */
+        Title, /** Container type node name. */
+        Type, /** File list URI node name. */
         Uri;
     }
 
@@ -113,10 +108,10 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Creates a new group container based on the provided XML document.<p>
-     * 
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
-     * @param cms the cms context, if <code>null</code> no link validation is performed 
+     *
+     * @param cms the cms context, if <code>null</code> no link validation is performed
      * @param document the document to create the container page from
      * @param encoding the encoding of the container page
      * @param resolver the XML entity resolver to use
@@ -133,14 +128,14 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Create a new group container based on the given default content,
-     * that will have all language nodes of the default content and ensures the presence of the given locale.<p> 
-     * 
+     * that will have all language nodes of the default content and ensures the presence of the given locale.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param modelUri the absolute path to the container page file acting as model
-     * 
+     *
      * @throws CmsException in case the model file is not found or not valid
      */
     protected CmsXmlGroupContainer(CmsObject cms, Locale locale, String modelUri)
@@ -173,10 +168,10 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Create a new container page based on the given content definition,
-     * that will have one language node for the given locale all initialized with default values.<p> 
-     * 
+     * that will have one language node for the given locale all initialized with default values.<p>
+     *
      * The given encoding is used when marshalling the XML again later.<p>
-     * 
+     *
      * @param cms the current users OpenCms content
      * @param locale the locale to generate the default content for
      * @param encoding the encoding to use when marshalling the container page later
@@ -198,8 +193,8 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Removes all locales from the element group XML.<p>
-     * 
-     * @throws CmsXmlException if something goes wrong 
+     *
+     * @throws CmsXmlException if something goes wrong
      */
     public void clearLocales() throws CmsXmlException {
 
@@ -237,11 +232,11 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Saves given container page in the current locale, and not only in memory but also to VFS.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param groupContainer the group-container page to save
      * @param locale the locale to save
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void save(CmsObject cms, CmsGroupContainerBean groupContainer, Locale locale) throws CmsException {
@@ -272,7 +267,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Fills a {@link CmsXmlVfsFileValue} with the resource identified by the given id.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param element the XML element to fill
      * @param res the resource to use
@@ -304,12 +299,13 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator<Element> itGroupContainers = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); itGroupContainers.hasNext();) {
+        for (Iterator<Element> itGroupContainers = CmsXmlGenericWrapper.elementIterator(
+            m_document.getRootElement()); itGroupContainers.hasNext();) {
             Element cntPage = itGroupContainers.next();
 
             try {
-                Locale locale = CmsLocaleManager.getLocale(cntPage.attribute(
-                    CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
+                Locale locale = CmsLocaleManager.getLocale(
+                    cntPage.attribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
 
                 addLocale(locale);
                 Element groupContainer = cntPage.element(XmlNode.GroupContainers.name());
@@ -363,7 +359,7 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
                     CmsUUID elementId = null;
                     if (uriLink == null) {
                         // this can happen when adding the elements node to the xml content
-                        // it is not dangerous since the link has to be set before saving 
+                        // it is not dangerous since the link has to be set before saving
                     } else {
                         elementId = new CmsLink(uriLink).getStructureId();
                     }
@@ -384,11 +380,9 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
                         elements.add(new CmsContainerElementBean(elementId, null, propertiesMap, false));
                     }
                 }
-                m_groupContainers.put(locale, new CmsGroupContainerBean(
-                    title.getText(),
-                    description.getText(),
-                    elements,
-                    types));
+                m_groupContainers.put(
+                    locale,
+                    new CmsGroupContainerBean(title.getText(), description.getText(), elements, types));
             } catch (NullPointerException e) {
                 LOG.error(
                     org.opencms.xml.content.Messages.get().getBundle().key(
@@ -400,11 +394,11 @@ public class CmsXmlGroupContainer extends CmsXmlContent {
 
     /**
      * Adds the given container page to the given element.<p>
-     * 
+     *
      * @param cms the current CMS object
      * @param parent the element to add it
      * @param groupContainer the container page to add
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void saveGroupContainer(CmsObject cms, Element parent, CmsGroupContainerBean groupContainer)

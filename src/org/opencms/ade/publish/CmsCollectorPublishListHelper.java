@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,12 +70,15 @@ public class CmsCollectorPublishListHelper {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param collectorInfo the collector information 
+     *
+     * @param cms the CMS context to use
+     * @param collectorInfo the collector information
      * @param collectorLimit the number of resources which should be fetched via the collector
      */
-    public CmsCollectorPublishListHelper(CmsObject cms, I_CmsContentLoadCollectorInfo collectorInfo, int collectorLimit) {
+    public CmsCollectorPublishListHelper(
+        CmsObject cms,
+        I_CmsContentLoadCollectorInfo collectorInfo,
+        int collectorLimit) {
 
         if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             throw new IllegalArgumentException("CmsObject must not be set to the Online project!");
@@ -86,13 +89,13 @@ public class CmsCollectorPublishListHelper {
         m_collectorLimit = collectorLimit;
     }
 
-    /** 
+    /**
      * Initializes a CmsObject.<p>
-     * 
-     * @param online true if a CmsObject for the Online project should be returned  
-     * @return the initialized CmsObject 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param online true if a CmsObject for the Online project should be returned
+     * @return the initialized CmsObject
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsObject getCmsObject(boolean online) throws CmsException {
 
@@ -105,10 +108,10 @@ public class CmsCollectorPublishListHelper {
         return result;
     }
 
-    /** 
+    /**
      * Gets the collector to use.<p>
-     * 
-     * @return the collector to use 
+     *
+     * @return the collector to use
      */
     public I_CmsResourceCollector getCollector() {
 
@@ -117,9 +120,9 @@ public class CmsCollectorPublishListHelper {
 
     /**
      * Gets the list to add to the publish list for the collector list.<p>
-     *  
-     * @return the resources to add to the publish list 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the resources to add to the publish list
+     * @throws CmsException if something goes wrong
      */
     public Set<CmsResource> getPublishListFiles() throws CmsException {
 
@@ -145,7 +148,7 @@ public class CmsCollectorPublishListHelper {
         onlineAndNotOffline.removeAll(offlineResults);
         for (CmsResource res : onlineAndNotOffline) {
             try {
-                // Because the resources have state 'unchanged' in the Online project, we need to read them again in the Offline project 
+                // Because the resources have state 'unchanged' in the Online project, we need to read them again in the Offline project
                 res = getCmsObject(OFFLINE).readResource(res.getStructureId(), CmsResourceFilter.ALL);
                 result.add(res);
             } catch (CmsException e) {
@@ -161,11 +164,11 @@ public class CmsCollectorPublishListHelper {
 
     /**
      * Computes the collector results.<p>
-     * 
-     * @param online true if the collector results for the Online project should be returned 
-     * @return the collector results 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param online true if the collector results for the Online project should be returned
+     * @return the collector results
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> computeCollectorResults(boolean online) throws CmsException {
 
@@ -179,11 +182,11 @@ public class CmsCollectorPublishListHelper {
         return collectorResult;
     }
 
-    /** 
+    /**
      * Helper method to generate a string representation for a collection of resources for debug purposes.<p>
-     * 
-     * @param resources the resources 
-     * @return a string representing the list of resources 
+     *
+     * @param resources the resources
+     * @return a string representing the list of resources
      */
     private String resourcesToString(Iterable<CmsResource> resources) {
 

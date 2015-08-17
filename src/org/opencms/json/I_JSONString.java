@@ -19,29 +19,29 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * org.json.I_JSONString
  * from the JSON in Java implementation.
- * 
+ *
  * Copyright (c) 2002 JSON.org
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * The Software shall be used for Good, not Evil.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,19 +54,19 @@
 package org.opencms.json;
 
 /**
- * The <code>I_JSONString</code> interface allows a <code>toJSONString()</code> 
- * method so that a class can change the behavior of 
+ * The <code>I_JSONString</code> interface allows a <code>toJSONString()</code>
+ * method so that a class can change the behavior of
  * <code>JSONObject.toString()</code>, <code>JSONArray.toString()</code>,
- * and <code>JSONWriter.value(</code>Object<code>)</code>. The 
- * <code>toJSONString</code> method will be used instead of the default behavior 
+ * and <code>JSONWriter.value(</code>Object<code>)</code>. The
+ * <code>toJSONString</code> method will be used instead of the default behavior
  * of using the Object's <code>toString()</code> method and quoting the result.
  */
 public interface I_JSONString {
 
     /**
-     * The <code>toJSONString</code> method allows a class to produce its own JSON 
+     * The <code>toJSONString</code> method allows a class to produce its own JSON
      * serialization.<p>
-     * 
+     *
      * @return a strictly syntactically correct JSON text
      */
     String toJSONString();

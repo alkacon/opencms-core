@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Extracts the text from OpenOffice documents (.ods, .odf).<p>
- * 
- * @since 7.0.4  
+ *
+ * @since 7.0.4
  */
 public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
 
@@ -50,7 +50,7 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
     private static final CmsExtractorOpenOffice INSTANCE = new CmsExtractorOpenOffice();
 
     /**
-     * Hide the public constructor.<p> 
+     * Hide the public constructor.<p>
      */
     private CmsExtractorOpenOffice() {
 
@@ -58,8 +58,8 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
     }
 
     /**
-     * Returns an instance of this text extractor.<p> 
-     * 
+     * Returns an instance of this text extractor.<p>
+     *
      * @return an instance of this text extractor
      */
     public static I_CmsTextExtractor getExtractor() {
@@ -94,13 +94,13 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
     }
 
     /**
-     * Internal routine that parses the specific content.xml part of 
+     * Internal routine that parses the specific content.xml part of
      * an odf document.<p>
-     * 
-     * @param in the input stream spooled to the start of the content.xml part 
-     * 
-     * @return the extracted content 
-     * 
+     *
+     * @param in the input stream spooled to the start of the content.xml part
+     *
+     * @return the extracted content
+     *
      * @throws Exception if sth goes wrong
      */
     private String readContent(java.io.InputStream in) throws Exception {

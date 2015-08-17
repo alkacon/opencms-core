@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,10 +80,10 @@ public class CmsCloneModule extends CmsWidgetDialog {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsCloneModule(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -104,9 +104,8 @@ public class CmsCloneModule extends CmsWidgetDialog {
                 throw new CmsException(Messages.get().container(Messages.ERR_CLONEMODULE_EMPTY_MODULE_NAME_0));
             }
             if (OpenCms.getModuleManager().hasModule(m_cloneInfo.getName())) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1,
-                    m_cloneInfo.getName()));
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_CLONEMODULE_MODULE_ALREADY_EXISTS_1, m_cloneInfo.getName()));
             }
             getJsp().getRequest().setAttribute(ATTR_CLONE_MODULE_INFO, m_cloneInfo);
             Map<String, String[]> params = new HashMap<String, String[]>();
@@ -121,7 +120,7 @@ public class CmsCloneModule extends CmsWidgetDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -129,7 +128,7 @@ public class CmsCloneModule extends CmsWidgetDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */

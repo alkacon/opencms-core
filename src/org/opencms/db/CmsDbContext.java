@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Wraps context information to access the OpenCms database.<p> 
- * 
+ * Wraps context information to access the OpenCms database.<p>
+ *
  * @since 6.0.0
  */
 public class CmsDbContext {
@@ -62,7 +62,7 @@ public class CmsDbContext {
     protected CmsRequestContext m_requestContext;
 
     /**
-     * Creates a new, empty database context.<p> 
+     * Creates a new, empty database context.<p>
      */
     public CmsDbContext() {
 
@@ -71,7 +71,7 @@ public class CmsDbContext {
 
     /**
      * Creates a new database context initialized with the given user request context.<p>
-     *  
+     *
      * @param context the current users request context
      */
     public CmsDbContext(CmsRequestContext context) {
@@ -80,7 +80,8 @@ public class CmsDbContext {
         m_projectId = CmsUUID.getNullUUID();
 
         if (m_requestContext != null) {
-            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(CmsRequestUtil.HEADER_LAST_MODIFIED);
+            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(
+                CmsRequestUtil.HEADER_LAST_MODIFIED);
         }
     }
 
@@ -95,7 +96,7 @@ public class CmsDbContext {
 
     /**
      * Returns the current users project.<p>
-     * 
+     *
      * @return the current users project
      */
     public CmsProject currentProject() {
@@ -105,7 +106,7 @@ public class CmsDbContext {
 
     /**
      * Returns the current user.<p>
-     * 
+     *
      * @return the current user
      */
     public CmsUser currentUser() {
@@ -115,9 +116,9 @@ public class CmsDbContext {
 
     /**
      * Get an attribute from the DB context.<p>
-     * 
+     *
      * @param key the attribute key
-     * 
+     *
      * @return the attribute value or null if the attribute does not exist
      */
     public Object getAttribute(String key) {
@@ -130,7 +131,7 @@ public class CmsDbContext {
 
     /**
      * Returns the current Flex request context info.<p>
-     * 
+     *
      * @return the current Flex request context info
      */
     public CmsFlexRequestContextInfo getFlexRequestContextInfo() {
@@ -140,10 +141,10 @@ public class CmsDbContext {
 
     /**
      * Gets the history driver associated with this database context.<p>
-     * 
+     *
      * @param projectId the project id for which the history driver should be retrieved
-     * 
-     * @return the history driver 
+     *
+     * @return the history driver
      */
     public I_CmsHistoryDriver getHistoryDriver(CmsUUID projectId) {
 
@@ -152,10 +153,10 @@ public class CmsDbContext {
 
     /**
      * Gets the project driver associated with this database context.<p>
-     * 
+     *
      * @param projectId the project id for which the project driver should be retrieved
-     * 
-     * @return the project driver 
+     *
+     * @return the project driver
      */
     public I_CmsProjectDriver getProjectDriver(CmsUUID projectId) {
 
@@ -183,11 +184,11 @@ public class CmsDbContext {
     }
 
     /**
-     * Gets the user driver associated with this database context.<p> 
-     * 
-     * @param projectId the project id for which the user driver should be retrieved 
-     * 
-     * @return the user driver 
+     * Gets the user driver associated with this database context.<p>
+     *
+     * @param projectId the project id for which the user driver should be retrieved
+     *
+     * @return the user driver
      */
     public I_CmsUserDriver getUserDriver(CmsUUID projectId) {
 
@@ -195,11 +196,11 @@ public class CmsDbContext {
     }
 
     /**
-     * Gets the VFS driver associated with this database context.<p> 
-     * 
+     * Gets the VFS driver associated with this database context.<p>
+     *
      * @param projectId the project id for which the VFS driver should be retrieved
-     *  
-     * @return the VFS driver 
+     *
+     * @return the VFS driver
      */
     public I_CmsVfsDriver getVfsDriver(CmsUUID projectId) {
 
@@ -208,7 +209,7 @@ public class CmsDbContext {
 
     /**
      * Checks if the database context uses the default implementation.<p>
-     * 
+     *
      * @return <code>true</code> if the database context uses the default implementation
      */
     public boolean isDefaultDbContext() {
@@ -218,7 +219,7 @@ public class CmsDbContext {
 
     /**
      * Processes the current database context.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void pop() throws CmsException {
@@ -229,8 +230,8 @@ public class CmsDbContext {
     }
 
     /**
-     * Removes the given attribute from the DB context.<p> 
-     * 
+     * Removes the given attribute from the DB context.<p>
+     *
      * @param key the attribute key
      */
     public void removeAttribute(String key) {
@@ -243,13 +244,13 @@ public class CmsDbContext {
 
     /**
      * Removes the current site root prefix from the absolute path in the resource name,
-     * that is adjusts the resource name for the current site root.<p> 
-     * 
+     * that is adjusts the resource name for the current site root.<p>
+     *
      * If no user request context is available, the given resource name is
      * returned unchanged.<p>
-     * 
+     *
      * @param resourcename the resource name
-     * 
+     *
      * @return the resource name adjusted for the current site root
      */
     public String removeSiteRoot(String resourcename) {
@@ -263,11 +264,11 @@ public class CmsDbContext {
 
     /**
      * Reports an error to the given report (if available) and to the OpenCms log file.<p>
-     *  
+     *
      * @param report the report to write the error to
      * @param message the message to write to the report / log
      * @param throwable the exception to write to the report / log
-     * 
+     *
      * @throws CmsException if the <code>throwable</code> parameter is not <code>null</code> and a {@link CmsException}
      * @throws CmsVfsException if the <code>throwable</code> parameter is not <code>null</code> and no {@link CmsException}
      */
@@ -296,7 +297,7 @@ public class CmsDbContext {
 
     /**
      * Sets an attribute in the DB context.<p>
-     * 
+     *
      * @param key the attribute key
      * @param value the attribute value
      */
@@ -321,10 +322,10 @@ public class CmsDbContext {
     /**
      * Returns an exception of the same type as <code>throwable</code>, if <code>throwable</code> is an OpenCms Exception
      * with the message as a {@link CmsMessageContainer} and the <code>throwable</code> as a cause.<p>
-     * 
+     *
      * @param message the message container for the exception to create
      * @param throwable the cause of the exception
-     * 
+     *
      * @throws CmsException if the <code>throwable</code> parameter is not <code>null</code> and a {@link CmsException}
      * @throws CmsVfsException if the <code>throwable</code> parameter is not <code>null</code> and no {@link CmsException}
      */

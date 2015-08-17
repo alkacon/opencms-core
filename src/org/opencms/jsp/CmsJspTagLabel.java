@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,12 +43,12 @@ import org.apache.commons.logging.Log;
 /**
  * Provides access to the labels stored in the
  * language files of the OpenCms workplace.<p>
- * 
- * Instead of using the XML based workplace tags one should 
- * consider using standard Java resource bundles to provide language independent 
+ *
+ * Instead of using the XML based workplace tags one should
+ * consider using standard Java resource bundles to provide language independent
  * implementations.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagLabel extends BodyTagSupport {
 
@@ -60,7 +60,7 @@ public class CmsJspTagLabel extends BodyTagSupport {
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @param label the label to look up
      * @param req the current request
      * @return String the value of the selected label
@@ -80,18 +80,18 @@ public class CmsJspTagLabel extends BodyTagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
             try {
 
-                // Get label string from the body and reset body 
-                BodyContent body = this.getBodyContent();
+                // Get label string from the body and reset body
+                BodyContent body = getBodyContent();
                 String label = body.getString();
                 body.clearBody();
 
                 // Get the result...
                 String result = wpLabelTagAction(label, req);
-                this.getPreviousOut().print(result);
+                getPreviousOut().print(result);
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {

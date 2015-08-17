@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Group dependencies list view including delete and transfer functionality.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList {
 
@@ -78,7 +78,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupDependenciesList(CmsJspActionElement jsp) {
@@ -89,7 +89,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -102,7 +102,7 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -120,7 +120,10 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
 
         switch (getAction()) {
             case ACTION_DELETE:
-                Iterator<String> it = CmsStringUtil.splitAsList(getGroupName(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+                Iterator<String> it = CmsStringUtil.splitAsList(
+                    getGroupName(),
+                    CmsHtmlList.ITEM_SEPARATOR,
+                    true).iterator();
                 while (it.hasNext()) {
                     String name = it.next();
                     try {
@@ -213,8 +216,8 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_NOTICE_0).key(
-            getLocale())));
+        result.append(
+            dialogBlockStart(Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_NOTICE_0).key(getLocale())));
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0));
             result.append(":<br>\n");
@@ -260,7 +263,10 @@ public class CmsGroupDependenciesList extends CmsGroupPrincipalDependenciesList 
 
         // test the needed parameters
         m_groupName = "";
-        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(
+            getParamGroupid(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
         while (itGroups.hasNext()) {
             CmsUUID id = new CmsUUID(itGroups.next());
             m_groupName += getCms().readGroup(id).getName();

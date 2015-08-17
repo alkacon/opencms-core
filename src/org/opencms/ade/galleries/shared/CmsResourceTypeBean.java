@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean representing resource type information.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSerializable {
@@ -44,10 +44,8 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** Enum representing the visibility of a resource type in the bean. */
     public enum TypeVisibility {
         /** Never displayed. */
-        hidden,
-        /** Always show the type. */
-        showAlways,
-        /** The user may choose to display the type, but it's not shown by default. */
+        hidden, /** Always show the type. */
+        showAlways, /** The user may choose to display the type, but it's not shown by default. */
         showOptional
     }
 
@@ -140,8 +138,8 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /**
      * Gets the visibility.<p>
-     * 
-     * @return the visibility 
+     *
+     * @return the visibility
      */
     public TypeVisibility getVisibility() {
 
@@ -250,8 +248,8 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /**
      * Sets the visibility.<p>
-     * 
-     * @param visibility the new visibility 
+     *
+     * @param visibility the new visibility
      */
     public void setVisibility(TypeVisibility visibility) {
 

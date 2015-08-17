@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,13 +43,13 @@ public interface I_CmsADEWidget extends I_CmsWidget {
 
     /**
      * Returns the configuration string for the ADE content editor widget.<p>
-     * 
+     *
      * @param cms the OpenCms context
      * @param contentValue the schema type
      * @param messages the messages
      * @param resource the edited resource
      * @param contentLocale the content locale
-     * 
+     *
      * @return the configuration string
      */
     String getConfiguration(
@@ -61,39 +61,39 @@ public interface I_CmsADEWidget extends I_CmsWidget {
 
     /**
      * Returns a list of CSS resources required by the widget.<p>
-     * 
+     *
      * @param cms the current OpenCms context
-     * 
+     *
      * @return the required CSS resource links
      */
     List<String> getCssResourceLinks(CmsObject cms);
 
     /**
      * Returns the default display type of this widget.<p>
-     * 
+     *
      * @return the default display type
      */
     DisplayType getDefaultDisplayType();
 
     /**
      * Returns the java script initialization call.<p>
-     * 
+     *
      * @return the java script initialization call
      */
     String getInitCall();
 
     /**
      * Returns a list of java script resources required by the widget.<p>
-     * 
+     *
      * @param cms the current OpenCms context
-     * 
+     *
      * @return the required java script resource links
      */
     List<String> getJavaScriptResourceLinks(CmsObject cms);
 
     /**
      * Returns the class name of the widget.<p>
-     * 
+     *
      * @return the class name
      */
     String getWidgetName();
@@ -101,7 +101,7 @@ public interface I_CmsADEWidget extends I_CmsWidget {
     /**
      * Returns if this is an internal widget.<p>
      * Only widgets belonging to the OpenCms core should be marked as internal.<p>
-     * 
+     *
      * @return <code>true</code> if this is an internal widget
      */
     boolean isInternal();

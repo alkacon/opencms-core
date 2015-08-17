@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,7 +56,7 @@ import org.dom4j.io.SAXReader;
 
 /**
  * Adds the gallery search nodes.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddADESearch extends A_CmsXmlSearch {
@@ -99,7 +99,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
     }
 
     /**
-     * An XML update action which adds the /system/galleries folder to the gallery index source. 
+     * An XML update action which adds the /system/galleries folder to the gallery index source.
      */
     public static class CmsAddIndexSourceResourceAction extends CmsXmlUpdateAction {
 
@@ -116,7 +116,8 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     "/system/galleries/");
                 return true;
             }
-            Element indexSourceResources = (Element)doc.selectSingleNode("/opencms/search/indexsources/indexsource[name='gallery_source']/resources");
+            Element indexSourceResources = (Element)doc.selectSingleNode(
+                "/opencms/search/indexsources/indexsource[name='gallery_source']/resources");
             if (indexSourceResources == null) {
                 return false;
             }
@@ -156,8 +157,8 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
         /**
          * Adds new office document types.<p>
-         * 
-         * @param node the node to add the document types to 
+         *
+         * @param node the node to add the document types to
          */
         protected void addNewTypes(Node node) {
 
@@ -169,27 +170,29 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
         /**
          * Checks whether a node contains the old office document types.<p>
-         * 
+         *
          * @param node the node which should be checked
-         *  
-         * @return true if the node contains old office document types  
+         *
+         * @return true if the node contains old office document types
          */
         protected boolean containsOldType(Node node) {
 
             @SuppressWarnings("unchecked")
-            List<Node> nodes = node.selectNodes("documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint']");
+            List<Node> nodes = node.selectNodes(
+                "documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint']");
             return !nodes.isEmpty();
         }
 
         /**
          * Removes the office document types from a node.<p>
-         * 
-         * @param node the node from which to remove the document types 
+         *
+         * @param node the node from which to remove the document types
          */
         protected void removeTypes(Node node) {
 
             @SuppressWarnings("unchecked")
-            List<Node> nodes = node.selectNodes("documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint' or text()='msoffice-ooxml' or text()='openoffice' or text()='msoffice-ole2']");
+            List<Node> nodes = node.selectNodes(
+                "documenttypes-indexed/name[text()='msword' or text()='msexcel' or text()='mspowerpoint' or text()='msoffice-ooxml' or text()='openoffice' or text()='msoffice-ole2']");
             for (Node nodeToRemove : nodes) {
                 nodeToRemove.detach();
             }
@@ -201,7 +204,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
      */
     class ElementReplaceAction extends CmsXmlUpdateAction {
 
-        /** 
+        /**
          * The XML which should be used as a replacement (as a string).
          */
         private String m_replacementXml;
@@ -213,9 +216,9 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
         /**
          * Creates a new instance.<p>
-         * 
+         *
          * @param xpath the xpath of the element to replace
-         * @param replacementXml the replacement xml 
+         * @param replacementXml the replacement xml
          */
         public ElementReplaceAction(String xpath, String replacementXml) {
 
@@ -255,10 +258,10 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
     /**
      * Creates a dom4j element from an XML string.<p>
-     * 
-     * @param xml the xml string 
-     * @return the dom4j element 
-     * 
+     *
+     * @param xml the xml string
+     * @return the dom4j element
+     *
      * @throws DocumentException if the XML parsing fails
      */
     public static org.dom4j.Element createElementFromXml(String xml) throws DocumentException {
@@ -276,12 +279,12 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         return "Add the ADE containerpage and gallery search nodes";
     }
 
-    /** 
+    /**
      * Creates an xpath for an index source.<p>
-     * 
-     * @param name the name of the index source 
-     * 
-     * @return the xpath for the index source 
+     *
+     * @param name the name of the index source
+     *
+     * @return the xpath for the index source
      */
     protected String buildXpathForIndexSource(String name) {
 
@@ -336,8 +339,8 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
     /**
      * Builds the xpath for the documenttypes node.<p>
-     * 
-     * @return the xpath for the documenttypes node 
+     *
+     * @return the xpath for the documenttypes node
      */
     private String buildXpathForDoctypes() {
 
@@ -346,11 +349,11 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
     /**
      * Builds an xpath for a document type node in an index source.<p>
-     * 
-     * @param source the name of the index source 
-     * @param doctype the document type 
-     * 
-     * @return the xpath 
+     *
+     * @param source the name of the index source
+     * @param doctype the document type
+     *
+     * @return the xpath
      */
     private String buildXpathForIndexedDocumentType(String source, String doctype) {
 
@@ -391,178 +394,179 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 try {
                     parent.elements().add(
                         position,
-                        createElementFromXml("      <documenttypes>     \n"
-                            + "            <documenttype>\n"
-                            + "                <name>generic</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentGeneric</class>\n"
-                            + "                <mimetypes/>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>*</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype> \n"
-                            + "            <documenttype>\n"
-                            + "                <name>html</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentHtml</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>text/html</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>\n"
-                            + "            <documenttype>\n"
-                            + "                <name>image</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentGeneric</class>\n"
-                            + "                <mimetypes/>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>image</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>     \n"
-                            + "            <documenttype>\n"
-                            + "                <name>jsp</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentPlainText</class>\n"
-                            + "                <mimetypes/>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>jsp</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>     \n"
-                            + "            <documenttype>\n"
-                            + "                <name>pdf</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentPdf</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>application/pdf</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>binary</resourcetype>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>\n"
-                            + "            <documenttype>\n"
-                            + "                <name>rtf</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentRtf</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>text/rtf</mimetype>\n"
-                            + "                    <mimetype>application/rtf</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>binary</resourcetype>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>     \n"
-                            + "            <documenttype>\n"
-                            + "                <name>text</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentPlainText</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>text/html</mimetype>\n"
-                            + "                    <mimetype>text/plain</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype> \n"
-                            + "            <documenttype>\n"
-                            + "                <name>xmlcontent</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentXmlContent</class>\n"
-                            + "                <mimetypes/>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>*</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>\n"
-                            + "            <documenttype>\n"
-                            + "                <name>containerpage</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentContainerPage</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>text/html</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>containerpage</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>                 \n"
-                            + "            <documenttype>\n"
-                            + "                <name>xmlpage</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentXmlPage</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>text/html</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>xmlpage</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>\n"
-                            + "            <documenttype>\n"
-                            + "                <name>xmlcontent-galleries</name>\n"
-                            + "                <class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>\n"
-                            + "                <mimetypes/>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>xmlcontent-galleries</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype> \n"
-                            + "            <documenttype>\n"
-                            + "                <name>xmlpage-galleries</name>\n"
-                            + "                <class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>\n"
-                            + "                <mimetypes />\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>xmlpage-galleries</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>     \n"
-                            + "            <documenttype>\n"
-                            + "                <name>xmlcontent-solr</name>\n"
-                            + "            <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>\n"
-                            + "            <mimetypes>\n"
-                            + "                <mimetype>text/html</mimetype>\n"
-                            + "</mimetypes>\n"
-                            + "<resourcetypes>\n"
-                            + "    <resourcetype>xmlcontent-solr</resourcetype>\n"
-                            + "</resourcetypes>\n"
-                            + "</documenttype>\n"
-                            + "<documenttype>\n"
-                            + "    <name>containerpage-solr</name>\n"
-                            + "    <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>\n"
-                            + "    <mimetypes>\n"
-                            + "        <mimetype>text/html</mimetype>\n"
-                            + "    </mimetypes>\n"
-                            + "    <resourcetypes>\n"
-                            + "        <resourcetype>containerpage-solr</resourcetype>\n"
-                            + "    </resourcetypes>\n"
-                            + "</documenttype>\n"
-                            + "            <documenttype>\n"
-                            + "                <name>msoffice-ole2</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>application/vnd.ms-powerpoint</mimetype>\n"
-                            + "                    <mimetype>application/msword</mimetype>     \n"
-                            + "                    <mimetype>application/vnd.ms-excel</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>binary</resourcetype>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>                 \n"
-                            + "            <documenttype>\n"
-                            + "                <name>msoffice-ooxml</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>\n"
-                            + "                <mimetypes>             \n"
-                            + "                    <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>\n"
-                            + "                    <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>\n"
-                            + "                    <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>binary</resourcetype>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>                 \n"
-                            + "            <documenttype>\n"
-                            + "                <name>openoffice</name>\n"
-                            + "                <class>org.opencms.search.documents.CmsDocumentOpenOffice</class>\n"
-                            + "                <mimetypes>\n"
-                            + "                    <mimetype>application/vnd.oasis.opendocument.text</mimetype>\n"
-                            + "                    <mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>\n"
-                            + "                </mimetypes>\n"
-                            + "                <resourcetypes>\n"
-                            + "                    <resourcetype>binary</resourcetype>\n"
-                            + "                    <resourcetype>plain</resourcetype>\n"
-                            + "                </resourcetypes>\n"
-                            + "            </documenttype>\n"
-                            + "        </documenttypes>\n"));
+                        createElementFromXml(
+                            "      <documenttypes>     \n"
+                                + "            <documenttype>\n"
+                                + "                <name>generic</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentGeneric</class>\n"
+                                + "                <mimetypes/>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>*</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype> \n"
+                                + "            <documenttype>\n"
+                                + "                <name>html</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentHtml</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>text/html</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>\n"
+                                + "            <documenttype>\n"
+                                + "                <name>image</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentGeneric</class>\n"
+                                + "                <mimetypes/>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>image</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>     \n"
+                                + "            <documenttype>\n"
+                                + "                <name>jsp</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentPlainText</class>\n"
+                                + "                <mimetypes/>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>jsp</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>     \n"
+                                + "            <documenttype>\n"
+                                + "                <name>pdf</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentPdf</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>application/pdf</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>binary</resourcetype>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>\n"
+                                + "            <documenttype>\n"
+                                + "                <name>rtf</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentRtf</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>text/rtf</mimetype>\n"
+                                + "                    <mimetype>application/rtf</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>binary</resourcetype>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>     \n"
+                                + "            <documenttype>\n"
+                                + "                <name>text</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentPlainText</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>text/html</mimetype>\n"
+                                + "                    <mimetype>text/plain</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype> \n"
+                                + "            <documenttype>\n"
+                                + "                <name>xmlcontent</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentXmlContent</class>\n"
+                                + "                <mimetypes/>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>*</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>\n"
+                                + "            <documenttype>\n"
+                                + "                <name>containerpage</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentContainerPage</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>text/html</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>containerpage</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>                 \n"
+                                + "            <documenttype>\n"
+                                + "                <name>xmlpage</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentXmlPage</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>text/html</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>xmlpage</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>\n"
+                                + "            <documenttype>\n"
+                                + "                <name>xmlcontent-galleries</name>\n"
+                                + "                <class>org.opencms.search.galleries.CmsGalleryDocumentXmlContent</class>\n"
+                                + "                <mimetypes/>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>xmlcontent-galleries</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype> \n"
+                                + "            <documenttype>\n"
+                                + "                <name>xmlpage-galleries</name>\n"
+                                + "                <class>org.opencms.search.galleries.CmsGalleryDocumentXmlPage</class>\n"
+                                + "                <mimetypes />\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>xmlpage-galleries</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>     \n"
+                                + "            <documenttype>\n"
+                                + "                <name>xmlcontent-solr</name>\n"
+                                + "            <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>\n"
+                                + "            <mimetypes>\n"
+                                + "                <mimetype>text/html</mimetype>\n"
+                                + "</mimetypes>\n"
+                                + "<resourcetypes>\n"
+                                + "    <resourcetype>xmlcontent-solr</resourcetype>\n"
+                                + "</resourcetypes>\n"
+                                + "</documenttype>\n"
+                                + "<documenttype>\n"
+                                + "    <name>containerpage-solr</name>\n"
+                                + "    <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>\n"
+                                + "    <mimetypes>\n"
+                                + "        <mimetype>text/html</mimetype>\n"
+                                + "    </mimetypes>\n"
+                                + "    <resourcetypes>\n"
+                                + "        <resourcetype>containerpage-solr</resourcetype>\n"
+                                + "    </resourcetypes>\n"
+                                + "</documenttype>\n"
+                                + "            <documenttype>\n"
+                                + "                <name>msoffice-ole2</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentMsOfficeOLE2</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>application/vnd.ms-powerpoint</mimetype>\n"
+                                + "                    <mimetype>application/msword</mimetype>     \n"
+                                + "                    <mimetype>application/vnd.ms-excel</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>binary</resourcetype>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>                 \n"
+                                + "            <documenttype>\n"
+                                + "                <name>msoffice-ooxml</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentMsOfficeOOXML</class>\n"
+                                + "                <mimetypes>             \n"
+                                + "                    <mimetype>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mimetype>\n"
+                                + "                    <mimetype>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mimetype>\n"
+                                + "                    <mimetype>application/vnd.openxmlformats-officedocument.presentationml.presentation</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>binary</resourcetype>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>                 \n"
+                                + "            <documenttype>\n"
+                                + "                <name>openoffice</name>\n"
+                                + "                <class>org.opencms.search.documents.CmsDocumentOpenOffice</class>\n"
+                                + "                <mimetypes>\n"
+                                + "                    <mimetype>application/vnd.oasis.opendocument.text</mimetype>\n"
+                                + "                    <mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>\n"
+                                + "                </mimetypes>\n"
+                                + "                <resourcetypes>\n"
+                                + "                    <resourcetype>binary</resourcetype>\n"
+                                + "                    <resourcetype>plain</resourcetype>\n"
+                                + "                </resourcetypes>\n"
+                                + "            </documenttype>\n"
+                                + "        </documenttypes>\n"));
                 } catch (DocumentException e) {
                     System.out.println("failed to update document types.");
                 }
@@ -648,19 +652,25 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                     return false;
                 }
                 // create doc type
-                createIndexSource(doc, xpath, "gallery_source", CmsVfsIndexer.class, new String[] {"/"}, new String[] {
-                    "xmlpage-galleries",
-                    "xmlcontent-galleries",
-                    "jsp",
-                    "text",
-                    "pdf",
-                    "rtf",
-                    "html",
-                    "image",
-                    "generic",
-                    "openoffice",
-                    "msoffice-ole2",
-                    "msoffice-ooxml"});
+                createIndexSource(
+                    doc,
+                    xpath,
+                    "gallery_source",
+                    CmsVfsIndexer.class,
+                    new String[] {"/"},
+                    new String[] {
+                        "xmlpage-galleries",
+                        "xmlcontent-galleries",
+                        "jsp",
+                        "text",
+                        "pdf",
+                        "rtf",
+                        "html",
+                        "image",
+                        "generic",
+                        "openoffice",
+                        "msoffice-ole2",
+                        "msoffice-ooxml"});
                 return true;
 
             }
@@ -927,7 +937,8 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
                 public boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
                     if (document.selectSingleNode(xpath) == null) {
-                        Element galleryFieldsElement = (Element)(document.selectSingleNode("/opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']/fields"));
+                        Element galleryFieldsElement = (Element)(document.selectSingleNode(
+                            "/opencms/search/fieldconfigurations/fieldconfiguration[name='gallery_fields']/fields"));
                         Element fieldElement = galleryFieldsElement.addElement("field").addAttribute(
                             "name",
                             "search_exclude").addAttribute("store", "true").addAttribute("index", "true");
@@ -947,7 +958,7 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
 
         m_actions.put("/opencms/search/indexsources", new CmsIndexSourceTypeUpdateAction());
 
-        // use dummy check [1=1] to make the xpaths unique 
+        // use dummy check [1=1] to make the xpaths unique
         m_actions.put("/opencms/search/indexsources[1=1]", new CmsAddGalleryModuleIndexSourceAction());
         m_actions.put(buildXpathForIndexedDocumentType("source1", "containerpage"), new CmsXmlUpdateAction() {
 
@@ -1018,16 +1029,24 @@ public class CmsXmlAddADESearch extends A_CmsXmlSearch {
         //=============================================================================================================
 
         String analyzerEnPath = "/opencms/search/analyzers/analyzer[class='org.apache.lucene.analysis.standard.StandardAnalyzer'][locale='en']";
-        m_actions.put(analyzerEnPath, new ElementReplaceAction(analyzerEnPath, "<analyzer>\n"
-            + "                <class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>\n"
-            + "                <locale>en</locale>\n"
-            + "            </analyzer>"));
+        m_actions.put(
+            analyzerEnPath,
+            new ElementReplaceAction(
+                analyzerEnPath,
+                "<analyzer>\n"
+                    + "                <class>org.apache.lucene.analysis.en.EnglishAnalyzer</class>\n"
+                    + "                <locale>en</locale>\n"
+                    + "            </analyzer>"));
 
         String analyzerItPath = "/opencms/search/analyzers/analyzer[class='org.apache.lucene.analysis.snowball.SnowballAnalyzer'][stemmer='Italian']";
-        m_actions.put(analyzerItPath, new ElementReplaceAction(analyzerItPath, "<analyzer>\n"
-            + "                <class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>\n"
-            + "                <locale>it</locale>\n"
-            + "            </analyzer>"));
+        m_actions.put(
+            analyzerItPath,
+            new ElementReplaceAction(
+                analyzerItPath,
+                "<analyzer>\n"
+                    + "                <class>org.apache.lucene.analysis.it.ItalianAnalyzer</class>\n"
+                    + "                <locale>it</locale>\n"
+                    + "            </analyzer>"));
 
         m_actions.put(
             "/opencms/search/indexsources/indexsource[name='gallery_source']/resources['systemgalleries'='systemgalleries']",

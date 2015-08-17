@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -101,8 +101,8 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      */
     public CmsUgcConfigurationReader(CmsObject cms) {
 
@@ -111,11 +111,11 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Reads the given configuration file.<p>
-     * 
-     * @param configFile the configuration file to read 
-     * @return the configuration data read from the file 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param configFile the configuration file to read
+     * @return the configuration data read from the file
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsUgcConfiguration readConfiguration(CmsFile configFile) throws CmsException {
 
@@ -175,9 +175,9 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Parses an optional integer value.<p>
-     * 
-     * @param path the xpath of the content field 
-     * @return the optional integer value in that field 
+     *
+     * @param path the xpath of the content field
+     * @return the optional integer value in that field
      */
     private Optional<Integer> getIntValue(String path) {
 
@@ -186,9 +186,9 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Parses an optional long value.<p>
-     * 
-     * @param path the xpath of the content element 
-     * @return  the optional long value in that field 
+     *
+     * @param path the xpath of the content element
+     * @return  the optional long value in that field
      */
     private Optional<Long> getLongValue(String path) {
 
@@ -206,12 +206,12 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Reads the XML content value for a given xpath.<p>
-     * 
+     *
      * Returns null if no value was found at that path.<p>
-     * 
-     * @param path the XML content xpath 
-     * 
-     * @return the value for that path as a string 
+     *
+     * @param path the XML content xpath
+     *
+     * @return the value for that path as a string
      */
     private String getStringValue(String path) {
 
@@ -225,10 +225,10 @@ public class CmsUgcConfigurationReader {
 
     /**
      * Converts an optional long value to an optional integer value.<p>
-     * 
-     * @param optLong the optional long value 
-     * 
-     * @return the optional integer value 
+     *
+     * @param optLong the optional long value
+     *
+     * @return the optional integer value
      */
     private Optional<Integer> longToInt(Optional<Long> optLong) {
 

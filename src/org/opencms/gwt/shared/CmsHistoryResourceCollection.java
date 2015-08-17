@@ -84,8 +84,8 @@ public class CmsHistoryResourceCollection implements IsSerializable {
 
     /**
      * Returns true if there are no historical versions.<p>
-     * 
-     * @return true if there are no historical versions 
+     *
+     * @return true if there are no historical versions
      */
     public boolean isEmpty() {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,27 +42,27 @@ import javax.servlet.jsp.PageContext;
 /**
  * Convenience class to access the localized messages of this OpenCms package.
  * <p>
- * 
- * 
+ *
+ *
  * Additionally two utility methods for localization in the context of
  * {@link javax.servlet.jsp.tagext.TagSupport} implementations of the <code>org.opencms.jsp</code>
  * package are provided .
  * <p>
- * 
+ *
  * The <code>javax.servlet.jsp.tagext.TagSupport</code> API constraint only allows to throw
  * certain <code>Exception</code> types which forbids to use {@link org.opencms.main.CmsException}
  * which will be localized with the current user's locale at the time the request is evaluated.
  * <p>
- * 
+ *
  * At the same time <code>TagSupport</code> implementations may use their member
  * <code>pageContext</code> to get the <code>CmsObject</code> and therefore the user request's
  * locale.
  * <p>
- * 
+ *
  * These methods provided here factor out the localization of exception messages and return Strings
  * for the <code>org.opencms.jsp</code> pacakge.
  * <p>
- * 
+ *
  * @since 9.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
@@ -88,7 +88,7 @@ public final class Messages extends A_CmsMessageBundle {
     /**
      * Returns an instance of this localized message accessor.
      * <p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static I_CmsMessageBundle get() {
@@ -100,11 +100,11 @@ public final class Messages extends A_CmsMessageBundle {
      * Returns the String for the given CmsMessageContainer localized to the current user's locale
      * if available or to the default locale else.
      * <p>
-     * 
+     *
      * This method is needed for localization of non- {@link org.opencms.main.CmsException}
      * instances that have to be thrown here due to API constraints (javax.servlet.jsp).
      * <p>
-     * 
+     *
      * @param container A CmsMessageContainer containing the message to localize.
      * @param cms the <code>CmsObject</code> belonging to the current user (e.g. obtained with
      *            <code>CmsFlexController.getCmsObject(ServletRequest)</code>).
@@ -128,11 +128,11 @@ public final class Messages extends A_CmsMessageBundle {
      * Returns the String for the given CmsMessageContainer localized to the current user's locale
      * if available or to the default locale else.
      * <p>
-     * 
+     *
      * This method is needed for localization of non- {@link org.opencms.main.CmsException}
      * instances that have to be thrown here due to API constraints (javax.servlet.jsp).
      * <p>
-     * 
+     *
      * @param container A CmsMessageContainer containing the message to localize.
      * @param context The page context that is known to any calling
      *            {@link javax.servlet.jsp.tagext.TagSupport} instance (member
@@ -150,11 +150,11 @@ public final class Messages extends A_CmsMessageBundle {
      * Returns the String for the given CmsMessageContainer localized to the current user's locale
      * if available or to the default locale else.
      * <p>
-     * 
+     *
      * This method allows a static method ({@link org.opencms.jsp.CmsJspTagInfo#infoTagAction(String, javax.servlet.http.HttpServletRequest)})
      * that has no <code>pageContext</code> in scope to lookup the locale at request time.
      * <p>
-     * 
+     *
      * @see #getLocalizedMessage(CmsMessageContainer, PageContext)
      * @param container A CmsMessageContainer containing the message to localize.
      * @param request The current request.
@@ -172,7 +172,7 @@ public final class Messages extends A_CmsMessageBundle {
     /**
      * Returns the bundle name for this OpenCms package.
      * <p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

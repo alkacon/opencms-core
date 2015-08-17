@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Used to access and display XML content item information from the VFS.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagContentShow extends TagSupport {
 
@@ -75,13 +75,13 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /**
      * Internal action method to show an element from a XML content document.<p>
-     * 
+     *
      * @param container the content container to read the XML content from
      * @param context the current JSP page context
      * @param element the node name of the element to show
      * @param locale the locale of the element to show
      * @param escape if the result html should be escaped or not
-     * 
+     *
      * @return the value of the selected content element
      */
     public static String contentShowTagAction(
@@ -107,8 +107,8 @@ public class CmsJspTagContentShow extends TagSupport {
         if (CmsMacroResolver.isMacro(element)) {
             // this is a macro, initialize a macro resolver
             String resourcename = CmsJspTagResourceLoad.getResourceName(cms, container);
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(context).setResourceName(
-                resourcename).setKeepEmptyMacros(true);
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(
+                context).setResourceName(resourcename).setKeepEmptyMacros(true);
             // resolve the macro
             content = resolver.resolveMacros(element);
         } else if (xmlContent == null) {
@@ -140,7 +140,7 @@ public class CmsJspTagContentShow extends TagSupport {
                 content = CmsMessages.formatUnknownKey(element);
             }
             if (escape) {
-                // HTML escape the value 
+                // HTML escape the value
                 content = CmsEncoder.escapeHtml(content);
             }
         }
@@ -170,7 +170,9 @@ public class CmsJspTagContentShow extends TagSupport {
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
-            CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentshow");
+            CmsMessageContainer errMsgContainer = Messages.get().container(
+                Messages.ERR_PARENTLESS_TAG_1,
+                "contentshow");
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
@@ -195,7 +197,7 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /**
      * Returns the name of the content node element to show.<p>
-     * 
+     *
      * @return the name of the content node element to show
      */
     public String getElement() {
@@ -226,7 +228,7 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /**
      * Sets the name of the content node element to show.<p>
-     * 
+     *
      * @param element the name of the content node element to show
      */
     public void setElement(String element) {
@@ -236,7 +238,7 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /**
      * Set the escape html flag.<p>
-     * 
+     *
      * @param value should be <code>"true"</code> or <code>"false"</code> (all values other then <code>"true"</code> are
      * considered to be false)
      */

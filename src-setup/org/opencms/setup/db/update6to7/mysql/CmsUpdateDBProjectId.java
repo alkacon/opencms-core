@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import java.util.Map;
 
 /**
  * This class updates the project ids from integer values to CmsUUIDs in all existing database tables.<p>
- * 
+ *
  * It creates new UUIDs for each existing project and stores it into a temporary table.<p>
- * 
+ *
  * For each table using a project id a new column for the UUID is added and the according data is transferred.<p>
  * After that the original indexes and the column for the project id index is dropped and the new column with the
  * project uuid becomes the primary key.<p>
@@ -56,7 +56,7 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.db.update6to7.CmsUpd
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBProjectId()
@@ -68,9 +68,9 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.db.update6to7.CmsUpd
 
     /**
      * Creates the CMS_HISTORY_PROJECTS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     @Override
@@ -89,9 +89,9 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.db.update6to7.CmsUpd
 
     /**
      * Creates the temp table for project ids if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     @Override
