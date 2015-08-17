@@ -312,6 +312,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** Site selector caption property. */
     public static final String SITE_CAPTION = "site_caption";
 
+    /** Site selector site root property. */
+    public static final String SITE_ROOT = "site_root";
+
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
@@ -423,15 +426,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         });
 
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
-        m_siteSelector.addValueChangeListener(new ValueChangeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-
-                changeSite((String)event.getProperty().getValue(), null);
-            }
-        });
         m_infoTitle = new Label();
         m_infoTitle.addStyleName(ValoTheme.LABEL_H3);
         m_infoPath = new Label();
@@ -873,7 +867,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             true,
             true,
             cms.getRequestContext().getOuFqn());
-        IndexedContainer availableSites = new IndexedContainer();
+        final IndexedContainer availableSites = new IndexedContainer();
         availableSites.addContainerProperty(SITE_CAPTION, String.class, null);
         Locale locale = A_CmsUI.get().getLocale();
         for (CmsSite site : sites) {
@@ -884,13 +878,27 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             siteItem.getItemProperty(SITE_CAPTION).setValue(title);
         }
-        ComboBox combo = new ComboBox("Site:", availableSites);
+        ComboBox combo = new ComboBox(null, availableSites);
         combo.setInputPrompt("You can click here");
-        combo.setTextInputAllowed(false);
+        combo.setTextInputAllowed(true);
         combo.setNullSelectionAllowed(false);
         combo.setWidth("200px");
         combo.setItemCaptionPropertyId(SITE_CAPTION);
         combo.select(cms.getRequestContext().getSiteRoot());
+
+        combo.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+
+                String value = (String)event.getProperty().getValue();
+                if (availableSites.containsId(value)) {
+                    changeSite(value, null);
+                    availableSites.removeAllContainerFilters();
+                }
+            }
+        });
         return combo;
     }
 
