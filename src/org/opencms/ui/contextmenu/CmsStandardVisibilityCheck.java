@@ -85,6 +85,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         deleted,
         writepermisssion);
 
+    public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
+
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
 

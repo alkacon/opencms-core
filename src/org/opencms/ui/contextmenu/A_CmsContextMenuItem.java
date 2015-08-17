@@ -39,8 +39,22 @@ import java.util.List;
  */
 public abstract class A_CmsContextMenuItem implements I_CmsContextMenuItem {
 
+    protected String m_id;
+    protected String m_parentId;
+    protected int m_order;
+    protected int m_priority;
+    private String m_title;
+
     /** Default global id. */
     private String m_globalId = "" + new CmsUUID();
+
+    public A_CmsContextMenuItem(String id, String parentId, String title, int order, int priority) {
+        m_id = id;
+        m_parentId = parentId;
+        m_title = title;
+        m_order = order;
+        m_priority = priority;
+    }
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getClientAction()
@@ -59,11 +73,44 @@ public abstract class A_CmsContextMenuItem implements I_CmsContextMenuItem {
     }
 
     /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getId()
+     */
+    public String getId() {
+
+        return m_id;
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getOrder()
+     */
+    public int getOrder() {
+
+        return m_order;
+
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getParentId()
      */
     public String getParentId() {
 
-        return null;
+        return m_parentId;
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getPriority()
+     */
+    public int getPriority() {
+
+        return m_priority;
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getTitle()
+     */
+    public String getTitle() {
+
+        return m_title;
     }
 
     /**

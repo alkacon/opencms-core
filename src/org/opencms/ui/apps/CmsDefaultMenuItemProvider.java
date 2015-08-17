@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.ui.contextmenu.CmsDialogContextMenuItem;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
+import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
@@ -53,7 +54,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
         return Arrays.<I_CmsContextMenuItem> asList(
             new CmsDialogContextMenuItem(
                 "availability",
-                null,
+                "advanced",
                 CmsAvailabilityDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
                 1,
@@ -69,7 +70,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 CmsStandardVisibilityCheck.UNDO),
             new CmsDialogContextMenuItem(
                 "secureexport",
-                null,
+                "advanced",
                 CmsSecureExportDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
                 2,
@@ -77,7 +78,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 CmsStandardVisibilityCheck.DEFAULT),
             new CmsDialogContextMenuItem(
                 "touch",
-                null,
+                "advanced",
                 CmsTouchDialog.class,
                 "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
                 0,
@@ -90,6 +91,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 "%(key.GUI_EXPLORER_CONTEXT_UNDELETE_0)",
                 5,
                 0,
-                CmsStandardVisibilityCheck.UNDELETE));
+                CmsStandardVisibilityCheck.UNDELETE),
+
+            new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0)
+
+        );
     }
 }

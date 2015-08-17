@@ -46,12 +46,7 @@ import com.vaadin.ui.Component;
 public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
 
     private Class<? extends Component> m_dialogClass;
-    private String m_id;
 
-    private int m_order;
-    private int m_priority;
-    private String m_rule;
-    private String m_title;
     private I_CmsHasMenuItemVisibility m_visibilityCheck;
 
     public CmsDialogContextMenuItem(
@@ -63,11 +58,8 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
         int order,
         int priority,
         I_CmsHasMenuItemVisibility visibilityCheck) {
+        super(id, parentId, title, order, priority);
         m_dialogClass = dialogClass;
-        m_id = id;
-        m_order = order;
-        m_priority = priority;
-        m_title = title;
         m_visibilityCheck = visibilityCheck;
     }
 
@@ -87,31 +79,6 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
         return null;
     }
 
-    public String getId() {
-
-        return m_id;
-    }
-
-    public int getOrder() {
-
-        return 0;
-    }
-
-    public String getParentId() {
-
-        return null;
-    }
-
-    public int getPriority() {
-
-        return 0;
-    }
-
-    public String getTitle() {
-
-        return m_title;
-    }
-
     @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
@@ -123,4 +90,5 @@ public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
 
         return true;
     }
+
 }
