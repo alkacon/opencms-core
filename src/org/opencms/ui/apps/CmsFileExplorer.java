@@ -45,6 +45,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
@@ -83,20 +84,18 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
@@ -427,7 +426,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
         m_infoPath = new TextField();
-        m_infoPath.addShortcutListener(new ShortcutListener("Open path", KeyCode.ENTER, null) {
+        A_CmsFocusShortcutListener shortcutListener = new A_CmsFocusShortcutListener("Open path", KeyCode.ENTER, null) {
 
             private static final long serialVersionUID = 1L;
 
@@ -436,7 +435,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
                 openPath(m_infoPath.getValue());
             }
-        });
+        };
+        shortcutListener.installOn(m_infoPath);
         m_searchField = new TextField();
         m_searchField.setIcon(FontAwesome.SEARCH);
         m_searchField.setInputPrompt("Search");
@@ -515,21 +515,21 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
         context.setAppContent(sp);
         context.showInfoArea(true);
-        AbsoluteLayout info = new AbsoluteLayout();
-        info.setSizeFull();
-        info.addComponent(m_infoPath, "top:14px; left:410px;");
-        FormLayout siteSelect = new FormLayout();
-        siteSelect.addStyleName("o-form-less-margin");
-        siteSelect.setWidth("370px");
-        m_siteSelector.setWidth("100%");
-        siteSelect.addComponent(m_siteSelector);
-        info.addComponent(siteSelect, "top:0px; left: 8px;");
-        CssLayout wrapper = new CssLayout();
-        m_searchField.setWidth("100%");
-        wrapper.addComponent(m_searchField);
-        wrapper.setWidth("200px");
-        info.addComponent(wrapper, "top:14px; right:15px;");
-        context.setAppInfo(info);
+        HorizontalLayout inf = new HorizontalLayout();
+        inf.setSizeFull();
+        inf.setSpacing(true);
+        inf.setMargin(true);
+        m_siteSelector.setWidth("379px");
+        inf.addComponent(m_siteSelector);
+
+        m_infoPath.setWidth("100%");
+        inf.addComponent(m_infoPath);
+        inf.setExpandRatio(m_infoPath, 1);
+
+        m_searchField.setWidth("200px");
+        inf.addComponent(m_searchField);
+        context.setAppInfo(inf);
+
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(m_upButton);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
@@ -929,7 +929,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         combo.setWidth("200px");
         combo.setItemCaptionPropertyId(SITE_CAPTION);
         combo.select(cms.getRequestContext().getSiteRoot());
-
+        combo.setFilteringMode(FilteringMode.CONTAINS);
         combo.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
