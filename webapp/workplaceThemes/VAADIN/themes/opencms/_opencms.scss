@@ -137,12 +137,10 @@
 	}
   }
   
-
+  .v-panel.o-resource-info{
+  	@include valo-gradient(darken($v-background-color,4%));
+  }
   
-
-  
-  
-
   .o-app-info{
   	display: block;
   	width: 100%;

@@ -27,29 +27,76 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Image;
+import java.util.Locale;
+
 import com.vaadin.ui.Label;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.Panel;
 
-public class CmsResourceInfo extends CssLayout {
+/**
+ * Resource info box.<p>
+ */
+public class CmsResourceInfo extends Panel {
 
-    private Label m_topText;
+    /** The serial version id. */
+    private static final long serialVersionUID = -1715926038770100307L;
+
+    /** The sub title label. */
     private Label m_bottomText;
-    private Image m_icon;
 
-    public CmsResourceInfo(String top, String bottom, String iconPath) {
-        super();
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
-        m_topText.setValue(top);
-        m_topText.addStyleName(ValoTheme.LABEL_BOLD);
-        m_topText.addStyleName(ValoTheme.LABEL_TINY);
-        m_bottomText.addStyleName(ValoTheme.LABEL_TINY);
-        m_bottomText.setValue(bottom);
-        m_icon.setSource(new ExternalResource(iconPath));
+    /** The resource icon. */
+    private CmsResourceIcon m_icon;
+
+    /** The title label. */
+    private Label m_topText;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param resource the resource
+     */
+    public CmsResourceInfo(CmsResource resource) {
+        this();
+        Locale locale = A_CmsUI.get().getLocale();
+        CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+        m_topText.setValue(resUtil.getGalleryTitle(locale));
+        m_bottomText.setValue(resUtil.getGalleryDescription(locale));
+        m_icon.initContent(
+            CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
+            resUtil.getLockState(),
+            resource.getState());
     }
 
+    /**
+     * Constructor.<p>
+     *
+     * @param top the title
+     * @param bottom the sub title
+     * @param iconPath the icon resource path
+     */
+    public CmsResourceInfo(String top, String bottom, String iconPath) {
+
+        this();
+        m_topText.setValue(top);
+        m_bottomText.setValue(bottom);
+        m_icon.initContent(iconPath, 0, null);
+    }
+
+    /**
+     * Constructor.<p>
+     */
+    private CmsResourceInfo() {
+        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+
+    }
 }

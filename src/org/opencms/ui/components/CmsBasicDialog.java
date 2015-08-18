@@ -28,11 +28,8 @@
 package org.opencms.ui.components;
 
 import org.opencms.file.CmsResource;
-import org.opencms.ui.A_CmsUI;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.jsoup.nodes.Element;
 
@@ -101,13 +98,8 @@ public class CmsBasicDialog extends VerticalLayout {
             m_infoComponent = null;
         }
         if ((resources != null) && !resources.isEmpty()) {
-            Locale locale = A_CmsUI.get().getLocale();
             if (resources.size() == 1) {
-                CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resources.get(0));
-                m_infoComponent = new CmsResourceInfo(
-                    resUtil.getGalleryTitle(locale),
-                    resUtil.getGalleryDescription(locale),
-                    resUtil.getBigIconPath());
+                m_infoComponent = new CmsResourceInfo(resources.get(0));
             } else {
 
                 m_infoComponent = new Panel("Resource infos");
@@ -117,13 +109,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 resourcePanel.setSpacing(true);
                 resourcePanel.setMargin(true);
                 for (CmsResource resource : resources) {
-                    CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
-
-                    resourcePanel.addComponent(
-                        new CmsResourceInfo(
-                            resUtil.getGalleryTitle(locale),
-                            resUtil.getGalleryDescription(locale),
-                            resUtil.getBigIconPath()));
+                    resourcePanel.addComponent(new CmsResourceInfo(resource));
                 }
             }
             m_mainPanel.addComponent(m_infoComponent, 0);

@@ -81,6 +81,9 @@ public class OpenCmsTheme {
     public static final String RESOURCE_ICON = "o-resource-icon";
 
     /** CSS style name. */
+    public static final String RESOURCE_INFO = "o-resource-info";
+
+    /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";
 
     /** CSS style name. */
