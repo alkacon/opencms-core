@@ -28,7 +28,6 @@
 package org.opencms.ui.components;
 
 import org.opencms.db.CmsResourceState;
-import org.opencms.workplace.CmsWorkplace;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -43,17 +42,37 @@ public class CmsResourceIcon extends Label {
     private static final long serialVersionUID = 5031544534869165777L;
 
     /**
+     * Constuctor.<p>
+     * To be used in declarative layouts. Make sure to call initContent later on.<p>
+     */
+    public CmsResourceIcon() {
+        setPrimaryStyleName(OpenCmsTheme.RESOURCE_ICON);
+        setContentMode(ContentMode.HTML);
+    }
+
+    /**
      * Constructor.<p>
      *
-     * @param icon the resource icon
+     * @param iconPath the resource icon
+     * @param lockState the lock state
+     * @param state the resource state
+     */
+    public CmsResourceIcon(String iconPath, int lockState, CmsResourceState state) {
+        this();
+        initContent(iconPath, lockState, state);
+    }
+
+    /**
+     * Initializes the content.<p>
+     *
+     * @param iconPath the resource icon
      * @param lockState the lock state
      * @param state the resource state
      */
     @SuppressWarnings("incomplete-switch")
-    public CmsResourceIcon(String icon, int lockState, CmsResourceState state) {
-        setPrimaryStyleName(OpenCmsTheme.RESOURCE_ICON);
-        setContentMode(ContentMode.HTML);
-        String content = "<img src=\"" + CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + icon) + "\" />";
+    public void initContent(String iconPath, int lockState, CmsResourceState state) {
+
+        String content = "<img src=\"" + iconPath + "\" />";
 
         String lockIcon = null;
         switch (lockState) {
@@ -71,11 +90,12 @@ public class CmsResourceIcon extends Label {
         if (lockIcon != null) {
             content += "<span class=\"" + lockIcon + "\"></span>";
         }
-
-        if (state.isChanged()) {
-            content += "<span class=\"" + OpenCmsTheme.STATE_CHANGED + "\"></span>";
-        } else if (state.isNew()) {
-            content += "<span class=\"" + OpenCmsTheme.STATE_NEW + "\"></span>";
+        if (state != null) {
+            if (state.isChanged()) {
+                content += "<span class=\"" + OpenCmsTheme.STATE_CHANGED + "\"></span>";
+            } else if (state.isNew()) {
+                content += "<span class=\"" + OpenCmsTheme.STATE_NEW + "\"></span>";
+            }
         }
         setValue(content);
     }

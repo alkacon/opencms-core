@@ -45,6 +45,7 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -710,7 +711,10 @@ public class CmsFileTable extends A_CmsCustomComponent {
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-            new CmsResourceIcon(settings.getBigIcon(), resUtil.getLockState(), resource.getState()));
+            new CmsResourceIcon(
+                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
+                resUtil.getLockState(),
+                resource.getState()));
         resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
         resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
         resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
