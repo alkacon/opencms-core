@@ -63,10 +63,22 @@ public class OpenCmsTheme {
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
 
     /** CSS style name. */
+    public static final String LOCK_OTHER = "o-lock-other";
+
+    /** CSS style name. */
+    public static final String LOCK_SHARED = "o-lock-shared";
+
+    /** CSS style name. */
+    public static final String LOCK_USER = "o-lock-user";
+
+    /** CSS style name. */
     public static final String MAIN = "o-main";
 
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
+
+    /** CSS style name. */
+    public static final String RESOURCE_ICON = "o-resource-icon";
 
     /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";

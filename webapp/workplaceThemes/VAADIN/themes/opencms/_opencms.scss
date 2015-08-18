@@ -92,6 +92,56 @@
   		}
   	}
   }
+  
+  .o-resource-icon{
+  	display: inline-block;
+  	height: 24px;
+  	width: 24px !important;
+  	position: relative;
+  	
+  	.o-lock-shared, .o-lock-user, .o-lock-other{
+  		position: absolute;
+  		bottom: -4px;
+  		right: -4px;
+  		height:16px;
+  		width: 16px;
+  		color: transparent;
+	  	z-index:2;
+  	}
+  	.o-lock-shared{
+  		background: transparent url(img/lockShared.png) no-repeat center right;
+  	}
+  	.o-lock-user{
+  		background: transparent url(img/lockUser.png) no-repeat center right;
+  	}
+  	.o-lock-other{
+  		background: transparent url(img/lockOther.png) no-repeat center right;
+  	}
+  	
+  	.o-state-changed, .o-state-new {
+	  	height: 16px;
+	  	width: 16px;
+	  	color: transparent;
+	  	position: absolute;
+	  	top: -4px;
+	  	right: -4px;
+	  	z-index:2;
+	}
+	  
+	.o-state-changed {
+	  	background: transparent url(img/changed.png) no-repeat center right;
+	} 
+	  
+	.o-state-new {
+	  	background: transparent url(img/changed.png) no-repeat center right;
+	}
+  }
+  
+
+  
+
+  
+  
 
   .o-app-info{
   	display: block;

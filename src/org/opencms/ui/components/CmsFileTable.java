@@ -45,7 +45,6 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -73,11 +72,8 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
@@ -209,9 +205,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public static final String PROPERTY_IS_FOLDER = "isFolder";
 
     /** File table property name. */
-    public static final String PROPERTY_LOCK = "lock";
-
-    /** File table property name. */
     public static final String PROPERTY_NAVIGATION_TEXT = CmsPropertyDefinition.PROPERTY_NAVTEXT;
 
     /** File table property name. */
@@ -293,13 +286,12 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         super();
         m_container = new IndexedContainer();
-        m_container.addContainerProperty(PROPERTY_TYPE_ICON, Resource.class, null);
+        m_container.addContainerProperty(PROPERTY_TYPE_ICON, Component.class, null);
         m_container.addContainerProperty(PROPERTY_RESOURCE_NAME, String.class, null);
         m_container.addContainerProperty(PROPERTY_TITLE, String.class, null);
         m_container.addContainerProperty(PROPERTY_NAVIGATION_TEXT, String.class, null);
         m_container.addContainerProperty(PROPERTY_RESOURCE_TYPE, String.class, null);
         m_container.addContainerProperty(PROPERTY_IS_FOLDER, Boolean.class, null);
-        m_container.addContainerProperty(PROPERTY_LOCK, Embedded.class, null);
         m_container.addContainerProperty(PROPERTY_SIZE, Integer.class, null);
         m_container.addContainerProperty(PROPERTY_PERMISSIONS, String.class, null);
         m_container.addContainerProperty(PROPERTY_DATE_MODIFIED, String.class, null);
@@ -326,7 +318,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         // following also sets the column order
         m_fileTable.setVisibleColumns(
-            PROPERTY_LOCK,
+            PROPERTY_TYPE_ICON,
             PROPERTY_RESOURCE_NAME,
             PROPERTY_TITLE,
             PROPERTY_NAVIGATION_TEXT,
@@ -346,7 +338,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
 
         // using the same order as above
         m_fileTable.setColumnHeaders(
-            "", // lock column has no header
+            "", // icon column has no header
             messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0),
             messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0),
             messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_NAVTEXT_0),
@@ -362,8 +354,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
             messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0),
             messages.key(org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0));
 
-        m_fileTable.setRowHeaderMode(RowHeaderMode.ICON_ONLY);
-        m_fileTable.setItemIconPropertyId(PROPERTY_TYPE_ICON);
+        m_fileTable.setRowHeaderMode(RowHeaderMode.HIDDEN);
+
+        // setting icon column width explicitly
+        m_fileTable.setColumnWidth(PROPERTY_TYPE_ICON, 40);
+
         m_fileTable.setSortContainerPropertyId(PROPERTY_RESOURCE_NAME);
 
         m_fileTable.setColumnCollapsed(PROPERTY_NAVIGATION_TEXT, true);
@@ -715,9 +710,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-            new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
-        resourceItem.getItemProperty(PROPERTY_LOCK).setValue(
-            new Embedded("Lock", new ExternalResource(CmsWorkplace.getResourceUri(resUtil.getIconPathLock()))));
+            new CmsResourceIcon(settings.getBigIcon(), resUtil.getLockState(), resource.getState()));
         resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
         resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
         resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
