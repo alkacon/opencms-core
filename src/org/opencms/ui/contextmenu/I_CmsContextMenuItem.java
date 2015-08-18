@@ -38,7 +38,7 @@ import java.util.List;
  * Interface for workplace context menu items.<p>
  *
  */
-public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility {
+public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsContextMenuAction {
 
     /**
      * Executes the context menu action given a dialog context.<p>

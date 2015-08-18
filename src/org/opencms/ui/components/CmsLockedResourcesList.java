@@ -25,43 +25,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
+package org.opencms.ui.components;
 
-import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 
-/**
- * Menu item which acts only as a container for nested menu items.<p>
- */
-public class CmsSubmenu extends CmsDefaultContextMenuItem {
+import java.util.List;
 
-    /**
-     * Creates a new instance.<p>
-     *
-     * @param id the id
-     * @param parentId the parent id
-     * @param title the title
-     * @param order the order
-     * @param priority the priority
-     */
-    public CmsSubmenu(String id, String parentId, String title, int order, int priority) {
-        super(id, parentId, null, title, order, priority, CmsStandardVisibilityCheck.VISIBLE);
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.VerticalLayout;
+
+public class CmsLockedResourcesList extends CustomComponent {
+
+    private CmsFileTable m_table = new CmsFileTable();
+    private VerticalLayout m_layout = new VerticalLayout();
+
+    public CmsLockedResourcesList(CmsObject cms, List<CmsResource> resources) {
+        m_layout.addComponent(m_table);
+        Button okButton = new Button("OK");
+        m_layout.addComponent(okButton);
+        setCompositionRoot(m_layout);
+        m_table.fillTable(cms, resources);
     }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#executeAction(org.opencms.ui.I_CmsDialogContext)
-     */
-    @Override
-    public void executeAction(I_CmsDialogContext context) {
-        // do nothing
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.CmsDefaultContextMenuItem#isLeafItem()
-     */
-    @Override
-    public boolean isLeafItem() {
-
-        return false;
-    }
-
 }

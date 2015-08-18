@@ -289,7 +289,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
                     public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
 
-                        data.executeAction(createDialogContext());
+                        data.executeAction(createDialogContext(data));
                     }
                 });
 
@@ -682,9 +682,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      *
      * @return the dialog context
      */
-    protected I_CmsDialogContext createDialogContext() {
+    protected I_CmsDialogContext createDialogContext(I_CmsContextMenuItem item) {
 
-        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources());
+        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources(), item);
     }
 
     /**

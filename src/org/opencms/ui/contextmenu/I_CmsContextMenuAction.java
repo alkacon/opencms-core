@@ -30,38 +30,14 @@ package org.opencms.ui.contextmenu;
 import org.opencms.ui.I_CmsDialogContext;
 
 /**
- * Menu item which acts only as a container for nested menu items.<p>
+ * Action to perform when a context menu item is clicked.<p>
  */
-public class CmsSubmenu extends CmsDefaultContextMenuItem {
+public interface I_CmsContextMenuAction {
 
     /**
-     * Creates a new instance.<p>
+     * Executes this action.<p>
      *
-     * @param id the id
-     * @param parentId the parent id
-     * @param title the title
-     * @param order the order
-     * @param priority the priority
+     * @param context a context object which provides both a CmsObject as well as information about the context in which the menu item was selected
      */
-    public CmsSubmenu(String id, String parentId, String title, int order, int priority) {
-        super(id, parentId, null, title, order, priority, CmsStandardVisibilityCheck.VISIBLE);
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#executeAction(org.opencms.ui.I_CmsDialogContext)
-     */
-    @Override
-    public void executeAction(I_CmsDialogContext context) {
-        // do nothing
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.CmsDefaultContextMenuItem#isLeafItem()
-     */
-    @Override
-    public boolean isLeafItem() {
-
-        return false;
-    }
-
+    void executeAction(I_CmsDialogContext context);
 }

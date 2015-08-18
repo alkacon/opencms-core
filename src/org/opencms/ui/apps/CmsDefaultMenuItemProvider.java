@@ -27,7 +27,9 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.ui.contextmenu.CmsDialogContextMenuItem;
+import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
+import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
+import org.opencms.ui.contextmenu.CmsDialogAction;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
@@ -52,42 +54,42 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     public List<I_CmsContextMenuItem> getMenuItems() {
 
         return Arrays.<I_CmsContextMenuItem> asList(
-            new CmsDialogContextMenuItem(
+            new CmsDefaultContextMenuItem(
                 "availability",
                 "advanced",
-                CmsAvailabilityDialog.class,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsAvailabilityDialog.class)),
                 "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
                 1,
                 0,
                 CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDialogContextMenuItem(
+            new CmsDefaultContextMenuItem(
                 "undo",
                 null,
-                CmsUndoDialog.class,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsUndoDialog.class)),
                 "%(key.GUI_EXPLORER_CONTEXT_UNDOCHANGES_0)",
                 3,
                 0,
                 CmsStandardVisibilityCheck.UNDO),
-            new CmsDialogContextMenuItem(
+            new CmsDefaultContextMenuItem(
                 "secureexport",
                 "advanced",
-                CmsSecureExportDialog.class,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsSecureExportDialog.class)),
                 "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
                 2,
                 0,
                 CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDialogContextMenuItem(
+            new CmsDefaultContextMenuItem(
                 "touch",
                 "advanced",
-                CmsTouchDialog.class,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsTouchDialog.class)),
                 "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
                 0,
                 0,
                 CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDialogContextMenuItem(
+            new CmsDefaultContextMenuItem(
                 "undelete",
                 null,
-                CmsUndeleteDialog.class,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsUndeleteDialog.class)),
                 "%(key.GUI_EXPLORER_CONTEXT_UNDELETE_0)",
                 5,
                 0,

@@ -58,6 +58,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -393,7 +394,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 }
                 m_currentResources = selectedResources;
 
-                if (!selectedIds.isEmpty()) {
+                if (!selectedIds.isEmpty() && (m_menuBuilder != null)) {
                     m_menu.removeAllItems();
                     m_menuBuilder.buildContextMenu(selectedResources, m_menu);
                 }
@@ -645,6 +646,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
         for (CmsUUID id : ids) {
             updateItem(id);
         }
+        m_fileTable.setValue(Sets.newHashSet());
     }
 
     /**

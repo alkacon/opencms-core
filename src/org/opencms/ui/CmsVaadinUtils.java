@@ -74,6 +74,24 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Creates a click listener which calls a Runnable when activated.<p>
+     *
+     * @param action the Runnable to execute on a click
+     *
+     * @return the click listener
+     */
+    public static Button.ClickListener createClickListener(final Runnable action) {
+
+        return new Button.ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+
+                action.run();
+            }
+        };
+    }
+
+    /**
      * Returns the path to the design template file of the given component.<p>
      *
      * @param component the component
@@ -85,6 +103,16 @@ public final class CmsVaadinUtils {
         String className = component.getClass().getName();
         String designPath = className.replace(".", "/") + ".html";
         return designPath;
+    }
+
+    public static String getMessageText(String key, Object... args) {
+
+        return getWpMessagesForCurrentLocale().key(key, args);
+    }
+
+    public static CmsMessages getWpMessagesForCurrentLocale() {
+
+        return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
     }
 
     /**
@@ -190,7 +218,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designPath the path to the design file
      * @param messages the message bundle to use for localization in the design (may be null)

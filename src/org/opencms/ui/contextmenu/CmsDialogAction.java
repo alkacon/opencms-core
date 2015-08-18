@@ -27,68 +27,53 @@
 
 package org.opencms.ui.contextmenu;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
 
 import com.vaadin.ui.Component;
 
 /**
- * Context menu item class for basic Vaadin dialogs.
+ * Context menu action which displays a dialog of the given class.<p>
  *
- * This class is highly likely to change.
  */
-public class CmsDialogContextMenuItem extends A_CmsContextMenuItem {
+public class CmsDialogAction implements I_CmsContextMenuAction {
 
+    /** The dialog class. */
     private Class<? extends Component> m_dialogClass;
 
-    private I_CmsHasMenuItemVisibility m_visibilityCheck;
-
-    public CmsDialogContextMenuItem(
-
-        String id,
-        String parentId,
-        Class<? extends Component> dialogClass,
-        String title,
-        int order,
-        int priority,
-        I_CmsHasMenuItemVisibility visibilityCheck) {
-        super(id, parentId, title, order, priority);
+    /**
+     * Creates a new instance for the given dialog class.<p>
+     *
+     * The dialog class must have a one-argument constructor taking an I_CmsDialogContext as a parameter.
+     *
+     * @param dialogClass the class of the dialog
+     */
+    public CmsDialogAction(Class<? extends Component> dialogClass) {
         m_dialogClass = dialogClass;
-        m_visibilityCheck = visibilityCheck;
     }
 
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     */
     public void executeAction(I_CmsDialogContext context) {
 
         try {
             Constructor<? extends Component> constructor = m_dialogClass.getConstructor(I_CmsDialogContext.class);
             Component component = constructor.newInstance(context);
-            context.start(CmsVaadinUtils.localizeString(getTitle()), component);
+            context.start(CmsVaadinUtils.localizeString(context.getMenuItem().getTitle()), component);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String getClientAction() {
-
-        return null;
-    }
-
+    /**
+     * @see java.lang.Object#toString()
+     */
     @Override
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+    public String toString() {
 
-        return m_visibilityCheck.getVisibility(cms, resources);
-
+        return "CmsDialogAction[" + m_dialogClass.getName() + "] ";
     }
-
-    public boolean isLeafItem() {
-
-        return true;
-    }
-
 }

@@ -33,6 +33,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -58,6 +59,8 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     /** The window used to display the dialog. */
     private Window m_window;
 
+    private I_CmsContextMenuItem m_item;
+
     /**
      * Creates a new instance.<p>
      *
@@ -68,10 +71,12 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     public CmsExplorerDialogContext(
         I_CmsAppUIContext appContext,
         CmsFileExplorer explorer,
-        List<CmsResource> resources) {
+        List<CmsResource> resources,
+        I_CmsContextMenuItem item) {
         m_resources = resources;
         m_appContext = appContext;
         m_explorer = explorer;
+        m_item = item;
     }
 
     /**
@@ -107,7 +112,6 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
             }
         }
         m_explorer.update(ids);
-
     }
 
     /**
@@ -124,6 +128,11 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     public CmsObject getCms() {
 
         return A_CmsUI.getCmsObject();
+    }
+
+    public I_CmsContextMenuItem getMenuItem() {
+
+        return m_item;
     }
 
     /**

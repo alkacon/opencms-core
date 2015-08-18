@@ -85,6 +85,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         deleted,
         writepermisssion);
 
+    /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
 
     /** The set of flags. */
@@ -175,5 +176,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         }
 
         return VISIBILITY_ACTIVE;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "visibility[" + m_flags + "]";
     }
 }
