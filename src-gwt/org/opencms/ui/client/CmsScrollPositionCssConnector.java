@@ -27,7 +27,7 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.ui.components.CmsScrollPositionCss;
+import org.opencms.ui.components.extensions.CmsScrollPositionCss;
 import org.opencms.ui.shared.components.CmsScrollPositionCssState;
 
 import com.google.gwt.event.dom.client.ScrollEvent;

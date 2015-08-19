@@ -25,8 +25,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
+package org.opencms.ui.components.extensions;
 
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.shared.rpc.I_CmsWindowCloseServerRpc;
 
 import java.util.ArrayList;

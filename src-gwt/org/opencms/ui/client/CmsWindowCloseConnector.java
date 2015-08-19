@@ -27,7 +27,7 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.ui.components.CmsWindowCloseExtension;
+import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.shared.rpc.I_CmsWindowCloseServerRpc;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -47,13 +47,13 @@ public class CmsWindowCloseConnector extends AbstractExtensionConnector {
     private static final long serialVersionUID = 190108090241764065L;
 
     /** The RPC proxy. */
-    I_CmsWindowCloseServerRpc rpc;
+    I_CmsWindowCloseServerRpc m_rpc;
 
     /**
      * Constructor.<p>
      */
     public CmsWindowCloseConnector() {
-        rpc = getRpcProxy(I_CmsWindowCloseServerRpc.class);
+        m_rpc = getRpcProxy(I_CmsWindowCloseServerRpc.class);
     }
 
     /**
@@ -66,7 +66,7 @@ public class CmsWindowCloseConnector extends AbstractExtensionConnector {
 
             public void onClose(CloseEvent<Window> event) {
 
-                rpc.windowClosed();
+                m_rpc.windowClosed();
             }
 
         });
