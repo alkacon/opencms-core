@@ -42,12 +42,25 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.DesignContext;
 
 /**
  * Basic dialog class with a content panel and button bar.<p>
  */
 public class CmsBasicDialog extends VerticalLayout {
+
+    /** The available window widths. */
+    public enum DialogWidth {
+        /** The default width of 600px. */
+        narrow,
+
+        /** The wide width of 800px. */
+        wide,
+
+        /** The maximum width of 90% of the window width. */
+        max
+    }
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -97,6 +110,45 @@ public class CmsBasicDialog extends VerticalLayout {
         addComponent(m_buttonPanel);
         setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
         enableMaxHeight();
+    }
+
+    /**
+     * Initializes the dialog window.<p>
+     *
+     * @return the window to be used by dialogs
+     */
+    public static Window prepareWindow() {
+
+        return prepareWindow(DialogWidth.narrow);
+    }
+
+    /**
+     * Initializes the dialog window.<p>
+     *
+     * @param width the dialog width
+     *
+     * @return the window to be used by dialogs
+     */
+    public static Window prepareWindow(DialogWidth width) {
+
+        Window window = new Window();
+        window.setModal(true);
+        window.setClosable(true);
+        //TODO: check width available
+        switch (width) {
+            case wide:
+                window.setWidth("800px");
+                break;
+            case max:
+                window.setWidth("90%");
+                break;
+            case narrow:
+            default:
+                window.setWidth("600px");
+                break;
+        }
+        window.center();
+        return window;
     }
 
     /**

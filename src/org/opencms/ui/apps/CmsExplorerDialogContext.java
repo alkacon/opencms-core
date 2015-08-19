@@ -31,7 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsUUID;
 
@@ -81,13 +81,15 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
 
         if (m_window != null) {
             m_window.close();
+            m_window = null;
         }
-        m_window = prepareWindow();
-        CmsErrorDialog err = new CmsErrorDialog(error, this);
-        m_window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
-        m_window.setContent(err);
+        CmsErrorDialog.showErrorDialog(error, new Runnable() {
 
-        A_CmsUI.get().addWindow(m_window);
+            public void run() {
+
+                finish(null);
+            }
+        });
     }
 
     /**
@@ -138,27 +140,10 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     public void start(String title, Component dialog) {
 
         if (dialog != null) {
-            m_window = prepareWindow();
+            m_window = CmsBasicDialog.prepareWindow();
             m_window.setCaption(title);
             m_window.setContent(dialog);
             A_CmsUI.get().addWindow(m_window);
         }
     }
-
-    /**
-     * Initializes the dialog window.<p>
-     *
-     * @return the window to be used by dialogs
-     */
-    protected Window prepareWindow() {
-
-        Window window = new Window();
-        window.setModal(true);
-        window.setClosable(true);
-        window.setWidth("600px");
-        window.center();
-        return window;
-
-    }
-
 }

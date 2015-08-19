@@ -30,7 +30,7 @@ package org.opencms.ui.components;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 
@@ -40,6 +40,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -49,9 +52,6 @@ public class CmsErrorDialog extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
-
-    /** The dialog context. */
-    private I_CmsDialogContext m_dialogContext;
 
     /** Label to display. */
     private Label m_errorLabel;
@@ -65,14 +65,23 @@ public class CmsErrorDialog extends CmsBasicDialog {
     /** The OK button. */
     private Button m_okButton;
 
+    /** The dialog context. */
+    private Runnable m_onClose;
+
+    /** The dialog window. */
+    private Window m_window;
+
     /**
      * Creates a new instance.<p>
      *
+     * @param message the error message
      * @param t the error to be displayed
-     * @param context the dialog context
+     * @param onClose executed on close
+     * @param window the dialog window if available
      */
-    public CmsErrorDialog(Throwable t, I_CmsDialogContext context) {
-        m_dialogContext = context;
+    public CmsErrorDialog(String message, Throwable t, Runnable onClose, final Window window) {
+        m_onClose = onClose;
+        m_window = window;
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
@@ -83,18 +92,88 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_icon.addStyleName(ValoTheme.LABEL_HUGE);
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
-        m_errorMessage.setValue(t.getLocalizedMessage());
+        m_errorMessage.setValue(message);
         m_okButton.addClickListener(new ClickListener() {
 
-            /** Serial version id. */
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_dialogContext.finish(null);
+                onClose();
             }
         });
+        if (m_window != null) {
+            m_window.addCloseListener(new CloseListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void windowClose(CloseEvent e) {
+
+                    onClose();
+                }
+            });
+        }
+
+    }
+
+    /**
+     * Shows the error dialog.<p>
+     *
+     * @param message the error message
+     * @param t the error to be displayed
+     */
+    public static void showErrorDialog(String message, Throwable t) {
+
+        showErrorDialog(message, t, null);
+    }
+
+    /**
+     * Shows the error dialog.<p>
+     *
+     * @param message the error message
+     * @param t the error to be displayed
+     * @param onClose executed on close
+     */
+    public static void showErrorDialog(String message, Throwable t, Runnable onClose) {
+
+        Window window = prepareWindow(DialogWidth.wide);
+        window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
+        window.setContent(new CmsErrorDialog(message, t, onClose, window));
+        A_CmsUI.get().addWindow(window);
+    }
+
+    /**
+     * Shows the error dialog.<p>
+     *
+     * @param t the error to be displayed
+     */
+    public static void showErrorDialog(Throwable t) {
+
+        showErrorDialog(t.getLocalizedMessage(), t, null);
+    }
+
+    /**
+     * Shows the error dialog.<p>
+     *
+     * @param t the error to be displayed
+     * @param onClose executed on close
+     */
+    public static void showErrorDialog(Throwable t, Runnable onClose) {
+
+        showErrorDialog(t.getLocalizedMessage(), t, onClose);
+    }
+
+    /**
+     * Called on dialog close.<p>
+     */
+    void onClose() {
+
+        if (m_onClose != null) {
+            m_onClose.run();
+        }
+        if (m_window != null) {
+            m_window.close();
+        }
     }
 
 }
