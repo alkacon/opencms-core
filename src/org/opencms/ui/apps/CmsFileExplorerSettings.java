@@ -31,7 +31,7 @@ import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
-import org.opencms.ui.components.CmsResourceTableColumn;
+import org.opencms.ui.components.CmsResourceTableProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,13 +64,13 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
     private static final String SORT_ORDER_KEY = "sort_order";
 
     /** The collapsed column ids. */
-    private List<CmsResourceTableColumn> m_collapsedColumns;
+    private List<CmsResourceTableProperty> m_collapsedColumns;
 
     /** The sort order. */
     private boolean m_sortAscending;
 
     /** The sort column id. */
-    private CmsResourceTableColumn m_sortColumnId;
+    private CmsResourceTableProperty m_sortColumnId;
 
     /**
      * Constructor.<p>
@@ -78,18 +78,18 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      */
     public CmsFileExplorerSettings() {
         // initialize with the default settings
-        m_sortColumnId = CmsResourceTableColumn.PROPERTY_RESOURCE_NAME;
+        m_sortColumnId = CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
         m_sortAscending = true;
-        m_collapsedColumns = new ArrayList<CmsResourceTableColumn>();
+        m_collapsedColumns = new ArrayList<CmsResourceTableProperty>();
         Collections.addAll(
             m_collapsedColumns,
-            CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT,
-            CmsResourceTableColumn.PROPERTY_PERMISSIONS,
-            CmsResourceTableColumn.PROPERTY_USER_MODIFIED,
-            CmsResourceTableColumn.PROPERTY_DATE_CREATED,
-            CmsResourceTableColumn.PROPERTY_USER_CREATED,
-            CmsResourceTableColumn.PROPERTY_STATE_NAME,
-            CmsResourceTableColumn.PROPERTY_USER_LOCKED);
+            CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
+            CmsResourceTableProperty.PROPERTY_PERMISSIONS,
+            CmsResourceTableProperty.PROPERTY_USER_MODIFIED,
+            CmsResourceTableProperty.PROPERTY_DATE_CREATED,
+            CmsResourceTableProperty.PROPERTY_USER_CREATED,
+            CmsResourceTableProperty.PROPERTY_STATE_NAME,
+            CmsResourceTableProperty.PROPERTY_USER_LOCKED);
     }
 
     /**
@@ -97,7 +97,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      *
      * @return the collapsed column ids
      */
-    public List<CmsResourceTableColumn> getCollapsedColumns() {
+    public List<CmsResourceTableProperty> getCollapsedColumns() {
 
         return m_collapsedColumns;
     }
@@ -112,7 +112,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
             json.put(SORT_ORDER_KEY, m_sortAscending);
             json.put(SORT_COLUMN_KEY, m_sortColumnId.getId());
             List<String> collapsed = Lists.newArrayList();
-            for (CmsResourceTableColumn column : m_collapsedColumns) {
+            for (CmsResourceTableProperty column : m_collapsedColumns) {
                 collapsed.add(column.getId());
             }
             json.put(COLLAPSED_COLUMNS_KEY, new JSONArray(collapsed));
@@ -129,7 +129,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      *
      * @return the sort column id
      */
-    public CmsResourceTableColumn getSortColumnId() {
+    public CmsResourceTableProperty getSortColumnId() {
 
         return m_sortColumnId;
     }
@@ -149,7 +149,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      */
     public void restoreSettings(String storedSettings) {
 
-        Map<String, CmsResourceTableColumn> columnMap = CmsResourceTableColumn.getDefaultColumnsByName();
+        Map<String, CmsResourceTableProperty> columnMap = CmsResourceTableProperty.getDefaultColumnsByName();
 
         try {
             JSONObject json = new JSONObject(storedSettings);
@@ -160,7 +160,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
                 m_sortColumnId = columnMap.get(json.getString(SORT_COLUMN_KEY));
             }
             if (json.has(COLLAPSED_COLUMNS_KEY)) {
-                List<CmsResourceTableColumn> collapsed = new ArrayList<CmsResourceTableColumn>();
+                List<CmsResourceTableProperty> collapsed = new ArrayList<CmsResourceTableProperty>();
                 JSONArray array = json.getJSONArray(COLLAPSED_COLUMNS_KEY);
 
                 for (int i = 0; i < array.length(); i++) {
@@ -179,7 +179,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      *
      * @param collapsedColumns the collapsed columns
      */
-    public void setCollapsedColumns(List<CmsResourceTableColumn> collapsedColumns) {
+    public void setCollapsedColumns(List<CmsResourceTableProperty> collapsedColumns) {
 
         m_collapsedColumns = collapsedColumns;
     }
@@ -199,7 +199,7 @@ public class CmsFileExplorerSettings implements Serializable, I_CmsAppSettings {
      *
      * @param sortColumnId the sort column
      */
-    public void setSortColumnId(CmsResourceTableColumn sortColumnId) {
+    public void setSortColumnId(CmsResourceTableProperty sortColumnId) {
 
         m_sortColumnId = sortColumnId;
     }

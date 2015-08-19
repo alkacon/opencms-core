@@ -27,49 +27,40 @@
 
 package org.opencms.ui.components;
 
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_DATE_CREATED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_DATE_EXPIRED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_DATE_MODIFIED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_DATE_RELEASED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_IS_FOLDER;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_PERMISSIONS;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_RESOURCE_NAME;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_RESOURCE_TYPE;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_SIZE;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_STATE;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_STATE_NAME;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_TITLE;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_TYPE_ICON;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_USER_CREATED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_USER_LOCKED;
-import static org.opencms.ui.components.CmsResourceTableColumn.PROPERTY_USER_MODIFIED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_CREATED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_STATE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_STATE_NAME;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_TITLE;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_TYPE_ICON;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_CREATED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_LOCKED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_USER_MODIFIED;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -82,7 +73,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator;
 import com.vaadin.data.util.DefaultItemSorter;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.event.FieldEvents.BlurEvent;
@@ -95,14 +85,13 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table for displaying resources.<p>
  */
-public class CmsFileTable extends A_CmsCustomComponent {
+public class CmsFileTable extends CmsResourceTable {
 
     /**
      * File edit handler.<p>
@@ -193,11 +182,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
         @Override
         protected int compareProperty(Object propertyId, boolean sortDirection, Item item1, Item item2) {
 
-            if (CmsResourceTableColumn.PROPERTY_RESOURCE_NAME.equals(propertyId)) {
+            if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(propertyId)) {
                 Boolean isFolder1 = (Boolean)item1.getItemProperty(
-                    CmsResourceTableColumn.PROPERTY_IS_FOLDER).getValue();
+                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 Boolean isFolder2 = (Boolean)item2.getItemProperty(
-                    CmsResourceTableColumn.PROPERTY_IS_FOLDER).getValue();
+                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 if (!isFolder1.equals(isFolder2)) {
                     int result = isFolder1.booleanValue() ? -1 : 1;
                     if (!sortDirection) {
@@ -219,17 +208,11 @@ public class CmsFileTable extends A_CmsCustomComponent {
     /** The selected resources. */
     protected List<CmsResource> m_currentResources = Lists.newArrayList();
 
-    /** The resource data container. */
-    IndexedContainer m_container;
-
     /** The current file property edit handler. */
     I_CmsFilePropertyEditHandler m_editHandler;
 
     /** File edit event handler. */
     FileEditHandler m_fileEditHandler = new FileEditHandler();
-
-    /** The table used to display the resource data. */
-    Table m_fileTable;
 
     /** The context menu. */
     CmsContextMenu m_menu;
@@ -241,13 +224,10 @@ public class CmsFileTable extends A_CmsCustomComponent {
     private CmsUUID m_editItemId;
 
     /** The edited property id. */
-    private CmsResourceTableColumn m_editProperty;
+    private CmsResourceTableProperty m_editProperty;
 
     /** The original edit value. */
     private String m_originalEditValue;
-
-    /** The messages. */
-    private CmsMessages messages;
 
     /**
      * Default constructor.<p>
@@ -255,68 +235,41 @@ public class CmsFileTable extends A_CmsCustomComponent {
     public CmsFileTable() {
 
         super();
-        m_container = new IndexedContainer();
-        for (CmsResourceTableColumn columnId : CmsResourceTableColumn.defaultColumns()) {
-            m_container.addContainerProperty(columnId, columnId.getColumnType(), columnId.getDefaultValue());
-        }
         m_container.setItemSorter(new FileSorter());
-
-        m_fileTable = new Table();
-        setCompositionRoot(m_fileTable);
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
         m_fileTable.setSizeFull();
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
         m_fileTable.setTableFieldFactory(new FileFieldFactory());
+        new ColumnBuilder() {
 
-        m_fileTable.setContainerDataSource(m_container);
-
-        // following also sets the column order
-        m_fileTable.setVisibleColumns(
-            CmsResourceTableColumn.PROPERTY_TYPE_ICON,
-            CmsResourceTableColumn.PROPERTY_RESOURCE_NAME,
-            CmsResourceTableColumn.PROPERTY_TITLE,
-            CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT,
-            CmsResourceTableColumn.PROPERTY_RESOURCE_TYPE,
-            CmsResourceTableColumn.PROPERTY_SIZE,
-            CmsResourceTableColumn.PROPERTY_PERMISSIONS,
-            CmsResourceTableColumn.PROPERTY_DATE_MODIFIED,
-            CmsResourceTableColumn.PROPERTY_USER_MODIFIED,
-            CmsResourceTableColumn.PROPERTY_DATE_CREATED,
-            CmsResourceTableColumn.PROPERTY_USER_CREATED,
-            CmsResourceTableColumn.PROPERTY_DATE_RELEASED,
-            CmsResourceTableColumn.PROPERTY_DATE_EXPIRED,
-            CmsResourceTableColumn.PROPERTY_STATE_NAME,
-            CmsResourceTableColumn.PROPERTY_USER_LOCKED);
-
-        messages = org.opencms.workplace.explorer.Messages.get().getBundle(CmsAppWorkplaceUi.get().getLocale());
-
-        for (Object visibleColumn : m_fileTable.getVisibleColumns()) {
-            CmsResourceTableColumn columnId = (CmsResourceTableColumn)visibleColumn;
-            String headerKey = columnId.getHeaderKey();
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(headerKey)) {
-                m_fileTable.setColumnHeader(columnId, messages.key(headerKey));
-            } else {
-                m_fileTable.setColumnHeader(columnId, "");
+            {
+                column(PROPERTY_TYPE_ICON);
+                column(PROPERTY_RESOURCE_NAME);
+                column(PROPERTY_TITLE);
+                column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
+                column(PROPERTY_RESOURCE_TYPE);
+                column(PROPERTY_SIZE);
+                column(PROPERTY_PERMISSIONS, COLLAPSED);
+                column(PROPERTY_DATE_MODIFIED);
+                column(PROPERTY_USER_MODIFIED, COLLAPSED);
+                column(PROPERTY_DATE_CREATED, COLLAPSED);
+                column(PROPERTY_USER_CREATED, COLLAPSED);
+                column(PROPERTY_DATE_RELEASED);
+                column(PROPERTY_DATE_EXPIRED);
+                column(PROPERTY_STATE_NAME);
+                column(PROPERTY_USER_LOCKED);
+                column(PROPERTY_IS_FOLDER, INVISIBLE);
+                column(PROPERTY_STATE, INVISIBLE);
             }
-        }
 
-        m_fileTable.setRowHeaderMode(RowHeaderMode.HIDDEN);
+        }.buildColumns();
 
         // setting icon column width explicitly
-        m_fileTable.setColumnWidth(CmsResourceTableColumn.PROPERTY_TYPE_ICON, 40);
+        m_fileTable.setColumnWidth(CmsResourceTableProperty.PROPERTY_TYPE_ICON, 40);
 
-        m_fileTable.setSortContainerPropertyId(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME);
-
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_PERMISSIONS, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_USER_MODIFIED, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_DATE_CREATED, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_USER_CREATED, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_STATE_NAME, true);
-        m_fileTable.setColumnCollapsed(CmsResourceTableColumn.PROPERTY_USER_LOCKED, true);
-
+        m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_menu = new CmsContextMenu();
         m_fileTable.addValueChangeListener(new ValueChangeListener() {
 
@@ -330,7 +283,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
                 List<CmsResource> selectedResources = Lists.newArrayList();
                 for (CmsUUID id : selectedIds) {
                     try {
-                        A_CmsUI.get();
                         CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
                         selectedResources.add(resource);
                     } catch (CmsException e) {
@@ -361,52 +313,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
-     * Static helper method to initialize the 'standard' properties of a data item from a given resource.<p>
-     * @param resourceItem the resource item to fill
-     * @param cms the CMS context
-     * @param resource the resource
-     * @param messages the message bundle
-     * @param locale the locale
-     */
-    public static void fillItemDefault(
-        Item resourceItem,
-        CmsObject cms,
-        CmsResource resource,
-        CmsMessages messages,
-        Locale locale) {
-
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-
-        resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-            new CmsResourceIcon(
-                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
-                resUtil.getLockState(),
-                resource.getState()));
-        resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-        resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
-        resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
-        resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
-            CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
-        resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
-        if (resource.isFile()) {
-            resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
-        }
-        resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
-        resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
-            messages.getDateTime(resource.getDateLastModified()));
-        resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
-        resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(messages.getDateTime(resource.getDateCreated()));
-        resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
-        resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
-        resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
-        resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
-        resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
-        resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
-    }
-
-    /**
      * Returns the resource state specific style name.<p>
      *
      * @param resourceItem the resource item
@@ -418,16 +324,8 @@ public class CmsFileTable extends A_CmsCustomComponent {
         String result = "";
         if (resourceItem != null) {
             CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
-                CmsResourceTableColumn.PROPERTY_STATE).getValue();
-            if (state != null) {
-                if (state.isDeleted()) {
-                    result = OpenCmsTheme.STATE_DELETED;
-                } else if (state.isNew()) {
-                    result = OpenCmsTheme.STATE_NEW;
-                } else if (state.isChanged()) {
-                    result = OpenCmsTheme.STATE_CHANGED;
-                }
-            }
+                CmsResourceTableProperty.PROPERTY_STATE).getValue();
+            result = getStateStyle(state);
         }
         return result;
     }
@@ -443,23 +341,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
     }
 
     /**
-     * Fills the resource table.<p>
-     *
-     * @param cms the current CMS context
-     * @param resources the resources which should be displayed in the table
-     */
-    public void fillTable(CmsObject cms, List<CmsResource> resources) {
-
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        m_container.removeAllItems();
-        m_container.removeAllContainerFilters();
-        for (CmsResource resource : resources) {
-            fillItem(cms, resource, wpLocale);
-        }
-        m_fileTable.sort();
-    }
-
-    /**
     * Filters the displayed resources.<p>
     * Only resources where either the resource name, the title or the nav-text contains the given substring are shown.<p>
     *
@@ -471,9 +352,9 @@ public class CmsFileTable extends A_CmsCustomComponent {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(search)) {
             m_container.addContainerFilter(
                 new Or(
-                    new SimpleStringFilter(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME, search, true, false),
-                    new SimpleStringFilter(CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT, search, true, false),
-                    new SimpleStringFilter(CmsResourceTableColumn.PROPERTY_TITLE, search, true, false)));
+                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, search, true, false),
+                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT, search, true, false),
+                    new SimpleStringFilter(CmsResourceTableProperty.PROPERTY_TITLE, search, true, false)));
         }
     }
 
@@ -508,12 +389,12 @@ public class CmsFileTable extends A_CmsCustomComponent {
         CmsFileExplorerSettings fileTableState = new CmsFileExplorerSettings();
 
         fileTableState.setSortAscending(m_fileTable.isSortAscending());
-        fileTableState.setSortColumnId((CmsResourceTableColumn)m_fileTable.getSortContainerPropertyId());
-        List<CmsResourceTableColumn> collapsedCollumns = new ArrayList<CmsResourceTableColumn>();
+        fileTableState.setSortColumnId((CmsResourceTableProperty)m_fileTable.getSortContainerPropertyId());
+        List<CmsResourceTableProperty> collapsedCollumns = new ArrayList<CmsResourceTableProperty>();
         Object[] visibleCols = m_fileTable.getVisibleColumns();
         for (int i = 0; i < visibleCols.length; i++) {
             if (m_fileTable.isColumnCollapsed(visibleCols[i])) {
-                collapsedCollumns.add((CmsResourceTableColumn)visibleCols[i]);
+                collapsedCollumns.add((CmsResourceTableProperty)visibleCols[i]);
             }
         }
         fileTableState.setCollapsedColumns(collapsedCollumns);
@@ -601,7 +482,10 @@ public class CmsFileTable extends A_CmsCustomComponent {
      * @param propertyId the property to edit
      * @param editHandler the edit handler
      */
-    public void startEdit(CmsUUID itemId, CmsResourceTableColumn propertyId, I_CmsFilePropertyEditHandler editHandler) {
+    public void startEdit(
+        CmsUUID itemId,
+        CmsResourceTableProperty propertyId,
+        I_CmsFilePropertyEditHandler editHandler) {
 
         m_editItemId = itemId;
         m_editProperty = propertyId;
@@ -668,7 +552,7 @@ public class CmsFileTable extends A_CmsCustomComponent {
      *
      * @return the edit property id
      */
-    CmsResourceTableColumn getEditProperty() {
+    CmsResourceTableProperty getEditProperty() {
 
         return m_editProperty;
     }
@@ -686,22 +570,6 @@ public class CmsFileTable extends A_CmsCustomComponent {
         m_editProperty = null;
         m_editHandler = null;
 
-    }
-
-    /**
-     * Fills the file item data.<p>
-     *
-     * @param cms the cms context
-     * @param resource the resource
-     * @param locale the workplace locale
-     */
-    private void fillItem(CmsObject cms, CmsResource resource, Locale locale) {
-
-        Item resourceItem = m_container.getItem(resource.getStructureId());
-        if (resourceItem == null) {
-            resourceItem = m_container.addItem(resource.getStructureId());
-        }
-        fillItemDefault(resourceItem, cms, resource, messages, locale);
     }
 
     /**

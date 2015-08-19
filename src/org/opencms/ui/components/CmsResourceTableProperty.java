@@ -57,136 +57,136 @@ import com.vaadin.ui.Component;
 /**
  * Class whose instances contain the static data needed for a table column.<p>
  */
-public class CmsResourceTableColumn {
+public class CmsResourceTableProperty {
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_DATE_CREATED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_DATE_CREATED = new CmsResourceTableProperty(
         "PROPERTY_DATE_CREATED",
         String.class,
         null,
         GUI_INPUT_DATECREATED_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_DATE_EXPIRED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_DATE_EXPIRED = new CmsResourceTableProperty(
         "PROPERTY_DATE_EXPIRED",
         String.class,
         "-",
         GUI_INPUT_DATEEXPIRED_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_DATE_MODIFIED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_DATE_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_DATE_MODIFIED",
         String.class,
         null,
         GUI_INPUT_DATELASTMODIFIED_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_DATE_RELEASED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_DATE_RELEASED = new CmsResourceTableProperty(
         "PROPERTY_DATE_RELEASED",
         String.class,
         "-",
         GUI_INPUT_DATERELEASED_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_IS_FOLDER = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_IS_FOLDER = new CmsResourceTableProperty(
         "PROPERTY_IS_FOLDER",
         Boolean.class,
         null,
         null);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_NAVIGATION_TEXT = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_NAVIGATION_TEXT = new CmsResourceTableProperty(
         "PROPERTY_NAVIGATION_TEXT",
         String.class,
         null,
         GUI_INPUT_NAVTEXT_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_PERMISSIONS = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_PERMISSIONS = new CmsResourceTableProperty(
         "PROPERTY_PERMISSIONS",
         String.class,
         null,
         GUI_INPUT_PERMISSIONS_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_RESOURCE_NAME = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_RESOURCE_NAME = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_NAME",
         String.class,
         null,
         GUI_INPUT_NAME_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_SITE_PATH = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
         "PROPERTY_SITE_PATH",
         String.class,
         null,
         null);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_RESOURCE_TYPE = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_RESOURCE_TYPE = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_TYPE",
         String.class,
         null,
         GUI_INPUT_TYPE_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_SIZE = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_SIZE = new CmsResourceTableProperty(
         "PROPERTY_SIZE",
         Integer.class,
         null,
         GUI_INPUT_SIZE_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_STATE = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_STATE = new CmsResourceTableProperty(
         "PROPERTY_STATE",
         CmsResourceState.class,
         null,
         null);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_STATE_NAME = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_STATE_NAME = new CmsResourceTableProperty(
         "PROPERTY_STATE_NAME",
         String.class,
         null,
         GUI_INPUT_STATE_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_TITLE = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_TITLE = new CmsResourceTableProperty(
         "PROPERTY_TITLE",
         String.class,
         null,
         GUI_INPUT_TITLE_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_TYPE_ICON = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON = new CmsResourceTableProperty(
         "PROPERTY_TYPE_ICON",
         Component.class,
         null,
         "");
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_USER_CREATED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_USER_CREATED = new CmsResourceTableProperty(
         "PROPERTY_USER_CREATED",
         String.class,
         null,
         GUI_INPUT_USERCREATED_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_USER_LOCKED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_USER_LOCKED = new CmsResourceTableProperty(
         "PROPERTY_USER_LOCKED",
         String.class,
         null,
         GUI_INPUT_LOCKEDBY_0);
 
     /** Resoure table property. */
-    public static final CmsResourceTableColumn PROPERTY_USER_MODIFIED = new CmsResourceTableColumn(
+    public static final CmsResourceTableProperty PROPERTY_USER_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_USER_MODIFIED",
         String.class,
         null,
         GUI_INPUT_USERLASTMODIFIED_0);
 
     /** Map to keep track of default columns by name. */
-    private static Map<String, CmsResourceTableColumn> m_columnsByName;
+    private static Map<String, CmsResourceTableProperty> m_columnsByName;
 
     /** The column id. */
     private String m_id;
@@ -208,7 +208,7 @@ public class CmsResourceTableColumn {
      * @param defaultValue the default value
      * @param headerKey the message key for the header
      */
-    public CmsResourceTableColumn(String id, Class<?> columnType, Object defaultValue, String headerKey) {
+    public CmsResourceTableProperty(String id, Class<?> columnType, Object defaultValue, String headerKey) {
         m_id = id;
         m_columnType = columnType;
         m_defaultValue = defaultValue;
@@ -221,7 +221,7 @@ public class CmsResourceTableColumn {
      *
      * @return the default columns
      */
-    public static List<CmsResourceTableColumn> defaultColumns() {
+    public static List<CmsResourceTableProperty> defaultProperties() {
 
         return Arrays.asList(
             PROPERTY_DATE_CREATED,
@@ -248,11 +248,11 @@ public class CmsResourceTableColumn {
      *
      * @return the default columns with their names as keys
      */
-    public static Map<String, CmsResourceTableColumn> getDefaultColumnsByName() {
+    public static Map<String, CmsResourceTableProperty> getDefaultColumnsByName() {
 
         if (m_columnsByName == null) {
             m_columnsByName = Maps.newHashMap();
-            for (CmsResourceTableColumn column : defaultColumns()) {
+            for (CmsResourceTableProperty column : defaultProperties()) {
                 m_columnsByName.put(column.getId(), column);
             }
 
@@ -266,7 +266,7 @@ public class CmsResourceTableColumn {
     @Override
     public boolean equals(Object other) {
 
-        return (other instanceof CmsResourceTableColumn) && ((CmsResourceTableColumn)other).m_id.equals(m_id);
+        return (other instanceof CmsResourceTableProperty) && ((CmsResourceTableProperty)other).m_id.equals(m_id);
     }
 
     /**

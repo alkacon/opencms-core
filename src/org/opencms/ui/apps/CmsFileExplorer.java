@@ -49,7 +49,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
-import org.opencms.ui.components.CmsResourceTableColumn;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
@@ -124,7 +124,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         private CmsUUID m_editId;
 
         /** The edited property. */
-        private CmsResourceTableColumn m_editProperty;
+        private CmsResourceTableProperty m_editProperty;
 
         /** The lock action record. */
         private CmsLockActionRecord m_lockActionRecord;
@@ -135,7 +135,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
          * @param editId the content structure id
          * @param editProperty the property to edit
          */
-        public ContextMenuEditHandler(CmsUUID editId, CmsResourceTableColumn editProperty) {
+        public ContextMenuEditHandler(CmsUUID editId, CmsResourceTableProperty editProperty) {
             m_editId = editId;
             m_editProperty = editProperty;
         }
@@ -183,17 +183,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 CmsObject cms = A_CmsUI.getCmsObject();
                 CmsResource res = cms.readResource(m_editId);
                 try {
-                    if (CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT.equals(m_editProperty)
-                        || CmsResourceTableColumn.PROPERTY_TITLE.equals(m_editProperty)) {
+                    if (CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.equals(m_editProperty)
+                        || CmsResourceTableProperty.PROPERTY_TITLE.equals(m_editProperty)) {
 
                         CmsProperty prop = new CmsProperty(
-                            m_editProperty == CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT
+                            m_editProperty == CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT
                             ? CmsPropertyDefinition.PROPERTY_NAVTEXT
                             : CmsPropertyDefinition.PROPERTY_TITLE,
                             value,
                             null);
                         cms.writePropertyObject(cms.getSitePath(res), prop);
-                    } else if (CmsResourceTableColumn.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
+                    } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(m_editProperty)) {
                         String sourcePath = cms.getSitePath(res);
                         cms.renameResource(
                             sourcePath,
@@ -239,13 +239,13 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 CmsUUID editId = resources.iterator().next().getStructureId();
                 ContextMenuItem editTitle = menu.addItem("Edit title");
                 editTitle.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableColumn.PROPERTY_TITLE));
+                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_TITLE));
                 ContextMenuItem editNavText = menu.addItem("Edit navigation text");
                 editNavText.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableColumn.PROPERTY_NAVIGATION_TEXT));
+                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT));
                 ContextMenuItem editResourceName = menu.addItem("Rename");
                 editResourceName.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableColumn.PROPERTY_RESOURCE_NAME));
+                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_RESOURCE_NAME));
             }
             CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(
                 A_CmsUI.getCmsObject(),
@@ -387,14 +387,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
         });
         m_treeContainer = new HierarchicalContainer();
-        m_treeContainer.addContainerProperty(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME, String.class, null);
-        m_treeContainer.addContainerProperty(CmsResourceTableColumn.PROPERTY_STATE, CmsResourceState.class, null);
-        m_treeContainer.addContainerProperty(CmsResourceTableColumn.PROPERTY_TYPE_ICON, Resource.class, null);
+        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
+        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
+        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
         m_fileTree = new Tree();
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
-        m_fileTree.setItemIconPropertyId(CmsResourceTableColumn.PROPERTY_TYPE_ICON);
-        m_fileTree.setItemCaptionPropertyId(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME);
+        m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON);
+        m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_fileTree.addExpandListener(new ExpandListener() {
 
             private static final long serialVersionUID = 1L;
@@ -647,9 +647,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 Item resourceItem = m_treeContainer.getItem(id);
                 if (resourceItem != null) {
                     // use the root path as name in case of the root item
-                    resourceItem.getItemProperty(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME).setValue(
+                    resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
                         parentId == null ? resource.getRootPath() : resource.getName());
-                    resourceItem.getItemProperty(CmsResourceTableColumn.PROPERTY_STATE).setValue(resource.getState());
+                    resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
                     if (parentId != null) {
                         m_treeContainer.setParent(resource.getStructureId(), parentId);
                     }
@@ -814,11 +814,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 m_fileTable.handleSelection((CmsUUID)event.getItemId());
                 m_fileTable.openContextMenu(event);
             } else if ((event.getPropertyId() == null)
-                || CmsResourceTableColumn.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                 m_fileTable.openContextMenu(event);
             } else {
                 Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                    CmsResourceTableColumn.PROPERTY_IS_FOLDER).getValue();
+                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                 if ((isFolder != null) && isFolder.booleanValue()) {
                     expandCurrentFolder();
                     if (m_fileTree.getItem(event.getItemId()) != null) {
@@ -858,7 +858,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             CmsUUID level = null;
             for (Object id : children) {
                 if (m_treeContainer.getItem(id).getItemProperty(
-                    CmsResourceTableColumn.PROPERTY_RESOURCE_NAME).getValue().equals(pathItems[i])) {
+                    CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).getValue().equals(pathItems[i])) {
                     level = (CmsUUID)id;
                     m_fileTree.expandItem(level);
                     break;
@@ -900,12 +900,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             resourceItem = container.addItem(resource.getStructureId());
         }
         // use the root path as name in case of the root item
-        resourceItem.getItemProperty(CmsResourceTableColumn.PROPERTY_RESOURCE_NAME).setValue(
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
             parentId == null ? resource.getRootPath() : resource.getName());
-        resourceItem.getItemProperty(CmsResourceTableColumn.PROPERTY_STATE).setValue(resource.getState());
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        resourceItem.getItemProperty(CmsResourceTableColumn.PROPERTY_TYPE_ICON).setValue(
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         if (parentId != null) {
             container.setParent(resource.getStructureId(), parentId);
