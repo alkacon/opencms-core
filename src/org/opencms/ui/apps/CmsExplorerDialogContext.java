@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsUUID;
 
@@ -83,7 +84,9 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
         }
         m_window = prepareWindow();
         CmsErrorDialog err = new CmsErrorDialog(error, this);
+        m_window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
         m_window.setContent(err);
+
         A_CmsUI.get().addWindow(m_window);
     }
 

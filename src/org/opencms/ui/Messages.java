@@ -45,6 +45,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHANGE_PW_FIELD2_0 = "GUI_CHANGE_PW_FIELD2_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_0 = "GUI_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_TEXT_0 = "GUI_FORGOT_PASSWORD_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -91,6 +94,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_USER_NOT_FOUND_0 = "GUI_PWCHANGE_USER_NOT_FOUND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_0 = "GUI_RESOURCE_INFO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";

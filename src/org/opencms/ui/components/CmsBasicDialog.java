@@ -29,6 +29,7 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 
 import java.util.List;
@@ -114,7 +115,7 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_infoComponent = new CmsResourceInfo(resources.get(0));
             } else {
 
-                m_infoComponent = new Panel("Resource infos");
+                m_infoComponent = new Panel(Messages.get().getBundle().key(Messages.GUI_RESOURCE_INFO_0));
                 m_infoComponent.addStyleName("v-scrollable");
                 VerticalLayout resourcePanel = new VerticalLayout();
                 ((Panel)m_infoComponent).setContent(resourcePanel);
