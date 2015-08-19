@@ -1,0 +1,68 @@
+### Demo configuration file for the OpenCms git commit tool
+### The configuration file assumes you have a git repository under
+###   /home/user/git/demo/
+### where modules are all stored in the subfolder
+###   /home/user/git/demo/modules/
+### and each module again has a subfolder with it's name, e.g.,
+###   /home/user/git/demo/modules/my.module.one/
+### and the module resources in a subfolder "resources", e.g.,
+###   /home/user/git/demo/modules/my.module.one/resources/
+### which is the place, where the module should be unzipped in before check in.
+###
+### NOTE: To use the git commit tool from inside OpenCms, provide your own configuration
+###       under WEB-INF/git-scripts/. To do so, copy this file (found under WEB-INF/git-scripts)
+###       to "module-checkin.conf" and adjust it according to your needs.
+###
+### NOTE: To use the git commit tool from outside OpenCms, you need to use the
+###       module-checkin.sh script and provide it with an adjusted config file.
+###       Possibly, you want to use the network share module export feature, i.e., set the
+###       MODULE_EXPORT_FOLDER to the share's /modules/export/ folder and choose 
+###       MODULE_EXPORT_MODE 0.
+
+### general settings
+###
+### A list of modules that should be exported and checked in
+DEFAULT_MODULES_TO_EXPORT="my.module.one my.module.two"
+### Flag, indicating if the module's lib/ folder should be removed before the commit
+DEFAULT_EXCLUDE_LIBS=1
+
+### repository specific settings
+###
+### the repository's main folder
+REPOSITORY_HOME=/home/user/git/demo/
+### the subfolder where all module resources are located
+MODULE_PATH=/home/user/workspace/modules-v8/modules/
+### the module specific subfolder for module resources
+MODULE_RESOURCES_SUBFOLDER=resources/
+
+### GIT specific settings
+###
+### The default commit message
+COMMIT_MESSAGE="This is my automatic commit."
+### Flag, indicating if a pull should be performed first
+GIT_PULL=1
+### Flag, indicating if a commit (including add) should be performed automatically
+GIT_COMMIT=1
+### Flag, indicating if a push should be performed in the end
+GIT_PUSH=1
+### Optionally specify private ssh key to be used for the pull and push actions
+#GIT_SSH="/home/user/.ssh/idtest_rsa"
+
+### OpenCms specific settings
+### NOTE: Uncomment these options only if not using the script from inside OpenCms or not
+###       using the default module export folder to get the exported modules.
+###       From inside OpenCms, the default module export folder will be read in mode 1.
+###       From outside OpenCms, the export folder must be specified and mode 0 is the default
+###       mode to read module zip-files.
+###
+
+### The folder where the exported modules should be read from
+#MODULE_EXPORT_FOLDER=/my/OpenCms/mount/modules/export/
+
+### The mode how exported modules are read
+### Mode 0: reads the file "${module}.zip".
+###         Use it to read from the network share's "/modules/export/"-folder.
+### Mode 1: reads the latest version of all files with pattern 
+###         "${module}[\.\-\_]\([0-9]\{1,4\}\.\)\{0,3\}zip".
+###         Use it when you read directly from the modules folder on the server 	
+#MODULE_EXPORT_MODE=0

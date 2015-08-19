@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>9.7.x</opencms_version>
+		<createdate>Wed, 19 Aug 2015 06:43:16 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>10</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.tools.git</name>
+		<nicename><![CDATA[OpenCms Git Support]]></nicename>
+		<class/>
+		<export-mode name="default"/>
+		<description><![CDATA[The module adds a git repository binding to the workplace tools.<br>
+You can configure a git repository and a set of modules that should be controlled by that repository.<br>
+The module allows you to check in the latest version of your modules by simply pressing one button.<br>
+<strong>NOTE: Currently only Linux systems are supported.</strong>]]></description>
+		<version>0.1</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.git/git-scripts/" destination="WEB-INF/git-scripts/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.git/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/workplace/admin/git/"/>
+			<resource uri="/system/modules/org.opencms.workplace.tools.git/"/>
+		</resources>
+		<excluderesources/>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>d17dd45d-44b2-11e5-98fe-a3f182483be7</uuidstructure>
+			<datelastmodified>Mon, 17 Aug 2015 07:37:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Aug 2015 07:37:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>d3bb6889-44b2-11e5-98fe-a3f182483be7</uuidstructure>
+			<datelastmodified>Mon, 17 Aug 2015 07:37:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Aug 2015 07:37:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.git</destination>
+			<type>folder</type>
+			<uuidstructure>2a096900-463c-11e5-a603-a3f182483be7</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2015 06:33:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:33:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.git/git-scripts</destination>
+			<type>folder</type>
+			<uuidstructure>36c5e882-463c-11e5-a603-a3f182483be7</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2015 06:33:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:33:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.git/git-scripts/module-checkin.conf.demo</source>
+			<destination>system/modules/org.opencms.workplace.tools.git/git-scripts/module-checkin.conf.demo</destination>
+			<type>plain</type>
+			<uuidstructure>49e45145-463c-11e5-a603-a3f182483be7</uuidstructure>
+			<uuidresource>49e45146-463c-11e5-a603-a3f182483be7</uuidresource>
+			<datelastmodified>Wed, 19 Aug 2015 06:34:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:34:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo config for the module check in]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.git/git-scripts/module-checkin.sh</source>
+			<destination>system/modules/org.opencms.workplace.tools.git/git-scripts/module-checkin.sh</destination>
+			<type>plain</type>
+			<uuidstructure>49f76418-463c-11e5-a603-a3f182483be7</uuidstructure>
+			<uuidresource>49f76419-463c-11e5-a603-a3f182483be7</uuidresource>
+			<datelastmodified>Wed, 19 Aug 2015 06:34:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:34:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Module check in script]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.git/lib</destination>
+			<type>folder</type>
+			<uuidstructure>5dc06f56-463d-11e5-a603-a3f182483be7</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2015 06:41:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:41:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.git/lib/org.opencms.workplace.tools.git.jar</source>
+			<destination>system/modules/org.opencms.workplace.tools.git/lib/org.opencms.workplace.tools.git.jar</destination>
+			<type>binary</type>
+			<uuidstructure>6f3c2499-463d-11e5-a603-a3f182483be7</uuidstructure>
+			<uuidresource>6f3c249a-463d-11e5-a603-a3f182483be7</uuidresource>
+			<datelastmodified>Wed, 19 Aug 2015 06:42:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2015 06:42:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<uuidstructure>825fb7db-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/git</destination>
+			<type>folder</type>
+			<uuidstructure>a046e8db-4187-11e5-a62d-df8540334f02</uuidstructure>
+			<datelastmodified>Thu, 13 Aug 2015 06:51:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Aug 2015 06:50:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Git Support]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/git/checkin.jsp</source>
+			<destination>system/workplace/admin/git/checkin.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>cbcd2ebe-4187-11e5-a62d-df8540334f02</uuidstructure>
+			<uuidresource>cbcd2ebf-4187-11e5-a62d-df8540334f02</uuidresource>
+			<datelastmodified>Wed, 19 Aug 2015 05:49:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Aug 2015 06:52:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
