@@ -46,6 +46,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
@@ -97,7 +98,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -151,7 +151,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                     CmsResource res = cms.readResource(m_editId);
                     cms.unlockResource(res);
                 } catch (CmsException e) {
-                    //TODO: show error dialog
+                    LOG.warn("Failed to unlock resource " + m_editId.toString(), e);
                 }
             }
         }
@@ -167,7 +167,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
                 m_fileTable.startEdit(m_editId, m_editProperty, this);
             } catch (CmsException e) {
-                //TODO: show error dialog
+                CmsErrorDialog.showErrorDialog(e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
 
@@ -198,7 +199,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
                 }
             } catch (CmsException e) {
-                //TODO: show error dialog
+                LOG.error("Exception while saving changed " + m_editProperty + " to resource " + m_editId, e);
+                CmsErrorDialog.showErrorDialog(e);
             }
 
         }
@@ -303,7 +305,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
+    static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -581,7 +583,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             List<CmsResource> folderResources = cms.readResources(sitePath, FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, folderResources);
         } catch (CmsException e) {
-            Notification.show(e.getMessage());
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -601,7 +604,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             m_fileTree.expandItem(siteRoot.getStructureId());
         } catch (CmsException e) {
-            LOG.error("Error while populating file explorer tree", e);
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
     }
@@ -648,6 +652,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 m_treeContainer.removeItem(id);
                 LOG.debug(e.getLocalizedMessage(), e);
             } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(e);
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
@@ -718,8 +723,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
         } catch (CmsException e) {
-            Notification.show(e.getMessage());
-            e.printStackTrace();
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -743,7 +748,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
-            LOG.error("Failed to read eplorer settings", e);
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
