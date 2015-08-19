@@ -113,10 +113,12 @@ public class CmsBasicDialog extends VerticalLayout {
         if ((resources != null) && !resources.isEmpty()) {
             if (resources.size() == 1) {
                 m_infoComponent = new CmsResourceInfo(resources.get(0));
+                m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
 
                 m_infoComponent = new Panel(Messages.get().getBundle().key(Messages.GUI_RESOURCE_INFO_0));
                 m_infoComponent.addStyleName("v-scrollable");
+                m_infoComponent.setSizeFull();
                 VerticalLayout resourcePanel = new VerticalLayout();
                 ((Panel)m_infoComponent).setContent(resourcePanel);
                 resourcePanel.setSpacing(true);
@@ -124,8 +126,14 @@ public class CmsBasicDialog extends VerticalLayout {
                 for (CmsResource resource : resources) {
                     resourcePanel.addComponent(new CmsResourceInfo(resource));
                 }
+                m_mainPanel.addComponent(m_infoComponent, 0);
+                m_mainPanel.setExpandRatio(m_infoComponent, 1);
+
+                // reset expand ratio of the content panel
+                m_contentPanel.setSizeUndefined();
+                m_contentPanel.setWidth("100%");
+                m_mainPanel.setExpandRatio(m_contentPanel, 0);
             }
-            m_mainPanel.addComponent(m_infoComponent, 0);
 
         }
     }
@@ -183,7 +191,7 @@ public class CmsBasicDialog extends VerticalLayout {
     private void enableMaxHeight() {
 
         // use the window height minus an offset for the window header and some spacing
-        int maxHeight = A_CmsUI.get().getPage().getBrowserWindowHeight() - 60;
+        int maxHeight = (int)((0.95 * A_CmsUI.get().getPage().getBrowserWindowHeight()) - 40);
         new CmsMaxHeightExtension(this, maxHeight);
     }
 }
