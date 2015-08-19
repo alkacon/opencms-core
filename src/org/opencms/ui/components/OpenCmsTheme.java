@@ -60,6 +60,15 @@ public class OpenCmsTheme {
     public static final String COLOR_TRANSPARENT = "o-color-transparent";
 
     /** CSS style name. */
+    public static final String DIALOG = "o-dialog";
+
+    /** CSS style name. */
+    public static final String DIALOG_BUTTON_BAR = "o-dialog-button-bar";
+
+    /** CSS style name. */
+    public static final String DIALOG_CONTENT = "o-dialog-content";
+
+    /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
 
     /** CSS style name. */

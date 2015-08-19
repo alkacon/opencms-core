@@ -28,6 +28,8 @@
 package org.opencms.ui.components;
 
 import org.opencms.file.CmsResource;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 
 import java.util.List;
 
@@ -65,13 +67,13 @@ public class CmsBasicDialog extends VerticalLayout {
      * Creates new instance.<p>
      */
     public CmsBasicDialog() {
-        addStyleName("o-dialog");
+        addStyleName(OpenCmsTheme.DIALOG);
         setMargin(true);
         setSpacing(true);
         setWidth("100%");
 
         m_mainPanel = new VerticalLayout();
-        m_mainPanel.addStyleName("o-dialog-content");
+        m_mainPanel.addStyleName(OpenCmsTheme.DIALOG_CONTENT);
         m_mainPanel.setSpacing(true);
         m_mainPanel.setSizeFull();
 
@@ -90,9 +92,10 @@ public class CmsBasicDialog extends VerticalLayout {
 
         m_buttonPanel = new HorizontalLayout();
         m_buttonPanel.setSpacing(true);
-        m_buttonPanel.addStyleName("o-dialog-button-bar");
+        m_buttonPanel.addStyleName(OpenCmsTheme.DIALOG_BUTTON_BAR);
         addComponent(m_buttonPanel);
         setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
+        enableMaxHeight();
     }
 
     /**
@@ -170,5 +173,16 @@ public class CmsBasicDialog extends VerticalLayout {
     void addButton(Component button) {
 
         m_buttonPanel.addComponent(button);
+    }
+
+    /**
+     * Adds the max height extension to the dialog panel.<p>
+     */
+    @SuppressWarnings("unused")
+    private void enableMaxHeight() {
+
+        // use the window height minus an offset for the window header and some spacing
+        int maxHeight = A_CmsUI.get().getPage().getBrowserWindowHeight() - 60;
+        new CmsMaxHeightExtension(this, maxHeight);
     }
 }
