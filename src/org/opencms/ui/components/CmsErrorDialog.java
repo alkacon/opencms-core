@@ -36,18 +36,16 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog used to display error stack traces in the workplace.<p>
  */
-public class CmsErrorDialog extends GridLayout {
+public class CmsErrorDialog extends CmsBasicDialog {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -85,7 +83,6 @@ public class CmsErrorDialog extends GridLayout {
         m_icon.addStyleName(ValoTheme.LABEL_HUGE);
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
-        setComponentAlignment(m_okButton, Alignment.MIDDLE_RIGHT);
         m_errorMessage.setValue(t.getLocalizedMessage());
         m_okButton.addClickListener(new ClickListener() {
 

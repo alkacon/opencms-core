@@ -4,19 +4,21 @@
 		<meta name="package-mapping" content="o:org.opencms.ui.components" />
 	</head>
 	<body>
- 			<v-grid-layout _id="m_grid" spacing margin size-full>
- 				<row>
- 					<column><v-label width="32px" _id="m_icon" /></column>
- 					<column expand="1"><v-label _id="m_errorMessage" /></column>
-	 				<column><v-button _id="m_okButton" width="150px">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button></column>
- 				</row>
- 				<row expand="1">
-	  				<column colspan="3">
-	  					<v-panel _id="m_panel" scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)">
-		  					<v-label _id="m_errorLabel" width="-1px" />
-		  				</v-panel>
-	  				</column>
- 				</row>
- 			</v-grid-layout>
+		<o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout size-full>
+  					<v-horizontal-layout height="60px">
+						<v-label width="32px" _id="m_icon" />
+						<v-label _id="m_errorMessage" :expand />
+					</v-horizontal-layout>
+					<v-panel _id="m_panel" scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)" :expand>
+		  				<v-label _id="m_errorLabel" width="-1px" />
+		  			</v-panel>
+		  		</v-vertical-layout>
+			</content>
+			<buttons>
+  				<v-button _id="m_okButton" width="150px">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
 	</body>
 </html>
