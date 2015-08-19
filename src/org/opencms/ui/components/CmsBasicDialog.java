@@ -50,13 +50,13 @@ public class CmsBasicDialog extends VerticalLayout {
     private static final long serialVersionUID = 1L;
 
     /** The main panel. */
-    private VerticalLayout m_mainPanel = new VerticalLayout();
+    private VerticalLayout m_mainPanel;
 
     /** The content panel. */
     private Panel m_contentPanel;
 
     /** The button bar. */
-    private HorizontalLayout m_buttonPanel = new HorizontalLayout();
+    private HorizontalLayout m_buttonPanel;
 
     /** The resource info component. */
     private Component m_infoComponent;
@@ -69,21 +69,30 @@ public class CmsBasicDialog extends VerticalLayout {
         setMargin(true);
         setSpacing(true);
         setWidth("100%");
-        Panel panel = new Panel();
-        panel.setContent(m_mainPanel);
+
+        m_mainPanel = new VerticalLayout();
         m_mainPanel.addStyleName("o-dialog-content");
         m_mainPanel.setSpacing(true);
-        addComponent(panel);
+        m_mainPanel.setSizeFull();
+
         m_contentPanel = new Panel();
+        m_contentPanel.setSizeFull();
+        m_contentPanel.addStyleName("v-scrollable");
 
         m_mainPanel.addComponent(m_contentPanel);
         m_mainPanel.setExpandRatio(m_contentPanel, 3);
-        addComponent(m_buttonPanel);
+
+        Panel panel = new Panel();
+        panel.setContent(m_mainPanel);
+        panel.setSizeFull();
+        addComponent(panel);
         setExpandRatio(panel, 1);
-        // m_contentPanel.setHeight("100%");
+
+        m_buttonPanel = new HorizontalLayout();
         m_buttonPanel.setSpacing(true);
-        setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
         m_buttonPanel.addStyleName("o-dialog-button-bar");
+        addComponent(m_buttonPanel);
+        setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
     }
 
     /**
