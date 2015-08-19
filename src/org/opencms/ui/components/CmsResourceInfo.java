@@ -67,10 +67,11 @@ public class CmsResourceInfo extends Panel {
         this();
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
+        resUtil.setAbbrevLength(100);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         m_topText.setValue(resUtil.getGalleryTitle(locale));
-        m_bottomText.setValue(resUtil.getGalleryDescription(locale));
+        m_bottomText.setValue(resUtil.getPath());
         m_icon.initContent(
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
             resUtil.getLockState(),
@@ -96,7 +97,7 @@ public class CmsResourceInfo extends Panel {
      * Constructor.<p>
      */
     private CmsResourceInfo() {
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
 
+        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
     }
 }

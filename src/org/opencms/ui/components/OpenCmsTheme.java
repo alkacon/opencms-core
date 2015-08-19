@@ -87,6 +87,12 @@ public class OpenCmsTheme {
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
     /** CSS style name. */
+    public static final String REDUCED_MARGIN = "o-reduced-margin";
+
+    /** CSS style name. */
+    public static final String REDUCED_SPACING = "o-reduced-spacing";
+
+    /** CSS style name. */
     public static final String RESOURCE_ICON = "o-resource-icon";
 
     /** CSS style name. */

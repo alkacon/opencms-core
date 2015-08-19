@@ -121,6 +121,8 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_infoComponent.setSizeFull();
                 VerticalLayout resourcePanel = new VerticalLayout();
                 ((Panel)m_infoComponent).setContent(resourcePanel);
+                resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
+                resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
                 resourcePanel.setSpacing(true);
                 resourcePanel.setMargin(true);
                 for (CmsResource resource : resources) {

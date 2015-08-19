@@ -37,8 +37,14 @@ $red-cyan:          mix($red, $cyan);
 $green:             mix($orange, $cyan);
 
 $o-layout-margin: 8px;
-$o-window-margin: 5px;
-$o-layout-spacing: 15px;
+$o-layout-reduced-margin: 5px;
+$o-layout-spacing: 10px;
+$o-layout-reduced-spacing: $o-layout-reduced-margin;
+
+$toolbar-padding: 20px;
+$toolbar-height: 52px;
+$app-icon-size: 32px;
+$app-icon-size-small: 24px;
 
 /* Valo variables - changes to the default valo variables */
 
@@ -58,10 +64,8 @@ $v-layout-margin-right: $o-layout-margin;
 $v-layout-margin-bottom: $o-layout-margin;
 $v-layout-margin-left: $o-layout-margin;
 
-$v-layout-spacing-top: $o-layout-spacing;
-$v-layout-spacing-right: $o-layout-spacing;
-$v-layout-spacing-bottom: $o-layout-spacing;
-$v-layout-spacing-left: $o-layout-spacing;
+$v-layout-spacing-vertical: $o-layout-spacing;
+$v-layout-spacing-horizontal: $o-layout-spacing;
 
 
 @import "../valo/valo";

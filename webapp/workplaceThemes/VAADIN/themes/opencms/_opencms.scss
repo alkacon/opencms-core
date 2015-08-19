@@ -28,21 +28,36 @@
  	  @include valo-gradient($v-window-background-color);
  	 }
  	 
- 	 .o-dialog > .v-spacing {
- 	 	height: $o-window-margin;
+ 	 .o-dialog > .v-spacing, .o-dialog > .v-expand> .v-spacing {
+ 	 	height: $o-layout-reduced-margin;
  	 }
  	 
  	 .o-dialog-content, .v-window-contents > .v-scrollable > .o-dialog {
- 	 	padding: $o-window-margin;
+ 	 	padding: $o-layout-reduced-margin;
  	 }
   }
   
+  .o-reduced-spacing > .v-spacing{
+  	height: $o-layout-reduced-spacing;
+  	width: $o-layout-reduced-spacing;
+  }
   
-  $toolbar-padding: 20px;
-  $toolbar-height: 52px;
-  $app-icon-size: 32px;
-  $app-icon-size-small: 24px;
-
+ .v-panel-content > .v-margin-left.o-reduced-margin {
+  	padding-left: $o-layout-reduced-margin;
+  }
+  
+  .v-panel-content > .v-margin-top.o-reduced-margin {
+  	padding-top: $o-layout-reduced-margin;
+  }
+  
+  .v-panel-content > .v-margin-right.o-reduced-margin {
+  	padding-right: $o-layout-reduced-margin;
+  }
+  
+  .v-panel-content > .v-margin-bottom.o-reduced-margin {
+  	padding-bottom: $o-layout-reduced-margin;
+  }
+  
   .o-responsive{
   	display: block;
   	background: #ffffff;
