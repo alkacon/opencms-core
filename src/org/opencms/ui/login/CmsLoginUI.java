@@ -233,7 +233,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             page = resolver.resolveMacros(page);
             return page;
         } catch (Exception e) {
-            System.out.println("Error");
+            LOG.error("Failed to display login dialog.", e);
             return "<!--Error-->";
         }
     }
@@ -250,7 +250,6 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
      */
     public static String generateLoginHtmlFragment(CmsObject cms, VaadinRequest request) throws IOException {
 
-        //   Parameters params = CmsLoginHelper.getLoginParameters(cms, (HttpServletRequest)request, request.getLocale());
         LoginParameters parameters = CmsLoginHelper.getLoginParameters(cms, (HttpServletRequest)request, true);
         request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, parameters);
         byte[] pageBytes;
@@ -386,7 +385,6 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-
     }
 
     /**
@@ -418,6 +416,10 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     protected void init(VaadinRequest request) {
 
         LoginParameters params = (LoginParameters)(request.getWrappedSession().getAttribute(INIT_DATA_SESSION_ATTR));
+        if (params == null) {
+            params = CmsLoginHelper.getLoginParameters(getCmsObject(), (HttpServletRequest)request, true);
+            request.getWrappedSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
+        }
         VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
         m_controller = new CmsLoginController(m_adminCms, params);
         m_controller.setUi(this);
