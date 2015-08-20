@@ -585,6 +585,7 @@ public class CmsFileTable extends CmsResourceTable {
             fillItem(cms, resource, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
         } catch (CmsVfsResourceNotFoundException e) {
             m_container.removeItem(itemId);
+            LOG.debug("Failed to update file table item, removing it from view.", e);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

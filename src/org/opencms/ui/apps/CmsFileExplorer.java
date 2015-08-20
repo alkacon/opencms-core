@@ -688,6 +688,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /**
      * Creates the dialog context for dialogs opened from the context menu.<p>
      *
+     * @param item the context menu item
+     *
      * @return the dialog context
      */
     protected I_CmsDialogContext createDialogContext(I_CmsContextMenuItem item) {
@@ -808,7 +810,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         if (m_fileTable.isEditing()) {
             m_fileTable.stopEdit();
 
-        } else if (!event.isCtrlKey()) {
+        } else if (!event.isCtrlKey() && !event.isShiftKey()) {
             // don't interfere with multi-selection using control key
             if (event.getButton().equals(MouseButton.RIGHT)) {
                 m_fileTable.handleSelection((CmsUUID)event.getItemId());
