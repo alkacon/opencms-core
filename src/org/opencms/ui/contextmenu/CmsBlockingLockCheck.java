@@ -33,9 +33,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsLockedResourcesList;
+import org.opencms.util.CmsUUID;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -85,12 +86,20 @@ public class CmsBlockingLockCheck implements I_CmsContextMenuAction {
         if (blocked.isEmpty()) {
             m_nextAction.executeAction(context);
         } else {
-            CmsLockedResourcesList lockedResourcesList = new CmsLockedResourcesList(cms, blocked);
-            CmsBasicDialog dialog = new CmsBasicDialog();
-            dialog.setContent(lockedResourcesList);
+
+            CmsLockedResourcesList dialog = new CmsLockedResourcesList(cms, blocked, new Runnable() {
+
+                public void run() {
+
+                    List<CmsUUID> noStructureIds = Collections.emptyList();
+                    context.finish(noStructureIds);
+                }
+
+            });
+
             context.start(
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCKS_0),
-                lockedResourcesList);
+                dialog);
         }
     }
 

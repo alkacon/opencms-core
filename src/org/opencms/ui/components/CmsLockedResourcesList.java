@@ -29,23 +29,22 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.ui.CmsVaadinUtils;
 
 import java.util.List;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.VerticalLayout;
 
-public class CmsLockedResourcesList extends CustomComponent {
+public class CmsLockedResourcesList extends CmsBasicDialog {
 
     private CmsFileTable m_table = new CmsFileTable();
     private VerticalLayout m_layout = new VerticalLayout();
 
-    public CmsLockedResourcesList(CmsObject cms, List<CmsResource> resources) {
-        m_layout.addComponent(m_table);
-        Button okButton = new Button("OK");
-        m_layout.addComponent(okButton);
-        setCompositionRoot(m_layout);
-        m_table.fillTable(cms, resources);
+    public CmsLockedResourcesList(CmsObject cms, List<CmsResource> resources, Runnable nextAction) {
+        Button okButton = new Button(CmsVaadinUtils.messageOk());
+        okButton.addClickListener(CmsVaadinUtils.createClickListener(nextAction));
+        addButton(okButton);
+        displayResourceInfo(resources);
     }
 }

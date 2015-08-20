@@ -152,6 +152,16 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
+     * Adds a button to the button bar.<p>
+     *
+     * @param button the button to add
+     */
+    public void addButton(Component button) {
+
+        m_buttonPanel.addComponent(button);
+    }
+
+    /**
      * Displays the resource infos panel.<p>
      *
      * @param resources the resources
@@ -226,16 +236,6 @@ public class CmsBasicDialog extends VerticalLayout {
         if (content instanceof Layout.MarginHandler) {
             ((Layout.MarginHandler)content).setMargin(true);
         }
-    }
-
-    /**
-     * Adds a button to the button bar.<p>
-     *
-     * @param button the button to add
-     */
-    void addButton(Component button) {
-
-        m_buttonPanel.addComponent(button);
     }
 
     /**

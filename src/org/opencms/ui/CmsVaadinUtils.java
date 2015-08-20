@@ -132,6 +132,26 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Message accessior function.<p>
+     *
+     * @return the message for Cancel buttons
+     */
+    public static String messageCancel() {
+
+        return getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0);
+    }
+
+    /**
+     * Message accessor function.<p>
+     *
+     * @return the message for OK buttons
+     */
+    public static String messageOk() {
+
+        return getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0);
+    }
+
+    /**
      * Reads the declarative design for a component and localizes it using a messages object.<p>
      *
      * The design will need to be located in the same directory as the component's class and have '.html' as a file extension.
