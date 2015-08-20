@@ -33,8 +33,17 @@ import org.opencms.ui.Messages;
 import com.vaadin.shared.ui.datefield.Resolution;
 import com.vaadin.ui.PopupDateField;
 
+/**
+ * Convenience subclass of PopupDateField which comes preconfigured with a resolution and validation error message.<p>
+ */
 public class CmsDateField extends PopupDateField {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance.<p<
+     */
     public CmsDateField() {
         super();
         setResolution(Resolution.MINUTE);
