@@ -4,10 +4,10 @@
 		<meta name="package-mapping" content="o:org.opencms.ui.components" />
 	</head>
 	<body>
-  		<v-panel style-name="o-resource-info">
-  			<v-horizontal-layout spacing margin-left="true" margin-right="true">
-  				<o-cms-resource-icon _id="m_icon" :middle />
-  				<v-vertical-layout :middle>
+  		<v-panel style-name="o-resource-info" height="40px">
+  			<v-horizontal-layout spacing size-full>
+  				<o-cms-resource-icon _id="m_icon" :middle width="32px"/>
+  				<v-vertical-layout :middle :expand height="100%">
   					<v-label _id="m_topText" style-name="bold" />
   					<v-label _id="m_bottomText" style-name="tiny" />
   				</v-vertical-layout>

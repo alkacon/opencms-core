@@ -37,7 +37,8 @@ $red-cyan:          mix($red, $cyan);
 $green:             mix($orange, $cyan);
 
 $o-layout-margin: 8px;
-$o-layout-reduced-margin: 5px;
+$o-layout-window-margin: 5px;
+$o-layout-reduced-margin: 2px;
 $o-layout-spacing: 10px;
 $o-layout-reduced-spacing: $o-layout-reduced-margin;
 

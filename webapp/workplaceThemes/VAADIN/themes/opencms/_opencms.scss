@@ -29,11 +29,11 @@
  	 }
  	 
  	 .o-dialog > .v-spacing, .o-dialog > .v-expand> .v-spacing {
- 	 	height: $o-layout-reduced-margin;
+ 	 	height: $o-layout-window-margin;
  	 }
  	 
  	 .o-dialog-content, .v-window-contents > .v-scrollable > .o-dialog {
- 	 	padding: $o-layout-reduced-margin;
+ 	 	padding: $o-layout-window-margin;
  	 }
   }
   
@@ -110,14 +110,15 @@
   
   .o-resource-icon{
   	display: inline-block;
-  	height: 24px;
-  	width: 24px !important;
+  	height: 32px;
+  	width: 32px !important;
   	position: relative;
+  	padding: 4px;
   	
   	.o-lock-shared, .o-lock-user, .o-lock-other{
   		position: absolute;
-  		bottom: -4px;
-  		right: -4px;
+  		bottom: 0;
+  		right: 0;
   		height:16px;
   		width: 16px;
   		color: transparent;
@@ -138,8 +139,8 @@
 	  	width: 16px;
 	  	color: transparent;
 	  	position: absolute;
-	  	top: -4px;
-	  	right: -4px;
+	  	top: 0;
+	  	right: 0;
 	  	z-index:2;
 	}
 	  
@@ -152,10 +153,19 @@
 	}
   }
   
-  .v-panel.o-resource-info{
-  	@include valo-gradient(darken($v-background-color,4%));
+  .v-table-cell-wrapper > .v-widget.o-resource-icon {
+  	margin-top: 0;
+  	margin-bottom: 0;
   }
   
+  .v-panel.o-resource-info{
+  	@include valo-gradient(darken($v-background-color,4%));
+  	
+  	.v-panel-content-o-resource-info > .v-horizontallayout {
+  		padding-left: 4px;
+  	}
+  }
+    
   .o-app-info{
   	display: block;
   	width: 100%;
