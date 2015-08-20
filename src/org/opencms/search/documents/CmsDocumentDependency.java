@@ -786,18 +786,18 @@ public final class CmsDocumentDependency {
             }
             // add the main document as dependency for this attachment
             addDependency(m_mainDocument);
-        }
-        for (CmsDocumentDependency var : getVariants()) {
-            String mainFileName = getMainDocument().getDocumentName();
-            if (getMainDocument().getDocumentSuffix() != null) {
-                mainFileName += getMainDocument().getDocumentSuffix();
-            }
-            if (mainFileName.equals(var.getResource().getRootPath())) {
-                setType(DependencyType.variant);
-                break;
-            } else {
-                setType(DependencyType.document);
-                break;
+            for (CmsDocumentDependency var : getVariants()) {
+                String mainFileName = getMainDocument().getDocumentName();
+                if (getMainDocument().getDocumentSuffix() != null) {
+                    mainFileName += getMainDocument().getDocumentSuffix();
+                }
+                if (mainFileName.equals(var.getResource().getRootPath())) {
+                    setType(DependencyType.variant);
+                    break;
+                } else {
+                    setType(DependencyType.document);
+                    break;
+                }
             }
         }
     }
