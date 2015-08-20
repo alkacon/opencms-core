@@ -202,17 +202,18 @@
     		font-weight: bold;
     		width: auto !important;
     		border-radius: $v-border-radius;
-    		margin: 6px 20px 6px 2px;
-		    padding: 4px 12px;
+    		padding: 4px 12px;
 		    color: $gray-lighter;
 		    @include valo-gradient($gray-darker);
     	}
   	}
   	
   	.o-toolbar-center{
-  		display: inline-block;
-  		width: auto;
-  		position: relative;
+  		display: block;
+  		position: absolute;
+  		left: 0;
+  		right:0;
+  		text-align: center;
   		
   		.o-toolbar-logo{
   			display: inline-block;

@@ -34,6 +34,7 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
@@ -88,7 +89,8 @@ public class CmsToolBar extends CssLayout {
         m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
         m_itemsRight.addComponent(createDropDown());
         m_itemsRight.addComponent(createButton(FontAwesome.USER));
-
+        // the app indicator will be reattached in case the app title is set
+        m_itemsLeft.removeComponent(m_appIndicator);
     }
 
     /**
@@ -132,6 +134,10 @@ public class CmsToolBar extends CssLayout {
     public void clearButtonsLeft() {
 
         m_itemsLeft.removeAllComponents();
+        // in case the app title is set, make sure to keep the label in the button bar
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_appIndicator.getValue())) {
+            m_itemsLeft.addComponent(m_appIndicator);
+        }
     }
 
     /**
@@ -149,7 +155,14 @@ public class CmsToolBar extends CssLayout {
      */
     public void setAppTitle(String appTitle) {
 
-        m_appIndicator.setValue(appTitle);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appTitle)) {
+            m_appIndicator.setValue(appTitle);
+            if (m_itemsLeft.getComponentIndex(m_appIndicator) == -1) {
+                m_itemsLeft.addComponent(m_appIndicator, 0);
+            }
+        } else {
+            m_itemsLeft.removeComponent(m_appIndicator);
+        }
     }
 
     /**
