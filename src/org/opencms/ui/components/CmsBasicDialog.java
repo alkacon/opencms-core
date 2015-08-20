@@ -177,7 +177,6 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_infoComponent = new CmsResourceInfo(resources.get(0));
                 m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
-
                 m_infoComponent = new Panel(Messages.get().getBundle().key(Messages.GUI_RESOURCE_INFO_0));
                 m_infoComponent.addStyleName("v-scrollable");
                 m_infoComponent.setSizeFull();

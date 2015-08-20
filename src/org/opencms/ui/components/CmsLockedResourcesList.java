@@ -36,15 +36,32 @@ import java.util.List;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Widget used to display a list of locked resources.<p<
+ */
 public class CmsLockedResourcesList extends CmsBasicDialog {
 
-    private CmsFileTable m_table = new CmsFileTable();
-    private VerticalLayout m_layout = new VerticalLayout();
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
+    /** The box containing the individual widgets for locked resources. */
+    private VerticalLayout m_resourceBox;
+
+    /** The OK button. */
+    private Button m_okButton;
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param cms the CMS context
+     * @param resources the locked resources to display
+     * @param nextAction the action to execute after clicking the OK button
+     */
     public CmsLockedResourcesList(CmsObject cms, List<CmsResource> resources, Runnable nextAction) {
-        Button okButton = new Button(CmsVaadinUtils.messageOk());
-        okButton.addClickListener(CmsVaadinUtils.createClickListener(nextAction));
-        addButton(okButton);
-        displayResourceInfo(resources);
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        m_okButton.addClickListener(CmsVaadinUtils.createClickListener(nextAction));
+        for (CmsResource resource : resources) {
+            m_resourceBox.addComponent(new CmsResourceInfo(resource));
+        }
     }
 }

@@ -48,6 +48,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_TEXT_0 = "GUI_FORGOT_PASSWORD_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
