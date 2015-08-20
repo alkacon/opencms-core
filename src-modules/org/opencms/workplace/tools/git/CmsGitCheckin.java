@@ -67,12 +67,16 @@ public class CmsGitCheckin extends CmsJspBean {
     private static final String DEFAULT_SCRIPT_FILENAME = "module-checkin.sh";
     /** The variable under which the default modules are listed in the configuration file. */
     private static final String DEFAULT_MODULES_TO_EXPORT = "DEFAULT_MODULES_TO_EXPORT";
-    /** The variable under which the default pull mode is set. */
-    private static final String DEFAULT_PULL_MODE = "GIT_PULL";
+    /** The variable under which the default pull mode is set for pulling before any other action. */
+    private static final String DEFAULT_PULL_MODE_BEFORE = "GIT_PULL_BEFORE";
+    /** The variable under which the default pull mode is set for pulling after the commit. */
+    private static final String DEFAULT_PULL_MODE_AFTER = "GIT_PULL_AFTER";
     /** The variable under which the default push mode is set. */
     private static final String DEFAULT_PUSH_MODE = "GIT_PUSH";
     /** The variable under which the default commit mode is set. */
     private static final String DEFAULT_COMMIT_MODE = "GIT_COMMIT";
+    /** The variable under which the default commit mode is set. */
+    private static final String DEFAULT_IGNORE_UNCLEAN = "GIT_IGNORE_UNCLEAN";
     /** The variable under which the repository path is set. */
     private static final String DEFAULT_REPOSITORY_PATH = "REPOSITORY_HOME";
     /** The variable under which the export path is set. */
@@ -101,7 +105,9 @@ public class CmsGitCheckin extends CmsJspBean {
     /** The modules that should really be exported and checked in. */
     private Collection<String> m_modulesToExport;
     /** The pull mode as configured. */
-    private boolean m_defaultPullMode;
+    private boolean m_defaultPullModeBefore;
+    /** The pull mode as configured. */
+    private boolean m_defaultPullModeAfter;
     /** The push mode as configured. */
     private boolean m_defaultPushMode;
     /** The export mode as configured - is ignored if the system export folder is chosen. */
@@ -116,18 +122,28 @@ public class CmsGitCheckin extends CmsJspBean {
     private String m_defaultCommitMessage = "Autocommit of exported modules.";
     /** Flag, indicating if the lib/ folders of the modules should be removed before the commit. */
     private boolean m_defaultExcludeLibs;
-    /** The default commit mode */
+    /** Flag, indicating if execution of the script should go on for an unclean repository. */
+    private boolean m_defaultIgnoreUnclean;
+    /** The default commit mode. */
     private boolean m_defaultCommitMode;
     /** Flag, indicating if an automatic pull should be performed first. */
-    private Boolean m_autoPull;
+    private Boolean m_autoPullBefore;
+    /** Flag, indicating if an automatic pull should be performed after commit. */
+    private Boolean m_autoPullAfter;
     /** Flag, indicating if an automatic push should be performed in the end. */
     private Boolean m_autoPush;
     /** The commit message. */
     private String m_commitMessage;
-    /** The commit mode */
+    /** The commit mode. */
     private Boolean m_commitMode;
     /** Flag, indicating if the lib/ folder of the modules should be deleted before the commit. */
     private Boolean m_excludeLibs;
+    /** Flag, indicating if execution of the script should go on for an unclean repository. */
+    private Boolean m_ignoreUnclean;
+    /** Flag, indicating if reset on ${origin}/${branch} should be performed. */
+    private boolean m_resetRemoteHead;
+    /** Flag, indicating if reset on HEAD should be performed. */
+    private boolean m_resetHead;
 
     /**
      * Default constructor. Initializing member variables with default values.
@@ -196,12 +212,20 @@ public class CmsGitCheckin extends CmsJspBean {
         return m_defaultCommitMode;
     }
 
-    /** Returns a flag, indicating if automatic pulling is enabled by default.
-     * @return a flag, indicating if automatic pulling is enabled by default.
+    /** Returns a flag, indicating if automatic pulling after the commit is enabled by default.
+     * @return a flag, indicating if automatic pulling after the commit is enabled by default.
      */
-    public boolean getDefaultAutoPull() {
+    public boolean getDefaultAutoPullAfter() {
 
-        return m_defaultPullMode;
+        return m_defaultPullModeAfter;
+    }
+
+    /** Returns a flag, indicating if automatic pulling first is enabled by default.
+     * @return a flag, indicating if automatic pulling first is enabled by default.
+     */
+    public boolean getDefaultAutoPullBefore() {
+
+        return m_defaultPullModeBefore;
     }
 
     /** Returns a flag, indicating if automatic pushing is enabled by default.
@@ -226,6 +250,14 @@ public class CmsGitCheckin extends CmsJspBean {
     public boolean getDefaultExcludeLibs() {
 
         return m_defaultExcludeLibs;
+    }
+
+    /** Returns the default ignore-unclean flag.
+     * @return the default ignore-unclean flag.
+     */
+    public boolean getDefaultIngoreUnclean() {
+
+        return m_defaultIgnoreUnclean;
     }
 
     /** Returns the export mode.
@@ -270,27 +302,11 @@ public class CmsGitCheckin extends CmsJspBean {
     }
 
     /** Setter for the commit mode.
-     * @param commitMode the commit mode to set.
+     * @param autoCommit the commit mode to set.
      */
-    public void setAutoCommit(final boolean autoCommit) {
+    public void setCommit(final boolean autoCommit) {
 
         m_commitMode = Boolean.valueOf(autoCommit);
-    }
-
-    /** Setter for the auto-pull flag.
-     * @param autoPull flag, indicating if a pull should be performed first.
-     */
-    public void setAutoPull(final boolean autoPull) {
-
-        m_autoPull = Boolean.valueOf(autoPull);
-    }
-
-    /** Setter for the auto-push flag.
-     * @param autoPush flag, indicating if a push should be performed in the end.
-     */
-    public void setAutoPush(final boolean autoPush) {
-
-        m_autoPush = Boolean.valueOf(autoPush);
     }
 
     /** Setter for the commit message.
@@ -307,6 +323,54 @@ public class CmsGitCheckin extends CmsJspBean {
     public void setExcludeLibs(final boolean excludeLibs) {
 
         m_excludeLibs = Boolean.valueOf(excludeLibs);
+    }
+
+    /** Setter for the ignore-unclean flag.
+     * @param ignore flag, indicating if an unclean repository should be ignored.
+     */
+    public void setIgnoreUnclean(final boolean ignore) {
+
+        m_ignoreUnclean = Boolean.valueOf(ignore);
+    }
+
+    /** Setter for the pull-after flag.
+     * @param autoPull flag, indicating if a pull should be performed directly after the commit.
+     */
+    public void setPullAfter(final boolean autoPull) {
+
+        m_autoPullAfter = Boolean.valueOf(autoPull);
+    }
+
+    /** Setter for the pull-before flag.
+     * @param autoPull flag, indicating if a pull should be performed first.
+     */
+    public void setPullBefore(final boolean autoPull) {
+
+        m_autoPullBefore = Boolean.valueOf(autoPull);
+    }
+
+    /** Setter for the auto-push flag.
+     * @param autoPush flag, indicating if a push should be performed in the end.
+     */
+    public void setPush(final boolean autoPush) {
+
+        m_autoPush = Boolean.valueOf(autoPush);
+    }
+
+    /** Setter for the reset-head flag.
+     * @param reset flag, indicating if a reset to the HEAD should be performed or not.
+     */
+    public void setResetHead(final boolean reset) {
+
+        m_resetHead = reset;
+    }
+
+    /** Setter for the reset-remote-head flag.
+     * @param reset flag, indicating if a reset to the ${origin}/${branch} should be performed or not.
+     */
+    public void setResetRemoteHead(final boolean reset) {
+
+        m_resetRemoteHead = reset;
     }
 
     /**
@@ -342,6 +406,71 @@ public class CmsGitCheckin extends CmsJspBean {
         m_logStream.close();
 
         return exitCode;
+    }
+
+    /** Returns the command to run by the shell to normally run the checkin script.
+     * @return the command to run by the shell to normally run the checkin script.
+     */
+    private String checkinScriptCommand() {
+
+        String exportModules = "";
+        if ((m_modulesToExport != null) && !m_modulesToExport.isEmpty()) {
+            StringBuffer exportModulesParam = new StringBuffer();
+            for (String moduleName : m_modulesToExport) {
+                exportModulesParam.append(" ").append(moduleName);
+            }
+            exportModulesParam.replace(0, 1, " \"");
+            exportModulesParam.append("\" ");
+            exportModules = " --modules " + exportModulesParam.toString();
+
+        }
+        String commitMessage = "";
+        if (m_commitMessage != null) {
+            commitMessage = " -msg \"" + m_commitMessage + "\"";
+        }
+        String autoPullBefore = "";
+        if (m_autoPullBefore != null) {
+            autoPullBefore = m_autoPullBefore.booleanValue() ? " --pull-before " : " --no-pull-before";
+        }
+        String autoPullAfter = "";
+        if (m_autoPullAfter != null) {
+            autoPullAfter = m_autoPullAfter.booleanValue() ? " --pull-after " : " --no-pull-after";
+        }
+        String autoPush = "";
+        if (m_autoPush != null) {
+            autoPush = m_autoPush.booleanValue() ? " --push " : " --no-push";
+        }
+        String exportFolder = " --export-folder \"" + getModuleExportPath() + "\"";
+        String exportMode = " --export-mode " + getExportMode();
+        String excludeLibs = "";
+        if (m_excludeLibs != null) {
+            excludeLibs = m_excludeLibs.booleanValue() ? " --exclude-libs" : " --no-exclude-libs";
+        }
+        String commitMode = "";
+        if (m_commitMode != null) {
+            commitMode = m_commitMode.booleanValue() ? " --commit" : " --no-commit";
+        }
+        String ignoreUncleanMode = "";
+        if (m_ignoreUnclean != null) {
+            ignoreUncleanMode = m_ignoreUnclean.booleanValue() ? " --ignore-unclean" : " --no-ignore-unclean";
+        }
+
+        return "\""
+            + m_scriptPath
+            + "\""
+            + exportModules
+            + commitMessage
+            + autoPullBefore
+            + autoPullAfter
+            + autoPush
+            + exportFolder
+            + exportMode
+            + excludeLibs
+            + commitMode
+            + ignoreUncleanMode
+            + " \""
+            + m_configPath
+            + "\"";
     }
 
     /**
@@ -408,11 +537,18 @@ public class CmsGitCheckin extends CmsJspBean {
                                 m_configuredModules = Arrays.asList(value.split(" "));
                             }
                         }
-                        if (line.startsWith(DEFAULT_PULL_MODE)) {
+                        if (line.startsWith(DEFAULT_PULL_MODE_BEFORE)) {
                             String value = getValueFromLine(line);
                             value = value.trim();
                             if (value.equals("1")) {
-                                m_defaultPullMode = true;
+                                m_defaultPullModeBefore = true;
+                            }
+                        }
+                        if (line.startsWith(DEFAULT_PULL_MODE_AFTER)) {
+                            String value = getValueFromLine(line);
+                            value = value.trim();
+                            if (value.equals("1")) {
+                                m_defaultPullModeAfter = true;
                             }
                         }
                         if (line.startsWith(DEFAULT_PUSH_MODE)) {
@@ -446,6 +582,10 @@ public class CmsGitCheckin extends CmsJspBean {
                             String value = getValueFromLine(line);
                             m_defaultCommitMode = (value.trim().equals("1")) ? true : false;
                         }
+                        if (line.startsWith(DEFAULT_IGNORE_UNCLEAN)) {
+                            String value = getValueFromLine(line);
+                            m_defaultIgnoreUnclean = (value.trim().equals("1")) ? true : false;
+                        }
                         line = configReader.readLine();
                     }
                 } catch (IOException e) {
@@ -463,6 +603,22 @@ public class CmsGitCheckin extends CmsJspBean {
         }
     }
 
+    /** Returns the command to run by the shell to reset to HEAD.
+     * @return the command to run by the shell to reset to HEAD.
+     */
+    private String resetHeadScriptCommand() {
+
+        return "\"" + m_scriptPath + "\" --reset-head" + " \"" + m_configPath + "\"";
+    }
+
+    /** Returns the command to run by the shell to reset to ${origin}/${branch}.
+     * @return the command to run by the shell to reset to ${origin}/${branch}.
+     */
+    private String resetRemoteHeadScriptCommand() {
+
+        return "\"" + m_scriptPath + "\" --reset-remote-head" + " \"" + m_configPath + "\"";
+    }
+
     /**
      * Runs the shell script for committing and optionally pushing the changes in the module.
      * @return exit code of the script.
@@ -471,56 +627,15 @@ public class CmsGitCheckin extends CmsJspBean {
 
         try {
             m_logStream.flush();
-            String exportModules = "";
-            if ((m_modulesToExport != null) && !m_modulesToExport.isEmpty()) {
-                StringBuffer exportModulesParam = new StringBuffer();
-                for (String moduleName : m_modulesToExport) {
-                    exportModulesParam.append(" ").append(moduleName);
-                }
-                exportModulesParam.replace(0, 1, " \"");
-                exportModulesParam.append("\" ");
-                exportModules = " --modules " + exportModulesParam.toString();
-
+            String commandParam;
+            if (m_resetRemoteHead) {
+                commandParam = resetRemoteHeadScriptCommand();
+            } else if (m_resetHead) {
+                commandParam = resetHeadScriptCommand();
+            } else {
+                commandParam = checkinScriptCommand();
             }
-            String commitMessage = "";
-            if (m_commitMessage != null) {
-                commitMessage = " -msg \"" + m_commitMessage + "\"";
-            }
-            String autoPull = "";
-            if (m_autoPull != null) {
-                autoPull = m_autoPull.booleanValue() ? " --pull " : " --no-pull";
-            }
-            String autoPush = "";
-            if (m_autoPush != null) {
-                autoPush = m_autoPush.booleanValue() ? " --push " : " --no-push";
-            }
-            String exportFolder = " --export-folder \"" + getModuleExportPath() + "\"";
-            String exportMode = " --export-mode " + getExportMode();
-            String excludeLibs = "";
-            if (m_excludeLibs != null) {
-                excludeLibs = m_excludeLibs.booleanValue() ? " --exclude-libs" : " --no-exclude-libs";
-            }
-            String commitMode = "";
-            if (m_commitMode != null) {
-                commitMode = m_commitMode.booleanValue() ? " --commit" : " --no-commit";
-            }
-            String[] cmd = {
-                "bash",
-                "-c",
-                "\""
-                    + m_scriptPath
-                    + "\""
-                    + exportModules
-                    + commitMessage
-                    + autoPull
-                    + autoPush
-                    + exportFolder
-                    + exportMode
-                    + excludeLibs
-                    + commitMode
-                    + " \""
-                    + m_configPath
-                    + "\""};
+            String[] cmd = {"bash", "-c", commandParam};
             m_logStream.println("Calling the script as follows:");
             m_logStream.println();
             m_logStream.println(cmd[0] + " " + cmd[1] + " " + cmd[2]);

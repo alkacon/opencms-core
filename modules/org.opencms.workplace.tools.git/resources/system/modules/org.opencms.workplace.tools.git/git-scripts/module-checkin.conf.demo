@@ -40,13 +40,18 @@ MODULE_RESOURCES_SUBFOLDER=resources/
 ### The default commit message
 COMMIT_MESSAGE="This is my automatic commit."
 ### Flag, indicating if a pull should be performed first
-GIT_PULL=1
+GIT_PULL_BEFORE=1
+### Flag, indicating if a pull should be performed after the commit
+GIT_PULL_AFTER=1
 ### Flag, indicating if a commit (including add) should be performed automatically
 GIT_COMMIT=1
 ### Flag, indicating if a push should be performed in the end
 GIT_PUSH=1
 ### Optionally specify private ssh key to be used for the pull and push actions
 #GIT_SSH="/home/user/.ssh/idtest_rsa"
+### Flag, indicating if you can operate on an unclean repository
+### Note, that doing so can be dangerous, in particular if merge conflicts are present.
+#GIT_IGNORE_UNCLEAN=0
 
 ### OpenCms specific settings
 ### NOTE: Uncomment these options only if not using the script from inside OpenCms or not

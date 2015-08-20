@@ -16,10 +16,12 @@
 <%!
 	public void setCommonParameters(CmsGitCheckin checkinBean, Map<String,String[]>parameters) {
 
-		checkinBean.setAutoPull(parameters.get("autopull") != null);
-		checkinBean.setAutoPush(parameters.get("autopush") != null);
+		checkinBean.setPullBefore(parameters.get("pullfirst") != null);
+		checkinBean.setPullAfter(parameters.get("pullafter") != null);
+		checkinBean.setPush(parameters.get("autopush") != null);
 		checkinBean.setExcludeLibs(parameters.get("excludelibs") != null);
-		checkinBean.setAutoCommit(parameters.get("autocommit") != null);
+		checkinBean.setCommit(parameters.get("autocommit") != null);
+		checkinBean.setIgnoreUnclean(parameters.get("ignoreunclean") != null);
 		if(parameters.get("commitmessage") != null && parameters.get("commitmessage").length > 0 && parameters.get("commitmessage")[0] != null) {
 			checkinBean.setCommitMessage(parameters.get("commitmessage")[0]);
 		}
@@ -32,38 +34,93 @@
 </head>
 <body>
 <c:choose>
-<c:when test='<%= parameters.get("all") != null || parameters.get("selected") != null %>'>
+<c:when test='<%= parameters.get("all") != null || parameters.get("selected") != null || parameters.get("resetHead") != null || parameters.get("resetRemoteHead") != null %>'>
 	<c:choose>
-	<c:when test='<%= parameters.get("selected") != null %>'>
-		<h1>Selected only some modules.</h1>
-		<%
-			String[] modules = parameters.get("module");
-			if (modules != null) {
-				for(int i=0; i < modules.length; i++) {
-					checkinBean.addModuleToExport(modules[i]);
-					%>
-					<p>Chosen module: <%= modules[i] %></p>
-					<%
+	<c:when test='<%= parameters.get("all") != null || parameters.get("selected") != null %>'>
+		<c:choose>
+		<c:when test='<%= parameters.get("selected") != null %>'>
+			<h1>Selected only some modules.</h1>
+			<%
+				String[] modules = parameters.get("module");
+				if (modules != null) {
+					for(int i=0; i < modules.length; i++) {
+						checkinBean.addModuleToExport(modules[i]);
+						%>
+						<p>Chosen module: <%= modules[i] %></p>
+						<%
+					}
 				}
-			}
+			%>
+		</c:when>
+		<c:when test='<%= parameters.get("all") != null %>'>
+			<h1>All modules selected.</h1>
+		</c:when>
+		</c:choose>
+		<% 	
+			setCommonParameters(checkinBean, parameters);
+			int exitCode = checkinBean.checkIn();
 		%>
+		<c:choose>
+		<c:when test="<%= exitCode == 0 %>">
+			<h2 style="color: green;">Modules exported and checked in successfully.</h2>
+		</c:when> 
+		<c:otherwise>
+			<c:choose>
+			<c:when test='<%= exitCode == 10 %>'>
+				<h2 style="color: red;">Export and check in failed because of an unclean repository. Please consult the log file.</h2>
+				<p>
+					<a href="<cms:link>${cms.requestContext.uri}?resetHead</cms:link>">Reset local repository to HEAD. You loose uncommitted changes but get a clean repository.</a>
+				</p>
+			</c:when>
+			<c:otherwise>
+				<h2 style="color: red;">Export and check in failed. Please consult the log file.</h2>
+			</c:otherwise>
+			</c:choose>
+			<p>
+				<a href="<cms:link>${cms.requestContext.uri}?resetRemoteHead</cms:link>">Reset local repository to the head of the remote branch for conflict resolving. You lose all local changes, even committed, but unpushed ones.</a>
+			</p>
+		</c:otherwise>
+		</c:choose>
 	</c:when>
-	<c:otherwise>
-		<h1>All modules selected.</h1>
-	</c:otherwise>
-	</c:choose>
-	<% 	
-		setCommonParameters(checkinBean, parameters);
-		int exitCode = checkinBean.checkIn();
-	%>
-	<c:choose>
-	<c:when test="<%= exitCode == 0 %>">
-		<h2 style="color: green;">Modules exported and checked in successfully.</h2>
-	</c:when> 
-	<c:otherwise>
-		<h2 style="color: red;">Export and check in failed. Please consult the log file.</h2>
-	</c:otherwise>
-	</c:choose>
+	<c:when test='<%= parameters.get("resetHead") != null %>'>
+		<h1>Reset local repository to HEAD</h1>
+		<% 
+			checkinBean.setResetHead(true);
+			int exitCode = checkinBean.checkIn();
+		%>
+		<c:choose>
+		<c:when test='<%= exitCode == 0 %>'>
+			<h2 style="color: green;">The repository was reset.</h2>
+			<p>You can repeat your commit with the "Pull first" option checked. This should avoid conflicts</p>
+			<p style="color: orange;"><strong>WARNING:</strong>Be aware that you may overwrite changes from the remote repository.</p>
+		</c:when>
+		<c:otherwise>
+			<h2 style="color: red;">Reset failed. Please consult the log file.</h2>
+			<p style="color: orange;">You may have an incorrect configuration or you have to manually resolve a GIT conflict.</p>
+		</c:otherwise>
+		</c:choose>
+	</c:when>
+	<c:when test='<%= parameters.get("resetRemoteHead") != null %>'>
+		<h1>Reset local repository to head of the remote branch.</h1>
+		<% 
+			checkinBean.setResetRemoteHead(true);
+			int exitCode = checkinBean.checkIn();
+		%>
+		<c:choose>
+		<c:when test='<%= exitCode == 0 %>'>
+			<h2 style="color: green;">The repository was reset.</h2>
+			<p>You can repeat your commit. Maybe you need the "Pull first" option to avoid conflicts.</p>
+		</c:when>
+		<c:otherwise>
+			<h2 style="color: red;">Reset failed. Please consult the log file.</h2>
+			<p style="color: orange;">You may have an incorrect configuration or you have to manually resolve a GIT conflict.</p>
+		</c:otherwise>
+		</c:choose>
+	</c:when>
+	</c:choose>	
+	<p>	
+		<a href="<cms:link>${cms.requestContext.uri}</cms:link>">Back to the checkin options.</a>
+	</p>
 	<h2>
 		Logfile output:
 	</h2>
@@ -82,7 +139,7 @@
 	</div>
 </c:when>
 <c:otherwise>
-<h1>Checkin Modules into Git</h1>
+	<h1>Check in Modules into Git</h1>
 	<h2>
 		Current configuration
 	</h2>
@@ -115,16 +172,24 @@
 		<fieldset>
 			<legend>Commit settings</legend>
 			<div>
-				<label>Commit message</label>
-				<input type="text" name="commitmessage" value="<%= checkinBean.getDefaultCommitMessage() %>">
+				<input type="checkbox" name="ignoreunclean" <%= checkinBean.getDefaultIngoreUnclean()? "checked=checked" : "" %>>
+				<label>Ignore an unclean repository <span style="color: red;">Caution: This can cause serious problems when a merge conflict is present.</span></label>
+			</div>
+			<div>
+				<input type="checkbox" name="pullfirst" <%= checkinBean.getDefaultAutoPullBefore()? "checked=checked" : "" %>>
+				<label>Pull first <span style="color: orange;">This can overwrite changes from the remote repository.</span></label>
 			</div>
 			<div>
 				<input type="checkbox" name="autocommit" <%= checkinBean.getDefaultAutoCommit()? "checked=checked" : "" %>>
 				<label>Add and commit automatically</label>
+				<div style="margin-left:27px;">
+					<label>Commit message</label>
+					<input type="text" name="commitmessage" value="<%= checkinBean.getDefaultCommitMessage() %>">
+				</div>
 			</div>
 			<div>
-				<input type="checkbox" name="autopull" <%= checkinBean.getDefaultAutoPull()? "checked=checked" : "" %>>
-				<label>Pull first</label>
+				<input type="checkbox" name="pullafter" <%= checkinBean.getDefaultAutoPullAfter()? "checked=checked" : "" %>>
+				<label>Pull after commit</label>
 			</div>
 			<div>
 				<input type="checkbox" name="autopush" <%= checkinBean.getDefaultAutoPush()? "checked=checked" : "" %>>

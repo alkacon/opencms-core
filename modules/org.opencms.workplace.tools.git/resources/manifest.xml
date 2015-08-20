@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>9.7.x</opencms_version>
-		<createdate>Wed, 19 Aug 2015 06:43:16 GMT</createdate>
+		<createdate>Thu, 20 Aug 2015 09:14:04 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>10</export_version>
 	</info>
@@ -112,7 +112,7 @@ The module allows you to check in the latest version of your modules by simply p
 			<type>plain</type>
 			<uuidstructure>49e45145-463c-11e5-a603-a3f182483be7</uuidstructure>
 			<uuidresource>49e45146-463c-11e5-a603-a3f182483be7</uuidresource>
-			<datelastmodified>Wed, 19 Aug 2015 06:34:44 GMT</datelastmodified>
+			<datelastmodified>Thu, 20 Aug 2015 09:12:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 19 Aug 2015 06:34:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -132,7 +132,7 @@ The module allows you to check in the latest version of your modules by simply p
 			<type>plain</type>
 			<uuidstructure>49f76418-463c-11e5-a603-a3f182483be7</uuidstructure>
 			<uuidresource>49f76419-463c-11e5-a603-a3f182483be7</uuidresource>
-			<datelastmodified>Wed, 19 Aug 2015 06:34:57 GMT</datelastmodified>
+			<datelastmodified>Thu, 20 Aug 2015 09:09:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 19 Aug 2015 06:34:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -263,7 +263,7 @@ The module allows you to check in the latest version of your modules by simply p
 			<type>jsp</type>
 			<uuidstructure>cbcd2ebe-4187-11e5-a62d-df8540334f02</uuidstructure>
 			<uuidresource>cbcd2ebf-4187-11e5-a62d-df8540334f02</uuidresource>
-			<datelastmodified>Wed, 19 Aug 2015 05:49:24 GMT</datelastmodified>
+			<datelastmodified>Thu, 20 Aug 2015 09:03:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 13 Aug 2015 06:52:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

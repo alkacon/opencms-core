@@ -4,14 +4,17 @@
 # if no modules are given as second parameter, the module list from the config-file are taken
 
 ## Error codes
-# 1 - pull failed
-# 2 - push failed
-# 3 - no config file provided
-# 4 - something went wrong when changing folders
-# 5 - the configured repository main folder does not exist
-# 6 - the configured repository main folder is not a repository main folder
-# 7 - the module export folder does not exist
-# 8 - the repository's module main folder does not exist
+#  1 - pull failed
+#  2 - push failed
+#  3 - no config file provided
+#  4 - something went wrong when changing folders
+#  5 - the configured repository main folder does not exist
+#  6 - the configured repository main folder is not a repository main folder
+#  7 - the module export folder does not exist
+#  8 - the repository's module main folder does not exist
+#  9 - the hard reset to ORIG_HEAD failed
+# 10 - git repository unclean
+# 11 - the hard reset to HEAD failed
 
 getExportedModule(){
 	case $exportMode in
@@ -28,13 +31,24 @@ testGitRepository(){
 		echo "ERROR: The GIT repository's main folder \"$REPOSITORY_HOME\" does not exist."
 		exit 5
 	fi
-	git status >/dev/null
+	echo "Status of the git repository:"
+	git status
+	echo
 	if [[ $? != 0 ]]; then
 		echo "ERROR: You have not specified a GIT repository's main folder via\
               \"REPOSITORY_HOME\" ($REPOSITORY_HOME)"
 		exit 6
 	fi
-	echo " * Test ok: found git repository at \"$(pwd)\"."
+	if [[ -n $(git status --porcelain) ]]; then
+		if [[ $resetHead == 1 || $resetRemoteHead == 1 || $ignoreUnclean == 1 ]]; then
+			echo " WARN: found unclean git repository, but continue."
+		else
+			echo " ERROR: found unclean git repository."
+			exit 10
+		fi
+	else
+		echo " * Test ok: found clean git repository at \"$(pwd)\"."
+	fi
 	cd $__pwd
 }
 
@@ -80,11 +94,17 @@ while [ "$1" != "" ]; do
         --no-push )             push=0
 								echo " * Read no-push option."
                                 ;;
-        --pull )                pull=1
-								echo " * Read pull option."
+        --pull-before )         pullbefore=1
+								echo " * Read pull-before option."
                                 ;;
-        --no-pull )             pull=0
-								echo " * Read no-pull option."
+        --no-pull-before )      pullbefore=0
+								echo " * Read no-pull-before option."
+                                ;;
+        --pull-after )          pullafter=1
+								echo " * Read pull-after option."
+                                ;;
+        --no-pull-after )       pullafter=0
+								echo " * Read no-pull-after option."
                                 ;;
         --commit )              commit=1
 								echo " * Read commit option."
@@ -110,7 +130,19 @@ while [ "$1" != "" ]; do
 								exportMode=$1
 								echo " * Read export mode: $exportMode."
 								;;
-        * )                     configfile=$1
+		--reset-remote-head )     resetRemoteHead=1;
+								echo " * Read reset-remote-head option."
+								;;
+		--reset-head )          resetHead=1
+								echo " * Read reset-head option."
+								;;
+		--ignore-unclean )      ignoreUnclean=1
+								echo " * Read ignore-unclean option."
+								;;
+		--no-ignore-unclean )   ignoreUnclean=0
+								echo " * Read no-ignore-unclean option."
+								;;
+                                * )             configfile=$1
 								echo " * Read config file: \"$configfile\"."
     esac
     shift
@@ -127,8 +159,61 @@ source $configfile
 echo " * Read file \"$configfile\":"
 cat $configfile | awk '$0="   * "$0'
 
+
+
 echo
-echo "Setting parameters ..."
+echo "Setting parameters (continued) ..."
+## set ignore-unclean flag
+if [[ -z "$ignoreUnclean" ]]; then
+	if [[ -z "$GIT_IGNORE_UNCLEAN" ]]; then
+		ignoreUnclean=0
+	else
+		ignoreUnclean=$GIT_IGNORE_UNCLEAN
+	fi
+fi
+echo " * Set exclude libs flag: $excludeLibs."
+
+# test git repository
+echo
+echo "Testing Git repository"
+testGitRepository
+
+# reset to HEAD
+if [[ $resetHead == 1 ]]; then
+	echo
+	echo "Performing \"git reset --hard HEAD\" ..."
+	cd $REPOSITORY_HOME
+	git reset --hard HEAD
+	exitCode=$?
+	if [[ $exitCode == 0 ]]; then
+		echo " * ... success. Your repository is clean now."
+		exit 0
+	else
+		echo " * ... failed with exit code $exitCode."
+		exit 11
+	fi
+fi
+
+# reset to ORIG_HEAD
+if [[ $resetRemoteHead == 1 ]]; then
+	echo
+	cd $REPOSITORY_HOME	
+	origin="$(git remote)"
+	branch="$(git symbolic-ref --short -q HEAD)"
+	echo "Performing \"git reset --hard $origin/$branch\" ..."
+	git reset --hard "$origin/$branch"
+	exitCode=$?
+	if [[ $exitCode == 0 ]]; then
+		echo " * ... success."
+		exit 0
+	else
+		echo " * ... failed with exit code $exitCode."
+		exit 9
+	fi
+fi
+
+echo
+echo "Setting parameters (continued) ..."
 ## set push flag
 if [[ -z "$push" ]]; then
 	if [[ -z "$GIT_PUSH" ]]; then
@@ -140,16 +225,27 @@ if [[ -z "$push" ]]; then
 fi
 echo " * Set auto-push: $push."
 
-## set pull flag
-if [[ -z "$pull" ]]; then
-	if [[ -z "$GIT_PULL" ]]; then
-		pull=0
-		echo " * Git pull mode not specified. Using mode 0, i.e. do not pull."
+## set pull-before flag
+if [[ -z "$pullbefore" ]]; then
+	if [[ -z "$GIT_PULL_BEFORE" ]]; then
+		pullbefore=0
+		echo " * Git pull-before mode not specified. Using mode 0, i.e. do not pull."
 	else
-		pull=$GIT_PULL
+		pullbefore=$GIT_PULL_BEFORE
 	fi	
 fi
-echo " * Set auto-pull: $pull."
+echo " * Set pull-before: $pullbefore."
+
+## set pull-after flag
+if [[ -z "$pullafter" ]]; then
+	if [[ -z "$GIT_PULL_AFTER" ]]; then
+		pullafter=0
+		echo " * Git pull-after mode not specified. Using mode 0, i.e. do not pull."
+	else
+		pullafter=$GIT_PULL_AFTER
+	fi	
+fi
+echo " * Set pull-after: $pullafter."
 
 ## set commit flag
 if [[ -z "$commit" ]]; then
@@ -204,18 +300,16 @@ if [[ -z "$excludeLibs" ]]; then
 fi
 echo " * Set exclude libs flag: $excludeLibs."
 
-
 ## test if all necessary options are set
 echo
 echo "Testing folders ..."
-testGitRepository
 testModuleExportFolder
 testModuleMainFolder
 
 echo
-echo "Performing pull ..."
+echo "Performing pull first ..."
 ## prepare the repository by pulling if wanted
-if [[ $pull == 1 ]]; then
+if [[ $pullbefore == 1 ]]; then
 	cd $REPOSITORY_HOME
 	if [[ ! -z "$GIT_SSH" ]]; then
 		echo "  * Pulling with specified ssh keys."
@@ -268,7 +362,7 @@ for module in $modulesToExport; do
 			echo "   * Removing old version of the module resources under $(pwd)."
 			rm -fr ./*
 		else
-			echo "   * ERROR: Something went wrong the current directory ($(pwd)) is not a\
+			echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
 				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})." 
 			exit 4
 		fi			
@@ -313,6 +407,29 @@ else
 	echo " * Auto-commit disabled. Nothing to do."
 fi
 
+echo
+echo "Performing pull after commit ..."
+## prepare the repository by pulling if wanted
+if [[ $pullafter == 1 ]]; then
+	cd $REPOSITORY_HOME
+	if [[ ! -z "$GIT_SSH" ]]; then
+		echo "  * Pulling with specified ssh keys."
+		ssh-agent bash -c "ssh-add $GIT_SSH; git pull"
+	else
+		echo "  * Pulling."
+		git pull
+	fi
+	pullExitCode=$?
+	if [[ $pullExitCode != 0 ]]; then
+		echo "   * ERROR: Pull failed: $pullExitCode."
+		exit 1
+	fi
+else
+	echo " * Skip pulling."
+fi
+echo
+
+
 echo 
 echo "Pushing changes ..."
 # pushing changes
@@ -332,7 +449,7 @@ if [[ $push == 1 ]]; then
 		exit 2
 	fi
 else
-	echo ' * Auto-Push is disabled. Do nothing.'
+	echo " * Auto-Push is disabled. Do nothing."
 fi
 
 echo
