@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -66,7 +67,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     private static final String QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
     /** A map to cache queries with replaced search patterns. */
-    protected Map<String, String> m_cachedQueries;
+    protected ConcurrentHashMap<String, String> m_cachedQueries;
 
     /** The type ID of the driver (vfs, user, project or history) from where this SQL manager is referenced. */
     protected int m_driverType;
@@ -82,7 +83,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
      */
     public CmsSqlManager() {
 
-        m_cachedQueries = new HashMap<String, String>();
+        m_cachedQueries = new ConcurrentHashMap<String, String>();
         m_queries = new HashMap<String, String>();
         loadQueryProperties(QUERY_PROPERTIES);
     }
