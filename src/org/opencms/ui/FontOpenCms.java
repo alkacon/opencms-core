@@ -33,17 +33,66 @@ import com.vaadin.server.FontIcon;
  * The available OpenCms workplace icons.<p>
  */
 public enum FontOpenCms implements FontIcon {
-    /** The sitemap icon. */
-    SITEMAP(0x73),
+
+    /** The clipboard icon. */
+    CLIPBOARD(0x43),
 
     /** The context menu icon. */
-    CONTEXT_MENU(0x63),
+    CONTEXT_MENU(0x4d),
 
-    /** The publish icon. */
-    PUBLISH(0x70),
+    /** The copy locale icon. */
+    COPY_LOCALE(0x6c),
 
     /** The bulls eye edit icon. */
-    EDIT_POINT(0x65);
+    EDIT_POINT(0x45),
+
+    /** The exit icon. */
+    EXIT(0x58),
+
+    /** The filter icon. */
+    FILTER(0x66),
+
+    /** The gallery icon. */
+    GALLERY(0x47),
+
+    /** The help icon. */
+    HELP(0x68),
+
+    /** The info icon. */
+    INFO(0x49),
+
+    /** The pen/edit icon. */
+    PEN(0x70),
+
+    /** The publish icon. */
+    PUBLISH(0x50),
+
+    /** The redo icon. */
+    REDO(0x72),
+
+    /** The remove locale icon. */
+    REMOVE_LOCALE(0x4c),
+
+    /** The save icon. */
+    SAVE(0x73),
+
+    /** The save and exit icon. */
+    SAVE_EXIT(0x78),
+
+    /** The search icon. */
+    SEARCH(0x46),
+
+    /** The sitemap icon. */
+    SITEMAP(0x53),
+
+    /** The undo icon. */
+    UNDO(0x75),
+
+    /** The upload icon. */
+    UPLOAD(0x55),
+
+    /** The wand icon. */
+    WAND(0x57);
 
     /** The icon code point. */
     private int m_codepoint;

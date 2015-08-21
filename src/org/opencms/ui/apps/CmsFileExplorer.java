@@ -451,8 +451,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         };
         shortcutListener.installOn(m_infoPath);
         m_searchField = new TextField();
-        m_searchField.setIcon(FontAwesome.SEARCH);
-        m_searchField.setInputPrompt("Search");
+        m_searchField.setIcon(FontOpenCms.FILTER);
+        m_searchField.setInputPrompt("Filter");
         m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         m_searchField.addTextChangeListener(new TextChangeListener() {
 
@@ -543,9 +543,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         inf.addComponent(m_searchField);
         context.setAppInfo(inf);
 
-        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
+        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.WAND));
         context.addToolbarButton(m_upButton);
-        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
+        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.UPLOAD));
         Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
         publishButton.addClickListener(new ClickListener() {
 
@@ -559,7 +559,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         });
 
         context.addToolbarButton(publishButton);
-
         populateFolderTree();
     }
 

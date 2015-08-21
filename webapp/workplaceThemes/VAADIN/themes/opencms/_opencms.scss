@@ -75,6 +75,10 @@
   	color: $blue;
   }
   
+  .v-tree-node-caption-o-state-changed > div:before, .v-tree-node-caption-o-state-new > div:before{
+  	color: $v-font-color;
+  }
+  
   .v-formlayout.o-form-less-margin{
   	@include valo-formlayout-margin(14px);
   }
