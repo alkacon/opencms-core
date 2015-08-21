@@ -79,13 +79,12 @@ public class CmsWindowCloseExtension extends AbstractExtension implements I_CmsW
     }
 
     /**
-     * @see org.opencms.ui.shared.rpc.I_CmsWindowCloseServerRpc#windowClosed()
+     * @see org.opencms.ui.shared.rpc.I_CmsWindowCloseServerRpc#windowClosed(java.lang.String)
      */
-    public void windowClosed() {
+    public void windowClosed(String syncToken) {
 
         for (I_CmsWindowCloseListener listener : m_listeners) {
             listener.onWindowClose();
         }
     }
-
 }

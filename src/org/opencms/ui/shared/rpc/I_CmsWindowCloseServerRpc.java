@@ -36,7 +36,9 @@ public interface I_CmsWindowCloseServerRpc extends ServerRpc {
 
     /**
      * Executed on window close.p>
+     *
+     * @param syncToken the sync token is used to trigger synchronous rpc requests,
+     *        it's value needs to be set to org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN
      */
-    public void windowClosed();
-
+    public void windowClosed(String syncToken);
 }

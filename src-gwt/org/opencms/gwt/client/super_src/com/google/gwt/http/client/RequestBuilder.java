@@ -365,7 +365,7 @@ public class RequestBuilder {
     private Request doSend(String requestData, final RequestCallback callback) 
         throws RequestException {
         XMLHttpRequest xmlHttpRequest = XMLHttpRequest.create();
-
+        evaluateSync(requestData);
         try {
             if ((user != null) && (password != null)) {
                 if (m_sync) {
@@ -422,6 +422,19 @@ public class RequestBuilder {
         }
 
         return request;
+    }
+    
+    /**
+     * Checks whether the request data contains the sync RPC token.<p>
+     * 
+     * This method was introduced to allow synchronised RPC calls within vaadin.
+     *   
+     * @param data the request data
+     */
+    private void evaluateSync(String data){
+        if (!m_sync && data.contains(org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN)){
+            m_sync=true;
+        }
     }
 
     /*

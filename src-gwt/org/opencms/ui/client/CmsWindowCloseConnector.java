@@ -27,12 +27,13 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.shared.rpc.I_CmsWindowCloseServerRpc;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
@@ -47,7 +48,7 @@ public class CmsWindowCloseConnector extends AbstractExtensionConnector {
     private static final long serialVersionUID = 190108090241764065L;
 
     /** The RPC proxy. */
-    I_CmsWindowCloseServerRpc m_rpc;
+    private I_CmsWindowCloseServerRpc m_rpc;
 
     /**
      * Constructor.<p>
@@ -62,13 +63,20 @@ public class CmsWindowCloseConnector extends AbstractExtensionConnector {
     @Override
     protected void extend(ServerConnector target) {
 
-        Window.addCloseHandler(new CloseHandler<Window>() {
+        Window.addWindowClosingHandler(new ClosingHandler() {
 
-            public void onClose(CloseEvent<Window> event) {
+            public void onWindowClosing(ClosingEvent event) {
 
-                m_rpc.windowClosed();
+                handleClose();
             }
-
         });
+    }
+
+    /**
+     * Handles the window closing.<p>
+     */
+    void handleClose() {
+
+        m_rpc.windowClosed(CmsRpcAction.SYNC_TOKEN);
     }
 }

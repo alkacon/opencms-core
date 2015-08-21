@@ -47,6 +47,9 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
  */
 public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
 
+    /** The sync token value, used to allow synchronous RPC calls within vaadin, see also com.google.gwt.http.client.RequestBuilder within the super source */
+    public static final String SYNC_TOKEN = "this_is_a_synchronous_rpc_call";
+
     /** The message displayed when loading. */
     private String m_loadingMessage = Messages.get().key(Messages.GUI_LOADING_0);
 
