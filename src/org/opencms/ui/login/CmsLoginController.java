@@ -359,8 +359,13 @@ public class CmsLoginController {
         String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
         String target = "";
         if (m_params.getRequestedWorkplaceApp() != null) {
-            // we need to read the URI fragment from the current page, as it is not avialable in the servlet request
-            target = m_params.getRequestedWorkplaceApp() + "#" + UI.getCurrent().getPage().getUriFragment();
+
+            target = m_params.getRequestedWorkplaceApp();
+            // we need to read the URI fragment from the current page, as it is not available in the servlet request
+            String fragment = UI.getCurrent().getPage().getUriFragment();
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
+                target += "#" + UI.getCurrent().getPage().getUriFragment();
+            }
         } else {
             if (m_params.getRequestedResource() != null) {
                 target = m_params.getRequestedResource();
