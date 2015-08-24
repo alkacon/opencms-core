@@ -158,8 +158,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
-        sb.append("var ").append(I_CmsUploadConstants.ATTR_CLOSE_LINK).append(" = \'").append(closeLink).append("\';");
-        wrapScript(sb);
+        sb.append(wrapScript("var ", I_CmsUploadConstants.ATTR_CLOSE_LINK, " = \'", closeLink, "\';"));
         return sb.toString();
     }
 
@@ -171,9 +170,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     private String exportDialogMode() {
 
         // var dialogMode = 'button';
-        StringBuffer sb = new StringBuffer("var " + I_CmsUploadConstants.ATTR_DIALOG_MODE + " = 'button';");
-        wrapScript(sb);
-        return sb.toString();
+        return wrapScript("var ", I_CmsUploadConstants.ATTR_DIALOG_MODE, " = 'button';");
     }
 
     /**
@@ -192,9 +189,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
         }
         StringBuffer sb = new StringBuffer();
         // var targetFolder = '/demo_t3/';
-        sb.append("var ").append(I_CmsUploadConstants.VAR_TARGET_FOLDER).append(" = \'").append(targetFolder).append(
-            "\';");
-        wrapScript(sb);
+        sb.append(wrapScript("var ", I_CmsUploadConstants.VAR_TARGET_FOLDER, " = \'", targetFolder, "\';"));
         return sb.toString();
     }
 }

@@ -147,8 +147,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         } else {
             backlink = link(backlink);
         }
-        sb.append(I_CmsContentService.PARAM_BACKLINK).append("='").append(backlink).append("';\n");
-        wrapScript(sb);
+        sb.append(wrapScript(I_CmsContentService.PARAM_BACKLINK, "='", backlink, "';\n"));
         String prefetchedData = exportDictionary(
             I_CmsContentService.DICT_CONTENT_DEFINITION,
             I_CmsContentService.class.getMethod("prefetch"),
