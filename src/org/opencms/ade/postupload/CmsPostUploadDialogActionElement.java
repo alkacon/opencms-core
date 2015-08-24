@@ -146,8 +146,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
-        sb.append("var ").append(I_CmsDialogConstants.ATTR_CLOSE_LINK).append(" = \'").append(closeLink).append("\';");
-        wrapScript(sb);
+        sb.append(wrapScript("var ", I_CmsDialogConstants.ATTR_CLOSE_LINK, " = \'", closeLink, "\';"));
         return sb.toString();
     }
 

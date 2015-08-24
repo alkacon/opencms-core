@@ -290,9 +290,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         // var closeLink = '/system/workplace/views/explorer/explorer_files.jsp';
-        sb.append("var ").append(I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK).append(" = \'").append(
-            link(closeLink)).append("\';");
-        wrapScript(sb);
+        sb.append(wrapScript("var ", I_CmsGalleryProviderConstants.ATTR_CLOSE_LINK, " = \'", link(closeLink), "\';"));
         return sb.toString();
     }
 }

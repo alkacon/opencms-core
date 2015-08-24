@@ -109,8 +109,9 @@ public abstract class A_CmsClientMessageBundle implements I_CmsClientMessageBund
             }
         }
         StringBuffer sb = new StringBuffer();
-        sb.append(getBundleName().replace('.', '_')).append("=").append(keys.toString()).append(";");
-        CmsGwtActionElement.wrapScript(sb);
+        String script = getBundleName().replace('.', '_') + "=" + keys.toString() + ";";
+        script = CmsGwtActionElement.wrapScript(script);
+        sb.append(script);
         return sb.toString();
     }
 
