@@ -144,6 +144,8 @@ public class CmsGitCheckin extends CmsJspBean {
     private boolean m_resetRemoteHead;
     /** Flag, indicating if reset on HEAD should be performed. */
     private boolean m_resetHead;
+    /** Flag, indicating if the config-file is missing. */
+    private boolean m_configFileReadable;
 
     /**
      * Default constructor. Initializing member variables with default values.
@@ -290,6 +292,14 @@ public class CmsGitCheckin extends CmsJspBean {
     public String getRepositoryPath() {
 
         return m_repositoryPath;
+    }
+
+    /** Returns a flag, indicating if the config file could be read.
+     * @return a flag, indicating if the config file could be read.
+     */
+    public boolean isConfigFileReadable() {
+
+        return m_configFileReadable;
     }
 
     /** Tests if a module is installed.
@@ -588,6 +598,7 @@ public class CmsGitCheckin extends CmsJspBean {
                         }
                         line = configReader.readLine();
                     }
+                    m_configFileReadable = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
