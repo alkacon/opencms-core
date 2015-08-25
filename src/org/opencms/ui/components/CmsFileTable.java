@@ -135,7 +135,7 @@ public class CmsFileTable extends CmsResourceTable {
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
 
             Field<?> result = null;
-            if (itemId.equals(getEditItemId()) && isEditProperty((String)propertyId)) {
+            if (itemId.equals(getEditItemId()) && isEditProperty((CmsResourceTableProperty)propertyId)) {
                 result = super.createField(container, itemId, propertyId, uiContext);
                 result.addStyleName(OpenCmsTheme.INLINE_TEXTFIELD);
                 result.addValidator(m_fileEditHandler);
@@ -433,7 +433,7 @@ public class CmsFileTable extends CmsResourceTable {
      *
      * @return <code>true</code> if the given property is being edited
      */
-    public boolean isEditProperty(String propertyId) {
+    public boolean isEditProperty(CmsResourceTableProperty propertyId) {
 
         return (m_editProperty != null) && m_editProperty.equals(propertyId);
     }
