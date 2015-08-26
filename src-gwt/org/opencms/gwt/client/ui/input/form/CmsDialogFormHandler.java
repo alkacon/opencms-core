@@ -38,12 +38,33 @@ public class CmsDialogFormHandler implements I_CmsFormHandler {
     /** The form submit handler. */
     protected I_CmsFormSubmitHandler m_submitHandler;
 
+    /** Flag indicating whether we are currently submitting the form results. */
+    private boolean m_submitting = false;
+
+    /**
+     * Creates a new instance.<p>
+     */
+    public CmsDialogFormHandler() {
+        // empty default constructor
+    }
+
+    /**
+     * Returns true if the form results are currently being submitted.<p>
+     *
+     * @return true if the form results are submitted
+     */
+    public boolean isSubmitting() {
+
+        return m_submitting;
+    }
+
     /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
      */
     public void onSubmitValidationResult(CmsForm form, boolean ok) {
 
         if (ok) {
+            m_submitting = true;
             m_dialog.hide();
             form.handleSubmit(m_submitHandler);
         } else {

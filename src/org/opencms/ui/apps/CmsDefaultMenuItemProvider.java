@@ -27,9 +27,12 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.main.CmsLog;
 import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
 import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
 import org.opencms.ui.contextmenu.CmsDialogAction;
+import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
@@ -43,10 +46,16 @@ import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Default implementation of menu item provider.<p>
  */
 public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider {
+
+    /** Logger instance for this class. */
+    @SuppressWarnings("unused")
+    private static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
@@ -94,6 +103,15 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 5,
                 0,
                 CmsStandardVisibilityCheck.UNDELETE),
+
+            new CmsDefaultContextMenuItem(
+                "properties",
+                null,
+                new CmsBlockingLockCheck(new CmsEditPropertiesAction()),
+                "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0)",
+                7,
+                0,
+                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)),
 
             new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0)
 

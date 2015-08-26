@@ -28,6 +28,8 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.CmsCoreService;
+import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
@@ -42,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
@@ -52,6 +55,7 @@ import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.UIClassSelectionEvent;
 import com.vaadin.server.UIProvider;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
@@ -208,17 +212,28 @@ public class CmsUIServlet extends VaadinServlet {
 
                     public void modifyBootstrapPage(BootstrapPageResponse response) {
 
+                        CmsCoreService svc = new CmsCoreService();
+                        HttpServletRequest request = (HttpServletRequest)VaadinService.getCurrentRequest();
+                        svc.setRequest(request);
+                        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
+                        svc.setCms(cms);
+
+                        Document doc = response.getDocument();
                         if (shouldShowLogin()) {
                             try {
-                                CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
                                 String html = CmsLoginUI.generateLoginHtmlFragment(cms, response.getRequest());
                                 Element el = new Element(Tag.valueOf("div"), "").html(html);
-                                response.getDocument().body().appendChild(el);
+                                doc.body().appendChild(el);
                             } catch (IOException e) {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
                         }
-
+                        // Inject CmsCoreData etc. for GWT dialogs
+                        try {
+                            doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
+                        } catch (Exception e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
                     }
                 });
             }

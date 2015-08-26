@@ -40,6 +40,10 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.PopupPanel;
+
 /**
  * The class for the "edit properties" context menu entries.<p>
  *
@@ -56,42 +60,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
     }
 
     /**
-     * Returns the context menu command according to
-     * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     *
-     * @return the context menu command
-     */
-    public static I_CmsContextMenuCommand getContextMenuCommand() {
-
-        return new I_CmsContextMenuCommand() {
-
-            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
-
-                editProperties(structureId, handler);
-            }
-
-            public A_CmsContextMenuItem getItemWidget(
-                CmsUUID structureId,
-                I_CmsContextMenuHandler handler,
-                CmsContextMenuEntryBean bean) {
-
-                return null;
-            }
-
-            public boolean hasItemWidget() {
-
-                return false;
-            }
-        };
-    }
-
-    /**
      * Starts the property editor for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource
      * @param contextMenuHandler the context menu handler
+     * @param cancelHandler callback which is executed if the user cancels the property dialog
      */
-    protected static void editProperties(final CmsUUID structureId, final I_CmsContextMenuHandler contextMenuHandler) {
+    public static void editProperties(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler contextMenuHandler,
+        final Runnable cancelHandler) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -125,7 +103,19 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                     }
                 };
                 defButton.installOnDialog(dialog);
-                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+                if (cancelHandler != null) {
+                    dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                        public void onClose(CloseEvent<PopupPanel> event) {
+
+                            if (!formHandler.isSubmitting()) {
+                                cancelHandler.run();
+                            }
+                        }
+                    });
+                }
+
                 formHandler.setDialog(dialog);
                 I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
                 formHandler.setSubmitHandler(submitHandler);
@@ -136,6 +126,36 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             }
         };
         action.execute();
+    }
+
+    /**
+     * Returns the context menu command according to
+     * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
+     *
+     * @return the context menu command
+     */
+    public static I_CmsContextMenuCommand getContextMenuCommand() {
+
+        return new I_CmsContextMenuCommand() {
+
+            public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+                editProperties(structureId, handler, null);
+            }
+
+            public A_CmsContextMenuItem getItemWidget(
+                CmsUUID structureId,
+                I_CmsContextMenuHandler handler,
+                CmsContextMenuEntryBean bean) {
+
+                return null;
+            }
+
+            public boolean hasItemWidget() {
+
+                return false;
+            }
+        };
     }
 
 }

@@ -2,10 +2,11 @@
 	<!-- Inherit the default widget set -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 	<inherits name="org.vaadin.peter.contextmenu.ContextmenuWidgetset" />
-	<inherits name="com.google.gwt.logging.Logging"/>
-	<set-property name="gwt.logging.logLevel" value="FINEST"/>  
+ 	<inherits name="com.google.gwt.logging.Logging"/>
+	<set-property name="gwt.logging.logLevel" value="WARNING"/>   
 
 	<inherits name="org.opencms.GwtBaseCommon" />
+	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
 
 	<source path="client" />
 	<source path="shared" />
