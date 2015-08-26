@@ -33,6 +33,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
@@ -43,6 +44,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -51,6 +53,8 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.Messages;
 
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Sets;
 
@@ -61,6 +65,9 @@ import com.google.common.collect.Sets;
  * may cause the context menu item to be hidden or deactivated.<p>
  */
 public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
 
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
@@ -77,6 +84,12 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         notdeleted,
         writepermisssion);
+
+    /** Visibility check for publish option. */
+    public static final CmsStandardVisibilityCheck PUBLISH = new CmsStandardVisibilityCheck(
+        notunchangedfile,
+        publishpermission,
+        notonline);
 
     /** Visibility check for undelete option. */
     public static final CmsStandardVisibilityCheck UNDELETE = new CmsStandardVisibilityCheck(
@@ -147,6 +160,22 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
         if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
             return VISIBILITY_INVISIBLE;
+        }
+
+        if (flag(publishpermission)) {
+            try {
+                if (!cms.hasPermissions(
+                    resource,
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    false,
+                    CmsResourceFilter.ALL)) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+
+            }
+
         }
 
         if (flag(writepermisssion)) {

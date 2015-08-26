@@ -197,7 +197,7 @@ public class CmsUIServlet extends VaadinServlet {
             public void sessionInit(final SessionInitEvent event) {
 
                 // set the locale to the users workplace locale
-                Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
+                final Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     ((CmsUIServlet)getCurrent()).getCmsObject());
                 event.getSession().setLocale(wpLocale);
                 event.getSession().addUIProvider(loginUiProvider);
@@ -231,6 +231,7 @@ public class CmsUIServlet extends VaadinServlet {
                         // Inject CmsCoreData etc. for GWT dialogs
                         try {
                             doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
+                            doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(wpLocale, true));
                         } catch (Exception e) {
                             LOG.error(e.getLocalizedMessage(), e);
                         }

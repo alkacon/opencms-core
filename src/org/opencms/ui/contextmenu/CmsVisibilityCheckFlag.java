@@ -55,6 +55,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check workplace user role. */
     rolewpuser,
 
+    /** Checks if user has publish permissions. */
+    publishpermission,
+
     /** Check that we have write permission. */
     writepermisssion;
 

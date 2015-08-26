@@ -59,6 +59,7 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     /** The window used to display the dialog. */
     private Window m_window;
 
+    /** The current context menu item. */
     private I_CmsContextMenuItem m_item;
 
     /**
@@ -67,6 +68,7 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      * @param appContext the app context
      * @param explorer the explorer app instance
      * @param resources the list of selected resources
+     * @param item the context menu item for which this context is created
      */
     public CmsExplorerDialogContext(
         I_CmsAppUIContext appContext,
@@ -111,6 +113,11 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
                 ids.add(res.getStructureId());
             }
         }
+        for (CmsUUID id : ids) {
+            if (id.isNullUUID()) {
+                m_explorer.updateAll();
+            }
+        }
         m_explorer.update(ids);
     }
 
@@ -130,6 +137,9 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
         return A_CmsUI.getCmsObject();
     }
 
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#getMenuItem()
+     */
     public I_CmsContextMenuItem getMenuItem() {
 
         return m_item;

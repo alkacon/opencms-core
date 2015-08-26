@@ -31,6 +31,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
 import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
 import org.opencms.ui.contextmenu.CmsDialogAction;
+import org.opencms.ui.contextmenu.CmsDirectPublishDialogAction;
 import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
@@ -112,6 +113,15 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 7,
                 0,
                 new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)),
+
+            new CmsDefaultContextMenuItem(
+                "directpublish",
+                null,
+                new CmsDirectPublishDialogAction(),
+                "%(key.GUI_EXPLORER_CONTEXT_PUBLISH_0)",
+                1,
+                0,
+                CmsStandardVisibilityCheck.PUBLISH),
 
             new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0)
 

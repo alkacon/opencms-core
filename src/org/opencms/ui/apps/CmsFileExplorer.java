@@ -630,6 +630,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
+     * Updates display for all contents of the current folder.<p>
+     */
+    public void updateAll() {
+
+        readFolder(m_currentFolder);
+    }
+
+    /**
      * Updates the tree items with the given ids.<p>
      *
      * @param ids the ids for which the tree should be updated

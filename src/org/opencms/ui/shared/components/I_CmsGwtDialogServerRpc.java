@@ -40,7 +40,8 @@ public interface I_CmsGwtDialogServerRpc extends ServerRpc {
      * Disposes of the extension, and tells the server which resources have changed.<p>
      *
      * @param changedStructureIds the structure ids of changed resources, as strings
+     * @param delayMillis time to delay the RPC (for allowing short background operations to finish)
      */
-    public void onClose(List<String> changedStructureIds);
+    public void onClose(List<String> changedStructureIds, long delayMillis);
 
 }

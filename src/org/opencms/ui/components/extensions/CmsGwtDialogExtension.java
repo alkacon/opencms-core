@@ -27,21 +27,39 @@
 
 package org.opencms.ui.components.extensions;
 
+import org.opencms.ade.publish.CmsPublishService;
+import org.opencms.ade.publish.shared.CmsPublishData;
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.gwt.CmsPrefetchSerializationPolicy;
+import org.opencms.main.CmsLog;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+
 import com.google.common.collect.Lists;
+import com.google.gwt.user.server.rpc.RPC;
 import com.vaadin.server.AbstractExtension;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.UI;
 
 /**
  * Extension used to open existing GWT based dialogs (from ADE, etc.) from the server side, for use in context menu actions.<p>
  */
 public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwtDialogServerRpc {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGwtDialogExtension.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -72,15 +90,94 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc#onClose(java.util.List)
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc#onClose(java.util.List, long)
      */
-    public void onClose(List<String> changedStructureIds) {
+    public void onClose(List<String> changedStructureIds, long delayMillis) {
 
         remove();
-        List<CmsUUID> changed = Lists.newArrayList();
-        for (String id : changedStructureIds) {
-            changed.add(new CmsUUID(id));
+        if (delayMillis > 0) {
+            try {
+                Thread.sleep(delayMillis);
+            } catch (InterruptedException e) {
+                // ignore
+            }
         }
-        m_dialogContext.finish(changed);
+        if (changedStructureIds == null) {
+            m_dialogContext.finish(null);
+        } else {
+            List<CmsUUID> changed = Lists.newArrayList();
+            for (String id : changedStructureIds) {
+                changed.add(new CmsUUID(id));
+            }
+            m_dialogContext.finish(changed);
+        }
     }
+
+    /**
+     * Tells the client to open the publish dialog for the given resources.<p>
+     *
+     * @param resources the resources for which to open the publish dialog.
+     */
+    public void openPublishDialog(List<CmsResource> resources) {
+
+        String data = getSerializedPublishData(resources);
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
+    }
+
+    /**
+     * Gets the publish data for the given resources.<p>
+     *
+     * @param directPublishResources the resources to publish
+     *
+     * @return the publish data for the resources
+     */
+    protected CmsPublishData getPublishData(List<CmsResource> directPublishResources) {
+
+        CmsPublishService publishService = new CmsPublishService();
+        CmsObject cms = A_CmsUI.getCmsObject();
+        publishService.setCms(cms);
+        List<String> pathList = Lists.newArrayList();
+        for (CmsResource resource : directPublishResources) {
+            pathList.add(cms.getSitePath(resource));
+        }
+        publishService.setRequest((HttpServletRequest)(VaadinService.getCurrentRequest()));
+        try {
+            return publishService.getPublishData(
+                cms,
+                new HashMap<String, String>()/*params*/,
+                null/*workflowId*/,
+                null/*projectParam*/,
+                pathList,
+                null/*closelink*/,
+                false/*confirmation*/);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+
+    }
+
+    /**
+     * Creates the publish data for the given resource list and serializes it using the GWT RPC serialization mechanism.<p>
+     *
+     * @param directPublishResources the publish resources
+     *
+     * @return the serialized publish data
+     */
+    protected String getSerializedPublishData(List<CmsResource> directPublishResources) {
+
+        CmsPublishData publishData = getPublishData(directPublishResources);
+        try {
+            String prefetchedData = RPC.encodeResponseForSuccess(
+                I_CmsPublishService.class.getMethod("getInitData", java.util.HashMap.class),
+                publishData,
+                CmsPrefetchSerializationPolicy.instance());
+            return prefetchedData;
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
+
+    }
+
 }

@@ -285,9 +285,9 @@ public class CmsPublishDialog extends CmsPopup {
      * Shows the publish dialog.<p>
      *
      * @param result the publish data
-     * @param handler the dialog close handler
+     * @param handler the dialog close handler (may be null)
      * @param refreshAction the action to execute on a context menu triggered refresh
-     * @param editorHandler the content editor handler
+     * @param editorHandler the content editor handler (may be null)
      */
     public static void showPublishDialog(
         CmsPublishData result,

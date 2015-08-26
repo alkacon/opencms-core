@@ -25,27 +25,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.components;
+package org.opencms.ui.contextmenu;
 
-import com.vaadin.shared.communication.ClientRpc;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+
+import com.vaadin.ui.UI;
 
 /**
- * Server-to-client Interface for the GWT dialog extension.<p>
+ * Context menu action for displaying the publish dialog for direct publishing of resources.<p>
  */
-public interface I_CmsGwtDialogClientRpc extends ClientRpc {
+public class CmsDirectPublishDialogAction implements I_CmsContextMenuAction {
 
     /**
-     * Tells the client to open the property editing dialog for the resource with the given structure id.<p>
-     *
-     * @param structureId the structure id of a resource, as a string
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
-    public void editProperties(String structureId);
+    public void executeAction(I_CmsDialogContext context) {
 
-    /**
-     * Opens the publish dialog with the given publish data.<p>
-     *
-     * @param serializedPublishData the publish data, an instance of CmsPublishData serialized with the GWT serialization mechanism
-     */
-    public void openPublishDialog(String serializedPublishData);
+        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(UI.getCurrent(), context);
+        extension.openPublishDialog(context.getResources());
+
+    }
 
 }

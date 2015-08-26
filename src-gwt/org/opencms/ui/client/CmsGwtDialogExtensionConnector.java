@@ -27,20 +27,31 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.ade.publish.client.CmsPublishDialog;
+import org.opencms.ade.publish.shared.CmsPublishData;
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
+import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
@@ -59,10 +70,12 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector {
 
     /**
      * Disposes of the extension on the server side and notifies the server of which resources have been changed.<p>
+     *
+     * @param delayMillis the time to wait on the server before refreshing the view
      */
-    protected void close() {
+    protected void close(long delayMillis) {
 
-        getRpcProxy(I_CmsGwtDialogServerRpc.class).onClose(m_changed);
+        getRpcProxy(I_CmsGwtDialogServerRpc.class).onClose(m_changed, delayMillis);
     }
 
     /**
@@ -105,12 +118,10 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector {
 
                     public void refreshResource(CmsUUID structureId) {
 
-                        CmsDebugLog.consoleLog("Refresh");
-
                         List<String> changed = Lists.newArrayList();
                         changed.add("" + structureId);
                         m_changed = changed;
-                        close();
+                        close(0);
                     }
 
                     public void unlockResource(CmsUUID structureId) {
@@ -126,10 +137,46 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector {
 
                     public void run() {
 
-                        CmsDebugLog.consoleLog("Cancel");
-                        close();
+                        // Handle cancel
+                        close(0);
                     }
                 });
+            }
+
+            public void openPublishDialog(String serializedPublishData) {
+
+                try {
+                    I_CmsPublishServiceAsync publishService = GWT.create(I_CmsPublishService.class);
+                    CmsPublishData initData = (CmsPublishData)CmsRpcPrefetcher.getSerializedObjectFromString(
+                        publishService,
+                        serializedPublishData);
+                    Runnable menuRefreshAction = new Runnable() {
+
+                        public void run() {
+
+                            Window.Location.reload();
+                        }
+                    };
+
+                    CloseHandler<PopupPanel> closeHandler = new CloseHandler<PopupPanel>() {
+
+                        public void onClose(CloseEvent<PopupPanel> event) {
+
+                            CmsPublishDialog dialog = (CmsPublishDialog)(event.getTarget());
+                            if (dialog.hasFailed() || dialog.hasSucceeded()) {
+                                m_changed = Arrays.asList("" + CmsUUID.getNullUUID());
+                            } else {
+                                m_changed = Lists.newArrayList();
+                            }
+                            close(700);
+                        }
+                    };
+
+                    CmsPublishDialog.showPublishDialog(initData, closeHandler, menuRefreshAction, null);
+                } catch (SerializationException e) {
+                    throw new RuntimeException(e);
+
+                }
             }
         });
     }

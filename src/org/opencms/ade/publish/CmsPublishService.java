@@ -171,57 +171,111 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
 
         CmsPublishData result = null;
         CmsObject cms = getCmsObject();
-        boolean canOverrideWorkflow = true;
+        String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
+        String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
+        boolean confirm = Boolean.parseBoolean(confirmStr);
+        String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
+        String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
+        String filesParam = getRequest().getParameter(CmsMultiDialog.PARAM_RESOURCELIST);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+            filesParam = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
+        }
+        List<String> pathList = Lists.newArrayList();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
+            pathList = CmsStringUtil.splitAsList(filesParam, "|");
+        }
         try {
+            result = getPublishData(cms, params, workflowId, projectParam, pathList, closeLink, confirm);
+        } catch (Throwable e) {
+            error(e);
+        }
+        return result;
+    }
 
-            String closeLink = getRequest().getParameter(CmsDialog.PARAM_CLOSELINK);
-            String confirmStr = getRequest().getParameter(PARAM_CONFIRM);
-            boolean confirm = Boolean.parseBoolean(confirmStr);
-            Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
-            if (workflows.isEmpty()) {
-                throw new Exception("No workflow available for the current user");
-            }
-            String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
+    /**
+     * Gets the publish data for the given parameters.<p>
+     *
+     * @param cms the CMS context
+     * @param params other publish parameters
+     * @param workflowId the workflow id
+     * @param projectParam the project
+     * @param pathList the list of direct publish resource site paths
+     * @param closeLink the close link
+     * @param confirm true if confirmation dialog should be displayed after closing the dialog
+     *
+     * @return the publish data
+     *
+     * @throws Exception if something goes wrong
+     */
+    public CmsPublishData getPublishData(
+        CmsObject cms,
+        HashMap<String, String> params,
+        String workflowId,
+        String projectParam,
+        List<String> pathList,
+        String closeLink,
+        boolean confirm) throws Exception {
+
+        CmsPublishData result;
+        boolean canOverrideWorkflow = true;
+        Map<String, CmsWorkflow> workflows = OpenCms.getWorkflowManager().getWorkflows(cms);
+        if (workflows.isEmpty()) {
+            throw new Exception("No workflow available for the current user");
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
+            workflowId = getLastWorkflowForUser();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
-                workflowId = getLastWorkflowForUser();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(workflowId) || !workflows.containsKey(workflowId)) {
-                    workflowId = workflows.values().iterator().next().getId();
-                }
-            } else {
-                canOverrideWorkflow = false;
+                workflowId = workflows.values().iterator().next().getId();
             }
-            setLastWorkflowForUser(workflowId);
-            String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
-            String filesParam = getRequest().getParameter(CmsMultiDialog.PARAM_RESOURCELIST);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
-                filesParam = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
-            }
-            // need to put this into params here so that the virtual project for direct publishing is included in the result of getManageableProjects()
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
-                params.put(CmsPublishOptions.PARAM_FILES, filesParam);
-            }
-            boolean useCurrentPageAsDefault = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
-            CmsPublishOptions options = getCachedOptions();
-            List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
-            Set<CmsUUID> availableProjectIds = Sets.newHashSet();
-            for (CmsProjectBean projectBean : projects) {
-                availableProjectIds.add(projectBean.getId());
-            }
-            CmsUUID defaultProjectId = CmsUUID.getNullUUID();
-            if (useCurrentPageAsDefault && availableProjectIds.contains(CmsCurrentPageProject.ID)) {
-                defaultProjectId = CmsCurrentPageProject.ID;
-            }
+        } else {
+            canOverrideWorkflow = false;
+        }
+        setLastWorkflowForUser(workflowId);
 
-            boolean foundProject = false;
-            CmsUUID selectedProject = null;
-            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
-                params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, Boolean.TRUE.toString());
-                params.put(CmsPublishOptions.PARAM_INCLUDE_CONTENTS, Boolean.TRUE.toString());
-                selectedProject = CmsDirectPublishProject.ID;
-                foundProject = true;
-            } else {
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
-                    selectedProject = new CmsUUID(projectParam);
+        // need to put this into params here so that the virtual project for direct publishing is included in the result of getManageableProjects()
+        if (!pathList.isEmpty()) {
+            params.put(CmsPublishOptions.PARAM_FILES, CmsStringUtil.listAsString(pathList, "|"));
+        }
+        boolean useCurrentPageAsDefault = params.containsKey(CmsPublishOptions.PARAM_START_WITH_CURRENT_PAGE);
+        CmsPublishOptions options = getCachedOptions();
+        List<CmsProjectBean> projects = OpenCms.getWorkflowManager().getManageableProjects(cms, params);
+        Set<CmsUUID> availableProjectIds = Sets.newHashSet();
+        for (CmsProjectBean projectBean : projects) {
+            availableProjectIds.add(projectBean.getId());
+        }
+        CmsUUID defaultProjectId = CmsUUID.getNullUUID();
+        if (useCurrentPageAsDefault && availableProjectIds.contains(CmsCurrentPageProject.ID)) {
+            defaultProjectId = CmsCurrentPageProject.ID;
+        }
+
+        boolean foundProject = false;
+        CmsUUID selectedProject = null;
+        if (!pathList.isEmpty()) {
+            params.put(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS, Boolean.TRUE.toString());
+            params.put(CmsPublishOptions.PARAM_INCLUDE_CONTENTS, Boolean.TRUE.toString());
+            selectedProject = CmsDirectPublishProject.ID;
+            foundProject = true;
+        } else {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(projectParam) && CmsUUID.isValidUUID(projectParam)) {
+                selectedProject = new CmsUUID(projectParam);
+                // check if the selected project is a manageable project
+                for (CmsProjectBean project : projects) {
+                    if (selectedProject.equals(project.getId())) {
+                        foundProject = true;
+                        if (project.isWorkflowProject()) {
+                            canOverrideWorkflow = false;
+                            workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(selectedProject);
+                        }
+                        break;
+                    }
+                }
+            }
+            if (!foundProject) {
+                selectedProject = options.getProjectId();
+                if (selectedProject == null) {
+                    selectedProject = defaultProjectId;
+                    foundProject = true;
+                } else {
                     // check if the selected project is a manageable project
                     for (CmsProjectBean project : projects) {
                         if (selectedProject.equals(project.getId())) {
@@ -235,45 +289,23 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
                         }
                     }
                 }
-                if (!foundProject) {
-                    selectedProject = options.getProjectId();
-                    if (selectedProject == null) {
-                        selectedProject = defaultProjectId;
-                        foundProject = true;
-                    } else {
-                        // check if the selected project is a manageable project
-                        for (CmsProjectBean project : projects) {
-                            if (selectedProject.equals(project.getId())) {
-                                foundProject = true;
-                                if (project.isWorkflowProject()) {
-                                    canOverrideWorkflow = false;
-                                    workflowId = OpenCms.getWorkflowManager().getWorkflowForWorkflowProject(
-                                        selectedProject);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
             }
-            if (foundProject) {
-                options.setProjectId(selectedProject);
-            } else {
-                options.setProjectId(CmsUUID.getNullUUID());
-            }
-
-            options.setParameters(params);
-            result = new CmsPublishData(
-                options,
-                projects,
-                getResourceGroups(workflows.get(workflowId), options, canOverrideWorkflow),
-                workflows,
-                workflowId);
-            result.setCloseLink(closeLink);
-            result.setShowConfirmation(confirm);
-        } catch (Throwable e) {
-            error(e);
         }
+        if (foundProject) {
+            options.setProjectId(selectedProject);
+        } else {
+            options.setProjectId(CmsUUID.getNullUUID());
+        }
+
+        options.setParameters(params);
+        result = new CmsPublishData(
+            options,
+            projects,
+            getResourceGroups(workflows.get(workflowId), options, canOverrideWorkflow),
+            workflows,
+            workflowId);
+        result.setCloseLink(closeLink);
+        result.setShowConfirmation(confirm);
         return result;
     }
 
