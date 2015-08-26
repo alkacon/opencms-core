@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
-  <Bundle language="de">
-    <Message>
-      <Key><![CDATA[fileicon.jsp-search-form]]></Key>
-      <Value><![CDATA[Suchformularkonfiguration]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[title.jsp-search-form]]></Key>
-      <Value><![CDATA[Erstellen einer neuen Suchformularkonfiguration]]></Value>
-    </Message>
-    <Message>
-      <Key><![CDATA[desc.jsp-search-form]]></Key>
-      <Value><![CDATA[Konfiguration eines Suchformulars für die einfache Integration einer serverseitigen Solr-Suche.]]></Value>
-    </Message>
-  </Bundle>
   <Bundle language="en">
     <Message>
-      <Key><![CDATA[fileicon.jsp-search-form]]></Key>
-      <Value><![CDATA[Search Form Configuration]]></Value>
+      <Key><![CDATA[fileicon.jsp-search]]></Key>
+      <Value><![CDATA[Search Configuration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[title.jsp-search-form]]></Key>
-      <Value><![CDATA[Create a new search form configuration]]></Value>
+      <Key><![CDATA[title.jsp-search]]></Key>
+      <Value><![CDATA[Create a new search configuration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[desc.jsp-search-form]]></Key>
-      <Value><![CDATA[Configuration of a search form for the easy integration of a server-side Solr search.]]></Value>
+      <Key><![CDATA[desc.jsp-search]]></Key>
+      <Value><![CDATA[Configuration of a search or content list for the easy integration of a server-side Solr search.]]></Value>
+    </Message>
+  </Bundle>
+  <Bundle language="de">
+    <Message>
+      <Key><![CDATA[fileicon.jsp-search]]></Key>
+      <Value><![CDATA[Suchkonfiguration]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[title.jsp-search]]></Key>
+      <Value><![CDATA[Erstellen einer neuen Suchkonfiguration]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[desc.jsp-search]]></Key>
+      <Value><![CDATA[Konfiguration eines Suchformulars oder einer Liste von Inhalten für die einfache Integration einer serverseitigen Solr-Suche.]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>

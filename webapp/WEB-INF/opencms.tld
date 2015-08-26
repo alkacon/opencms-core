@@ -2110,13 +2110,13 @@
     
     <tag>
       	<description><![CDATA[
-            This tag provides support to generate search forms for a server-side handled Solr search.
+            This tag provides support to generate search forms and result lists for a server-side handled Solr search.
             It takes an (XML or JSON) configuration file and essentially exposes an object with the search results
             and also the necessary information to suitably build up your search form. 
             It supports facets and highlighting.
        	]]></description>
-        <name>searchform</name>
-        <tag-class>org.opencms.jsp.CmsJspTagSearchForm</tag-class>
+        <name>search</name>
+        <tag-class>org.opencms.jsp.CmsJspTagSearch</tag-class>
         <body-content>JSP</body-content>
         <attribute>
           	<description><![CDATA[The name of the variable that exposes an object of type <code>org.opencms.jsp.search.result.I_SearchResultWrapper</code>, 
@@ -2124,7 +2124,8 @@
            	]]></description>
             <name>var</name>
             <required>true</required>
-            <rtexprvalue>false</rtexprvalue>            
+            <rtexprvalue>false</rtexprvalue>   
+            <type>org.opencms.jsp.search.result.I_SearchResultWrapper</type>         
         </attribute>
         <attribute>
           	<description><![CDATA[VFS-URI of the search form configuration file (either a JSON file or an XML content of type <code>jsp-search-form</code>.

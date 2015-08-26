@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
 /**
  * This tag is used to easily create a search form for a Solr search within a JSP.
  */
-public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements I_CmsCollectorPublishListProvider {
+public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_CmsCollectorPublishListProvider {
 
     /**
      * Type for the file formats that can be parsed.
@@ -89,7 +89,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
     }
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsJspTagSearchForm.class);
+    private static final Log LOG = CmsLog.getLog(CmsJspTagSearch.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 6048771777971251L;
@@ -133,7 +133,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
      * Empty constructor, required for JSP tags.
      *
      */
-    public CmsJspTagSearchForm() {
+    public CmsJspTagSearch() {
 
         super();
         m_fileFormat = FileFormat.XML;
@@ -184,7 +184,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
                 }
             }
         } catch (CmsSearchException e) {
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCHFORM_SEARCH_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
         }
         return result;
     }
@@ -404,7 +404,7 @@ public class CmsJspTagSearchForm extends CmsJspScopedVarBodyTagSuport implements
                 true);
             return new CmsSearchResultWrapper(m_searchController, solrResultList, m_cms);
         } catch (CmsSearchException e) {
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCHFORM_SEARCH_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
             return null;
         }
     }

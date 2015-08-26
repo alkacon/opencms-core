@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>9.7.x</opencms_version>
-		<createdate>Tue, 12 May 2015 13:29:28 GMT</createdate>
+		<createdate>Tue, 25 Aug 2015 13:16:55 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -13,7 +13,7 @@
 		<nicename><![CDATA[Solr search form support for JSPs]]></nicename>
 		<class/>
 		<description><![CDATA[Exposes a configuration content that can be used to configure search forms]]></description>
-		<version>0.2</version>
+		<version>0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -23,18 +23,18 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/modules/org.opencms.jsp.search/"/>
-			<resource uri="/system/workplace/resources/filetypes/jsp-search-form.png"/>
-			<resource uri="/system/workplace/resources/filetypes/jsp-search-form_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp-search.png"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp-search_big.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search-form" id="311">
-				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</param>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="jsp-search" id="311">
+				<param name="schema">/system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="jsp-search-form" key="fileicon.jsp-search-form" icon="jsp-search-form.png" bigicon="jsp-search-form_big.png" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=jsp-search-form" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search-form" key="title.jsp-search-form"/>
+			<explorertype name="jsp-search" key="fileicon.jsp-search" icon="jsp-search.png" bigicon="jsp-search_big.png" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=jsp-search" order="10" autosetnavigation="false" autosettitle="false" info="desc.jsp-search" key="title.jsp-search"/>
 			</explorertype>
 		</explorertypes>
 	</module>
@@ -102,7 +102,7 @@
 			<type>module_config</type>
 			<uuidstructure>e67bc3e3-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e67bc3e4-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 12:56:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -138,12 +138,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter-config.xml</source>
-			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter-config.xml</destination>
+			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-formatter-config.xml</source>
+			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-formatter-config.xml</destination>
 			<type>formatter_config</type>
 			<uuidstructure>e65eed0d-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e65eed0e-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Tue, 27 Jan 2015 14:00:50 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 12:57:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -170,17 +170,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter.jsp</source>
-			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter.jsp</destination>
+			<source>system/modules/org.opencms.jsp.search/formatters/jsp-search-formatter.jsp</source>
+			<destination>system/modules/org.opencms.jsp.search/formatters/jsp-search-formatter.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>e65af56a-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e65af56b-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Mon, 11 May 2015 11:43:37 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 13:14:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample formatter for a search form]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -256,7 +260,7 @@
 			<type>xmlvfsbundle</type>
 			<uuidstructure>e64f0e85-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e64f0e86-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Mon, 02 Feb 2015 10:51:07 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 12:54:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -284,12 +288,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</source>
-			<destination>system/modules/org.opencms.jsp.search/schemas/jsp-search-form.xsd</destination>
+			<source>system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</source>
+			<destination>system/modules/org.opencms.jsp.search/schemas/jsp-search.xsd</destination>
 			<type>plain</type>
 			<uuidstructure>e6332208-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e6332209-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Mon, 11 May 2015 14:25:39 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 10:49:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -297,7 +301,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample resource type schema]]></value>
+					<value><![CDATA[XML Search configuration for <cms:search>]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -511,12 +515,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/jsp-search-form.png</source>
-			<destination>system/workplace/resources/filetypes/jsp-search-form.png</destination>
+			<source>system/workplace/resources/filetypes/jsp-search.png</source>
+			<destination>system/workplace/resources/filetypes/jsp-search.png</destination>
 			<type>image</type>
 			<uuidstructure>e642d97b-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e642d97c-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Mon, 02 Feb 2015 16:07:32 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 10:55:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -524,7 +528,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Nomal-sized icon for the JSP search form configuration]]></value>
+					<value><![CDATA[Nomal-sized icon for the JSP search configuration]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
@@ -535,12 +539,12 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/jsp-search-form_big.png</source>
-			<destination>system/workplace/resources/filetypes/jsp-search-form_big.png</destination>
+			<source>system/workplace/resources/filetypes/jsp-search_big.png</source>
+			<destination>system/workplace/resources/filetypes/jsp-search_big.png</destination>
 			<type>image</type>
 			<uuidstructure>e64634df-a62c-11e4-9ae0-bfc0090a1084</uuidstructure>
 			<uuidresource>e64634e0-a62c-11e4-9ae0-bfc0090a1084</uuidresource>
-			<datelastmodified>Mon, 02 Feb 2015 16:07:39 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2015 10:55:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 27 Jan 2015 14:00:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -548,7 +552,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Big icon for the JSP search form configuration]]></value>
+					<value><![CDATA[Big icon for the JSP search configuration]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

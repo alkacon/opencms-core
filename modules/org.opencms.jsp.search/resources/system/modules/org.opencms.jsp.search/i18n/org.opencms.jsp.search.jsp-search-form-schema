@@ -3,163 +3,163 @@
 <XmlVfsBundles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd">
   <Bundle language="de">
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Title]]></Key>
       <Value><![CDATA[Titel]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Title.help]]></Key>
       <Value><![CDATA[Der Titel wird auf die Titel Eigenschaft gemappt. Er hilft Ihnen ihre Konfiguration leichter zu identifizieren.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Core]]></Key>
       <Value><![CDATA[Solr Core]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Core.help]]></Key>
       <Value><![CDATA[Der Name des Solr Cores, welcher für die Suche benutzt wird. Typischer Weise wird der Standard-Core verwendet. Somit muss diese Option meist nicht angegeben werden.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Index]]></Key>
       <Value><![CDATA[Solr Index]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Index.help]]></Key>
       <Value><![CDATA[Name des Solr Suchindex der zur Suche genutzt wird. Falls kein Index angegeben wird, wird "Solr Online" im Online-Projekt und sonst "Solr Offline" genutzt.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SearchForEmptyQuery]]></Key>
       <Value><![CDATA[Für leere Suchanfrage suchen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SearchForEmptyQuery.help]]></Key>
       <Value><![CDATA[Ist diese Option eingeschaltet, wird eine Suche nach "*" ausgeführt falls kein Suchbegriff eingegeben wurde. Andernfalls wird bei fehlendem Suchbegriff gar nicht gesucht.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.IgnoreQuery]]></Key>
       <Value><![CDATA[Suchanfrage ignorieren]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.IgnoreQuery.help]]></Key>
       <Value><![CDATA[Ist diese Option eingeschaltet, werden die durch Request-Parameter übermittelten Suchanfragen ignoriert. Die Anfrage sollte dann über "Zusätzliche Solr Query-Parameter" spezifiziert sein. Diese Option ist besonders zur Erstellung von Listen hilfreich.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryModifier]]></Key>
       <Value><![CDATA[Suchanfragen-Modifizierer]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryModifier.help]]></Key>
       <Value><![CDATA[Normalerweise wird die eingegebene Suchanfrage als "q=Suchanfrage" an den Solr-Query angehängt. Durch den Modifizierer, kann "Suchanfrage" ersetzt werden. Der Modifizierer kann das Makro %(query) enthalten, welches durch "Suchanfrage" ersetzt wird. Beispiel: Der Modifizierer "content_en:%(query) OR Title_prop:%(query)" liefert die Anfrage "q=content_en:Suchanfrage OR Title_prop:Suchanfrage".]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryParam]]></Key>
       <Value><![CDATA[Request-Parameter: Suchanfrage]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryParam.help]]></Key>
       <Value><![CDATA[Der Request-Parameter über den die aktuelle Suchanfrage übermittelt wird. Default: q.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.LastQueryParam]]></Key>
       <Value><![CDATA[Request-Parameter: Letzte Suchanfrage]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.LastQueryParam.help]]></Key>
       <Value><![CDATA[Der Request-Parameter über den die letzte Suchanfrage übermittelt wird. Default: lq.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.EscapeQueryCharacters]]></Key>
       <Value><![CDATA[Suchanfrage mit Escape-Zeichen versehen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.EscapeQueryCharacters.help]]></Key>
       <Value><![CDATA[Ist diese Option angeklickt oder nicht gesetzt, werden in der Suchanfrage, welche durch den Suchanfragen-Request-Paramter übermittelt wird, spezielle Solr-Query-Zeichen (z.B., ":", "(", "[") mit Escape-Zeichen versehen.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ReloadedParam]]></Key>
       <Value><![CDATA[Request-Parameter: wiederholt geladen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ReloadedParam.help]]></Key>
       <Value><![CDATA[Der Request-Parameter zeigt an, ob das Suchformular zum wiederholten Male geladen wird. Default: reloaded.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ExtraSolrParams]]></Key>
       <Value><![CDATA[Zusätzliche Solr Query-Parameter]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ExtraSolrParams.help]]></Key>
       <Value><![CDATA[Ein String mit Solr Query-Parametern, der unverändert an Solr weitergegeben wird. Beispiel: Um die Suche auf Containerpages einzuschränken und nur unter /sites/default/ zu suchen, kann der Parameter <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code> gewählt werden.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.AdditionalRequestParams]]></Key>
       <Value><![CDATA[Zusätzliche Request-Parameter]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.AdditionalRequestParams.help]]></Key>
       <Value><![CDATA[Mit zusätzlichen Request-Parametern kann die Solr-Query unter Verwendung des Parameterwertes erweitert werden.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageParam]]></Key>
       <Value><![CDATA[Request-Parameter: Aktuelle Seite]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageParam.help]]></Key>
       <Value><![CDATA[Der Request-Parameter über den die aktuelle Seite übermittelt wird. Default: page.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageSize]]></Key>
       <Value><![CDATA[Seitengröße]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageSize.help]]></Key>
       <Value><![CDATA[Anzahl der maximal auf einer Seite angezeigten Suchresultate]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageNavLength]]></Key>
       <Value><![CDATA[Länge der Seitennavigation]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageNavLength.help]]></Key>
       <Value><![CDATA[Länge einer "Google"-artigen Seitennavigation. Es sollte eine ungerade Zahl angegeben werden. Beispiel: Ist die Länge der Seitennavigation auf 5 gesetzt und Seite 4 wird angezeigt, dann wird das anzeigen einer Seitennavigation mit den Seiten 2, 3, 4, 5, 6 unterstützt.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortParam]]></Key>
       <Value><![CDATA[Request-Parameter: Sortieroption]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortParam.help]]></Key>
       <Value><![CDATA[Der Request-Parameter über den die aktuelle Sortieroption übermittelt wird. Default: sort.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOption]]></Key>
       <Value><![CDATA[Sortieroptionen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOption.help]]></Key>
       <Value><![CDATA[Spezification verschiedener Sortieroptionen. Wenn keine Optionen angegeben werden, wird immer nach "score desc" sortiert.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacet]]></Key>
       <Value><![CDATA[Feldfacetten]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacet.help]]></Key>
       <Value><![CDATA[Spezifikation der aktuellen Feldfacetten.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacet]]></Key>
       <Value><![CDATA[Query-Facette]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacet.help]]></Key>
       <Value><![CDATA[Spezifikation einer Query-Facette.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlight-Optionen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting.help]]></Key>
       <Value><![CDATA[Schalten Sie die Highlighting-Komponente von Solr ein und geben Sie Highlight-Optionen an.]]></Value>
     </Message>
     <Message>
@@ -403,47 +403,47 @@
       <Value><![CDATA[Ein Label, das für die Suchoption angezeigt werden kann, z.B. "Sortieren nach: Titel (aufsteigend)". Default: Der Parameter-Wert.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Common]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Common]]></Key>
       <Value><![CDATA[Allgemein]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryOptions]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryOptions]]></Key>
       <Value><![CDATA[Anfrage Optionen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Pagination]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Pagination]]></Key>
       <Value><![CDATA[Pagination]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOptions]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOptions]]></Key>
       <Value><![CDATA[Sortierung]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacets]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacets]]></Key>
       <Value><![CDATA[Feld-Facetten]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacets]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacets]]></Key>
       <Value><![CDATA[Query-Facette]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
+      <Key><![CDATA[default.JspSearchConfig.Title]]></Key>
       <Value><![CDATA[Standard Suchkonfiguration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanTab]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMeanTab]]></Key>
       <Value><![CDATA[Meinten Sie]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMean]]></Key>
       <Value><![CDATA[Aktivieren der "Meinten Sie ...?" Funktion]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMean.help]]></Key>
       <Value><![CDATA["Meinten Sie ...?" bietet eine alternative Suchanfrage an, falls für die aktuelle Anfrage keine Ergebnisse gefunden werden.]]></Value>
     </Message>
     <Message>
@@ -465,163 +465,163 @@
   </Bundle>
   <Bundle language="en">
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Title]]></Key>
       <Value><![CDATA[Title]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Title.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Title.help]]></Key>
       <Value><![CDATA[Title mapped to the title property, helping to identify your search form configuration.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Core]]></Key>
       <Value><![CDATA[Solr Core]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Core.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Core.help]]></Key>
       <Value><![CDATA[The Solr core to use for the search. Typically there is no need to set it explicitly, since the default core is chosen otherwise.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Index]]></Key>
       <Value><![CDATA[Solr Index]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Index.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Index.help]]></Key>
       <Value><![CDATA[The Solr index to use for the search. If not configured, "Solr Online" is used in the online project and "Solr Offline" in all other projects.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SearchForEmptyQuery]]></Key>
       <Value><![CDATA[Search for empty query]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SearchForEmptyQuery.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SearchForEmptyQuery.help]]></Key>
       <Value><![CDATA[If enabled, a search for "*" will be performed if the search query is empty. Otherwise, no search will be performed for the empty query.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.IgnoreQuery]]></Key>
       <Value><![CDATA[Ignore Query]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.IgnoreQuery.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.IgnoreQuery.help]]></Key>
       <Value><![CDATA[If this option is checked, the query string send via the request parameter is ignored. The query should be specified in the "Additional Solr Query Parameters". The option is in paricular helpful when rendering lists (not search forms).]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryModifier]]></Key>
       <Value><![CDATA[Query Modifier]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryModifier.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryModifier.help]]></Key>
       <Value><![CDATA[Usually, the entered search query is passed to Solr as "q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query) OR Title_prop:%(query)" will yield "q=content_en:my query OR Title_prop:my query" for the original query string "my query".]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryParam]]></Key>
       <Value><![CDATA[Request Parameter: Query]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to transmit the current query string. Default: q.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.LastQueryParam]]></Key>
       <Value><![CDATA[Request Parameter: Last Query]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.LastQueryParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.LastQueryParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to transmit the last query string. Default: lq.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.EscapeQueryCharacters]]></Key>
       <Value><![CDATA[Escape query characters]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.EscapeQueryCharacters.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.EscapeQueryCharacters.help]]></Key>
       <Value><![CDATA[If this option is set to true (or not set at all), the special Solr query characters (e.g., ":", "(", "[") will be escaped in the query string provided via the query request parameter.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ReloadedParam]]></Key>
       <Value><![CDATA[Request Parameter: Reloaded]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ReloadedParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ReloadedParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to indicate that the page with the search form is reloaded. Default: reloaded.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ExtraSolrParams]]></Key>
       <Value><![CDATA[Additional Solr Query Parameters]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.ExtraSolrParams.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.ExtraSolrParams.help]]></Key>
       <Value><![CDATA[A string of Solr query parameters, handed unmodified to Solr. E.g., to restrict the type to containerpages and the search to /sites/default/, use <code>fq=type:containerpage&fq=parent-folders:"/sites/default/"</code>.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.AdditionalRequestParams]]></Key>
       <Value><![CDATA[Additional Request Parameter]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.AdditionalRequestParams.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.AdditionalRequestParams.help]]></Key>
       <Value><![CDATA[Additional request parameters can be used to extend the Solr query according to the request parameter's value.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageParam]]></Key>
       <Value><![CDATA[Request Parameter: Current Page]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to transmit the current page. Default: page.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageSize]]></Key>
       <Value><![CDATA[Page Size]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageSize.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageSize.help]]></Key>
       <Value><![CDATA[The maximal number of results shown on a page.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageNavLength]]></Key>
       <Value><![CDATA[Length of the Page Navigation]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.PageNavLength.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.PageNavLength.help]]></Key>
       <Value><![CDATA[Length of a "Google"-like page navigation. Should be an odd number. E.g., if you chose 5 and are at page 4, you get support for showing links to pages 2, 3, 4, 5, 6 in the pagination.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortParam]]></Key>
       <Value><![CDATA[Request Parameter: Sort Option]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortParam.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortParam.help]]></Key>
       <Value><![CDATA[The request parameter sent to transmit the currently chosen sort option. Default: sort.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOption]]></Key>
       <Value><![CDATA[Sort Options]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOption.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOption.help]]></Key>
       <Value><![CDATA[Specify the different sort options.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacet]]></Key>
       <Value><![CDATA[Field Facets]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacet.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacet.help]]></Key>
       <Value><![CDATA[Specify the available field facets.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacet]]></Key>
       <Value><![CDATA[Query Facet]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacet.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacet.help]]></Key>
       <Value><![CDATA[Specify a query facet.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting Options]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting.help]]></Key>
       <Value><![CDATA[Enable highlighting and specify the highlighting options.]]></Value>
     </Message>
     <Message>
@@ -865,47 +865,47 @@
       <Value><![CDATA[A label to show for the sort option, e.g. "Sort by: Title ascending". Default: The configured parameter value.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Common]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Common]]></Key>
       <Value><![CDATA[Common]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryOptions]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryOptions]]></Key>
       <Value><![CDATA[Query Options]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Pagination]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Pagination]]></Key>
       <Value><![CDATA[Pagination]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.SortOptions]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.SortOptions]]></Key>
       <Value><![CDATA[Sorting]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.FieldFacets]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.FieldFacets]]></Key>
       <Value><![CDATA[Field Facets]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.QueryFacets]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.QueryFacets]]></Key>
       <Value><![CDATA[Query Facet]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.Highlighting]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.Highlighting]]></Key>
       <Value><![CDATA[Highlighting]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[default.JspSearchFormConfig.Title]]></Key>
+      <Key><![CDATA[default.JspSearchConfig.Title]]></Key>
       <Value><![CDATA[Default Search Configuration]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMeanTab]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMeanTab]]></Key>
       <Value><![CDATA[Did you mean]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMean]]></Key>
       <Value><![CDATA[Enable the "Did you mean ...?" feature]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.JspSearchFormConfig.DidYouMean.help]]></Key>
+      <Key><![CDATA[label.JspSearchConfig.DidYouMean.help]]></Key>
       <Value><![CDATA[Did you mean provides alternative search queries in the case that your search fails.]]></Value>
     </Message>
     <Message>

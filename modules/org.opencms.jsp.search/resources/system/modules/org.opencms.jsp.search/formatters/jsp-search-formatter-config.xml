@@ -3,10 +3,10 @@
 <NewFormatters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd">
   <NewFormatter language="en">
     <NiceName><![CDATA[Sample formatter for Search Form]]></NiceName>
-    <Type><![CDATA[jsp-search-form]]></Type>
+    <Type><![CDATA[jsp-search]]></Type>
     <Jsp>
       <link type="WEAK">
-        <target><![CDATA[/system/modules/org.opencms.jsp.search/formatters/jsp-search-form-formatter.jsp]]></target>
+        <target><![CDATA[/system/modules/org.opencms.jsp.search/formatters/jsp-search-formatter.jsp]]></target>
         <uuid>e65af56a-a62c-11e4-9ae0-bfc0090a1084</uuid>
       </link>
     </Jsp>

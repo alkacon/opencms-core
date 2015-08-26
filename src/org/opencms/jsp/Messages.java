@@ -227,7 +227,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_WRONG_DEVICE_TYPE_2 = "LOG_WRONG_DEVICE_TYPE_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_TAG_SEARCHFORM_SEARCH_FAILED_0 = "LOG_TAG_SEARCHFORM_SEARCH_FAILED_0";
+    public static final String LOG_TAG_SEARCH_SEARCH_FAILED_0 = "LOG_TAG_SEARCH_SEARCH_FAILED_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";
