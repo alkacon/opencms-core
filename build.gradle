@@ -652,7 +652,11 @@ allModuleNames.split(',').each{ moduleName ->
         ext.requiresJar = requiresJar
         ext.dependencies = moduleDependencies
         ext.gwtRenameTo = gwtRename
-        version moduleVersion
+        if (project.hasProperty('noVersion')) {
+        	version
+        } else {
+         	version moduleVersion
+        }
         destinationDir modulesDistsDir
         // include the jar file if necessary
         if (requiresJar.toBoolean()){
