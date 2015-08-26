@@ -329,6 +329,10 @@ fi
 echo
 
 echo "Copy and unzip modules ..."
+
+## marker for sed - do not remove next line
+## set umask
+
 ## copy and unzip modules
 for module in $modulesToExport; do
 	echo
@@ -392,6 +396,9 @@ for module in $modulesToExport; do
 		echo "   ! WARN: Skipped module $module because the zip file was not found."
 	fi
 done
+
+## marker for sed - do not remove next line
+## reset umask
 
 echo
 echo "Performing commit ..."
