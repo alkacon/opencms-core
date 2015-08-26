@@ -653,7 +653,7 @@ allModuleNames.split(',').each{ moduleName ->
         ext.dependencies = moduleDependencies
         ext.gwtRenameTo = gwtRename
         if (project.hasProperty('noVersion')) {
-        	version
+        	version ""
         } else {
          	version moduleVersion
         }
