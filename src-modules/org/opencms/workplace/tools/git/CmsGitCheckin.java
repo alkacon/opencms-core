@@ -393,17 +393,26 @@ public class CmsGitCheckin extends CmsJspBean {
         m_logStream.println("=========================");
         m_logStream.println();
 
-        m_logStream.println("Exporting relevant modules");
-        m_logStream.println("--------------------------");
-        m_logStream.println();
+        if (!(m_resetHead || m_resetRemoteHead)) {
+            m_logStream.println("Exporting relevant modules");
+            m_logStream.println("--------------------------");
+            m_logStream.println();
 
-        exportModules();
+            exportModules();
 
-        m_logStream.println();
-        m_logStream.println("Calling script to check in the exports");
-        m_logStream.println("--------------------------------------");
-        m_logStream.println();
+            m_logStream.println();
+            m_logStream.println("Calling script to check in the exports");
+            m_logStream.println("--------------------------------------");
+            m_logStream.println();
 
+        } else {
+
+            m_logStream.println();
+            m_logStream.println("Calling script to reset the repository");
+            m_logStream.println("--------------------------------------");
+            m_logStream.println();
+
+        }
         int exitCode = runCommitScript();
 
         if (exitCode != 0) {
