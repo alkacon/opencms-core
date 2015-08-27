@@ -35,7 +35,6 @@ import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,14 +43,12 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.ComparisonChain;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
@@ -75,9 +72,6 @@ public class CmsToolBar extends CssLayout {
     /** Toolbar items right. */
     private HorizontalLayout m_itemsRight;
 
-    /** OpenCms logo. */
-    private Image m_logo;
-
     /**
      * Constructor.<p>
      */
@@ -85,7 +79,6 @@ public class CmsToolBar extends CssLayout {
 
         Design.read("CmsToolBar.html", this);
 
-        m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
         m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
         m_itemsRight.addComponent(createDropDown());
         m_itemsRight.addComponent(createButton(FontAwesome.USER));

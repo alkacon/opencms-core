@@ -86,6 +86,9 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
+    /** Path to the OpenCms logo  theme resource. */
+    public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
+
     /** CSS style name. */
     public static final String REDUCED_MARGIN = "o-reduced-margin";
 

@@ -30,7 +30,7 @@ package org.opencms.ui.login;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +38,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.server.ExternalResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -116,7 +116,7 @@ public class CmsLoginForm extends VerticalLayout {
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
         setWidth("700px");
 
-        m_logo.setSource(new ExternalResource(CmsWorkplace.getResourceUri("commons/login_logo.png")));
+        m_logo.setSource(new ThemeResource(OpenCmsTheme.OPENCMS_LOGO_PATH));
         setComponentAlignment(m_logo, Alignment.MIDDLE_CENTER);
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {

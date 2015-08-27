@@ -49,16 +49,18 @@ $app-icon-size-small: 24px;
 
 /* Valo variables - changes to the default valo variables */
 
-$v-background-color: $gray-lighter;
-$v-app-background-color: $white;
-$v-focus-color: $blue;
+$v-background-color: $gray-lighter; // #FAFAFB
+$v-app-background-color: $white; // #ffffff
+$v-focus-color: $blue;  // #144382
 $v-selection-color: $blue-light;
+$v-selection-item-height: 25px;
 $v-font-size: 14px;
+$v-font-weight: 400;
 $v-table-row-height: 32px;
 $v-tree-row-height: $v-table-row-height;
 $v-app-loading-text: "Default OpenCms";
-$v-window-background-color: $gray-darker;
-$v-window-modality-curtain-background-color: $gray-light;
+$v-window-background-color: #1F232A; // #1F232A
+$v-window-modality-curtain-background-color: $gray-light; // #E2E3E6
 
 $v-layout-margin-top: $o-layout-margin;
 $v-layout-margin-right: $o-layout-margin;

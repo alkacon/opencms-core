@@ -12,12 +12,15 @@
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
 			float: left;
 			clear: left;
-		
+		  	font-size: $v-font-size--large;
 			@include valo-selection-item-style;
 		}
 	
-		.v-context-menu-item-basic-submenu {
-			background: transparent url(img/basic/arrow.png) no-repeat center right;
+		.v-context-menu-item-basic-submenu:after {
+		  // showing icon 'caret-right'
+			content: "\f0da";
+			font-family: FontAwesome;
+			float: right;
 		}
 	
 		.v-context-menu-item-basic:focus,
@@ -34,22 +37,21 @@
 	
 		.v-context-menu-item-basic-icon-container {
 			float: left;
-			width: 26px;
-			height: 26px;
-			margin-right: 5px;
+			width: $v-selection-item-height;
+			height: $v-selection-item-height;
+			margin: 0 5px 0 0;
 			text-align: center;
 			
 			.v-icon {
-				float: left;
-				width: 16px;
-				height: 16px;
-				padding: 5px;
+				display: inline-block;
+				line-height: $v-selection-item-height;
+				padding: 0 2px;
 			}
 		}
 	
 		.v-context-menu-item-basic-text {
 			float: left;
-			padding: 0 20px 0 10px;
+			padding: 0 20px 0 0px;
 		}
 	}
 }

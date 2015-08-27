@@ -1,3 +1,10 @@
+@function opencms-color-stops($color) {
+  $opacity: 100%;
+  $start: blend-overlay(rgba(#fff, $opacity/100%), $color);
+  $end: $color;
+  @return $start 2%, $end 98%;
+}
+
 @mixin opencms {
   @include valo;
   
@@ -25,7 +32,7 @@
    	 	color: $v-selection-color;
  	 }
  	 .v-window-outerheader{
- 	  @include valo-gradient($v-window-background-color);
+	  @include  linear-gradient(to bottom, opencms-color-stops($v-window-background-color), $v-window-background-color);
  	 }
  	 
  	 .o-dialog > .v-spacing, .o-dialog > .v-expand> .v-spacing {
@@ -232,6 +239,8 @@
   		.o-toolbar-logo{
   			display: inline-block;
   			height: 42px;
+  			width: 170px;
+  			background: url("img/opencmsLogo.png") no-repeat transparent; 
   		}
   	}
   	.o-toolbar-items-left, .o-toolbar-items-right, .o-toolbar-center{
@@ -255,6 +264,18 @@
     min-width: 40px;
     line-height: 40px;
     padding: 0 5px;
+    
+    &:focus:after {
+    	border-color: transparent;
+    	box-shadow: none;
+    }
+    
+    &:hover{
+    	color: $v-selection-color;
+    	&.v-disabled{
+    		color: inherit;
+    	}
+    }
   }
   
   
