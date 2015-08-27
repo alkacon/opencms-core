@@ -15,6 +15,7 @@
 #  9 - the hard reset to ORIG_HEAD failed
 # 10 - git repository unclean
 # 11 - the hard reset to HEAD failed
+# 12 - backup folder does not exist
 
 getExportedModule(){
 	case $exportMode in
@@ -142,7 +143,11 @@ while [ "$1" != "" ]; do
 		--no-ignore-unclean )   ignoreUnclean=0
 								echo " * Read no-ignore-unclean option."
 								;;
-                                * )             configfile=$1
+		--only-backup-to )	    shift
+								backupFolder=$1
+								echo " * Read only-backup-to option with folder \"$backupFolder\"."
+								;;
+        * )             		configfile=$1
 								echo " * Read config file: \"$configfile\"."
     esac
     shift
@@ -162,8 +167,71 @@ cat $configfile | awk '$0="   * "$0'
 
 
 echo
+echo "Setting parameters ..."
+
+## set modules to export
+if [[ -z "$modulesToExport" ]]; then
+	modulesToExport=$DEFAULT_MODULES_TO_EXPORT
+fi
+echo " * Set modules to export: \"$modulesToExport\"."
+
+## set export mode
+if [[ -z "$exportMode" ]]; then
+	exportMode=$MODULE_EXPORT_MODE
+fi
+case $exportMode in
+	1 )	;;
+	* ) exportMode=0
+esac
+echo " * Set export mode: $exportMode."
+
+## set module export folder
+if [[ -z "$moduleExportFolder" ]]; then
+	moduleExportFolder=$MODULE_EXPORT_FOLDER
+fi
+echo " * Set module export folder: \"$moduleExportFolder\"."
+
+echo
+echo "Testing module export folder ..."
+testModuleExportFolder
+
+## only backup modules
+if [[ ! -z "$backupFolder" ]]; then
+	echo
+	echo "Only backup modules ..."
+	if [[ -d "$backupFolder" ]]; then
+		## backup modules
+		echo " * Copying modules to \"$backupFolder\" ..."
+		for module in $modulesToExport; do
+			echo
+			echo "   * Handling module ${module} ..."
+			echo
+			cd $moduleExportFolder
+			fileName=$(getExportedModule)
+			if [[ ! -z "$fileName" ]]; then
+				echo "     * Found zip file ${fileName}."
+				#switch to the backup folder
+				cd "${backupFolder}"
+				echo "     * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
+				#copy the new module .zip
+				cp -f "${moduleExportFolder}/${fileName}" ./
+			else
+				echo "     ! WARN: Skipped module $module because the zip file was not found."
+			fi
+		done
+		echo
+		echo "Successfully finished the backup."
+		exit 0
+	else
+		echo "  * FAILED: Folder \"$backupFolder\" does not exist. Exit the script."
+		exit 12
+	fi
+fi
+
+echo
 echo "Setting parameters (continued) ..."
-## set ignore-unclean flag
+
+## set ignore-unclean
 if [[ -z "$ignoreUnclean" ]]; then
 	if [[ -z "$GIT_IGNORE_UNCLEAN" ]]; then
 		ignoreUnclean=0
@@ -171,49 +239,8 @@ if [[ -z "$ignoreUnclean" ]]; then
 		ignoreUnclean=$GIT_IGNORE_UNCLEAN
 	fi
 fi
-echo " * Set exclude libs flag: $excludeLibs."
+echo " * Set ignore-unclean: $ignoreUnclean."
 
-# test git repository
-echo
-echo "Testing Git repository"
-testGitRepository
-
-# reset to HEAD
-if [[ $resetHead == 1 ]]; then
-	echo
-	echo "Performing \"git reset --hard HEAD\" ..."
-	cd $REPOSITORY_HOME
-	git reset --hard HEAD
-	exitCode=$?
-	if [[ $exitCode == 0 ]]; then
-		echo " * ... success. Your repository is clean now."
-		exit 0
-	else
-		echo " * ... failed with exit code $exitCode."
-		exit 11
-	fi
-fi
-
-# reset to ORIG_HEAD
-if [[ $resetRemoteHead == 1 ]]; then
-	echo
-	cd $REPOSITORY_HOME	
-	origin="$(git remote)"
-	branch="$(git symbolic-ref --short -q HEAD)"
-	echo "Performing \"git reset --hard $origin/$branch\" ..."
-	git reset --hard "$origin/$branch"
-	exitCode=$?
-	if [[ $exitCode == 0 ]]; then
-		echo " * ... success."
-		exit 0
-	else
-		echo " * ... failed with exit code $exitCode."
-		exit 9
-	fi
-fi
-
-echo
-echo "Setting parameters (continued) ..."
 ## set push flag
 if [[ -z "$push" ]]; then
 	if [[ -z "$GIT_PUSH" ]]; then
@@ -258,22 +285,6 @@ if [[ -z "$commit" ]]; then
 fi
 echo " * Set auto-commit: $commit."
 
-## set modules to export
-if [[ -z "$modulesToExport" ]]; then
-	modulesToExport=$DEFAULT_MODULES_TO_EXPORT
-fi
-echo " * Set modules to export: \"$modulesToExport\"."
-
-## set export mode
-if [[ -z "$exportMode" ]]; then
-	exportMode=$MODULE_EXPORT_MODE
-fi
-case $exportMode in
-	1 )	;;
-	* ) exportMode=0
-esac
-echo " * Set export mode: $exportMode."
-
 ## set commit message
 if [[ -z "$commitMessage" ]]; then
 	if [[ -z "$COMMIT_MESSAGE" ]]; then
@@ -284,15 +295,9 @@ if [[ -z "$commitMessage" ]]; then
 fi
 echo " * Set commit message: \"$commitMessage\"."
 
-## set module export folder
-if [[ -z "$moduleExportFolder" ]]; then
-	moduleExportFolder=$MODULE_EXPORT_FOLDER
-fi
-echo " * Set module export folder: \"$moduleExportFolder\"."
-
 ## set export libs flag
 if [[ -z "$excludeLibs" ]]; then
-	if [[ -z "$COMMIT_MESSAGE" ]]; then
+	if [[ -z "$DEFAULT_EXCLUDE_LIBS" ]]; then
 		excludeLibs=0
 	else
 		excludeLibs=$DEFAULT_EXCLUDE_LIBS
@@ -300,10 +305,47 @@ if [[ -z "$excludeLibs" ]]; then
 fi
 echo " * Set exclude libs flag: $excludeLibs."
 
-## test if all necessary options are set
+# test git repository
 echo
-echo "Testing folders ..."
-testModuleExportFolder
+echo "Testing Git repository"
+testGitRepository
+
+# reset to HEAD
+if [[ $resetHead == 1 ]]; then
+	echo
+	echo "Performing \"git reset --hard HEAD\" ..."
+	cd $REPOSITORY_HOME
+	git reset --hard HEAD
+	exitCode=$?
+	if [[ $exitCode == 0 ]]; then
+		echo " * ... success. Your repository is clean now."
+		exit 0
+	else
+		echo " * ... failed with exit code $exitCode."
+		exit 11
+	fi
+fi
+
+# reset to ORIG_HEAD
+if [[ $resetRemoteHead == 1 ]]; then
+	echo
+	cd $REPOSITORY_HOME	
+	origin="$(git remote)"
+	branch="$(git symbolic-ref --short -q HEAD)"
+	echo "Performing \"git reset --hard $origin/$branch\" ..."
+	git reset --hard "$origin/$branch"
+	exitCode=$?
+	if [[ $exitCode == 0 ]]; then
+		echo " * ... success."
+		exit 0
+	else
+		echo " * ... failed with exit code $exitCode."
+		exit 9
+	fi
+fi
+
+echo
+echo "Testing module main folder of the specified repository ..."
 testModuleMainFolder
 
 echo
