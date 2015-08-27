@@ -261,6 +261,9 @@ public class CmsModuleImportExportRepository {
         }
 
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(module.getImportSite())) {
+            cms.getRequestContext().setSiteRoot(module.getImportSite());
+        }
         cms.getRequestContext().setCurrentProject(project);
 
         // We compute a hash code from the paths of all resources belonging to the module and their respective modification dates.
