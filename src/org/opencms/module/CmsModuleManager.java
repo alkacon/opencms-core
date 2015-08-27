@@ -490,6 +490,17 @@ public class CmsModuleManager {
         }
 
         CmsModule module = m_modules.get(moduleName);
+        String importSite = module.getImportSite();
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(importSite)) {
+            CmsObject newCms;
+            try {
+                newCms = OpenCms.initCmsObject(cms);
+                newCms.getRequestContext().setSiteRoot(importSite);
+                cms = newCms;
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
 
         if (!replace) {
             // module is deleted, not replaced
