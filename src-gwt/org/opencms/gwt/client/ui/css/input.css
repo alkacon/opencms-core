@@ -592,7 +592,7 @@ div.formLabel {
 	overflow: hidden;
 	vertical-align: top;
 	margin-top: 3px;
-	line-height: 16px;
+	line-height: value("constants.css.lineHeight");
 	float: left;
 }
 

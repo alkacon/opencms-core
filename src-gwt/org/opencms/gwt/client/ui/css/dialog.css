@@ -1,3 +1,5 @@
+@external cmsState-up-hovering, cmsState-down-hovering;
+
 .popup{
     z-index: value("constants.css.zIndexPopup");
 }
@@ -30,13 +32,23 @@
 
 .closePopup{
     position: absolute;
-    right: -12px;
-    top: -12px;
+    right: 2px;
+    top: 0px;
     cursor: pointer;
+    height: 31px;
+    width: 28px;
 }
-@sprite .closePopupImage{
-	gwt-image: "gwtImages.dialogCloseImage";
+span.closePopupImage:after{
+	content: "x";
+	font-family: value("constants.css.fontFamily");
+	font-weight: bold;
+	color: value("constants.css.textColorCaption");
+	line-height: 29px;
 }
+.cmsState-up-hovering span.closePopupImage:after, .cmsState-down-hovering span.closePopupImage:after{
+	color: #2197DB;
+}
+
 .dragOverlay{
 	display: none;
 }
