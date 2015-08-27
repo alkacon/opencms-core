@@ -31,13 +31,18 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 
 import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 
 /**
  * Displays all available app.<p>
@@ -72,8 +77,34 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
         context.setAppContent(hierarchyPanel);
         context.showInfoArea(false);
         // some dummy buttons
-        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.PUBLISH));
+
+        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
+        publishButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                onClickPublish();
+            }
+        });
+        context.addToolbarButton(publishButton);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.WRENCH));
+    }
+
+    /**
+     * Triggered when the user clicks the 'publsh' button.<p>
+     */
+    public void onClickPublish() {
+
+        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
+
+            public void onUpdate(List<String> updatedItems) {
+                // ignore
+            }
+        });
+        extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
     }
 
     /**
