@@ -25,41 +25,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
-
-import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
-import org.opencms.util.CmsUUID;
+package org.opencms.ui;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-import com.vaadin.ui.UI;
-
 /**
- * Context menu action for displaying the publish dialog for direct publishing of resources.<p>
+ * Handles updates to items of a given type.<p>
+ *
+ * @param <T> the type of updated items
  */
-public class CmsDirectPublishDialogAction implements I_CmsContextMenuAction {
+public interface I_CmsUpdateListener<T> {
 
     /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     * Called with a list of items when these items have been updated.<p>
+     *
+     * @param updatedItems the updated items
      */
-    public void executeAction(final I_CmsDialogContext context) {
-
-        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(UI.getCurrent(), new I_CmsUpdateListener<String>() {
-
-            public void onUpdate(List<String> updatedItems) {
-
-                List<CmsUUID> updatedIds = Lists.newArrayList();
-                for (String item : updatedItems) {
-                    updatedIds.add(new CmsUUID(item));
-                }
-                context.finish(updatedIds);
-            }
-        });
-        extension.openPublishDialog(context.getResources());
-
-    }
-
+    public void onUpdate(List<T> updatedItems);
 }

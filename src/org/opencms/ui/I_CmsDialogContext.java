@@ -56,6 +56,11 @@ public interface I_CmsDialogContext {
      */
     public void finish(List<CmsUUID> result);
 
+    /**
+     * Gets the menu item for which this context was created.<p>
+     *
+     * @return the menu item
+     */
     public I_CmsContextMenuItem getMenuItem();
 
     /**

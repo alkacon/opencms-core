@@ -163,12 +163,14 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector {
                         public void onClose(CloseEvent<PopupPanel> event) {
 
                             CmsPublishDialog dialog = (CmsPublishDialog)(event.getTarget());
+                            long delay = 0;
                             if (dialog.hasFailed() || dialog.hasSucceeded()) {
                                 m_changed = Arrays.asList("" + CmsUUID.getNullUUID());
+                                delay = 700;
                             } else {
                                 m_changed = Lists.newArrayList();
                             }
-                            close(700);
+                            close(delay);
                         }
                     };
 

@@ -29,7 +29,13 @@ package org.opencms.ui.contextmenu;
 
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.util.CmsUUID;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Action class which triggers the GWT-based property editor on the client side.<p>
@@ -39,10 +45,22 @@ public class CmsEditPropertiesAction implements I_CmsContextMenuAction {
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
-    public void executeAction(I_CmsDialogContext context) {
+    public void executeAction(final I_CmsDialogContext context) {
 
         try {
-            CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(A_CmsUI.get(), context);
+            CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(
+                A_CmsUI.get(),
+                new I_CmsUpdateListener<String>() {
+
+                    public void onUpdate(List<String> updatedItems) {
+
+                        List<CmsUUID> updatedIds = Lists.newArrayList();
+                        for (String item : updatedItems) {
+                            updatedIds.add(new CmsUUID(item));
+                        }
+                        context.finish(updatedIds);
+                    }
+                });
             dialogExtension.editProperties(context.getResources().get(0).getStructureId());
         } catch (Exception e) {
             context.error(e);

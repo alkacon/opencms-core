@@ -44,8 +44,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
@@ -53,6 +55,7 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -543,8 +546,37 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.MAGIC));
         context.addToolbarButton(m_upButton);
         context.addToolbarButton(CmsToolBar.createButton(FontAwesome.UPLOAD));
+        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
+        publishButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                onClickPublish();
+            }
+        });
+
+        context.addToolbarButton(publishButton);
 
         populateFolderTree();
+    }
+
+    /**
+     * Triggered when the user clicks the 'publsh' button.<p>
+     */
+    public void onClickPublish() {
+
+        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
+
+            public void onUpdate(List<String> updatedItems) {
+
+                updateAll();
+            }
+
+        });
+        extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
     }
 
     /**

@@ -31,15 +31,17 @@ import org.opencms.ade.publish.CmsPublishService;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsPrefetchSerializationPolicy;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,18 +66,18 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The dialog context for which this extension instance was created. */
-    private I_CmsDialogContext m_dialogContext;
+    /** The update listener. */
+    private I_CmsUpdateListener<String> m_updateListener;
 
     /**
      * Creates a new instance and binds it to a UI instance.<p>
      *
      * @param ui the UI to bind this extension to
-     * @param dialogContext the dialog context
+     * @param updateListener the update listener
      */
-    public CmsGwtDialogExtension(UI ui, I_CmsDialogContext dialogContext) {
+    public CmsGwtDialogExtension(UI ui, I_CmsUpdateListener<String> updateListener) {
         extend(ui);
-        m_dialogContext = dialogContext;
+        m_updateListener = updateListener;
         registerRpc(this, I_CmsGwtDialogServerRpc.class);
     }
 
@@ -102,15 +104,20 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
                 // ignore
             }
         }
-        if (changedStructureIds == null) {
-            m_dialogContext.finish(null);
-        } else {
-            List<CmsUUID> changed = Lists.newArrayList();
-            for (String id : changedStructureIds) {
-                changed.add(new CmsUUID(id));
-            }
-            m_dialogContext.finish(changed);
-        }
+        m_updateListener.onUpdate(changedStructureIds);
+
+    }
+
+    /**
+     * Opens the publish dialog for the given project.<p>
+     *
+     * @param project the project for which to open the dialog
+     */
+    public void openPublishDialog(CmsProject project) {
+
+        CmsPublishData publishData = getPublishData(project);
+        String data = getSerializedPublishData(publishData);
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
     }
 
     /**
@@ -120,8 +127,36 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      */
     public void openPublishDialog(List<CmsResource> resources) {
 
-        String data = getSerializedPublishData(resources);
+        String data = getSerializedPublishData(getPublishData(resources));
         getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
+    }
+
+    /**
+     * Gets the publish data for the given project.<p>
+     *
+     * @param project the project to open publish dialog for
+     *
+     * @return the publish data
+     */
+    protected CmsPublishData getPublishData(CmsProject project) {
+
+        CmsPublishService publishService = new CmsPublishService();
+        CmsObject cms = A_CmsUI.getCmsObject();
+        publishService.setCms(cms);
+        publishService.setRequest((HttpServletRequest)(VaadinService.getCurrentRequest()));
+        try {
+            return publishService.getPublishData(
+                cms,
+                new HashMap<String, String>()/*params*/,
+                null/*workflowId*/,
+                "" + project.getUuid()/*projectParam*/,
+                new ArrayList<String>(),
+                null/*closelink*/,
+                false/*confirmation*/);
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -154,23 +189,21 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
-
     }
 
     /**
-     * Creates the publish data for the given resource list and serializes it using the GWT RPC serialization mechanism.<p>
+     * Serializes a CmsPublishData object into string form using the GWT serialization.<p>
      *
-     * @param directPublishResources the publish resources
+     * @param data the publish data
      *
      * @return the serialized publish data
      */
-    protected String getSerializedPublishData(List<CmsResource> directPublishResources) {
+    protected String getSerializedPublishData(CmsPublishData data) {
 
-        CmsPublishData publishData = getPublishData(directPublishResources);
         try {
             String prefetchedData = RPC.encodeResponseForSuccess(
                 I_CmsPublishService.class.getMethod("getInitData", java.util.HashMap.class),
-                publishData,
+                data,
                 CmsPrefetchSerializationPolicy.instance());
             return prefetchedData;
         } catch (Exception e) {
