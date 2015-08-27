@@ -459,13 +459,6 @@ div.categoryItem{
 @def FADER_LEFT_RIGHT literal("left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%"); 
 @def FADER_TOP_BOTTOM literal("top, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,1) 100%");  
 
-div.dataValue{
-	background-image: value("constants.css.gradientFormDialogIE9");
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
-}
 div.fader, div.textArea div.fader {
 	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	background-image: literal("-moz-linear-gradient(")FADER_LEFT_RIGHT literal(")") !important;
@@ -628,21 +621,8 @@ div.formDescriptionLabel {
 	margin-left: 8px;
 }
 
-.textAreaBox{}
-.selectBoxPopup{}
+.textAreaBox, .selectBoxPopup{}
 
-@def PARENT_GRADIENT literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
-@def PARENT_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
-	
-.formGradientBackground  {
-	background: #EEEEEE !important;
- 	background-image: PARENT_GRADIENT_IE9 !important;
-	background-image: literal("-moz-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-o-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("linear-gradient(")PARENT_GRADIENT literal(")") !important;
-}
 
 .formGradientBackground .fieldset-fieldsetVisible, .formGradientBackground .properties-vfsModeSimplePropertiesBox { 
 	background: transparent !important; 

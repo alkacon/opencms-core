@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
+import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 
 import com.google.gwt.core.client.Scheduler;
@@ -88,6 +89,8 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         m_toolbar = toolbar;
         m_controller = controller;
         setTitle(title);
+        m_button.addStyleName(I_CmsButton.Size.big.getCssClassName());
+        m_button.addStyleName(I_CmsButton.ButtonStyle.FONT_ICON.getCssClassName());
         setToolbarMode(true);
         setOpenRight(true);
         if (!m_controller.isEditable()) {

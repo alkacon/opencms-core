@@ -531,6 +531,14 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
+    @Source("images/opencmsLogo.png")
+    ImageResource opencmsLogo();
+
+    /**
+     * Access method.<p>
+     *
+     * @return the image resource
+     */
     @Source("images/opencmsSymbolImage.png")
     ImageResource opencmsSymbolImage();
 

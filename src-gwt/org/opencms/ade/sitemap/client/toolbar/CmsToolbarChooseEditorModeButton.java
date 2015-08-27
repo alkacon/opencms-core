@@ -33,7 +33,6 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsMenuButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -115,10 +114,11 @@ public class CmsToolbarChooseEditorModeButton extends CmsMenuButton {
         super(null, I_CmsButton.ButtonData.SITEMAP.getIconClass());
         m_canEditModelPages = canEditModelPages;
         setTitle(Messages.get().key(Messages.GUI_SELECT_VIEW_0));
+        m_button.addStyleName(I_CmsButton.Size.big.getCssClassName());
+        m_button.addStyleName(I_CmsButton.ButtonStyle.FONT_ICON.getCssClassName());
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
         m_menuPanel.getElement().addClassName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuPanel());
-        m_button.setSize(Size.small);
         // set the widget
         setMenuWidget(m_menuPanel);
         getPopup().addAutoHidePartner(getElement());

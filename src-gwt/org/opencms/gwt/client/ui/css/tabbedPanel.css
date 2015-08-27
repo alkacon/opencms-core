@@ -26,7 +26,7 @@
 }
 
 .buttonTabs .gwt-TabLayoutPanelTabs {
-	height: 24px !important; 
+	height: 27px !important; 
 }
 
 @sprite .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
@@ -62,7 +62,7 @@
 	border-bottom-left-radius: value("constants.css.borderRadiusButton");
 }
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent{
-	border-radius: 8px;
+	border-radius: value("constants.css.borderRadius");
 }
 
 
@@ -189,7 +189,7 @@
 	}
 } @else {
 	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-		margin:0 0 -2px 2px;
+		margin:0 0 -4px 2px;
 	}
 }
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
@@ -204,7 +204,7 @@
 	cursor: default;
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
-	margin-bottom: -3px;
+	margin-bottom: -5px;
 	padding-bottom: 1px;
 }
 

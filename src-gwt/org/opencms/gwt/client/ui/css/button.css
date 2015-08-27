@@ -7,7 +7,7 @@
 div.html-face {
 	color:inherit;
 	font-family:value("constants.css.fontFamily");
-	line-height: value("constants.css.lineHeight");
+	line-height: value("constants.css.lineHeightBig");
 	font-weight:inherit;
 	text-align:center;
 	white-space:nowrap;
@@ -47,13 +47,18 @@ div.resizeButton{
 	background-image: literal("-webkit-linear-gradient(")RESIZE_BUTTON literal(")");
 	background-image: literal("linear-gradient(")RESIZE_BUTTON literal(")");
 }
-div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton {
+div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-webkit-user-select: none;
 	-o-user-select: none;
 	user-select: none;
 }
+
+div.cmsFontIconButton.cmsState *, div.cmsFontIconButton.cmsState div.html-face, div.cmsFontIconButton.cmsState div.html-face > span {
+	font-size: inherit;
+	color: inherit;
+} 
 
 /** Button size styles. */
 div.cmsButtonMedium div.html-face {
@@ -69,8 +74,15 @@ div.cmsButtonBig div.html-face {
 	line-height: value("constants.css.lineHeightBig");
 }
 
+div.cmsButtonBig.cmsFontIconButton {
+	font-size: 32px;
+	height: 40px;
+	padding: 5px;
+	position: relative;
+}
+
 /** General styling for all buttons (don't let the background expand the button height and position it in the middle). */
-div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton {
+div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
 	height:auto !important;
 	background-position:50% 50% !important;
 	background-color:transparent;
@@ -91,7 +103,7 @@ div.cmsTextButton, div.cmsTransparentButton, div.cmsMenuButton, div.cmsImageButt
     border:1px solid value("constants.css.borderColor");
     padding:3px 8px;
 }
-div.cmsMenuButton, div.cmsImageButton {
+div.cmsMenuButton, div.cmsImageButton, div.cmsFontIconButton {
     border:1px solid transparent;
     padding:2px 4px; 
 }
@@ -104,7 +116,7 @@ div.cmsTransparentButton {
  */
 
 /** Set a general text color for all disabled buttons. */
-div.cmsState-up-disabled div.html-face, div.cmsState-down-disabled div.html-face {
+div.cmsState-up-disabled div.html-face, div.cmsState-down-disabled div.html-face, div.cmsState-up-disabled div.html-face span, div.cmsState-down-disabled div.html-face span {
 	color:value("constants.css.textColorDisabledButton") !important;
 }
 /** Text-Button:If no button style is set use the default state behavior. */
@@ -136,6 +148,12 @@ div.cmsTextButton.cmsState-down {
 	gwt-image:"backgrounds.stateBackground"; 
 	background-color:value("constants.css.backgroundColorStateHover");
 	border-color:value("constants.css.borderColor");
+}
+
+div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-down, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
+	color:  #2197DB;
+	border-color: transparent;
+	background: transparent;
 }
 
 /**

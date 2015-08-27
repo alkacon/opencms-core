@@ -143,6 +143,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String cmsFontIconButton();
+
+        /**
+         *  Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String cmsImageButton();
 
         /**
@@ -2236,6 +2243,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String toolbarCenter();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String toolbarContent();
 
         /**
@@ -2244,6 +2258,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarHide();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String toolbarLogo();
 
         /**
          * Access method.<p>

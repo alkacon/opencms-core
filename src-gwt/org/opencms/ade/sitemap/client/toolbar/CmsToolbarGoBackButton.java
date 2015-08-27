@@ -36,6 +36,7 @@ import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.util.CmsStringUtil;
@@ -64,7 +65,8 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
 
         setImageClass(I_CmsButton.ButtonData.BACK.getIconClass());
         setTitle(I_CmsButton.ButtonData.BACK.getTitle());
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
+        setSize(Size.big);
         addClickHandler(new ClickHandler() {
 
             /**

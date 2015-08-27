@@ -72,11 +72,11 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     public enum CmsTabbedPanelStyle {
 
         /** Button style. */
-        buttonTabs(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
+        buttonTabs(27, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
         I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
 
         /** Classic style. */
-        classicTabs(25, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().classicTabs(), null);
+        classicTabs(27, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().classicTabs(), null);
 
         /** The default tabbar height. */
         public static final CmsTabbedPanelStyle DEFAULT = buttonTabs;

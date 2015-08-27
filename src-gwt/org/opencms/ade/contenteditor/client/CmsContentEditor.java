@@ -66,7 +66,6 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
-import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
@@ -477,18 +476,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListsner(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-                                                                                                              var instance = changeListener;
-                                                                                                              var nat = {
-                                                                                                              onChange : function(entity) {
-                                                                                                              var cmsEntity=@org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-                                                                                                              }
-                                                                                                              }
-                                                                                                              var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-                                                                                                              if (typeof method == 'function') {
-                                                                                                              method(nat, changeScope);
-                                                                                                              }
-                                                                                                              }-*/;
+        var instance = changeListener;
+        var nat = {
+            onChange : function(entity) {
+                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+            }
+        }
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            method(nat, changeScope);
+        }
+    }-*/;
 
     /**
      * Checks whether the add entity change listener method has been exported.<p>
@@ -496,13 +495,13 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-                                                      var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-                                                      if (typeof method == 'function') {
-                                                      return true;
-                                                      } else {
-                                                      return false;
-                                                      }
-                                                      }-*/;
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
 
     /**
      * Returns the current entity.<p>
@@ -510,9 +509,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-                                                            return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                                                            ();
-                                                            }-*/;
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]();
+    }-*/;
 
     /**
      * Closes the editor.<p>
@@ -1821,15 +1819,15 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-                                           if ($wnd.top.cms_ade_closeEditorDialog) {
-                                           $wnd.top.cms_ade_closeEditorDialog();
-                                           } else {
-                                           var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-                                           if (backlink) {
-                                           $wnd.top.location.href = backlink;
-                                           }
-                                           }
-                                           }-*/;
+        if ($wnd.top.cms_ade_closeEditorDialog) {
+            $wnd.top.cms_ade_closeEditorDialog();
+        } else {
+            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+            if (backlink) {
+                $wnd.top.location.href = backlink;
+            }
+        }
+    }-*/;
 
     /**
      * Creates a push button for the edit tool-bar.<p>
@@ -1844,7 +1842,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         CmsPushButton result = new CmsPushButton();
         result.setTitle(title);
         result.setImageClass(imageClass);
-        result.setButtonStyle(ButtonStyle.IMAGE, null);
+        result.setButtonStyle(ButtonStyle.FONT_ICON, null);
         result.setSize(Size.big);
         return result;
     }
@@ -1862,18 +1860,19 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-                                        var self = this;
-                                        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                                        listener, scope) {
-                                        var wrapper = {
-                                        onChange : listener.onChange
-                                        }
-                                        self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-                                        }
-                                        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-                                        return new $wnd.acacia.CmsEntityWrapper(self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-                                        }
-                                        }-*/;
+        var self = this;
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(listener,
+                scope) {
+            var wrapper = {
+                onChange : listener.onChange
+            }
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+        }
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+            return new $wnd.acacia.CmsEntityWrapper(
+                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+        }
+    }-*/;
 
     /**
      * Returns the attribute handler for the given attribute.<p>
@@ -1964,7 +1963,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_deleteLocaleButton == null) {
             m_deleteLocaleButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
-                I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarDeleteLocale());
+                "opencms-icon-delete-locale");
             m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -2001,8 +2000,8 @@ public final class CmsContentEditor extends CmsEditorBase {
 
         m_toolbar = new CmsToolbar();
         m_publishButton = createButton(
-            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_TOOLBAR_PUBLISH_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarPublish());
+            I_CmsButton.ButtonData.PUBLISH.getTitle(),
+            I_CmsButton.ButtonData.PUBLISH.getIconClass());
         m_toolbar.addLeft(m_publishButton);
         m_publishButton.addClickHandler(new ClickHandler() {
 
@@ -2045,7 +2044,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         });
         m_saveExitButton = createButton(
             Messages.get().key(Messages.GUI_TOOLBAR_SAVE_AND_EXIT_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarSaveExit());
+            "opencms-icon-save-exit");
         m_saveExitButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2067,9 +2066,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_saveButton.setVisible(false);
         m_toolbar.addLeft(m_saveButton);
         disableSave(Messages.get().key(Messages.GUI_TOOLBAR_NOTHING_CHANGED_0));
-        m_undoButton = createButton(
-            Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarUndo());
+        m_undoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_0), "opencms-icon-undo");
         m_undoButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2083,9 +2080,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_undoButton.getElement().getStyle().setMarginLeft(10, Unit.PX);
         m_undoButton.setVisible(false);
         m_toolbar.addLeft(m_undoButton);
-        m_redoButton = createButton(
-            Messages.get().key(Messages.GUI_TOOLBAR_REDO_0),
-            I_CmsToolbarButtonLayoutBundle.INSTANCE.toolbarButtonCss().toolbarRedo());
+        m_redoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_REDO_0), "opencms-icon-redo");
         m_redoButton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -2124,7 +2119,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         m_hideHelpBubblesButton = new CmsToggleButton();
 
         m_hideHelpBubblesButton.setImageClass(I_CmsButton.ButtonData.TOGGLE_HELP.getIconClass());
-        m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.IMAGE, null);
+        m_hideHelpBubblesButton.setButtonStyle(ButtonStyle.FONT_ICON, null);
         m_hideHelpBubblesButton.setSize(Size.big);
         m_hideHelpBubblesButton.addClickHandler(new ClickHandler() {
 
@@ -2164,9 +2159,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-                                                                             $wnd._editResource = sitePath;
-                                                                             $wnd._editLanguage = locale;
-                                                                             }-*/;
+        $wnd._editResource = sitePath;
+        $wnd._editLanguage = locale;
+    }-*/;
 
     /**
      * Shows the locked resource error message.<p>

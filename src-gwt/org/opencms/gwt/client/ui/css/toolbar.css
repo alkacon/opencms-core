@@ -32,13 +32,9 @@
 	z-index: value("constants.css.zIndexPopup");
 }
 
-@sprite .toolbarBackground{
-	gwt-image: "backgrounds.softBackground";
-	background-position: 50% 50%;
-	overflow: visible;
-	border-top:medium none;
-	font-weight:normal;
-	height: 34px;
+.toolbarBackground{
+	overflow: hidden;
+	height: 52px;
 	position:absolute;
 	top:0px;
 	left:0px;
@@ -47,25 +43,55 @@
 	color:value("constants.css.textColor");
 	padding:0px;
 	margin:0px;
-	background-color: value("constants.css.backgroundColorSoft");
+	background-color: #ffffff;
 }
 
-.toolbarContent{
-	padding:0px;
-	position:relative;
-	width:value("constants.css.toolbarWidth");
-	margin:2px auto;
+.toolbarBackground .toolbarCenter{
+	display: block;
+  	position: absolute;
+  	left: 0;
+  	right:0;
+  	top: 4px;
+  	text-align: center;
 }
-.toolbarButtonsLeft>div{
-	margin-right: 5px;
-	vertical-align:middle;
+
+@sprite .toolbarBackground .toolbarLogo{
+	gwt-image: "coreImages.opencmsLogo";
+	display: inline-block;
+  	height: 42px;
+  	width: 170px;
 }
+
+.toolbarBackground .toolbarContent{
+	margin: 0 20px;
+  	min-width: 700px;
+  	text-align: center;
+  	display: block;
+}
+
+.toolbarButtonsRight, .toolbarButtonsLeft{
+	margin: 5px 0;
+	width: 49%;
+	z-index: 10;
+}
+
+.toolbarButtonsLeft{
+	float: left;
+}
+
 .toolbarButtonsRight{
 	text-align: right;
 	vertical-align:middle;
+	float: right;
 }
+
+.toolbarButtonsLeft>div{
+	margin-right: 10px;
+	vertical-align:middle;
+}
+
 .toolbarButtonsRight>div{
-	margin-left: 5px;
+	margin-left: 10px;
 }
 
 .notification {

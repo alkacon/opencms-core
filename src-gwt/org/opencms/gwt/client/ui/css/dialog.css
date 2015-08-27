@@ -49,21 +49,18 @@
 	width: 100%;
 	z-index: value("constants.css.zIndexInline");
 }
-@sprite div.popup.popupContent, div.popupContent{
-	gwt-image: "backgrounds.dialogBackground";
+div.popup.popupContent, div.popupContent{
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientDialogHeader") literal(")");
+	background-size: 100% 31px;
+	background-repeat: no-repeat;
 	background-position: top;
     height: auto;
-    /** This background behaves like a border. */
     background-color: value("constants.css.backgroundColorDialogBorder");
-    background-repeat:repeat-x;
     padding: 6px 5px 5px 5px;
     position: relative;
-    border-width: 1px;
-    border-style: solid;
-    border-top-color: value("constants.css.borderColorTopDialog");
-    border-right-color: value("constants.css.borderColorDialog");
-    border-bottom-color: value("constants.css.borderColorDialog");
-    border-left-color: value("constants.css.borderColorDialog");
     font-family: value("constants.css.fontFamily");
     overflow: visible;
 }
@@ -86,10 +83,10 @@ div.frameDialog div.popupButtonPanel {
 
 .popupContent{
 	box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
-	border-radius: 12px;
+	border-radius: 4px;
 }
 .popupMainContent, .caption{
-	border-radius: 8px;
+	border-radius: 4px;
 }
 
 
@@ -104,9 +101,8 @@ div.frameDialog div.popupButtonPanel {
     position:relative;
 }
 
-@sprite .popup .popupMainContent.contentPadding, .popupMainContent.contentPadding {
-	gwt-image: "backgrounds.dialogBackgroundShadow";
-    background-color: value("constants.css.backgroundColorDialog");
+.popup .popupMainContent.contentPadding, .popupMainContent.contentPadding {
+	background-color: value("constants.css.backgroundColorDialog");
 	background-position: top;
 	background-repeat: repeat-x;
 	padding: value("constants.css.defaultSpace");
@@ -145,7 +141,7 @@ div.frameDialog div.popupButtonPanel {
     text-overflow: ellipsis;
     overflow: hidden;
     height: 25px;
-    line-height: 25px;
+    line-height: 20px;
 }
 
 .hideButtonPanel{

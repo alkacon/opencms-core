@@ -245,20 +245,6 @@ public class CmsToolbarPopup extends CmsPopup {
      */
     private int getToolbarWidth() {
 
-        if (m_toolbarWidth > 0) {
-            return m_toolbarWidth;
-        }
-        String toolbarWidthConstant = I_CmsLayoutBundle.INSTANCE.constants().css().toolbarWidth().toLowerCase();
-        int posPX = toolbarWidthConstant.indexOf("px");
-        if (posPX != -1) {
-            try {
-                m_toolbarWidth = Integer.parseInt(toolbarWidthConstant.substring(0, posPX));
-                return m_toolbarWidth;
-            } catch (NumberFormatException ex) {
-                // noop
-            }
-        }
-        return 930;
+        return Window.getClientWidth() - 20;
     }
-
 }

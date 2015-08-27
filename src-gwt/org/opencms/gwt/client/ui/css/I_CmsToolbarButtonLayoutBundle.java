@@ -35,7 +35,7 @@ import com.google.gwt.resources.client.CssResource.Shared;
  *
  * @since 8.0.0
  */
-public interface I_CmsToolbarButtonLayoutBundle extends I_CmsBigIconBundle {
+public interface I_CmsToolbarButtonLayoutBundle extends I_CmsImageBundle {
 
     /** The extended tool-bar button CSS. */
     @Shared

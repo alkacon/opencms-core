@@ -3,19 +3,19 @@
  */
 
 /** The font family for everything. */
-@def fontFamily literal("Verdana,Helvetica,Arial,sans-serif");
+@def fontFamily literal("Open Sans, sans-serif");
 
 @def fontFamilyMono literal("monospace");
 /** The normal font size. */
-@def fontSize 12px;
+@def fontSize 14px;
 /** The small font size. */
-@def fontSizeSmall 10px;
+@def fontSizeSmall 12px;
 /** The big font size. */
-@def fontSizeBig 14px;
+@def fontSizeBig 17px;
 
-@def lineHeight 14px;
-@def lineHeightSmall 12px;
-@def lineHeightBig 17px;
+@def lineHeight 17px;
+@def lineHeightSmall 14px;
+@def lineHeightBig 22px;
 
 
 /**
@@ -23,19 +23,19 @@
  */
 
 /** The default text color. */
-@def textColor #222222;
+@def textColor #474747;
 /** The text color for the caption of dialogs. */
-@def textColorCaption #FFFFFF;
+@def textColorCaption #FAFAFB;
 /** The text color for buttons that have a dark background. */
-@def textColorDarkButton #FFFFFF;
+@def textColorDarkButton #FAFAFB;
 /** The text color for buttons that have a light background. */
-@def textColorLightButton #222222;
+@def textColorLightButton #474747;
 /** The text color for buttons that are disabled. */
 @def textColorDisabledButton #888888;
 /** The disabled text color. Use it for any inactive or disabled texts e.g. input components. */
 @def textColorDisabled #999999;
 /** The new text color. Use it only for displaying texts of new resources. */
-@def textColorNew #003082;
+@def textColorNew #144382;
 /** The changed text color. Use it only for displaying texts of changed resources. */
 @def textColorChanged #B31B34;
 /** The important text color. Use it only for displaying important text. */
@@ -51,7 +51,7 @@
  */
 
 /** The default border color. */
-@def borderColor #999999;
+@def borderColor #C9C9C9;
 /** The border color for list items. */
 @def borderColorListItem #CCC;
 /** The border color for the dialog's top. */
@@ -63,9 +63,9 @@
 /** The highlight border color. Use it for highlighting special UI components e.g. errors. */
 @def borderColorHighlight #B31B34;
 /** The default border radius. */
-@def borderRadius 3px;
+@def borderRadius 4px;
 /** The default border radius for buttons. */
-@def borderRadiusButton 8px;
+@def borderRadiusButton 4px;
 
 
 /**
@@ -78,7 +78,7 @@
  */
 @def backgroundColorDialog #FFFFFF;
 /** The menu background color. Use it for menu backgrounds. NOTE: This color is also used for the CmsTabbedPanel. */
-@def backgroundColorMenu #F9F9F9;
+@def backgroundColorMenu #FAFAFB;
 /** The backgroundColor for a list item. */
 @def backgroundColorListItem #E0E0E0;
 /** The disabled background color. Use it for disabled UI components. */
@@ -137,6 +137,10 @@
 /**
  * Background gradients.
  */
+/**
+ * The dialog header background. 
+ */
+@def gradientDialogHeader literal("to bottom, #3E4654 2%, #1F232A 98%, #1F232A");
 /** The form dialog background gradient. */
 @def gradientFormDialog literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
 @def gradientFormDialogIE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");

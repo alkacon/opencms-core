@@ -101,6 +101,7 @@ div.previewDialog {
     height: 0;
     clear: both;
     visibility: hidden;
+    line-height: 1px;
 }
 
 table.infoTable{

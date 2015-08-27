@@ -77,37 +77,37 @@ public interface I_CmsButton {
     public enum ButtonData {
 
         /** Toolbar button. */
-        ADD(BUTTON_CSS.toolbarAdd(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
+        ADD("opencms-icon-wand", Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
 
         /** Toolbar button. */
-        ADD_TO_FAVORITES(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
+        ADD_TO_FAVORITES("opencms-icon-clipboard", Messages.get().key(Messages.GUI_TOOLBAR_ADD_TO_FAVORITES_0)),
 
         /** Toolbar button. */
-        BACK(BUTTON_CSS.toolbarBack(), Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
+        BACK("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_BACK_0)),
 
         /** Toolbar button. */
-        CLIPBOARD(BUTTON_CSS.toolbarClipboard(), Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
+        CLIPBOARD("opencms-icon-clipboard", Messages.get().key(Messages.GUI_TOOLBAR_CLIPBOARD_0)),
 
         /** Toolbar button. */
-        CONTEXT(BUTTON_CSS.toolbarContext(), Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
+        CONTEXT("opencms-icon-context-menu", Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_0)),
 
         /** Toolbar button. */
-        COPY_LOCALE(BUTTON_CSS.toolbarCopyLocale(), Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
+        COPY_LOCALE("opencms-icon-copy-locale", Messages.get().key(Messages.GUI_TOOLBAR_COPY_LOCALE_0)),
 
         /** Toolbar button. */
         DELETE(BUTTON_CSS.toolbarDelete(), Messages.get().key(Messages.GUI_TOOLBAR_DELETE_0)),
 
         /** Toolbar button. */
-        EDIT(BUTTON_CSS.toolbarEdit(), Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
+        EDIT("opencms-icon-pen", Messages.get().key(Messages.GUI_TOOLBAR_EDIT_0)),
 
         /** Toolbar button. */
-        ELEMENT_INFO(BUTTON_CSS.toolbarElementInfo(), Messages.get().key(Messages.GUI_TOOLBAR_ELEMENT_INFO_0)),
+        ELEMENT_INFO("opencms-icon-info", Messages.get().key(Messages.GUI_TOOLBAR_ELEMENT_INFO_0)),
 
         /** Toolbar button. */
-        GALLERY(BUTTON_CSS.toolbarGallery(), Messages.get().key(Messages.GUI_TOOLBAR_GALLERY_0)),
+        GALLERY("opencms-icon-gallery", Messages.get().key(Messages.GUI_TOOLBAR_GALLERY_0)),
 
         /** Toolbar button. */
-        INFO(BUTTON_CSS.toolbarInfo(), Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
+        INFO("opencms-icon-info", Messages.get().key(Messages.GUI_TOOLBAR_INFO_0)),
 
         /** Inherited element button. */
         INHERITED(BUTTON_CSS.toolbarInherited(), Messages.get().key(Messages.GUI_TOOLBAR_INHERITED_0)),
@@ -122,7 +122,7 @@ public interface I_CmsButton {
         PROPERTIES(BUTTON_CSS.toolbarProperties(), Messages.get().key(Messages.GUI_TOOLBAR_PROPERTIES_0)),
 
         /** Toolbar button. */
-        PUBLISH(BUTTON_CSS.toolbarPublish(), Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
+        PUBLISH("opencms-icon-publish", Messages.get().key(Messages.GUI_TOOLBAR_PUBLISH_0)),
 
         /** Toolbar button. */
         REFRESH(BUTTON_CSS.toolbarRefresh(), Messages.get().key(Messages.GUI_TOOLBAR_REFRESH_0)),
@@ -131,13 +131,13 @@ public interface I_CmsButton {
         REMOVE(BUTTON_CSS.toolbarRemove(), Messages.get().key(Messages.GUI_TOOLBAR_REMOVE_0)),
 
         /** Toolbar button. */
-        RESET(BUTTON_CSS.toolbarReset(), Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
+        RESET("opencms-icon-exit", Messages.get().key(Messages.GUI_TOOLBAR_RESET_0)),
 
         /** Toolbar button. */
-        SAVE(BUTTON_CSS.toolbarSave(), Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0)),
+        SAVE("opencms-icon-save", Messages.get().key(Messages.GUI_TOOLBAR_SAVE_0)),
 
         /** Toolbar button. */
-        SELECTION(BUTTON_CSS.toolbarSelection(), Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
+        SELECTION("opencms-icon-edit-point", Messages.get().key(Messages.GUI_TOOLBAR_SELECTION_0)),
 
         /** Shows formerly hidden elements. */
         SHOW(BUTTON_CSS.toolbarNew(), Messages.get().key(Messages.GUI_TOOLBAR_ADD_0)),
@@ -146,10 +146,10 @@ public interface I_CmsButton {
         SHOWSMALL(BUTTON_CSS.toolbarShowSmall(), Messages.get().key(Messages.GUI_TOOLBAR_SHOWSMALL_0)),
 
         /** Toolbar button. */
-        SITEMAP(BUTTON_CSS.toolbarSitemap(), Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
+        SITEMAP("opencms-icon-sitemap", Messages.get().key(Messages.GUI_TOOLBAR_SITEMAP_0)),
 
         /** Toolbar button. */
-        TOGGLE_HELP(BUTTON_CSS.toolbarToggleHelp(), Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
+        TOGGLE_HELP("opencms-icon-help", Messages.get().key(Messages.GUI_TOOLBAR_TOGGLE_HELP_0));
 
         /** The icon class name. */
         private String m_iconClass;
@@ -192,6 +192,10 @@ public interface I_CmsButton {
 
     /** Available button styles. */
     public enum ButtonStyle {
+
+        /** Font icon button. */
+        FONT_ICON(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsFontIconButton(),
+        I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll(), "opencms-icon"),
 
         /** Menu button. */
         IMAGE(I_CmsLayoutBundle.INSTANCE.buttonCss().cmsImageButton(),

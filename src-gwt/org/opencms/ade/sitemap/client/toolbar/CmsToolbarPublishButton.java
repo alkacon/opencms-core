@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 
 import java.util.HashMap;
@@ -63,7 +64,8 @@ public class CmsToolbarPublishButton extends CmsPushButton {
         m_editorHandler = toolbar.getToolbarHandler().getEditorHandler();
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
+        setSize(Size.big);
 
         addClickHandler(new ClickHandler() {
 

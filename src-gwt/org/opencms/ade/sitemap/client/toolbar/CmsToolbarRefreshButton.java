@@ -31,6 +31,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.I_CmsButton.Size;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,7 +53,8 @@ public class CmsToolbarRefreshButton extends CmsPushButton {
 
         setImageClass(I_CmsButton.ButtonData.REFRESH.getIconClass());
         setTitle(I_CmsButton.ButtonData.REFRESH.getTitle());
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
+        setSize(Size.big);
         addClickHandler(new ClickHandler() {
 
             /**

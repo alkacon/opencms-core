@@ -51,7 +51,7 @@ div.hasUpload > div.uploadButton{
 	height: auto;
 	width: auto;
 	position: absolute;
-	top: 1px;
+	top: -3px;
 	right: 24px;
 }
 

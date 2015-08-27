@@ -20,16 +20,23 @@
 			padding:2px;
 		}
 		
+		div.imageInfo * {
+			font-size: inherit;
+			line-height: inherit;
+		}
+		
 		div.imageInfo table.infos tr td, .imageInfo span.title{
 			border: none;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			padding: 1px;
+			font-size: inherit;
+			line-height: inherit;
 		}
 		
 	</ui:style>
-	<g:HTMLPanel styleName="{style.imageInfo}" addStyleNames="{res.generalCss.cornerAll}">
+	<g:HTMLPanel styleName="{style.imageInfo}" addStyleNames="{res.generalCss.cornerAll} {res.generalCss.textSmall}">
 		<div class="{res.generalCss.cornerAll}">
 			<span class="{style.title}" ui:field="m_title"></span>
 			<table class="{style.infos}">

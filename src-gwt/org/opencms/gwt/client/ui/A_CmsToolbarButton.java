@@ -62,7 +62,7 @@ implements I_CmsToolbarButton {
     protected A_CmsToolbarButton(I_CmsButton.ButtonData buttonData, HANDLER handler) {
 
         super(buttonData);
-        setButtonStyle(ButtonStyle.IMAGE, null);
+        setButtonStyle(ButtonStyle.FONT_ICON, null);
         setSize(Size.big);
         m_handler = handler;
         m_iconClass = buttonData.getIconClass();

@@ -7,14 +7,13 @@
 	<g:FlowPanel ui:field="m_panel" styleName="{resources.toolbarCss.toolbar}">
 		<cms:CmsNotificationWidget />
 		<g:FlowPanel styleName="{resources.toolbarCss.toolbarBackground}">
-			<g:HorizontalPanel styleName="{resources.toolbarCss.toolbarContent}" >
-				<g:cell horizontalAlignment="ALIGN_LEFT" verticalAlignment="ALIGN_MIDDLE">
-					<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
-			 	</g:cell>
-				<g:cell horizontalAlignment="ALIGN_RIGHT" verticalAlignment="ALIGN_MIDDLE">
-					<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"></g:FlowPanel>
-				</g:cell>
-			</g:HorizontalPanel>
+			<g:FlowPanel styleName="{resources.toolbarCss.toolbarContent}" >
+				<g:HTMLPanel styleName="{resources.toolbarCss.toolbarCenter}">
+					<span class="{resources.toolbarCss.toolbarLogo}"></span>
+	  			</g:HTMLPanel>
+				<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
+			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"></g:FlowPanel>
+			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 

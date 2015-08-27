@@ -24,7 +24,7 @@ li div.itemContainer.cmsHovering{
 
 .itemContainer div {
 	font-family: value("constants.css.fontFamily");
-	font-size: value("constants.css.fontSize");
+	font-size: value("constants.css.fontSizeSmall");
 	line-height: 16px;
 }
 @url editCursorGifUrl coreImages.editCursorGif;
@@ -154,7 +154,8 @@ div.itemIcon{
 	background-repeat: no-repeat;
 }
 
-.itemTitle{
+.itemContainer .itemTitle{
+	font-size: value("constants.css.fontSize");
 	font-weight: bold;
     vertical-align: middle;
     white-space: nowrap;
