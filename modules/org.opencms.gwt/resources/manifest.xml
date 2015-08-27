@@ -22,7 +22,9 @@
 		<userinstalled />
 		<dateinstalled />
 		<dependencies />
-		<exportpoints />
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.gwt/resources/" destination="resources/ade/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.gwt/" />
 		</resources>
@@ -256,6 +258,165 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.gwt/resources</destination>
+			<type>folder</type>
+			<uuidstructure>d0cbf648-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.gwt/resources/css</destination>
+			<type>folder</type>
+			<uuidstructure>dd1dcd1a-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/opencmsFont.css</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/opencmsFont.css</destination>
+			<type>plain</type>
+			<uuidstructure>e8d0cc02-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8d0cc03-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[style]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts</destination>
+			<type>folder</type>
+			<uuidstructure>e8c00300-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.eot</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.eot</destination>
+			<type>plain</type>
+			<uuidstructure>e8c46fd8-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8c46fd9-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[opencms-font]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.svg</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.svg</destination>
+			<type>plain</type>
+			<uuidstructure>e8c5f67b-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8c5f67c-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[opencms-font]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.ttf</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.ttf</destination>
+			<type>plain</type>
+			<uuidstructure>e8c189a2-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8c189a3-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[opencms-font]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.woff</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.woff</destination>
+			<type>plain</type>
+			<uuidstructure>e8c2e935-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8c2e936-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[opencms-font]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.woff2</source>
+			<destination>system/modules/org.opencms.gwt/resources/css/fonts/opencms-font.woff2</destination>
+			<type>plain</type>
+			<uuidstructure>e8cf937f-4a43-11e5-9dc4-377ea9708e4d</uuidstructure>
+			<uuidresource>e8cf9380-4a43-11e5-9dc4-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 24 Aug 2015 09:38:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 24 Aug 2015 09:38:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[opencms-font]]></value>
 				</property>
 			</properties>
 			<relations/>

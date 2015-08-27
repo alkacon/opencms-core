@@ -145,7 +145,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
         sb.append(prefetchedData);
         sb.append(ClientMessages.get().export(wpLocale));
         sb.append("<style type=\"text/css\">\n @import url(\"").append(iconCssLink(cms, iconCssClassPrefix)).append(
-            "\");\n</style>\n");
+            "\");\n </style>\n");
         // append the workplace locale information
         sb.append("<meta name=\"gwt:property\" content=\"locale=").append(wpLocale).append("\" />\n");
         return sb.toString();
@@ -227,6 +227,16 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Returns the OpenCms font icon CSS link.<p>
+     *
+     * @return the CSS link
+     */
+    private static String getFontIconCssLink() {
+
+        return CmsWorkplace.getResourceUri("ade/css/opencmsFont.css");
+    }
+
+    /**
      * Generates the link to the icon CSS JSP, and appends a "prefix" request parameter with the given value.<p>
      *
      * @param cms the CMS context
@@ -283,7 +293,10 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     public String export(String iconCssClassPrefix) throws Exception {
 
-        return exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix);
+        return exportCommon(getCmsObject(), getCoreData(), iconCssClassPrefix)
+            + "\n<style type=\"text/css\">\n @import url(\""
+            + getFontIconCssLink()
+            + "\");\n </style>\n";
     }
 
     /**
