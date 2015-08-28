@@ -339,6 +339,35 @@
   	color: $white;
   }
   
+  /* explorer bread crumb path input styles */
+  .o-crumb-wrapper{
+  	position: relative;
+  	
+  	.o-crumbs {
+  		position: absolute;
+  		top:0;
+  		left: ceil($v-unit-size/6 + 2);
+  		
+  		.v-button-link {
+  			padding: 0 2px;
+  		}
+  		
+  		&.o-crumbs-hidden{
+  			display: none;
+  		}
+  	}
+  	
+  	.v-textfield {
+  		color: transparent;
+  		transition: color 0.1s ease-in-out;
+  		
+  		&:focus {
+  			color: $v-font-color;
+  			transition: color 0.3s ease-in-out;
+  		}
+  	}
+  }
+  
   /* login form styles */
   
   .cmslogin-parent .cmslogin-box { 

@@ -55,6 +55,7 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
@@ -85,6 +86,8 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
@@ -101,6 +104,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.TextField;
@@ -309,17 +313,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         }
     }
 
-    /** The files and folder resource filter. */
-    private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
-
-    /** The folders resource filter. */
-    private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
-
-    /** Logger instance for this class. */
-    static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
-
-    /** The serial version id. */
-    private static final long serialVersionUID = 1L;
+    /** The opened paths session attribute name. */
+    public static final String OPENED_PATHS = "explorer-opened-paths";
 
     /** Site selector caption property. */
     public static final String SITE_CAPTION = "site_caption";
@@ -327,14 +322,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** Site selector site root property. */
     public static final String SITE_ROOT = "site_root";
 
-    /** The opened paths session attribute name. */
-    public static final String OPENED_PATHS = "explorer-opened-paths";
-
     /** The state separator string. */
     public static final String STATE_SEPARATOR = "!!";
 
-    /** The opened paths by site. */
-    private Map<String, String> m_openedPaths;
+    /** Logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
+
+    /** The files and folder resource filter. */
+    private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
+
+    /** The folders resource filter. */
+    private static final CmsResourceFilter FOLDERS = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder();
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
@@ -348,6 +349,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The table containing the contents of the current folder. */
     CmsFileTable m_fileTable;
 
+    /** The info path. */
+    TextField m_infoPath;
+
+    /** The bread crumb click listener. */
+    private ClickListener m_crumbListener;
+
+    /** The path bread crumb container. */
+    private CssLayout m_crumbs;
+
     /** The currently viewed folder. */
     private CmsUUID m_currentFolder;
 
@@ -357,20 +367,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The folder tree. */
     private Tree m_fileTree;
 
-    /** The info path. */
-    TextField m_infoPath;
+    /** The opened paths by site. */
+    private Map<String, String> m_openedPaths;
 
     /** The search field. */
     private TextField m_searchField;
+
+    /** The site selector. */
+    private ComboBox m_siteSelector;
 
     /** The folder tree data container. */
     private HierarchicalContainer m_treeContainer;
 
     /** The move up button. */
     private Button m_upButton;
-
-    /** The site selector. */
-    private ComboBox m_siteSelector;
 
     /**
      * Constructor.<p>
@@ -444,12 +454,39 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             private static final long serialVersionUID = 1L;
 
             @Override
+            public void blur(BlurEvent event) {
+
+                super.blur(event);
+                showCrumbs(true);
+            }
+
+            @Override
+            public void focus(FocusEvent event) {
+
+                super.focus(event);
+                showCrumbs(false);
+            }
+
+            @Override
             public void handleAction(Object sender, Object target) {
 
                 openPath(m_infoPath.getValue());
             }
         };
         shortcutListener.installOn(m_infoPath);
+
+        m_crumbs = new CssLayout();
+        m_crumbs.setPrimaryStyleName(OpenCmsTheme.CRUMBS);
+        m_crumbListener = new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openPath((String)event.getButton().getData());
+            }
+        };
+
         m_searchField = new TextField();
         m_searchField.setIcon(FontOpenCms.FILTER);
         m_searchField.setInputPrompt("Filter");
@@ -534,10 +571,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         inf.setMargin(true);
         m_siteSelector.setWidth("379px");
         inf.addComponent(m_siteSelector);
+        CssLayout crumbWrapper = new CssLayout();
+        crumbWrapper.setSizeFull();
+        crumbWrapper.setPrimaryStyleName(OpenCmsTheme.CRUMB_WRAPPER);
+        crumbWrapper.addComponent(m_crumbs);
 
         m_infoPath.setWidth("100%");
-        inf.addComponent(m_infoPath);
-        inf.setExpandRatio(m_infoPath, 1);
+        crumbWrapper.addComponent(m_infoPath);
+        inf.addComponent(crumbWrapper);
+        inf.setExpandRatio(crumbWrapper, 1);
 
         m_searchField.setWidth("200px");
         inf.addComponent(m_searchField);
@@ -748,7 +790,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
             m_currentFolder = folderId;
-            m_infoPath.setValue(cms.getSitePath(folder));
+            setPathInfo(cms.getSitePath(folder));
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, childResources);
             boolean hasFolderChild = false;
@@ -915,6 +957,20 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
+     * Shows and hides the path bread crumb.<p>
+     *
+     * @param show <code>true</code> to show the bread crumb
+     */
+    void showCrumbs(boolean show) {
+
+        if (show) {
+            m_crumbs.removeStyleName(OpenCmsTheme.HIDDEN);
+        } else {
+            m_crumbs.addStyleName(OpenCmsTheme.HIDDEN);
+        }
+    }
+
+    /**
      * Shows the parent folder, if available.<p>
      */
     void showParentFolder() {
@@ -1053,6 +1109,31 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
         }
         return result;
+    }
+
+    /**
+     * Sets the current path info.<p>
+     *
+     * @param path the path
+     */
+    private void setPathInfo(String path) {
+
+        m_infoPath.setValue(path);
+
+        // generate the path bread crumb
+        m_crumbs.removeAllComponents();
+        int i = path.indexOf("/");
+        String openPath = "";
+        while (i >= 0) {
+            String fragment = path.substring(0, i + 1);
+            openPath += fragment;
+            path = path.substring(i + 1);
+            i = path.indexOf("/");
+            Button crumb = new Button(fragment, m_crumbListener);
+            crumb.setData(openPath);
+            crumb.addStyleName(ValoTheme.BUTTON_LINK);
+            m_crumbs.addComponent(crumb);
+        }
     }
 
     /**
