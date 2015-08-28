@@ -358,7 +358,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userNameCookie.getValue())
                 && !"null".equals(userNameCookie.getValue())) {
                 // only set the data if needed
-                if (username != null) {
+                if (username == null) {
                     username = userNameCookie.getValue();
                 }
                 if (pcType == null) {
