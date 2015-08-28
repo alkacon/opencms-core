@@ -168,15 +168,7 @@
   	margin-top: 0;
   	margin-bottom: 0;
   }
-  
-  .v-panel.o-resource-info{
-  	@include valo-gradient(darken($v-background-color,4%));
-  	
-  	.v-panel-content-o-resource-info > .v-horizontallayout {
-  		padding-left: 4px;
-  	}
-  }
-    
+   
   .o-app-info{
   	display: block;
   	width: 100%;
@@ -294,6 +286,15 @@
   .v-popupview-popup-o-navigator-dropdown .popupContent{
   	max-width: 400px;
   }
+  
+  /* Resource info box */ 
+  .v-panel.o-resource-info{
+  	@include valo-gradient(darken($v-background-color,4%));
+  	
+  	.v-panel-content-o-resource-info > .v-horizontallayout {
+  		padding-left: 4px;
+  	}
+  }
     
   /* App buttons */
   .v-button.v-button-o-app-button{
@@ -350,6 +351,17 @@
   		
   		.v-button-link {
   			padding: 0 2px;
+  			color: $v-font-color;
+  			text-decoration: none;
+  			
+  			&:hover {
+  				color: lighten($v-link-font-color, 10%);
+  			}
+  			
+  			&:focus:after {
+  				box-shadow: none;
+  				border-color: transparent;
+  			}
   		}
   		
   		&.o-crumbs-hidden{
