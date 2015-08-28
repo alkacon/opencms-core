@@ -41,6 +41,7 @@ import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
 import org.opencms.ui.dialogs.CmsTouchDialog;
 import org.opencms.ui.dialogs.CmsUndeleteDialog;
@@ -156,8 +157,15 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                     }
                     UI.getCurrent().getPage().open(url, "_self");
                 }
-            }
+            },
 
-        );
+            new CmsDefaultContextMenuItem(
+                "delete",
+                null,
+                new CmsBlockingLockCheck(new CmsDialogAction(CmsDeleteDialog.class)),
+                "%(key.GUI_EXPLORER_CONTEXT_DELETE_0)",
+                3,
+                0,
+                CmsStandardVisibilityCheck.DEFAULT));
     }
 }

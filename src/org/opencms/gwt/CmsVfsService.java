@@ -1745,7 +1745,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         Multimap<CmsResource, CmsResource> linkMap = HashMultimap.create();
         for (CmsResource resource : descendants) {
-            List<CmsResource> linkSources = getLinkSources(cms, resource, deleteIds);
+            List<CmsRelation> relations = cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES);
+            List<CmsResource> result1 = new ArrayList<CmsResource>();
+            for (CmsRelation relation : relations) {
+                // only add related resources that are not going to be deleted
+                if (!deleteIds.contains(relation.getSourceId())) {
+                    CmsResource source1 = relation.getSource(cms, CmsResourceFilter.ALL);
+                    if (!source1.getState().isDeleted()) {
+                        result1.add(source1);
+                    }
+                }
+            }
+            List<CmsResource> linkSources = result1;
             for (CmsResource source : linkSources) {
                 linkMap.put(source, resource);
             }
