@@ -29,11 +29,8 @@
 	height: 28px !important; 
 }
 
-@sprite .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
-	gwt-image: "backgrounds.dialogBackgroundShadow";
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
     background-color: value("constants.css.backgroundColorMenu");
-	background-position: top;
-	background-repeat: repeat-x;
     overflow: visible;
 	display:block;
 	color:value("constants.css.textColor");

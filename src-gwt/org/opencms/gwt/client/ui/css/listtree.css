@@ -13,7 +13,7 @@ div.listTreeItemOpener {
 }
 
 div.listTreeItemOpener, div.listTreeItemOpener *{
-line-height:12px;
+	line-height: value("constants.css.lineHeight");
 }
 
 div.listTreeItemOpener > img {
@@ -26,12 +26,12 @@ div.listTreeItemOpener {
 
 @sprite span.plus {
 	gwt-image: "gwtImages.plusImage";
-	margin: 2px 0 3px;
+	margin: 4px 0 3px;
 }
 
 @sprite span.minus {
 	gwt-image: "gwtImages.minusImage";
-	margin: 2px 0 3px;
+	margin: 4px 0 3px;
 }
 
 

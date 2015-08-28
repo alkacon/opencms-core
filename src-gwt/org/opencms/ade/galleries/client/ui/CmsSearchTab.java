@@ -426,7 +426,7 @@ public class CmsSearchTab extends A_CmsTab {
     @Override
     public int getRequiredHeight() {
 
-        return 210;
+        return 216;
     }
 
     /**

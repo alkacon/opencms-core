@@ -89,10 +89,11 @@ input.textboxGhostMode {
 	color: value("constants.css.textColorDisabled") !important;
 }
 
-.textBoxWidget, .checkBox {}
+.textBoxWidget {}
 
-.checkBox .html-face {
+.checkBox div.html-face {
 	font-weight: normal; 
+	line-height: value("constants.css.lineHeight");
 }
 
 input.textBoxReadOnly {
