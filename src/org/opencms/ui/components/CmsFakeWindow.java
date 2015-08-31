@@ -59,7 +59,10 @@ public class CmsFakeWindow extends CustomLayout {
     public CmsFakeWindow() {
 
         super();
+
+        // Need this for setWindowTitle, see below
         setId(RandomStringUtils.randomAlphabetic(8));
+
         try {
             InputStream layoutStream = CmsVaadinUtils.readCustomLayout(getClass(), "CmsFakeWindow.html");
             initTemplateContentsFromInputStream(layoutStream);
@@ -85,6 +88,8 @@ public class CmsFakeWindow extends CustomLayout {
      */
     public void setWindowTitle(String title) {
 
+        /* HACK: Using a Label destroys the layout for some reason, so we resort to setting the caption directly in the
+         element via an explicit JavaScript call. */
         m_windowTitle = title;
         JavaScript.eval(
             "document.querySelector('#"
