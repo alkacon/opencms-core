@@ -37,12 +37,14 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Alignment;
@@ -84,11 +86,39 @@ public final class CmsVaadinUtils {
 
         return new Button.ClickListener() {
 
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
             public void buttonClick(ClickEvent event) {
 
                 action.run();
             }
         };
+    }
+
+    /**
+     * Reads the content of an input stream into a string (using UTF-8 encoding), performs a function on the string, and returns the result
+     * again as an input stream.<p>
+     *
+     * @param stream the stream producing the input data
+     * @param transformation the function to apply to the input
+     *
+     * @return the stream producing the transformed input data
+     */
+    public static InputStream filterUtf8ResourceStream(InputStream stream, Function<String, String> transformation) {
+
+        try {
+            byte[] streamData = CmsFileUtil.readFully(stream);
+            String dataAsString = new String(streamData, "UTF-8");
+            byte[] transformedData = transformation.apply(dataAsString).getBytes("UTF-8");
+            return new ByteArrayInputStream(transformedData);
+        } catch (UnsupportedEncodingException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            return null;
+        } catch (IOException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -105,11 +135,24 @@ public final class CmsVaadinUtils {
         return designPath;
     }
 
+    /**
+     * Gets the workplace message for the current locale and the given key and arguments.<p>
+     *
+     * @param key the message key
+     * @param args the message arguments
+     *
+     * @return the message text for the current locale
+     */
     public static String getMessageText(String key, Object... args) {
 
         return getWpMessagesForCurrentLocale().key(key, args);
     }
 
+    /**
+     * Gets the workplace messages for the current locale.<p>
+     *
+     * @return the workplace messages
+     */
     public static CmsMessages getWpMessagesForCurrentLocale() {
 
         return OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
@@ -164,6 +207,32 @@ public final class CmsVaadinUtils {
 
         String designPath = getDefaultDesignPath(component);
         readAndLocalizeDesign(component, designPath, messages, macros);
+    }
+
+    /**
+     * Reads a layout from a resource, applies basic i18n macro substitution on the contained text, and returns a stream of the transformed
+     * data.<p>
+     *
+     * @param layoutClass the class relative to which the layout resource will be looked up
+     * @param relativeName the file name of the layout file
+     *
+     * @return an input stream which produces the transformed layout resource html
+     */
+    public static InputStream readCustomLayout(Class<? extends Component> layoutClass, String relativeName) {
+
+        CmsMacroResolver resolver = new CmsMacroResolver() {
+
+            @Override
+            public String getMacroValue(String macro) {
+
+                return CmsEncoder.escapeXml(super.getMacroValue(macro));
+            }
+        };
+        resolver.setMessages(CmsVaadinUtils.getWpMessagesForCurrentLocale());
+        InputStream layoutStream = CmsVaadinUtils.filterUtf8ResourceStream(
+            layoutClass.getResourceAsStream(relativeName),
+            resolver.toFunction());
+        return layoutStream;
     }
 
     /**
@@ -238,7 +307,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designPath the path to the design file
      * @param messages the message bundle to use for localization in the design (may be null)

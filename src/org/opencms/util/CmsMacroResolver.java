@@ -51,6 +51,8 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.collections.Factory;
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Function;
+
 /**
  * Resolves macros in the form of <code>%(key)</code> or <code>${key}</code> in an input String.<p>
  *
@@ -967,5 +969,22 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         m_resourceName = resourceName;
         return this;
+    }
+
+    /**
+     * Returns a function which applies the macro substitution of this resolver to its argument.<p>
+     *
+     * @return a function performing string substitution with this resolver
+     */
+    public Function<String, String> toFunction() {
+
+        return new Function<String, String>() {
+
+            public String apply(String input) {
+
+                return resolveMacros(input);
+
+            }
+        };
     }
 }

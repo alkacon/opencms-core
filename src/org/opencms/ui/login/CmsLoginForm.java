@@ -28,6 +28,7 @@
 package org.opencms.ui.login;
 
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -97,7 +98,7 @@ public class CmsLoginForm extends VerticalLayout {
     public CmsLoginForm(CmsLoginController controller, Locale locale) {
 
         m_controller = controller;
-        final CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(locale);
+        final CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
         Map<String, String> macros = Maps.newHashMap();
         macros.put("showSecure", "" + controller.isShowSecure());
         String pctype = controller.getPcType();
@@ -114,7 +115,7 @@ public class CmsLoginForm extends VerticalLayout {
         m_securityField.setItemCaption(
             "public",
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
-        setWidth("700px");
+        setWidth("600px");
 
         m_logo.setSource(new ThemeResource(OpenCmsTheme.OPENCMS_LOGO_PATH));
         setComponentAlignment(m_logo, Alignment.MIDDLE_CENTER);
