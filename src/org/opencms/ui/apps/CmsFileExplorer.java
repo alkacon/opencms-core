@@ -580,9 +580,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 onClickPublish();
             }
         });
+        context.addToolbarButton(publishButton);
         context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.WAND));
         context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.UPLOAD));
-        context.addToolbarButton(publishButton);
         populateFolderTree();
     }
 

@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -90,7 +89,6 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
             }
         });
         context.addToolbarButton(publishButton);
-        context.addToolbarButton(CmsToolBar.createButton(FontAwesome.WRENCH));
     }
 
     /**

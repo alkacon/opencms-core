@@ -268,7 +268,6 @@ public class CmsWorkplaceAppManager {
 
         return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
             new CmsSitemapEditorConfiguration(),
-            new MyTestAppConfig(),
             new CmsPageEditorConfiguration(),
             new CmsFileExplorerConfiguration(),
             new CmsAppHierarchyConfiguration());
