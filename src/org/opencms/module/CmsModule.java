@@ -378,13 +378,16 @@ public class CmsModule implements Comparable<CmsModule> {
     public static List<String> calculateModuleResourceNames(final CmsObject cms, final CmsModule module)
     throws CmsException {
 
+        // adjust the site root, if necessary
+        CmsObject cmsClone = adjustSiteRootIfNecessary(cms, module);
+
         // calculate the module resources
-        List<CmsResource> moduleResources = calculateModuleResources(cms, module);
+        List<CmsResource> moduleResources = calculateModuleResources(cmsClone, module);
 
         // get the site paths
         List<String> moduleResouceNames = new ArrayList<String>(moduleResources.size());
         for (CmsResource resource : moduleResources) {
-            moduleResouceNames.add(cms.getSitePath(resource));
+            moduleResouceNames.add(cmsClone.getSitePath(resource));
         }
         return moduleResouceNames;
     }
@@ -405,16 +408,17 @@ public class CmsModule implements Comparable<CmsModule> {
     public static List<CmsResource> calculateModuleResources(final CmsObject cms, final CmsModule module)
     throws CmsException {
 
+        CmsObject cmsClone = adjustSiteRootIfNecessary(cms, module);
         List<CmsResource> result = null;
         List<String> excluded = CmsFileUtil.removeRedundancies(module.getExcludeResources());
-        excluded = removeNonAccessible(cms, excluded);
+        excluded = removeNonAccessible(cmsClone, excluded);
         List<String> resourceSitePaths = CmsFileUtil.removeRedundancies(module.getResources());
-        resourceSitePaths = removeNonAccessible(cms, resourceSitePaths);
+        resourceSitePaths = removeNonAccessible(cmsClone, resourceSitePaths);
 
         List<CmsResource> moduleResources = new ArrayList<CmsResource>(resourceSitePaths.size());
         for (String resourceSitePath : resourceSitePaths) {
-            // assumes resources are accessible - already checked above
-            CmsResource resource = cms.readResource(resourceSitePath);
+            // assumes resources are accessible - already checked aboveremoveNonAccessible
+            CmsResource resource = cmsClone.readResource(resourceSitePath);
             moduleResources.add(resource);
         }
 
@@ -423,11 +427,32 @@ public class CmsModule implements Comparable<CmsModule> {
         } else {
             result = new ArrayList<CmsResource>();
 
-            addCalculatedModuleResources(result, cms, moduleResources, excluded);
+            addCalculatedModuleResources(result, cmsClone, moduleResources, excluded);
 
         }
         return result;
 
+    }
+
+    /** Adjusts the site root and returns a cloned CmsObject, iff the module has set an import site that differs
+     * from the site root of the CmsObject provided as argument. Otherwise returns the provided CmsObject unchanged.
+     * @param cms The original CmsObject.
+     * @param module The module where the import site is read from.
+     * @return The original CmsObject, or, if necessary, a clone with adjusted site root
+     * @throws CmsException see {@link OpenCms#initCmsObject(CmsObject)}
+     */
+    private static CmsObject adjustSiteRootIfNecessary(final CmsObject cms, final CmsModule module)
+    throws CmsException {
+
+        CmsObject cmsClone;
+        if ((null != module.getImportSite()) && cms.getRequestContext().getSiteRoot().equals(module.getImportSite())) {
+            cmsClone = cms;
+        } else {
+            cmsClone = OpenCms.initCmsObject(cms);
+            cmsClone.getRequestContext().setSiteRoot(module.getImportSite());
+        }
+
+        return cmsClone;
     }
 
     /** Returns only the resource names starting with the provided <code>sitePath</code>.
