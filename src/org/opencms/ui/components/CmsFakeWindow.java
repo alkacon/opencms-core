@@ -50,6 +50,9 @@ public class CmsFakeWindow extends CustomLayout {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFakeWindow.class);
 
+    /** The window title. */
+    private String m_windowTitle;
+
     /**
      * Creates a new instance.<p>
      */
@@ -66,12 +69,23 @@ public class CmsFakeWindow extends CustomLayout {
     }
 
     /**
+     * Gets the window title.<p>
+     *
+     * @return the window title
+     */
+    public String getWindowTitle() {
+
+        return m_windowTitle;
+    }
+
+    /**
      * Sets the window title.<p>
      *
      * @param title the new window title
      */
     public void setWindowTitle(String title) {
 
+        m_windowTitle = title;
         JavaScript.eval(
             "document.querySelector('#"
                 + getId()

@@ -61,6 +61,9 @@ public class CmsLoginForm extends VerticalLayout {
     /** Version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Boolean which indicated whether the advanced options are currently visible. */
+    private boolean m_optionsVisible;
+
     /** The login controller. */
     protected CmsLoginController m_controller;
 
@@ -69,6 +72,9 @@ public class CmsLoginForm extends VerticalLayout {
 
     /** Button for opening the "forgot password" dialog. */
     private Button m_forgotPasswordButton;
+
+    /** Button to show / hide advanced options. */
+    private Button m_optionsButton;
 
     /** Login button. */
     private Button m_loginButton;
@@ -145,6 +151,18 @@ public class CmsLoginForm extends VerticalLayout {
             }
         });
 
+        m_optionsButton.addClickListener(
+
+            new ClickListener() {
+
+                public void buttonClick(ClickEvent event) {
+
+                    toggleOptionsVisible();
+                }
+
+            });
+        setOptionsVisible(false);
+
     }
 
     /**
@@ -199,6 +217,23 @@ public class CmsLoginForm extends VerticalLayout {
     }
 
     /**
+     * Sets visibility of 'advanced' options.<p>
+     *
+     * @param optionsVisible true if the options should be shown, false if not
+     */
+    public void setOptionsVisible(boolean optionsVisible) {
+
+        m_optionsVisible = optionsVisible;
+        m_ouSelect.setVisible(optionsVisible);
+        m_forgotPasswordButton.setVisible(optionsVisible);
+        String optionsMessage = CmsVaadinUtils.getMessageText(
+            optionsVisible
+            ? org.opencms.workplace.Messages.GUI_LOGIN_ORGUNIT_SELECT_OFF_0
+            : org.opencms.workplace.Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0);
+        m_optionsButton.setCaption(optionsMessage);
+    }
+
+    /**
      * Sets the org units available for selection.<p>
      *
      * @param ous the ous
@@ -206,6 +241,14 @@ public class CmsLoginForm extends VerticalLayout {
     public void setSelectableOrgUnits(List<CmsOrganizationalUnit> ous) {
 
         m_ouSelect.initOrgUnits(ous);
+    }
+
+    /**
+     * Toggles visibility of 'advanced' options.<p>
+     */
+    public void toggleOptionsVisible() {
+
+        setOptionsVisible(!m_optionsVisible);
     }
 
 }
