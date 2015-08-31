@@ -445,7 +445,7 @@ public class CmsModule implements Comparable<CmsModule> {
     throws CmsException {
 
         CmsObject cmsClone;
-        if ((null != module.getImportSite()) && cms.getRequestContext().getSiteRoot().equals(module.getImportSite())) {
+        if ((null == module.getImportSite()) || cms.getRequestContext().getSiteRoot().equals(module.getImportSite())) {
             cmsClone = cms;
         } else {
             cmsClone = OpenCms.initCmsObject(cms);
