@@ -95,7 +95,6 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -379,9 +378,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The folder tree data container. */
     private HierarchicalContainer m_treeContainer;
 
-    /** The move up button. */
-    private Button m_upButton;
-
     /**
      * Constructor.<p>
      */
@@ -502,18 +498,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
         });
 
-        // toolbar buttons
-        m_upButton = CmsToolBar.createButton(FontAwesome.ARROW_UP);
-        m_upButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                showParentFolder();
-            }
-        });
-
         m_openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(OPENED_PATHS);
         if (m_openedPaths == null) {
             m_openedPaths = new HashMap<String, String>();
@@ -585,9 +569,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         inf.addComponent(m_searchField);
         context.setAppInfo(inf);
 
-        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.WAND));
-        context.addToolbarButton(m_upButton);
-        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.UPLOAD));
         Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
         publishButton.addClickListener(new ClickListener() {
 
@@ -599,7 +580,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 onClickPublish();
             }
         });
-
+        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.WAND));
+        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.UPLOAD));
         context.addToolbarButton(publishButton);
         populateFolderTree();
     }
@@ -801,7 +783,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 }
             }
             m_treeContainer.setChildrenAllowed(folderId, hasFolderChild);
-            updateUpButtonStatus();
             String sitePath = folder.getRootPath().equals(cms.getRequestContext().getSiteRoot() + "/")
             ? ""
             : cms.getSitePath(folder);
@@ -971,19 +952,6 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
-     * Shows the parent folder, if available.<p>
-     */
-    void showParentFolder() {
-
-        CmsUUID parentId = (CmsUUID)m_treeContainer.getParent(m_currentFolder);
-        if (parentId != null) {
-            readFolder(parentId);
-            m_fileTree.select(parentId);
-        }
-
-    }
-
-    /**
      * Adds an item to the folder tree.<p>
      *
      * @param resource the folder resource
@@ -1135,13 +1103,4 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             m_crumbs.addComponent(crumb);
         }
     }
-
-    /**
-     * Updates the up button status.<p>
-     */
-    private void updateUpButtonStatus() {
-
-        m_upButton.setEnabled(m_treeContainer.getParent(m_currentFolder) != null);
-    }
-
 }
