@@ -428,6 +428,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             return null;
         }
 
+        // in case the target is the workplace UI
+        if (CmsLinkManager.isWorkplaceUri(uri)) {
+            return null;
+        }
+
         CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
         if (exportManager.isValidRfsName(path)) {
             String originalSiteRoot = cms.getRequestContext().getSiteRoot();

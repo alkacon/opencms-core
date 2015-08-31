@@ -93,6 +93,11 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
             return null;
         }
 
+        // in case the target is the workplace UI
+        if (CmsLinkManager.isWorkplaceUri(uri)) {
+            return null;
+        }
+
         // get the list of link excludes form the cache if possible
         CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
         @SuppressWarnings("unchecked")

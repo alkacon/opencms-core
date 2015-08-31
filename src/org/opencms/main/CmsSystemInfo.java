@@ -61,14 +61,14 @@ public class CmsSystemInfo {
      */
     public class BuildInfoItem {
 
-        /** The build information value. */
-        private String m_value;
+        /** The key name. */
+        private String m_keyName;
 
         /** The nice name for display. */
         private String m_niceName;
 
-        /** The key name. */
-        private String m_keyName;
+        /** The build information value. */
+        private String m_value;
 
         /**
          * Creates a new instance wrapping a build info string array.<p>
@@ -142,6 +142,9 @@ public class CmsSystemInfo {
 
     /** Path to the "WEB-INF" folder relative to the directory of the application. */
     public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
+
+    /** The workplace UI servlet name. */
+    public static final String WORKPLACE_PATH = "/workplace";
 
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
@@ -638,6 +641,21 @@ public class CmsSystemInfo {
     public String getWebInfRfsPath() {
 
         return m_servletContainerSettings.getWebInfRfsPath();
+    }
+
+    /**
+     * Returns the OpenCms workplace request context, e.g. "/opencms/workplace".<p>
+     *
+     * The OpenCms workplace context will always start with a "/" and never have a trailing "/".
+     * The OpenCms context is identical to <code>getContexPath() + WORKPLACE_PATH</code>.<p>
+     *
+     * @return the OpenCms request context, e.g. "/opencms/workplace"
+     * @see #getContextPath()
+     * @see #WORKPLACE_PATH
+     */
+    public String getWorkplaceContext() {
+
+        return getContextPath() + WORKPLACE_PATH;
     }
 
     /**

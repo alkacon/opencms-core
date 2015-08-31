@@ -44,6 +44,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -64,6 +65,19 @@ public class CmsLinkManager {
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
+    /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
     /** The configured link substitution handler. */
     private I_CmsLinkSubstitutionHandler m_linkSubstitutionHandler;
 
@@ -81,18 +95,6 @@ public class CmsLinkManager {
         if (m_linkSubstitutionHandler == null) {
             // just make very sure that this is not null
             m_linkSubstitutionHandler = new CmsDefaultLinkSubstitutionHandler();
-        }
-    }
-
-    /**
-     * Static initializer for the base URL.<p>
-     */
-    static {
-        m_baseUrl = null;
-        try {
-            m_baseUrl = new URL("http://127.0.0.1");
-        } catch (MalformedURLException e) {
-            // this won't happen
         }
     }
 
@@ -127,6 +129,7 @@ public class CmsLinkManager {
             }
             return result.toString();
         } catch (MalformedURLException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
             return relativeUri;
         }
     }
@@ -222,6 +225,18 @@ public class CmsLinkManager {
     public static boolean isAbsoluteUri(String uri) {
 
         return (uri == null) || ((uri.length() >= 1) && ((uri.charAt(0) == '/') || hasScheme(uri)));
+    }
+
+    /**
+     * Returns if the given URI is pointing to the OpenCms workplace UI.<p>
+     *
+     * @param uri the URI
+     *
+     * @return <code>true</code> if the given URI is pointing to the OpenCms workplace UI
+     */
+    public static boolean isWorkplaceUri(URI uri) {
+
+        return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getWorkplaceContext());
     }
 
     /**
