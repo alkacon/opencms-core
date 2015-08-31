@@ -27,7 +27,10 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
 import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
 import org.opencms.ui.contextmenu.CmsDialogAction;
@@ -44,10 +47,14 @@ import org.opencms.ui.dialogs.CmsUndeleteDialog;
 import org.opencms.ui.dialogs.CmsUndoDialog;
 import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
+
+import com.vaadin.ui.UI;
 
 /**
  * Default implementation of menu item provider.<p>
@@ -55,8 +62,7 @@ import org.apache.commons.logging.Log;
 public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider {
 
     /** Logger instance for this class. */
-    @SuppressWarnings("unused")
-    private static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
+    static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
@@ -123,7 +129,34 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 0,
                 CmsStandardVisibilityCheck.PUBLISH),
 
-            new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0)
+            new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0),
+
+            new CmsDefaultContextMenuItem(
+                "edit",
+                null,
+                null,
+                "%(key.GUI_EXPLORER_CONTEXT_EDIT_0)",
+                0,
+                0,
+                CmsStandardVisibilityCheck.DEFAULT) {
+
+                @Override
+                public void executeAction(org.opencms.ui.I_CmsDialogContext context) {
+
+                    CmsObject cms = A_CmsUI.getCmsObject();
+                    String url = OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/editors/editor.jsp");
+                    url += "?resource=";
+                    url += cms.getSitePath(context.getResources().get(0));
+                    url += "&backlink=";
+                    try {
+                        url += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        url += UI.getCurrent().getPage().getLocation().toString();
+                    }
+                    UI.getCurrent().getPage().open(url, "_self");
+                }
+            }
 
         );
     }
