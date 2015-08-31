@@ -27,10 +27,9 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -155,18 +154,14 @@ public class CmsWorkplaceAppManager {
     throws InstantiationException, IllegalAccessException {
 
         CmsUser user = cms.getRequestContext().getCurrentUser();
-        String settingsString = (String)user.getAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY);
+        CmsUserSettings settings = new CmsUserSettings(user);
+        String settingsString = settings.getAdditionalPreference(type.getName(), true);
         T result = type.newInstance();
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(settingsString)) {
-            try {
-                JSONObject settings = new JSONObject(settingsString);
-                if (settings.has(type.getName())) {
-                    result.restoreSettings(settings.getString(type.getName()));
-                }
-            } catch (JSONException e) {
-                LOG.error("Failed to restore settings for type " + type.getName(), e);
-            }
+
+            result.restoreSettings(settingsString);
+
         }
 
         return result;
@@ -219,42 +214,20 @@ public class CmsWorkplaceAppManager {
     public void storeAppSettings(CmsObject cms, Class<? extends I_CmsAppSettings> type, I_CmsAppSettings appSettings) {
 
         CmsUser user = cms.getRequestContext().getCurrentUser();
-        String settingsString = (String)user.getAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY);
-        JSONObject settings;
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(settingsString)) {
-            settings = new JSONObject();
-        } else {
-            try {
-                settings = new JSONObject(settingsString);
-            } catch (JSONException e) {
-                LOG.error("Failed to parse store workplace app settings. Discarding corrupted settings.", e);
-                settings = new JSONObject();
-            }
-        }
-        boolean changed = false;
-        try {
-            String state = appSettings.getSettingsString();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(state)) {
-                if (settings.has(type.getName())) {
-                    settings.remove(type.getName());
-                    changed = true;
-                }
-            } else if (!settings.has(type.getName()) || !state.equals(settings.getString(type.getName()))) {
-                settings.put(type.getName(), state);
-                changed = true;
-            }
+        CmsUserSettings settings = new CmsUserSettings(user);
 
-        } catch (JSONException e) {
-            LOG.error("Failed to store workplace app settings for type " + type.getName(), e);
+        String currentSetting = settings.getAdditionalPreference(type.getName(), true);
+        String state = appSettings.getSettingsString();
+        if (((state == null) && (currentSetting == null)) || ((state != null) && state.equals(currentSetting))) {
+            // nothing changed
+            return;
         }
-        if (changed) {
-            settingsString = settings.toString();
-            user.setAdditionalInfo(WORKPLACE_APP_SETTINGS_KEY, settingsString);
-            try {
-                cms.writeUser(user);
-            } catch (CmsException e) {
-                LOG.error("Failed to store workplace app settings for type " + type.getName(), e);
-            }
+
+        settings.setAdditionalPreference(type.getName(), state);
+        try {
+            settings.save(cms);
+        } catch (CmsException e) {
+            LOG.error("Failed to store workplace app settings for type " + type.getName(), e);
         }
     }
 
