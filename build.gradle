@@ -103,6 +103,10 @@ configurations {
     }
 }
 
+configurations.each {
+    it.transitive = false;
+}
+
 // import dependencies
 apply from: 'dependencies.gradle'
 
@@ -1412,7 +1416,7 @@ tasks.withType(Javadoc) {
 }
 
 
-        
+
 
 
 
