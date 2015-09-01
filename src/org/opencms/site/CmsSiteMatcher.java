@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * A matcher object to compare request data against the configured sites.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsSiteMatcher implements Cloneable {
 
@@ -71,10 +71,10 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
-     * 
+     *
      * If no port is provided, the default port 80 or 443 will be used for http or https respectively.
      * If no protocol is provided, the default protocol "http" will be used.
-     * 
+     *
      * @param serverString the String, e.g. http://localhost:8080
      */
     public CmsSiteMatcher(String serverString) {
@@ -84,10 +84,10 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
-     * 
+     *
      * If no port is provided, the default port 80 or 443 will be used for http or https respectively.
      * If no protocol is provided, the default protocol "http" will be used.
-     * 
+     *
      * @param serverString the String, e.g. http://localhost:8080
      * @param timeOffset the time offset
      */
@@ -109,7 +109,7 @@ public final class CmsSiteMatcher implements Cloneable {
         if (pos > 0) {
             serverString = serverString.substring(0, pos);
         }
-        // cut trailing "/" 
+        // cut trailing "/"
         if (serverString.endsWith("/")) {
             serverString = serverString.substring(0, serverString.length() - 1);
         }
@@ -162,7 +162,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Constructs a new site matcher object.<p>
-     * 
+     *
      * @param serverProtocol to protocol required to access this site
      * @param serverName the server URL prefix to which this site is mapped
      * @param serverPort the port required to access this site
@@ -174,7 +174,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Constructs a new site matcher object.<p>
-     * 
+     *
      * @param serverProtocol to protocol required to access this site
      * @param serverName the server URL prefix to which this site is mapped
      * @param serverPort the port required to access this site
@@ -187,7 +187,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -220,7 +220,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Returns the hostname (e.g. localhost) which is required to access this site.<p>
-     * 
+     *
      * @return the hostname (e.g. localhost) which is required to access this site
      */
     public String getServerName() {
@@ -240,7 +240,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Returns the protocol (e.g. "http", "https") which is required to access this site.<p>
-     * 
+     *
      * @return the protocol (e.g. "http", "https") which is required to access this site
      */
     public String getServerProtocol() {
@@ -260,7 +260,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Returns the url of this site matcher.<p>
-     * 
+     *
      * @return the url, i.e. {protocol}://{servername}[:{port}], port appened only if != 80
      */
     public String getUrl() {
@@ -306,9 +306,9 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Sets the hostname (e.g. localhost) which is required to access this site.<p>
-     * 
+     *
      * Setting the hostname to "*" is a wildcard that matches all hostnames
-     * 
+     *
      * @param serverName the hostname (e.g. localhost) which is required to access this site
      */
     protected void setServerName(String serverName) {
@@ -337,9 +337,9 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Sets the protocol (e.g. "http", "https") which is required to access this site.<p>
-     * 
+     *
      * Setting the protocol to "*" is a wildcard that matches all protocols.<p>
-     *      
+     *
      * @param serverProtocol the protocol (e.g. "http", "https") which is required to access this site
      */
     protected void setServerProtocol(String serverProtocol) {
@@ -368,7 +368,7 @@ public final class CmsSiteMatcher implements Cloneable {
 
     /**
      * Initializes the member variables.<p>
-     * 
+     *
      * @param serverProtocol to protocol required to access this site
      * @param serverName the server URL prefix to which this site is mapped
      * @param serverPort the port required to access this site

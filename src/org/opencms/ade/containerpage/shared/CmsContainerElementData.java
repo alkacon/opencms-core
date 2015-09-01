@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage.shared;
 
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
+import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
@@ -40,7 +41,7 @@ import java.util.Set;
 
 /**
  * Bean holding all element information including it's formatted contents.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerElementData extends CmsContainerElement {
@@ -50,6 +51,12 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /** The group-container description. */
     private String m_description;
+
+    /** Dragging an element may require changing its settings, but this changes the id since it is computed from the settings. In the DND case this field contains the client id of the element with the changed settings. */
+    private String m_dndId;
+
+    /** The formatter configurations by container. */
+    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
 
     /** The inheritance infos off all sub-items. */
     private List<CmsInheritanceInfo> m_inheritanceInfos = new ArrayList<CmsInheritanceInfo>();
@@ -72,40 +79,85 @@ public class CmsContainerElementData extends CmsContainerElement {
     /** The contained sub-item id's. */
     private List<String> m_subItems = new ArrayList<String>();
 
-    /** The element title property. */
+    /** The title. */
     private String m_title;
 
     /** The supported container types of a group-container. */
     private Set<String> m_types;
 
-    /** The formatter configurations by container. */
-    private Map<String, Map<String, CmsFormatterConfig>> m_formatters;
-
     /**
-     * Returns if there are alternative formatters available for the given container.<p>
-     * 
-     * @param containerName the container name
-     * 
-     * @return <code>true</code> if there are alternative formatters available for the given container
+     * Returns the contents.<p>
+     *
+     * @return the contents
      */
-    public boolean hasAlternativeFormatters(String containerName) {
+    public Map<String, String> getContents() {
 
-        return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
+        return m_contents;
     }
 
     /**
-     * Sets the formatter configurations.<p>
+     * Returns the required css resources.<p>
      *
-     * @param formatters the formatter configurations to set
+     * @param containerName the current container name
+     *
+     * @return the required css resources
      */
-    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
+    public Set<String> getCssResources(String containerName) {
 
-        m_formatters = formatters;
+        CmsFormatterConfig formatterConfig = getFormatterConfig(containerName);
+        return formatterConfig != null ? formatterConfig.getCssResources() : Collections.<String> emptySet();
+    }
+
+    /**
+     * Returns the description.<p>
+     *
+     * @return the description
+     */
+    public String getDescription() {
+
+        return m_description;
+    }
+
+    /**
+     * Dragging an element may require changing its settings, but this changes the id since it is computed from the settings. In the DND case this method returns the client id of the element with the changed settings.<p>
+     *
+     * @return the drag and drop element id, or null if it isn't available or needed
+     */
+    public String getDndId() {
+
+        return m_dndId;
+    }
+
+    /**
+     * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
+     *
+     * @param containerId the container id
+     *
+     * @return the settings list
+     */
+    public List<CmsAdditionalInfoBean> getFormatedIndividualSettings(String containerId) {
+
+        List<CmsAdditionalInfoBean> result = new ArrayList<CmsAdditionalInfoBean>();
+        CmsFormatterConfig config = getFormatterConfig(containerId);
+        if ((m_settings != null) && (config != null)) {
+            for (Entry<String, String> settingEntry : m_settings.entrySet()) {
+                String settingKey = settingEntry.getKey();
+                if (config.getSettingConfig().containsKey(settingEntry.getKey())) {
+                    String niceName = config.getSettingConfig().get(settingEntry.getKey()).getNiceName();
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                        config.getSettingConfig().get(settingEntry.getKey()).getNiceName())) {
+                        settingKey = niceName;
+                    }
+                }
+                result.add(new CmsAdditionalInfoBean(settingKey, settingEntry.getValue(), null));
+            }
+        }
+        return result;
     }
 
     /**
      * Returns the current formatter configuration.<p>
-     * 
+     *
      * @param containerName the current container name
      *
      * @return the current formatter configuration
@@ -138,67 +190,8 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the contents.<p>
-     *
-     * @return the contents
-     */
-    public Map<String, String> getContents() {
-
-        return m_contents;
-    }
-
-    /**
-     * Returns the required css resources.<p>
-     * 
-     * @param containerName the current container name 
-     *
-     * @return the required css resources
-     */
-    public Set<String> getCssResources(String containerName) {
-
-        CmsFormatterConfig formatterConfig = getFormatterConfig(containerName);
-        return formatterConfig != null ? formatterConfig.getCssResources() : Collections.<String> emptySet();
-    }
-
-    /**
-     * Returns the description.<p>
-     *
-     * @return the description
-     */
-    public String getDescription() {
-
-        return m_description;
-    }
-
-    /**
-     * Returns the individual element settings formated with nice-names to be used as additional-info.<p>
-     * 
-     * @param containerId the container id 
-     * 
-     * @return the settings list
-     */
-    public List<CmsAdditionalInfoBean> getFormatedIndividualSettings(String containerId) {
-
-        List<CmsAdditionalInfoBean> result = new ArrayList<CmsAdditionalInfoBean>();
-        CmsFormatterConfig config = getFormatterConfig(containerId);
-        if ((m_settings != null) && (config != null)) {
-            for (Entry<String, String> settingEntry : m_settings.entrySet()) {
-                String settingKey = settingEntry.getKey();
-                if (config.getSettingConfig().containsKey(settingEntry.getKey())) {
-                    String niceName = config.getSettingConfig().get(settingEntry.getKey()).getNiceName();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getSettingConfig().get(settingEntry.getKey()).getNiceName())) {
-                        settingKey = niceName;
-                    }
-                }
-                result.add(new CmsAdditionalInfoBean(settingKey, settingEntry.getValue(), null));
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns the inheritance infos off all sub-items.<p>
-     * 
+     *
      * @return the inheritance infos off all sub-items.
      */
     public List<CmsInheritanceInfo> getInheritanceInfos() {
@@ -252,10 +245,10 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Gets the setting configuration for this container element.<p>
-     * 
+     *
      * @param containerName the current container name
-     * 
-     * @return the setting configuration map 
+     *
+     * @return the setting configuration map
      */
     public Map<String, CmsXmlContentProperty> getSettingConfig(String containerName) {
 
@@ -267,7 +260,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Returns the settings for this container element.<p>
-     * 
+     *
      * @return a map of settings
      */
     public Map<String, String> getSettings() {
@@ -298,23 +291,36 @@ public class CmsContainerElementData extends CmsContainerElement {
     }
 
     /**
-     * Returns the title.<p>
+     * Returns the supported container types.<p>
      *
-     * @return the title
+     * @return the supported container types
      */
+    @Override
     public String getTitle() {
 
         return m_title;
     }
 
     /**
-     * Returns the supported container types.<p>
+     * If this element represents an element group, this method will return the supported container type.<p>
      *
      * @return the supported container types
      */
     public Set<String> getTypes() {
 
         return m_types;
+    }
+
+    /**
+     * Returns if there are alternative formatters available for the given container.<p>
+     *
+     * @param containerName the container name
+     *
+     * @return <code>true</code> if there are alternative formatters available for the given container
+     */
+    public boolean hasAlternativeFormatters(String containerName) {
+
+        return (m_formatters.get(containerName) != null) && (m_formatters.get(containerName).size() > 1);
     }
 
     /**
@@ -325,6 +331,23 @@ public class CmsContainerElementData extends CmsContainerElement {
 
         CmsFormatterConfig config = getFormatterConfig(containerId);
         return (config != null) && (!config.getSettingConfig().isEmpty() || hasAlternativeFormatters(containerId));
+    }
+
+    /**
+     * Returns true if the element should be shown in the current template context.<p>
+     *
+     * @param currentContext the current template context
+     *
+     * @return true if the element should be shown
+     */
+    public boolean isShowInContext(String currentContext) {
+
+        if ((m_settings == null)
+            || !m_settings.containsKey(CmsTemplateContextInfo.SETTING)
+            || CmsStringUtil.isEmptyOrWhitespaceOnly(m_settings.get(CmsTemplateContextInfo.SETTING))) {
+            return true;
+        }
+        return CmsStringUtil.splitAsList(m_settings.get(CmsTemplateContextInfo.SETTING), "|").contains(currentContext);
     }
 
     /**
@@ -345,6 +368,26 @@ public class CmsContainerElementData extends CmsContainerElement {
     public void setDescription(String description) {
 
         m_description = description;
+    }
+
+    /**
+     * During dragging and dropping in the container page editor, it may be required to substitute a different element for the element being dragged. This sets the id of the element to substitute.<p>
+     *
+     * @param dndId the drag and drop replacement element's client id
+     */
+    public void setDndId(String dndId) {
+
+        m_dndId = dndId;
+    }
+
+    /**
+     * Sets the formatter configurations.<p>
+     *
+     * @param formatters the formatter configurations to set
+     */
+    public void setFormatters(Map<String, Map<String, CmsFormatterConfig>> formatters) {
+
+        m_formatters = formatters;
     }
 
     /**
@@ -399,7 +442,7 @@ public class CmsContainerElementData extends CmsContainerElement {
 
     /**
      * Sets the settings for this container element.<p>
-     * 
+     *
      * @param settings the new settings
      */
     public void setSettings(Map<String, String> settings) {
@@ -422,6 +465,7 @@ public class CmsContainerElementData extends CmsContainerElement {
      *
      * @param title the title to set
      */
+    @Override
     public void setTitle(String title) {
 
         m_title = title;
@@ -444,8 +488,8 @@ public class CmsContainerElementData extends CmsContainerElement {
     public String toString() {
 
         StringBuffer result = new StringBuffer();
-        result.append("Title: ").append(m_title).append("  File: ").append(getSitePath()).append("  ClientId: ").append(
-            getClientId());
+        result.append("Title: ").append(getTitle()).append("  File: ").append(getSitePath()).append(
+            "  ClientId: ").append(getClientId());
         return result.toString();
     }
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ import org.xml.sax.EntityResolver;
 /**
  * Provides basic XML document handling functions useful when dealing
  * with XML documents that are stored in the OpenCms VFS.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
@@ -89,7 +89,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Default constructor for a XML document
-     * that initializes some internal values.<p> 
+     * that initializes some internal values.<p>
      */
     protected A_CmsXmlDocument() {
 
@@ -99,9 +99,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Creates the bookmark name for a localized element to be used in the bookmark lookup table.<p>
-     * 
+     *
      * @param name the element name
-     * @param locale the element locale 
+     * @param locale the element locale
      * @return the bookmark name for a localized element
      */
     protected static final String getBookmarkName(String name, Locale locale) {
@@ -186,11 +186,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Corrects the structure of this XML document.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
-     * 
+     *
      * @return the file that contains the corrected XML structure
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public CmsFile correctXmlStructure(CmsObject cms) throws CmsXmlException {
@@ -218,7 +218,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             while (j.hasNext()) {
 
                 // this step is required for values that need a processing of their content
-                // an example for this is the HTML value that does link replacement                
+                // an example for this is the HTML value that does link replacement
                 String name = j.next();
                 I_CmsXmlContentValue value = getValue(name, locale);
                 if (value.isSimpleType()) {
@@ -247,7 +247,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     List<CmsXmlContentDefinition> rootCds = new ArrayList<CmsXmlContentDefinition>();
                     List<Element> validElements = new ArrayList<Element>();
 
-                    // gather all XML content definitions and their parent nodes                                
+                    // gather all XML content definitions and their parent nodes
                     Iterator<I_CmsXmlContentValue> it = validValues.iterator();
                     while (it.hasNext()) {
                         // collect all root elements, also for the nested content definitions
@@ -266,11 +266,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                                     rootCds.add(rcd);
                                 } else {
                                     // no valid content definition for the XML value
-                                    throw new CmsXmlException(Messages.get().container(
-                                        Messages.ERR_CORRECT_NO_CONTENT_DEF_3,
-                                        value.getName(),
-                                        value.getTypeName(),
-                                        value.getPath()));
+                                    throw new CmsXmlException(
+                                        Messages.get().container(
+                                            Messages.ERR_CORRECT_NO_CONTENT_DEF_3,
+                                            value.getName(),
+                                            value.getTypeName(),
+                                            value.getPath()));
                                 }
                             }
                         }
@@ -284,39 +285,30 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
                         // step 1: first sort the nodes according to the schema, this takes care of re-ordered elements
                         List<List<Element>> nodeLists = new ArrayList<List<Element>>();
-                        for (I_CmsXmlSchemaType type : cd.getTypeSequence()) {
-                            List<Element> elements = CmsXmlGenericWrapper.elements(root, type.getName());
-                            int maxOccures = cd.getChoiceMaxOccurs() > 0
-                            ? cd.getChoiceMaxOccurs()
-                            : type.getMaxOccurs();
-                            if (elements.size() > maxOccures) {
-                                if (type.getTypeName().equals(CmsXmlCategoryValue.TYPE_NAME)) {
-                                    if (type.getMaxOccurs() == 1) {
-                                        Element category = elements.get(0);
-                                        List<Element> categories = new ArrayList<Element>();
-                                        for (Element value : elements) {
-                                            @SuppressWarnings("unchecked")
-                                            Iterator<Element> itLink = value.elementIterator();
-                                            while (itLink.hasNext()) {
-                                                Element link = itLink.next();
-                                                categories.add((Element)link.clone());
-                                            }
-                                        }
-                                        category.clearContent();
-                                        for (Element value : categories) {
-                                            category.add(value);
-                                        }
-                                    }
+                        boolean isMultipleChoice = cd.getSequenceType() == CmsXmlContentDefinition.SequenceType.MULTIPLE_CHOICE;
 
+                        // if it's a multiple choice element, the child elements must not be sorted into their types,
+                        // but must keep their original order
+                        if (isMultipleChoice) {
+                            List<Element> nodeList = new ArrayList<Element>();
+                            List<Element> elements = CmsXmlGenericWrapper.elements(root);
+                            Set<String> typeNames = cd.getSchemaTypes();
+                            for (Element element : elements) {
+                                // check if the node type is still in the definition
+                                if (typeNames.contains(element.getName())) {
+                                    nodeList.add(element);
                                 }
-
-                                // to many nodes of this type appear according to the current schema definition
-                                for (int lo = (elements.size() - 1); lo >= type.getMaxOccurs(); lo--) {
-                                    elements.remove(lo);
-                                }
-
                             }
-                            nodeLists.add(elements);
+                            checkMaxOccurs(nodeList, cd.getChoiceMaxOccurs(), cd.getTypeName());
+                            nodeLists.add(nodeList);
+                        }
+                        // if it's a sequence, the children are sorted according to the sequence type definition
+                        else {
+                            for (I_CmsXmlSchemaType type : cd.getTypeSequence()) {
+                                List<Element> elements = CmsXmlGenericWrapper.elements(root, type.getName());
+                                checkMaxOccurs(elements, type.getMaxOccurs(), type.getTypeName());
+                                nodeLists.add(elements);
+                            }
                         }
 
                         // step 2: clear the list of nodes (this will remove all invalid nodes)
@@ -334,9 +326,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     }
                 }
             }
+            initDocument();
         }
 
-        // write the modified XML back to the VFS file 
+        // write the modified XML back to the VFS file
         if (m_file != null) {
             // make sure the file object is available
             m_file.setContents(marshal());
@@ -355,7 +348,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             return locale;
         }
         if (locale.getVariant().length() > 0) {
-            // locale has a variant like "en_EN_whatever", try only with language and country 
+            // locale has a variant like "en_EN_whatever", try only with language and country
             Locale check = new Locale(locale.getLanguage(), locale.getCountry(), "");
             if (hasLocale(check)) {
                 return check;
@@ -418,9 +411,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Returns a List of all locales that have the named element set in this document.<p>
-     * 
+     *
      * If no locale for the given element name is available, an empty list is returned.<p>
-     * 
+     *
      * @param path the element to look up the locale List for
      * @return a List of all Locales that have the named element set in this document
      */
@@ -623,9 +616,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Marshals (writes) the content of the current XML document 
+     * Marshals (writes) the content of the current XML document
      * into a byte array using the selected encoding.<p>
-     * 
+     *
      * @return the content of the current XML document written into a byte array
      * @throws CmsXmlException if something goes wrong
      */
@@ -672,7 +665,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Sets the content conversion mode for this document.<p>
-     * 
+     *
      * @param conversion the conversion mode to set for this document
      */
     public void setConversion(String conversion) {
@@ -695,10 +688,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Validates the XML structure of the document with the DTD or XML schema used by the document.<p>
-     * 
-     * This is required in case someone modifies the XML structure of a  
+     *
+     * This is required in case someone modifies the XML structure of a
      * document using the "edit control code" option.<p>
-     * 
+     *
      * @param resolver the XML entity resolver to use
      * @throws CmsXmlException if the validation fails
      */
@@ -715,7 +708,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Adds a bookmark for the given value.<p>
-     * 
+     *
      * @param path the lookup path to use for the bookmark
      * @param locale the locale to use for the bookmark
      * @param enabled if true, the value is enabled, if false it is disabled
@@ -726,7 +719,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         // add the locale (since the locales are a set adding them more then once does not matter)
         addLocale(locale);
 
-        // add a bookmark to the provided value 
+        // add a bookmark to the provided value
         m_bookmarks.put(getBookmarkName(path, locale), value);
 
         Set<Locale> sl;
@@ -753,7 +746,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Adds a locale to the set of locales of the XML document.<p>
-     * 
+     *
      * @param locale the locale to add
      */
     protected void addLocale(Locale locale) {
@@ -773,10 +766,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * Creates a partial deep element copy according to the set of element paths.<p>
      * Only elements contained in that set will be copied.
-     * 
+     *
      * @param element the element to copy
      * @param copyElements the set of paths for elements to copy
-     * 
+     *
      * @return a partial deep copy of <code>element</code>
      */
     protected Element createDeepElementCopy(Element element, Set<String> copyElements) {
@@ -786,11 +779,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Returns the bookmarked value for the given bookmark,
-     * which must be a valid bookmark name. 
-     * 
+     * which must be a valid bookmark name.
+     *
      * Use {@link #getBookmarks()} to get the list of all valid bookmark names.<p>
-     * 
-     * @param bookmark the bookmark name to look up 
+     *
+     * @param bookmark the bookmark name to look up
      * @return the bookmarked value for the given bookmark
      */
     protected I_CmsXmlContentValue getBookmark(String bookmark) {
@@ -800,7 +793,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Returns the bookmarked value for the given name.<p>
-     * 
+     *
      * @param path the lookup path to use for the bookmark
      * @param locale the locale to get the bookmark for
      * @return the bookmarked value
@@ -812,7 +805,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Returns the names of all bookmarked elements.<p>
-     * 
+     *
      * @return the names of all bookmarked elements
      */
     protected Set<String> getBookmarks() {
@@ -821,16 +814,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Internal method to look up a value, requires that the name already has been 
-     * "normalized" for the bookmark lookup. 
-     * 
+     * Internal method to look up a value, requires that the name already has been
+     * "normalized" for the bookmark lookup.
+     *
      * This is required to find names like "title/subtitle" which are stored
-     * internally as "title[0]/subtitle[0]" in the bookmarks. 
-     * 
-     * @param path the path to look up 
+     * internally as "title[0]/subtitle[0]" in the bookmarks.
+     *
+     * @param path the path to look up
      * @param locale the locale to look up
-     *  
-     * @return the value found in the bookmarks 
+     *
+     * @return the value found in the bookmarks
      */
     protected I_CmsXmlContentValue getValueInternal(String path, Locale locale) {
 
@@ -839,7 +832,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Initializes an XML document based on the provided document, encoding and content definition.<p>
-     * 
+     *
      * @param document the base XML document to use for initializing
      * @param encoding the encoding to use when marshalling the document later
      * @param contentDefinition the content definition to use
@@ -848,7 +841,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Returns <code>true</code> if the auto correction feature is enabled for saving this XML content.<p>
-     * 
+     *
      * @return <code>true</code> if the auto correction feature is enabled for saving this XML content
      */
     protected boolean isAutoCorrectionEnabled() {
@@ -858,9 +851,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Marshals (writes) the content of the current XML document 
+     * Marshals (writes) the content of the current XML document
      * into an output stream.<p>
-     * 
+     *
      * @param out the output stream to write to
      * @param encoding the encoding to use
      * @return the output stream with the XML content
@@ -873,7 +866,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /**
      * Removes the bookmark for an element with the given name and locale.<p>
-     * 
+     *
      * @param path the lookup path to use for the bookmark
      * @param locale the locale of the element
      * @return the element removed from the bookmarks or null
@@ -896,14 +889,49 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * Removes all nodes that exceed newly defined maxOccurs rules from the list of elements.<p>
+     *
+     * @param elements the list of elements to check
+     * @param maxOccurs maximum number of elements allowed
+     * @param typeName name of the element type
+     */
+    private void checkMaxOccurs(List<Element> elements, int maxOccurs, String typeName) {
+
+        if (elements.size() > maxOccurs) {
+            if (typeName.equals(CmsXmlCategoryValue.TYPE_NAME)) {
+                if (maxOccurs == 1) {
+                    Element category = elements.get(0);
+                    List<Element> categories = new ArrayList<Element>();
+                    for (Element value : elements) {
+                        Iterator<Element> itLink = value.elementIterator();
+                        while (itLink.hasNext()) {
+                            Element link = itLink.next();
+                            categories.add((Element)link.clone());
+                        }
+                    }
+                    category.clearContent();
+                    for (Element value : categories) {
+                        category.add(value);
+                    }
+                }
+            }
+
+            // too many nodes of this type appear according to the current schema definition
+            for (int lo = (elements.size() - 1); lo >= maxOccurs; lo--) {
+                elements.remove(lo);
+            }
+        }
+    }
+
+    /**
      * Creates a partial deep element copy according to the set of element paths.<p>
      * Only elements contained in that set will be copied.
-     * 
+     *
      * @param parentPath the path of the parent element or <code>null</code>, initially
      * @param parent the parent element
      * @param element the element to copy
      * @param copyElements the set of paths for elements to copy
-     * 
+     *
      * @return a partial deep copy of <code>element</code>
      */
     private Element createDeepElementCopyInternal(

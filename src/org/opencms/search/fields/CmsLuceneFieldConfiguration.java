@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,15 +44,15 @@ import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * The default for the standard search configuration.<p>
-     * 
-     * This defines the default that is used in case no "standard" field configuration 
+     *
+     * This defines the default that is used in case no "standard" field configuration
      * is defined in <code>opencms-search.xml</code>.<p>
      */
     public static final CmsLuceneFieldConfiguration DEFAULT_STANDARD = createStandardConfiguration();
@@ -84,10 +84,10 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Creates the default standard search configuration.<p>
-     * 
-     * This defines the default that is used in case no "standard" field configuration 
+     *
+     * This defines the default that is used in case no "standard" field configuration
      * is defined in <code>opencms-search.xml</code>.<p>
-     * 
+     *
      * @return the default standard search configuration
      */
     private static CmsLuceneFieldConfiguration createStandardConfiguration() {
@@ -122,50 +122,43 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
             false,
             0.0f,
             null);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
         result.addField(field);
 
         // title mapping as indexed field
         field = new CmsLuceneField(CmsSearchField.FIELD_TITLE_UNSTORED, "%(key.field.title)", false, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
         result.addField(field);
 
         // mapping of "Keywords" property to search field with the same name
         field = new CmsLuceneField(CmsSearchField.FIELD_KEYWORDS, "%(key.field.keywords)", true, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_KEYWORDS));
         result.addField(field);
 
         // mapping of "Description" property to search field with the same name
         field = new CmsLuceneField(CmsSearchField.FIELD_DESCRIPTION, "%(key.field.description)", true, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION));
         result.addField(field);
 
         // "meta" field is a combination of "Title", "Keywords" and "Description" properties
         field = new CmsLuceneField(CmsSearchField.FIELD_META, "%(key.field.meta)", false, true);
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_TITLE));
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_KEYWORDS));
-        field.addMapping(new CmsSearchFieldMapping(
-            CmsSearchFieldMappingType.PROPERTY,
-            CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_TITLE));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_KEYWORDS));
+        field.addMapping(
+            new CmsSearchFieldMapping(CmsSearchFieldMappingType.PROPERTY, CmsPropertyDefinition.PROPERTY_DESCRIPTION));
         result.addField(field);
 
         return result;
     }
 
     /**
-     * 
+     *
      * @see org.opencms.search.fields.CmsSearchFieldConfiguration#addField(org.opencms.search.fields.CmsSearchField)
      */
     @Override
@@ -177,9 +170,9 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns an analyzer that wraps the given base analyzer with the analyzers of this individual field configuration.<p>
-     * 
+     *
      * @param analyzer the base analyzer to wrap
-     * 
+     *
      * @return an analyzer that wraps the given base analyzer with the analyzers of this individual field configuration
      */
     public Analyzer getAnalyzer(Analyzer analyzer) {
@@ -206,7 +199,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns a list of all field names (Strings) that are used in generating the search excerpt.<p>
-     * 
+     *
      * @return a list of all field names (Strings) that are used in generating the search excerpt
      */
     public List<String> getExcerptFieldNames() {
@@ -229,7 +222,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns the field names used for the excerpt generation.<p>
-     * 
+     *
      * @return the field names used for the excerpt generation
      */
     public Set<String> getExcerptFields() {
@@ -239,7 +232,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns a list of the concrete Lucene search fields.<p>
-     * 
+     *
      * @return a list of lucene search fields
      */
     public List<CmsLuceneField> getLuceneFields() {
@@ -255,7 +248,7 @@ public class CmsLuceneFieldConfiguration extends CmsSearchFieldConfiguration {
 
     /**
      * Returns the field names used for a regular result.<p>
-     * 
+     *
      * @return the field names used for a regular result
      */
     public Set<String> getReturnFields() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,53 +33,53 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Convenient client message bundle interface.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.i18n.I_CmsMessageBundle
  */
 public interface I_CmsClientMessageBundle {
 
     /**
      * Returns the JSON code for this resource bundle and the default locale.<p>
-     * 
-     * @param request the current request to get the default locale from 
-     * 
+     *
+     * @param request the current request to get the default locale from
+     *
      * @return the JSON code
      */
     String export(HttpServletRequest request);
 
     /**
      * Returns the JSON code for this resource bundle and given locale.<p>
-     * 
-     * @param locale the locale to export 
-     * 
+     *
+     * @param locale the locale to export
+     *
      * @return the JSON code
      */
     String export(Locale locale);
 
     /**
      * Returns the JSON code for this resource bundle and given locale.<p>
-     * 
-     * @param localeName the name of the locale to export 
-     * 
+     *
+     * @param localeName the name of the locale to export
+     *
      * @return the JSON code
      */
     String export(String localeName);
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     String getBundleName();
 
     /**
      * Returns the class of the client implementation.<p>
-     * 
+     *
      * @return the class of the client implementation
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     Class<?> getClientImpl() throws Exception;
 }

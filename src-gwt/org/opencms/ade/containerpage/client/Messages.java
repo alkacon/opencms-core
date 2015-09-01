@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,8 +30,8 @@ package org.opencms.ade.containerpage.client;
 import org.opencms.gwt.client.util.CmsMessages;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
+ * Convenience class to access the localized messages of this OpenCms package.<p>
+ *
  * @since 8.0.0
  */
 public final class Messages {
@@ -137,6 +137,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_SMALL_ELEMENTS_0 = "GUI_EDIT_SMALL_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SELECT_ELEMENT_VIEW_0 = "GUI_SELECT_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FORMATTERS_LEGEND_0 = "GUI_FORMATTERS_LEGEND_0";
@@ -249,6 +252,12 @@ public final class Messages {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_REUSE_ELEMENT_0 = "GUI_REUSE_ELEMENT_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LEGEND_0 = "GUI_CREATE_NEW_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CREATE_NEW_LABEL_0 = "GUI_CREATE_NEW_LABEL_0";
+
     /** Static instance member. */
     private static CmsMessages INSTANCE;
 
@@ -262,7 +271,7 @@ public final class Messages {
 
     /**
      * Returns an instance of this localized message accessor.<p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static CmsMessages get() {
@@ -275,7 +284,7 @@ public final class Messages {
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

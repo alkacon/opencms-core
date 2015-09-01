@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,28 +45,28 @@ public class CmsImportResultList extends Composite {
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          */
         String aliasImportError();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          */
         String aliasImportOk();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          */
         String aliasImportOverwrite();
 
         /**
          * CSS class accessor.<p>
-         * 
+         *
          * @return a CSS class
          */
         String rightLabel();
@@ -79,8 +79,8 @@ public class CmsImportResultList extends Composite {
 
         /**
          * CSS bundle accessor.<p>
-         * 
-         * @return the CSS bundle for this widget 
+         *
+         * @return the CSS bundle for this widget
          */
         @Source("resultlabel.css")
         I_Css css();
@@ -116,10 +116,10 @@ public class CmsImportResultList extends Composite {
 
     /**
      * Adds a single line of the import result to the widget.<p>
-     * 
+     *
      * @param leftText the text to display on the left
-     * @param rightText the text to display on the right 
-     * @param styleName the style which should be applied to the right text 
+     * @param rightText the text to display on the right
+     * @param styleName the style which should be applied to the right text
      */
     public void addRow(String leftText, String rightText, String styleName) {
 
@@ -143,7 +143,7 @@ public class CmsImportResultList extends Composite {
         m_table = null;
     }
 
-    /** 
+    /**
      * Ensures the existence of the 'empty' label.<p>
      */
     protected void ensureEmptyLabel() {

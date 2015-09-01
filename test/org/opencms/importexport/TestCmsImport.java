@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,32 +27,23 @@
 
 package org.opencms.importexport;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /**
  * Basic test cases for import/export utilities.<p>
- * 
+ *
  * @since 6.0.0
  */
-public class TestCmsImport extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsImport(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsImport extends OpenCmsTestCase {
 
     /**
      * Runs a test for the conversion of the digest encoding.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
-     * 
+     *
      * @deprecated old import version 4 issue
      */
+    @Deprecated
     public void testConvertDigestEncoding() throws Throwable {
 
         A_CmsImport imp = new CmsImportVersion4();
@@ -80,10 +71,11 @@ public class TestCmsImport extends TestCase {
     }
 
     /**
-     * Runs a test for the import of content.<p>  
-     * 
+     * Runs a test for the import of content.<p>
+     *
      * @deprecated old import version 2 issue
      */
+    @Deprecated
     public void testSetDirectories() {
 
         String[] rules = {

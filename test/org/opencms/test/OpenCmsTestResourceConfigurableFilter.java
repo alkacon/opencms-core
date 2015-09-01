@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
 
     /**
      * Creates a new OpenCmsTestResourceFilter based on an existing filter.<p>
-     * 
+     *
      * @param baseFilter the filter to base this filter on
      */
     public OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter baseFilter) {
@@ -181,7 +181,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public void disableFlagsTest() {
 
-        this.m_flags = false;
+        m_flags = false;
     }
 
     /**
@@ -189,7 +189,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public void disableLengthTest() {
 
-        this.m_length = false;
+        m_length = false;
     }
 
     /**
@@ -245,7 +245,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public void disableStateTest() {
 
-        this.m_state = false;
+        m_state = false;
     }
 
     /**

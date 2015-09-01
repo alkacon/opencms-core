@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ public interface I_CmsFormSubmitHandler {
 
     /**
      * The method which should be called when a {@link CmsForm} is submitted.<p>
-     * 
-     * The map passed as a parameter will contain key-value pairs where the key is the 
+     *
+     * The map passed as a parameter will contain key-value pairs where the key is the
      * name of the field and the value is the value obtained from the field. It is explicitly
      * allowed that the value is null; this means that the property is set to 'default'.
-     * 
+     *
      * @param form the form
      * @param fieldValues a map of field values
-     * @param editedFields the fields which have been edited 
+     * @param editedFields the fields which have been edited
      */
     void onSubmitForm(CmsForm form, Map<String, String> fieldValues, Set<String> editedFields);
 

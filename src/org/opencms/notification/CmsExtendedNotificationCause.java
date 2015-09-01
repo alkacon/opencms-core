@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import java.util.Date;
 
 /**
  * Class to encapsulate a resource and the cause of its notification.<p>
- * 
+ *
  */
 public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotificationCause> {
 
@@ -60,7 +60,7 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
 
     /**
      * Creates a new CmsNotificationResourceInfo.<p>
-     * 
+     *
      * @param resource the specific resource
      * @param cause that the resource occures in the notification
      * @param date when the event will happen
@@ -73,7 +73,7 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
     }
 
     /**
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(CmsExtendedNotificationCause o) {
@@ -84,11 +84,11 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
     /**
      * Returns true if the Object equals to the corresponding CmsResourceInfo, that means a resource info
      * with the same resource and cause.
-     * 
+     *
      * @return true if the resource info is equal to a notification cause or resource info with the same resource and cause
-     * 
+     *
      * @param o the object to check for equality
-     * 
+     *
      * @see org.opencms.notification.CmsNotificationCause#equals(java.lang.Object)
      */
     @Override
@@ -101,7 +101,7 @@ public class CmsExtendedNotificationCause implements Comparable<CmsExtendedNotif
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import org.w3c.tidy.Tidy;
 /**
  * This class implements Html-converting routines based on tidy to modify the
  * Html code of the imported Html pages.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlImportConverter {
 
@@ -103,8 +103,8 @@ public class CmsHtmlImportConverter {
      */
     private HashSet m_enterTags = new HashSet();
 
-    /** 
-     * the absolute path in the real filesystem of the file to convert. 
+    /**
+     * the absolute path in the real filesystem of the file to convert.
      */
     private String m_filename;
 
@@ -113,8 +113,8 @@ public class CmsHtmlImportConverter {
      */
     private CmsHtmlImport m_htmlImport;
 
-    /** 
-     * temporary buffer used in transformation method. 
+    /**
+     * temporary buffer used in transformation method.
      */
     private StringBuffer m_tempString;
 
@@ -126,7 +126,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Default constructor, creates a new HtmlConverter.<p>
-     * 
+     *
      * @param htmlImport reference to the htmlimport
      * @param xmlMode switch for setting the import to HTML or XML mode
      */
@@ -148,10 +148,10 @@ public class CmsHtmlImportConverter {
 
     /**
      * Extracts the content of a HTML page.<p>
-     * 
+     *
      * This method should be pretty robust and work even if the input HTML does not contains
-     * the specified matchers.<p> 
-     * 
+     * the specified matchers.<p>
+     *
      * @param content the content to extract the body from
      * @param startpoint the point where matching starts
      * @param endpoint the point where matching ends
@@ -184,11 +184,11 @@ public class CmsHtmlImportConverter {
 
     /**
      * Transforms HTML code into user defined output.<p>
-     * 
+     *
      * @param input Reader with HTML code
      * @param output Writer with transformed code
      * @param startPattern the start pattern definition for content extracting
-     * @param endPattern the end pattern definition for content extracting 
+     * @param endPattern the end pattern definition for content extracting
      * @param properties the file properties
      */
     public void convertHTML(Reader input, Writer output, String startPattern, String endPattern, Hashtable properties) {
@@ -206,7 +206,10 @@ public class CmsHtmlImportConverter {
             }
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0, e.getLocalizedMessage()));
+                CmsLog.INIT.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0,
+                        e.getLocalizedMessage()));
             }
             return;
         }
@@ -216,7 +219,7 @@ public class CmsHtmlImportConverter {
             String extractMain = extractHtml(outString, startPattern, endPattern);
             if (extractMain.length() != outString.length()) {
                 String extractHead = extractHtml(outString, "<html>", CmsStringUtil.BODY_START_REGEX);
-                //String extractHead = extractHtml(extractMain, "<html>", CmsStringUtil.C_BODY_START_REGEX);     
+                //String extractHead = extractHtml(extractMain, "<html>", CmsStringUtil.C_BODY_START_REGEX);
                 StringBuffer buffer = new StringBuffer(extractHead.length() + extractMain.length() + 255);
                 buffer.append("<html>");
                 buffer.append(extractHead);
@@ -250,7 +253,7 @@ public class CmsHtmlImportConverter {
             }
         }
         /* second step: create transformed output with printDocument from DOM */
-        this.printDocument(node, properties);
+        printDocument(node, properties);
 
         try {
             String content = m_tempString.toString();
@@ -261,7 +264,10 @@ public class CmsHtmlImportConverter {
 
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1, e.getLocalizedMessage()));
+                CmsLog.INIT.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1,
+                        e.getLocalizedMessage()));
             }
             return;
         }
@@ -269,11 +275,11 @@ public class CmsHtmlImportConverter {
 
     /**
      * Transforms HTML code into user defined output.<p>
-     * 
+     *
      * @param filename the absolute path in the real filesystem of the file to convert
      * @param inString String with HTML code
      * @param startPattern the start pattern definition for content extracting
-     * @param endPattern the end pattern definition for content extracting 
+     * @param endPattern the end pattern definition for content extracting
      * @param properties the file properties
      * @return String with transformed code
      */
@@ -308,7 +314,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Private method to parse DOM and create user defined output.<p>
-     * 
+     *
      * @param node Node of DOM from HTML code
      * @param properties the file properties
      */
@@ -326,7 +332,7 @@ public class CmsHtmlImportConverter {
         switch (type) {
             case Node.DOCUMENT_NODE:
 
-                this.printDocument(((Document)node).getDocumentElement(), properties);
+                printDocument(((Document)node).getDocumentElement(), properties);
                 break;
             case Node.ELEMENT_NODE:
 
@@ -348,7 +354,7 @@ public class CmsHtmlImportConverter {
                     int len = children.getLength();
                     for (int i = 0; i < len; i++) {
                         // recursively call printDocument with all child nodes
-                        this.printDocument(children.item(i), properties);
+                        printDocument(children.item(i), properties);
                     }
                 }
                 break;
@@ -379,7 +385,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Transform element nodes and create end tags in output.<p>
-     * 
+     *
      * @param node actual element node
      */
     private void transformEndElement(Node node) {
@@ -407,7 +413,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Transforms element nodes and create start tags in output. <p>
-     * 
+     *
      * @param node actual element node
      * @param properties the file properties
      */
@@ -458,9 +464,9 @@ public class CmsHtmlImportConverter {
                             //                                String anchor = value.substring(value.indexOf("#"), value.length());
                             //                            }
                             // get the new link into the VFS
-                            String internalUri = m_htmlImport.getAbsoluteUri(value, m_filename.substring(
-                                0,
-                                m_filename.lastIndexOf("/") + 1));
+                            String internalUri = m_htmlImport.getAbsoluteUri(
+                                value,
+                                m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
 
                             value = m_htmlImport.translateLink(internalUri);
                         }
@@ -494,9 +500,9 @@ public class CmsHtmlImportConverter {
                         // external image.
                         // if not, we must get the correct location in the VFS
                         if (value.indexOf("://") <= 0) {
-                            imagename = m_htmlImport.getAbsoluteUri(value, m_filename.substring(
-                                0,
-                                m_filename.lastIndexOf("/") + 1));
+                            imagename = m_htmlImport.getAbsoluteUri(
+                                value,
+                                m_filename.substring(0, m_filename.lastIndexOf("/") + 1));
                             value = m_htmlImport.translateLink(imagename);
                         }
                     } else if (name.equals(ATTRIB_ALT)) {
@@ -535,7 +541,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Private method to transform text nodes.<p>
-     * 
+     *
      * @param node actual text node
      */
     private void transformTextNode(Node node) {
@@ -549,7 +555,7 @@ public class CmsHtmlImportConverter {
 
     /**
      * Writes meta tags as cms properties by analyzing the meta tags nodes.<p>
-     * 
+     *
      * @param node the meta tag node in html document
      * @param properties the properties hashtable
      */
@@ -570,14 +576,14 @@ public class CmsHtmlImportConverter {
         }
         // check if we have valid entries for this <META> node, store them
         // in the properties
-        if (metaName.length() > 0 && metaContent.length() > 0) {
+        if ((metaName.length() > 0) && (metaContent.length() > 0)) {
             properties.put(metaName, CmsStringUtil.substitute(metaContent, "{subst}", "&#"));
         }
     }
 
     /**
      * Sets the Property title by analyzing the title node.<p>
-     * 
+     *
      * @param node the title node in html document
      * @param properties the properties hashtable
      */
@@ -599,7 +605,9 @@ public class CmsHtmlImportConverter {
             // the title will be used as navtext if no other navtext is
             // given
             if (properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) == null) {
-                properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, CmsStringUtil.substitute(title, "{subst}", "&#"));
+                properties.put(
+                    CmsPropertyDefinition.PROPERTY_NAVTEXT,
+                    CmsStringUtil.substitute(title, "{subst}", "&#"));
             }
         }
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.ade.galleries.shared;
 
 /**
  * Bean holding image info to be display in the resource preview dialog.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImageInfoBean extends CmsResourceInfoBean {
@@ -64,7 +64,7 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /**
      * Returns the structure id hash.<p>
-     * 
+     *
      * @return the hash
      */
     public int getHash() {
@@ -94,8 +94,8 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /**
      * The view link for displaying the image.<p>
-     * 
-     * @return the link for displaying the image 
+     *
+     * @return the link for displaying the image
      */
     public String getViewLink() {
 
@@ -124,7 +124,7 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /**
      * Sets the hash.<p>
-     * 
+     *
      * @param hash the hash
      */
     public void setHash(int hash) {
@@ -154,8 +154,8 @@ public class CmsImageInfoBean extends CmsResourceInfoBean {
 
     /**
      * Sets the link for displaying the image.<p>
-     * 
-     * @param viewLink the link for displaying the image 
+     *
+     * @param viewLink the link for displaying the image
      */
     public void setViewLink(String viewLink) {
 

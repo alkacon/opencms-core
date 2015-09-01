@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog in the administration view, to edit the resources to check the internal links for.<p>
- * 
- * @since 6.5.3 
+ *
+ * @since 6.5.3
  */
 public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
 
@@ -66,7 +66,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsInternalLinkValidationDialog(CmsJspActionElement jsp) {
@@ -76,7 +76,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -89,6 +89,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -116,7 +117,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
      */
     public List getResources() {
 
-        if (m_resources == null || m_resources.isEmpty()) {
+        if ((m_resources == null) || m_resources.isEmpty()) {
             m_resources = new ArrayList();
             m_resources.add("/");
         }
@@ -125,7 +126,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
 
     /**
      * Sets the resources list.<p>
-     * 
+     *
      * @param value the resources to set
      */
     public void setResources(List value) {
@@ -140,6 +141,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -164,6 +166,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog
@@ -185,6 +188,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -193,6 +197,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -213,7 +218,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
                 m_resources.size();
             }
         } catch (Exception e) {
-            // ignore            
+            // ignore
         }
         if (m_resources == null) {
             // create a new project object
@@ -235,6 +240,7 @@ public class CmsInternalLinkValidationDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

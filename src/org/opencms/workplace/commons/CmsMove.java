@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,15 +53,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the move resources dialog.<p> 
- * 
+ * Provides methods for the move resources dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/move.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsMove extends CmsMultiDialog {
 
@@ -79,7 +79,7 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsMove(CmsJspActionElement jsp) {
@@ -89,7 +89,7 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -101,7 +101,7 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Performs the move action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionMove() throws JspException {
@@ -135,9 +135,8 @@ public class CmsMove extends CmsMultiDialog {
                 }
                 if (!resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
-                    throw new CmsVfsException(Messages.get().container(
-                        Messages.ERR_MOVE_MULTI_TARGET_NOFOLDER_1,
-                        target));
+                    throw new CmsVfsException(
+                        Messages.get().container(Messages.ERR_MOVE_MULTI_TARGET_NOFOLDER_1, target));
                 }
             }
             if (performDialogOperation()) {
@@ -173,9 +172,9 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Returns the current name of the resource without path information.<p>
-     * 
+     *
      * This is used to preset the input text field with the current resource name for single resource operations.<p>
-     * 
+     *
      * @return the current name of the resource without path information
      */
     public String getCurrentResourceName() {
@@ -191,12 +190,12 @@ public class CmsMove extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the target parameter, 
+     * Returns the value of the target parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The target parameter selects the target name 
+     *
+     * The target parameter selects the target name
      * of the operation.<p>
-     * 
+     *
      * @return the value of the target parameter
      */
     public String getParamTarget() {
@@ -206,7 +205,7 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Sets the value of the target parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamTarget(String value) {
@@ -223,7 +222,7 @@ public class CmsMove extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to rename/move the resource       
+        // check the required permissions to rename/move the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -231,7 +230,7 @@ public class CmsMove extends CmsMultiDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_MOVE);
         } else if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -244,14 +243,14 @@ public class CmsMove extends CmsMultiDialog {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for move dialog     
+            // build title for move dialog
             setDialogTitle(Messages.GUI_MOVE_RESOURCE_1, Messages.GUI_MOVE_MULTI_2);
         }
     }
 
     /**
      * Performs the resource moving.<p>
-     * 
+     *
      * @return true, if the resource was successfully moved, otherwise false
      * @throws CmsException if moving is not successful
      */
@@ -313,11 +312,11 @@ public class CmsMove extends CmsMultiDialog {
 
     /**
      * Performs the move operation for a single VFS resource.<p>
-     * 
+     *
      * @param source the source VFS path
      * @param target the target VFS path
      * @param sitePrefix the site prefix
-     * 
+     *
      * @throws CmsException if moving the resource fails
      */
     protected void performSingleMoveOperation(String source, String target, String sitePrefix) throws CmsException {
@@ -355,10 +354,11 @@ public class CmsMove extends CmsMultiDialog {
         // could not overwrite a resource in a move operation
         if (getCms().existsResource(finalTarget, CmsResourceFilter.ALL)) {
             // throw exception to indicate that the target exists
-            throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
-                source,
-                getJsp().getRequestContext().removeSiteRoot(finalTarget)));
+            throw new CmsVfsResourceAlreadyExistsException(
+                Messages.get().container(
+                    Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
+                    source,
+                    getJsp().getRequestContext().removeSiteRoot(finalTarget)));
         }
 
         // lock resource if autolock is enabled

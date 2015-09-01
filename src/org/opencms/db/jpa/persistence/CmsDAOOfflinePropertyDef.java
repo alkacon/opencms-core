@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,11 +36,11 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * This data access object represents a offline property definition entry inside the table "cms_offline_propertydef".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
-@Table(name = "CMS_OFFLINE_PROPERTYDEF", uniqueConstraints = @UniqueConstraint(columnNames = {"PROPERTYDEF_NAME"}))
+@Table(name = "CMS_OFFLINE_PROPERTYDEF", uniqueConstraints = @UniqueConstraint(columnNames = {"PROPERTYDEF_NAME"}) )
 public class CmsDAOOfflinePropertyDef implements I_CmsDAOPropertyDef {
 
     /** The property definition id. */
@@ -68,7 +68,7 @@ public class CmsDAOOfflinePropertyDef implements I_CmsDAOPropertyDef {
 
     /**
      * A public constructor for generating a new offline property definition object with an unique id.<p>
-     * 
+     *
      * @param propertydefId the id
      */
     public CmsDAOOfflinePropertyDef(String propertydefId) {

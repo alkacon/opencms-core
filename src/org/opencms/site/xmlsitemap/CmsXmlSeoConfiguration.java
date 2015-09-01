@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -91,10 +92,10 @@ public class CmsXmlSeoConfiguration {
     /** The sitemap generator class name. */
     private String m_generatorClassName;
 
-    /** 
+    /**
      * Gets the list of exclude paths.<p>
-     * 
-     * @return the list of exclude paths 
+     *
+     * @return the list of exclude paths
      */
     public List<String> getExcludes() {
 
@@ -103,8 +104,8 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Gets the list of include paths.<p>
-     * 
-     * @return the list of include paths 
+     *
+     * @return the list of include paths
      */
     public List<String> getIncludes() {
 
@@ -113,8 +114,8 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Gets the mode.<p>
-     * 
-     * @return the mode 
+     *
+     * @return the mode
      */
     public String getMode() {
 
@@ -123,18 +124,18 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Gets the text which should be inserted in robots.txt mode.<p>
-     * 
-     * @return the text to insert in robots.txt mode 
+     *
+     * @return the text to insert in robots.txt mode
      */
     public String getRobotsTxtText() {
 
         return m_robotsTxtText;
     }
 
-    /** 
+    /**
      * Gets the class name for the sitemap generator class (may return null if none is explicitly configured).
-     * 
-     * @return the sitemap generator class name 
+     *
+     * @return the sitemap generator class name
      */
     public String getSitemapGeneratorClassName() {
 
@@ -143,8 +144,8 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Returns true if this configuration is configured as robots.txt mode.<p>
-     * 
-     * @return true if the mode is set to the robots.txt mode 
+     *
+     * @return true if the mode is set to the robots.txt mode
      */
     public boolean isXmlSitemapMode() {
 
@@ -153,11 +154,11 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Loads the bean data from the given resource.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param resource the resource from which to load the data
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void load(CmsObject cms, CmsResource resource) throws CmsException {
 
@@ -168,11 +169,15 @@ public class CmsXmlSeoConfiguration {
         Locale en = new Locale("en");
         for (I_CmsXmlContentValue value : content.getValues(N_INCLUDE, en)) {
             String include = value.getStringValue(rootCms);
-            m_includes.add(include);
+            if (!CmsStringUtil.isEmpty(include)) {
+                m_includes.add(include);
+            }
         }
         for (I_CmsXmlContentValue value : content.getValues(N_EXCLUDE, en)) {
             String exclude = value.getStringValue(rootCms);
-            m_excludes.add(exclude);
+            if (!CmsStringUtil.isEmpty(exclude)) {
+                m_excludes.add(exclude);
+            }
         }
         I_CmsXmlContentValue robotsValue = content.getValue(N_MODE, en);
         m_mode = robotsValue.getStringValue(rootCms);
@@ -195,8 +200,8 @@ public class CmsXmlSeoConfiguration {
 
     /**
      * Returns true if container page modification dates should be computed.<p>
-     * 
-     * @return true if container page modification dates should be computed 
+     *
+     * @return true if container page modification dates should be computed
      */
     public boolean shouldComputeContainerPageModificationDates() {
 

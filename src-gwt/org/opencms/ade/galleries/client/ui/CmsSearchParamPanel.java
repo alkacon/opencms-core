@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HTML;
 /**
  * A panel displaying search parameters associated with a gallery tab.<p>
  * Used in the result tab to display and remove these parameters.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSearchParamPanel extends Composite {
@@ -74,7 +74,7 @@ public class CmsSearchParamPanel extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the parameters title
      * @param tab the tab
      */
@@ -88,7 +88,7 @@ public class CmsSearchParamPanel extends Composite {
 
     /**
      * Sets the text content of the parameters panel.<p>
-     * 
+     *
      * @param content the content
      * @param paramKey the parameter key
      */
@@ -102,7 +102,7 @@ public class CmsSearchParamPanel extends Composite {
 
     /**
      * Calls to the result tab to remove parameters. Executed on button click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_button")

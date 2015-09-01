@@ -43,11 +43,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsResourceHistoryView extends Composite {
 
-    /** 
+    /**
      * The uiBinder interface for this class.<p>
      */
     interface CmsResourceHistoryViewUiBinder extends UiBinder<Widget, CmsResourceHistoryView> {
-        // empty 
+        // empty
     }
 
     /** The uiBinder instance for this widget. */
@@ -67,10 +67,10 @@ public class CmsResourceHistoryView extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param historyResources the resource history bean 
-     * 
-     * @param handler the handler class used to perform the list actions 
+     *
+     * @param historyResources the resource history bean
+     *
+     * @param handler the handler class used to perform the list actions
      */
     public CmsResourceHistoryView(CmsHistoryResourceCollection historyResources, I_CmsHistoryActionHandler handler) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,28 +29,28 @@ package org.opencms.gwt.client.ui.input;
 
 /**
  * Interface for widgets which can contain a "ghost value".<p>
- * 
+ *
  * A ghost value will be displayed, but not reported when asking the widget for its current value.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsHasGhostValue {
 
     /**
      * Enables or disables ghost mode, if possible.<p>
-     * 
-     * @param enable if ghost mode should be enabled, else disabled 
+     *
+     * @param enable if ghost mode should be enabled, else disabled
      */
     void setGhostMode(boolean enable);
 
     /**
      * Sets the "ghost value" of the widget and optionally sets it to "ghost mode".<p>
-     * 
-     * "Ghost mode" can be used to show the user the value (called "ghost value") which will be used if he 
+     *
+     * "Ghost mode" can be used to show the user the value (called "ghost value") which will be used if he
      * either doesn't choose an option in the widget, or explicitly chooses an "empty" or "default" option.<p>
-     * 
-     * @param value the ghost value 
-     * @param isGhostMode if true, sets the widget to ghost mode 
+     *
+     * @param value the ghost value
+     * @param isGhostMode if true, sets the widget to ghost mode
      */
     void setGhostValue(String value, boolean isGhostMode);
 }

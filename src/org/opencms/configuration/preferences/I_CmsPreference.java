@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,56 +37,56 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 public interface I_CmsPreference {
 
     /**
-     * Gets the default value for the preference.<p>
-     * 
-     * @return the default value 
-     */
-    public String getDefaultValue();
-
-    /**
-     * Gets the preference name.<p>
-     * 
-     * @return the preference name 
-     */
-    public String getName();
-
-    /**
-     * Gets the metadata describing how the setting should be edited.<p>
-     * 
-     * @param cms the current CMS context  
-     * 
-     * @return the metadata for the client which describes how the setting should be edited 
-     */
-    public CmsXmlContentProperty getPropertyDefinition(CmsObject cms);
-
-    /**
-     * Gets the preference tab.<p>
-     * 
-     * @return the preference tab 
-     */
-    public String getTab();
-
-    /**
-     * Reads the value of the preference from a CmsDefaultUserSettings instance 
-     * 
-     * @param userSettings the user settings from which to read the preference value 
-     * 
-     * @return the preference value 
-     */
-    public String getValue(CmsDefaultUserSettings userSettings);
-
-    /**
-     * Sets the value of the preference in a CmsDefaultUserSettings instance 
-     * 
-     * @param settings the settings used to store the preference value 
-     * @param value the new value  
-     */
-    public void setValue(CmsDefaultUserSettings settings, String value);
-
-    /**
      * Creates the configuration for this preference.<p>
-     * 
+     *
      * @return the configuration for this preference
      */
     org.dom4j.Element createConfigurationItem();
+
+    /**
+     * Gets the default value for the preference.<p>
+     *
+     * @return the default value
+     */
+    String getDefaultValue();
+
+    /**
+     * Gets the preference name.<p>
+     *
+     * @return the preference name
+     */
+    String getName();
+
+    /**
+     * Gets the metadata describing how the setting should be edited.<p>
+     *
+     * @param cms the current CMS context
+     *
+     * @return the metadata for the client which describes how the setting should be edited
+     */
+    CmsXmlContentProperty getPropertyDefinition(CmsObject cms);
+
+    /**
+     * Gets the preference tab.<p>
+     *
+     * @return the preference tab
+     */
+    String getTab();
+
+    /**
+     * Reads the value of the preference from a CmsDefaultUserSettings instance .<p>
+     *
+     * @param userSettings the user settings from which to read the preference value
+     *
+     * @return the preference value
+     */
+    String getValue(CmsDefaultUserSettings userSettings);
+
+    /**
+     * Sets the value of the preference in a CmsDefaultUserSettings instance.<p>
+     *
+     * @param settings the settings used to store the preference value
+     * @param value the new value
+     */
+    void setValue(CmsDefaultUserSettings settings, String value);
 }

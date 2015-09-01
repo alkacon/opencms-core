@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,9 +48,9 @@ public class CmsRemovedElementStatus implements IsSerializable {
 
     /**
      * Creates a new instance.<p>
-     *      
-     * @param structureId the structure id of the removed element 
-     * @param elementInfo the list info bean for the removed element 
+     *
+     * @param structureId the structure id of the removed element
+     * @param elementInfo the list info bean for the removed element
      * @param deletable true if this is a possible deletion candidate
      */
     public CmsRemovedElementStatus(CmsUUID structureId, CmsListInfoBean elementInfo, boolean deletable) {
@@ -60,18 +60,18 @@ public class CmsRemovedElementStatus implements IsSerializable {
         m_structureId = structureId;
     }
 
-    /** 
+    /**
      * Default constructor for serialization.<p>
      */
     protected CmsRemovedElementStatus() {
 
-        // empty default constructor for serialization 
+        // empty default constructor for serialization
     }
 
     /**
      * Gets the list info bean for the removed element.<p>
-     * 
-     * @return the list info bean for the removed element 
+     *
+     * @return the list info bean for the removed element
      */
     public CmsListInfoBean getElementInfo() {
 
@@ -80,8 +80,8 @@ public class CmsRemovedElementStatus implements IsSerializable {
 
     /**
      * Gets the structure id of the removed element.<p>
-     * 
-     * @return the structure id of the removed element 
+     *
+     * @return the structure id of the removed element
      */
     public CmsUUID getStructureId() {
 
@@ -90,8 +90,8 @@ public class CmsRemovedElementStatus implements IsSerializable {
 
     /**
      * Returns true if the removed element is a possible candidate for deletion.<p>
-     * 
-     * @return true if the removed element is a deletion candidate 
+     *
+     * @return true if the removed element is a deletion candidate
      */
     public boolean isDeletionCandidate() {
 

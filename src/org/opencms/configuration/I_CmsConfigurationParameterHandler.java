@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,15 +27,14 @@
 
 package org.opencms.configuration;
 
-
 /**
- * Used for classes that are configurable using 
- * <code>&lt;param name="name"&gt;value&lt;/param&gt;</code> 
+ * Used for classes that are configurable using
+ * <code>&lt;param name="name"&gt;value&lt;/param&gt;</code>
  * in the XML configuration.<p>
- * 
- * Such "param" nodes can be used to add some arbitrary names 
+ *
+ * Such "param" nodes can be used to add some arbitrary names
  * parameters to classes that otherwise share the same XML configuration.
- * 
+ *
  * @since 6.0.0
  */
 public interface I_CmsConfigurationParameterHandler {
@@ -48,8 +47,8 @@ public interface I_CmsConfigurationParameterHandler {
 
     /**
      * Adds a configuration parameter to this parameter configurable class instance.<p>
-     * 
-     * @param paramName the name of the parameter 
+     *
+     * @param paramName the name of the parameter
      * @param paramValue the value for the parameter
      */
     void addConfigurationParameter(String paramName, String paramValue);
@@ -57,7 +56,7 @@ public interface I_CmsConfigurationParameterHandler {
     /**
      * Returns the parameters of this configurable class instance,
      * or <code>null</code> if the class does not need any parameters.<p>
-     * 
+     *
      * @return the parameters of this configurable class instance,
      *      or <code>null</code> if the class does not need any parameters
      */
@@ -65,7 +64,7 @@ public interface I_CmsConfigurationParameterHandler {
 
     /**
      * Initializes a configuration after all parameters have been added.<p>
-     * 
+     *
      * @throws CmsConfigurationException if something goes wrong
      */
     void initConfiguration() throws CmsConfigurationException;

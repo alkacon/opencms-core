@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,10 @@ import org.opencms.gwt.client.dnd.I_CmsDropTarget;
 import org.opencms.gwt.client.ui.CmsHighlightingBorder;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsPositionBean;
+import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,10 +51,13 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Group-container element. To be used for content elements within a container-page.<p>
  * The group-container acts as a draggable element and if edited as a container.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel implements I_CmsDropContainer {
+
+    /** Processed children of the group. */
+    private List<CmsContainerPageElementPanel> m_children;
 
     /** The container type. */
     private String m_containerId;
@@ -62,6 +68,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     /** The editing placeholder. Used within group-container editing. */
     private Element m_editingPlaceholder;
 
+    /** The cached highlighting position. */
+    private CmsPositionBean m_ownPosition;
+
     /** The placeholder element. */
     private Element m_placeholder;
 
@@ -71,12 +80,9 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     /** The resource type name. */
     private String m_resourceType;
 
-    /** The cached highlighting position. */
-    private CmsPositionBean m_ownPosition;
-
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the DOM element
      * @param parent the drag parent
      * @param clientId the client id
@@ -85,10 +91,11 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      * @param noEditReason the no edit reason, if empty, editing is allowed
      * @param title the resource title
      * @param subTitle the sub title
-     * @param hasSettings should be true if the element has settings which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
+     * @param elementView the element view of the element
      */
     public CmsGroupContainerElementPanel(
         Element element,
@@ -102,7 +109,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
         boolean hasSettings,
         boolean hasViewPermission,
         boolean hasWritePermission,
-        boolean releasedAndNotExpired) {
+        boolean releasedAndNotExpired,
+        CmsUUID elementView) {
 
         super(
             element,
@@ -117,7 +125,8 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
             hasViewPermission,
             hasWritePermission,
             releasedAndNotExpired,
-            true);
+            true,
+            elementView);
         m_resourceType = resourceType;
     }
 
@@ -211,6 +220,20 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * Gets the consumed group elements.<p>
+     *
+     * @return the list of children
+     */
+    public List<CmsContainerPageElementPanel> getGroupChildren() {
+
+        if (m_children == null) {
+            // can happen when saving element groups
+            return Collections.emptyList();
+        }
+        return m_children;
+    }
+
+    /**
      * @see org.opencms.gwt.client.dnd.I_CmsDropTarget#getPlaceholderIndex()
      */
     public int getPlaceholderIndex() {
@@ -254,7 +277,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void highlightContainer() {
 
-        highlightContainer(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        highlightContainer(CmsPositionBean.getBoundingClientRect(getElement()));
     }
 
     /**
@@ -316,8 +339,16 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#isEditable()
+     */
+    public boolean isEditable() {
+
+        return hasWritePermission();
+    }
+
+    /**
      * Returns if this element represents a group container.<p>
-     * 
+     *
      * @return <code>true</code> if this element represents a group container
      */
     public boolean isGroupContainer() {
@@ -327,12 +358,23 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Returns if this element represents an inherit container.<p>
-     * 
+     *
      * @return <code>true</code> if this element represents an inherit container
      */
     public boolean isInheritContainer() {
 
         return CmsContainerElement.INHERIT_CONTAINER_TYPE_NAME.equals(m_resourceType);
+    }
+
+    /**
+     * @see org.opencms.ade.containerpage.client.ui.I_CmsDropContainer#onConsumeChildren(java.util.List)
+     */
+    public void onConsumeChildren(List<CmsContainerPageElementPanel> children) {
+
+        m_children = new ArrayList<CmsContainerPageElementPanel>(children);
+
+        // TODO Auto-generated method stub
+
     }
 
     /**
@@ -349,7 +391,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void refreshHighlighting() {
 
-        refreshHighlighting(CmsPositionBean.getInnerDimensions(getElement(), 3, false));
+        refreshHighlighting(CmsPositionBean.getBoundingClientRect(getElement()));
     }
 
     /**
@@ -428,7 +470,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
                 break;
         }
         if (oldIndex != m_placeholderIndex) {
-            m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+            m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
         }
     }
 
@@ -444,7 +486,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Sets the editing marker. Used to highlight the container background while editing.<p>
-     *  
+     *
      * @param editingMarker the editing marker element
      */
     public void setEditingMarker(Element editingMarker) {
@@ -454,7 +496,7 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
 
     /**
      * Sets the editing placeholder.<p>
-     * 
+     *
      * @param editingPlaceholder the editing placeholder element
      */
     public void setEditingPlaceholder(Element editingPlaceholder) {
@@ -507,6 +549,6 @@ public class CmsGroupContainerElementPanel extends CmsContainerPageElementPanel 
      */
     public void updatePositionInfo() {
 
-        m_ownPosition = CmsPositionBean.getInnerDimensions(getElement(), 3, false);
+        m_ownPosition = CmsPositionBean.getBoundingClientRect(getElement());
     }
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,7 +45,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * Context menu command init generator.<p>
- * 
+ *
  * @since version 8.0.1
  */
 public class CmsCommandInitGenerator extends Generator {
@@ -86,10 +86,9 @@ public class CmsCommandInitGenerator extends Generator {
                 }
                 initTypes.add(subtype);
             } catch (NotFoundException e) {
-                logger.log(TreeLogger.ERROR, "Could not find "
-                    + GET_COMMAND_METHOD
-                    + "() method in class "
-                    + subtype.getQualifiedSourceName());
+                logger.log(
+                    TreeLogger.ERROR,
+                    "Could not find " + GET_COMMAND_METHOD + "() method in class " + subtype.getQualifiedSourceName());
                 throw new UnableToCompleteException();
             }
         }
@@ -99,10 +98,10 @@ public class CmsCommandInitGenerator extends Generator {
 
     /**
      * This method generates the source code for the class initializer class.<p>
-     * 
-     * @param logger the logger to be used 
+     *
+     * @param logger the logger to be used
      * @param context the generator context
-     * @param subclasses the classes for which the generated code should the initClass() method 
+     * @param subclasses the classes for which the generated code should the initClass() method
      */
     public void generateClass(TreeLogger logger, GeneratorContext context, List<JClassType> subclasses) {
 
@@ -115,19 +114,21 @@ public class CmsCommandInitGenerator extends Generator {
         SourceWriter sourceWriter = composer.createSourceWriter(context, printWriter);
         sourceWriter.println("public java.util.Map<String, " + COMMAND_INTERFACE + "> initCommands() {");
         sourceWriter.indent();
-        sourceWriter.println("java.util.Map<String, "
-            + COMMAND_INTERFACE
-            + "> result=new java.util.HashMap<String, "
-            + COMMAND_INTERFACE
-            + ">();");
+        sourceWriter.println(
+            "java.util.Map<String, "
+                + COMMAND_INTERFACE
+                + "> result=new java.util.HashMap<String, "
+                + COMMAND_INTERFACE
+                + ">();");
         for (JClassType type : subclasses) {
-            sourceWriter.println("result.put(\""
-                + type.getQualifiedSourceName()
-                + "\","
-                + type.getQualifiedSourceName()
-                + "."
-                + GET_COMMAND_METHOD
-                + "());");
+            sourceWriter.println(
+                "result.put(\""
+                    + type.getQualifiedSourceName()
+                    + "\","
+                    + type.getQualifiedSourceName()
+                    + "."
+                    + GET_COMMAND_METHOD
+                    + "());");
         }
         sourceWriter.println("return result;");
         sourceWriter.outdent();

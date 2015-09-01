@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,10 +40,10 @@ public class CmsDropListener implements I_CmsDNDController {
     /** A flag which indicates whether an element has been dropped.<p> */
     private boolean m_dropped;
 
-    /** 
+    /**
      * Returns true if an element has been dropped.<p>
-     * 
-     * @return true if an element has been dropped 
+     *
+     * @return true if an element has been dropped
      */
     public boolean isDropped() {
 
@@ -55,7 +55,7 @@ public class CmsDropListener implements I_CmsDNDController {
      */
     public void onAnimationStart(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -71,7 +71,7 @@ public class CmsDropListener implements I_CmsDNDController {
      */
     public void onDragCancel(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -95,7 +95,7 @@ public class CmsDropListener implements I_CmsDNDController {
      */
     public void onPositionedPlaceholder(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -111,7 +111,7 @@ public class CmsDropListener implements I_CmsDNDController {
      */
     public void onTargetLeave(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
 
-        // do nothing 
+        // do nothing
     }
 
 }

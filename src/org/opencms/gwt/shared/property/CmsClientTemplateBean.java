@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Sitemap initialization data.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsClientTemplateBean implements IsSerializable {
@@ -61,7 +61,7 @@ public class CmsClientTemplateBean implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the title
      * @param description the description
      * @param sitePath the site path
@@ -77,8 +77,8 @@ public class CmsClientTemplateBean implements IsSerializable {
 
     /**
      * Returns a dummy template object which represents an empty selection.<p>
-     * 
-     * @return a dummy template object 
+     *
+     * @return a dummy template object
      */
     public static CmsClientTemplateBean getNullTemplate() {
 
@@ -130,7 +130,7 @@ public class CmsClientTemplateBean implements IsSerializable {
 
     /**
      * Returns true if the template should be shown with weak text.<p>
-     * 
+     *
      * @return true if the template should be shown with weak text
      */
     public boolean isShowWeakText() {
@@ -140,7 +140,7 @@ public class CmsClientTemplateBean implements IsSerializable {
 
     /**
      * Sets the display of weak text to true or false.<p>
-     * 
+     *
      * @param showWeakText if true, the template should be displayed with weak text
      */
     public void setShowWeakText(boolean showWeakText) {

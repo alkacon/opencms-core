@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsResourceStateCss;
 
 /**
  * Utility class for the publish dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsResourceStateUtil {
@@ -52,10 +52,10 @@ public final class CmsResourceStateUtil {
 
     /**
      * Returns the human-readable name of a resource state.<p>
-     * 
-     * @param state the resource state 
-     * 
-     * @return the human-readable name of the code 
+     *
+     * @param state the resource state
+     *
+     * @return the human-readable name of the code
      */
     public static String getStateName(CmsResourceState state) {
 
@@ -73,9 +73,9 @@ public final class CmsResourceStateUtil {
 
     /**
      * Returns the text style for a given resource state.<p>
-     * 
-     * @param state the resource state 
-     * 
+     *
+     * @param state the resource state
+     *
      * @return the style name for the resource's state
      */
     public static String getStateStyle(CmsResourceState state) {

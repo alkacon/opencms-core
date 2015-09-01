@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -78,7 +78,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the resource structure id
      * @param handler the context menu handler
      */
@@ -146,8 +146,8 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
     /**
      * Creates the menu and adds it to the panel.<p>
-     * 
-     * @param menuEntries the menu entries 
+     *
+     * @param menuEntries the menu entries
      */
     public void showMenu(List<I_CmsContextMenuEntry> menuEntries) {
 
@@ -156,7 +156,7 @@ public class CmsContextMenuButton extends CmsMenuButton {
             m_menu = new CmsContextMenu(menuEntries, true, getPopup());
             // add the resize handler for the menu
             m_resizeRegistration = Window.addResizeHandler(m_menu);
-            // set the menu as widget for the panel 
+            // set the menu as widget for the panel
             m_menuPanel.setWidget(0, 0, m_menu);
             if (m_menuCloseHandler != null) {
                 m_menuCloseHandler.removeHandler();
@@ -182,8 +182,8 @@ public class CmsContextMenuButton extends CmsMenuButton {
 
     /**
      * @see org.opencms.gwt.client.ui.CmsMenuButton#hideMenu()
-     * 
-     * Needed to increase visibility.<p> 
+     *
+     * Needed to increase visibility.<p>
      */
     @Override
     protected void hideMenu() {

@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import org.dom4j.Node;
 
 /**
  * Adds the new image loader.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlAddImageLoader extends A_CmsXmlVfs {
 
@@ -86,11 +86,10 @@ public class CmsXmlAddImageLoader extends A_CmsXmlVfs {
                     document,
                     xpath + "/" + I_CmsXmlConfiguration.N_PARAM,
                     Boolean.TRUE.toString());
-                CmsSetupXmlHelper.setValue(document, xpath
-                    + "/"
-                    + I_CmsXmlConfiguration.N_PARAM
-                    + "/@"
-                    + I_CmsXmlConfiguration.A_NAME, CmsImageLoader.CONFIGURATION_SCALING_ENABLED);
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/" + I_CmsXmlConfiguration.N_PARAM + "/@" + I_CmsXmlConfiguration.A_NAME,
+                    CmsImageLoader.CONFIGURATION_SCALING_ENABLED);
             }
             return true;
         }
@@ -106,7 +105,7 @@ public class CmsXmlAddImageLoader extends A_CmsXmlVfs {
         // /opencms/vfs/resources/resourceloaders
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
             CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
-            CmsVfsConfiguration.N_RESOURCELOADERS).toString();
+                CmsVfsConfiguration.N_RESOURCELOADERS).toString();
     }
 
     /**

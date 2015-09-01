@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a subscription entry inside the table "cms_subscription".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -67,7 +67,7 @@ public class CmsDAOSubscription {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -77,7 +77,7 @@ public class CmsDAOSubscription {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -111,7 +111,7 @@ public class CmsDAOSubscription {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOSubscriptionPK(String str) {
@@ -142,8 +142,10 @@ public class CmsDAOSubscription {
             }
 
             CmsDAOSubscriptionPK other = (CmsDAOSubscriptionPK)obj;
-            return (((m_principalId == null) && (other.m_principalId == null)) || ((m_principalId != null) && m_principalId.equals(other.m_principalId)))
-                && (((m_structureId == null) && (other.m_structureId == null)) || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
+            return (((m_principalId == null) && (other.m_principalId == null))
+                || ((m_principalId != null) && m_principalId.equals(other.m_principalId)))
+                && (((m_structureId == null) && (other.m_structureId == null))
+                    || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
         }
 
         /**
@@ -173,8 +175,8 @@ public class CmsDAOSubscription {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_principalId == null) ? 0 : m_principalId.hashCode());
-            rs = rs * 37 + ((m_structureId == null) ? 0 : m_structureId.hashCode());
+            rs = (rs * 37) + ((m_principalId == null) ? 0 : m_principalId.hashCode());
+            rs = (rs * 37) + ((m_structureId == null) ? 0 : m_structureId.hashCode());
             return rs;
         }
 
@@ -209,7 +211,7 @@ public class CmsDAOSubscription {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -255,7 +257,7 @@ public class CmsDAOSubscription {
 
     /**
      * A public constructor for generating a new subscription object with an unique id.<p>
-     * 
+     *
      * @param principalId the principal id
      * @param structureId the structure id
      */

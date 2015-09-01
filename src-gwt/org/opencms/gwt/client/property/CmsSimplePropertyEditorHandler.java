@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import java.util.Map;
  * A simpler implementation of the property editor handler interface which only provides
  * the data to edit a single file's properties (i.e. does not support combined folder/default file
  * property editing.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandler {
@@ -59,10 +59,10 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     /** The context menu handler. */
     private I_CmsContextMenuHandler m_handler;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param handler  the context menu handler 
+     *
+     * @param handler  the context menu handler
      */
     public CmsSimplePropertyEditorHandler(I_CmsContextMenuHandler handler) {
 
@@ -185,7 +185,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
         boolean editedName,
         CmsReloadMode reloadMode) {
 
-        // ignore reloadMode; it's only relevant for the sitemap editor 
+        // ignore reloadMode; it's only relevant for the sitemap editor
 
         final I_CmsVfsServiceAsync vfsService = CmsCoreProvider.getVfsService();
         CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
@@ -248,8 +248,8 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Sets the data necessary to edit the properties.<p>
-     * 
-     * @param propertiesBean the data which is used to edit the properties 
+     *
+     * @param propertiesBean the data which is used to edit the properties
      */
     public void setPropertiesBean(CmsPropertiesBean propertiesBean) {
 
@@ -266,7 +266,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Returns the context menu handler.<p>
-     * 
+     *
      * @return the context menu handler
      */
     protected I_CmsContextMenuHandler getContextMenuHandler() {

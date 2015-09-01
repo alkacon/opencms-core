@@ -157,8 +157,8 @@ public final class CmsSecurityManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
             // OpenCms is already initialized
-            throw new CmsInitException(org.opencms.main.Messages.get().container(
-                org.opencms.main.Messages.ERR_ALREADY_INITIALIZED_0));
+            throw new CmsInitException(
+                org.opencms.main.Messages.get().container(org.opencms.main.Messages.ERR_ALREADY_INITIALIZED_0));
         }
 
         CmsSecurityManager securityManager = new CmsSecurityManager();
@@ -169,10 +169,10 @@ public final class CmsSecurityManager {
 
     /**
      * Adds an alias.<p>
-     * 
-     * @param context the current request context 
-     * @param alias the alias to add 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param context the current request context
+     * @param alias the alias to add
+     * @throws CmsException if something goes wrong
      */
     public void addAlias(CmsRequestContext context, CmsAlias alias) throws CmsException {
 
@@ -391,10 +391,11 @@ public final class CmsSecurityManager {
             }
         }
         if (!hasRole) {
-            throw new CmsRoleViolationException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_NOT_MANAGER_OF_PROJECT_2,
-                dbc.currentUser().getName(),
-                dbc.currentProject().getName()));
+            throw new CmsRoleViolationException(
+                org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_NOT_MANAGER_OF_PROJECT_2,
+                    dbc.currentUser().getName(),
+                    dbc.currentProject().getName()));
         }
     }
 
@@ -412,8 +413,9 @@ public final class CmsSecurityManager {
     public void checkOfflineProject(CmsDbContext dbc) throws CmsVfsException {
 
         if (dbc.currentProject().isOnlineProject()) {
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
+            throw new CmsVfsException(
+                org.opencms.file.Messages.get().container(
+                    org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
         }
     }
 
@@ -489,19 +491,23 @@ public final class CmsSecurityManager {
                     if (parent.getState().isDeleted()) {
                         if (!(publishList.isUserPublishList() && publishList.getDeletedFolderList().contains(parent))) {
                             // parent folder is deleted - direct publish not allowed
-                            resourceIssues.addException(new CmsVfsException(Messages.get().container(
-                                Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                                dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
-                                parentFolder)));
+                            resourceIssues.addException(
+                                new CmsVfsException(
+                                    Messages.get().container(
+                                        Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
+                                        dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
+                                        parentFolder)));
                         }
                     }
                     if (parent.getState().isNew()) {
                         if (!(publishList.isUserPublishList() && publishList.getFolderList().contains(parent))) {
                             // parent folder is new - direct publish not allowed
-                            resourceIssues.addException(new CmsVfsException(Messages.get().container(
-                                Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
-                                dbc.removeSiteRoot(res.getRootPath()),
-                                parentFolder)));
+                            resourceIssues.addException(
+                                new CmsVfsException(
+                                    Messages.get().container(
+                                        Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
+                                        dbc.removeSiteRoot(res.getRootPath()),
+                                        parentFolder)));
                         }
                     }
                     // add checked parent folder to prevent duplicate checks
@@ -516,9 +522,11 @@ public final class CmsSecurityManager {
                     CmsResourceFilter.ALL)) {
 
                     // the user has no "direct publish" permissions on the resource
-                    permissionIssues.addException(new CmsSecurityException(Messages.get().container(
-                        Messages.ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1,
-                        dbc.removeSiteRoot(res.getRootPath()))));
+                    permissionIssues.addException(
+                        new CmsSecurityException(
+                            Messages.get().container(
+                                Messages.ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1,
+                                dbc.removeSiteRoot(res.getRootPath()))));
                 }
             }
             if (resourceIssues.hasExceptions() || permissionIssues.hasExceptions()) {
@@ -770,10 +778,11 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             if (source.isFolder() && destination.startsWith(source.getRootPath())) {
-                throw new CmsVfsException(Messages.get().container(
-                    Messages.ERR_RECURSIVE_INCLUSION_2,
-                    dbc.removeSiteRoot(source.getRootPath()),
-                    dbc.removeSiteRoot(destination)));
+                throw new CmsVfsException(
+                    Messages.get().container(
+                        Messages.ERR_RECURSIVE_INCLUSION_2,
+                        dbc.removeSiteRoot(source.getRootPath()),
+                        dbc.removeSiteRoot(destination)));
             }
             // target permissions will be checked later
             m_driverManager.copyResource(dbc, source, destination, siblingMode);
@@ -1098,7 +1107,7 @@ public final class CmsSecurityManager {
 
         String checkExistsPath = "/".equals(resourcename) ? "/" : CmsFileUtil.removeTrailingSeparator(resourcename);
         // We use checkExistsPath instead of resourcename because when creating a folder /foo/bar/, we want to fail
-        // if a file /foo/bar already exists. 
+        // if a file /foo/bar already exists.
 
         if (existsResource(context, checkExistsPath, CmsResourceFilter.ALL)) {
             // check if the resource already exists by name
@@ -1224,11 +1233,11 @@ public final class CmsSecurityManager {
 
     /**
      * Deletes alias entries matching a filter.<p>
-     * 
-     * @param context the request context 
-     * @param filter the alias filter 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param context the request context
+     * @param filter the alias filter
+     *
+     * @throws CmsException if something goes wrong
      */
     public void deleteAliases(CmsRequestContext context, CmsAliasFilter filter) throws CmsException {
 
@@ -1363,7 +1372,11 @@ public final class CmsSecurityManager {
                 null,
                 Messages.get().container(
                     Messages.ERR_DELETE_HISTORY_4,
-                    new Object[] {"/", new Integer(versionsToKeep), new Integer(versionsDeleted), new Date(timeDeleted)}),
+                    new Object[] {
+                        "/",
+                        new Integer(versionsToKeep),
+                        new Integer(versionsDeleted),
+                        new Date(timeDeleted)}),
                 e);
         } finally {
             dbc.clear();
@@ -1418,8 +1431,9 @@ public final class CmsSecurityManager {
         try {
             // check for root ou
             if (organizationalUnit.getParentFqn() == null) {
-                throw new CmsDataAccessException(org.opencms.security.Messages.get().container(
-                    org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
+                throw new CmsDataAccessException(
+                    org.opencms.security.Messages.get().container(
+                        org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
             }
 
             checkRole(dbc, CmsRole.ADMINISTRATOR.forOrgUnit(getParentOrganizationalUnit(organizationalUnit.getName())));
@@ -1448,8 +1462,9 @@ public final class CmsSecurityManager {
 
         if (projectId.equals(CmsProject.ONLINE_PROJECT_ID)) {
             // online project must not be deleted
-            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
+            throw new CmsVfsException(
+                org.opencms.file.Messages.get().container(
+                    org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
         }
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -1571,7 +1586,10 @@ public final class CmsSecurityManager {
 
             deleteResource(dbc, resource, siblingMode);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1687,9 +1705,8 @@ public final class CmsSecurityManager {
         m_dbContextFactory = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1,
-                this.getClass().getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 
@@ -1840,7 +1857,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlEntries(dbc, resource, getInherited);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1870,7 +1890,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.getAccessControlList(dbc, resource, inheritedOnly);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_GET_ACL_ENTRIES_1, context.getSitePath(resource)),
+                e);
 
         } finally {
             dbc.clear();
@@ -1880,13 +1903,13 @@ public final class CmsSecurityManager {
 
     /**
      * Gets the aliases for a given site.<p>
-     * 
-     * @param requestContext the current request context 
-     * @param siteRoot the site root 
-     * 
-     * @return the list of aliases for the given site root 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param requestContext the current request context
+     * @param siteRoot the site root
+     *
+     * @return the list of aliases for the given site root
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsAlias> getAliasesForSite(CmsRequestContext requestContext, String siteRoot) throws CmsException {
 
@@ -1907,11 +1930,11 @@ public final class CmsSecurityManager {
 
     /**
      * Gets all access control entries.<p>
-     *  
-     * @param context the current request context 
+     *
+     * @param context the current request context
      * @return the list of all access control entries
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsAccessControlEntry> getAllAccessControlEntries(CmsRequestContext context) throws CmsException {
 
@@ -2503,8 +2526,8 @@ public final class CmsSecurityManager {
         CmsRelationFilter filter) throws CmsException {
 
         if (!publishList.isDirectPublish()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_0));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_GET_RELATED_RESOURCES_PUBLISH_PROJECT_0));
         }
 
         CmsPublishList ret = null;
@@ -2639,12 +2662,12 @@ public final class CmsSecurityManager {
 
     /**
      * Gets the rewrite aliases matching a given filter.<p>
-     *  
-     * @param requestContext the current request context 
-     * @param filter the filter used for selecting the rewrite aliases 
-     * @return the rewrite aliases matching the given filter 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param requestContext the current request context
+     * @param filter the filter used for selecting the rewrite aliases
+     * @return the rewrite aliases matching the given filter
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsRewriteAlias> getRewriteAliases(CmsRequestContext requestContext, CmsRewriteAliasFilter filter)
     throws CmsException {
@@ -2937,7 +2960,32 @@ public final class CmsSecurityManager {
             return false;
         }
 
-        result = Boolean.valueOf(hasRole(role, roles));
+        boolean hasRole = hasRole(role, roles);
+
+        // hack: require individual user based confirmation for certain roles
+        // this is for updated older systems where content managers have been WORKPLACE_USER only
+        // to prevent access to certain ADE management functions
+        if (hasRole && ((CmsRole.CATEGORY_EDITOR.equals(role)) || (CmsRole.GALLERY_EDITOR.equals(role)))) {
+            String info = CmsRole.CONFIRM_ROLE_PREFIX + role.getRoleName();
+            Object prop = OpenCms.getRuntimeProperty(info);
+            if ((prop != null) && Boolean.valueOf(prop.toString()).booleanValue()) {
+                // individual user based confirmation for the role is required
+                // if the user is a WORKPLACE_USER
+                Object val = user.getAdditionalInfo(info);
+                if ((val == null) || !Boolean.valueOf(val.toString()).booleanValue()) {
+                    // no individual user confirmation present
+                    if (hasRole(CmsRole.WORKPLACE_USER, roles)
+                        && !hasRole(CmsRole.DEVELOPER, roles)
+                        && !hasRole(CmsRole.PROJECT_MANAGER, roles)
+                        && !hasRole(CmsRole.ACCOUNT_MANAGER, roles)) {
+                        // user is a WORKPLACE_USER, confirmation is required but not present
+                        hasRole = false;
+                    }
+                }
+            }
+        }
+
+        result = Boolean.valueOf(hasRole);
         OpenCms.getMemoryMonitor().cacheRole(key, result.booleanValue());
         return result.booleanValue();
     }
@@ -2993,14 +3041,15 @@ public final class CmsSecurityManager {
         // read all roles of the current user
         List<CmsGroup> roles;
         try {
-            roles = new ArrayList<CmsGroup>(m_driverManager.getGroupsOfUser(
-                dbc,
-                user.getName(),
-                "",
-                true,
-                true,
-                true,
-                dbc.getRequestContext().getRemoteAddress()));
+            roles = new ArrayList<CmsGroup>(
+                m_driverManager.getGroupsOfUser(
+                    dbc,
+                    user.getName(),
+                    "",
+                    true,
+                    true,
+                    true,
+                    dbc.getRequestContext().getRemoteAddress()));
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
@@ -3164,15 +3213,15 @@ public final class CmsSecurityManager {
 
     /**
      * Imports a rewrite alias.<p>
-     * 
-     * @param requestContext the current request context 
-     * @param siteRoot the site root 
-     * @param source the rewrite alias source 
-     * @param target the rewrite alias target 
-     * @param mode the alias mode 
+     *
+     * @param requestContext the current request context
+     * @param siteRoot the site root
+     * @param source the rewrite alias source
+     * @param target the rewrite alias target
+     * @param mode the alias mode
      * @return the import result
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsAliasImportResult importRewriteAlias(
         CmsRequestContext requestContext,
@@ -3301,13 +3350,14 @@ public final class CmsSecurityManager {
         CmsPublishEngine publishEngine) throws CmsInitException {
 
         if (dbContextFactory == null) {
-            throw new CmsInitException(org.opencms.main.Messages.get().container(
-                org.opencms.main.Messages.ERR_CRITICAL_NO_DB_CONTEXT_0));
+            throw new CmsInitException(
+                org.opencms.main.Messages.get().container(org.opencms.main.Messages.ERR_CRITICAL_NO_DB_CONTEXT_0));
         }
 
         m_dbContextFactory = dbContextFactory;
 
-        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(
+            CmsSystemConfiguration.class);
 
         // create the driver manager
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory, publishEngine);
@@ -3339,9 +3389,11 @@ public final class CmsSecurityManager {
             try {
                 m_permissionHandler = (I_CmsPermissionHandler)Class.forName(permHandlerClassName).newInstance();
             } catch (Exception e) {
-                throw new CmsInitException(org.opencms.main.Messages.get().container(
-                    org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
-                    permHandlerClassName), e);
+                throw new CmsInitException(
+                    org.opencms.main.Messages.get().container(
+                        org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
+                        permHandlerClassName),
+                    e);
             }
         }
 
@@ -3350,6 +3402,19 @@ public final class CmsSecurityManager {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
         }
+    }
+
+    /**
+     * Initializes the default groups for an organizational unit.<p>
+     *
+     * @param context the request context
+     * @param ou the organizational unit
+     */
+    public void initializeOrgUnit(CmsRequestContext context, CmsOrganizationalUnit ou) {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        m_driverManager.initOrgUnit(dbc, ou);
+
     }
 
     /**
@@ -4052,8 +4117,10 @@ public final class CmsSecurityManager {
      *
      * @see CmsObject#readDefaultFile(String)
      */
-    public CmsResource readDefaultFile(CmsRequestContext context, CmsResource resource, CmsResourceFilter resourceFilter)
-    throws CmsSecurityException {
+    public CmsResource readDefaultFile(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsResourceFilter resourceFilter) throws CmsSecurityException {
 
         CmsResource result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -4300,7 +4367,10 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_READ_HISTORY_PROJECT_2, projectId, dbc.currentProject().getName()),
+                Messages.get().container(
+                    Messages.ERR_READ_HISTORY_PROJECT_2,
+                    projectId,
+                    dbc.currentProject().getName()),
                 e);
         } finally {
             dbc.clear();
@@ -4499,7 +4569,10 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_READ_PARENT_FOLDER_2, dbc.currentProject().getName(), structureId),
+                Messages.get().container(
+                    Messages.ERR_READ_PARENT_FOLDER_2,
+                    dbc.currentProject().getName(),
+                    structureId),
                 e);
         } finally {
             dbc.clear();
@@ -5038,7 +5111,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResponsiblePrincipals(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5062,7 +5138,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readResponsibleUsers(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()),
+                e);
         } finally {
             dbc.clear();
         }
@@ -5228,13 +5307,13 @@ public final class CmsSecurityManager {
 
     /**
      * Reads the URL name mappings matching a given filter.<p>
-     * 
-     * @param context the current request context 
-     * @param filter the filter to match 
-     * 
+     *
+     * @param context the current request context
+     * @param filter the filter to match
+     *
      * @return the matching URL name mappings
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsUrlNameMappingEntry> readUrlNameMappings(CmsRequestContext context, CmsUrlNameMappingFilter filter)
     throws CmsException {
@@ -5243,7 +5322,9 @@ public final class CmsSecurityManager {
         try {
             return m_driverManager.readUrlNameMappings(dbc, filter);
         } catch (Exception e) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_DB_OPERATION_1, e.getLocalizedMessage());
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_DB_OPERATION_1,
+                e.getLocalizedMessage());
             dbc.report(null, message, e);
             return null; // will never be reached
         } finally {
@@ -5395,8 +5476,10 @@ public final class CmsSecurityManager {
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      * @see org.opencms.security.CmsOrgUnitManager#addResourceToOrgUnit(CmsObject, String, String)
      */
-    public void removeResourceFromOrgUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit, CmsResource resource)
-    throws CmsException {
+    public void removeResourceFromOrgUnit(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        CmsResource resource) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -5605,7 +5688,9 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(
                 null,
-                Messages.get().container(Messages.ERR_TEST_MOVED_RESOURCE_1, dbc.removeSiteRoot(resource.getRootPath())),
+                Messages.get().container(
+                    Messages.ERR_TEST_MOVED_RESOURCE_1,
+                    dbc.removeSiteRoot(resource.getRootPath())),
                 e);
         } finally {
             dbc.clear();
@@ -5705,12 +5790,12 @@ public final class CmsSecurityManager {
 
     /**
      * Replaces the rewrite aliases for a given site root.<p>
-     * 
-     * @param requestContext the current request context 
-     * @param siteRoot the site root for which the rewrite aliases should be replaced 
-     * @param newAliases the new list of aliases for the given site root 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param requestContext the current request context
+     * @param siteRoot the site root for which the rewrite aliases should be replaced
+     * @param newAliases the new list of aliases for the given site root
+     *
+     * @throws CmsException if something goes wrong
      */
     public void saveRewriteAliases(CmsRequestContext requestContext, String siteRoot, List<CmsRewriteAlias> newAliases)
     throws CmsException {
@@ -6389,7 +6474,10 @@ public final class CmsSecurityManager {
             }
             m_driverManager.writeAccessControlEntry(dbc, resource, ace);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_WRITE_ACL_ENTRY_1, context.getSitePath(resource)),
+                e);
         } finally {
             dbc.clear();
         }
@@ -6728,7 +6816,7 @@ public final class CmsSecurityManager {
      * @param nameSeq the sequence of URL name candidates
      * @param structureId the structure id which should be mapped to the name
      * @param locale the locale for the mapping
-     * @param replaceOnPublish mappings for which this is set will replace all other mappings for the same resource on publishing 
+     * @param replaceOnPublish mappings for which this is set will replace all other mappings for the same resource on publishing
      *
      * @return the name which was actually mapped to the structure id
      *
@@ -6838,24 +6926,25 @@ public final class CmsSecurityManager {
         CmsResource resource,
         CmsPermissionSet requiredPermissions,
         I_CmsPermissionHandler.CmsPermissionCheckResult permissions)
-    throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
+        throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
 
         if (permissions == I_CmsPermissionHandler.PERM_FILTERED) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_PERM_FILTERED_1,
-                context.getSitePath(resource)));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_PERM_FILTERED_1, context.getSitePath(resource)));
         }
         if (permissions == I_CmsPermissionHandler.PERM_DENIED) {
-            throw new CmsPermissionViolationException(Messages.get().container(
-                Messages.ERR_PERM_DENIED_2,
-                context.getSitePath(resource),
-                requiredPermissions.getPermissionString()));
+            throw new CmsPermissionViolationException(
+                Messages.get().container(
+                    Messages.ERR_PERM_DENIED_2,
+                    context.getSitePath(resource),
+                    requiredPermissions.getPermissionString()));
         }
         if (permissions == I_CmsPermissionHandler.PERM_NOTLOCKED) {
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_PERM_NOTLOCKED_2,
-                context.getSitePath(resource),
-                context.getCurrentUser().getName()));
+            throw new CmsLockException(
+                Messages.get().container(
+                    Messages.ERR_PERM_NOTLOCKED_2,
+                    context.getSitePath(resource),
+                    context.getCurrentUser().getName()));
         }
     }
 
@@ -6902,9 +6991,10 @@ public final class CmsSecurityManager {
     protected void checkSystemLocks(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         if (m_lockManager.hasSystemLocks(dbc, resource)) {
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_RESOURCE_SYSTEM_LOCKED_1,
-                dbc.removeSiteRoot(resource.getRootPath())));
+            throw new CmsLockException(
+                Messages.get().container(
+                    Messages.ERR_RESOURCE_SYSTEM_LOCKED_1,
+                    dbc.removeSiteRoot(resource.getRootPath())));
         }
     }
 
@@ -6971,9 +7061,10 @@ public final class CmsSecurityManager {
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
         if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
-            throw new CmsSecurityException(org.opencms.security.Messages.get().container(
-                org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
-                user.getName()));
+            throw new CmsSecurityException(
+                org.opencms.security.Messages.get().container(
+                    org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
+                    user.getName()));
         }
         if (context.getCurrentUser().equals(user)) {
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
@@ -7091,14 +7182,11 @@ public final class CmsSecurityManager {
      */
     protected boolean hasRole(CmsRole role, List<CmsGroup> roles) {
 
-        // iterates the roles the user are in
-        Iterator<CmsGroup> itGroups = roles.iterator();
-        while (itGroups.hasNext()) {
-            String groupName = (itGroups.next()).getName();
+        // iterates the role groups the user is in
+        for (CmsGroup group : roles) {
+            String groupName = group.getName();
             // iterate the role hierarchy
-            Iterator<String> itDistinctGroupNames = role.getDistinctGroupNames().iterator();
-            while (itDistinctGroupNames.hasNext()) {
-                String distictGroupName = itDistinctGroupNames.next();
+            for (String distictGroupName : role.getDistinctGroupNames()) {
                 if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role
                     // we need an exact match, and we ignore the ou parameter
@@ -7187,7 +7275,8 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if something goes wrong
      */
-    protected CmsFolder readFolder(CmsDbContext dbc, String resourcename, CmsResourceFilter filter) throws CmsException {
+    protected CmsFolder readFolder(CmsDbContext dbc, String resourcename, CmsResourceFilter filter)
+    throws CmsException {
 
         CmsResource resource = readResource(dbc, resourcename, filter);
         return m_driverManager.convertResourceToFolder(resource);
@@ -7274,8 +7363,9 @@ public final class CmsSecurityManager {
                             // ignore
                         }
                         if (root != null) {
-                            throw new CmsVfsException(org.opencms.file.Messages.get().container(
-                                org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
+                            throw new CmsVfsException(
+                                org.opencms.file.Messages.get().container(
+                                    org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
                         }
                     }
                 }

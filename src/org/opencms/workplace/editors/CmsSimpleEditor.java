@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,15 +49,15 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.logging.Log;
 
 /**
- * Creates the output for editing a resource (text or JSP files).<p> 
- * 
+ * Creates the output for editing a resource (text or JSP files).<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/editors/simple/editor.jsp</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSimpleEditor extends CmsEditor {
 
@@ -69,7 +69,7 @@ public class CmsSimpleEditor extends CmsEditor {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSimpleEditor(CmsJspActionElement jsp) {
@@ -98,8 +98,8 @@ public class CmsSimpleEditor extends CmsEditor {
     }
 
     /**
-     * Performs the exit editor action.<p> 
-     * 
+     * Performs the exit editor action.<p>
+     *
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
     @Override
@@ -119,7 +119,7 @@ public class CmsSimpleEditor extends CmsEditor {
 
     /**
      * Performs the save content action.<p>
-     * 
+     *
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     @Override
@@ -152,7 +152,7 @@ public class CmsSimpleEditor extends CmsEditor {
         }
 
         if (getAction() != ACTION_CANCEL) {
-            // save successful, set save action         
+            // save successful, set save action
             setAction(ACTION_SAVE);
         }
     }
@@ -168,12 +168,12 @@ public class CmsSimpleEditor extends CmsEditor {
 
     /**
      * Decodes the content from the content request parameter.<p>
-     *  
-     * @param encodedContent the encoded content 
-     * @param encoding the encoding to use 
-     * @param originalFile the current file state 
-     * 
-     * @return the decoded content 
+     *
+     * @param encodedContent the encoded content
+     * @param encoding the encoding to use
+     * @param originalFile the current file state
+     *
+     * @return the decoded content
      */
     protected String decodeContentParameter(String encodedContent, String encoding, CmsFile originalFile) {
 
@@ -191,7 +191,7 @@ public class CmsSimpleEditor extends CmsEditor {
         // get the default encoding
         String content = getParamContent();
         if (CmsStringUtil.isNotEmpty(content)) {
-            // content already read, must be decoded 
+            // content already read, must be decoded
             setParamContent(decodeContent(content));
             return;
         } else {
@@ -228,7 +228,7 @@ public class CmsSimpleEditor extends CmsEditor {
         // set the dialog type
         setParamDialogtype(EDITOR_TYPE);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (EDITOR_SAVE.equals(getParamAction())) {
             setAction(ACTION_SAVE);
         } else if (EDITOR_SAVEEXIT.equals(getParamAction())) {

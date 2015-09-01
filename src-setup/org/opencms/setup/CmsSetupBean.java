@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -100,17 +100,17 @@ import org.apache.commons.logging.Log;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
- * 
+ *
  * It is not allowed to customize this bean with methods for a specific database server setup!<p>
- * 
+ *
  * Database server specific settings should be set/read using get/setDbProperty, as for example like:
- * 
+ *
  * <pre>
  * setDbProperty("oracle.defaultTablespace", value);
  * </pre>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSetupBean implements I_CmsShellCommands {
 
@@ -330,7 +330,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** Xml read/write helper object. */
     private CmsSetupXmlHelper m_xmlHelper;
 
-    /** 
+    /**
      * Default constructor.<p>
      */
     public CmsSetupBean() {
@@ -342,7 +342,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * Restores the opencms.xml either to or from a backup file, depending
      * whether the setup wizard is executed the first time (the backup
      * does not exist) or not (the backup exists).
-     * 
+     *
      * @param filename something like e.g. "opencms.xml"
      * @param originalFilename the configurations real file name, e.g. "opencms.xml.ori"
      */
@@ -366,9 +366,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns a map of dependencies.<p>
-     * 
+     *
      * The component dependencies are get from the setup and module components.properties files found.<p>
-     * 
+     *
      * @return a Map of component ids as keys and a list of dependency names as values
      */
     public Map<String, List<String>> buildDepsForAllComponents() {
@@ -381,7 +381,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             CmsSetupComponent component = itComponents.next();
 
             // if component a depends on component b, and component c depends also on component b:
-            // build a map with a list containing "a" and "c" keyed by "b" to get a 
+            // build a map with a list containing "a" and "c" keyed by "b" to get a
             // list of components depending on component "b"...
             Iterator<String> itDeps = component.getDependencies().iterator();
             while (itDeps.hasNext()) {
@@ -413,13 +413,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void checkEthernetAddress() {
 
-        // check the ethernet address in order to generate a random address, if not available                   
+        // check the ethernet address in order to generate a random address, if not available
         if (CmsStringUtil.isEmpty(getEthernetAddress())) {
             setEthernetAddress(CmsStringUtil.getEthernetAddress());
         }
     }
 
-    /** 
+    /**
      * Clears the cache.<p>
      */
     public void clearCache() {
@@ -427,9 +427,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         OpenCms.getEventManager().fireEvent(I_CmsEventListener.EVENT_CLEAR_CACHES);
     }
 
-    /** 
+    /**
      * Copies a given file.<p>
-     * 
+     *
      * @param source the source file
      * @param target the destination file
      */
@@ -444,10 +444,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns html code to display an error.<p> 
-     * 
+     * Returns html code to display an error.<p>
+     *
      * @param pathPrefix to adjust the path
-     * 
+     *
      * @return html code
      */
     public String displayError(String pathPrefix) {
@@ -479,10 +479,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns html code to display the errors occurred.<p> 
-     * 
+     * Returns html code to display the errors occurred.<p>
+     *
      * @param pathPrefix to adjust the path
-     * 
+     *
      * @return html code
      */
     public String displayErrors(String pathPrefix) {
@@ -521,12 +521,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns a map with all available modules.<p>
-     * 
+     *
      * The map contains maps keyed by module package names. Each of these maps contains various
-     * information about the module such as the module name, version, description, and a list of 
-     * it's dependencies. You should refer to the source code of this method to understand the data 
+     * information about the module such as the module name, version, description, and a list of
+     * it's dependencies. You should refer to the source code of this method to understand the data
      * structure of the map returned by this method!<p>
-     * 
+     *
      * @return a map with all available modules
      */
     public Map<String, CmsModule> getAvailableModules() {
@@ -569,7 +569,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the "config" path in the OpenCms web application.<p>
-     * 
+     *
      * @return the config path
      */
     public String getConfigRfsPath() {
@@ -577,9 +577,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return m_configRfsPath;
     }
 
-    /** 
+    /**
      * Returns the key of the selected database server (e.g. "mysql", "generic" or "oracle").<p>
-     * 
+     *
      * @return the key of the selected database server (e.g. "mysql", "generic" or "oracle")
      */
     public String getDatabase() {
@@ -595,7 +595,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the URI of a database config page (in step 3) for a specified database key.<p>
-     * 
+     *
      * @param key the database key (e.g. "mysql", "generic" or "oracle")
      * @return the URI of a database config page
      */
@@ -608,9 +608,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns a list of needed jar filenames for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
-     * 
+     *
      * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
-     * 
+     *
      * @return a list of needed jar filenames
      */
     public List<String> getDatabaseLibs(String databaseKey) {
@@ -629,7 +629,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the clear text name for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
-     * 
+     *
      * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
      * @return the clear text name for a database server setup
      */
@@ -638,10 +638,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getDatabaseProperties().get(databaseKey).getProperty(databaseKey + PROPKEY_NAME);
     }
 
-    /** 
+    /**
      * Returns a map with the database properties of *all* available database configurations keyed
      * by their database keys (e.g. "mysql", "generic" or "oracle").<p>
-     * 
+     *
      * @return a map with the database properties of *all* available database configurations
      */
     public Map<String, Properties> getDatabaseProperties() {
@@ -655,7 +655,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /**
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
-     * 
+     *
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List<String> getDatabases() {
@@ -666,7 +666,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return m_databaseKeys;
     }
 
-    /** 
+    /**
      * Returns the database name.<p>
      *
      * @return the database name
@@ -678,7 +678,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the JDBC connect URL parameters.<p>
-     * 
+     *
      * @return the JDBC connect URL parameters
      */
     public String getDbConStrParams() {
@@ -686,9 +686,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getDbProperty(m_databaseKey + ".constr.params");
     }
 
-    /** 
+    /**
      * Returns the database create statement.<p>
-     * 
+     *
      * @return the database create statement
      */
     public String getDbCreateConStr() {
@@ -696,7 +696,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getDbProperty(m_databaseKey + ".constr");
     }
 
-    /** 
+    /**
      * Returns the password used for database creation.<p>
      *
      * @return the password used for database creation
@@ -706,9 +706,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return (m_dbCreatePwd != null) ? m_dbCreatePwd : "";
     }
 
-    /** 
+    /**
      * Returns the database user that is used to connect to the database.<p>
-     * 
+     *
      * @return the database user
      */
     public String getDbCreateUser() {
@@ -716,22 +716,22 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getDbProperty(m_databaseKey + ".user");
     }
 
-    /** 
+    /**
      * Returns the database driver belonging to the database
      * from the default configuration.<p>
      *
-     * @return name of the database driver 
+     * @return name of the database driver
      */
     public String getDbDriver() {
 
         return getDbProperty(m_databaseKey + ".driver");
     }
 
-    /** 
+    /**
      * Returns the value for a given key from the database properties.
-     * 
+     *
      * @param key the property key
-     * 
+     *
      * @return the string value for a given key
      */
     public String getDbProperty(String key) {
@@ -743,21 +743,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return databaseProperties.getProperty(key, "");
     }
 
-    /** 
+    /**
      * Returns the validation query belonging to the database
      * from the default configuration .<p>
      *
-     * @return query used to validate connections 
+     * @return query used to validate connections
      */
     public String getDbTestQuery() {
 
         return getDbProperty(m_databaseKey + ".testQuery");
     }
 
-    /** 
+    /**
      * Returns a connection string.<p>
      *
-     * @return the connection string used by the OpenCms core  
+     * @return the connection string used by the OpenCms core
      */
     public String getDbWorkConStr() {
 
@@ -768,20 +768,20 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
-    /** 
+    /**
      * Returns the password of the database from the properties .<p>
      *
-     * @return the password for the OpenCms database user 
+     * @return the password for the OpenCms database user
      */
     public String getDbWorkPwd() {
 
         return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".password");
     }
 
-    /** 
+    /**
      * Returns the user of the database from the properties.<p>
-     * 
-     * @return the database user used by the opencms core  
+     *
+     * @return the database user used by the opencms core
      */
     public String getDbWorkUser() {
 
@@ -792,7 +792,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return user;
     }
 
-    /** 
+    /**
      * Returns the default content encoding.<p>
      * @return String
      */
@@ -801,7 +801,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getExtProperty("defaultContentEncoding");
     }
 
-    /** 
+    /**
      * Returns the name of the default web application, configured in <code>web.xml</code>.<p>
      *
      * By default this is <code>"ROOT"</code>.<p>
@@ -815,9 +815,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the display string for a given module.<p>
-     * 
+     *
      * @param module a module
-     * 
+     *
      * @return the display string for the given module
      */
     public String getDisplayForModule(CmsModule module) {
@@ -835,19 +835,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return display;
     }
 
-    /** 
+    /**
      * Returns the error messages.<p>
-     * 
-     * @return a vector of error messages 
+     *
+     * @return a vector of error messages
      */
     public List<String> getErrors() {
 
         return m_errors;
     }
 
-    /** 
+    /**
      * Returns the mac ethernet address.<p>
-     * 
+     *
      * @return the mac ethernet addess
      */
     public String getEthernetAddress() {
@@ -877,14 +877,15 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Generates the HTML code for the drop down for db selection.<p>
-     * 
-     * @return the generated HTML 
+     *
+     * @return the generated HTML
      */
     public String getHtmlForDbSelection() {
 
         StringBuffer buf = new StringBuffer(2048);
 
-        buf.append("<select name=\"fullDatabaseKey\" style=\"width: 250px;\" size=\"1\" onchange=\"location.href='../../step_3_database_selection.jsp?fullDatabaseKey='+this.options[this.selectedIndex].value;\">");
+        buf.append(
+            "<select name=\"fullDatabaseKey\" style=\"width: 250px;\" size=\"1\" onchange=\"location.href='../../step_3_database_selection.jsp?fullDatabaseKey='+this.options[this.selectedIndex].value;\">");
         buf.append("<!-- --------------------- JSP CODE --------------------------- -->");
 
         // get all available databases
@@ -939,11 +940,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return buf.toString();
     }
 
-    /** 
+    /**
      * Returns a help image icon tag to display a help text in the setup wizard.<p>
-     * 
+     *
      * @param id the id of the desired help div
-     * @param pathPrefix the path prefix to the image 
+     * @param pathPrefix the path prefix to the image
      * @return the HTML part for the help icon or an empty String, if the part was not found
      */
     public String getHtmlHelpIcon(String id, String pathPrefix) {
@@ -957,9 +958,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
-    /** 
+    /**
      * Returns the specified HTML part of the HTML property file to create the output.<p>
-     * 
+     *
      * @param part the name of the desired part
      * @return the HTML part or an empty String, if the part was not found
      */
@@ -968,9 +969,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return getHtmlPart(part, "");
     }
 
-    /** 
+    /**
      * Returns the specified HTML part of the HTML property file to create the output.<p>
-     * 
+     *
      * @param part the name of the desired part
      * @param replaceString String which is inserted in the found HTML part at the location of "$replace$"
      * @return the HTML part or an empty String, if the part was not found
@@ -987,7 +988,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the path to the /WEB-INF/lib folder.<p>
-     * 
+     *
      * @return the path to the /WEB-INF/lib folder
      */
     public String getLibFolder() {
@@ -997,7 +998,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the name of the log file.<p>
-     * 
+     *
      * @return the name of the log file
      */
     public String getLogName() {
@@ -1007,7 +1008,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns a map with lists of dependent module package names keyed by module package names.<p>
-     * 
+     *
      * @return a map with lists of dependent module package names keyed by module package names
      */
     public Map<String, List<String>> getModuleDependencies() {
@@ -1025,7 +1026,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the absolute path to the module root folder.<p>
-     * 
+     *
      * @return the absolute path to the module root folder
      */
     public String getModuleFolder() {
@@ -1048,8 +1049,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Gets the default pool.<p>
-     * 
-     * @return name of the default pool 
+     *
+     * @return name of the default pool
      */
     public String getPool() {
 
@@ -1058,7 +1059,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the parameter configuration.<p>
-     * 
+     *
      * @return the parameter configuration
      */
     public CmsParameterConfiguration getProperties() {
@@ -1068,7 +1069,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the replacer.<p>
-     * 
+     *
      * @return the replacer
      */
     public Map<String, String> getReplacer() {
@@ -1078,7 +1079,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Return the OpenCms server name.<p>
-     * 
+     *
      * @return the OpenCms server name
      */
     public String getServerName() {
@@ -1088,7 +1089,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the initial servlet configuration.<p>
-     * 
+     *
      * @return the initial servlet configuration
      */
     public ServletConfig getServletConfig() {
@@ -1098,9 +1099,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the OpenCms servlet mapping, configured in <code>web.xml</code>.<p>
-     * 
+     *
      * By default this is <code>"/opencms/*"</code>.<p>
-     * 
+     *
      * @return the OpenCms servlet mapping, configured in <code>web.xml</code>
      */
     public String getServletMapping() {
@@ -1108,7 +1109,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return m_servletMapping;
     }
 
-    /** 
+    /**
      * Returns a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/" sorted by their ranking property.<p>
      *
@@ -1132,7 +1133,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             }
 
             while (mappedDatabases.size() > 0) {
-                // get database with highest ranking 
+                // get database with highest ranking
                 Integer key = mappedDatabases.lastKey();
                 String database = mappedDatabases.get(key);
                 sortedDatabases.add(database);
@@ -1143,10 +1144,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return m_sortedDatabaseKeys;
     }
 
-    /** 
+    /**
      * Returns the absolute path to the OpenCms home directory.<p>
-     * 
-     * @return the path to the OpenCms home directory 
+     *
+     * @return the path to the OpenCms home directory
      */
     public String getWebAppRfsPath() {
 
@@ -1155,7 +1156,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Checks if the setup wizard is enabled.<p>
-     * 
+     *
      * @return true if the setup wizard is enables, false otherwise
      */
     public boolean getWizardEnabled() {
@@ -1165,7 +1166,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the workplace import thread.<p>
-     * 
+     *
      * @return the workplace import thread
      */
     public CmsSetupWorkplaceImportThread getWorkplaceImportThread() {
@@ -1199,7 +1200,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the html code for component selection.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlComponents() {
@@ -1216,7 +1217,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns html code for the module descriptions in help ballons.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlModuleHelpDescriptions() {
@@ -1239,7 +1240,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns html for displaying a module selection box.<p>
-     * 
+     *
      * @return html code
      */
     public String htmlModules() {
@@ -1256,9 +1257,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Installed all modules that have been set using {@link #setInstallModules(String)}.<p>
-     * 
+     *
      * This method is invoked as a shell command.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void importModulesFromSetupBean() throws Exception {
@@ -1285,9 +1286,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
-    /** 
+    /**
      * Creates a new instance of the setup Bean from a JSP page.<p>
-     * 
+     *
      * @param pageContext the JSP's page context
      */
     public void init(PageContext pageContext) {
@@ -1308,13 +1309,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
         init(webAppRfsPath, servletMapping, defaultWebApplication);
     }
 
-    /** 
+    /**
      * Creates a new instance of the setup Bean.<p>
-     * 
+     *
      * @param webAppRfsPath path to the OpenCms web application
      * @param servletMapping the OpenCms servlet mapping
      * @param defaultWebApplication the name of the default web application
-     * 
+     *
      */
     public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
@@ -1408,8 +1409,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Over simplistic helper to compare two strings to check radio buttons.
-     * 
-     * @param value1 the first value 
+     *
+     * @param value1 the first value
      * @param value2 the second value
      * @return "checked" if both values are equal, the empty String "" otherwise
      */
@@ -1428,7 +1429,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns true if this setup bean is correctly initialized.<p>
-     * 
+     *
      * @return true if this setup bean is correctly initialized
      */
     public boolean isInitialized() {
@@ -1438,9 +1439,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns true if jpa is supported for the given dbKey.<p>
-     * 
+     *
      * @param dbKey the database key to check the jpa support for
-     * 
+     *
      * @return true if jpa is supported for the given dbKey
      */
     public boolean isJpaSupported(String dbKey) {
@@ -1451,9 +1452,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns true if sql is supported for the given dbKey.<p>
-     * 
+     *
      * @param dbKey the database key to check the sql support for
-     * 
+     *
      * @return true if sql is supported for the given dbKey
      */
     public boolean isSqlSupported(String dbKey) {
@@ -1463,8 +1464,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns js code with array definition for the available component dependencies.<p> 
-     * 
+     * Returns js code with array definition for the available component dependencies.<p>
+     *
      * @return js code
      */
     public String jsComponentDependencies() {
@@ -1496,8 +1497,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns js code with array definition for the component modules.<p> 
-     * 
+     * Returns js code with array definition for the component modules.<p>
+     *
      * @return js code
      */
     public String jsComponentModules() {
@@ -1526,8 +1527,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns js code with array definition for the available components names.<p> 
-     * 
+     * Returns js code with array definition for the available components names.<p>
+     *
      * @return js code
      */
     public String jsComponentNames() {
@@ -1546,8 +1547,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns js code with array definition for the available module dependencies.<p> 
-     * 
+     * Returns js code with array definition for the available module dependencies.<p>
+     *
      * @return js code
      */
     public String jsModuleDependencies() {
@@ -1578,8 +1579,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns js code with array definition for the available module names.<p> 
-     * 
+     * Returns js code with array definition for the available module names.<p>
+     *
      * @return js code
      */
     public String jsModuleNames() {
@@ -1613,9 +1614,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public void prepareStep10() {
 
         if (isInitialized()) {
-            // lock the wizard for further use 
+            // lock the wizard for further use
             lockWizard();
-            // save Properties to file "opencms.properties" 
+            // save Properties to file "opencms.properties"
             saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false);
 
             setSchemaGeneration(false);
@@ -1625,7 +1626,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Prepares step 8 of the setup wizard.<p>
-     * 
+     *
      * @return true if the workplace should be imported
      */
     public boolean prepareStep8() {
@@ -1656,10 +1657,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     CmsConfigurationManager.DEFAULT_XML_FILE_NAME,
                     CmsConfigurationManager.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
 
-                // save Properties to file "opencms.properties" 
+                // save Properties to file "opencms.properties"
                 setDatabase(m_databaseKey);
                 if (m_driverType == DRIVER_TYPE_JPA) {
-                    setEntityManagerPoolSize(getDbProperty(m_databaseKey + "." + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE));
+                    setEntityManagerPoolSize(
+                        getDbProperty(m_databaseKey + "." + CmsDbPool.KEY_ENTITY_MANAGER_POOL_SIZE));
                 }
                 saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
 
@@ -1694,7 +1696,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 xp.append("/").append(CmsSystemConfiguration.N_SITES);
                 xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
 
-                getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
+                getXmlHelper().setValue(
+                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
+                    xp.toString(),
+                    getWorkplaceSite());
 
                 // /opencms/system/sites/site[@uri='/sites/default/']/@server
                 xp = new StringBuffer(256);
@@ -1706,7 +1711,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
                 xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
 
-                getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
+                getXmlHelper().setValue(
+                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
+                    xp.toString(),
+                    getWorkplaceSite());
 
                 if (m_driverType == DRIVER_TYPE_JPA) {
                     // /opencms/system/runtimeclasses/runtimeinfo
@@ -1756,7 +1764,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Generates the output for step 8b of the setup wizard.<p>
-     * 
+     *
      * @param out the JSP print stream
      * @throws IOException in case errors occur while writing to "out"
      */
@@ -1798,7 +1806,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      *  Saves properties to specified file.<p>
-     * 
+     *
      *  @param properties the properties to be saved
      *  @param file the file to save the properties to
      *  @param backup if true, create a backupfile
@@ -1833,13 +1841,17 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      *  Saves properties to specified file.<p>
-     * 
+     *
      *  @param properties the properties to be saved
      *  @param file the file to save the properties to
      *  @param backup if true, create a backupfile
-     *  @param forceWrite the keys for the properties which should always be written, even if they don't exist in the configuration file 
+     *  @param forceWrite the keys for the properties which should always be written, even if they don't exist in the configuration file
      */
-    public void saveProperties(CmsParameterConfiguration properties, String file, boolean backup, Set<String> forceWrite) {
+    public void saveProperties(
+        CmsParameterConfiguration properties,
+        String file,
+        boolean backup,
+        Set<String> forceWrite) {
 
         if (new File(m_configRfsPath + file).isFile()) {
             String backupFile = file + CmsConfigurationManager.POSTFIX_ORI;
@@ -1879,7 +1891,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the database drivers to the given value.<p>
-     * 
+     *
      * @param databaseKey the key of the selected database server (e.g. "mysql", "generic" or "oracle")
      */
     public void setDatabase(String databaseKey) {
@@ -1924,7 +1936,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the database name.<p>
-     * 
+     *
      * @param db the database name to set
      */
     public void setDb(String db) {
@@ -1934,7 +1946,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the JDBC connect URL parameters.<p>
-     * 
+     *
      * @param value the JDBC connect URL parameters
      */
     public void setDbConStrParams(String value) {
@@ -1944,7 +1956,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the database create statement.<p>
-     * 
+     *
      * @param dbCreateConStr the database create statement
      */
     public void setDbCreateConStr(String dbCreateConStr) {
@@ -1954,10 +1966,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the password used for the initial OpenCms database creation.<p>
-     * 
-     * This password will not be stored permanently, 
+     *
+     * This password will not be stored permanently,
      * but used only in the setup wizard.<p>
-     * 
+     *
      * @param dbCreatePwd the password used for the initial OpenCms database creation
      */
     public void setDbCreatePwd(String dbCreatePwd) {
@@ -1967,7 +1979,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Set the database user that is used to connect to the database.<p>
-     * 
+     *
      * @param dbCreateUser the user to set
      */
     public void setDbCreateUser(String dbCreateUser) {
@@ -1975,10 +1987,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
         setDbProperty(m_databaseKey + ".user", dbCreateUser);
     }
 
-    /** 
+    /**
      * Sets the database driver belonging to the database.<p>
-     * 
-     * @param driver name of the opencms driver 
+     *
+     * @param driver name of the opencms driver
      */
     public void setDbDriver(String driver) {
 
@@ -1986,11 +1998,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Sets the needed database parameters.<p> 
-     * 
+     * Sets the needed database parameters.<p>
+     *
      * @param request the http request
      * @param provider the db provider
-     * 
+     *
      * @return true if already submitted
      */
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
@@ -1999,13 +2011,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Sets the needed database parameters.<p> 
-     * 
+     * Sets the needed database parameters.<p>
+     *
      * @param request the http request
      * @param provider the db provider
      * @param contextPath the context path to use
      * @param session  the session to use or <code>null</code> if running outside a servlet container
-     * 
+     *
      * @return true if already submitted
      */
     public boolean setDbParamaters(
@@ -2187,9 +2199,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return isFormSubmitted;
     }
 
-    /** 
+    /**
      * This method sets the value for a given key in the database properties.<p>
-     * 
+     *
      * @param key The key of the property
      * @param value The value of the property
      */
@@ -2201,10 +2213,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
         databaseProperties.put(key, value);
     }
 
-    /** 
+    /**
      * Sets the connection string to the database to the given value.<p>
      *
-     * @param dbWorkConStr the connection string used by the OpenCms core 
+     * @param dbWorkConStr the connection string used by the OpenCms core
      */
     public void setDbWorkConStr(String dbWorkConStr) {
 
@@ -2224,18 +2236,18 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the password of the database to the given value.<p>
-     * 
-     * @param dbWorkPwd the password for the OpenCms database user  
+     *
+     * @param dbWorkPwd the password for the OpenCms database user
      */
     public void setDbWorkPwd(String dbWorkPwd) {
 
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_PASSWORD, dbWorkPwd);
     }
 
-    /** 
-     * Sets the user of the database to the given value.<p> 
+    /**
+     * Sets the user of the database to the given value.<p>
      *
-     * @param dbWorkUser the database user used by the opencms core 
+     * @param dbWorkUser the database user used by the opencms core
      */
     public void setDbWorkUser(String dbWorkUser) {
 
@@ -2244,7 +2256,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the driver type.<p>
-     * 
+     *
      * @param type the type to set
      */
     public void setDriverType(String type) {
@@ -2252,9 +2264,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         m_driverType = JPA_PROVIDER.equalsIgnoreCase(type) ? DRIVER_TYPE_JPA : DRIVER_TYPE_SQL;
     }
 
-    /** 
+    /**
      * Set the mac ethernet address, required for UUID generation.<p>
-     * 
+     *
      * @param ethernetAddress the mac addess to set
      */
     public void setEthernetAddress(String ethernetAddress) {
@@ -2281,7 +2293,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the list with the package names of the modules to be installed.<p>
-     * 
+     *
      * @param value a string with the package names of the modules to be installed delimited by the pipe symbol "|"
      */
     public void setInstallModules(String value) {
@@ -2296,7 +2308,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the replacer.<p>
-     * 
+     *
      * @param map the replacer to set
      */
     public void setReplacer(Map<String, String> map) {
@@ -2306,7 +2318,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the OpenCms server name.<p>
-     * 
+     *
      * @param name the OpenCms server name
      */
     public void setServerName(String name) {
@@ -2352,20 +2364,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms "
-            + OpenCms.getSystemInfo().getVersionNumber()
-            + " ["
-            + OpenCms.getSystemInfo().getVersionId()
-            + "]");
+        System.out.println(
+            "This is OpenCms "
+                + OpenCms.getSystemInfo().getVersionNumber()
+                + " ["
+                + OpenCms.getSystemInfo().getVersionId()
+                + "]");
         System.out.println();
         System.out.println();
     }
 
     /**
      * Sorts the modules for display.<p>
-     * 
+     *
      * @param modules the list of {@link CmsModule} objects
-     * 
+     *
      * @return a sorted list of module names
      */
     public List<String> sortModules(Collection<CmsModule> modules) {
@@ -2389,7 +2402,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Checks the jdbc driver.<p>
-     * 
+     *
      * @return <code>true</code> if at least one of the recommended drivers is found
      */
     public boolean validateJdbc() {
@@ -2413,10 +2426,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Reads all components from the given location, a folder or a zip file.<p>
-     * 
+     *
      * @param fileName the location to read the components from
-     * 
-     * @throws CmsConfigurationException if something goes wrong 
+     *
+     * @throws CmsConfigurationException if something goes wrong
      */
     protected void addComponentsFromPath(String fileName) throws CmsConfigurationException {
 
@@ -2436,20 +2449,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
             componentBean.setName(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
             componentBean.setDescription(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_DESCRIPTION));
             componentBean.setModulesRegex(configuration.get(PROPKEY_COMPONENT + componentId + PROPKEY_MODULES));
-            componentBean.setDependencies(configuration.getList(PROPKEY_COMPONENT + componentId + PROPKEY_DEPENDENCIES));
-            componentBean.setPosition(configuration.getInteger(
-                PROPKEY_COMPONENT + componentId + PROPKEY_POSITION,
-                DEFAULT_POSITION));
-            componentBean.setChecked(configuration.getBoolean(PROPKEY_COMPONENT + componentId + PROPKEY_CHECKED, false));
+            componentBean.setDependencies(
+                configuration.getList(PROPKEY_COMPONENT + componentId + PROPKEY_DEPENDENCIES));
+            componentBean.setPosition(
+                configuration.getInteger(PROPKEY_COMPONENT + componentId + PROPKEY_POSITION, DEFAULT_POSITION));
+            componentBean.setChecked(
+                configuration.getBoolean(PROPKEY_COMPONENT + componentId + PROPKEY_CHECKED, false));
             m_components.addIdentifiableObject(componentBean.getId(), componentBean, componentBean.getPosition());
         }
     }
 
     /**
      * Returns a pipe separated list of module names for the given list of components.<p>
-     * 
+     *
      * @param componentIds the list of component IDs to get the modules for
-     * 
+     *
      * @return a pipe separated list of module names for the given list of components
      */
     protected String getComponentModules(List<String> componentIds) {
@@ -2481,12 +2495,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Reads all properties from the components.properties file at the given location, a folder or a zip file.<p>
-     * 
+     *
      * @param location the location to read the properties from
-     * 
-     * @return the read properties 
-     * 
-     * @throws FileNotFoundException if the properties file could not be found 
+     *
+     * @return the read properties
+     *
+     * @throws FileNotFoundException if the properties file could not be found
      * @throws CmsConfigurationException if the something else goes wrong
      */
     protected CmsParameterConfiguration getComponentsProperties(String location)
@@ -2508,9 +2522,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 }
                 if (entry == null) {
                     zipFile.close();
-                    throw new FileNotFoundException(org.opencms.importexport.Messages.get().getBundle().key(
-                        org.opencms.importexport.Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
-                        location + "/" + COMPONENTS_PROPERTIES));
+                    throw new FileNotFoundException(
+                        org.opencms.importexport.Messages.get().getBundle().key(
+                            org.opencms.importexport.Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
+                            location + "/" + COMPONENTS_PROPERTIES));
                 }
 
                 stream = zipFile.getInputStream(entry);
@@ -2553,9 +2568,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
-    /** 
+    /**
      * Returns the value for a given key from the extended properties.
-     * 
+     *
      * @param key the property key
      * @return the string value for a given key
      */
@@ -2566,9 +2581,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns html for the given component to fill the selection list.<p>
-     * 
+     *
      * @param component the component to generate the code for
-     * 
+     *
      * @return html code
      */
     protected String htmlComponent(CmsSetupComponent component) {
@@ -2592,7 +2607,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
         html.append("\t</tr>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td>&nbsp;</td>\n");
-        html.append("\t\t<td style='vertical-align: top; width: 100%; padding-bottom: 8px; font-style: italic;'>\n\t\t\t");
+        html.append(
+            "\t\t<td style='vertical-align: top; width: 100%; padding-bottom: 8px; font-style: italic;'>\n\t\t\t");
         html.append(component.getDescription());
         html.append("\n\t\t</td>\n");
         html.append("\t</tr>\n");
@@ -2602,10 +2618,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns html for the given module to fill the selection list.<p>
-     * 
+     *
      * @param module the module to generate the code for
      * @param pos the position in the list
-     * 
+     *
      * @return html code
      */
     protected String htmlModule(CmsModule module, int pos) {
@@ -2633,13 +2649,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Imports a module (zipfile) from the default module directory, 
+     * Imports a module (zipfile) from the default module directory,
      * creating a temporary project for this.<p>
-     * 
+     *
      * @param importFile the name of the import module located in the default module directory
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, org.opencms.report.I_CmsReport, CmsImportParameters)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
@@ -2653,7 +2669,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Initializes and validates the read components.<p>
-     * 
+     *
      * @param modules a modifiable list of the modules to be imported
      */
     protected void initializeComponents(Collection<String> modules) {
@@ -2727,7 +2743,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns <code>true</code> if the import thread is currently running.<p>
-     * 
+     *
      * @return <code>true</code> if the import thread is currently running
      */
     protected boolean isImportRunning() {
@@ -2735,7 +2751,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return (m_workplaceImportThread != null) && m_workplaceImportThread.isAlive();
     }
 
-    /** 
+    /**
      * Stores the properties of all available database configurations in a
      * map keyed by their database key names (e.g. "mysql", "generic" or "oracle").<p>
      */
@@ -2836,9 +2852,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         }
     }
 
-    /** 
+    /**
      * This method sets the value for a given key in the extended properties.
-     * 
+     *
      * @param key The key of the property
      * @param value The value of the property
      */
@@ -2849,10 +2865,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Checks if the necessary files for the configuration are existent or not.<p>
-     * 
+     *
      * @param requiredFiles the required files
      * @param childResource the folder to check
-     * 
+     *
      * @return true if the files are existent
      */
     private boolean checkFilesExists(String[] requiredFiles, File childResource) {
@@ -2865,10 +2881,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
             if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
                 hasMissingSetupFiles = true;
-                System.err.println("["
-                    + getClass().getName()
-                    + "] missing or unreadable database setup file: "
-                    + setupFile.getPath());
+                System.err.println(
+                    "[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
                 break;
             }
 
@@ -2881,9 +2895,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Creates an string out of the given array to store back in the property file.<p>
-     * 
+     *
      * @param values the array with the values to create a string from
-     * 
+     *
      * @return a string with the values of the array which is ready to store in the property file
      */
     private String createValueString(String[] values) {
@@ -2903,9 +2917,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns a list of matching modules for the given component.<p>
-     * 
-     * @param component the component to get the modules for 
-     * 
+     *
+     * @param component the component to get the modules for
+     *
      * @return a list of matching module names
      */
     private List<String> getComponentModules(CmsSetupComponent component) {
@@ -2923,10 +2937,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the text which should be written to the configuration file for a given property value.<p>
-     * 
-     * @param obj the property value 
-     * 
-     * @return the text to write for that property value 
+     *
+     * @param obj the property value
+     *
+     * @return the text to write for that property value
      */
     private String getPropertyValueToWrite(Object obj) {
 
@@ -2950,10 +2964,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Returns the first value of the array for the given key.<p>
-     * 
+     *
      * @param map the map to search the key in
      * @param key the key to get the first value from
-     * 
+     *
      * @return the first value of the array for the given key
      */
     private String getReqValue(Map<String, String[]> map, String key) {
@@ -2963,11 +2977,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Saves the properties to a file.<p>
-     * 
+     *
      * @param properties the properties to be saved
      * @param source the source file to get the keys from
      * @param target the target file to save the properties to
-     * @param forceWrite the keys of the properties which should always be written, even if they don't exist in the configuration file 
+     * @param forceWrite the keys of the properties which should always be written, even if they don't exist in the configuration file
      */
     private void save(CmsParameterConfiguration properties, String source, String target, Set<String> forceWrite) {
 
@@ -3012,7 +3026,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                             }
 
                         } catch (NullPointerException e) {
-                            // no value found - do nothing 
+                            // no value found - do nothing
                         }
                         // add trailing line feed
                         fw.write("\n");
@@ -3053,7 +3067,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Sets the pool size.<p>
-     * 
+     *
      * @param poolSize the pool size
      */
     private void setEntityManagerPoolSize(String poolSize) {
@@ -3065,7 +3079,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
      * Lock/unlock schema generation in persistence xml file.<p>
-     * 
+     *
      * @param generate - true schema generation is on.
      */
     private void setSchemaGeneration(boolean generate) {
@@ -3081,7 +3095,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /**
       * Sets the path to the OpenCms home directory.<p>
-      * 
+      *
       * @param webInfRfsPath path to OpenCms home directory
       */
     private void setWebAppRfsPath(String webInfRfsPath) {
@@ -3093,8 +3107,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
             return;
         }
         if (!m_webAppRfsPath.endsWith(File.separator)) {
-            // make sure that Path always ends with a separator, not always the case in different 
-            // environments since getServletContext().getRealPath("/") does not end with a "/" in 
+            // make sure that Path always ends with a separator, not always the case in different
+            // environments since getServletContext().getRealPath("/") does not end with a "/" in
             // all servlet runtimes
             m_webAppRfsPath += File.separator;
         }

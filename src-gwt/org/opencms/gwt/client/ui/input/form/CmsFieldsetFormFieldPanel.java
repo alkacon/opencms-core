@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,17 +58,19 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param info the bean used to display the info item
-     * @param legend the legend for the field set 
+     * @param legend the legend for the field set
      */
     public CmsFieldsetFormFieldPanel(CmsListInfoBean info, String legend) {
 
         m_panel = new FlowPanel();
-        CmsListItemWidget liWidget = new CmsListItemWidget(info);
-        liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
-        liWidget.setStateIcon(StateIcon.standard);
-        m_panel.add(liWidget);
+        if (info != null) {
+            CmsListItemWidget liWidget = new CmsListItemWidget(info);
+            liWidget.truncate(TM_INFOBOX, CmsFormDialog.STANDARD_DIALOG_WIDTH - 50);
+            liWidget.setStateIcon(StateIcon.standard);
+            m_panel.add(liWidget);
+        }
         m_fieldSet = new CmsFieldSet();
         m_fieldSet.setLegend(legend);
         m_fieldSet.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
@@ -87,7 +89,7 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Returns the main field set.<p>
-     * 
+     *
      * @return the main field set
      */
     public CmsFieldSet getFieldSet() {
@@ -97,8 +99,8 @@ public class CmsFieldsetFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Gets the main panel.<p>
-     * 
-     * @return the main panel 
+     *
+     * @return the main panel
      */
     public FlowPanel getMainPanel() {
 

@@ -131,7 +131,7 @@ public class CmsHistoryMessages {
      */
     public static String dialogTitle() {
 
-        return Messages.get().key(Messages.GUI_HISTORY_DIALOG_TITLE_0); // History 
+        return Messages.get().key(Messages.GUI_HISTORY_DIALOG_TITLE_0); // History
     }
 
     /**

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.apache.log4j.spi.LoggingEvent;
 /**
  * Simple extension of the log4j console appender that throws a
  * <code>RuntimeException</code> if an error (or fatal) event is logged,
- * causing the running test to fail.<p> 
- * 
+ * causing the running test to fail.<p>
+ *
  * @since 6.0.0
  */
 public class OpenCmsTestLogAppender extends ConsoleAppender {
@@ -47,7 +47,7 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
 
     /**
      * Sets the "break on error" status.<p>
-     * 
+     *
      * @param value the "break on error" status to set
      */
     public static void setBreakOnError(boolean value) {

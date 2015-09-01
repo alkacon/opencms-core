@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,10 +63,10 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
-     * 
-     * @param jso a Javascript array of toolbar items 
-     * 
-     * @return the TinyMCE toolbar config string 
+     *
+     * @param jso a Javascript array of toolbar items
+     *
+     * @return the TinyMCE toolbar config string
      */
     protected static String createContextMenu(JavaScriptObject jso) {
 
@@ -80,10 +80,10 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Creates the TinyMCE toolbar config string from a Javascript config object.<p>
-     * 
-     * @param jso a Javascript array of toolbar items 
-     * 
-     * @return the TinyMCE toolbar config string 
+     *
+     * @param jso a Javascript array of toolbar items
+     *
+     * @return the TinyMCE toolbar config string
      */
     protected static String createToolbar(JavaScriptObject jso) {
 
@@ -121,9 +121,9 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
     /**
      * Generates the tinyMCE editor options according to the configuration.<p>
-     * 
+     *
      * @param configuration the widget configuration
-     * 
+     *
      * @return the tinyMCE options
      */
     private native JavaScriptObject generateOptionsForTiny(String configuration)/*-{
@@ -132,23 +132,26 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 try {
                                                                                 var config = @org.opencms.gwt.client.util.CmsDomUtil::parseJSON(Ljava/lang/String;)(configuration);
                                                                                 options = {
+                                                                                entity_encoding: 'named',
+                                                                                entities: '160,nbsp',
                                                                                 // the browser call back function is defined in /system/workplace/editors/tinymce/opencms_plugin.js
                                                                                 file_browser_callback : $wnd.cmsTinyMceFileBrowser
                                                                                 };
                                                                                 if (config.downloadGalleryConfig) {
-                                                                                    options.downloadGalleryConfig = config.downloadGalleryConfig; 
+                                                                                    options.downloadGalleryConfig = config.downloadGalleryConfig;
                                                                                 }
-                                                                                
+
                                                                                 if (config.imageGalleryConfig) {
-                                                                                    options.imageGalleryConfig = config.imageGalleryConfig; 
+                                                                                    options.imageGalleryConfig = config.imageGalleryConfig;
                                                                                 }
-                                                                                
+
                                                                                 if (config.language) {
                                                                                 options.language = config.language;
                                                                                 }
                                                                                 if (config.content_css) {
                                                                                 options.content_css = config.content_css;
                                                                                 }
+                                                                                options.importcss_append = true;
                                                                                 if (config.height) {
                                                                                 options.editorHeight = config.height;
                                                                                 }
@@ -173,7 +176,7 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 if (config.cmsGalleryUseThickbox) {
                                                                                 options.cmsGalleryUseThickbox = config.cmsGalleryUseThickbox;
                                                                                 }
-                                                                                options.plugins = "anchor,charmap,code,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,spellchecker,-opencms";
+                                                                                options.plugins = "anchor,charmap,code,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,spellchecker,-opencms";
                                                                                 if (config.fullpage) {
                                                                                 options.plugins += ",fullpage";
                                                                                 }
@@ -191,8 +194,25 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                                                                                 options.paste_as_text=config.tinyMceOptions.paste_text_sticky_default ? true : false;
                                                                                 }
                                                                                 if (config.spellcheck_url){
+                                                                                    options.spellchecker_language = config.spellcheck_language;
                                                                                 options.spellchecker_languages = config.spellcheck_language;
                                                                                 options.spellchecker_rpc_url = config.spellcheck_url;
+                                                                                options.spellchecker_callback= function(method, text, success, failure) {
+                                                                                $wnd.tinymce.util.JSONRequest.sendRPC({
+                                                                                url: config.spellcheck_url,
+                                                                                method: "spellcheck",
+                                                                                params: {
+                                                                                lang: this.getLanguage(),
+                                                                                words: text.match(this.getWordCharPattern())
+                                                                                },
+                                                                                success: function(result) {
+                                                                                success(result);
+                                                                                },
+                                                                                error: function(error, xhr) {
+                                                                                failure("Spellcheck error:" + xhr.status);
+                                                                                }
+                                                                                });
+                                                                                };
                                                                                 }
                                                                                 }
 

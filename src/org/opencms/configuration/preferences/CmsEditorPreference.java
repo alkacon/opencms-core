@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,10 +45,10 @@ public class CmsEditorPreference extends A_CmsPreference {
     private String m_editorType;
 
     /**
-     * 
+     *
      * @param editorType the type for which this is the editor preference
-     * 
-     * @param value the default value 
+     *
+     * @param value the default value
      */
     public CmsEditorPreference(String editorType, String value) {
 
@@ -78,16 +78,17 @@ public class CmsEditorPreference extends A_CmsPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            null,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
+            "string", //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            null, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -98,11 +99,11 @@ public class CmsEditorPreference extends A_CmsPreference {
      */
     public String getTab() {
 
-        return "extended";
+        return "hidden";
     }
 
     /**
-     * 
+     *
      * @see org.opencms.configuration.preferences.I_CmsPreference#getValue(org.opencms.configuration.CmsDefaultUserSettings)
      */
     public String getValue(CmsDefaultUserSettings userSettings) {

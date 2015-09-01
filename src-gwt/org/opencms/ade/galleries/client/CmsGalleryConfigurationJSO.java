@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,9 +55,9 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Parses the given JSON configuration string.<p>
-     * 
+     *
      * @param conf the JSON configuration string
-     * 
+     *
      * @return the gallery configuration object
      */
     public static CmsGalleryConfigurationJSO parseConfiguration(String conf) {
@@ -223,6 +223,26 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasGalleriesSelectable()
+     */
+    public boolean hasGalleriesSelectable() {
+
+        return Boolean.valueOf(getString(I_CmsGalleryProviderConstants.CONFIG_GALLERIES_SELECTABLE)).booleanValue();
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasResultsSelectable()
+     */
+    public boolean hasResultsSelectable() {
+
+        String resultsSelectable = getString(I_CmsGalleryProviderConstants.CONFIG_RESULTS_SELECTABLE);
+        if (resultsSelectable == null) {
+            return true;
+        }
+        return Boolean.valueOf(resultsSelectable).booleanValue();
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isIncludeFiles()
      */
     public boolean isIncludeFiles() {
@@ -265,22 +285,22 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Gets a string-valued attribute.<p>
-     * 
-     * @param key the name of the attribute 
-     * 
-     * @return the value of the attribute 
+     *
+     * @param key the name of the attribute
+     *
+     * @return the value of the attribute
      */
     private native String getString(String key) /*-{
-                                                if (typeof this[key] != 'undefined') { 
+                                                if (typeof this[key] != 'undefined') {
                                                 return this[key];
-                                                } 
-                                                return null;  
+                                                }
+                                                return null;
                                                 }-*/;
 
     /**
      * Gets the tab configuration string.<p>
-     * 
-     * @return the tab configuration string 
+     *
+     * @return the tab configuration string
      */
     private String getTabConfigString() {
 
@@ -289,7 +309,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Returns the gallery mode name.<p>
-     * 
+     *
      * @return the gallery mode name
      */
     private String internalGetGalleryMode() {
@@ -299,7 +319,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Returns the gallery types in a comma separated list.<p>
-     * 
+     *
      * @return the gallery types in a comma separated list
      */
     private String internalGetGalleryTypes() {
@@ -309,7 +329,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Returns the resource types in a comma separated list.<p>
-     * 
+     *
      * @return the resource types in a comma separated list
      */
     private String internalGetResourceTypes() {
@@ -319,7 +339,7 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
 
     /**
      * Returns the search types in a comma separated list.<p>
-     * 
+     *
      * @return the search types in a comma separated list
      */
     private String internalGetSearchTypes() {

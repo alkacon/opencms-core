@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
@@ -184,19 +185,19 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
         /**
          * Finds the resources which should be excluded.<p>
-         * 
+         *
          * @param input the set of input resources
-         *  
-         * @return the excluded resources 
+         *
+         * @return the excluded resources
          */
         Set<CmsResource> findInvalidResources(Set<CmsResource> input);
 
         /**
          * Gets the status information for an excluded resource.<p>
-         * 
-         * @param resource the resource for which to get the status 
-         * @return the status for the resource 
-         * @throws CmsException if something goes wrong 
+         *
+         * @param resource the resource for which to get the status
+         * @return the status for the resource
+         * @throws CmsException if something goes wrong
          */
         CmsPublishResourceInfo getInfoForResource(CmsResource resource) throws CmsException;
     }
@@ -273,9 +274,9 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Constructor.<p>
-     * 
-     * 
-     * @param cms the CMS context to use 
+     *
+     *
+     * @param cms the CMS context to use
      */
     public CmsDefaultPublishResourceFormatter(CmsObject cms) {
 
@@ -284,10 +285,10 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Returns the simple name if the ou is the same as the current user's ou.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param name the fully qualified name to check
-     * 
+     *
      * @return the simple name if the ou is the same as the current user's ou
      */
     public static String getOuAwareName(CmsObject cms, String name) {
@@ -311,7 +312,7 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
     /**
      * @see org.opencms.workflow.I_CmsPublishResourceFormatter#initialize(org.opencms.ade.publish.shared.CmsPublishOptions, org.opencms.ade.publish.CmsPublishRelationFinder.ResourceMap)
      */
-    public void initialize(CmsPublishOptions options, ResourceMap resources) {
+    public void initialize(CmsPublishOptions options, ResourceMap resources) throws CmsException {
 
         m_options = options;
         for (CmsResource parentRes : resources.keySet()) {
@@ -339,8 +340,8 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Creates the publish resource warnings.<p>
-     * 
-     * @return a map from structure ids to the warnings for the corresponding resources 
+     *
+     * @return a map from structure ids to the warnings for the corresponding resources
      */
     protected Map<CmsUUID, CmsPublishResourceInfo> computeWarnings() {
 
@@ -374,19 +375,23 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Creates a publish resource bean from a resource.<p>
-     * 
-     * @param resource the resource 
-     * @return the publish resource bean 
+     *
+     * @param resource the resource
+     * @return the publish resource bean
+     *
+     * @throws CmsException if something goes wrong
      */
-    protected CmsPublishResource createPublishResource(CmsResource resource) {
+    protected CmsPublishResource createPublishResource(CmsResource resource) throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            permissionInfo,
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
             CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),
@@ -398,8 +403,8 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Gets the workplace locale for the currently used CMS context.<p>
-     * 
-     * @return the workplace locale 
+     *
+     * @return the workplace locale
      */
     protected Locale getLocale() {
 
@@ -408,8 +413,8 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Gets the list of publish resource validators.<p>
-     * 
-     * @return the list of publish resource validators 
+     *
+     * @return the list of publish resource validators
      */
     protected List<I_PublishResourceValidator> getValidators() {
 
@@ -421,8 +426,8 @@ public class CmsDefaultPublishResourceFormatter implements I_CmsPublishResourceF
 
     /**
      * Sorts the result publish resource list.<p>
-     *  
-     * @param publishResources the list to sort 
+     *
+     * @param publishResources the list to sort
      */
     protected void sortResult(List<CmsPublishResource> publishResources) {
 

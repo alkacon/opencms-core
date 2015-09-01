@@ -30,16 +30,14 @@ input.textBox {
 	height: auto;
 	vertical-align: baseline;
 }
+
+.comboBoxOpener input {
+	outline: none;
+}
+
 input.textBox:focus{
 	box-shadow:none;
 }
-
-.multiCheckboxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
-
-
 
 .highTextBoxes .textBox {
 	height: 20px;
@@ -50,6 +48,42 @@ input.textboxGhostMode {
 	color: value("constants.css.textColorDisabled") /*!important*/;
 }
 
+.textBoxPanelWhite {
+	background-color: white; 
+}
+
+
+
+.textBoxPanelDisabled {
+	background-color: value("constants.css.backgroundColorDisabled");
+}
+
+.textBoxPanelDisabled * {
+	color: value("constants.css.textColorDisabled");
+	cursor: default;
+}
+
+.showDisabledAsGhostMode .textBoxPanelDisabled { 
+	background-color: white;
+}
+
+.showDisabledAsGhostMode .textBoxPanelDisabled input {
+	font-style: oblique; 
+	color: value("constants.css.textColorDisabled");
+}
+	
+	
+	
+
+
+.textBoxPanelError {
+	border: 1px solid value("constants.css.borderColorHighlight");
+	background-color: value("constants.css.backgroundColorInputError");
+	overflow:hidden;
+}
+
+
+
 .weakText * {
 	font-style: oblique !important;
 	color: value("constants.css.textColorDisabled") !important;
@@ -57,9 +91,19 @@ input.textboxGhostMode {
 
 .textBoxWidget, .checkBox {}
 
+.checkBox .html-face {
+	font-weight: normal; 
+}
+
 input.textBoxReadOnly {
 	background-color: value("constants.css.backgroundColorDisabled");
 }
+
+.textBoxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
+
 
 .colorPicker {
 background-color: transparent;
@@ -72,10 +116,6 @@ background-color: transparent;
 
 
 
-.textBoxPanel {
-	border: 1px solid value("constants.css.borderColor");
-	overflow:hidden;
-}
 
 div.textArea {
     overflow:hidden;
@@ -224,31 +264,16 @@ div.textArea textarea{
 
 
 
-.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formWidgetContainer * {
+.radioButtonGroup *, .multiCheckBox *, .textBoxPanel *, .formLabel, .formWidgetContainer * {
 	font-size: inherit;
 	font-family: inherit;
 	color: value("constants.css.textColor");
 }
 
-.formLabel {
-	color: #7788AA; 
-}
 
 
-.textBoxPanelDisabled {
-	background-color: value("constants.css.backgroundColorDisabled");
-}
 
-.textBoxPanelDisabled * {
-	color: value("constants.css.textColorDisabled");
-	cursor: default;
-}
 
-.textBoxPanelError {
-	border: 1px solid value("constants.css.borderColorHighlight");
-	background-color: value("constants.css.backgroundColorInputError");
-	overflow:hidden;
-}
 
 .formLabel {
 	font-weight: normal;
@@ -326,16 +351,17 @@ div.error, .error {
 	background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.transparentSelectBox .openerNoHover.selectBoxSelected, .transparentSelectBox .openerHover.selectBoxSelected {
+.noSelectionSelectBox .openerNoHover.selectBoxSelected, .noSelectionSelectBox .openerHover.selectBoxSelected {
 	background-image: none !important;
 	font-style: oblique !important; 
+	background-color: white !important; 
 }
 
-.transparentSelectBox * {
-	background-color: transparent !important; 
-}
+/*.noSelectionSelectBox * {
+	background-color: white !important; 
+}*/
 
-.transparentSelectBox .selectBoxOpener {
+.noSelectionSelectBox .selectBoxOpener {
 	color: value("constants.css.textColorDisabled") !important; 
 }
 
@@ -397,9 +423,13 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 }
 
 div.selectBoxOpener {
-	margin: 2px 12px 2px 5px;
+	margin: 3px 12px 3px 5px;
 	cursor: pointer;
 }
+
+.comboBoxOpener { 
+   margin: 1px 12px 1px 5px; 
+}  
 
 .selectBoxSelected .comboBoxOpener{
 	border: medium none;
@@ -593,9 +623,6 @@ div.formLabel {
 	float: left;
 }
 
-div.formRow:hover div.formLabel { 
-	text-decoration: underline; 
-}
 
 div.formWidgetContainer {
 	width: widgetContainerWidth;
@@ -645,5 +672,9 @@ div.formDescriptionLabel {
 	margin-top: 2px; 
 }
 
+.multiCheckboxPanel {
+	border: 1px solid value("constants.css.borderColor");
+	overflow:hidden;
+}
 
 

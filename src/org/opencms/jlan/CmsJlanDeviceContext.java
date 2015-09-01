@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.alfresco.jlan.server.filesys.SrvDiskInfo;
 
 /**
  * OpenCms implementation of the JLAN device context.<p>
- * 
+ *
  * For now, it just contains a reference to the corresponding CmsJLanRepository interface.<p>
  */
 public class CmsJlanDeviceContext extends DiskDeviceContext {
@@ -43,27 +43,26 @@ public class CmsJlanDeviceContext extends DiskDeviceContext {
 
     /**
      * Creates a new device context instance.<p>
-     * 
-     * @param repo the repository for which this is a device context 
+     *
+     * @param repo the repository for which this is a device context
      */
     public CmsJlanDeviceContext(CmsJlanRepository repo) {
 
         super(repo.getName());
         m_repository = repo;
-        setFilesystemAttributes(FileSystem.CasePreservedNames
-            | FileSystem.UnicodeOnDisk
-            | FileSystem.CaseSensitiveSearch);
+        setFilesystemAttributes(
+            FileSystem.CasePreservedNames | FileSystem.UnicodeOnDisk | FileSystem.CaseSensitiveSearch);
 
-        // Need to set the disk information, even with arbitrary numbers, because not setting it will cause 
+        // Need to set the disk information, even with arbitrary numbers, because not setting it will cause
         // a hanging dialog in Windows 7 when creating a copy of a file on the network share in the same folder
         SrvDiskInfo diskInfo = new SrvDiskInfo(2560000, 64, 512, 2304000);
         setDiskInformation(diskInfo);
     }
 
-    /** 
+    /**
      * Gets the repository to which this device context belongs.<p>
-     * 
-     * @return the repository to which this device context belongs 
+     *
+     * @return the repository to which this device context belongs
      */
     public CmsJlanRepository getRepository() {
 

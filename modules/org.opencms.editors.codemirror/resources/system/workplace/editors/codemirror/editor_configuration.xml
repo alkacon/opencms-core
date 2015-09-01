@@ -30,5 +30,6 @@
 		<agent>^Mozilla/5\.0 \(.*\).*Chrome.*$</agent>
 		<agent>^Mozilla/5\.0 \(.*\).*Safari.*$</agent>
 		<agent>^Opera/9\..*\(.*\).*Presto.*$</agent>
+		<agent>^Mozilla.*Trident.*$</agent>
 	</useragents>
 </editor>

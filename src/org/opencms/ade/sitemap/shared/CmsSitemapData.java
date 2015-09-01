@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,6 +31,7 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.gwt.shared.property.CmsClientTemplateBean;
+import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.List;
@@ -40,17 +41,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Sitemap initialization data bean for prefetching.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsSitemapData implements IsSerializable {
 
     /** The sitemap editor modes. */
     public enum EditorMode {
-        /** The galleries mode. */
-        galleries,
-        /** The navigation mode. */
+        /** The categories mode. */
+        categories, /** The galleries mode. */
+        galleries, /** The model page mode. */
+        modelpages, /** The navigation mode. */
         navigation,
+
         /** The VFS mode. */
         vfs
     }
@@ -72,6 +75,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** Flag to indicate whether detail pages can be edited. */
     private boolean m_canEditDetailPages;
+
+    /** Flag indicating whether user is category manager. */
+    private boolean m_categoryManager;
 
     /** The clipboard data. */
     private CmsSitemapClipboardData m_clipboardData;
@@ -99,6 +105,9 @@ public class CmsSitemapData implements IsSerializable {
 
     /** The export RFS prefix. */
     private String m_exportRfsPrefix;
+
+    /** Flag indicating whether user is gallery manager. */
+    private boolean m_galleryManager;
 
     /** A flag which indicates whether the site which contains the sitemap is a secure site. */
     private boolean m_isSecure;
@@ -145,6 +154,9 @@ public class CmsSitemapData implements IsSerializable {
     /** The sitemap info. */
     private CmsSitemapInfo m_sitemapInfo;
 
+    /** The structure id of the site root. */
+    private CmsUUID m_siteRootId;
+
     /** The available templates. */
     private Map<String, CmsClientTemplateBean> m_templates;
 
@@ -158,15 +170,15 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param templates the available templates
      * @param properties the properties
      * @param clipboardData the clipboard data
      * @param contextMenuEntries the sitemap context menu entries
-     * @param parentProperties the root entry's parent's inherited properties 
-     * @param allPropNames the names of all properties 
-     * @param exportRfsPrefix the export RFS prefix 
-     * @param isSecure true if there is a secure server configuration for the site which contains the sitemap 
+     * @param parentProperties the root entry's parent's inherited properties
+     * @param allPropNames the names of all properties
+     * @param exportRfsPrefix the export RFS prefix
+     * @param isSecure true if there is a secure server configuration for the site which contains the sitemap
      * @param noEditReason the reason why the current sitemap is not editable
      * @param displayToolbar the flag to control the display of the toolbar
      * @param defaultNewElementInfo the type of the container page resource
@@ -176,16 +188,18 @@ public class CmsSitemapData implements IsSerializable {
      * @param sitemapInfo the sitemap info bean
      * @param parentSitemap the path to the parent sitemap or <code>null</code>
      * @param root the sitemap root
-     * @param openPath the path at which the sitemap should be opened 
+     * @param openPath the path at which the sitemap should be opened
      * @param maxDepth the maximum sitemap depth
-     * @param detailPageTable the detail page table 
-     * @param resourceTypeInfos the resource type information for the detail pages  
+     * @param detailPageTable the detail page table
+     * @param resourceTypeInfos the resource type information for the detail pages
      * @param returnCode return page code
      * @param canEditDetailPages flag to indicate whether detail pages can be edited
-     * @param aliasImportUrl the URL of the JSP used to import aliases 
-     * @param canEditAliases flag to indicate whether the current user can edit the alias table 
-     * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps 
-     * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types 
+     * @param aliasImportUrl the URL of the JSP used to import aliases
+     * @param canEditAliases flag to indicate whether the current user can edit the alias table
+     * @param createNewFoldersForSubsitemaps flag to control whether new folders should be created for subsitemaps
+     * @param galleryManager true if the user is a gallery manager
+     * @param categoryManager true if the user is a category manager
+     * @param subsitemapTypeInfos the type information beans for the available subsitemap folder types
      * @param editorMode the editor mode
      * @param defaultGalleryFolder default gallery parent folder
      */
@@ -216,6 +230,8 @@ public class CmsSitemapData implements IsSerializable {
         String aliasImportUrl,
         boolean canEditAliases,
         boolean createNewFoldersForSubsitemaps,
+        boolean galleryManager,
+        boolean categoryManager,
         List<CmsListInfoBean> subsitemapTypeInfos,
         EditorMode editorMode,
         String defaultGalleryFolder) {
@@ -246,15 +262,18 @@ public class CmsSitemapData implements IsSerializable {
         m_aliasImportUrl = aliasImportUrl;
         m_canEditAliases = canEditAliases;
         m_createNewFolderForSubsitemap = createNewFoldersForSubsitemaps;
+        m_galleryManager = galleryManager;
+        m_categoryManager = categoryManager;
         m_sitemapFolderTypeInfos = subsitemapTypeInfos;
         m_editorMode = editorMode;
         m_defaultGalleryFolder = defaultGalleryFolder;
+
     }
 
     /**
      * Checks whether the current user can edit the aliases.<p>
-     * 
-     * @return true if the current user can edit the aliases 
+     *
+     * @return true if the current user can edit the aliases
      */
     public boolean canEditAliases() {
 
@@ -264,8 +283,8 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns true if the detail pages can be edited.
-     *  
-     * @return true if the detail pages can be edited 
+     *
+     * @return true if the detail pages can be edited
      */
     public boolean canEditDetailPages() {
 
@@ -274,8 +293,8 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Gets the URL of the JSP used to import aliases.<p>
-     * 
-     * @return the alias import URL 
+     *
+     * @return the alias import URL
      */
     public String getAliasImportUrl() {
 
@@ -284,8 +303,8 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the names of all properties.<p>
-     * 
-     * @return the names of all properties 
+     *
+     * @return the names of all properties
      */
     public List<String> getAllPropertyNames() {
 
@@ -314,7 +333,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the default gallery parent folder.<p>
-     * 
+     *
      * @return the default gallery parent folder
      */
     public String getDefaultGalleryFolder() {
@@ -344,7 +363,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the editor mode.<p>
-     * 
+     *
      * @return the editor mode
      */
     public EditorMode getEditorMode() {
@@ -354,7 +373,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the export RFS prefix.<p>
-     * 
+     *
      * @return the export RFS prefix
      */
     public String getExportRfsPrefix() {
@@ -364,7 +383,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the maximum sitemap depth.<p>
-     * 
+     *
      * @return the maximum sitemap depth
      */
     public int getMaxDepth() {
@@ -384,7 +403,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the new navigation level element info.<p>
-     * 
+     *
      * @return the new navigation level element info
      */
     public CmsNewResourceInfo getNewNavigationLevelElementInfo() {
@@ -403,6 +422,23 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Gets the new resource info with a given structure id.<p>
+     *
+     * @param id the structure id
+     *
+     * @return the new resource info with the given id
+     */
+    public CmsNewResourceInfo getNewResourceInfoById(CmsUUID id) {
+
+        for (CmsNewResourceInfo info : m_newElementInfos) {
+            if (info.getCopyResourceId().equals(id)) {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the reason why the current sitemap is not editable.<p>
      *
      * @return the reason why the current sitemap is not editable
@@ -414,8 +450,8 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Gets the path at which the sitemap should be opened (may be null).<p>
-     * 
-     * @return the path at which the sitemap should be opened 
+     *
+     * @return the path at which the sitemap should be opened
      */
     public String getOpenPath() {
 
@@ -424,7 +460,7 @@ public class CmsSitemapData implements IsSerializable {
 
     /**
      * Returns the properties of the sitemap root's parent.<p>
-     * 
+     *
      * @return the properties of the sitemap root'S parent
      */
     public Map<String, CmsClientProperty> getParentProperties() {
@@ -455,7 +491,7 @@ public class CmsSitemapData implements IsSerializable {
     /**
      * Gets the resource type info beans for the detail pages.<p>
      *
-     * @return the resource type info beans for the detail pages 
+     * @return the resource type info beans for the detail pages
      */
     public List<CmsNewResourceInfo> getResourceTypeInfos() {
 
@@ -493,9 +529,19 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Gets the structure id of the site root.<p>
+     *
+     * @return the structure id of the site root
+     */
+    public CmsUUID getSiteRootId() {
+
+        return m_siteRootId;
+    }
+
+    /**
      * Returns the list info beans for the available sitemap folder types.<p>
-     * 
-     * @return the list info beans for the available sitemap folder types 
+     *
+     * @return the list info beans for the available sitemap folder types
      */
     public List<CmsListInfoBean> getSubsitemapFolderTypeInfos() {
 
@@ -513,9 +559,19 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns if the current user has the category manager role.<p>
+     *
+     * @return if the current user has the category manager role
+     */
+    public boolean isCategoryManager() {
+
+        return m_categoryManager;
+    }
+
+    /**
      * Returns true if new folders should be created for subsitemaps.<p>
-     * 
-     * @return true if new folders should be created for subsitemaps 
+     *
+     * @return true if new folders should be created for subsitemaps
      */
     public boolean isCreateNewFoldersForSubsitemaps() {
 
@@ -533,13 +589,33 @@ public class CmsSitemapData implements IsSerializable {
     }
 
     /**
+     * Returns if the current user has the gallery manager role.<p>
+     *
+     * @return if the current user has the gallery manager role
+     */
+    public boolean isGalleryManager() {
+
+        return m_galleryManager;
+    }
+
+    /**
      * Returns true if there is a secure server configured for the site which contains the sitemap.<p>
-     * 
-     * @return true if there is a secure server configured for the site which contains the sitemap 
+     *
+     * @return true if there is a secure server configured for the site which contains the sitemap
      */
     public boolean isSecure() {
 
         return m_isSecure;
+    }
+
+    /**
+     * Sets the new element infos.<p>
+     *
+     * @param newElementInfos the new element infos
+     */
+    public void setNewElementInfos(List<CmsNewResourceInfo> newElementInfos) {
+
+        m_newElementInfos = newElementInfos;
     }
 
     /**
@@ -550,6 +626,16 @@ public class CmsSitemapData implements IsSerializable {
     public void setReturnCode(String returnCode) {
 
         m_returnCode = returnCode;
+    }
+
+    /**
+     * Sets the site root structure id .<p>
+     *
+     * @param id the site root id
+     */
+    public void setSiteRootId(CmsUUID id) {
+
+        m_siteRootId = id;
     }
 
 }

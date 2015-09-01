@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,13 +61,13 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
- * 
+ *
  * This class acts as a container for form fields.<p>
- * 
+ *
  * It is also responsible for collecting and validating the values of the form fields.
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsForm {
 
@@ -100,8 +100,8 @@ public class CmsForm {
 
     /**
      * Creates a new form with an existing form widget container.<p>
-     * 
-     * @param panel the form widget container 
+     *
+     * @param panel the form widget container
      */
     public CmsForm(A_CmsFormFieldPanel panel) {
 
@@ -110,8 +110,8 @@ public class CmsForm {
 
     /**
      * Creates a new form and optionally sets the form widget container to a simple form field panel.<p>
-     * 
-     * @param initPanel if true, initializes the form widget container 
+     *
+     * @param initPanel if true, initializes the form widget container
      */
     public CmsForm(boolean initPanel) {
 
@@ -122,9 +122,9 @@ public class CmsForm {
 
     /**
      * Adds a form field.<p>
-     * 
-     * @param field the field to add 
-     * @param initialValue the initial field value 
+     *
+     * @param field the field to add
+     * @param initialValue the initial field value
      */
     public void addField(I_CmsFormField field, String initialValue) {
 
@@ -133,8 +133,8 @@ public class CmsForm {
 
     /**
      * Adds a form field to the form.<p>
-     * 
-     * @param fieldGroup the form field group key  
+     *
+     * @param fieldGroup the form field group key
      * @param formField the form field which should be added
      */
     public void addField(String fieldGroup, final I_CmsFormField formField) {
@@ -151,10 +151,10 @@ public class CmsForm {
 
     /**
      * Adds a form field to the form and sets its initial value.<p>
-     * 
-     * @param fieldGroup the form field group key 
-     * @param formField the form field which should be added 
-     * @param initialValue the initial value of the form field, or null if the field shouldn't have an initial value 
+     *
+     * @param fieldGroup the form field group key
+     * @param formField the form field which should be added
+     * @param initialValue the initial value of the form field, or null if the field shouldn't have an initial value
      */
     public void addField(String fieldGroup, I_CmsFormField formField, String initialValue) {
 
@@ -164,10 +164,10 @@ public class CmsForm {
         addField(fieldGroup, formField);
     }
 
-    /** 
+    /**
      * Adds a new form reset handler to the form.<p>
-     * 
-     * @param handler the new form reset handler 
+     *
+     * @param handler the new form reset handler
      */
     public void addResetHandler(I_CmsFormResetHandler handler) {
 
@@ -176,10 +176,10 @@ public class CmsForm {
 
     /**
      * Collects all values from the form fields.<p>
-     * 
+     *
      * This method omits form fields whose values are null.
-     * 
-     * @return a map of the form field values 
+     *
+     * @return a map of the form field values
      */
     public Map<String, String> collectValues() {
 
@@ -196,8 +196,8 @@ public class CmsForm {
 
     /**
      * Returns the set of names of fields which have been edited by the user in the current form.<p>
-     *  
-     * @return the set of names of fields edited by the user 
+     *
+     * @return the set of names of fields edited by the user
      */
     public Set<String> getEditedFields() {
 
@@ -207,20 +207,20 @@ public class CmsForm {
 
     /**
      * Returns the form field with a given id.<p>
-     * 
-     * @param id the id of the form field 
-     * 
-     * @return the form field with the given id, or null if no field was found 
+     *
+     * @param id the id of the form field
+     *
+     * @return the form field with the given id, or null if no field was found
      */
     public I_CmsFormField getField(String id) {
 
         return m_fields.get(id);
     }
 
-    /** 
+    /**
      * Returns a map of this form's field, indexed by their field name.<p>
-     * 
-     * @return a map of form fields 
+     *
+     * @return a map of form fields
      */
     public Map<String, I_CmsFormField> getFields() {
 
@@ -229,8 +229,8 @@ public class CmsForm {
 
     /**
      * Returns the form widget container.<p>
-     * 
-     * @return the form widget container 
+     *
+     * @return the form widget container
      */
     public A_CmsFormFieldPanel getWidget() {
 
@@ -239,7 +239,7 @@ public class CmsForm {
 
     /**
      * Passes this form's data to a form submit handler.<p>
-     *  
+     *
      * @param handler the form submit handler
      */
     public void handleSubmit(I_CmsFormSubmitHandler handler) {
@@ -252,8 +252,8 @@ public class CmsForm {
 
     /**
      * Checks that no fields are invalid.<p>
-     * 
-     * @return true if no fields are invalid. 
+     *
+     * @return true if no fields are invalid.
      */
     public boolean noFieldsInvalid() {
 
@@ -264,8 +264,8 @@ public class CmsForm {
      * Returns true if none of the fields in a collection are marked as invalid.<p>
      *
      * @param fields the form fields
-     * 
-     * @return true if none of the fields are invalid 
+     *
+     * @return true if none of the fields are invalid
      */
     public boolean noFieldsInvalid(Collection<I_CmsFormField> fields) {
 
@@ -279,7 +279,7 @@ public class CmsForm {
 
     /**
      * Removes all fields for the given group.<p>
-     * 
+     *
      * @param group the group for which the fields should be removed
      */
     public void removeGroup(String group) {
@@ -301,8 +301,8 @@ public class CmsForm {
 
     /**
      * Renders the fields of the given group.<p>
-     * 
-     * @param group the field group 
+     *
+     * @param group the field group
      */
     public void renderGroup(String group) {
 
@@ -312,8 +312,8 @@ public class CmsForm {
 
     /**
      * Sets the form handler for this form.<p>
-     * 
-     * @param handler the form handler 
+     *
+     * @param handler the form handler
      */
     public void setFormHandler(I_CmsFormHandler handler) {
 
@@ -322,8 +322,8 @@ public class CmsForm {
 
     /**
      * Sets the server-side form validator class to use.<p>
-     * 
-     * @param validatorClass the form validator class name 
+     *
+     * @param validatorClass the form validator class name
      */
     public void setValidatorClass(String validatorClass) {
 
@@ -331,9 +331,9 @@ public class CmsForm {
     }
 
     /**
-     * Sets the form widget container. 
-     * 
-     * @param widget the form widget container 
+     * Sets the form widget container.
+     *
+     * @param widget the form widget container
      */
     public void setWidget(A_CmsFormFieldPanel widget) {
 
@@ -388,8 +388,8 @@ public class CmsForm {
 
     /**
      * Validates a single field.<p>
-     * 
-     * @param field the field to validate 
+     *
+     * @param field the field to validate
      */
     public void validateField(final I_CmsFormField field) {
 
@@ -401,8 +401,8 @@ public class CmsForm {
 
     /**
      * Returns the configuration string for the server side form validator.<p>
-     * 
-     * @return the form validator configuration string 
+     *
+     * @return the form validator configuration string
      */
     protected String createValidatorConfig() {
 
@@ -411,10 +411,10 @@ public class CmsForm {
 
     /**
      * The default keypress event handling function for form fields.<p>
-     * 
+     *
      * @param field the form field for which the event has been fired
-     *  
-     * @param keyCode the key code 
+     *
+     * @param keyCode the key code
      */
     protected void defaultHandleKeyPress(I_CmsFormField field, int keyCode) {
 
@@ -425,7 +425,7 @@ public class CmsForm {
                 // force a blur because not all browsers send a change event if the user just presses enter in a field
                 ((I_CmsHasBlur)widget).blur();
             }
-            // make sure that the flag is set to false again after the other events have been processed 
+            // make sure that the flag is set to false again after the other events have been processed
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                 /**
@@ -442,11 +442,11 @@ public class CmsForm {
 
     /**
      * Default handler for value change events of form fields.<p>
-     *  
-     * @param field the form field for which the event has been fired 
-     * @param inhibitValidation prevents validation of the edited field 
-     * 
-     * @param newValue the new value 
+     *
+     * @param field the form field for which the event has been fired
+     * @param inhibitValidation prevents validation of the edited field
+     *
+     * @param newValue the new value
      */
     protected void defaultHandleValueChange(I_CmsFormField field, String newValue, boolean inhibitValidation) {
 
@@ -470,10 +470,10 @@ public class CmsForm {
 
     /**
      * Gets the fields with a given model id.<p>
-     * 
-     * @param modelId the model id 
-     * 
-     * @return the fields with the given model id 
+     *
+     * @param modelId the model id
+     *
+     * @return the fields with the given model id
      */
     protected Collection<I_CmsFormField> getFieldsByModelId(String modelId) {
 
@@ -482,9 +482,9 @@ public class CmsForm {
 
     /**
      * Updates the field validation status.<p>
-     * 
-     * @param field the form field 
-     * @param result the validation result 
+     *
+     * @param field the form field
+     * @param result the validation result
      */
     protected void updateFieldValidationStatus(I_CmsFormField field, CmsValidationResult result) {
 
@@ -496,16 +496,15 @@ public class CmsForm {
         }
         String errorMessage = result.getErrorMessage();
         field.getWidget().setErrorMessage(result.getErrorMessage());
-        field.setValidationStatus(errorMessage == null
-        ? I_CmsFormField.ValidationStatus.valid
-        : I_CmsFormField.ValidationStatus.invalid);
+        field.setValidationStatus(
+            errorMessage == null ? I_CmsFormField.ValidationStatus.valid : I_CmsFormField.ValidationStatus.invalid);
     }
 
     /**
      * Applies a validation result to a form field.<p>
-     * 
-     * @param fieldId the field id to which the validation result should be applied 
-     * @param result the result of the validation operation 
+     *
+     * @param fieldId the field id to which the validation result should be applied
+     * @param result the result of the validation operation
      */
     protected void updateFieldValidationStatus(String fieldId, CmsValidationResult result) {
 
@@ -515,9 +514,9 @@ public class CmsForm {
 
     /**
      * Updates the model validation status.<p>
-     * 
+     *
      * @param modelId the model id
-     * @param result the validation result  
+     * @param result the validation result
      */
     protected void updateModelValidationStatus(String modelId, CmsValidationResult result) {
 
@@ -530,8 +529,8 @@ public class CmsForm {
 
     /**
     * Creates a validation handler which updates the OK button state when validation results come in.<p>
-    * 
-    * @return a validation handler 
+    *
+    * @return a validation handler
     */
     private I_CmsValidationHandler createValidationHandler() {
 
@@ -559,8 +558,8 @@ public class CmsForm {
 
     /**
      * Initializes the widget for a new form field.<p>
-     * 
-     * @param formField the form field whose widget should be initialized 
+     *
+     * @param formField the form field whose widget should be initialized
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void initializeFormFieldWidget(final I_CmsFormField formField) {
@@ -570,7 +569,7 @@ public class CmsForm {
             ((HasValueChangeHandlers)widget).addValueChangeHandler(new ValueChangeHandler() {
 
                 /**
-                 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
+                 * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event)
                  */
                 public void onValueChange(ValueChangeEvent event) {
 
@@ -581,7 +580,7 @@ public class CmsForm {
                     }
                     Object eventValue = event.getValue();
                     if ((eventValue instanceof String) || (event.getValue() == null)) {
-                        // only makes sense for strings 
+                        // only makes sense for strings
                         defaultHandleValueChange(formField, (String)(event.getValue()), inhibitValidation);
                     } else if (eventValue instanceof Date) {
                         defaultHandleValueChange(formField, "" + ((Date)eventValue).getTime(), inhibitValidation);
@@ -610,23 +609,23 @@ public class CmsForm {
 
     /**
      * Removes a field from the form's data structure (but not from the form's widget!).<p>
-     * 
-     * @param field the field to remove 
+     *
+     * @param field the field to remove
      */
     private void removeField(I_CmsFormField field) {
 
         String id = field.getId();
         m_fields.remove(id);
-        // *not* removing the field id from m_editedFields, because a field of the same id may 
-        // be added later 
+        // *not* removing the field id from m_editedFields, because a field of the same id may
+        // be added later
         m_fieldsByModelId.remove(field.getModelId(), field);
         field.unbind();
     }
 
     /**
      * Starts the validation of the form.<p>
-     * 
-     * @param validationController the validation controller to use for the validation 
+     *
+     * @param validationController the validation controller to use for the validation
      */
     private void startValidation(CmsValidationController validationController) {
 

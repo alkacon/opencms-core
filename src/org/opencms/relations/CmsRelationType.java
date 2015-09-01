@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import java.util.Locale;
 /**
  * Wrapper class for
  * the different types of relations.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  *   <li>{@link #HYPERLINK}</li>
@@ -59,9 +59,9 @@ import java.util.Locale;
  *   <li>{@link #XSD}</li>
  * </ul>
  * <p>
- * 
+ *
  * User defined relation types are also available.<p>
- * 
+ *
  * @since 6.3.0
  */
 public final class CmsRelationType implements Serializable {
@@ -143,7 +143,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Public constructor for user defined relation types.<p>
-     * 
+     *
      * @param id the id of the relation type
      * @param name the name of the relation
      * @param type the type of relation type, strong or weak
@@ -162,7 +162,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Private constructor for system relation types.<p>
-     * 
+     *
      * @param id the internal representation
      * @param name the name of the relation
      * @param strong if the relation is strong or weak
@@ -178,9 +178,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all relation types in the given list that define relations in the content.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterDefinedInContent(Collection<CmsRelationType> relationTypes) {
@@ -198,9 +198,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all internal defined relation types in the given list.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterInternal(Collection<CmsRelationType> relationTypes) {
@@ -218,9 +218,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all relation types in the given list that are not defined in the content.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterNotDefinedInContent(Collection<CmsRelationType> relationTypes) {
@@ -238,9 +238,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all strong relation types in the given list.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterStrong(Collection<CmsRelationType> relationTypes) {
@@ -258,9 +258,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all user defined relation types in the given list.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterUserDefined(Collection<CmsRelationType> relationTypes) {
@@ -278,9 +278,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all weak relation types in the given list.<p>
-     * 
+     *
      * @param relationTypes the collection of relation types to filter
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> filterWeak(Collection<CmsRelationType> relationTypes) {
@@ -298,7 +298,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all relation types.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAll() {
@@ -310,7 +310,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all relation types for relations defined in the content.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllDefinedInContent() {
@@ -320,7 +320,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all internally defined relation types.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllInternal() {
@@ -330,7 +330,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all relation types for relations that are not defined in the content.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllNotDefinedInContent() {
@@ -340,7 +340,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all strong relation types.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllStrong() {
@@ -350,7 +350,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all user defined relation types.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllUserDefined() {
@@ -360,7 +360,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns all weak relation types.<p>
-     * 
+     *
      * @return a list of {@link CmsRelationType} objects
      */
     public static List<CmsRelationType> getAllWeak() {
@@ -372,10 +372,10 @@ public final class CmsRelationType implements Serializable {
      * Parses an <code>int</code> into a relation type.<p>
      *
      * @param id the internal representation number to parse
-     * 
+     *
      * @return the enumeration element
-     * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a
      *         <code>{@link CmsRelationType}</code> object.
      */
     public static CmsRelationType valueOf(int id) throws CmsIllegalArgumentException {
@@ -387,22 +387,23 @@ public final class CmsRelationType implements Serializable {
         if ((id >= 0) && (id < getAllUserDefined().size())) {
             return getAllUserDefined().get(id);
         }
-        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
-            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
-            new Integer(id),
-            CmsRelationType.class.getName()));
+        throw new CmsIllegalArgumentException(
+            org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
+                new Integer(id),
+                CmsRelationType.class.getName()));
     }
 
     /**
      * Parses an <code>String</code> into a relation type.<p>
      *
      * @param name the relation type name
-     * 
+     *
      * @return the enumeration element
-     * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a
      *         <code>{@link CmsRelationType}</code> object
-     *         
+     *
      * @see #valueOfXml(String)
      * @see #valueOfJsp(String)
      */
@@ -421,14 +422,14 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Parses the given value into a valid enumeration element for a JSP relation type.<p>
-     * 
+     *
      * This should be used to extend Strings like "weak" or "strong" to full relation type descriptors
-     * for JSP pages like "JSP_WEAK" or "JSP_STRONG".<p> 
-     * 
+     * for JSP pages like "JSP_WEAK" or "JSP_STRONG".<p>
+     *
      * @param name the name to get the JSP type for
-     * 
+     *
      * @return the JSP enumeration element
-     * 
+     *
      * @see #valueOf(String)
      */
     public static CmsRelationType valueOfJsp(String name) {
@@ -442,14 +443,14 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Parses the given value into a valid enumeration element for a XML relation type.<p>
-     * 
+     *
      * This should be used to extend Strings like "weak" or "strong" to full relation type descriptors
-     * for XML documents like "XML_WEAK" or "XML_STRONG".<p> 
-     * 
+     * for XML documents like "XML_WEAK" or "XML_STRONG".<p>
+     *
      * @param name the name to get the XML type for
-     * 
+     *
      * @return the XML enumeration element
-     * 
+     *
      * @see #valueOf(String)
      */
     public static CmsRelationType valueOfXml(String name) {
@@ -463,9 +464,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Internal parse method.<p>
-     * 
+     *
      * @param name the type to parse
-     * 
+     *
      * @return the enumeration element, or <code>null</code> if no matching element is found
      */
     private static CmsRelationType valueOfInternal(String name) {
@@ -521,9 +522,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns a localized name for the given relation type.<p>
-     * 
+     *
      * @param messages the message bundle to use to resolve the name
-     * 
+     *
      * @return a localized name
      */
     public String getLocalizedName(CmsMessages messages) {
@@ -534,9 +535,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns a localized name for the given relation type.<p>
-     * 
+     *
      * @param locale the locale
-     * 
+     *
      * @return a localized name
      */
     public String getLocalizedName(Locale locale) {
@@ -546,10 +547,10 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns the type name.<p>
-     * 
+     *
      * @return the type name
-     * 
-     * @see CmsRelationType#valueOf(String) 
+     *
+     * @see CmsRelationType#valueOf(String)
      */
     public String getName() {
 
@@ -558,14 +559,14 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns the type name for xml output.<p>
-     * 
+     *
      * The short type name of XML or JSP types is only <code>"WEAK"</code> or <code>"STRONG"</code>.
-     * For other types the short name is equal to the name.<p> 
-     * 
+     * For other types the short name is equal to the name.<p>
+     *
      * In case you need the full type name, use {@link #getName()}.<p>
-     * 
+     *
      * @return the short type name
-     * 
+     *
      * @see #getName()
      * @see CmsRelationType#valueOfJsp(String)
      * @see CmsRelationType#valueOfXml(String)
@@ -594,9 +595,9 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Returns the string strong or weak.<p>
-     * 
+     *
      * @return the string strong or weak
-     * 
+     *
      * @see #isStrong()
      */
     public String getType() {
@@ -625,7 +626,7 @@ public final class CmsRelationType implements Serializable {
 
     /**
      * Checks if this is an internal relation type.<p>
-     * 
+     *
      * @return <code>true</code> if this is an internal relation type
      */
     public boolean isInternal() {

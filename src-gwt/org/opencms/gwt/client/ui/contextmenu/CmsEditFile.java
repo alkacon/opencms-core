@@ -147,7 +147,7 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
         I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
-            public void onClose(String sitePath, boolean isNew) {
+            public void onClose(String sitePath, CmsUUID id, boolean isNew) {
 
                 if (!m_reload) {
                     return;
@@ -173,7 +173,10 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
     /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
      */
-    public void execute(final CmsUUID structureId, final I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public void execute(
+        final CmsUUID structureId,
+        final I_CmsContextMenuHandler handler,
+        CmsContextMenuEntryBean bean) {
 
         m_menuHandler = handler;
         Map<String, String> params = bean.getParams();

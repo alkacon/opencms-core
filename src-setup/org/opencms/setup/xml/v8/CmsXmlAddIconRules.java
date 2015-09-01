@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.dom4j.Node;
 
 /**
  * XML updater for adding icon rules to opencms-workplace.xml.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddIconRules extends A_CmsXmlWorkplace {
@@ -139,11 +139,11 @@ public class CmsXmlAddIconRules extends A_CmsXmlWorkplace {
 
     /**
      * Adds an icon rule to the XML dom.<p>
-     * 
-     * @param element the parent element 
-     * @param extension the extension 
-     * @param icon the icon name 
-     * @param bigicon the big icon name 
+     *
+     * @param element the parent element
+     * @param extension the extension
+     * @param icon the icon name
+     * @param bigicon the big icon name
      */
     private void addIconRule(org.dom4j.Element element, String extension, String icon, String bigicon) {
 
@@ -155,10 +155,10 @@ public class CmsXmlAddIconRules extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for a given explorer type.<p>
-     * 
-     * @param explorerType the explorer type 
-     * 
-     * @return the xpath for that explorer type 
+     *
+     * @param explorerType the explorer type
+     *
+     * @return the xpath for that explorer type
      */
     private String xpathForType(String explorerType) {
 

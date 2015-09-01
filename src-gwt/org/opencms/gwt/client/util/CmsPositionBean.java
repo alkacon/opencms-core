@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,13 +27,17 @@
 
 package org.opencms.gwt.client.util;
 
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Bean holding the position data of a HTML DOM element.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPositionBean {
@@ -107,7 +111,7 @@ public class CmsPositionBean {
 
     /**
      * Copy constructor. Generating a copy of the given model.<p>
-     * 
+     *
      * @param model the model to copy
      */
     public CmsPositionBean(CmsPositionBean model) {
@@ -120,12 +124,11 @@ public class CmsPositionBean {
 
     /**
      * Manipulates the position infos to ensure a minimum margin between the rectangles.<p>
-     * 
+     *
      * @param posA the first position to check
      * @param posB the second position to check
      * @param margin the required margin
      */
-    @SuppressWarnings("incomplete-switch")
     public static void avoidCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
 
         Direction dir = null;
@@ -153,65 +156,69 @@ public class CmsPositionBean {
         }
 
         diff = (int)Math.ceil((1.0 * (diff + margin)) / 2);
-        switch (dir) {
-            case left:
-                // move the left border of a
-                posA.setLeft(posA.getLeft() + diff);
-                posA.setWidth(posA.getWidth() - diff);
+        if (dir != null) {
+            switch (dir) {
+                case left:
+                    // move the left border of a
+                    posA.setLeft(posA.getLeft() + diff);
+                    posA.setWidth(posA.getWidth() - diff);
 
-                // move the right border of b
-                posB.setWidth(posB.getWidth() - diff);
-                break;
+                    // move the right border of b
+                    posB.setWidth(posB.getWidth() - diff);
+                    break;
 
-            case right:
-                // move the left border of b
-                posB.setLeft(posB.getLeft() + diff);
-                posB.setWidth(posB.getWidth() - diff);
+                case right:
+                    // move the left border of b
+                    posB.setLeft(posB.getLeft() + diff);
+                    posB.setWidth(posB.getWidth() - diff);
 
-                // move the right border of a
-                posA.setWidth(posA.getWidth() - diff);
-                break;
+                    // move the right border of a
+                    posA.setWidth(posA.getWidth() - diff);
+                    break;
 
-            case top:
-                posA.setTop(posA.getTop() + diff);
-                posA.setHeight(posA.getHeight() - diff);
+                case top:
+                    posA.setTop(posA.getTop() + diff);
+                    posA.setHeight(posA.getHeight() - diff);
 
-                posB.setHeight(posB.getHeight() - diff);
-                break;
-            case bottom:
-                posB.setTop(posB.getTop() + diff);
-                posB.setHeight(posB.getHeight() - diff);
+                    posB.setHeight(posB.getHeight() - diff);
+                    break;
+                case bottom:
+                    posB.setTop(posB.getTop() + diff);
+                    posB.setHeight(posB.getHeight() - diff);
 
-                posA.setHeight(posA.getHeight() - diff);
-
+                    posA.setHeight(posA.getHeight() - diff);
+                    break;
+                default:
+                    // nothing to do
+            }
         }
     }
 
     /**
      * Checks whether the two position rectangles collide.<p>
-     * 
+     *
      * @param posA the first position to check
      * @param posB the second position to check
      * @param margin the required margin
-     * 
+     *
      * @return <code>true</code> if the two position rectangles collide
      */
     public static boolean checkCollision(CmsPositionBean posA, CmsPositionBean posB, int margin) {
 
         // check for non collision is easier
-        if ((posA.getLeft() - margin) > (posB.getLeft() + posB.getWidth())) {
+        if ((posA.getLeft() - margin) >= (posB.getLeft() + posB.getWidth())) {
             // posA is right of posB
             return false;
         }
-        if ((posA.getLeft() + posA.getWidth()) < (posB.getLeft() - margin)) {
+        if ((posA.getLeft() + posA.getWidth()) <= (posB.getLeft() - margin)) {
             // posA is left of posB
             return false;
         }
-        if ((posA.getTop() - margin) > (posB.getTop() + posB.getHeight())) {
+        if ((posA.getTop() - margin) >= (posB.getTop() + posB.getHeight())) {
             // posA is bellow posB
             return false;
         }
-        if ((posA.getTop() + posA.getHeight()) < (posB.getTop() - margin)) {
+        if ((posA.getTop() + posA.getHeight()) <= (posB.getTop() - margin)) {
             // posA is above posB
             return false;
         }
@@ -221,10 +228,10 @@ public class CmsPositionBean {
     }
 
     /**
-     * Collects the position information of the given UI object and returns a position info bean.<p> 
-     * 
+     * Collects the position information of the given UI object and returns a position info bean.<p>
+     *
      * @param element the object to read the position data from
-     * 
+     *
      * @return the position data
      */
     public static CmsPositionBean generatePositionInfo(Element element) {
@@ -238,10 +245,10 @@ public class CmsPositionBean {
     }
 
     /**
-     * Collects the position information of the given UI object and returns a position info bean.<p> 
-     * 
+     * Collects the position information of the given UI object and returns a position info bean.<p>
+     *
      * @param uiObject the object to read the position data from
-     * 
+     *
      * @return the position data
      */
     public static CmsPositionBean generatePositionInfo(UIObject uiObject) {
@@ -250,29 +257,13 @@ public class CmsPositionBean {
     }
 
     /**
-     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
-     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
-     * 
+     * Returns the bounding rectangle dimensions of the element including all floated elements.<p>
+     *
      * @param panel the panel
-     * 
+     *
      * @return the position info
      */
-    public static CmsPositionBean getInnerDimensions(Element panel) {
-
-        return getInnerDimensions(panel, 2, false);
-    }
-
-    /**
-     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
-     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
-     * 
-     * @param panel the panel
-     * @param levels the levels to traverse down the DOM tree
-     * @param includeSelf <code>true</code> to include the outer dimensions of the given panel
-     * 
-     * @return the position info
-     */
-    public static CmsPositionBean getInnerDimensions(Element panel, int levels, boolean includeSelf) {
+    public static CmsPositionBean getBoundingClientRect(Element panel) {
 
         CmsPositionBean result = new CmsPositionBean();
         getBoundingClientRect(panel, result, Window.getScrollLeft(), Window.getScrollTop());
@@ -280,25 +271,93 @@ public class CmsPositionBean {
     }
 
     /**
+     * Returns a position info representing the dimensions of all visible child elements of the given panel (excluding elements with position:absolute).
+     * If the panel has no visible child elements, it's outer dimensions are returned.<p>
+     *
+     * @param panel the panel
+     *
+     * @return the position info
+     */
+    public static CmsPositionBean getInnerDimensions(Element panel) {
+
+        boolean first = true;
+        int top = 0;
+        int left = 0;
+        int bottom = 0;
+        int right = 0;
+        Element child = panel.getFirstChildElement();
+        while (child != null) {
+            String tagName = child.getTagName();
+            if (tagName.equalsIgnoreCase("br")
+                || tagName.equalsIgnoreCase("tr")
+                || tagName.equalsIgnoreCase("thead")
+                || tagName.equalsIgnoreCase("tfoot")
+                || tagName.equalsIgnoreCase("script")
+                || tagName.equalsIgnoreCase("style")) {
+                // ignore tags with no relevant position info
+                child = child.getNextSiblingElement();
+                continue;
+            }
+            String positioning = CmsDomUtil.getCurrentStyle(child, Style.position);
+            if (!Display.NONE.getCssName().equals(CmsDomUtil.getCurrentStyle(child, Style.display))
+                && !(positioning.equalsIgnoreCase(Position.ABSOLUTE.getCssName())
+                    || positioning.equalsIgnoreCase(Position.FIXED.getCssName()))) {
+                CmsPositionBean childDimensions = getBoundingClientRect(child);
+                if (first) {
+                    first = false;
+                    top = childDimensions.getTop();
+                    left = childDimensions.getLeft();
+                    bottom = top + childDimensions.getHeight();
+                    right = left + childDimensions.getWidth();
+                } else {
+                    int wTop = childDimensions.getTop();
+                    top = top < wTop ? top : wTop;
+                    int wLeft = childDimensions.getLeft();
+                    left = left < wLeft ? left : wLeft;
+                    int wBottom = wTop + childDimensions.getHeight();
+                    bottom = bottom > wBottom ? bottom : wBottom;
+                    int wRight = wLeft + childDimensions.getWidth();
+                    right = right > wRight ? right : wRight;
+                }
+            }
+            child = child.getNextSiblingElement();
+        }
+        if (!first) {
+            CmsPositionBean result = new CmsPositionBean();
+            result.setHeight(bottom - top);
+            result.setWidth(right - left);
+            result.setTop(top);
+            result.setLeft(left);
+            return result;
+        } else {
+            return getBoundingClientRect(panel);
+        }
+    }
+
+    /**
      * Uses the getBoundingClientRect method to evaluate the element dimensions.<p>
-     * 
+     *
      * @param element the element
      * @param pos the position bean
      * @param scrollLeft the window scroll position left
      * @param scrollTop the window scroll position top
      */
-    private static native void getBoundingClientRect(Element element, CmsPositionBean pos, int scrollLeft, int scrollTop)/*-{
-                                                                                                                         
-                                                                                                                         var rect = element.getBoundingClientRect();
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_top=Math.round(rect.top+scrollTop);
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_left=Math.round(rect.left+scrollLeft);
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=Math.round(rect.height);
-                                                                                                                         pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=Math.round(rect.width);
-                                                                                                                         }-*/;
+    private static native void getBoundingClientRect(
+        Element element,
+        CmsPositionBean pos,
+        int scrollLeft,
+        int scrollTop)/*-{
+
+                      var rect = element.getBoundingClientRect();
+                      pos.@org.opencms.gwt.client.util.CmsPositionBean::m_top=Math.round(rect.top+scrollTop);
+                      pos.@org.opencms.gwt.client.util.CmsPositionBean::m_left=Math.round(rect.left+scrollLeft);
+                      pos.@org.opencms.gwt.client.util.CmsPositionBean::m_height=Math.round(rect.height);
+                      pos.@org.opencms.gwt.client.util.CmsPositionBean::m_width=Math.round(rect.width);
+                      }-*/;
 
     /**
      * Increases the dimensions to completely surround the child.<p>
-     * 
+     *
      * @param child the child position info
      * @param padding the padding to apply
      */
@@ -332,11 +391,11 @@ public class CmsPositionBean {
 
     /**
      * Returns over which area of this the given position is. Will return <code>null</code> if the provided position is not within this position.<p>
-     *  
+     *
      * @param absLeft the left position
      * @param absTop the right position
      * @param offset the border offset
-     * 
+     *
      * @return the area
      */
     public Area getArea(int absLeft, int absTop, int offset) {
@@ -420,10 +479,10 @@ public class CmsPositionBean {
 
     /**
      * Checks whether the given position is completely surrounded by this position.<p>
-     * 
+     *
      * @param child the child position
      * @param padding the padding to use
-     * 
+     *
      * @return <code>true</code> if the child position is completely surrounded
      */
     public boolean isInside(CmsPositionBean child, int padding) {
@@ -436,10 +495,10 @@ public class CmsPositionBean {
 
     /**
      * Returns if given position is inside the position beans coordinates.<p>
-     * 
+     *
      * @param absLeft the absolute left position
      * @param absTop the absolute top position
-     * 
+     *
      * @return true if the given position if within the beans coordinates
      */
     public boolean isOverElement(int absLeft, int absTop) {
@@ -451,9 +510,9 @@ public class CmsPositionBean {
         return false;
     }
 
-    /** 
+    /**
      * Returns if given absolute top is above the vertical middle of the position beans coordinates.<p>
-     * 
+     *
      * @param absTop the absolute top position
      * @return true if given absolute top is above the vertical middle
      */

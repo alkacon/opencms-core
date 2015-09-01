@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,25 +27,15 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 /**
  * Tests the text extraction form a RTF file.<p>
  */
-public class TestRtfExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestRtfExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestRtfExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the basic RTF extraction.<p>
@@ -54,7 +44,7 @@ public class TestRtfExtraction extends TestCase {
      */
     public void testBasicRtfExtraction() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.rtf");
 
         // extract the content

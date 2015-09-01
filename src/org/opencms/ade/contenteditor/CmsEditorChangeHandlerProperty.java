@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -92,12 +92,12 @@ public class CmsEditorChangeHandlerProperty extends A_CmsXmlContentEditorChangeH
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setContfiguration(java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setConfiguration(java.lang.String)
      */
     @Override
-    public void setContfiguration(String configuration) {
+    public void setConfiguration(String configuration) {
 
-        super.setContfiguration(configuration);
+        super.setConfiguration(configuration);
         String[] temp = m_configuration.split("\\|");
         if (temp.length == 2) {
             m_propertyName = temp[0];

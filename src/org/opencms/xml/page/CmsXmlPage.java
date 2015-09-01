@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,14 +70,14 @@ import org.xml.sax.InputSource;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
- * 
- * This implementation consists of several named elements optionally available for 
- * various languages. The data of each element is accessible via its name and language. 
- * 
- * The content of each element is stored as CDATA, links within the 
+ *
+ * This implementation consists of several named elements optionally available for
+ * various languages. The data of each element is accessible via its name and language.
+ *
+ * The content of each element is stored as CDATA, links within the
  * content are processed and are separately accessible as entries of a CmsLinkTable.
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -128,9 +128,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Creates a new CmsXmlPage based on the provided document and encoding.<p>
-     * 
+     *
      * The encoding is used for marshalling the XML document later.<p>
-     * 
+     *
      * @param document the document to create the CmsXmlPage from
      * @param encoding the encoding of the xml page
      */
@@ -140,12 +140,12 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * Creates an empty XML page in the provided locale using 
+     * Creates an empty XML page in the provided locale using
      * the provided encoding.<p>
-     * 
+     *
      * The page is initialized according to the minimal necessary xml structure.
      * The encoding is used for marshalling the XML document later.<p>
-     * 
+     *
      * @param locale the initial locale of the XML page
      * @param encoding the encoding of the XML page
      */
@@ -171,13 +171,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /**
      * Adds a new, empty value with the given name and locale
      * to this XML document.<p>
-     * 
+     *
      * @param name the name of the value
      * @param locale the locale of the value
-     *  
-     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]") or the value for the 
+     *
+     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]") or the value for the
      *         given locale already exists in the xmlpage.
-     *     
+     *
      */
     public void addValue(String name, Locale locale) throws CmsIllegalArgumentException {
 
@@ -187,10 +187,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         }
 
         if (hasValue(name, locale)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2,
-                name,
-                locale));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2, name, locale));
         }
 
         Element pages = m_document.getRootElement();
@@ -231,7 +229,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Returns if relative links are accepted (and left unprocessed).<p>
-     * 
+     *
      * @return true if relative links are allowed
      */
     public boolean getAllowRelativeLinks() {
@@ -253,7 +251,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 // store content definition in static variable
                 m_xmlPageContentDefinition = CmsXmlContentDefinition.unmarshal(source, XMLPAGE_XSD_SYSTEM_ID, resolver);
             } catch (CmsXmlException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
+                throw new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0),
+                    e);
             }
         }
         return m_xmlPageContentDefinition;
@@ -282,7 +282,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Returns the link table of an element.<p>
-     * 
+     *
      * @param name name of the element
      * @param locale locale of the element
      * @return the link table
@@ -317,7 +317,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Checks if the element of a page object is enabled.<p>
-     * 
+     *
      * @param name the name of the element
      * @param locale the locale of the element
      * @return true if the element exists and is not disabled
@@ -339,7 +339,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /**
      * Removes an existing value with the given name and locale
      * from this XML document.<p>
-     * 
+     *
      * @param name the name of the value
      * @param locale the locale of the value
      */
@@ -354,41 +354,36 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Renames the page-element value from the old to the new one.<p>
-     * 
-     * @param oldValue the old value 
+     *
+     * @param oldValue the old value
      * @param newValue the new value
      * @param locale the locale
-     * 
-     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]"), the new value for the 
+     *
+     * @throws CmsIllegalArgumentException if the name contains an index ("[&lt;number&gt;]"), the new value for the
      *         given locale already exists in the xmlpage or the the old value does not exist for the locale in the xmlpage.
-     * 
+     *
      */
     public void renameValue(String oldValue, String newValue, Locale locale) throws CmsIllegalArgumentException {
 
         CmsXmlHtmlValue oldXmlHtmlValue = (CmsXmlHtmlValue)getValue(oldValue, locale);
         if (oldXmlHtmlValue == null) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XML_PAGE_NO_ELEM_FOR_LANG_2,
-                oldValue,
-                locale));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XML_PAGE_NO_ELEM_FOR_LANG_2, oldValue, locale));
         }
 
         if (hasValue(newValue, locale)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2,
-                newValue,
-                locale));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XML_PAGE_LANG_ELEM_EXISTS_2, newValue, locale));
         }
         if (newValue.indexOf('[') >= 0) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XML_PAGE_CONTAINS_INDEX_1,
-                newValue));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XML_PAGE_CONTAINS_INDEX_1, newValue));
         }
 
-        // get the element 
+        // get the element
         Element element = oldXmlHtmlValue.getElement();
 
-        // update value of the element attribute 'NAME'         
+        // update value of the element attribute 'NAME'
         element.addAttribute(ATTRIBUTE_NAME, newValue);
 
         // re-initialize the document to update the bookmarks
@@ -397,10 +392,10 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Sets the enabled flag of an already existing element.<p>
-     * 
+     *
      * Note: if isEnabled is set to true, the attribute is removed
      * since true is the default
-     * 
+     *
      * @param name name name of the element
      * @param locale locale of the element
      * @param isEnabled enabled flag for the element
@@ -424,16 +419,16 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Sets the data of an already existing value.<p>
-     * 
+     *
      * The data will be enclosed as CDATA within the xml page structure.
      * When setting the element data, the content of this element will be
      * processed automatically.<p>
-     * 
+     *
      * @param cms the cms object
      * @param name name of the element
      * @param locale locale of the element
      * @param content character data (CDATA) of the element
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public void setStringValue(CmsObject cms, String name, Locale locale, String content) throws CmsXmlException {
@@ -444,10 +439,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             // set the values
             value.setStringValue(cms, content);
         } else {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XML_PAGE_INVALID_ELEM_SELECT_2,
-                locale,
-                name));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_XML_PAGE_INVALID_ELEM_SELECT_2, locale, name));
         }
     }
 
@@ -493,7 +486,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     String elementEnabled = element.attributeValue(ATTRIBUTE_ENABLED);
                     boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
 
-                    // create an element type from the XML node                    
+                    // create an element type from the XML node
                     CmsXmlHtmlValue value = new CmsXmlHtmlValue(this, element, locale);
                     value.setContentDefinition(definition);
 
@@ -509,7 +502,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
     /**
      * Sets the parameter that controls the relative link generation.<p>
-     * 
+     *
      * @param value the parameter that controls the relative link generation
      */
     protected void setAllowRelativeLinks(boolean value) {
@@ -518,8 +511,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * Sets the file this XML page content is written to.<p> 
-     * 
+     * Sets the file this XML page content is written to.<p>
+     *
      * @param file the file this XML page content is written to
      */
     protected void setFile(CmsFile file) {
@@ -528,7 +521,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * Converts the XML structure of the pre 5.5.0 development version of 
+     * Converts the XML structure of the pre 5.5.0 development version of
      * the XML page to the final 6.0 version.<p>
      */
     private void convertOldDocument() {
@@ -541,8 +534,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         Map<String, Element> pages = new HashMap<String, Element>();
 
         if ((m_document.getRootElement() != null) && (m_document.getRootElement().element(NODE_ELEMENTS) != null)) {
-            for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement().element(
-                NODE_ELEMENTS), NODE_ELEMENT); i.hasNext();) {
+            for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(
+                m_document.getRootElement().element(NODE_ELEMENTS),
+                NODE_ELEMENT); i.hasNext();) {
 
                 Element elem = i.next();
                 try {

@@ -15,8 +15,8 @@
 		<class>org.opencms.workplace.CmsWorkplaceAction</class>
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
-<p><i>&copy; 2014 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.4.8</version>
+<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>9.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -165,7 +165,6 @@
 			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/document_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/document.png"/>
-
 			<resource uri="/system/workplace/views/top_foot.jsp"/>
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
@@ -794,7 +793,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-
 		<file>
 			<destination>system/workplace/commons</destination>
 			<type>folder</type>
@@ -4351,14 +4349,14 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/components/js_calendar/lang/calendar-cs-win.js</source>
-			<destination>system/workplace/resources/components/js_calendar/lang/calendar-cs-win.js</destination>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-cs.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-cs.js</destination>
 			<type>plain</type>
-			<uuidstructure>8366045d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>239e70e6-adb6-11da-9937-71161b30b4f0</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>ff4806ad-14e3-11e5-b8ce-01bfaccbe1c9</uuidstructure>
+			<uuidresource>ff4806ae-14e3-11e5-b8ce-01bfaccbe1c9</uuidresource>
+			<datelastmodified>Wed, 17 Jun 2015 11:28:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<datecreated>Wed, 17 Jun 2015 11:28:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -6291,7 +6289,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-			<file>
+		<file>
 			<source>system/workplace/resources/components/widgets/multiselector.js</source>
 			<destination>system/workplace/resources/components/widgets/multiselector.js</destination>
 			<type>plain</type>
@@ -7344,8 +7342,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-
-				<file>
+		<file>
 			<source>system/workplace/resources/filetypes/document.png</source>
 			<destination>system/workplace/resources/filetypes/document.png</destination>
 			<type>image</type>
@@ -7385,17 +7382,6 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-
-
-
-
-
-
-
-
-
-
-
 		<file>
 			<source>system/workplace/resources/filetypes/unknown_file.png</source>
 			<destination>system/workplace/resources/filetypes/unknown_file.png</destination>

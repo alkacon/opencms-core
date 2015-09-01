@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * The selection button for the direct edit provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditToolbarHandler> {
@@ -46,7 +46,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the container-page handler
      */
     public CmsToolbarSelectionButton(CmsDirectEditToolbarHandler handler) {
@@ -60,7 +60,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
      */
     public void onToolbarActivate() {
 
-        // this is never called 
+        // this is never called
     }
 
     /**
@@ -81,7 +81,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
      */
     public void onToolbarDeactivate() {
 
-        // this is never called 
+        // this is never called
     }
 
     /**
@@ -96,20 +96,21 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
 
     /**
      * Sets the visibility of the direct edit buttons.<p>
-     *  
-     * @param visible true if the buttons should be shown 
+     *
+     * @param visible true if the buttons should be shown
      */
     protected void setDirectEditButtonsVisible(boolean visible) {
 
-        m_editButtonsVisibility.setValue(visible
-        ? I_CmsLayoutBundle.INSTANCE.directEditCss().showButtons()
-        : I_CmsLayoutBundle.INSTANCE.directEditCss().hideButtons());
+        m_editButtonsVisibility.setValue(
+            visible
+            ? I_CmsLayoutBundle.INSTANCE.directEditCss().showButtons()
+            : I_CmsLayoutBundle.INSTANCE.directEditCss().hideButtons());
     }
 
     /**
      * Checks whether the direct edit buttons are visible.<p>
-     * 
-     * @return true if the direct edit buttons are visible 
+     *
+     * @return true if the direct edit buttons are visible
      */
     private boolean areEditButtonsVisible() {
 

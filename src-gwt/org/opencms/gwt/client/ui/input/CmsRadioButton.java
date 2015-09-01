@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,13 +41,13 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * Class representing a single radio button.<p>
- * 
- * In most cases, you will need to set the group of a radio button, which is a Java object, 
+ *
+ * In most cases, you will need to set the group of a radio button, which is a Java object,
  * not just a string as in HTML radio buttons. Clicking on a radio button in a group will result
  * in the radio button being selected, and none of the other buttons in the group being selected.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsRadioButton extends Composite implements HasHorizontalAlignment, HasClickHandlers {
 
@@ -97,7 +97,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Creates a new radio button.<p>
-     * 
+     *
      * @param name the value associated with this radio button
      * @param labelText the label text of the radio button
      */
@@ -112,7 +112,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Adds a click handler to the radio button.<p>
-     * 
+     *
      * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
      */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -122,7 +122,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#getHorizontalAlignment()
      */
     public HorizontalAlignmentConstant getHorizontalAlignment() {
@@ -132,7 +132,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Returns the value associated with this radio button.<p>
-     * 
+     *
      * @return the value associated with this radio button
      */
     public String getName() {
@@ -142,7 +142,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Returns the radio button.<p>
-     * 
+     *
      * @return the radio button
      */
     public CmsToggleButton getRadioButton() {
@@ -152,8 +152,8 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Returns true if the radio button is checked.<p>
-     * 
-     * @return true if the  radio button is checked 
+     *
+     * @return true if the  radio button is checked
      */
     public boolean isChecked() {
 
@@ -162,7 +162,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Returns <code>true</code> if this widget is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if this widget is enabled
      */
     public boolean isEnabled() {
@@ -172,8 +172,8 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Sets the 'checked' status of the radio button.<p>
-     * 
-     * @param checked if true, check the radio button, else uncheck it 
+     *
+     * @param checked if true, check the radio button, else uncheck it
      */
     public void setChecked(boolean checked) {
 
@@ -187,8 +187,8 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Enables or disables the radio button.<p>
-     * 
-     * @param enabled if true, the radio button is enabled, else disabled 
+     *
+     * @param enabled if true, the radio button is enabled, else disabled
      */
     public void setEnabled(boolean enabled) {
 
@@ -197,7 +197,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Sets the group for this radio button.<p>
-     * 
+     *
      * @param group
      */
     public void setGroup(CmsRadioButtonGroup group) {
@@ -207,7 +207,7 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * This is the alignment of the text in reference to the checkbox, possible values are left or right.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.HasHorizontalAlignment#setHorizontalAlignment(com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant)
      */
     public void setHorizontalAlignment(HorizontalAlignmentConstant align) {
@@ -222,8 +222,8 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Sets the name of this radio button.<p>
-     * 
-     * @param name the new name 
+     *
+     * @param name the new name
      */
     public void setName(String name) {
 
@@ -232,8 +232,8 @@ public class CmsRadioButton extends Composite implements HasHorizontalAlignment,
 
     /**
      * Sets the text which is displayed next to the radio button.<p>
-     * 
-     * @param text the new text 
+     *
+     * @param text the new text
      */
     public void setText(String text) {
 

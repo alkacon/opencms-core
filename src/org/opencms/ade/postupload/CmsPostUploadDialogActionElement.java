@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,10 +59,10 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
     /**
      * Creates a new instance.<p>
-     *  
-     * @param pageContext the current page context 
-     * @param request the servlet request 
-     * @param response the servlet response 
+     *
+     * @param pageContext the current page context
+     * @param request the servlet request
+     * @param response the servlet response
      */
     public CmsPostUploadDialogActionElement(
         PageContext pageContext,
@@ -105,7 +105,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     }
 
     /**
-     * Returns the needed server data for client-side usage.<p> 
+     * Returns the needed server data for client-side usage.<p>
      *
      * @return the needed server data for client-side usage
      * @throws CmsRpcException if something goes wrong
@@ -121,8 +121,8 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
     /**
      * Enables / disables use of property configurations.<p>
-     * 
-     * @param useConfiguration if true , use the property configurations 
+     *
+     * @param useConfiguration if true , use the property configurations
      */
     public void setUsePropertyConfiguration(boolean useConfiguration) {
 
@@ -131,7 +131,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
 
     /**
      * Returns a javascript tag that contains a variable deceleration that has the close link as value.<p>
-     * 
+     *
      * @return a javascript tag that contains a variable deceleration that has the close link as value
      */
     private String exportCloseLink() {

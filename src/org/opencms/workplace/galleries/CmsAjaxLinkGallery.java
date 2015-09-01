@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,10 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the external link gallery dialog 
+ * Provides the specific constants, members and helper methods to generate the content of the external link gallery dialog
  * used in the XML content editors, WYSIWYG editors and context menu.<p>
- * 
- * @since 7.5.0 
+ *
+ * @since 7.5.0
  */
 
 public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
@@ -80,7 +80,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsAjaxLinkGallery(CmsJspActionElement jsp) {
@@ -91,7 +91,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -110,7 +110,8 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
         int pointerId;
         try {
-            pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+            pointerId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePointer.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e) {
             // should not never ever happen
             pointerId = CmsResourceTypePointer.getStaticTypeId();
@@ -125,14 +126,14 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
     public int getGalleryTypeId() {
 
         try {
-            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
+            m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
         } catch (CmsLoaderException e) {
             // resource type not found, log error
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        return this.m_galleryTypeId;
+        return m_galleryTypeId;
     }
 
     /**
@@ -146,11 +147,11 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
     /**
      * Fills the JSON object with the specific information used for pointer file resource type.<p>
-     * 
+     *
      * <ul>
      * <li><code>pointer</code>: the content of the pointer resource. This could be an external or internal link.</li>
      * </ul>
-     * 
+     *
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      *
      */
@@ -178,11 +179,11 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
     /**
      * Writes the current link into the pointer resource. <p>
-     * 
+     *
      * @see org.opencms.workplace.galleries.CmsAjaxLinkGallery#changeItemLinkUrl(String)
-     * 
-     * @param itemUrl the pointer resource to change the link of 
-     * 
+     *
+     * @param itemUrl the pointer resource to change the link of
+     *
      */
     @Override
     protected void changeItemLinkUrl(String itemUrl) {
@@ -209,9 +210,9 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
 
     /**
      * Writes the current link into the pointer resource. <p>
-     * 
-     * @param res the pointer resource to change the link of 
-     * 
+     *
+     * @param res the pointer resource to change the link of
+     *
      * @throws CmsException if sth. goes wrong
      */
     private void writePointerLink(CmsResource res) throws CmsException {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,6 +42,9 @@ public class CmsBuiltinPreference extends A_CmsPreference {
     /** True if this is a basic preference. */
     protected boolean m_basic;
 
+    /** True if this is a hidden preference. */
+    protected boolean m_hidden;
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsBuiltinPreference.class);
 
@@ -50,7 +53,7 @@ public class CmsBuiltinPreference extends A_CmsPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param propName the name of the bean property used to access this preference
      */
     public CmsBuiltinPreference(String propName) {
@@ -87,17 +90,18 @@ public class CmsBuiltinPreference extends A_CmsPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(m_propName,//name
-            "string",//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            null,//nicename
-            null,//description
-            null,//error
-            null//preferfolder
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            m_propName, // name
+            "string", // type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            null, //nicename
+            null, //description
+            null, //error
+            null //preferfolder
         );
         return prop;
     }
@@ -107,7 +111,7 @@ public class CmsBuiltinPreference extends A_CmsPreference {
      */
     public String getTab() {
 
-        return m_basic ? "basic" : "extended";
+        return m_hidden ? "hidden" : (m_basic ? "basic" : "extended");
     }
 
     /**

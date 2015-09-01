@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ import com.google.common.base.Joiner;
 
 /**
  * OpenCms implementation of the JLAN DiskInterface interface.<p>
- * 
+ *
  * This class, together with the CmsJlanNetworkFile class, contains the main repository access functionality.<p>
  */
 public class CmsJlanDiskInterface implements DiskInterface {
@@ -78,11 +78,11 @@ public class CmsJlanDiskInterface implements DiskInterface {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJlanDiskInterface.class);
 
-    /** 
+    /**
      * Tries to convert a CmsException to the matching exception type from JLAN.<p>
-     * 
-     * @param e the exception to convert 
-     * @return the converted exception 
+     *
+     * @param e the exception to convert
+     * @return the converted exception
      */
     public static IOException convertCmsException(CmsException e) {
 
@@ -100,15 +100,15 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Converts a CIFS path to an OpenCms path by converting backslashes to slashes and translating special characters in the file name.<p>
-     * 
-     * @param path the path to transform 
-     * @return the OpenCms path for the given path 
+     *
+     * @param path the path to transform
+     * @return the OpenCms path for the given path
      */
     protected static String getCmsPath(String path) {
 
         String slashPath = path.replace('\\', '/');
 
-        // split path into components, translate each of them separately, then combine them again at the end 
+        // split path into components, translate each of them separately, then combine them again at the end
         String[] segments = slashPath.split("/");
         List<String> nonEmptySegments = new ArrayList<String>();
         for (String segment : segments) {
@@ -136,7 +136,7 @@ public class CmsJlanDiskInterface implements DiskInterface {
      */
     public DeviceContext createContext(String shareName, ConfigElement args) {
 
-        return null; // not used, since the repository creates the device context 
+        return null; // not used, since the repository creates the device context
 
     }
 
@@ -171,12 +171,12 @@ public class CmsJlanDiskInterface implements DiskInterface {
      */
     public void deleteFile(SrvSession session, TreeConnection connection, String path) throws IOException {
 
-        // note: deletion of a file may not necessarily go through this method, instead the client program may open the 
+        // note: deletion of a file may not necessarily go through this method, instead the client program may open the
         // file, set a "delete on close" flag, and then close it.
         try {
             CmsJlanNetworkFile file = getFileForPath(session, connection, path);
             if (file == null) {
-                // Only log a warning, since if the file doesn't exist, it doesn't really need to be deleted anymore 
+                // Only log a warning, since if the file doesn't exist, it doesn't really need to be deleted anymore
                 LOG.warn("Couldn't delete file " + path + " because it doesn't exist anymore.");
             } else {
                 file.delete();
@@ -381,7 +381,7 @@ public class CmsJlanDiskInterface implements DiskInterface {
      */
     public void treeOpened(SrvSession arg0, TreeConnection arg1) {
 
-        // ignore 
+        // ignore
     }
 
     /**
@@ -414,13 +414,13 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Creates a CmsObjectWrapper for the current session.<p>
-     * 
-     * @param session the current session 
-     * @param connection the tree connection 
-     * 
-     * @return the correctly configured CmsObjectWrapper for this session 
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @param session the current session
+     * @param connection the tree connection
+     *
+     * @return the correctly configured CmsObjectWrapper for this session
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsObjectWrapper getCms(SrvSession session, TreeConnection connection) throws CmsException {
 
@@ -431,12 +431,12 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Helper method to get a network file object given a path.<p>
-     * 
-     * @param session the current session 
-     * @param connection the current connection 
-     * @param path the file path 
-     * 
-     * @return the network file object for the given path 
+     *
+     * @param session the current session
+     * @param connection the current connection
+     * @param path the file path
+     *
+     * @return the network file object for the given path
      * @throws CmsException if something goes wrong
      */
     protected CmsJlanNetworkFile getFileForPath(SrvSession session, TreeConnection connection, String path)
@@ -455,15 +455,15 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Internal method for creating a new file.<p>
-     *  
-     * @param session the session 
-     * @param connection the tree connection 
-     * @param params the parameters for opening the file 
-     * @param typeName the name of the resource type for the new file 
-     * 
-     * @return a NetworkFile instance representing the newly created file 
-     * 
-     * @throws IOException if something goes wrong 
+     *
+     * @param session the session
+     * @param connection the tree connection
+     * @param params the parameters for opening the file
+     * @param typeName the name of the resource type for the new file
+     *
+     * @return a NetworkFile instance representing the newly created file
+     *
+     * @throws IOException if something goes wrong
      */
     protected NetworkFile internalCreateFile(
         SrvSession session,
@@ -495,10 +495,10 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Translates the last path segment of a path using the configured OpenCms file translations.<p>
-     * 
-     * @param path the path for which the last segment should be translated 
-     * 
-     * @return the path with the translated last segment 
+     *
+     * @param path the path for which the last segment should be translated
+     *
+     * @return the path with the translated last segment
      */
     protected String translateName(String path) {
 
@@ -514,8 +514,8 @@ public class CmsJlanDiskInterface implements DiskInterface {
 
     /**
      * Tries to unlock the file at the given path.<p>
-     * 
-     * @param cms the CMS context wrapper 
+     *
+     * @param cms the CMS context wrapper
      * @param path the path of the resource to unlock
      */
     private void tryUnlock(CmsObjectWrapper cms, String path) {

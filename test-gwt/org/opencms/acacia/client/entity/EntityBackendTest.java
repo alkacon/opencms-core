@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -173,8 +173,9 @@ public class EntityBackendTest extends GWTTestCase {
         String value2 = "";
         entity2.addAttributeValue(ATTRIBUTE_NAME, value2);
         CmsEntityAttribute attribute2 = entity2.getAttribute(ATTRIBUTE_NAME);
-        assertNotNull("The entity should have an attribute even though the value was an empty string: "
-            + ATTRIBUTE_NAME, attribute2);
+        assertNotNull(
+            "The entity should have an attribute even though the value was an empty string: " + ATTRIBUTE_NAME,
+            attribute2);
         assertEquals(
             "The attribute value should match the previously set empty string value",
             value2,
@@ -209,7 +210,7 @@ public class EntityBackendTest extends GWTTestCase {
     }
 
     /**
-     * Tests if an attribute with three identical values remains intact as a nested entity.<p> 
+     * Tests if an attribute with three identical values remains intact as a nested entity.<p>
      */
     public void testSameValueAttributes() {
 
@@ -234,7 +235,8 @@ public class EntityBackendTest extends GWTTestCase {
         assertEquals(
             "There should be three attribute values",
             3,
-            mainEntity.getAttribute(nestedAttributeName).getComplexValue().getAttribute(ATTRIBUTE_NAME).getValueCount());
+            mainEntity.getAttribute(nestedAttributeName).getComplexValue().getAttribute(
+                ATTRIBUTE_NAME).getValueCount());
     }
 
     /**
@@ -261,7 +263,7 @@ public class EntityBackendTest extends GWTTestCase {
 
     /**
      * Returns the change count.<p>
-     * 
+     *
      * @return the change count
      */
     protected int getChangeCount() {
@@ -279,7 +281,7 @@ public class EntityBackendTest extends GWTTestCase {
 
     /**
      * Returns the {@link CmsEntityBackend} instance.<p>
-     * 
+     *
      * @return the {@link CmsEntityBackend} instance
      */
     private I_CmsEntityBackend getBackendInstance() {

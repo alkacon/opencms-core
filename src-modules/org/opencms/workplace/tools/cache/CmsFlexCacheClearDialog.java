@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The flex cache clear dialog.<p>
- * 
+ *
  * @since 7.0.5
  */
 public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
@@ -79,7 +79,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsFlexCacheClearDialog(CmsJspActionElement jsp) {
@@ -90,7 +90,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -102,7 +102,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Sends a clear caches event.<p>
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     public void actionClearCaches() throws JspException {
@@ -116,6 +116,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
     /**
      * Commits the edited group to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         try {
@@ -145,9 +146,10 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
                     action = CmsFlexCache.CLEAR_ENTRIES;
                 }
             }
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-                Collections.<String, Object> singletonMap("action", new Integer(action))));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(
+                    I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                    Collections.<String, Object> singletonMap("action", new Integer(action))));
         } catch (Exception e) {
             setCommitErrors(Collections.singletonList((Throwable)e));
         }
@@ -155,17 +157,17 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Purges the jsp repository.<p>
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     public void actionPurgeJspRepository() throws JspException {
 
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-            Collections.<String, Object> emptyMap()));
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
-            Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
+        OpenCms.fireCmsEvent(
+            new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, Collections.<String, Object> emptyMap()));
+        OpenCms.fireCmsEvent(
+            new CmsEvent(
+                I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
+                Collections.<String, Object> singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
 
         setAction(CmsDialog.ACTION_CANCEL);
         actionCloseDialog();
@@ -233,12 +235,13 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -278,6 +281,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -286,6 +290,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         setKeyPrefix(KEY_PREFIX);
@@ -310,6 +315,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -318,6 +324,7 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -328,9 +335,10 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Overridden to set the online help path for this dialog.<p>
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);
@@ -339,17 +347,18 @@ public class CmsFlexCacheClearDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with the possible modes for the clean action.<p>
-     * 
+     *
      * @return a list with the possible modes for the clean action
      */
     private List getModes() {
 
         ArrayList ret = new ArrayList();
 
-        ret.add(new CmsSelectWidgetOption(
-            MODE_VARIATIONS,
-            getMode().equals(MODE_VARIATIONS),
-            key(Messages.GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0)));
+        ret.add(
+            new CmsSelectWidgetOption(
+                MODE_VARIATIONS,
+                getMode().equals(MODE_VARIATIONS),
+                key(Messages.GUI_FLEXCACHE_CLEAN_MODE_VARIATIONS_0)));
         ret.add(new CmsSelectWidgetOption(
             MODE_ALL,
             getMode().equals(MODE_ALL),

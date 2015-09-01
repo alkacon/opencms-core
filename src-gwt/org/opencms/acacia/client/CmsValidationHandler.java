@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,10 +46,11 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/** 
+/**
  * Validation handler.<p>
  */
-public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationContext> {
+public final class CmsValidationHandler
+implements ValueChangeHandler<CmsEntity>, HasValueChangeHandlers<CmsValidationContext> {
 
     /**
      * The validation timer.<p>
@@ -61,7 +62,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param entity the entity to validate
          */
         protected ValidationTimer(CmsEntity entity) {
@@ -128,7 +129,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Displays the given error messages within the form.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param validationResult the validationResult
      */
@@ -184,7 +185,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Returns the validation context.<p>
-     * 
+     *
      * @return the validation context
      */
     public CmsValidationContext getValidationContext() {
@@ -208,7 +209,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Registers the validation handler for the given entity.<p>
-     * 
+     *
      * @param entity the entity
      */
     public void registerEntity(CmsEntity entity) {
@@ -225,7 +226,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Sets the content service used for validation.<p>
-     * 
+     *
      * @param contentService the content service
      */
     public void setContentService(I_CmsContentServiceAsync contentService) {
@@ -235,7 +236,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Sets the form tabbed panel.<p>
-     * 
+     *
      * @param tabPanel the tabbed panel
      */
     public void setFormTabPanel(CmsTabbedPanel<?> tabPanel) {
@@ -245,7 +246,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Sets the validation to pause.<p>
-     * 
+     *
      * @param paused <code>true</code> to pause the validation
      * @param entity the entity will be revalidated when setting paused to <code>false</code>
      */
@@ -268,7 +269,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Sets the root attribute handler.<p>
-     * 
+     *
      * @param rootHandler the root attribute handler
      */
     public void setRootHandler(CmsRootHandler rootHandler) {
@@ -278,7 +279,7 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Adds this handler to the widget.
-     * 
+     *
      * @param <H> the type of handler to add
      * @param type the event type
      * @param handler the handler
@@ -291,31 +292,33 @@ public final class CmsValidationHandler implements ValueChangeHandler<CmsEntity>
 
     /**
      * Validates the given entity.<p>
-     * 
+     *
      * @param entity the entity
      */
     protected void validate(final CmsEntity entity) {
 
         if (!m_validating) {
             m_validating = true;
-            m_contentService.validateEntities(Collections.singletonList(entity), new AsyncCallback<CmsValidationResult>() {
+            m_contentService.validateEntities(
+                Collections.singletonList(entity),
+                new AsyncCallback<CmsValidationResult>() {
 
-                public void onFailure(Throwable caught) {
+                    public void onFailure(Throwable caught) {
 
-                    // can be ignored
-                }
+                        // can be ignored
+                    }
 
-                public void onSuccess(CmsValidationResult result) {
+                    public void onSuccess(CmsValidationResult result) {
 
-                    displayValidation(entity.getId(), result);
-                }
-            });
+                        displayValidation(entity.getId(), result);
+                    }
+                });
         }
     }
 
     /**
      * Lazy initializing the handler manager.<p>
-     * 
+     *
      * @return the handler manager
      */
     private SimpleEventBus ensureHandlers() {

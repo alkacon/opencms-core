@@ -42,8 +42,8 @@ import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
@@ -53,7 +53,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
-import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -62,7 +61,6 @@ import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
@@ -110,7 +108,7 @@ import org.apache.commons.logging.Log;
 public class CmsElementUtil {
 
     /** The maximum number of nested container levels. */
-    public static final int MAX_NESTING_LEVEL = 2;
+    public static final int MAX_NESTING_LEVEL = 5;
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
@@ -145,6 +143,46 @@ public class CmsElementUtil {
 
     /**
      * Creates a new instance.<p>
+     * Use this constructor to set the current container page state.<p>
+     *
+     * @param cms the cms context
+     * @param currentPageUri the current page uri
+     * @param containerPage the container page bean with the current container state
+     * @param detailContentId the detail content structure id
+     * @param req the http request
+     * @param res the http response
+     * @param locale the content locale
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsElementUtil(
+        CmsObject cms,
+        String currentPageUri,
+        CmsContainerPageBean containerPage,
+        CmsUUID detailContentId,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        Locale locale)
+        throws CmsException {
+
+        m_cms = OpenCms.initCmsObject(cms);
+        m_req = req;
+        m_res = res;
+        m_currentPageUri = currentPageUri;
+        m_locale = locale;
+        // initializing request for standard context bean
+        req.setAttribute(CmsJspStandardContextBean.ATTRIBUTE_CMS_OBJECT, m_cms);
+        if (detailContentId != null) {
+            CmsResource detailRes = m_cms.readResource(detailContentId);
+            req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
+        }
+        m_standardContext = CmsJspStandardContextBean.getInstance(req);
+        m_page = m_cms.readResource(currentPageUri);
+        m_standardContext.setPage(containerPage);
+    }
+
+    /**
+     * Creates a new instance.<p>
      *
      * @param cms the cms context
      * @param currentPageUri the current page uri
@@ -162,11 +200,10 @@ public class CmsElementUtil {
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
-    throws CmsException {
+        throws CmsException {
 
         m_cms = OpenCms.initCmsObject(cms);
         m_req = req;
-
         m_res = res;
         m_currentPageUri = currentPageUri;
         m_locale = locale;
@@ -176,13 +213,9 @@ public class CmsElementUtil {
             CmsResource detailRes = m_cms.readResource(detailContentId);
             req.setAttribute(CmsDetailPageResourceHandler.ATTR_DETAIL_CONTENT_RESOURCE, detailRes);
         }
-
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
-
-        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(
-            cms,
-            m_page = m_cms.readResource(currentPageUri),
-            req);
+        m_page = m_cms.readResource(currentPageUri);
+        CmsXmlContainerPage xmlContainerPage = CmsXmlContainerPageFactory.unmarshal(cms, m_page, req);
         CmsContainerPageBean containerPage = xmlContainerPage.getContainerPage(cms);
         m_standardContext.setPage(containerPage);
     }
@@ -208,7 +241,7 @@ public class CmsElementUtil {
         HttpServletRequest req,
         HttpServletResponse res,
         Locale locale)
-    throws CmsException {
+        throws CmsException {
 
         this(cms, currentPageUri, detailContentId, req, res, locale);
         m_parameterMap = parseRequestParameters(requestParameters);
@@ -238,39 +271,9 @@ public class CmsElementUtil {
     }
 
     /**
-     * Returns the rendered element content for all the given containers.
-     *
-     * @param element the element to render
-     * @param containers the containers the element appears in
-     * @param allowNested if nested containers are allowed
-     *
-     * @return a map from container names to rendered page contents
-     */
-    public Map<String, String> getContentsByContainerName(
-        CmsContainerElementBean element,
-        Collection<CmsContainer> containers,
-        boolean allowNested) {
-
-        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
-        Map<String, String> result = new HashMap<String, String>();
-        for (CmsContainer container : containers) {
-            String content = getContentByContainer(
-                element,
-                container,
-                configs,
-                allowNested && checkContainerTreeLevel(container, containers));
-            if (content != null) {
-                content = removeScriptTags(content);
-            }
-            result.put(container.getName(), content);
-        }
-        return result;
-    }
-
-    /**
      * Returns the data for an element.<p>
      *
-     * @param page the current container page 
+     * @param page the current container page
      * @param element the resource
      * @param containers the containers on the current container page
      * @param allowNested if nested containers are allowed
@@ -288,6 +291,9 @@ public class CmsElementUtil {
         Locale requestLocale = m_cms.getRequestContext().getLocale();
         m_cms.getRequestContext().setLocale(m_locale);
         element.initResource(m_cms);
+        if (element.getResource().isFolder()) {
+            return null;
+        }
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, element.getResource());
         CmsContainerElementData elementData = new CmsContainerElementData();
         setElementInfo(element, elementData);
@@ -299,10 +305,11 @@ public class CmsElementUtil {
             m_cms,
             page,
             element.getResource());
-        elementData.setSettings(CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
-            m_cms,
-            element.getIndividualSettings(),
-            settingConfig));
+        elementData.setSettings(
+            CmsXmlContentPropertyHelper.convertPropertiesToClientFormat(
+                m_cms,
+                element.getIndividualSettings(),
+                settingConfig));
         CmsFormatterConfiguration formatterConfiguraton = getFormatterConfiguration(element.getResource());
         Map<String, Map<String, CmsFormatterConfig>> formatters = new HashMap<String, Map<String, CmsFormatterConfig>>();
 
@@ -400,8 +407,8 @@ public class CmsElementUtil {
                     I_CmsFormatterBean formatter = formatterEntry.getValue();
                     String id = formatterEntry.getKey();
                     if (missesFormatterSetting
-                        && ((element.getFormatterId() == null) || element.getFormatterId().equals(
-                            formatter.getJspStructureId()))) {
+                        && ((element.getFormatterId() == null)
+                            || element.getFormatterId().equals(formatter.getJspStructureId()))) {
                         elementData.getSettings().put(CmsFormatterConfig.getSettingsKeyForContainer(cnt.getName()), id);
                         missesFormatterSetting = false;
                     }
@@ -445,7 +452,7 @@ public class CmsElementUtil {
 
     /**
      * Gets the container page.<p>
-     * 
+     *
      * @return the container page resource
      */
     public CmsResource getPage() {
@@ -467,53 +474,47 @@ public class CmsElementUtil {
     throws CmsException {
 
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
-        String noEditReason = "";
         // reinitializing resource to avoid caching issues
         elementBean.initResource(m_cms);
         boolean newEditorDisabled = !CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(
             m_cms,
             elementBean.getResource());
         result.setNewEditorDisabled(newEditorDisabled);
+        String typeName = OpenCms.getResourceManager().getResourceType(
+            elementBean.getResource().getTypeId()).getTypeName();
+        result.setResourceType(typeName);
+        CmsPermissionInfo permissionInfo;
+        String title;
+        String subTitle;
         if (!elementBean.isInMemoryOnly()) {
+            permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                m_cms,
+                elementBean.getResource(),
+                m_page.getRootPath());
             if (CmsResourceTypeXmlContent.isXmlContent(elementBean.getResource())) {
-                result.setWritePermission(m_cms.hasPermissions(
-                    elementBean.getResource(),
-                    CmsPermissionSet.ACCESS_WRITE,
-                    false,
-                    CmsResourceFilter.IGNORE_EXPIRATION));
-                noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason) && elementBean.isInheritedContainer(m_cms)) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
+                    && elementBean.isInheritedContainer(m_cms)) {
                     String requestUri = m_cms.getRequestContext().getUri();
                     String folderPath = CmsResource.getFolderPath(requestUri);
                     String configPath = CmsStringUtil.joinPaths(
                         folderPath,
                         CmsContainerConfigurationCache.INHERITANCE_CONFIG_FILE_NAME);
                     if (m_cms.existsResource(configPath)) {
-                        noEditReason = new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(
-                            wpLocale,
-                            true);
+                        permissionInfo.setNoEditReason(
+                            new CmsResourceUtil(m_cms, m_cms.readResource(configPath)).getNoEditReason(wpLocale, true));
                     } else {
                         if (!m_cms.getLock(folderPath).isLockableBy(m_cms.getRequestContext().getCurrentUser())) {
-                            noEditReason = org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
-                                org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
-                                new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName());
+                            permissionInfo.setNoEditReason(
+                                org.opencms.workplace.explorer.Messages.get().getBundle(wpLocale).key(
+                                    org.opencms.workplace.explorer.Messages.GUI_NO_EDIT_REASON_LOCK_1,
+                                    new CmsResourceUtil(m_cms, m_cms.readResource(folderPath)).getLockedByName()));
                         }
                     }
-                } else {
-                    noEditReason = new CmsResourceUtil(m_cms, elementBean.getResource()).getNoEditReason(wpLocale, true);
                 }
             } else {
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0);
+                permissionInfo.setNoEditReason(
+                    Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
-        }
-        String typeName = OpenCms.getResourceManager().getResourceType(elementBean.getResource().getTypeId()).getTypeName();
-        result.setResourceType(typeName);
-        String title;
-        String subTitle;
-        if (elementBean.isInMemoryOnly()) {
-            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-            subTitle = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
-        } else {
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
                 elementBean.getResource().getStructureId(),
@@ -527,46 +528,52 @@ public class CmsElementUtil {
             if (lastModDate != null) {
                 subTitle += " / " + CmsDateUtil.getDateTime(lastModDate, DateFormat.MEDIUM, wpLocale);
             }
+        } else {
+            permissionInfo = new CmsPermissionInfo(true, true, "");
+            title = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+            subTitle = CmsWorkplaceMessages.getResourceTypeDescription(wpLocale, typeName);
         }
         result.setTitle(title);
         result.setSubTitle(subTitle);
         result.setClientId(elementBean.editorHash());
         result.setSitePath(elementBean.getSitePath());
 
-        result.setNew(elementBean.isCreateNew());
-        if (elementBean.isCreateNew()) {
-            CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(noEditReason)
-                && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
-                String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
-                noEditReason = Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName);
-            }
+        result.setCreateNew(elementBean.isCreateNew());
+        CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
+        if (typeConfig != null) {
+            result.setElementView(typeConfig.getElementView());
+        }
+        if (elementBean.isCreateNew()
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())
+            && ((typeConfig == null) || !typeConfig.checkCreatable(m_cms))) {
+            String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
+            permissionInfo.setNoEditReason(
+                Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName));
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-
-        // although the addRequireVisible seems redundant, it is actually needed because of a weird bug
-        // in the default permission handler.
-        result.setViewPermission(elementBean.isInMemoryOnly()
-            || (m_cms.hasPermissions(
-                elementBean.getResource(),
-                CmsPermissionSet.ACCESS_VIEW,
-                false,
-                CmsResourceFilter.IGNORE_EXPIRATION.addRequireVisible()) && settings.getAccess().getPermissions(
-                m_cms,
-                elementBean.getResource()).requiresViewPermission()));
-
+        result.setPermissionInfo(permissionInfo);
         result.setReleasedAndNotExpired(elementBean.isReleasedAndNotExpired());
-        result.setNoEditReason(noEditReason);
         return result;
     }
 
     /**
+     * Returns the formatter configuration for the given element resource.<p>
+     *
+     * @param resource the element resource
+     *
+     * @return the formatter configuration
+     */
+    CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
+
+        return getConfigData().getFormatters(m_cms, resource);
+    }
+
+    /**
      * Checks if the maximum nesting level is reached for the given container.<p>
-     * 
+     *
      * @param container the container
      * @param containers the other containers of the container page
-     * 
+     *
      * @return <code>true</code> if further nesting is allowed
      */
     private boolean checkContainerTreeLevel(CmsContainer container, Collection<CmsContainer> containers) {
@@ -644,6 +651,36 @@ public class CmsElementUtil {
     }
 
     /**
+     * Returns the rendered element content for all the given containers.
+     *
+     * @param element the element to render
+     * @param containers the containers the element appears in
+     * @param allowNested if nested containers are allowed
+     *
+     * @return a map from container names to rendered page contents
+     */
+    private Map<String, String> getContentsByContainerName(
+        CmsContainerElementBean element,
+        Collection<CmsContainer> containers,
+        boolean allowNested) {
+
+        CmsFormatterConfiguration configs = getFormatterConfiguration(element.getResource());
+        Map<String, String> result = new HashMap<String, String>();
+        for (CmsContainer container : containers) {
+            String content = getContentByContainer(
+                element,
+                container,
+                configs,
+                allowNested && checkContainerTreeLevel(container, containers));
+            if (content != null) {
+                content = removeScriptTags(content);
+            }
+            result.put(container.getName(), content);
+        }
+        return result;
+    }
+
+    /**
      * Returns the content of an element when rendered with the given formatter.<p>
      *
      * @param element the element bean
@@ -661,8 +698,10 @@ public class CmsElementUtil {
     throws CmsException, ServletException, IOException {
 
         element.initResource(m_cms);
-        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            formatter), element.getResource(), formatter);
+        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
+            OpenCms.getResourceManager().getLoader(formatter),
+            element.getResource(),
+            formatter);
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
         TemplateBean templateBean = CmsADESessionCache.getCache(m_req, m_cms).getTemplateBean(
             m_cms.addSiteRoot(m_currentPageUri),
@@ -696,22 +735,12 @@ public class CmsElementUtil {
             m_req.setAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER, eb);
             m_req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
             String encoding = m_res.getCharacterEncoding();
-            return (new String(loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res), encoding)).trim();
+            return (new String(
+                loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res),
+                encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
         }
-    }
-
-    /**
-     * Returns the formatter configuration for the given element resource.<p>
-     *
-     * @param resource the element resource
-     *
-     * @return the formatter configuration
-     */
-    private CmsFormatterConfiguration getFormatterConfiguration(CmsResource resource) {
-
-        return getConfigData().getFormatters(m_cms, resource);
     }
 
     /**

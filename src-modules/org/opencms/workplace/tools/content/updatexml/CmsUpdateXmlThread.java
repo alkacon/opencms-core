@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
 /**
  * Converting xml contents according to new schema.
  * <p>
- * 
+ *
  * @since 7.0.5
  */
 public class CmsUpdateXmlThread extends A_CmsReportThread {
@@ -71,9 +71,9 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
 
     /**
      * Creates a replace html tag Thread.<p>
-     * 
+     *
      * @param cms the current cms context.
-     * 
+     *
      * @param settings the settings needed to perform the operation.
      */
     public CmsUpdateXmlThread(CmsObject cms, CmsUpdateXmlSettings settings) {
@@ -127,11 +127,11 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
 
     /**
      * Locks the current resource.<p>
-     * 
+     *
      * @param cms the current CmsObject
      * @param cmsResource the resource to lock
      * @param report the report
-     * 
+     *
      * @throws CmsException if some goes wrong
      */
     private boolean lockResource(CmsObject cms, CmsResource cmsResource, I_CmsReport report) throws CmsException {
@@ -145,7 +145,9 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
                 getCms().getRequestContext().getCurrentProject())) {
             // prove is current lock from current user in current project
             return true;
-        } else if ((lock != null) && !lock.isUnlocked() && !lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
+        } else if ((lock != null)
+            && !lock.isUnlocked()
+            && !lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
             // the resource is not locked by the current user, so can not lock it
             m_lockedFiles += 1;
             return false;
@@ -157,7 +159,7 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
                 getCms().getRequestContext().getCurrentProject())) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
-            // change the lock 
+            // change the lock
             cms.changeLock(getCms().getSitePath(cmsResource));
         } else if ((lock != null) && lock.isUnlocked()) {
             // lock resource from current user in current project
@@ -187,7 +189,11 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
      * @param cmsObject Current CmsObject
      */
     @SuppressWarnings("unchecked")
-    private void updateXmlContents(I_CmsReport report, String resourcePath, boolean inclSubFolder, CmsObject cmsObject) {
+    private void updateXmlContents(
+        I_CmsReport report,
+        String resourcePath,
+        boolean inclSubFolder,
+        CmsObject cmsObject) {
 
         // write parameters to report
         report.println(Messages.get().container(Messages.RPT_UPDATEXML_BEGIN_UPDATE_0), I_CmsReport.FORMAT_NOTE);
@@ -195,9 +201,11 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
         report.println(
             Messages.get().container(Messages.RPT_UPDATEXML_PARAMETERS_RESOURCE_PATH_1, resourcePath),
             I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_UPDATEXML_PARAMETERS_INC_SUBFOLDERS_1,
-            new Boolean(inclSubFolder).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_UPDATEXML_PARAMETERS_INC_SUBFOLDERS_1,
+                new Boolean(inclSubFolder).toString()),
+            I_CmsReport.FORMAT_NOTE);
 
         // check for valid parameters (vfs folder)
         if (CmsStringUtil.isEmpty(resourcePath)) {
@@ -227,16 +235,17 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
             CmsResource cmsResource = iter.next();
             // only update Xml contents
             if (cmsResource.isFile()
-                && (CmsResourceTypeXmlContent.isXmlContent(cmsResource) || CmsResourceTypeXmlPage.isXmlPage(cmsResource))) {
+                && (CmsResourceTypeXmlContent.isXmlContent(cmsResource)
+                    || CmsResourceTypeXmlPage.isXmlPage(cmsResource))) {
                 files2Update.add(cmsResource);
             }
         }
 
         // number of files to update
         int nrOfFiles = files2Update.size();
-        report.println(Messages.get().container(
-            Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1,
-            new Integer(nrOfFiles).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, new Integer(nrOfFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
         // the file counter
         int fileCounter = 0;
         // update the files
@@ -245,20 +254,23 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
             report.println(
                 Messages.get().container(Messages.RPT_UPDATEXML_START_UPDATING_0),
                 I_CmsReport.FORMAT_HEADLINE);
-            // loop over all files 
+            // loop over all files
             iter = files2Update.iterator();
             while (iter.hasNext()) {
                 CmsResource cmsResource = iter.next();
                 fileCounter += 1;
                 // report entries
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(fileCounter),
-                    String.valueOf(nrOfFiles)), I_CmsReport.FORMAT_NOTE);
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_SUCCESSION_2,
+                        String.valueOf(fileCounter),
+                        String.valueOf(nrOfFiles)),
+                    I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_UPDATEXML_CURRENT_FILE_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    report.removeSiteRoot(cmsResource.getRootPath())));
+                report.print(
+                    org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        report.removeSiteRoot(cmsResource.getRootPath())));
                 report.print(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
                     I_CmsReport.FORMAT_DEFAULT);
@@ -267,15 +279,19 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
                 try {
                     // try to lock the resource
                     if (!lockResource(cmsObject, cmsResource, report)) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_UPDATEXML_LOCKED_FILE_0,
-                            cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                        report.println(
+                            Messages.get().container(
+                                Messages.RPT_UPDATEXML_LOCKED_FILE_0,
+                                cmsObject.getSitePath(cmsResource)),
+                            I_CmsReport.FORMAT_ERROR);
                         continue;
                     }
                 } catch (CmsException e) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_UPDATEXML_LOCKED_FILE_0,
-                        cmsObject.getSitePath(cmsResource)), I_CmsReport.FORMAT_ERROR);
+                    report.println(
+                        Messages.get().container(
+                            Messages.RPT_UPDATEXML_LOCKED_FILE_0,
+                            cmsObject.getSitePath(cmsResource)),
+                        I_CmsReport.FORMAT_ERROR);
                     if (LOG.isErrorEnabled()) {
                         LOG.error(e.getMessageContainer(), e);
                     }
@@ -325,15 +341,17 @@ public class CmsUpdateXmlThread extends A_CmsReportThread {
 
         // the results are written in the report
         report.println(Messages.get().container(Messages.RPT_UPDATEXML_RESULT_0), I_CmsReport.FORMAT_HEADLINE);
-        report.println(Messages.get().container(
-            Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1,
-            new Integer(nrOfFiles).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_UPDATEXML_UPDATE_NUMBER_ERRORS_1,
-            new Integer(m_errorUpdate).toString()), I_CmsReport.FORMAT_NOTE);
-        report.println(Messages.get().container(
-            Messages.RPT_UPDATEXML_LOCKED_FILES_1,
-            new Integer(m_lockedFiles).toString()), I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_UPDATEXML_FILES_TO_UPDATE_1, new Integer(nrOfFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(
+                Messages.RPT_UPDATEXML_UPDATE_NUMBER_ERRORS_1,
+                new Integer(m_errorUpdate).toString()),
+            I_CmsReport.FORMAT_NOTE);
+        report.println(
+            Messages.get().container(Messages.RPT_UPDATEXML_LOCKED_FILES_1, new Integer(m_lockedFiles).toString()),
+            I_CmsReport.FORMAT_NOTE);
         if (m_lockedFiles > 0) {
             report.println(Messages.get().container(Messages.RPT_UPDATEXML_UPDATE_FAILED_0), I_CmsReport.FORMAT_ERROR);
         } else {

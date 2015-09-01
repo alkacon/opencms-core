@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,9 +40,9 @@ import org.timepedia.exporter.client.Exportable;
 @ExportPackage("opencms")
 public interface I_CmsClientCmsUgcSessionCallback extends Exportable {
 
-    /** 
+    /**
      * Calls the callback with the given session as a parameter.<p>
-     * 
+     *
      * @param session the parameter
      */
     void call(CmsClientUgcSession session);

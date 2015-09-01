@@ -20,7 +20,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,12 +65,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The tab widget for selecting folders from the VFS tree.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsVfsTab extends A_CmsListTab {
 
-    /** 
+    /**
      * Handles the change of the item selection.<p>
      */
     private class SelectionHandler extends A_SelectionHandler {
@@ -80,7 +80,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param vfsEntry the vfs entry represented by the list item
          * @param checkBox the reference to the checkbox
          */
@@ -159,8 +159,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Constructor.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      * @param includeFiles the include files flag
      */
     public CmsVfsTab(CmsVfsTabHandler tabHandler, boolean includeFiles) {
@@ -173,8 +173,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Sets the initial folders in the VFS tab.<p>
-     * 
-     * @param entries the root folders to display 
+     *
+     * @param entries the root folders to display
      */
     public void fillInitially(List<CmsVfsEntryBean> entries) {
 
@@ -205,8 +205,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Checks if the tab is initialized.<p>
-     * 
-     * @return true if the tab is initialized 
+     *
+     * @return true if the tab is initialized
      */
     public boolean isInitialized() {
 
@@ -215,8 +215,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * This method is called when the VFS tree preload data is received.<p>
-     * 
-     * @param vfsPreloadData the VFS tree preload data 
+     *
+     * @param vfsPreloadData the VFS tree preload data
      */
     public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
 
@@ -229,8 +229,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Un-checks the check boxes for each folder passed in the <code>folders</code> parameter.<p>
-     * 
-     * @param folders the folders for which the check boxes should be unchecked 
+     *
+     * @param folders the folders for which the check boxes should be unchecked
      */
     public void uncheckFolders(Collection<String> folders) {
 
@@ -254,9 +254,9 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Helper method for creating a VFS tree item widget from a VFS entry bean.<p>
-     * 
-     * @param vfsEntry the VFS entry bean 
-     * 
+     *
+     * @param vfsEntry the VFS entry bean
+     *
      * @return the tree item widget
      */
     protected CmsLazyTreeItem createItem(final CmsVfsEntryBean vfsEntry) {
@@ -272,9 +272,12 @@ public class CmsVfsTab extends A_CmsListTab {
                 name = name.substring(0, name.length() - 1);
             }
         }
-        CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
-            I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER,
-            true), name, vfsEntry.getDisplayName());
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            CmsIconUtil.getResourceIconClasses(I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER, true),
+            name,
+            vfsEntry.getDisplayName());
         dataValue.setUnselectable();
         if (vfsEntry.isEditable()) {
             dataValue.addButton(createUploadButtonForTarget(vfsEntry.getRootPath(), true));
@@ -293,14 +296,15 @@ public class CmsVfsTab extends A_CmsListTab {
             result = new CmsLazyTreeItem(dataValue, true);
             selectionHandler = new SelectionHandler(vfsEntry, null);
         }
-        // we need this in a final variable to access it in the click handler 
+        // we need this in a final variable to access it in the click handler
         if (getTabHandler().hasSelectResource()) {
             String selectPath = m_tabHandler.getSelectPath(vfsEntry);
-            dataValue.addButton(createSelectResourceButton(
-                selectPath,
-                vfsEntry.getStructureId(),
-                vfsEntry.getDisplayName(),
-                I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER));
+            dataValue.addButton(
+                createSelectResourceButton(
+                    selectPath,
+                    vfsEntry.getStructureId(),
+                    vfsEntry.getDisplayName(),
+                    I_CmsGalleryProviderConstants.RESOURCE_TYPE_FOLDER));
         }
         result.setData(vfsEntry);
         m_itemsByPath.put(vfsEntry.getRootPath(), result);
@@ -344,7 +348,7 @@ public class CmsVfsTab extends A_CmsListTab {
                          */
                         public void onFailure(Throwable caught) {
 
-                            // should never be called 
+                            // should never be called
 
                         }
 
@@ -413,7 +417,7 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Returns if files are included.<p>
-     * 
+     *
      * @return <code>true</code> if files are included
      */
     protected boolean isIncludeFiles() {
@@ -423,8 +427,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Collects the structure ids belonging to open tree entries.<p>
-     * 
-     * @return the structure ids for  the open tree entries 
+     *
+     * @return the structure ids for  the open tree entries
      */
     Set<CmsUUID> getOpenElementIds() {
 
@@ -440,8 +444,8 @@ public class CmsVfsTab extends A_CmsListTab {
 
     /**
      * Selects a specific site.<p>
-     * 
-     * @param siteRoot the site root 
+     *
+     * @param siteRoot the site root
      */
     private void selectSite(String siteRoot) {
 

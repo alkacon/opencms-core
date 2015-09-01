@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,10 +35,8 @@ public class CmsLockActionRecord {
     /** A type for the different locking actions. */
     public enum LockChange {
         /** The lock was changed. */
-        changed,
-        /** The resource was locked. */
-        locked,
-        /** The lock state was not modified. */
+        changed, /** The resource was locked. */
+        locked, /** The lock state was not modified. */
         unchanged;
     }
 
@@ -48,11 +46,11 @@ public class CmsLockActionRecord {
     /** The action type. */
     private LockChange m_change;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param lock the lock state after the action 
-     * @param change the action type 
+     *
+     * @param lock the lock state after the action
+     * @param change the action type
      */
     public CmsLockActionRecord(CmsLock lock, LockChange change) {
 
@@ -60,20 +58,20 @@ public class CmsLockActionRecord {
         m_change = change;
     }
 
-    /** 
+    /**
      * Gets the change type.<p>
-     * 
-     * @return the change type 
+     *
+     * @return the change type
      */
     public LockChange getChange() {
 
         return m_change;
     }
 
-    /** 
+    /**
      * Gets the lock state after the action.<p>
-     * 
-     * @return the lock state after the action 
+     *
+     * @return the lock state after the action
      */
     public CmsLock getLock() {
 

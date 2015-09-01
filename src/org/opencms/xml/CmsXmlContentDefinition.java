@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -75,8 +76,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Describes the structure definition of an XML content object.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
 
@@ -85,10 +86,8 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public enum SequenceType {
         /** A <code>xsd:choice</code> where the choice elements can appear more than once in a mix. */
-        MULTIPLE_CHOICE,
-        /** A simple <code>xsd:sequence</code>. */
-        SEQUENCE,
-        /** A <code>xsd:choice</code> where only one choice element can be selected. */
+        MULTIPLE_CHOICE, /** A simple <code>xsd:sequence</code>. */
+        SEQUENCE, /** A <code>xsd:choice</code> where only one choice element can be selected. */
         SINGLE_CHOICE
     }
 
@@ -213,8 +212,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     private List<I_CmsXmlSchemaType> m_typeSequence;
 
     /**
-     * Creates a new XML content definition.<p> 
-     * 
+     * Creates a new XML content definition.<p>
+     *
      * @param innerName the inner element name to use for the content definiton
      * @param schemaLocation the location from which the XML schema was read (system id)
      */
@@ -224,8 +223,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Creates a new XML content definition.<p> 
-     * 
+     * Creates a new XML content definition.<p>
+     *
      * @param outerName the outer element name to use for the content definition
      * @param innerName the inner element name to use for the content definition
      * @param schemaLocation the location from which the XML schema was read (system id)
@@ -241,7 +240,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         m_schemaLocation = schemaLocation;
         m_contentHandler = new CmsDefaultXmlContentHandler();
         m_sequenceType = SequenceType.SEQUENCE;
-        m_elementTypes = new HashMap<String, I_CmsXmlSchemaType>();
+        m_elementTypes = new ConcurrentHashMap<String, I_CmsXmlSchemaType>();
     }
 
     /**
@@ -254,12 +253,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Factory method that returns the XML content definition instance for a given resource.<p>
-     * 
+     *
      * @param cms the cms-object
      * @param resource the resource
-     * 
+     *
      * @return the XML content definition
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static CmsXmlContentDefinition getContentDefinitionForResource(CmsObject cms, CmsResource resource)
@@ -282,7 +281,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
         if (contentDef == null) {
             // could still be empty since it is not mandatory to configure the resource type in the XML configuration
-            // try through the XSD relation 
+            // try through the XSD relation
             List<CmsRelation> relations = cms.getRelationsForResource(
                 resource,
                 CmsRelationFilter.TARGETS.filterType(CmsRelationType.XSD));
@@ -304,13 +303,13 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Reads the content definition which is configured for a resource type.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param typeName the type name
-     *  
-     * @return the content definition 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the content definition
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsXmlContentDefinition getContentDefinitionForType(CmsObject cms, String typeName)
     throws CmsException {
@@ -327,12 +326,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Returns a content handler instance for the given resource.<p>
-     * 
+     *
      * @param cms the cms-object
      * @param resource the resource
-     * 
+     *
      * @return the content handler
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static I_CmsXmlContentHandler getContentHandlerForResource(CmsObject cms, CmsResource resource)
@@ -344,13 +343,13 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a byte array
      * that contains XML data.<p>
-     * 
+     *
      * @param xmlData the XML data in a byte array
      * @param schemaLocation the location from which the XML schema was read (system id)
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the byte array
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContentDefinition unmarshal(byte[] xmlData, String schemaLocation, EntityResolver resolver)
@@ -367,12 +366,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Factory method to unmarshal (read) a XML content definition instance from the OpenCms VFS resource name.<p>
-     * 
+     *
      * @param cms the current users CmsObject
      * @param resourcename the resource name to unmarshal the XML content definition from
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the VFS resource
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContentDefinition unmarshal(CmsObject cms, String resourcename) throws CmsXmlException {
@@ -391,15 +390,15 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a XML document.<p>
-     * 
+     *
      * This method does additional validation to ensure the document has the required
      * XML structure for a OpenCms content definition schema.<p>
-     * 
+     *
      * @param document the XML document to generate a XML content definition from
      * @param schemaLocation the location from which the XML schema was read (system id)
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the XML document
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContentDefinition unmarshal(Document document, String schemaLocation) throws CmsXmlException {
@@ -416,13 +415,13 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a XML InputSource.<p>
-     * 
+     *
      * @param source the XML InputSource to use
      * @param schemaLocation the location from which the XML schema was read (system id)
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the InputSource
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContentDefinition unmarshal(InputSource source, String schemaLocation, EntityResolver resolver)
@@ -439,15 +438,15 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a given XML schema location.<p>
-     * 
+     *
      * The XML content definition data to unmarshal will be read from the provided schema location using
      * an XML InputSource.<p>
-     * 
+     *
      * @param schemaLocation the location from which to read the XML schema (system id)
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the InputSource
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      * @throws SAXException if the XML schema location could not be converted to an XML InputSource
      * @throws IOException if the XML schema location could not be converted to an XML InputSource
@@ -468,13 +467,13 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a String
      * that contains XML data.<p>
-     * 
+     *
      * @param xmlData the XML data in a String
      * @param schemaLocation the location from which the XML schema was read (system id)
      * @param resolver the XML entity resolver to use
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the byte array
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     public static CmsXmlContentDefinition unmarshal(String xmlData, String schemaLocation, EntityResolver resolver)
@@ -491,9 +490,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Creates the name of the type attribute from the given content name.<p>
-     * 
+     *
      * @param name the name to use
-     * 
+     *
      * @return the name of the type attribute
      */
     protected static String createTypeName(String name) {
@@ -509,19 +508,19 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Validates if a given attribute exists at the given element with an (optional) specified value.<p>
-     * 
-     * If the required value is not <code>null</code>, the attribute must have exactly this 
-     * value set.<p> 
-     * 
+     *
+     * If the required value is not <code>null</code>, the attribute must have exactly this
+     * value set.<p>
+     *
      * If no value is required, some simple validation is performed on the attribute value,
      * like a check that the value does not have leading or trailing white spaces.<p>
-     * 
+     *
      * @param element the element to validate
      * @param attributeName the attribute to check for
      * @param requiredValue the required value of the attribute, or <code>null</code> if any value is allowed
-     * 
+     *
      * @return the value of the attribute
-     * 
+     *
      * @throws CmsXmlException if the element does not have the required attribute set, or if the validation fails
      */
     protected static String validateAttribute(Element element, String attributeName, String requiredValue)
@@ -529,26 +528,26 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         Attribute attribute = element.attribute(attributeName);
         if (attribute == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_EL_MISSING_ATTRIBUTE_2,
-                element.getUniquePath(),
-                attributeName));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_EL_MISSING_ATTRIBUTE_2, element.getUniquePath(), attributeName));
         }
         String value = attribute.getValue();
 
         if (requiredValue == null) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) || !value.equals(value.trim())) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_EL_BAD_ATTRIBUTE_WS_3,
-                    element.getUniquePath(),
-                    attributeName,
-                    value));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_EL_BAD_ATTRIBUTE_WS_3,
+                        element.getUniquePath(),
+                        attributeName,
+                        value));
             }
         } else {
             if (!requiredValue.equals(value)) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_EL_BAD_ATTRIBUTE_VALUE_4,
-                    new Object[] {element.getUniquePath(), attributeName, requiredValue, value}));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_EL_BAD_ATTRIBUTE_VALUE_4,
+                        new Object[] {element.getUniquePath(), attributeName, requiredValue, value}));
             }
         }
         return value;
@@ -556,12 +555,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Validates if a given element has exactly the required attributes set.<p>
-     * 
+     *
      * @param element the element to validate
      * @param requiredAttributes the list of required attributes
      * @param optionalAttributes the list of optional attributes
-     * 
-     * @throws CmsXmlException if the validation fails 
+     *
+     * @throws CmsXmlException if the validation fails
      */
     protected static void validateAttributesExists(
         Element element,
@@ -569,28 +568,31 @@ public class CmsXmlContentDefinition implements Cloneable {
         String[] optionalAttributes) throws CmsXmlException {
 
         if (element.attributeCount() < requiredAttributes.length) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_EL_ATTRIBUTE_TOOFEW_3,
-                element.getUniquePath(),
-                new Integer(requiredAttributes.length),
-                new Integer(element.attributeCount())));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_EL_ATTRIBUTE_TOOFEW_3,
+                    element.getUniquePath(),
+                    new Integer(requiredAttributes.length),
+                    new Integer(element.attributeCount())));
         }
 
         if (element.attributeCount() > (requiredAttributes.length + optionalAttributes.length)) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_EL_ATTRIBUTE_TOOMANY_3,
-                element.getUniquePath(),
-                new Integer(requiredAttributes.length + optionalAttributes.length),
-                new Integer(element.attributeCount())));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_EL_ATTRIBUTE_TOOMANY_3,
+                    element.getUniquePath(),
+                    new Integer(requiredAttributes.length + optionalAttributes.length),
+                    new Integer(element.attributeCount())));
         }
 
         for (int i = 0; i < requiredAttributes.length; i++) {
             String attributeName = requiredAttributes[i];
             if (element.attribute(attributeName) == null) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_EL_MISSING_ATTRIBUTE_2,
-                    element.getUniquePath(),
-                    attributeName));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_EL_MISSING_ATTRIBUTE_2,
+                        element.getUniquePath(),
+                        attributeName));
             }
         }
 
@@ -600,22 +602,23 @@ public class CmsXmlContentDefinition implements Cloneable {
         for (int i = 0; i < element.attributes().size(); i++) {
             String attributeName = element.attribute(i).getName();
             if (!rA.contains(attributeName) && !oA.contains(attributeName)) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_EL_INVALID_ATTRIBUTE_2,
-                    element.getUniquePath(),
-                    attributeName));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_EL_INVALID_ATTRIBUTE_2,
+                        element.getUniquePath(),
+                        attributeName));
             }
         }
     }
 
     /**
      * Validates the given element as a complex type sequence.<p>
-     * 
+     *
      * @param element the element to validate
      * @param includes the XML schema includes
-     * 
-     * @return a data structure containing the validated complex type sequence data 
-     * 
+     *
+     * @return a data structure containing the validated complex type sequence data
+     *
      * @throws CmsXmlException if the validation fails
      */
     protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
@@ -629,10 +632,11 @@ public class CmsXmlContentDefinition implements Cloneable {
         // now check the type definition list
         List<Element> mainElements = CmsXmlGenericWrapper.elements(element);
         if ((mainElements.size() != 1) && (mainElements.size() != 2)) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_TS_SUBELEMENT_COUNT_2,
-                element.getUniquePath(),
-                new Integer(mainElements.size())));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_TS_SUBELEMENT_COUNT_2,
+                    element.getUniquePath(),
+                    new Integer(mainElements.size())));
         }
 
         boolean hasLanguageAttribute = false;
@@ -641,11 +645,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
             Element typeAttribute = mainElements.get(1);
             if (!XSD_NODE_ATTRIBUTE.equals(typeAttribute.getQName())) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_CD_ELEMENT_NAME_3,
-                    typeAttribute.getUniquePath(),
-                    XSD_NODE_ATTRIBUTE.getQualifiedName(),
-                    typeAttribute.getQName().getQualifiedName()));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_CD_ELEMENT_NAME_3,
+                        typeAttribute.getUniquePath(),
+                        XSD_NODE_ATTRIBUTE.getQualifiedName(),
+                        typeAttribute.getQName().getQualifiedName()));
             }
             validateAttribute(typeAttribute, XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
             validateAttribute(typeAttribute, XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
@@ -666,13 +671,14 @@ public class CmsXmlContentDefinition implements Cloneable {
         Element typeSequenceElement = mainElements.get(0);
         if (!XSD_NODE_SEQUENCE.equals(typeSequenceElement.getQName())) {
             if (!XSD_NODE_CHOICE.equals(typeSequenceElement.getQName())) {
-                throw new CmsXmlException(Messages.get().container(
-                    Messages.ERR_CD_ELEMENT_NAME_4,
-                    new Object[] {
-                        typeSequenceElement.getUniquePath(),
-                        XSD_NODE_SEQUENCE.getQualifiedName(),
-                        XSD_NODE_CHOICE.getQualifiedName(),
-                        typeSequenceElement.getQName().getQualifiedName()}));
+                throw new CmsXmlException(
+                    Messages.get().container(
+                        Messages.ERR_CD_ELEMENT_NAME_4,
+                        new Object[] {
+                            typeSequenceElement.getUniquePath(),
+                            XSD_NODE_SEQUENCE.getQualifiedName(),
+                            XSD_NODE_CHOICE.getQualifiedName(),
+                            typeSequenceElement.getQName().getQualifiedName()}));
             } else {
                 // this is a xsd:choice, check if this is single or multiple choice
                 String minOccursStr = typeSequenceElement.attributeValue(XSD_ATTRIBUTE_MIN_OCCURS);
@@ -681,11 +687,12 @@ public class CmsXmlContentDefinition implements Cloneable {
                     try {
                         minOccurs = Integer.parseInt(minOccursStr.trim());
                     } catch (NumberFormatException e) {
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_EL_BAD_ATTRIBUTE_3,
-                            element.getUniquePath(),
-                            XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr == null ? "1" : minOccursStr));
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_EL_BAD_ATTRIBUTE_3,
+                                element.getUniquePath(),
+                                XSD_ATTRIBUTE_MIN_OCCURS,
+                                minOccursStr == null ? "1" : minOccursStr));
                     }
                 }
                 String maxOccursStr = typeSequenceElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS);
@@ -697,11 +704,12 @@ public class CmsXmlContentDefinition implements Cloneable {
                         try {
                             choiceMaxOccurs = Integer.parseInt(maxOccursStr.trim());
                         } catch (NumberFormatException e) {
-                            throw new CmsXmlException(Messages.get().container(
-                                Messages.ERR_EL_BAD_ATTRIBUTE_3,
-                                element.getUniquePath(),
-                                XSD_ATTRIBUTE_MAX_OCCURS,
-                                maxOccursStr));
+                            throw new CmsXmlException(
+                                Messages.get().container(
+                                    Messages.ERR_EL_BAD_ATTRIBUTE_3,
+                                    element.getUniquePath(),
+                                    XSD_ATTRIBUTE_MAX_OCCURS,
+                                    maxOccursStr));
                         }
                     }
                 }
@@ -711,11 +719,12 @@ public class CmsXmlContentDefinition implements Cloneable {
                 } else {
                     // this is a multiple choice sequence
                     if (minOccurs > choiceMaxOccurs) {
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_EL_BAD_ATTRIBUTE_3,
-                            element.getUniquePath(),
-                            XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr == null ? "1" : minOccursStr));
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_EL_BAD_ATTRIBUTE_3,
+                                element.getUniquePath(),
+                                XSD_ATTRIBUTE_MIN_OCCURS,
+                                minOccursStr == null ? "1" : minOccursStr));
                     }
                     sequenceType = SequenceType.MULTIPLE_CHOICE;
                 }
@@ -728,11 +737,12 @@ public class CmsXmlContentDefinition implements Cloneable {
         // check the type definition sequence
         List<Element> typeSequenceElements = CmsXmlGenericWrapper.elements(typeSequenceElement);
         if (typeSequenceElements.size() < 1) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_TS_SUBELEMENT_TOOFEW_3,
-                typeSequenceElement.getUniquePath(),
-                new Integer(1),
-                new Integer(typeSequenceElements.size())));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_TS_SUBELEMENT_TOOFEW_3,
+                    typeSequenceElement.getUniquePath(),
+                    new Integer(1),
+                    new Integer(typeSequenceElements.size())));
         }
 
         // now add all type definitions from the schema
@@ -758,24 +768,26 @@ public class CmsXmlContentDefinition implements Cloneable {
                     }
                     // minOccurs must be "0"
                     if (minOccurs != 0) {
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_EL_BAD_ATTRIBUTE_3,
-                            typeElement.getUniquePath(),
-                            XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr == null ? "1" : minOccursStr));
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_EL_BAD_ATTRIBUTE_3,
+                                typeElement.getUniquePath(),
+                                XSD_ATTRIBUTE_MIN_OCCURS,
+                                minOccursStr == null ? "1" : minOccursStr));
                     }
                 }
                 // create the type with the type manager
                 I_CmsXmlSchemaType type = typeManager.getContentType(typeElement, includes);
                 if (sequenceType == SequenceType.MULTIPLE_CHOICE) {
-                    // if this is a multiple choice sequence, 
+                    // if this is a multiple choice sequence,
                     // all elements must have "minOccurs" 0 or 1 and "maxOccurs" of 1
                     if ((type.getMinOccurs() < 0) || (type.getMinOccurs() > 1) || (type.getMaxOccurs() != 1)) {
-                        throw new CmsXmlException(Messages.get().container(
-                            Messages.ERR_EL_BAD_ATTRIBUTE_3,
-                            typeElement.getUniquePath(),
-                            XSD_ATTRIBUTE_MAX_OCCURS,
-                            typeElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS)));
+                        throw new CmsXmlException(
+                            Messages.get().container(
+                                Messages.ERR_EL_BAD_ATTRIBUTE_3,
+                                typeElement.getUniquePath(),
+                                XSD_ATTRIBUTE_MAX_OCCURS,
+                                typeElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS)));
                     }
                 }
                 sequence.add(type);
@@ -798,11 +810,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Looks up the given XML content definition system id in the internal content definition cache.<p> 
-     * 
+     * Looks up the given XML content definition system id in the internal content definition cache.<p>
+     *
      * @param schemaLocation the system id of the XML content definition to look up
      * @param resolver the XML entity resolver to use (contains the cache)
-     * 
+     *
      * @return the XML content definition found, or null if no definition is cached for the given system id
      */
     private static CmsXmlContentDefinition getCachedContentDefinition(String schemaLocation, EntityResolver resolver) {
@@ -817,9 +829,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Translates the XSD schema location.<p>
-     * 
+     *
      * @param schemaLocation the location to translate
-     * 
+     *
      * @return the translated schema location
      */
     private static String translateSchema(String schemaLocation) {
@@ -832,17 +844,17 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Internal method to unmarshal (read) a XML content definition instance from a XML document.<p>
-     * 
-     * It is assumed that the XML content definition cache has already been tested and the document 
-     * has not been found in the cache. After the XML content definition has been successfully created, 
+     *
+     * It is assumed that the XML content definition cache has already been tested and the document
+     * has not been found in the cache. After the XML content definition has been successfully created,
      * it is placed in the cache.<p>
-     * 
+     *
      * @param document the XML document to generate a XML content definition from
      * @param schemaLocation the location from which the XML schema was read (system id)
      * @param resolver the XML entity resolver used by the given XML document
-     * 
+     *
      * @return a XML content definition instance unmarshalled from the XML document
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      */
     private static CmsXmlContentDefinition unmarshalInternal(
@@ -850,7 +862,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         String schemaLocation,
         EntityResolver resolver) throws CmsXmlException {
 
-        // analyze the document and generate the XML content type definition        
+        // analyze the document and generate the XML content type definition
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {
             // schema node is required
@@ -867,10 +879,8 @@ public class CmsXmlContentDefinition implements Cloneable {
         String target = validateAttribute(include, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
         if (!XSD_INCLUDE_OPENCMS.equals(target)) {
             // the first include must point to the default OpenCms standard schema include
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_CD_FIRST_INCLUDE_2,
-                XSD_INCLUDE_OPENCMS,
-                target));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_CD_FIRST_INCLUDE_2, XSD_INCLUDE_OPENCMS, target));
         }
 
         boolean recursive = false;
@@ -900,10 +910,11 @@ public class CmsXmlContentDefinition implements Cloneable {
         List<Element> elements = CmsXmlGenericWrapper.elements(root, XSD_NODE_ELEMENT);
         if (elements.size() != 1) {
             // only one root element is allowed
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_CD_ROOT_ELEMENT_COUNT_1,
-                XSD_INCLUDE_OPENCMS,
-                new Integer(elements.size())));
+            throw new CmsXmlException(
+                Messages.get().container(
+                    Messages.ERR_CD_ROOT_ELEMENT_COUNT_1,
+                    XSD_INCLUDE_OPENCMS,
+                    new Integer(elements.size())));
         }
 
         // collect the data from the root element node
@@ -914,12 +925,11 @@ public class CmsXmlContentDefinition implements Cloneable {
         List<Element> complexTypes = CmsXmlGenericWrapper.elements(root, XSD_NODE_COMPLEXTYPE);
         if (complexTypes.size() != 2) {
             // exactly two complex types are required
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_CD_COMPLEX_TYPE_COUNT_1,
-                new Integer(complexTypes.size())));
+            throw new CmsXmlException(
+                Messages.get().container(Messages.ERR_CD_COMPLEX_TYPE_COUNT_1, new Integer(complexTypes.size())));
         }
 
-        // get the outer element sequence, this must be the first element 
+        // get the outer element sequence, this must be the first element
         CmsXmlComplexTypeSequence outerSequence = validateComplexTypeSequence(complexTypes.get(0), nestedDefinitions);
         CmsXmlNestedContentDefinition outer = (CmsXmlNestedContentDefinition)outerSequence.getSequence().get(0);
 
@@ -944,7 +954,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             nestedDefinitions.add(result);
         }
 
-        // get the inner element sequence, this must be the second element 
+        // get the inner element sequence, this must be the second element
         CmsXmlComplexTypeSequence innerSequence = validateComplexTypeSequence(complexTypes.get(1), nestedDefinitions);
 
         // add the types from the main sequence node
@@ -966,7 +976,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             List<Element> appinfos = CmsXmlGenericWrapper.elements(annotations.get(0), XSD_NODE_APPINFO);
 
             if (appinfos.size() > 0) {
-                // the first appinfo node contains the specific XML content data 
+                // the first appinfo node contains the specific XML content data
                 appInfoElement = appinfos.get(0);
 
                 // check for a special content handler in the appinfo node
@@ -1001,15 +1011,15 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Adds the missing default XML according to this content definition to the given document element.<p>  
-     * 
+     * Adds the missing default XML according to this content definition to the given document element.<p>
+     *
      * In case the root element already contains sub nodes, only missing sub nodes are added.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param document the document where the XML is added in (required for default XML generation)
      * @param root the root node to add the missing XML for
      * @param locale the locale to add the XML for
-     * 
+     *
      * @return the given root element with the missing content added
      */
     public Element addDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
@@ -1049,7 +1059,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Adds a nested (included) XML content definition.<p>
-     * 
+     *
      * @param nestedSchema the nested (included) XML content definition to add
      */
     public void addInclude(CmsXmlContentDefinition nestedSchema) {
@@ -1059,9 +1069,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Adds the given content type.<p>
-     * 
+     *
      * @param type the content type to add
-     * 
+     *
      * @throws CmsXmlException in case an unregistered type is added
      */
     public void addType(I_CmsXmlSchemaType type) throws CmsXmlException {
@@ -1081,8 +1091,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Creates a clone of this XML content definition.<p> 
-     * 
+     * Creates a clone of this XML content definition.<p>
+     *
      * @return a clone of this XML content definition
      */
     @Override
@@ -1104,16 +1114,16 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Generates the default XML content for this content definition, and append it to the given root element.<p>
-     * 
+     *
      * Please note: The default values for the annotations are read from the content definition of the given
-     * document. For a nested content definitions, this means that all defaults are set in the annotations of the 
+     * document. For a nested content definitions, this means that all defaults are set in the annotations of the
      * "outer" or "main" content definition.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for
      * @param root the node of the document where to append the generated XML to
      * @param locale the locale to create the default element in the document with
-     * 
+     *
      * @return the default XML content for this content definition, and append it to the given root element
      */
     public Element createDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
@@ -1138,11 +1148,11 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Generates a valid XML document according to the XML schema of this content definition.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for
      * @param locale the locale to create the default element in the document with
-     * 
+     *
      * @return a valid XML document according to the XML schema of this content definition
      */
     public Document createDocument(CmsObject cms, I_CmsXmlDocument document, Locale locale) {
@@ -1160,12 +1170,12 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Generates a valid locale (language) element for the XML schema of this content definition.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for
      * @param root the root node of the document where to append the locale to
      * @param locale the locale to create the default element in the document with
-     * 
+     *
      * @return a valid XML element for the locale according to the XML schema of this content definition
      */
     public Element createLocale(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
@@ -1203,7 +1213,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Freezes this content definition, making all internal data structures
      * unmodifiable.<p>
-     * 
+     *
      * This is required to prevent modification of a cached content definition.<p>
      */
     public void freeze() {
@@ -1239,7 +1249,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Returns the set of nested (included) XML content definitions.<p>
-     * 
+     *
      * @return the set of nested (included) XML content definitions
      */
     public Set<CmsXmlContentDefinition> getIncludes() {
@@ -1269,7 +1279,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Generates an XML schema for the content definition.<p>
-     * 
+     *
      * @return the generated XML schema
      */
     public Document getSchema() {
@@ -1354,11 +1364,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the schema type for the given element name, or <code>null</code> if no 
+     * Returns the schema type for the given element name, or <code>null</code> if no
      * node is defined with this name.<p>
-     * 
+     *
      * @param elementPath the element xpath to look up the type for
-     * @return the type for the given element name, or <code>null</code> if no 
+     * @return the type for the given element name, or <code>null</code> if no
      *      node is defined with this name
      */
     public I_CmsXmlSchemaType getSchemaType(String elementPath) {
@@ -1380,7 +1390,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Returns the internal set of schema type names.<p>
-     * 
+     *
      * @return the internal set of schema type names
      */
     public Set<String> getSchemaTypes() {
@@ -1390,7 +1400,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Returns the sequence type of this content definition.<p>
-     * 
+     *
      * @return the sequence type of this content definition
      */
     public SequenceType getSequenceType() {
@@ -1400,7 +1410,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Returns the main type name of this XML content definition.<p>
-     * 
+     *
      * @return the main type name of this XML content definition
      */
     public String getTypeName() {
@@ -1452,9 +1462,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /**
      * Calculates the schema type for the given element name by recursing into the schema structure.<p>
-     * 
+     *
      * @param elementPath the element xpath to look up the type for
-     * @return the type for the given element name, or <code>null</code> if no 
+     * @return the type for the given element name, or <code>null</code> if no
      *      node is defined with this name
      */
     private I_CmsXmlSchemaType getSchemaTypeRecusive(String elementPath) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * Provides the user export settings.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsUserExportSettings {
@@ -53,7 +53,7 @@ public class CmsUserExportSettings {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param separator the seperator to use during import
      * @param columns the columns to export
      */
@@ -65,7 +65,7 @@ public class CmsUserExportSettings {
 
     /**
      * Adds a column to the list of export columns.<p>
-     * 
+     *
      * @param column column to add to export columns list
      */
     public void addColumn(String column) {
@@ -85,7 +85,7 @@ public class CmsUserExportSettings {
 
     /**
      * Returns the export separator.<p>
-     * 
+     *
      * @return the export separator
      */
     public String getSeparator() {

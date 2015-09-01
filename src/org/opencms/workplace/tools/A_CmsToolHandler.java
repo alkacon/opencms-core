@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Helper class to build easily other admin tool handlers.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
@@ -361,31 +361,31 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /**
      * Default implementation.<p>
-     * 
-     * It takes the icon path from <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> property, 
-     * or uses a default icon if undefined, the name is taken from the 
-     * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVTEXT}</code> property, 
-     * or uses the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_TITLE}</code> property if undefined, 
-     * or an default text, if still undefined. if you want 2 different names, one for the big icon tools and one for 
+     *
+     * It takes the icon path from <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> property,
+     * or uses a default icon if undefined, the name is taken from the
+     * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVTEXT}</code> property,
+     * or uses the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_TITLE}</code> property if undefined,
+     * or an default text, if still undefined. if you want 2 different names, one for the big icon tools and one for
      * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> to separate them in the property.
-     * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the 
+     * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the
      * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_DESCRIPTION}</code> property or a
-     * default text if undefined, if you want to customize a help text while disabled, use a 
-     * <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
-     * 
+     * default text if undefined, if you want to customize a help text while disabled, use a
+     * <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> as a separator in the same property.<p>
+     *
      * The group is taken from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVINFO}</code> property,
      * the position from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVPOS}</code>
      * and the install path is given by the folder structure if the <code>{@link #ARGS_PROPERTY_DEFINITION}</code>
      * property does not include path information.<p>
-     * 
-     * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code>, 
+     *
+     * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code>,
      * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). The paths are relative
-     * to the /system/workplace/resources/ folder. If the tool is disabled, the names of the icons are composed as 
+     * to the /system/workplace/resources/ folder. If the tool is disabled, the names of the icons are composed as
      * ${name}_disabled.${ext}<p>
-     * 
-     * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key 
+     *
+     * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key
      * <code>#ARG_CONFIRMATION_NAME</code>
-     * 
+     *
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, CmsToolRootHandler, java.lang.String)
      */
     public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
@@ -481,12 +481,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /**
      * Sets the link for the given resource.<p>
-     * 
+     *
      * Use the <code>resourcePath</code> as link if it is not a folder.
-     * 
+     *
      * If it is a folder, try to use the folder default file property value as link.
      * if not use the {@link CmsToolManager#VIEW_JSPPAGE_LOCATION}.
-     * 
+     *
      * @param cms the cms context
      * @param resourcePath the path to the resource to set the link for
      */
@@ -494,7 +494,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         String link = resourcePath;
         try {
-            // make sure the res is a folder 
+            // make sure the res is a folder
             cms.readFolder(resourcePath);
 
             // adjust the path
@@ -531,7 +531,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /**
      * Sets the needed properties from the {@link #ARGS_PROPERTY_DEFINITION} property of the given resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resourcePath the path to the resource to read the property from
      */

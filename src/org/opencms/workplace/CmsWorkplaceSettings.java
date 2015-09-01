@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,6 +40,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import java.util.HashMap;
@@ -47,11 +48,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
  * will be stored in the session of a user.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceSettings {
 
@@ -136,6 +139,9 @@ public class CmsWorkplaceSettings {
     /** The view URI. */
     private String m_viewUri;
 
+    /** Cache for workplace list metadata. */
+    private Map<String, CmsListMetadata> m_listMetadataCache = Maps.newHashMap();
+
     /**
      * Constructor, only package visible.<p>
      */
@@ -154,7 +160,7 @@ public class CmsWorkplaceSettings {
      * Returns the collector object.<p>
      *
      * Use this mechanism for transferring a resource collector between
-     * several page instances of an interactive dialog. <p> 
+     * several page instances of an interactive dialog. <p>
      *
      * @return the dialog object
      */
@@ -167,8 +173,8 @@ public class CmsWorkplaceSettings {
      * Returns the dialog object.<p>
      *
      * Use this mechanism for transferring a complex object between
-     * several page instances of an interactive dialog. This is usually 
-     * required when editing a complex object in a dialog of the "Administration" view.<p> 
+     * several page instances of an interactive dialog. This is usually
+     * required when editing a complex object in a dialog of the "Administration" view.<p>
      *
      * @return the dialog object
      */
@@ -189,7 +195,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the explorer flat url.<p>
-     *  
+     *
      * @return the explorer flat url
      */
     public String getExplorerFlaturl() {
@@ -198,8 +204,8 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the current explorer mode.<p> 
-     * 
+     * Returns the current explorer mode.<p>
+     *
      * @return the current explorer mode
      */
     public String getExplorerMode() {
@@ -209,7 +215,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the currently selected page in the explorer view.<p>
-     * 
+     *
      * @return the currently selected page in the explorer view
      */
     public int getExplorerPage() {
@@ -219,10 +225,10 @@ public class CmsWorkplaceSettings {
 
     /**
      * Gets the explorer project filter for the project view.<p>
-     * 
+     *
      * This parameter is used in the administration to filter
      * files belonging to a project.
-     * 
+     *
      * @return the explorer project filter
      */
     public String getExplorerProjectFilter() {
@@ -232,10 +238,10 @@ public class CmsWorkplaceSettings {
 
     /**
      * Gets the explorer project id for the project view.<p>
-     * 
+     *
      * This parameter is used in the administration to filter
      * files belonging to a selected project.
-     * 
+     *
      * @return the explorer project id
      */
     public CmsUUID getExplorerProjectId() {
@@ -245,7 +251,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current resource to be displayed in the explorer.<p>
-     * 
+     *
      * @return the current resource to be displayed in the explorer
      */
     public String getExplorerResource() {
@@ -269,7 +275,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
-     * 
+     *
      * @return the frame URIs of the currently loaded frameset
      */
     public Map<String, String> getFrameUris() {
@@ -289,7 +295,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the last gallery search scope.<p>
-     * 
+     *
      * @return the last gallery search scope
      */
     public CmsGallerySearchScope getLastSearchScope() {
@@ -302,9 +308,9 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the last saved gallery for the given gallery key.<p>
-     * 
+     *
      * @param galleryKey the key for which to look up the gallery
-     * @return the last saved gallery for the given gallery key 
+     * @return the last saved gallery for the given gallery key
      **/
     public String getLastUsedGallery(String galleryKey) {
 
@@ -314,15 +320,25 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Gets the cache for workplace list metadata.<p>
+     *
+     * @return the cache for workplace list metadata
+     */
+    public Map<String, CmsListMetadata> getListMetadataCache() {
+
+        return m_listMetadataCache;
+    }
+
+    /**
      * Returns the list dialog object.<p>
      *
      * Use this mechanism for transfering a html list object between
-     * several page instances of an interactive dialog. This is usually 
-     * required when having several lists in a tool or when a list action 
-     * another list displays of the "Administration" view.<p> 
+     * several page instances of an interactive dialog. This is usually
+     * required when having several lists in a tool or when a list action
+     * another list displays of the "Administration" view.<p>
      *
      * @return the dialog object
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#getListObject(Class, CmsWorkplaceSettings)
      */
     public Object getListObject() {
@@ -332,7 +348,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current detail grade of the view.<p>
-     *  
+     *
      * @return value of the details.
      */
     public String getPermissionDetailView() {
@@ -341,8 +357,8 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the currently selected project of the workplace user.<p> 
-     * 
+     * Returns the currently selected project of the workplace user.<p>
+     *
      * @return the currently selected project of the workplace user
      */
     public CmsUUID getProject() {
@@ -352,7 +368,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the publish list.<p>
-     * 
+     *
      * @return the publishList
      */
     public CmsPublishList getPublishList() {
@@ -362,8 +378,8 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current site for the user.<p>
-     * 
-     * @return the current site for the user 
+     *
+     * @return the current site for the user
      */
     public String getSite() {
 
@@ -382,7 +398,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the tree resource uri for the specified tree type.<p>
-     * 
+     *
      * @param type the type of the tree
      * @return the tree resource uri for the specified tree type
      */
@@ -397,7 +413,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the tree site uri for the specified tree type.<p>
-     * 
+     *
      * @param type the type of the tree
      * @return the tree site uri for the specified tree type
      */
@@ -409,7 +425,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current workplace user.<p>
-     * 
+     *
      * @return the current workplace user
      */
     public CmsUser getUser() {
@@ -419,7 +435,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current workplace user settings object.<p>
-     * 
+     *
      * @return the current workplace user settings object
      */
     public CmsUserSettings getUserSettings() {
@@ -430,7 +446,7 @@ public class CmsWorkplaceSettings {
     /**
      * Returns the view startup page.<p>
      *
-     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the 
+     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the
      * OpenCms workplace base frameset after the user logs in.<p>
      *
      * @return the view startup page
@@ -442,8 +458,8 @@ public class CmsWorkplaceSettings {
 
     /**
      * Returns the current view Uri selected in the workplace.<p>
-     * 
-     * @return the current view Uri selected in the workplace 
+     *
+     * @return the current view Uri selected in the workplace
      */
     public String getViewUri() {
 
@@ -462,8 +478,8 @@ public class CmsWorkplaceSettings {
 
     /**
      * Checks if the current view is the explorer view.<p>
-     * 
-     * @return true if the current view is the explorer view, otherwise false 
+     *
+     * @return true if the current view is the explorer view, otherwise false
      */
     public boolean isViewExplorer() {
 
@@ -472,10 +488,10 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the collector object.<p>
-     * 
+     *
      * Use this mechanism for transferring a resource collector between
      * several page instances of an interactive dialog.<p>
-     *  
+     *
      * @param collector the dialog object to set
      */
     public void setCollector(I_CmsResourceCollector collector) {
@@ -485,11 +501,11 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the dialog object.<p>
-     * 
+     *
      * Use this mechanism for transferring a complex object between
-     * several page instances of an interactive dialog. This is usually 
+     * several page instances of an interactive dialog. This is usually
      * required when editing a complex object in a dialog of the "Administration" view.<p>
-     *  
+     *
      * @param dialogObject the dialog object to set
      */
     public void setDialogObject(Object dialogObject) {
@@ -509,7 +525,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the explorer flat url.<p>
-     * 
+     *
      * @param value the explorer flat url
      */
     public void setExplorerFlaturl(String value) {
@@ -519,7 +535,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current explorer mode.<p>
-     * 
+     *
      * @param value the current explorer mode
      */
     public void setExplorerMode(String value) {
@@ -529,7 +545,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the currently selected page in the explorer view.<p>
-     * 
+     *
      * @param page the currently selected page in the explorer view
      */
     public void setExplorerPage(int page) {
@@ -539,7 +555,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the explorer project filter for the project view.<p>
-     * 
+     *
      * @param value the explorer project filter
      */
     public void setExplorerProjectFilter(String value) {
@@ -549,7 +565,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the explorer project id for the project view.<p>
-     * 
+     *
      * @param value the explorer project id
      */
     public void setExplorerProjectId(CmsUUID value) {
@@ -559,9 +575,9 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current resource to be displayed in the explorer.<p>
-     * 
-     * @param value the current resource to be displayed in the explorer 
-     * 
+     *
+     * @param value the current resource to be displayed in the explorer
+     *
      * @deprecated use {@link #setExplorerResource(String, CmsObject)} instead
      */
     @Deprecated
@@ -572,9 +588,9 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current resource to be displayed in the explorer.<p>
-     * 
-     * @param value the current resource to be displayed in the explorer 
-     * 
+     *
+     * @param value the current resource to be displayed in the explorer
+     *
      * @param cms needed for validation / normalization of the given path
      */
     public void setExplorerResource(String value, CmsObject cms) {
@@ -596,13 +612,13 @@ public class CmsWorkplaceSettings {
         if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
             && (!value.startsWith(m_currentSite))
             && (!CmsExplorer.VIEW_GALLERY.equals(getExplorerMode()))) {
-            // restrict access to /system/ 
+            // restrict access to /system/
             m_explorerResource.put(mode, "/");
         } else {
             if (cms != null) {
-                // Validation with read resource has 2 advantages: 
+                // Validation with read resource has 2 advantages:
                 // 1: Normalization of the path: a missing trailing slash is not fatal.
-                // 2: existence is verified. 
+                // 2: existence is verified.
                 try {
                     CmsResource resource = cms.readResource(value);
                     value = cms.getSitePath(resource);
@@ -626,7 +642,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the last gallery search scope.<p>
-     * 
+     *
      * @param scope the gallery search scope
      */
     public void setLastSearchScope(CmsGallerySearchScope scope) {
@@ -636,7 +652,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Saves the last gallery for a given key.<p>
-     * 
+     *
      * @param galleryKey the gallery key
      * @param gallerypath the resourcepath of the gallery
      */
@@ -648,14 +664,14 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the list object.<p>
-     * 
+     *
      * Use this mechanism for transfering a html list object between
-     * several page instances of an interactive dialog. This is usually 
-     * required when having several lists in a tool or when a list action 
-     * another list displays of the "Administration" view.<p> 
-     *  
+     * several page instances of an interactive dialog. This is usually
+     * required when having several lists in a tool or when a list action
+     * another list displays of the "Administration" view.<p>
+     *
      * @param listObject the list object to set
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#setListObject(Class, org.opencms.workplace.list.CmsHtmlList)
      */
     public void setListObject(Object listObject) {
@@ -665,7 +681,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current detail grade of the view.<p>
-     * 
+     *
      * @param value the current details.
      */
     public void setPermissionDetailView(String value) {
@@ -675,7 +691,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the currently selected project of the workplace user.<p>
-     * 
+     *
      * @param project the currently selected project of thw workplace user
      */
     public void setProject(CmsUUID project) {
@@ -685,7 +701,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the publish list.<p>
-     * 
+     *
      * @param publishList the publishList to set
      */
     public void setPublishList(CmsPublishList publishList) {
@@ -695,7 +711,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current site for the user.<p>
-     * 
+     *
      * @param value the current site for the user
      */
     public void setSite(String value) {
@@ -718,7 +734,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the tree resource uri for the specified tree type.<p>
-     * 
+     *
      * @param type the type of the tree
      * @param value the resource uri to set for the type
      */
@@ -728,7 +744,7 @@ public class CmsWorkplaceSettings {
             return;
         }
         if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/") && (!value.startsWith(m_currentSite))) {
-            // restrict access to /system/ 
+            // restrict access to /system/
             value = "/";
         }
         m_treeType.put(type, value);
@@ -736,7 +752,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the tree resource uri for the specified tree type.<p>
-     * 
+     *
      * @param type the type of the tree
      * @param value the resource uri to set for the type
      */
@@ -750,7 +766,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current workplace user.<p>
-     * 
+     *
      * @param user the current workplace user
      */
     public void setUser(CmsUser user) {
@@ -770,7 +786,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the current workplace user settings object.<p>
-     * 
+     *
      * @param userSettings the current workplace user settings object
      */
     public void setUserSettings(CmsUserSettings userSettings) {
@@ -781,7 +797,7 @@ public class CmsWorkplaceSettings {
     /**
      * Sets the view startup page.<p>
      *
-     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the 
+     * The view startup page can be used to directly load a specific workplace dialog or other workplace resource in the
      * OpenCms workplace base frameset after the user logs in.<p>
      *
      * @param viewStartup the view startup page to set
@@ -793,7 +809,7 @@ public class CmsWorkplaceSettings {
 
     /**
      * Sets the view Uri for the workplace.<p>
-     * 
+     *
      * @param string the view Uri for the workplace
      */
     public void setViewUri(String string) {

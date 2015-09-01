@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.io.FileFilter;
 
 /**
  * Implements the file filter used to guess the right suffix of a deleted jsp file.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPrefixFileFilter implements FileFilter {
@@ -42,7 +42,7 @@ public class CmsPrefixFileFilter implements FileFilter {
 
     /**
      * Creates a new instance of this filter.<p>
-     * 
+     *
      * @param fileName the base file to compare with.
      */
     public CmsPrefixFileFilter(String fileName) {
@@ -51,9 +51,9 @@ public class CmsPrefixFileFilter implements FileFilter {
     }
 
     /**
-     * Accepts the given file if its name starts with the name of of the base file (without extension) 
+     * Accepts the given file if its name starts with the name of of the base file (without extension)
      * and ends with the extension.<p>
-     * 
+     *
      * @see java.io.FileFilter#accept(java.io.File)
      */
     public boolean accept(File f) {

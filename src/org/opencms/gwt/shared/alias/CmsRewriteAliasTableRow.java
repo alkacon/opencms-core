@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,16 +56,16 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
      */
     public CmsRewriteAliasTableRow() {
 
-        // nothing 
+        // nothing
     }
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param id the id of the alias 
-     * @param patternString the regular expression used for matching the URI 
+     *
+     * @param id the id of the alias
+     * @param patternString the regular expression used for matching the URI
      * @param replacementString the replacement string used when the URI is matched
-     * @param mode the alias mode for this row   
+     * @param mode the alias mode for this row
      */
     public CmsRewriteAliasTableRow(CmsUUID id, String patternString, String replacementString, CmsAliasMode mode) {
 
@@ -77,8 +77,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Gets the error message for this row.<p>
-     * 
-     * @return the error message for this row 
+     *
+     * @return the error message for this row
      */
     public String getError() {
 
@@ -87,8 +87,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Gets the id of the alias.<p>
-     * 
-     * @return the id of the alias 
+     *
+     * @return the id of the alias
      */
     public CmsUUID getId() {
 
@@ -97,8 +97,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Gets the alias mode for this row.<p>
-     * 
-     * @return the alias mode for this row 
+     *
+     * @return the alias mode for this row
      */
     public CmsAliasMode getMode() {
 
@@ -107,8 +107,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Gets the regular expression string.<p>
-     * 
-     * @return the regular expression string 
+     *
+     * @return the regular expression string
      */
     public String getPatternString() {
 
@@ -117,8 +117,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Gets the string used to replace the string matching the regex.<p>
-     * 
-     * @return the replacement string 
+     *
+     * @return the replacement string
      */
     public String getReplacementString() {
 
@@ -127,8 +127,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Sets the error message for this row.<p>
-     * 
-     * @param error the new error message 
+     *
+     * @param error the new error message
      */
     public void setError(String error) {
 
@@ -137,8 +137,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Sets the id of this row.<p>
-     * 
-     * @param id the new id 
+     *
+     * @param id the new id
      */
     public void setId(CmsUUID id) {
 
@@ -147,8 +147,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Sets the mode of this row.<p>
-     * 
-     * @param mode the new mode 
+     *
+     * @param mode the new mode
      */
     public void setMode(CmsAliasMode mode) {
 
@@ -157,8 +157,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Sets the pattern of this row.<p>
-     * 
-     * @param patternString the new pattern 
+     *
+     * @param patternString the new pattern
      */
     public void setPatternString(String patternString) {
 
@@ -167,8 +167,8 @@ public class CmsRewriteAliasTableRow implements IsSerializable {
 
     /**
      * Sets the replacement string for this row.<p>
-     * 
-     * @param replacementString the new replacement string 
+     *
+     * @param replacementString the new replacement string
      */
     public void setReplacementString(String replacementString) {
 

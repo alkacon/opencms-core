@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,6 +41,7 @@ import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Explorer dialog for the content search result list.<p>
- * 
+ *
  * @since 7.5.3
  */
 public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
@@ -69,14 +70,14 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
     private I_CmsListResourceCollector m_collector;
 
     /** The content sraech file list. */
-    private ArrayList<CmsResource> m_files;
+    private Collection<CmsResource> m_files;
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSourceSearchFilesDialog(CmsJspActionElement jsp) {
@@ -86,7 +87,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -142,10 +143,10 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Gets the content search result list.<p>
-     * 
+     *
      * @return the content search result list
      */
-    public List<CmsResource> getFiles() {
+    public Collection<CmsResource> getFiles() {
 
         return m_files;
     }
@@ -161,7 +162,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Returns the project id parameter value.<p>
-     * 
+     *
      * @return the project id parameter value
      */
     public String getParamProjectid() {
@@ -171,9 +172,9 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Returns an appropiate initialized resource util object for the given item.<p>
-     * 
+     *
      * @param item the item representing the resource
-     * 
+     *
      * @return a resource util object
      */
     @Override
@@ -200,17 +201,17 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /** Sets the content search result list.
-     * 
+     *
      * @param files the found files
      */
-    public void setList(ArrayList<CmsResource> files) {
+    public void seFiles(Collection<CmsResource> files) {
 
         m_files = files;
     }
 
     /**
      * Sets the project id parameter value.<p>
-     * 
+     *
      * @param projectId the project id parameter value
      */
     public void setParamProjectid(String projectId) {
@@ -220,7 +221,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Returns a list item created from the resource information, differs between valid resources and invalid resources.<p>
-     * 
+     *
      * @param resource the resource to create the list item from
      * @param list the list
      * @param showPermissions if to show permissions
@@ -233,7 +234,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
      * @param showState if to show the state
      * @param showLockedBy if to show the lock user
      * @param showSite if to show the site
-     * 
+     *
      * @return a list item created from the resource information
      */
     protected CmsListItem createResourceListItem(
@@ -303,7 +304,7 @@ public class CmsSourceSearchFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Returns a list of list items from a list of resources.<p>
-     * 
+     *
      * @return a list of {@link CmsListItem} objects
      */
     @Override

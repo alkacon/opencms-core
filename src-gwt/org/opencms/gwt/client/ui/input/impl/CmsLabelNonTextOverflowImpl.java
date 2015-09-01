@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Single line label implementation for gecko based browsers which don't support CSS property 'text-overflow'.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsLabelNonTextOverflowImpl extends CmsLabel {
@@ -50,8 +50,8 @@ public class CmsLabelNonTextOverflowImpl extends CmsLabel {
 
     /**
      * Creates an empty label using the given element.<p>
-     * 
-     * @param element the element to use 
+     *
+     * @param element the element to use
      */
     public CmsLabelNonTextOverflowImpl(Element element) {
 
@@ -60,7 +60,7 @@ public class CmsLabelNonTextOverflowImpl extends CmsLabel {
 
     /**
      * Creates a label with the specified text.<p>
-     * 
+     *
      * @param text the new label's text
      */
     public CmsLabelNonTextOverflowImpl(String text) {

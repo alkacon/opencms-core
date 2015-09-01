@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,11 +50,11 @@ import com.google.common.collect.Sets;
 
 /**
  *  Virtual project for 'direct publishing' of resources.<p>
- *  
+ *
  *  This virtual project gets the names of the resources to publish from the publish parameter map.
- *  If the 'add contents' mode is enabled (which is also determined from the publish parameters), the 
- *  contents of folders are added to the list of publish resources. This virtual project is only available 
- *  if any file names are passed via the   
+ *  If the 'add contents' mode is enabled (which is also determined from the publish parameters), the
+ *  contents of folders are added to the list of publish resources. This virtual project is only available
+ *  if any file names are passed via the
  */
 public class CmsDirectPublishProject implements I_CmsVirtualProject {
 
@@ -93,7 +93,9 @@ public class CmsDirectPublishProject implements I_CmsVirtualProject {
     /**
      * @see org.opencms.ade.publish.I_CmsVirtualProject#getRelatedResourceProvider(org.opencms.file.CmsObject, org.opencms.ade.publish.shared.CmsPublishOptions)
      */
-    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(CmsObject cmsObject, CmsPublishOptions options) {
+    public I_CmsPublishRelatedResourceProvider getRelatedResourceProvider(
+        CmsObject cmsObject,
+        CmsPublishOptions options) {
 
         return CmsDummyRelatedResourceProvider.INSTANCE;
     }
@@ -136,10 +138,10 @@ public class CmsDirectPublishProject implements I_CmsVirtualProject {
 
     /**
      * Adds contents of folders to a list of resources.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param resources the resource list to which to add the folder contents 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param resources the resource list to which to add the folder contents
+     * @throws CmsException if something goes wrong
      */
     protected void addSubResources(CmsObject cms, Set<CmsResource> resources) throws CmsException {
 
@@ -164,9 +166,9 @@ public class CmsDirectPublishProject implements I_CmsVirtualProject {
 
     /**
      * Returns true if the folder contents should be included.<p>
-     *  
-     * @param params the publish parameters 
-     * @return true if the folder contents should be included 
+     *
+     * @param params the publish parameters
+     * @return true if the folder contents should be included
      */
     protected boolean shouldIncludeContents(Map<String, String> params) {
 
@@ -175,17 +177,17 @@ public class CmsDirectPublishProject implements I_CmsVirtualProject {
         try {
             includeContents = Boolean.parseBoolean(includeContentsStr);
         } catch (Exception e) {
-            // ignore; includeContents remains the default value 
+            // ignore; includeContents remains the default value
         }
         return includeContents;
     }
 
-    /** 
+    /**
      * Gets the set of site paths from the publish parameters.<p>
-     * 
+     *
      * @param params the publish parameters
-     *  
-     * @return the set of site paths 
+     *
+     * @return the set of site paths
      */
     private Set<String> getPaths(Map<String, String> params) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,15 +39,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Helper class to create the editor frameset.<p> 
- * 
+ * Helper class to create the editor frameset.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/editor_html
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditorFrameset extends CmsEditor {
 
@@ -59,7 +59,7 @@ public class CmsEditorFrameset extends CmsEditor {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditorFrameset(CmsJspActionElement jsp) {
@@ -69,16 +69,16 @@ public class CmsEditorFrameset extends CmsEditor {
 
     /**
      * Deletes the temporary file and unlocks the edited resource when in direct edit mode.<p>
-     * 
+     *
      * This method is needed in the editor close help frame, which is called when the user presses
      * the "back" button or closes the browser window when editing a page.<p>
-     * 
+     *
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
     @Override
     public void actionClear(boolean forceUnlock) {
 
-        // delete the temporary file        
+        // delete the temporary file
         deleteTempFile();
         if (Boolean.valueOf(getParamDirectedit()).booleanValue() || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true

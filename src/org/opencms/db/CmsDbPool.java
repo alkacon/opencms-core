@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
@@ -47,14 +48,14 @@ import org.apache.commons.pool.impl.GenericObjectPool;
 
 /**
  * Various methods to create DBCP pools.<p>
- * 
- * Only JDBC Driver based pools are supported currently. JNDI DataSource 
+ *
+ * Only JDBC Driver based pools are supported currently. JNDI DataSource
  * based pools might be added probably later.<p>
- * 
+ *
  * <b>Please note:</b> This class is subject to change in later versions.
  * To obtain information about the connections, please use the
  * {@link org.opencms.db.CmsSqlManager}.<p>
- * 
+ *
  * @since 6.0.0
  */
 public final class CmsDbPool {
@@ -82,6 +83,9 @@ public final class CmsDbPool {
 
     /** Key for the entity manager pool size. */
     public static final String KEY_ENTITY_MANAGER_POOL_SIZE = "entityMangerPoolSize";
+
+    /** Key for jdbc driver. */
+    public static final String KEY_CONNECTION_PROPERTIES = "connectionProperties";
 
     /** Key for jdbc driver. */
     public static final String KEY_JDBC_DRIVER = "jdbcDriver";
@@ -157,7 +161,7 @@ public final class CmsDbPool {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * Nobody is allowed to create an instance of this class!
      */
     private CmsDbPool() {
@@ -167,7 +171,7 @@ public final class CmsDbPool {
 
     /**
      * Creates a JDBC DriverManager based DBCP connection pool.<p>
-     * 
+     *
      * @param config the configuration (opencms.properties)
      * @param key the key of the database pool in the configuration
      * @return String the URL to access the created DBCP pool
@@ -187,23 +191,20 @@ public final class CmsDbPool {
             KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME,
             1800000);
         int minIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_IDLE, 0);
-        int numTestsPerEvictionRun = config.getInteger(KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
-        int timeBetweenEvictionRuns = config.getInteger(KEY_DATABASE_POOL
-            + '.'
-            + key
-            + '.'
-            + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
+        int numTestsPerEvictionRun = config.getInteger(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_NUM_TESTS_PER_EVICTION_RUN,
+            3);
+        int timeBetweenEvictionRuns = config.getInteger(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_TIME_BETWEEN_EVICTION_RUNS,
+            3600000);
         String testQuery = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
         String username = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
         username = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_USER, username);
         String password = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
         password = OpenCms.getCredentialsResolver().resolveCredential(I_CmsCredentialsResolver.DB_PASSWORD, password);
         String poolUrl = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL);
-        String whenExhaustedActionValue = config.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
+        String whenExhaustedActionValue = config.get(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
         boolean testOnBorrow = Boolean.valueOf(
             config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW, "false").trim()).booleanValue();
@@ -234,15 +235,14 @@ public final class CmsDbPool {
 
         // read the values of the statement pool configuration specified by the given key
         boolean poolingStmts = Boolean.valueOf(
-            config.getString(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING, CmsStringUtil.TRUE).trim()).booleanValue();
+            config.getString(
+                KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING,
+                CmsStringUtil.TRUE).trim()).booleanValue();
         int maxActiveStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_ACTIVE, 25);
         int maxWaitStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_WAIT, 250);
         int maxIdleStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_IDLE, 15);
-        String whenStmtsExhaustedActionValue = config.get(KEY_DATABASE_STATEMENTS
-            + '.'
-            + key
-            + '.'
-            + KEY_WHEN_EXHAUSTED_ACTION);
+        String whenStmtsExhaustedActionValue = config.get(
+            KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION);
         byte whenStmtsExhaustedAction = GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
         if (whenStmtsExhaustedActionValue != null) {
             whenStmtsExhaustedActionValue = whenStmtsExhaustedActionValue.trim();
@@ -263,12 +263,12 @@ public final class CmsDbPool {
         GenericObjectPool connectionPool = new GenericObjectPool(null);
 
         /* Abandoned pool configuration:
-         *  
+         *
          * In case the systems encounters "pool exhaustion" (runs out of connections),
-         * comment the above line with "new GenericObjectPool(null)" and uncomment the 
-         * 5 lines below. This will generate an "abandoned pool" configuration that logs 
+         * comment the above line with "new GenericObjectPool(null)" and uncomment the
+         * 5 lines below. This will generate an "abandoned pool" configuration that logs
          * abandoned connections to the System.out. Unfortunatly this code is deprecated,
-         * so to avoid code warnings it's also disabled here. 
+         * so to avoid code warnings it's also disabled here.
          * Tested with commons-pool v 1.2.
          */
 
@@ -297,7 +297,11 @@ public final class CmsDbPool {
             jdbcUrl += jdbcUrlParams;
         }
 
-        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
+        Properties connectionProperties = config.getPrefixedProperties(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECTION_PROPERTIES);
+        connectionProperties.put(KEY_USERNAME, username);
+        connectionProperties.put(KEY_PASSWORD, password);
+        ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, connectionProperties);
 
         // Set up statement pool, if desired
         GenericKeyedObjectPoolFactory statementFactory = null;
@@ -334,9 +338,14 @@ public final class CmsDbPool {
                 // connection failed, increase attempts, sleept for some seconds and log a message
                 connectionTests++;
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_WAIT_FOR_DB_4,
-                        new Object[] {poolUrl, jdbcUrl, new Integer(connectionTests), new Integer(connetionsWait)}));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_WAIT_FOR_DB_4,
+                            new Object[] {
+                                poolUrl,
+                                jdbcUrl,
+                                new Integer(connectionTests),
+                                new Integer(connetionsWait)}));
                 }
                 Thread.sleep(connetionsWait);
             } finally {
@@ -354,8 +363,8 @@ public final class CmsDbPool {
 
     /**
      * Returns the database pool name for a given configuration key.<p>
-     * 
-     * @param configuration the configuration 
+     *
+     * @param configuration the configuration
      * @param key a db pool configuration key
      * @return the database pool name
      */
@@ -366,9 +375,9 @@ public final class CmsDbPool {
 
     /**
      * Returns a list of available database pool names.<p>
-     * 
+     *
      * @param configuration the configuration to read the pool names from
-     * 
+     *
      * @return a list of database pool names
      */
     public static List<String> getDbPoolUrls(CmsParameterConfiguration configuration) {
@@ -384,7 +393,7 @@ public final class CmsDbPool {
 
     /**
      * Returns the name of the default database connection pool.<p>
-     * 
+     *
      * @return the name of the default database connection pool
      */
     public static String getDefaultDbPoolName() {

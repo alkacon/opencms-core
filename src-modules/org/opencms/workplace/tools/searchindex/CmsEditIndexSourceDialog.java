@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,16 +43,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * 
+ *
  * Dialog to edit new or existing search indexsource in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditIndexSourceDialog(CmsJspActionElement jsp) {
@@ -62,7 +62,7 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -74,9 +74,9 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -118,14 +118,21 @@ public class CmsEditIndexSourceDialog extends A_CmsEditIndexSourceDialog {
             // existing indexsource
             addWidget(new CmsWidgetDialogParameter(m_indexsource, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_indexsource, "indexerClassName", "", PAGES[0], new CmsComboWidget(
-            getIndexerClassWidgetConfiguration()), 1, 1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_indexsource,
+                "indexerClassName",
+                "",
+                PAGES[0],
+                new CmsComboWidget(getIndexerClassWidgetConfiguration()),
+                1,
+                1));
 
     }
 
     /**
      * Returns the indexer class widget configuration.<p>
-     * 
+     *
      * @return the indexer class widget configuration
      */
     private List<CmsSelectWidgetOption> getIndexerClassWidgetConfiguration() {

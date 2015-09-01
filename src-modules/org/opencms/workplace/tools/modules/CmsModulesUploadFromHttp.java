@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Class to upload a module with HTTP upload.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
@@ -73,7 +73,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesUploadFromHttp(CmsJspActionElement jsp) {
@@ -83,7 +83,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -96,12 +96,12 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         try {
-            copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath()
-                + File.separator
-                + CmsSystemInfo.FOLDER_MODULES);
+            copyFileToServer(
+                OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsSystemInfo.FOLDER_MODULES);
         } catch (CmsException e) {
             // error copying the file to the OpenCms server
             if (LOG.isErrorEnabled()) {
@@ -133,10 +133,11 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
                     dep.append(dependency.getVersion());
                     dep.append(")");
                 }
-                exception = new CmsConfigurationException(Messages.get().container(
-                    Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
-                    getParamImportfile(),
-                    new String(dep)));
+                exception = new CmsConfigurationException(
+                    Messages.get().container(
+                        Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
+                        getParamImportfile(),
+                        new String(dep)));
             }
         } catch (CmsConfigurationException e) {
             exception = e;
@@ -163,7 +164,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             }
         } else {
             if (exception != null) {
-                // log it 
+                // log it
                 if (LOG.isErrorEnabled()) {
                     LOG.error(exception.getLocalizedMessage(getLocale()), exception);
                 }
@@ -176,6 +177,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getDialogReturnUri()
      */
+    @Override
     public String getDialogReturnUri() {
 
         return DIALOG_URI;
@@ -184,6 +186,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getImportMessage()
      */
+    @Override
     public String getImportMessage() {
 
         return key(Messages.GUI_MODULES_IMPORT_FILE_0);
@@ -192,6 +195,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getStarttext()
      */
+    @Override
     public String getStarttext() {
 
         return key(Messages.GUI_MODULES_IMPORT_BLOCK_0);
@@ -200,6 +204,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

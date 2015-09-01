@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,15 +60,15 @@ public class CmsUserSettingsBean implements IsSerializable {
      */
     public CmsUserSettingsBean() {
 
-        // do nothing 
+        // do nothing
 
     }
 
     /**
      * Adds an account info item.<p>
-     * 
-     * @param label the label 
-     * @param value the value 
+     *
+     * @param label the label
+     * @param value the value
      */
     public void addAccountInfo(String label, String value) {
 
@@ -77,11 +77,11 @@ public class CmsUserSettingsBean implements IsSerializable {
 
     /**
      * Adds a user setting.<p>
-     * 
-     * @param value the current value of the user setting 
+     *
+     * @param value the current value of the user setting
      * @param config the configuration for the user setting
-     *  
-     * @param basic true if this is a basic user setting 
+     *
+     * @param basic true if this is a basic user setting
      */
     public void addSetting(String value, CmsXmlContentProperty config, boolean basic) {
 
@@ -94,7 +94,7 @@ public class CmsUserSettingsBean implements IsSerializable {
 
     /**
      * Gets the account information to display.<p>
-     * 
+     *
      * @return the account info
      */
     public Map<String, String> getAccountInfo() {
@@ -104,8 +104,8 @@ public class CmsUserSettingsBean implements IsSerializable {
 
     /**
      * Gets the map  with the configurations for the individual user settings.<p>
-     * 
-     * @return the user setting configurations, indexed by user setting name 
+     *
+     * @return the user setting configurations, indexed by user setting name
      */
     public Map<String, CmsXmlContentProperty> getConfiguration() {
 
@@ -114,10 +114,10 @@ public class CmsUserSettingsBean implements IsSerializable {
 
     /**
      * Gets the value for a given user setting.<p>
-     * 
+     *
      * @param key the user setting key
-     *  
-     * @return the current value of the user setting 
+     *
+     * @return the current value of the user setting
      */
     public String getValue(String key) {
 
@@ -125,11 +125,11 @@ public class CmsUserSettingsBean implements IsSerializable {
     }
 
     /**
-     * Returns true if the user setting with the given name is a basic setting  
-     * 
-     * @param name the user setting name 
-     * 
-     * @return true if this is a basic setting 
+     * Returns true if the user setting with the given name is a basic setting
+     *
+     * @param name the user setting name
+     *
+     * @return true if this is a basic setting
      */
     public boolean isBasic(String name) {
 

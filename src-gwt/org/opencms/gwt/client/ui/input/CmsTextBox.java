@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,9 +73,9 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Basic text box class for forms.
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsTextBox extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasFocusHandlers, HasBlurHandlers, HasValueChangeHandlers<String>,
@@ -92,7 +92,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param currentValue the current text box value
          */
         protected TextBoxHandler(String currentValue) {
@@ -160,7 +160,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         }
 
         /**
-         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event) 
+         * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(ValueChangeEvent event)
          */
         public void onValueChange(ValueChangeEvent<String> event) {
 
@@ -182,8 +182,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
         /**
          * Sets the current value.<p>
-         * 
-         * @param value the current value 
+         *
+         * @param value the current value
          */
         public void setValue(String value) {
 
@@ -192,8 +192,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
         /**
          * Checks if the current text box value has changed and fires the value changed event.<p>
-         * 
-         * @param inhibitValidation if set to true, validation should not be performed directly by event handlers 
+         *
+         * @param inhibitValidation if set to true, validation should not be performed directly by event handlers
          */
         protected void checkForChange(boolean inhibitValidation) {
 
@@ -287,7 +287,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Creates a new text box based on an underlying GWT text box instance.<p>
-     * 
+     *
      * @param textbox the GWT text box instance to wrap
      */
     public CmsTextBox(TextBox textbox) {
@@ -333,7 +333,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
              */
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                return new CmsTextBox();
+                return new CmsTextBox().colorWhite();
             }
         });
     }
@@ -391,6 +391,17 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     }
 
     /**
+     * Sets the background color to white.<p>
+     *
+     * @return this widget
+     */
+    public CmsTextBox colorWhite() {
+
+        getTextBoxContainer().addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().textBoxPanelWhite());
+        return this;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
@@ -432,9 +443,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         return (String)getFormValue();
     }
 
-    /** 
+    /**
      * Returns the HTML id of the internal textbox used by this widget.<p>
-     * 
+     *
      * @return the HTML id of the internal textbox used by this widget
      */
     public String getId() {
@@ -444,8 +455,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns the text in the text box.<p>
-     * 
-     * @return the text 
+     *
+     * @return the text
      */
     public String getText() {
 
@@ -454,7 +465,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns the Textbox of this widget.<p>
-     * 
+     *
      * @return the CmsTextBox
      */
     public TextBox getTextBox() {
@@ -464,7 +475,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns the Panel of this widget.<p>
-     * 
+     *
      * @return the Panel
      */
     public CmsPaddedPanel getTextBoxContainer() {
@@ -474,7 +485,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns <code>true</code> if this textbox has an error set.<p>
-     * 
+     *
      * @return <code>true</code> if this textbox has an error set
      */
     public boolean hasError() {
@@ -484,7 +495,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Gets whether this widget is enabled.
-     * 
+     *
      * @return <code>true</code> if the widget is enabled
      */
     public boolean isEnabled() {
@@ -504,7 +515,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns the read only flag.<p>
-     * 
+     *
      * @return <code>true</code> if this text box is only readable
      */
     public boolean isReadOnly() {
@@ -514,7 +525,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Returns if the text box is set to trigger the value changed event on key press and not on blur only.<p>
-     * 
+     *
      * @return <code>true</code> if the text box is set to trigger the value changed event on key press
      */
     public boolean isTriggerChangeOnKeyPress() {
@@ -529,9 +540,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
     public void onBrowserEvent(Event event) {
 
         super.onBrowserEvent(event);
-        /* 
-         * In IE8, the change event is not fired if we switch to another application window after having 
-         * pasted some text into the text box, so we need to turn off ghost mode manually 
+        /*
+         * In IE8, the change event is not fired if we switch to another application window after having
+         * pasted some text into the text box, so we need to turn off ghost mode manually
          */
         if (event.getTypeInt() == Event.ONPASTE) {
             setGhostMode(false);
@@ -614,7 +625,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the width of the error message for this textbox.<p>
-     * 
+     *
      * @param width the object's new width, in CSS units (e.g. "10px", "1em")
      */
     public void setErrorMessageWidth(String width) {
@@ -624,7 +635,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the focus on the text box.<p>
-     * 
+     *
      * @param focused signals if the focus should be set
      */
     public void setFocus(boolean focused) {
@@ -658,8 +669,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Enables or disables ghost mode.<p>
-     * 
-     * @param ghostMode if true, enables ghost mode, else disables it 
+     *
+     * @param ghostMode if true, enables ghost mode, else disables it
      */
     public void setGhostMode(boolean ghostMode) {
 
@@ -670,7 +681,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets if the input field should be cleared when leaving the ghost mode.<p>
-     * 
+     *
      * @param clearOnChangeMode <code>true</code> to clear on leaving the ghost mode
      */
     public void setGhostModeClear(boolean clearOnChangeMode) {
@@ -680,10 +691,10 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Enables or disables the "ghost mode" style.<p>
-     * 
+     *
      * This *only* changes the style, not the actual mode.
-     * 
-     * @param enabled <code>true</code> if the ghost mode style should be enabled, false if it should be disabled 
+     *
+     * @param enabled <code>true</code> if the ghost mode style should be enabled, false if it should be disabled
      * @param mayClear <code>true</code> if no value was previously set
      */
     public void setGhostStyleEnabled(boolean enabled, boolean mayClear) {
@@ -714,8 +725,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the 'inhibitValidationForKeypresses' flag.<p>
-     * 
-     * @param inhibitValidationForKeypresses the new flag value 
+     *
+     * @param inhibitValidationForKeypresses the new flag value
      */
     public void setInhibitValidationForKeypresses(boolean inhibitValidationForKeypresses) {
 
@@ -724,7 +735,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the name of the input box.
-     * 
+     *
      * @param name of the input box
      * */
     public void setName(String name) {
@@ -747,7 +758,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Enables or disables read-only mode.<p>
-     * 
+     *
      * @param readOnly if true, enables read-only mode, else disables it
      */
     public void setReadOnly(boolean readOnly) {
@@ -762,7 +773,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets if the value changed event should be triggered on key press and not on blur only.<p>
-     * 
+     *
      * @param triggerOnKeyPress <code>true</code> if the value changed event should be triggered on key press
      */
     public void setTriggerChangeOnKeyPress(boolean triggerOnKeyPress) {
@@ -772,8 +783,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the value of the text box after a short delay.
-     * 
-     * @param value the value to set 
+     *
+     * @param value the value to set
      */
     public void setValueInTextBoxDelayed(final String value) {
 
@@ -805,9 +816,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         fireValueChangedEvent(false);
     }
 
-    /** 
+    /**
      * Helper method for firing a 'value changed' event.<p>
-     * 
+     *
      * @param inhibitValidation if true, some additional information will be added to the event to ask event handlers to not perform any validation directly
      */
     protected void fireValueChangedEvent(boolean inhibitValidation) {
@@ -817,7 +828,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
         } else {
             CmsExtendedValueChangeEvent<String> e = new CmsExtendedValueChangeEvent<String>(getFormValueAsString());
             e.setInhibitValidation(true);
-            this.fireEvent(e);
+            fireEvent(e);
         }
     }
 
@@ -831,9 +842,9 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Checks if the given key code represents a functional key.<p>
-     * 
+     *
      * @param keyCode the key code to check
-     * 
+     *
      * @return <code>true</code> if the given key code represents a functional key
      */
     protected boolean isNavigationKey(int keyCode) {
@@ -856,8 +867,8 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     private void setFormValue(Object value) {
 
@@ -869,7 +880,7 @@ HasKeyPressHandlers, HasClickHandlers, I_CmsHasBlur, I_CmsHasGhostValue {
 
     /**
      * Sets the text in the text box.<p>
-     * 
+     *
      * @param text the new text
      */
     private void setText(String text) {

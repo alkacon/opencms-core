@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access background image resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsBackgroundImageBundle extends ClientBundle {
@@ -45,7 +45,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/dialogBackground.png")
@@ -54,7 +54,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/dialogBackgroundShadow.png")
@@ -63,7 +63,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/invalidStateBackground.png")
@@ -72,7 +72,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/sitemapBackground.png")
@@ -81,7 +81,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/softBackground.png")
@@ -90,7 +90,7 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/backgrounds/stateBackground.png")

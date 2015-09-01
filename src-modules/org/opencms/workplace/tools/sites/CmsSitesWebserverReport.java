@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * The write to web server report.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSitesWebserverReport extends A_CmsListReport {
@@ -69,7 +69,7 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSitesWebserverReport(CmsJspActionElement jsp) {
@@ -79,7 +79,7 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -149,7 +149,7 @@ public class CmsSitesWebserverReport extends A_CmsListReport {
         return m_paramWebserverscript;
     }
 
-    /** 
+    /**
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override

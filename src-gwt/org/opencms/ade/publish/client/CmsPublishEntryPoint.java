@@ -32,7 +32,9 @@ import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.util.CmsJsUtil;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -90,6 +92,12 @@ public class CmsPublishEntryPoint extends A_CmsEntryPoint {
                     Window.Location.reload();
                 }
 
+            }, new I_CmsContentEditorHandler() {
+
+                public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                    // nothing to do
+                }
             });
         } catch (Exception e) {
             CmsErrorDialog.handleException(e);

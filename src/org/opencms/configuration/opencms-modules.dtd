@@ -23,6 +23,7 @@
 	nicename?,
 	group?, 
 	class?, 
+	import-script?,
 	description?,
 	version,
 	authorname?,
@@ -61,6 +62,12 @@
 # code on certain system events, like startup or shutdown.
 -->
 <!ELEMENT class (#PCDATA)>
+
+<!--
+# The optional import script.
+# This is a script for the CMSShell which will be executed when the module is imported.
+-->
+<!ELEMENT import-script (#PCDATA)>
 
 <!--
 # The (optional) description of the module.

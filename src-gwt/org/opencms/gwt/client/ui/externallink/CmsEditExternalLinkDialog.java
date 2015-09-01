@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -108,7 +108,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param structureId the structure id of the resource to edit
      */
     private CmsEditExternalLinkDialog(CmsUUID structureId) {
@@ -117,10 +117,10 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
         m_structureId = structureId;
     }
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
-     * @param title the dialog title 
+     *
+     * @param title the dialog title
      */
     private CmsEditExternalLinkDialog(String title) {
 
@@ -129,7 +129,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Constructor. Use to create new link resources.<p>
-     * 
+     *
      * @param niceName the pointer resource nice name
      * @param description the type description
      * @param parentFolderPath the parent folder path
@@ -148,9 +148,9 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Loads the link info and shows the edit dialog.<p>
-     * 
+     *
      * @param structureId the structure id
-     * 
+     *
      * @return the dialog object
      */
     public static CmsEditExternalLinkDialog loadAndShowDialog(final CmsUUID structureId) {
@@ -177,11 +177,11 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Shows the create new link dialog.<p>
-     * 
+     *
      * @param niceName the pointer type nice name
      * @param description the pointer type description
      * @param parentFolderPath the parent folder site path
-     * 
+     *
      * @return the dialog object
      */
     public static CmsEditExternalLinkDialog showNewLinkDialog(
@@ -196,7 +196,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Validates the form input.<p>
-     * 
+     *
      * @see com.google.gwt.event.logical.shared.ValueChangeHandler#onValueChange(com.google.gwt.event.logical.shared.ValueChangeEvent)
      */
     public void onValueChange(ValueChangeEvent<String> event) {
@@ -212,7 +212,8 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
                 message = Messages.get().key(Messages.GUI_EDIT_LINK_NO_LINK_0);
             }
         } else {
-            if ((m_linkContent.getFormValueAsString().equals(m_previousLink) && (m_linkTitle.getFormValueAsString().equals(m_previousTitle)))) {
+            if ((m_linkContent.getFormValueAsString().equals(m_previousLink)
+                && (m_linkTitle.getFormValueAsString().equals(m_previousTitle)))) {
                 enableOk = false;
                 message = Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0);
             } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_linkContent.getFormValueAsString())) {
@@ -225,7 +226,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Sets the context menu handler.<p>
-     * 
+     *
      * @param contextMenuHandler the context menu handler to set
      */
     public void setContextMenuHandler(I_CmsContextMenuHandler contextMenuHandler) {
@@ -235,7 +236,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Initializes the dialog content.<p>
-     * 
+     *
      * @param linkInfo the link info bean
      */
     protected void initContent(CmsExternalLinkInfoBean linkInfo) {
@@ -265,7 +266,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
         m_linkContent.addValueChangeHandler(this);
         m_linkContent.setFormValueAsString(m_previousLink);
         addInputRow(Messages.get().key(Messages.GUI_EDIT_LINK_LABEL_LINK_0), m_linkContent);
-        this.addDialogClose(null);
+        addDialogClose(null);
 
         CmsPushButton closeButton = new CmsPushButton();
         closeButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
@@ -298,9 +299,11 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
             }
         });
         addButton(m_okButton);
-        setOkEnabled(false, m_isCreateNew
-        ? Messages.get().key(Messages.GUI_EDIT_LINK_NO_FILE_NAME_0)
-        : Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0));
+        setOkEnabled(
+            false,
+            m_isCreateNew
+            ? Messages.get().key(Messages.GUI_EDIT_LINK_NO_FILE_NAME_0)
+            : Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0));
 
         m_dialogContent.truncate(METRICS_KEY, DIALOG_WIDTH - 20);
     }
@@ -366,9 +369,9 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Enables or disables the OK button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
-     * @param message the disabled reason 
+     * @param message the disabled reason
      */
     protected void setOkEnabled(boolean enabled, String message) {
 
@@ -381,7 +384,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
 
     /**
      * Adds a row to the form.<p>
-     * 
+     *
      * @param label the label
      * @param inputWidget the input widget
      */

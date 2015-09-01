@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.HasText;
 
 /**
  * A tab for the gallery dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsTab extends Composite {
@@ -53,7 +53,7 @@ public abstract class A_CmsTab extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param tabId the tab id
      */
     protected A_CmsTab(String tabId) {
@@ -71,23 +71,23 @@ public abstract class A_CmsTab extends Composite {
 
     /**
      * Returns the search parameters to display within the result tab.<p>
-     * 
+     *
      * @param searchObj the current search object
-     * 
+     *
      * @return the parameter panel
      */
     public abstract List<CmsSearchParamPanel> getParamPanels(CmsGallerySearchBean searchObj);
 
     /**
      * Returns the height required by this tab.<p>
-     * 
+     *
      * @return the height
      */
     public abstract int getRequiredHeight();
 
     /**
      * Returns the tab id.<p>
-     * 
+     *
      * @return the tab id
      */
     public String getTabId() {
@@ -97,7 +97,7 @@ public abstract class A_CmsTab extends Composite {
 
     /**
      * Returns if the tab is currently selected.<p>
-     * 
+     *
      * @return <code>true</code> if the tab is currently selected
      */
     public boolean isSelected() {
@@ -133,7 +133,7 @@ public abstract class A_CmsTab extends Composite {
 
     /**
      * Removes the parameter with the given key from the tab.<p>
-     * 
+     *
      * @param paramKey the parameter key
      */
     public void removeParam(String paramKey) {
@@ -143,8 +143,8 @@ public abstract class A_CmsTab extends Composite {
 
     /**
      * Sets the tab text accessor for this tab.<p>
-     * 
-     * @param tabText the tab text accessor 
+     *
+     * @param tabText the tab text accessor
      */
     public void setTabTextAccessor(HasText tabText) {
 

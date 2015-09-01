@@ -417,10 +417,10 @@ public class CmsAliasList extends Composite {
 
     /**
      * Validates aliases.
-     * 
+     *
      * @param uuid The structure id for which the aliases should be valid
-     * @param aliasPaths a map from id strings to alias paths 
-     * @param callback the callback which should be called with the validation results 
+     * @param aliasPaths a map from id strings to alias paths
+     * @param callback the callback which should be called with the validation results
      */
     public void validateAliases(
         final CmsUUID uuid,

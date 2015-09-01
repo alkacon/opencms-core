@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -87,7 +88,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param id the entity id/URI
      * @param typeName the entity type name
      */
@@ -110,10 +111,10 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Returns the value of a simple attribute for the given path or <code>null</code>, if the value does not exist.<p>
-     * 
+     *
      * @param entity the entity to get the value from
      * @param pathElements the path elements
-     * 
+     *
      * @return the value
      */
     public static String getValueForPath(CmsEntity entity, String[] pathElements) {
@@ -140,6 +141,76 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
                     }
                     List<CmsEntity> values = attribute.getComplexValues();
                     result = getValueForPath(values.get(index), childPathElements);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the list of values reachable from the given base object with the given path.<p>
+     *
+     * @param baseObject the base object (a CmsEntity or a string)
+     * @param pathComponents the path components
+     * @return the list of values for the given path (either of type String or CmsEntity)
+     */
+    public static List<Object> getValuesForPath(Object baseObject, String[] pathComponents) {
+
+        List<Object> currentList = Lists.newArrayList();
+        currentList.add(baseObject);
+        for (String pathComponent : pathComponents) {
+            List<Object> newList = Lists.newArrayList();
+            for (Object element : currentList) {
+                newList.addAll(getValuesForPathComponent(element, pathComponent));
+            }
+            currentList = newList;
+        }
+        return currentList;
+    }
+
+    /**
+     * Gets the values reachable from a given object (an entity or a string) with a single XPath component.<p>
+     *
+     * If entityOrString is a string, and pathComponent is "VALUE", a list containing only entityOrString is returned.
+     * Otherwise, entityOrString is assumed to be an entity, and the pathComponent is interpreted as a field of the entity
+     * (possibly with an index).
+     *
+     * @param entityOrString the entity or string from which to get the values for the given path component
+     * @param pathComponent the path component
+     * @return the list of reachable values
+     */
+    public static List<Object> getValuesForPathComponent(Object entityOrString, String pathComponent) {
+
+        List<Object> result = Lists.newArrayList();
+        if (pathComponent.equals("VALUE")) {
+            result.add(entityOrString);
+        } else {
+            if (entityOrString instanceof CmsEntity) {
+                CmsEntity entity = (CmsEntity)entityOrString;
+                boolean hasIndex = CmsContentDefinition.hasIndex(pathComponent);
+                int index = CmsContentDefinition.extractIndex(pathComponent);
+                if (index > 0) {
+                    index--;
+                }
+                String attributeName = entity.getTypeName() + "/" + CmsContentDefinition.removeIndex(pathComponent);
+                CmsEntityAttribute attribute = entity.getAttribute(attributeName);
+
+                if (attribute != null) {
+                    if (hasIndex) {
+                        if (index < attribute.getValueCount()) {
+                            if (attribute.isSimpleValue()) {
+                                result.add(attribute.getSimpleValues().get(index));
+                            } else {
+                                result.add(attribute.getComplexValues().get(index));
+                            }
+                        }
+                    } else {
+                        if (attribute.isSimpleValue()) {
+                            result.addAll(attribute.getSimpleValues());
+                        } else {
+                            result.addAll(attribute.getComplexValues());
+                        }
+                    }
                 }
             }
         }
@@ -199,7 +270,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Clones the given entity keeping all entity ids.<p>
-     * 
+     *
      * @return returns the cloned instance
      */
     public CmsEntity cloneEntity() {
@@ -223,9 +294,9 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Creates a deep copy of this entity.<p>
-     * 
+     *
      * @param entityId the id of the new entity, if <code>null</code> a generic id will be used
-     * 
+     *
      * @return the entity copy
      */
     public CmsEntity createDeepCopy(String entityId) {
@@ -325,7 +396,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Returns all entity attributes.<p>
-     * 
+     *
      * @return the entity attributes
      */
     public List<CmsEntityAttribute> getAttributes() {
@@ -343,9 +414,9 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
     /**
      * Returns this or a child entity with the given id.<p>
      * Will return <code>null</code> if no entity with the given id is present.<p>
-     * 
+     *
      * @param entityId the entity id
-     * 
+     *
      * @return the entity
      */
     public CmsEntity getEntityById(String entityId) {
@@ -381,7 +452,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Returns the entity type name.<p>
-     * 
+     *
      * @return the entity type name
      */
     public String getTypeName() {
@@ -412,7 +483,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Inserts a new attribute value at the given index.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param value the attribute value
      * @param index the value index
@@ -430,7 +501,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Inserts a new attribute value at the given index.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param value the attribute value
      * @param index the value index
@@ -478,7 +549,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Removes a specific attribute value.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param index the value index
      */
@@ -518,7 +589,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Sets the given attribute value at the given index.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param value the attribute value
      * @param index the value index
@@ -561,7 +632,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Sets the given attribute value at the given index.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param value the attribute value
      * @param index the value index
@@ -588,7 +659,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Returns the JSON string representation of this entity.<p>
-     * 
+     *
      * @return the JSON string representation of this entity
      */
     public String toJSON() {
@@ -637,7 +708,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Adds this handler to the widget.
-     * 
+     *
      * @param <H> the type of handler to add
      * @param type the event type
      * @param handler the handler
@@ -658,7 +729,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Lazy initializing the handler manager.<p>
-     * 
+     *
      * @return the handler manager
      */
     private SimpleEventBus ensureHandlers() {
@@ -671,7 +742,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Adds the value change handler to the given entity.<p>
-     * 
+     *
      * @param child the child entity
      */
     private void registerChangeHandler(CmsEntity child) {
@@ -682,7 +753,7 @@ public class CmsEntity implements HasValueChangeHandlers<CmsEntity>, Serializabl
 
     /**
      * Removes the child entity change handler.<p>
-     * 
+     *
      * @param child the child entity
      */
     private void removeChildChangeHandler(CmsEntity child) {

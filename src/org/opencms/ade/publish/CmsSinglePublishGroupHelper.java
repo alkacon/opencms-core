@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPubl
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param locale the locale to use
-     * @param title the title to use for the single group 
+     * @param title the title to use for the single group
      */
     public CmsSinglePublishGroupHelper(Locale locale, String title) {
 
@@ -61,7 +61,7 @@ public class CmsSinglePublishGroupHelper extends A_CmsPublishGroupHelper<CmsPubl
     public List<CmsPublishGroup> getGroups(List<CmsPublishResource> resources) {
 
         List<CmsPublishGroup> result = new ArrayList<CmsPublishGroup>();
-        if (!resources.isEmpty()) { // only add a group if there are resources 
+        if (!resources.isEmpty()) { // only add a group if there are resources
             List<CmsPublishResource> copyResources = new ArrayList<CmsPublishResource>(resources);
             CmsPublishGroup singleGroup = new CmsPublishGroup(m_title, copyResources);
             result.add(singleGroup);

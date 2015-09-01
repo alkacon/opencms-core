@@ -53,6 +53,9 @@ public final class CmsEditorConstants {
     /** Request parameter name. */
     public static final String PARAM_POST_CREATE_HANDLER = "postCreateHandler";
 
+    /** Attribute used for storing the element view of a collector list element. */
+    public static final String ATTR_ELEMENT_VIEW = "elementView";
+
     /** Constant for the "reuse" mode when dropping clipboard elements. */
     public static final String MODE_REUSE = "reuse";
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,11 +36,11 @@ public interface I_CmsRepositoryFolderHandler {
 
     /**
      * Returns the repository folder to store new contents in.<p>
-     * 
+     *
      * @param cms the user cms context
      * @param reference the reference resource - the resource being edited
      * @param type the resource or gallery type - like 'image' or 'imagegallery'
-     * 
+     *
      * @return the site path of the repository folder
      */
     String getRepositoryFolder(CmsObject cms, String reference, String type);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,12 +35,12 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.apache.commons.logging.Log;
 
 /**
- * Visitor implementation that resolves the content mappings for all the visited values.<p> 
- * 
- * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)} 
+ * Visitor implementation that resolves the content mappings for all the visited values.<p>
+ *
+ * This class is used when {@link org.opencms.xml.content.CmsXmlContent#validate(CmsObject)}
  * is called to resolve the mappings of a XML content object.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
 
@@ -57,8 +57,8 @@ class CmsXmlContentMappingVisitor implements I_CmsXmlContentValueVisitor {
     I_CmsXmlContentHandler m_handler;
 
     /**
-     * Creates a new error handler node visitor.<p> 
-     * 
+     * Creates a new error handler node visitor.<p>
+     *
      * @param cms the initialized OpenCms user context (required for VFS access)
      * @param content the XML content to resolve the mappings for
      */

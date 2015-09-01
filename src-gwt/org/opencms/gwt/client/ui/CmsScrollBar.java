@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,8 @@ import com.google.gwt.user.client.ui.VerticalScrollbar;
 /**
  * A custom scroll bar to be used with {@link org.opencms.gwt.client.ui.CmsScrollPanel}.<p>
  */
-public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
+public class CmsScrollBar extends FocusPanel
+implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
 
     /**
      * The timer used to continue to shift the knob as the user holds down one of
@@ -130,8 +131,8 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
         public void schedule(final int delayMillis, final boolean shiftUp2, final int multiplier2) {
 
             m_firstRun = true;
-            this.m_shiftUp = shiftUp2;
-            this.m_multiplier = multiplier2;
+            m_shiftUp = shiftUp2;
+            m_multiplier = multiplier2;
             super.schedule(delayMillis);
         }
     }
@@ -200,7 +201,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param scrollableElement the scrollable element
      * @param containerElement the scroll content
      */
@@ -276,14 +277,14 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * @param reziseable true if the panel is resizeable
-     * 
+     *
      */
     public void isResizeable(boolean reziseable) {
 
         if (reziseable) {
-            this.getElement().getStyle().setMarginBottom(7, Unit.PX);
+            getElement().getStyle().setMarginBottom(7, Unit.PX);
         } else {
-            this.getElement().getStyle().setMarginBottom(0, Unit.PX);
+            getElement().getStyle().setMarginBottom(0, Unit.PX);
         }
     }
 
@@ -297,7 +298,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
         super.onBrowserEvent(event);
         switch (DOM.eventGetType(event)) {
-        // Unhighlight and cancel keyboard events
+            // Unhighlight and cancel keyboard events
             case Event.ONBLUR:
                 m_keyTimer.cancel();
                 if (m_slidingMouse) {
@@ -448,7 +449,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Returns the associated scrollable element.<p>
-     * 
+     *
      * @return the associated scrollable element
      */
     protected Element getScrollableElement() {
@@ -511,7 +512,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Shifts the scroll position down.<p>
-     * 
+     *
      * @param shift the shift size
      */
     protected void shiftDown(int shift) {
@@ -526,7 +527,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Shifts the scroll position up.<p>
-     * 
+     *
      * @param shift the shift size
      */
     protected void shiftUp(int shift) {
@@ -541,7 +542,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Calculates the scroll knob height.<p>
-     * 
+     *
      * @param outerHeight the height of the scrollable element
      * @param innerHeight the height of the scroll content
      */
@@ -557,7 +558,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Sets the scroll knob position according to the given value.<p>
-     * 
+     *
      * @param value the value
      */
     private void setKnobPosition(int value) {
@@ -570,7 +571,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Sets the scroll bar visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to set the scroll bar visible
      */
     private void setScrollbarVisible(boolean visible) {
@@ -586,7 +587,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Sides the scroll knob according to the mouse event.<p>
-     * 
+     *
      * @param event the mouse event
      */
     private void slideKnob(Event event) {
@@ -609,9 +610,9 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Returns <code>true</code> if the events mouse position is above the scroll bar knob.<p>
-     * 
+     *
      * @param event the mouse event
-     * 
+     *
      * @return <code>true</code> if the events mouse position is above the scroll bar knob
      */
     private boolean sliderClicked(Event event) {
@@ -625,7 +626,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Starts the mouse sliding.<p>
-     * 
+     *
      * @param event the mouse event
      */
     private void startMouseSliding(Event event) {
@@ -647,7 +648,7 @@ public class CmsScrollBar extends FocusPanel implements I_DescendantResizeHandle
 
     /**
      * Stops the mouse sliding.<p>
-     * 
+     *
      * @param event the mouse event
      */
     private void stopMouseSliding(Event event) {

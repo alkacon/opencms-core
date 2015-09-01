@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,9 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog;
+import org.opencms.util.CmsUUID;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -39,15 +41,15 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Sitemap context menu availability entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsAvailabilityMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -62,8 +64,15 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
     public void execute() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
+        CmsUUID editId = null;
+        if ((CmsSitemapView.getInstance().getEditorMode() == EditorMode.navigation)
+            && (entry.getDefaultFileId() != null)) {
+            editId = entry.getDefaultFileId();
+        } else {
+            editId = entry.getId();
+        }
         CmsAvailabilityDialog dialog = new CmsAvailabilityDialog(
-            entry.getId(),
+            editId,
             CmsSitemapView.getInstance().getIconForEntry(entry));
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
@@ -84,7 +93,7 @@ public class CmsAvailabilityMenuEntry extends A_CmsSitemapMenuEntry {
 
         CmsSitemapController controller = getHoverbar().getController();
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode() && (entry != null);
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode() && (entry != null);
         setVisible(show);
         if (show && (entry != null) && !entry.isEditable()) {
             setActive(false);

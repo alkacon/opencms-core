@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Provides a confirmation dialog with ok and cancel button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsConfirmDialog extends CmsAlertDialog {
@@ -47,10 +47,10 @@ public class CmsConfirmDialog extends CmsAlertDialog {
     /** The 'Ok' button. */
     private CmsPushButton m_okButton;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
-     * @param caption the title for this dialog 
+     *
+     * @param caption the title for this dialog
      */
     public CmsConfirmDialog(String caption) {
 
@@ -59,7 +59,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param caption the title and heading of the dialog
      * @param content the content text
      */
@@ -95,7 +95,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /**
      * Returns the 'OK' button widget.<p>
-     * 
+     *
      * @return the 'OK' button
      */
     public CmsPushButton getOkButton() {
@@ -105,7 +105,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /**
      * Sets the dialog handler.<p>
-     * 
+     *
      * @param handler the handler to set
      */
     public void setHandler(I_CmsConfirmDialogHandler handler) {
@@ -116,7 +116,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /**
      * Sets the accept button icon class.<p>
-     * 
+     *
      * @param iconClass the icon class
      */
     public void setOkIconClass(String iconClass) {
@@ -126,7 +126,7 @@ public class CmsConfirmDialog extends CmsAlertDialog {
 
     /**
      * Sets the accept button text.<p>
-     * 
+     *
      * @param text the button text
      */
     public void setOkText(String text) {

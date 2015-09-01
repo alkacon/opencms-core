@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates a new instance.<p> 
+     * Creates a new instance.<p>
      */
     public CmsPostUploadDialogService() {
 
@@ -74,10 +74,10 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
     /**
      * Fetches the dialog data.<p>
-     * 
+     *
      * @param request the servlet request
-     *  
-     * @return the dialog data  
+     *
+     * @return the dialog data
      * @throws CmsRpcException if something goes wrong
      */
     public static CmsPostUploadDialogBean prefetch(HttpServletRequest request) throws CmsRpcException {
@@ -142,12 +142,13 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 "",
                 "false");
             propertyDefinitions.put(CmsPropertyModification.FILE_NAME_PROPERTY, fileNamePropDef);
-            clientProperties.put(CmsPropertyModification.FILE_NAME_PROPERTY, new CmsClientProperty(
+            clientProperties.put(
                 CmsPropertyModification.FILE_NAME_PROPERTY,
-                res.getName(),
-                res.getName()));
+                new CmsClientProperty(CmsPropertyModification.FILE_NAME_PROPERTY, res.getName(), res.getName()));
 
-            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(getCmsObject(), res.getRootPath());
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                getCmsObject(),
+                res.getRootPath());
             Map<String, CmsXmlContentProperty> propertyConfiguration = configData.getPropertyConfigurationAsMap();
             for (String propertyName : defaultproperties) {
                 CmsXmlContentProperty propDef = null;
@@ -184,7 +185,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             return result;
         } catch (CmsException e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 
@@ -197,8 +198,8 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
 
             Map<CmsUUID, String> uuids = new LinkedHashMap<CmsUUID, String>();
 
-            if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRequest().getParameter(
-                I_CmsDialogConstants.PARAM_RESOURCES)))) {
+            if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                getRequest().getParameter(I_CmsDialogConstants.PARAM_RESOURCES)))) {
                 // if the request parameter resources exists and contains a list of UUIDs
                 // this dialog is used as upload hook
                 String resourcesParam = getRequest().getParameter(I_CmsDialogConstants.PARAM_RESOURCES);
@@ -223,7 +224,7 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
             return new CmsPostUploadDialogBean(uuids);
         } catch (CmsException e) {
             error(e);
-            return null; // will never be reached 
+            return null; // will never be reached
         }
     }
 

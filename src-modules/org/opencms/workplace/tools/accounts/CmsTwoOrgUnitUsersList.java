@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,14 +33,14 @@ import org.opencms.workplace.list.CmsTwoListsDialog;
 
 /**
  * Class for managing two organizational unit lists on the same dialog.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsTwoOrgUnitUsersList extends CmsTwoListsDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param wp1 the workplace instance for the first list
      * @param wp2 the workplace instance for the second list
      */
@@ -65,7 +65,7 @@ public class CmsTwoOrgUnitUsersList extends CmsTwoListsDialog {
 
     /**
      * Returns the custom html end code for this dialog.<p>
-     * 
+     *
      * @return custom html code
      */
     protected String customHtmlEnd() {
@@ -80,14 +80,16 @@ public class CmsTwoOrgUnitUsersList extends CmsTwoListsDialog {
         result.append("<input name='");
         result.append(CmsDialog.DIALOG_CONFIRMED);
         result.append("' type='button' value='");
-        result.append(Messages.get().container(Messages.GUI_ORGUNITUSERS_BUTTON_CONFIRM_0).key(getFirstWp().getLocale()));
+        result.append(
+            Messages.get().container(Messages.GUI_ORGUNITUSERS_BUTTON_CONFIRM_0).key(getFirstWp().getLocale()));
         result.append("' onclick=\"submitAction('");
         result.append(CmsDialog.DIALOG_CONFIRMED);
         result.append("', form);\" class='dialogbutton'>\n");
         result.append("<input name='");
         result.append(CmsDialog.DIALOG_CANCEL);
         result.append("' type='button' value='");
-        result.append(Messages.get().container(Messages.GUI_ORGUNITUSERS_BUTTON_CANCEL_0).key(getFirstWp().getLocale()));
+        result.append(
+            Messages.get().container(Messages.GUI_ORGUNITUSERS_BUTTON_CANCEL_0).key(getFirstWp().getLocale()));
         result.append("' onclick=\"submitAction('");
         result.append(CmsDialog.DIALOG_CANCEL);
         result.append("', form);\" class='dialogbutton'>\n");

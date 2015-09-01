@@ -19,27 +19,27 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.repository;
+
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.CmsException;
 
-
 /**
  * Abstract implementation of the repository interface {@link I_CmsRepository}.<p>
- * 
+ *
  * Get a {@link I_CmsRepositorySession} through login in with the
  * username and password ({@link #login(String, String)}).<p>
- * 
+ *
  * Handles the functionality of basic configuration. This is actually the configuration
  * of param/values and the filters ({@link CmsRepositoryFilter}) to use of the repository.<p>
- * 
+ *
  * @since 6.2.4
  */
 public abstract class A_CmsRepository implements I_CmsRepository {
@@ -113,13 +113,13 @@ public abstract class A_CmsRepository implements I_CmsRepository {
     }
 
     /**
-     * Login a user given the username and the password.<p> 
-     * 
+     * Login a user given the username and the password.<p>
+     *
      * @param userName the user name
      * @param password the user's password
-     * 
+     *
      * @return the authenticated session
-     * 
+     *
      * @throws CmsException if the login was not succesful
      */
     public abstract I_CmsRepositorySession login(String userName, String password) throws CmsException;

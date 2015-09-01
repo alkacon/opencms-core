@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,15 +48,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The CmsLockManager is used by the Cms application to detect 
+ * The CmsLockManager is used by the Cms application to detect
  * the lock state of a resource.<p>
- * 
- * The lock state depends on the path of the resource, and probably 
+ *
+ * The lock state depends on the path of the resource, and probably
  * locked parent folders. The result of a query to the lock manager
  * are instances of CmsLock objects.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
@@ -73,8 +73,8 @@ public final class CmsLockManager {
 
     /**
      * Default constructor, creates a new lock manager.<p>
-     * 
-     * @param driverManager the driver manager instance 
+     *
+     * @param driverManager the driver manager instance
      */
     public CmsLockManager(CmsDriverManager driverManager) {
 
@@ -83,13 +83,13 @@ public final class CmsLockManager {
 
     /**
      * Adds a resource to the lock manager.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource
      * @param user the user who locked the resource
      * @param project the project where the resource is locked
      * @param type the lock type
-     * 
+     *
      * @throws CmsLockException if the resource is locked
      * @throws CmsException if something goes wrong
      */
@@ -139,9 +139,9 @@ public final class CmsLockManager {
 
     /**
      * Counts the exclusive locked resources in a project.<p>
-     * 
+     *
      * @param project the project
-     * 
+     *
      * @return the number of exclusive locked resources in the specified project
      */
     public int countExclusiveLocksInProject(CmsProject project) {
@@ -159,14 +159,14 @@ public final class CmsLockManager {
 
     /**
      * Returns the lock state of the given resource.<p>
-     * 
-     * In case no lock is set, the <code>null lock</code> which can be obtained 
+     *
+     * In case no lock is set, the <code>null lock</code> which can be obtained
      * by {@link CmsLock#getNullLock()} is returned.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource
-     * 
-     * @return the lock state of the given resource 
+     *
+     * @return the lock state of the given resource
 
      * @throws CmsException if something goes wrong
      */
@@ -177,15 +177,15 @@ public final class CmsLockManager {
 
     /**
      * Returns the lock state of the given resource.<p>
-     * 
-     * In case no lock is set, the <code>null lock</code> which can be obtained 
+     *
+     * In case no lock is set, the <code>null lock</code> which can be obtained
      * by {@link CmsLock#getNullLock()} is returned.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource
      * @param includeSiblings if siblings (shared locks) should be included in the search
-     * 
-     * @return the lock state of the given resource 
+     *
+     * @return the lock state of the given resource
 
      * @throws CmsException if something goes wrong
      */
@@ -218,14 +218,14 @@ public final class CmsLockManager {
 
     /**
      * Returns all exclusive locked resources matching the given resource and filter.<p>
-     * 
+     *
      * @param dbc the database context
      * @param resource the resource
      * @param filter the lock filter
-     * 
+     *
      * @return a list of resources
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsResource> getLockedResources(CmsDbContext dbc, CmsResource resource, CmsLockFilter filter)
     throws CmsException {
@@ -266,15 +266,15 @@ public final class CmsLockManager {
 
     /**
      * Returns all exclusive locked resources matching the given resource and filter, but uses a cache for resource loookups.<p>
-     * 
+     *
      * @param dbc the database context
      * @param resource the resource
      * @param filter the lock filter
-     * @param cache a cache to use for resource lookups 
-     * 
+     * @param cache a cache to use for resource lookups
+     *
      * @return a list of resources
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsResource> getLockedResourcesWithCache(
         CmsDbContext dbc,
@@ -299,7 +299,7 @@ public final class CmsLockManager {
                     cache.put(lock.getResourceName(), lockedResource);
                 } catch (CmsVfsResourceNotFoundException e) {
                     OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
-                    // we put a dummy resource object in the map so we won't need to read the nonexistent resource again 
+                    // we put a dummy resource object in the map so we won't need to read the nonexistent resource again
                     CmsResource dummy = new CmsResource(
                         null,
                         null,
@@ -323,7 +323,7 @@ public final class CmsLockManager {
                     continue;
                 }
             } else if (lockedResource.getStructureId() == null) {
-                // dummy resource, i.e. the resource was not found in a previous readResource call 
+                // dummy resource, i.e. the resource was not found in a previous readResource call
                 continue;
             }
             if (filter.isSharedExclusive() && (lockedResource != null) && (lockedResource.getSiblingCount() > 1)) {
@@ -346,14 +346,14 @@ public final class CmsLockManager {
 
     /**
      * Returns all exclusive locked resources matching the given resource name and filter.<p>
-     * 
+     *
      * @param dbc the database context
      * @param resourceName the resource name
      * @param filter the lock filter
-     * 
+     *
      * @return a list of root paths
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsLock> getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
@@ -389,15 +389,15 @@ public final class CmsLockManager {
 
     /**
      * Returns <code>true</code> if the given resource contains a resource that has a system lock.<p>
-     * 
-     * This check is required for certain operations on folders.<p> 
-     * 
+     *
+     * This check is required for certain operations on folders.<p>
+     *
      * @param dbc the database context
      * @param resource the resource to check the system locks for
-     * 
+     *
      * @return <code>true</code> if the given resource contains a resource that has a system lock
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public boolean hasSystemLocks(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
@@ -445,8 +445,8 @@ public final class CmsLockManager {
 
     /**
      * Moves a lock during the move resource operation.<p>
-     * 
-     * @param source the source root path 
+     *
+     * @param source the source root path
      * @param destination the destination root path
      */
     public void moveResource(String source, String destination) {
@@ -465,11 +465,11 @@ public final class CmsLockManager {
     }
 
     /**
-     * Reads the latest saved locks from the database and installs them to 
+     * Reads the latest saved locks from the database and installs them to
      * this lock manager.<p>
-     * 
+     *
      *  @param dbc the current database context
-     *  
+     *
      *  @throws CmsException if something goes wrong
      */
     public void readLocks(CmsDbContext dbc) throws CmsException {
@@ -490,7 +490,7 @@ public final class CmsLockManager {
 
     /**
      * Removes a resource after it has been deleted by the driver manager.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resourceName the root path of the deleted resource
      * @throws CmsException if something goes wrong
@@ -499,9 +499,10 @@ public final class CmsLockManager {
 
         try {
             m_driverManager.getVfsDriver(dbc).readResource(dbc, dbc.currentProject().getUuid(), resourceName, false);
-            throw new CmsLockException(Messages.get().container(
-                Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
-                dbc.getRequestContext().removeSiteRoot(resourceName)));
+            throw new CmsLockException(
+                Messages.get().container(
+                    Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
+                    dbc.getRequestContext().removeSiteRoot(resourceName)));
         } catch (CmsVfsResourceNotFoundException e) {
             // ok, ignore
         }
@@ -511,9 +512,9 @@ public final class CmsLockManager {
 
     /**
      * Removes all locks of a user.<p>
-     * 
+     *
      * Edition and system locks are removed.<p>
-     * 
+     *
      * @param userId the id of the user whose locks should be removed
      */
     public void removeLocks(CmsUUID userId) {
@@ -534,17 +535,17 @@ public final class CmsLockManager {
 
     /**
      * Removes a resource from the lock manager.<p>
-     * 
+     *
      * The forceUnlock option should be used with caution.<br>
      * forceUnlock will remove the lock by ignoring any rules which may cause wrong lock states.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource
-     * @param forceUnlock <code>true</code>, if a resource is forced to get unlocked (only edition locks), 
+     * @param forceUnlock <code>true</code>, if a resource is forced to get unlocked (only edition locks),
      *                    no matter by which user and in which project the resource is currently locked
      * @param removeSystemLock <code>true</code>, if you also want to remove system locks
-     * 
-     * @return the previous {@link CmsLock} object of the resource, 
+     *
+     * @return the previous {@link CmsLock} object of the resource,
      *          or <code>{@link CmsLock#getNullLock()}</code> if the resource was unlocked
      *
      * @throws CmsException if something goes wrong
@@ -559,16 +560,14 @@ public final class CmsLockManager {
         if (!lock.isNullLock()) {
             // the resource is locked by another user or in other project
             if (!forceUnlock && (!lock.isOwnedInProjectBy(dbc.currentUser(), dbc.currentProject()))) {
-                throw new CmsLockException(Messages.get().container(
-                    Messages.ERR_RESOURCE_UNLOCK_1,
-                    dbc.removeSiteRoot(resourcename)));
+                throw new CmsLockException(
+                    Messages.get().container(Messages.ERR_RESOURCE_UNLOCK_1, dbc.removeSiteRoot(resourcename)));
             }
 
             // sub-resources of a locked folder can't be unlocked
             if (!forceUnlock && lock.isInherited()) {
-                throw new CmsLockException(Messages.get().container(
-                    Messages.ERR_UNLOCK_LOCK_INHERITED_1,
-                    dbc.removeSiteRoot(resourcename)));
+                throw new CmsLockException(
+                    Messages.get().container(Messages.ERR_UNLOCK_LOCK_INHERITED_1, dbc.removeSiteRoot(resourcename)));
             }
         }
 
@@ -576,7 +575,7 @@ public final class CmsLockManager {
         if (lock.isExclusive()) {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
-                // been upgraded from an inherited lock when the user edited a resource                
+                // been upgraded from an inherited lock when the user edited a resource
                 Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
                 while (itLocks.hasNext()) {
                     String lockedPath = (itLocks.next()).getResourceName();
@@ -595,7 +594,7 @@ public final class CmsLockManager {
 
         if (lock.getType().isSharedExclusive()) {
             List<String> locks = OpenCms.getMemoryMonitor().getAllCachedLockPaths();
-            // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
+            // when a resource with a shared lock gets unlocked, fetch all siblings of the resource
             // to the same content record to identify the exclusive locked sibling
             List<CmsResource> siblings = internalReadSiblings(dbc, resource);
             for (int i = 0; i < siblings.size(); i++) {
@@ -621,7 +620,7 @@ public final class CmsLockManager {
 
     /**
      * Removes all resources locked in a project.<p>
-     * 
+     *
      * @param projectId the ID of the project where the resources have been locked
      * @param removeSystemLocks if <code>true</code>, also system locks are removed
      */
@@ -641,9 +640,9 @@ public final class CmsLockManager {
 
     /**
      * Removes all exclusive temporary locks of a user.<p>
-     * 
+     *
      * Only edition lock can be temporary, so no system locks are removed.<p>
-     * 
+     *
      * @param userId the id of the user whose locks has to be removed
      */
     public void removeTempLocks(CmsUUID userId) {
@@ -657,7 +656,7 @@ public final class CmsLockManager {
         }
     }
 
-    /** 
+    /**
      * @see java.lang.Object#toString()
      */
     @Override
@@ -679,19 +678,19 @@ public final class CmsLockManager {
     }
 
     /**
-     * Writes the locks that are currently stored in-memory to the database to allow restoring them in 
-     * later startups.<p> 
-     * 
+     * Writes the locks that are currently stored in-memory to the database to allow restoring them in
+     * later startups.<p>
+     *
      * This overwrites the locks previously stored in the underlying database table.<p>
-     * 
+     *
      *  @param dbc the current database context
-     *  
+     *
      *  @throws CmsException if something goes wrong
      */
     public void writeLocks(CmsDbContext dbc) throws CmsException {
 
         if (m_isDirty // only if something changed
-            && m_runningInServlet // only if started in run level 4 
+            && m_runningInServlet // only if started in run level 4
             && OpenCms.getMemoryMonitor().requiresPersistency()) { // only if persistency is required
 
             List<CmsLock> locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
@@ -701,15 +700,15 @@ public final class CmsLockManager {
     }
 
     /**
-     * Checks if the given resource is lockable by the given user/project/lock type.<p> 
-     * 
+     * Checks if the given resource is lockable by the given user/project/lock type.<p>
+     *
      * @param dbc just to get the site path of the resource
      * @param resource the resource to check lockability for
      * @param user the user to check
      * @param project the project to check
      * @param type the lock type to check
      * @param currentLock the resource current lock
-     * 
+     *
      * @throws CmsLockException if resource is not lockable
      */
     private void checkLockable(
@@ -748,10 +747,10 @@ public final class CmsLockManager {
 
     /**
      * Returns the direct lock of a resource.<p>
-     * 
+     *
      * @param resourcename the name of the resource
-     * 
-     * @return the direct lock of the resource or <code>null</code> 
+     *
+     * @return the direct lock of the resource or <code>null</code>
      */
     private CmsLock getDirectLock(String resourcename) {
 
@@ -760,9 +759,9 @@ public final class CmsLockManager {
 
     /**
      * Returns the lock of a possible locked parent folder of a resource, system locks are ignored.<p>
-     * 
+     *
      * @param resourceName the name of the resource
-     * 
+     *
      * @return the lock of a parent folder, or {@link CmsLock#getNullLock()} if no parent folders are locked by a non system lock
      */
     private CmsLock getParentFolderLock(String resourceName) {
@@ -786,7 +785,7 @@ public final class CmsLockManager {
 
     /**
      * Returns the inherited lock of a resource.<p>
-     * 
+     *
      * @param resourcename the name of the resource
      * @return the inherited lock or the null lock
      */
@@ -805,10 +804,10 @@ public final class CmsLockManager {
 
     /**
      * Returns the indirect lock of a resource depending on siblings lock state.<p>
-     * 
+     *
      * @param siblings the list of siblings
      * @param resourcename the name of the resource
-     * 
+     *
      * @return the indirect lock of the resource or the null lock
      */
     private CmsLock getSiblingsLock(List<CmsResource> siblings, String resourcename) {
@@ -817,7 +816,7 @@ public final class CmsLockManager {
             CmsResource sibling = siblings.get(i);
             CmsLock exclusiveLock = getDirectLock(sibling.getRootPath());
             if (exclusiveLock != null) {
-                // a sibling is already locked 
+                // a sibling is already locked
                 return internalSiblingLock(exclusiveLock, resourcename);
             }
         }
@@ -828,11 +827,11 @@ public final class CmsLockManager {
 
     /**
      * Finally set the given lock.<p>
-     * 
+     *
      * @param lock the lock to set
      * @param locks during reading the locks from db we need to operate on an extra map
-     * 
-     * @throws CmsLockException if the lock is not compatible with the current lock 
+     *
+     * @throws CmsLockException if the lock is not compatible with the current lock
      */
     private void internalLockResource(CmsLock lock, Map<String, CmsLock> locks) throws CmsLockException {
 
@@ -856,10 +855,8 @@ public final class CmsLockManager {
             } else if (currentLock.getSystemLock().isUnlocked() && !lock.getSystemLock().isUnlocked()) {
                 currentLock.setRelatedLock(lock);
             } else {
-                throw new CmsLockException(Messages.get().container(
-                    Messages.ERR_LOCK_ILLEGAL_STATE_2,
-                    currentLock,
-                    lock));
+                throw new CmsLockException(
+                    Messages.get().container(Messages.ERR_LOCK_ILLEGAL_STATE_2, currentLock, lock));
             }
         } else {
             if (locks == null) {
@@ -872,17 +869,17 @@ public final class CmsLockManager {
 
     /**
      * Reads all siblings from a given resource.<p>
-     * 
-     * The result is a list of <code>{@link CmsResource}</code> objects. 
+     *
+     * The result is a list of <code>{@link CmsResource}</code> objects.
      * It does NOT contain the resource itself, only the siblings of the resource.<p>
-     * 
+     *
      * @param dbc the current database context
      * @param resource the resource to find all siblings from
-     * 
-     * @return a list of <code>{@link CmsResource}</code> Objects that 
-     *          are siblings to the specified resource, 
+     *
+     * @return a list of <code>{@link CmsResource}</code> Objects that
+     *          are siblings to the specified resource,
      *          excluding the specified resource itself
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     private List<CmsResource> internalReadSiblings(CmsDbContext dbc, CmsResource resource) throws CmsException {
@@ -900,10 +897,10 @@ public final class CmsLockManager {
 
     /**
      * Returns a shared lock for the given excclusive lock and sibling.<p>
-     * 
+     *
      * @param exclusiveLock the exclusive lock to use (has to be set on a sibling of siblingName)
      * @param siblingName the siblings name
-     * 
+     *
      * @return the shared lock
      */
     private CmsLock internalSiblingLock(CmsLock exclusiveLock, String siblingName) {
@@ -937,10 +934,10 @@ public final class CmsLockManager {
 
     /**
      * Sets the given lock to the resource.<p>
-     * 
+     *
      * @param lock the lock to set
-     * 
-     * @throws CmsLockException if the lock is not compatible with the current lock 
+     *
+     * @throws CmsLockException if the lock is not compatible with the current lock
      */
     private void lockResource(CmsLock lock) throws CmsLockException {
 
@@ -950,11 +947,11 @@ public final class CmsLockManager {
 
     /**
      * Unlocks the the resource with the given name.<p>
-     * 
+     *
      * @param resourceName the name of the resource to unlock
-     * @param systemLocks <code>true</code> if only system locks should be removed, 
+     * @param systemLocks <code>true</code> if only system locks should be removed,
      *              and <code>false</code> if only exclusive locks should be removed
-     * 
+     *
      * @return the removed lock object
      */
     private CmsLock unlockResource(String resourceName, boolean systemLocks) {

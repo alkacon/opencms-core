@@ -12,6 +12,10 @@ initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_Cms
 initValues.fieldid = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_FIELDID))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_FIELDID)); } %>";
 initValues.viewonly = false;
 
+function getOpener() {
+    return window.opener || window.parent; 
+}
+
 itemsPerPage = 9;
 
 /* Initializes the download gallery popup window. */
@@ -34,7 +38,7 @@ function initPopup() {
 
 
 	
-	var itemField = window.opener.document.getElementById(initValues.fieldid);
+	var itemField = getOpener().document.getElementById(initValues.fieldid);
 	if (itemField.value != null && itemField.value != "") {
 		//path to selected item
 		loadItemSitepath = new ItemSitepath();
@@ -85,12 +89,18 @@ function initStartGallery(data) {
 function okPressed() {
 
 	if ( initValues.fieldid != null && initValues.fieldid != "") {
-		var linkField = window.opener.document.getElementById(initValues.fieldid);
+		var linkField = getOpener().document.getElementById(initValues.fieldid);
 		linkField.value = activeItem.sitepath;
 		try {
 			// toggle preview icon if possible
-			window.opener.checkPreview(initValues.fieldid);
+			getOpener().checkPreview(initValues.fieldid);
 		} catch (e) {}
 	}
+	// handle both the case where we are opened as a separate browser window and as an iframe 
+	try {
 	window.close();
+	} catch(e) {}
+	try {
+	    getOpener().cmsCloseDialog("<%=org.opencms.i18n.CmsEncoder.escapeXml(request.getParameter("fieldid"))%>");
+	} catch(e) {} 
 }

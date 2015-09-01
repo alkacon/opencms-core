@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This class represents the result of a 'merge sub-sitemap' operation.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSitemapMergeInfo implements IsSerializable {
@@ -44,9 +44,9 @@ public class CmsSitemapMergeInfo implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param mergedEntry the entries which have been merged into the parent sitemap
-     * @param timestamp the modification time of the parent sitemap  
+     * @param timestamp the modification time of the parent sitemap
      */
     public CmsSitemapMergeInfo(CmsClientSitemapEntry mergedEntry, long timestamp) {
 
@@ -64,7 +64,7 @@ public class CmsSitemapMergeInfo implements IsSerializable {
 
     /**
      * Returns the entry to be merged back into the parent sitemap.<p>
-     * 
+     *
      * @return the entry to be merged
      */
     public CmsClientSitemapEntry getMergedEntry() {
@@ -74,7 +74,7 @@ public class CmsSitemapMergeInfo implements IsSerializable {
 
     /**
      * The timestamp of the last modification of the parent sitemap.<p>
-     * 
+     *
      * @return the timestamp of the last modification of the parent sitemap
      */
     public long getTimestamp() {

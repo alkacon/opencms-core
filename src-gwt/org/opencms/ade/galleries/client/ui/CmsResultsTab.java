@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,6 +40,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsList;
+import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuButton;
@@ -70,6 +71,8 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Timer;
@@ -80,10 +83,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the results tab.<p>
- * 
+ *
  * It displays the selected search parameter, the sort order and
  * the search results for the current search.
- * 
+ *
  * @since 8.0.
  */
 public class CmsResultsTab extends A_CmsListTab {
@@ -98,8 +101,8 @@ public class CmsResultsTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
-         * @param resourcePath the item resource path 
+         *
+         * @param resourcePath the item resource path
          */
         protected DeleteHandler(String resourcePath) {
 
@@ -118,7 +121,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Scroll handler which executes an action when the user has scrolled to the bottom.<p>
-     * 
+     *
      * @since 8.0.0
      */
     protected class CmsAsynchronousScrollToBottomHandler implements ScrollHandler {
@@ -131,11 +134,11 @@ public class CmsResultsTab extends A_CmsListTab {
 
         /**
          * Constructs a new scroll handler with a custom scroll threshold.
-         * 
+         *
          * The scroll threshold is the distance from the bottom edge of the scrolled content
          * such that when the distance from the bottom edge of the scroll viewport to the bottom
          * edge of the scrolled content becomes lower than the distance, the scroll action is triggered.
-         * 
+         *
          */
         public CmsAsynchronousScrollToBottomHandler() {
 
@@ -176,8 +179,8 @@ public class CmsResultsTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
-         * @param resourcePath the item resource path 
+         *
+         * @param resourcePath the item resource path
          * @param resourceType the item resource type
          */
         public PreviewHandler(String resourcePath, String resourceType) {
@@ -215,8 +218,8 @@ public class CmsResultsTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
-         * @param resourcePath the item resource path 
+         *
+         * @param resourcePath the item resource path
          * @param structureId the structure id
          * @param title the resource title
          * @param resourceType the item resource type
@@ -296,12 +299,15 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * The constructor.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      * @param dndHandler the dnd manager
-     * @param galleryHandler the gallery handler   
+     * @param galleryHandler the gallery handler
      **/
-    public CmsResultsTab(CmsResultsTabHandler tabHandler, CmsDNDHandler dndHandler, I_CmsGalleryHandler galleryHandler) {
+    public CmsResultsTab(
+        CmsResultsTabHandler tabHandler,
+        CmsDNDHandler dndHandler,
+        I_CmsGalleryHandler galleryHandler) {
 
         super(GalleryTabId.cms_tab_results);
         m_galleryHandler = galleryHandler;
@@ -346,7 +352,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Fill the content of the results tab.<p>
-     * 
+     *
      * @param searchObj the current search object containing search results
      * @param paramPanels list of search parameter panels to show
      */
@@ -354,7 +360,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
         removeNoParamMessage();
 
-        // in case there is a single type selected and the current sort order is not by type, 
+        // in case there is a single type selected and the current sort order is not by type,
         // hide the type ascending and type descending sort order options
         SortParams currentSorting = SortParams.valueOf(searchObj.getSortOrder());
         if ((searchObj.getTypes().size() == 1)
@@ -384,7 +390,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Returns the drag and drop handler.<p>
-     * 
+     *
      * @return the drag and drop handler
      */
     public CmsDNDHandler getDNDHandler() {
@@ -413,9 +419,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Returns the delete handler.<p>
-     * 
+     *
      * @param resourcePath the resource path of the resource
-     * 
+     *
      * @return the delete handler
      */
     public DeleteHandler makeDeleteHandler(String resourcePath) {
@@ -439,7 +445,7 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * Removes the no params message.<p> 
+     * Removes the no params message.<p>
      */
     public void removeNoParamMessage() {
 
@@ -449,7 +455,7 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * Shows the message if no search params were selected.<p> 
+     * Shows the message if no search params were selected.<p>
      */
     public void showNoParamsMessage() {
 
@@ -473,12 +479,14 @@ public class CmsResultsTab extends A_CmsListTab {
     }
 
     /**
-     * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>    
+     * Updates the height (with border) of the result list panel according to the search parameter panels shown.<p>
      */
     public void updateListSize() {
 
-        int paramsHeight = m_params.isVisible() ? m_params.getOffsetHeight()
-            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom) : 21;
+        int paramsHeight = m_params.isVisible()
+        ? m_params.getOffsetHeight()
+            + CmsDomUtil.getCurrentStyleInt(m_params.getElement(), CmsDomUtil.Style.marginBottom)
+        : 21;
         int optionsHeight = m_options.getOffsetHeight()
             + CmsDomUtil.getCurrentStyleInt(m_options.getElement(), CmsDomUtil.Style.marginBottom);
         int listTop = paramsHeight + optionsHeight + 5;
@@ -490,8 +498,8 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Appends the list items for the search results from a search bean.<p>
-     * 
-     * @param searchBean a search bean containing results 
+     *
+     * @param searchBean a search bean containing results
      */
     protected void addContent(CmsGallerySearchBean searchBean) {
 
@@ -502,10 +510,10 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Adds list items for a list of search results.<p>
-     * 
+     *
      * @param list the list of search results
-     *  
-     * @param front if true, list items will be added to the front of the list, else at the back 
+     *
+     * @param front if true, list items will be added to the front of the list, else at the back
      */
     protected void addContentItems(List<CmsResultItemBean> list, boolean front) {
 
@@ -527,9 +535,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Adds a list item for a single search result.<p>
-     * 
-     * @param resultItem the search result 
-     * @param front if true, adds the list item to the front of the list, else at the back 
+     *
+     * @param resultItem the search result
+     * @param front if true, adds the list item to the front of the list, else at the back
      */
     protected void addSingleResult(CmsResultItemBean resultItem, boolean front) {
 
@@ -548,15 +556,22 @@ public class CmsResultsTab extends A_CmsListTab {
         }
         CmsUUID structureId = new CmsUUID(resultItem.getClientId());
         listItem.getListItemWidget().addButton(new CmsContextMenuButton(structureId, m_contextMenuHandler));
+        listItem.getListItemWidget().addOpenHandler(new OpenHandler<CmsListItemWidget>() {
+
+            public void onOpen(OpenEvent<CmsListItemWidget> event) {
+
+                onContentChange();
+            }
+        });
         if (m_tabHandler.hasSelectResource()) {
             SelectHandler selectHandler = new SelectHandler(
                 resultItem.getPath(),
                 structureId,
-                resultItem.getTitle(),
+                resultItem.getRawTitle(),
                 resultItem.getType());
             listItem.addSelectClickHandler(selectHandler);
 
-            // this affects both tiled and non-tiled result lists. 
+            // this affects both tiled and non-tiled result lists.
             listItem.addDoubleClickHandler(selectHandler);
         }
         m_galleryHandler.processResultItem(listItem);
@@ -629,7 +644,7 @@ public class CmsResultsTab extends A_CmsListTab {
                             if (offset >= 0) {
                                 scrollPanel.setVerticalScrollPosition(offset);
                             } else {
-                                // something is seriously wrong with the positioning if this case occurs   
+                                // something is seriously wrong with the positioning if this case occurs
                                 scrollPanel.scrollToBottom();
                             }
                         }
@@ -642,7 +657,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Helper for setting the scroll position of the scroll panel.<p>
-     * 
+     *
      * @param pos the scroll position
      */
     protected void setScrollPosition(final int pos) {
@@ -666,7 +681,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Selects the view with the given name.<p>
-     * 
+     *
      * @param viewName the view name
      */
     void selectView(String viewName) {
@@ -684,7 +699,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Displays the result count.<p>
-     * 
+     *
      * @param displayed the displayed result items
      * @param total the total of result items
      */
@@ -699,9 +714,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Returns the count of the currently displayed results.<p>
-     * 
+     *
      * @param searchObj the search bean
-     * 
+     *
      * @return the count of the currently displayed results
      */
     private int getResultsDisplayed(CmsGallerySearchBean searchObj) {
@@ -712,9 +727,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Returns the list of properties to sort the results according to.<p>
-     * 
+     *
      * @param includeType <code>true</code> to include sort according to type
-     * 
+     *
      * @return the sort list
      */
     private LinkedHashMap<String, String> getSortList(boolean includeType) {
@@ -739,7 +754,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Checks if the thumbnail tiling view is allowed for the given result items.<p>
-     * 
+     *
      * @return <code>true</code> if the thumbnail tiling view is allowed for the given result items
      */
     private boolean isTilingViewAllowed() {
@@ -749,9 +764,9 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Displays the selected search parameters in the result tab.<p>
-     * 
-     * @param paramPanels the list of search parameter panels to show 
-     * 
+     *
+     * @param paramPanels the list of search parameter panels to show
+     *
      */
     private void showParams(List<CmsSearchParamPanel> paramPanels) {
 
@@ -770,7 +785,7 @@ public class CmsResultsTab extends A_CmsListTab {
 
     /**
      * Shows the upload button if appropriate.<p>
-     * 
+     *
      * @param searchObj the current search object
      */
     private void showUpload(CmsGallerySearchBean searchObj) {

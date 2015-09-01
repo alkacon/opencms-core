@@ -42,10 +42,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * The login uri must have following format:<br>
  * <code>/${CONTEXT}/${SERVLET}/system/login/${OU_PATH}</code><p>
- * 
+ *
  * for example:<br>
  * <code>/opencms/opencms/system/login/intranet/marketing</code><p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
@@ -59,10 +59,13 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsResourceInitException {
 
-        // only do something if the resource was not found 
+        // only do something if the resource was not found
         if (resource != null) {
             return resource;
         }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,24 +60,27 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
 
     /**
      * Constructor, with parameters.
-     * 
+     *
      * @param pageContext the JSP page context object
-     * @param request the JSP request 
-     * @param response the JSP response 
+     * @param request the JSP request
+     * @param response the JSP response
      */
-    public CmsXmlSitemapActionElement(PageContext pageContext, HttpServletRequest request, HttpServletResponse response) {
+    public CmsXmlSitemapActionElement(
+        PageContext pageContext,
+        HttpServletRequest request,
+        HttpServletResponse response) {
 
         super(pageContext, request, response);
     }
 
-    /** 
-     * Creates an XML sitemap generator instance given a class name and the root path for the sitemap.<p> 
-     * 
+    /**
+     * Creates an XML sitemap generator instance given a class name and the root path for the sitemap.<p>
+     *
      * @param className the class name of the sitemap generator (may be null for the default
-     * @param folderRootPath the root path of the start folder for the sitemap 
-     * @return the sitemap generator instance 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param folderRootPath the root path of the start folder for the sitemap
+     * @return the sitemap generator instance
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsXmlSitemapGenerator createSitemapGenerator(String className, String folderRootPath) throws CmsException {
 
@@ -91,23 +94,23 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
             CmsXmlSitemapGenerator generator = constructor.newInstance(folderRootPath);
             return generator;
         } catch (Exception e) {
-            LOG.error("Could not create configured sitemap generator "
-                + className
-                + ", using the default class instead", e);
+            LOG.error(
+                "Could not create configured sitemap generator " + className + ", using the default class instead",
+                e);
             return new CmsXmlSitemapGenerator(folderRootPath);
         }
     }
 
     /**
      * Writes the XML sitemap to the response.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void renderXmlSitemap() throws Exception {
 
         CmsObject cms = getCmsObject();
-        String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(
-            cms.getRequestContext().getUri())));
+        String baseFolderRootPath = CmsFileUtil.removeTrailingSeparator(
+            CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri())));
         CmsXmlSitemapGenerator xmlSitemapGenerator = createSitemapGenerator(
             m_configuration.getSitemapGeneratorClassName(),
             baseFolderRootPath);
@@ -125,8 +128,8 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
 
     /**
      * Displays either the generated sitemap.xml or the generated robots.txt, depending on the configuration.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void run() throws Exception {
 
@@ -145,8 +148,8 @@ public class CmsXmlSitemapActionElement extends CmsJspActionElement {
 
     /**
      * Renders the robots.txt data containing the sitemaps automatically.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     private void showRobotsTxt() throws Exception {
 

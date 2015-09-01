@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A collector that returns visited or subscribed resources depending on the current user and parameters.<p>
- * 
+ *
  * The configuration of the collectors can be done in the parameter String using key value pairs,
  * separated by the <code>|</code> (pipe) symbol. The following configuration options are available:<p>
  * <ul>
@@ -70,10 +70,10 @@ import org.apache.commons.logging.Log;
  * <li><i>resource</i>: the resource, i.e. the parent folder from which the subscribed or visited resources should be read from</li>
  * <li><i>user</i>:<the user to read subscribed or visited resources for/li>
  * </ul>
- * 
+ *
  * Example parameter String that can be used for the collector:<br/>
  * <code>currentuser=true|daysfrom=14|includegroups=true|mode=unvisited|resource=/demo_en/|includesubfolders=true</code><p>
- * 
+ *
  * @since 8.0
  */
 public class CmsSubscriptionCollector extends A_CmsResourceCollector {
@@ -81,13 +81,13 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
     /** The collector parameter key for the current user flag (to set the user in the filters to the current user). */
     public static final String PARAM_KEY_CURRENTUSER = "currentuser";
 
-    /** 
+    /**
      * The collector parameter key for the number of days subtracted from the current day
      * specifying the start point in time from which a resource was visited.
      */
     public static final String PARAM_KEY_DAYSFROM = "daysfrom";
 
-    /** 
+    /**
      * The collector parameter key for the number of days subtracted from the current day
      * specifying the end point in time to which a resource was visited.<p>
      * If the parameter {@link #PARAM_KEY_DAYSFROM} is also used, the value of this key should be less than the value
@@ -180,21 +180,20 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
                 // "allSubscribedDeleted"
                 return getSubscribedDeletedResources(cms, param, numResults);
             default:
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NAME_INVALID_1,
-                    collectorName));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NAME_INVALID_1, collectorName));
         }
     }
 
     /**
      * Returns the subscribed deleted resources according to the collector parameter.<p>
-     * 
+     *
      * @param cms the current users context
      * @param param an optional collector parameter
-     * @param numResults the number of results 
-     * 
+     * @param numResults the number of results
+     *
      * @return the subscribed deleted resources according to the collector parameter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getSubscribedDeletedResources(CmsObject cms, String param, int numResults)
@@ -229,16 +228,17 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the subscribed resources according to the collector parameter.<p>
-     * 
+     *
      * @param cms the current users context
      * @param param an optional collector parameter
-     * @param numResults the number of results 
-     * 
+     * @param numResults the number of results
+     *
      * @return the subscribed resources according to the collector parameter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
-    protected List<CmsResource> getSubscribedResources(CmsObject cms, String param, int numResults) throws CmsException {
+    protected List<CmsResource> getSubscribedResources(CmsObject cms, String param, int numResults)
+    throws CmsException {
 
         List<CmsResource> result = OpenCms.getSubscriptionManager().readSubscribedResources(
             cms,
@@ -252,12 +252,12 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the configured subscription filter to use.<p>
-     * 
+     *
      * @param cms the current users context
      * @param params the optional collector parameters
-     * 
+     *
      * @return the configured subscription filter to use
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsSubscriptionFilter getSubscriptionFilter(CmsObject cms, Map<String, String> params)
@@ -286,9 +286,10 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
                     filter.addGroup(group);
                 } catch (CmsException e) {
                     // error reading a group
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_COLLECTOR_PARAM_INVALID_1,
-                        PARAM_KEY_GROUPS + "=" + params.get(PARAM_KEY_GROUPS)));
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_COLLECTOR_PARAM_INVALID_1,
+                            PARAM_KEY_GROUPS + "=" + params.get(PARAM_KEY_GROUPS)));
                     throw e;
                 }
             }
@@ -310,12 +311,12 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the configured subscription filter to use.<p>
-     * 
+     *
      * @param cms the current users context
      * @param param an optional collector parameter
-     * 
+     *
      * @return the configured subscription filter to use
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsSubscriptionFilter getSubscriptionFilter(CmsObject cms, String param) throws CmsException {
@@ -325,12 +326,12 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the configured visited by filter to use.<p>
-     * 
+     *
      * @param cms the current users context
      * @param param an optional collector parameter
-     * 
+     *
      * @return the configured visited by filter to use
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsVisitedByFilter getVisitedByFilter(CmsObject cms, String param) throws CmsException {
@@ -346,13 +347,13 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the visited resources according to the collector parameter.<p>
-     * 
+     *
      * @param cms the current users context
      * @param param an optional collector parameter
-     * @param numResults the number of results 
-     * 
+     * @param numResults the number of results
+     *
      * @return the visited resources according to the collector parameter
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getVisitedResources(CmsObject cms, String param, int numResults) throws CmsException {
@@ -369,12 +370,12 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the calculated time with the days delta using the base time.<p>
-     * 
+     *
      * @param baseTime the base time to calculate the returned time from
      * @param deltaDays the number of days which should be subtracted from the base time
      * @param key the parameter key name used for error messages
      * @param defaultTime the default time is used if there were errors calculating the resulting time
-     * 
+     *
      * @return the calculated time
      */
     private long getCalculatedTime(long baseTime, String deltaDays, String key, long defaultTime) {
@@ -395,9 +396,9 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Returns the collector parameters.<p>
-     * 
+     *
      * @param param the collector parameter
-     * 
+     *
      * @return the collector parameters
      */
     private Map<String, String> getParameters(String param) {
@@ -410,13 +411,13 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
 
     /**
      * Initializes the visited by filter from the parameters.<p>
-     * 
+     *
      * @param filter the filter to initialize
      * @param cms the current users context
      * @param params the collector parameters to configure the filter
      * @param forceSetUser flag to determine if a user has to be set in the filter
      *        (should be <code>true</code> for the visited by filter, <code>false</code> for the subscription filter)
-     *        
+     *
      * @throws CmsException if something goes wrong
      */
     private void initVisitedByFilter(
@@ -431,9 +432,8 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
                 CmsUser user = cms.readUser(params.get(PARAM_KEY_USER));
                 filter.setUser(user);
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_COLLECTOR_PARAM_USER_1,
-                    params.get(PARAM_KEY_USER)));
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_COLLECTOR_PARAM_USER_1, params.get(PARAM_KEY_USER)));
                 throw e;
             }
         }
@@ -449,11 +449,8 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
             filter.setFromDate(getCalculatedTime(currentTime, params.get(PARAM_KEY_DAYSFROM), PARAM_KEY_DAYSFROM, 0L));
         }
         if (params.containsKey(PARAM_KEY_DAYSTO)) {
-            filter.setToDate(getCalculatedTime(
-                currentTime,
-                params.get(PARAM_KEY_DAYSTO),
-                PARAM_KEY_DAYSTO,
-                Long.MAX_VALUE));
+            filter.setToDate(
+                getCalculatedTime(currentTime, params.get(PARAM_KEY_DAYSTO), PARAM_KEY_DAYSTO, Long.MAX_VALUE));
         }
 
         // determine if a parent folder should be used
@@ -467,9 +464,10 @@ public class CmsSubscriptionCollector extends A_CmsResourceCollector {
                     filter.setIncludeSubfolders(includeSubFolders);
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_COLLECTOR_PARAM_INVALID_1,
-                    PARAM_KEY_RESOURCE + "=" + params.get(PARAM_KEY_RESOURCE)));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_COLLECTOR_PARAM_INVALID_1,
+                        PARAM_KEY_RESOURCE + "=" + params.get(PARAM_KEY_RESOURCE)));
                 throw e;
             }
         }

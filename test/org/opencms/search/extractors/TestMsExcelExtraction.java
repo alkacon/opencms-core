@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,26 +27,16 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the text extraction form an Excel file.<p>
  */
-public class TestMsExcelExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestMsExcelExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestMsExcelExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the Excel text extraction for old OLE2 documents.<p>
@@ -55,7 +45,7 @@ public class TestMsExcelExtraction extends TestCase {
      */
     public void testExcelExtractionOLE2() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xls");
 
         // extract the content
@@ -102,7 +92,7 @@ public class TestMsExcelExtraction extends TestCase {
      */
     public void testExcelExtractionOOXML() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.xlsx");
 
         // extract the content

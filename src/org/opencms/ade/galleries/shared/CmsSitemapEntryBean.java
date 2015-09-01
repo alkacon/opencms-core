@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,8 +76,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Constructor.<p>
-     * 
-     * @param rootPath the root path 
+     *
+     * @param rootPath the root path
      * @param sitePath the site path
      * @param structureId the entry id
      * @param title the title
@@ -85,8 +85,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
      * @param isFolder <code>true</code> if this entry represents a folder
      * @param isRoot <code>true</code> if this is a site root entry
      * @param isHiddenEntry <code>true</code> if this is a hidden entry
-     * @param isNavLevel <code>true</code> if this is a navigation level 
-     * 
+     * @param isNavLevel <code>true</code> if this is a navigation level
+     *
      */
     public CmsSitemapEntryBean(
         String rootPath,
@@ -131,7 +131,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Returns the children of this entry or <code>null</code> if not loaded.<p>
-     * 
+     *
      * @return the children of the entry
      */
     public List<CmsSitemapEntryBean> getChildren() {
@@ -141,7 +141,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Gets the name which should be displayed in the widget representing this VFS entry.<p>
-     * 
+     *
      * @return the name to display
      */
     public String getDisplayName() {
@@ -161,10 +161,10 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
         }
     }
 
-    /** 
+    /**
      * Returns the type name used to determine the icon (may be different from the actual type.<p>
-     * 
-     * @return the type name used for the icon 
+     *
+     * @return the type name used for the icon
      */
     public String getImageType() {
 
@@ -177,8 +177,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Gets the root path of the sitemap entry.<p>
-     * 
-     * @return the root path of the sitemap entry 
+     *
+     * @return the root path of the sitemap entry
      */
     public String getRootPath() {
 
@@ -186,9 +186,9 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
     }
 
     /**
-     * Returns the site path of this VFS tree. 
-     * 
-     * @return the site path 
+     * Returns the site path of this VFS tree.
+     *
+     * @return the site path
      */
     public String getSitePath() {
 
@@ -197,8 +197,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Gets the site root.<p>
-     * 
-     * @return the site root 
+     *
+     * @return the site root
      */
     public String getSiteRoot() {
 
@@ -227,7 +227,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Returns if the children of this entry have been loaded.<p>
-     * 
+     *
      * @return <code>true</code> if the children of this entry have been loaded
      */
     public boolean hasChildren() {
@@ -247,7 +247,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Returns if this is a hidden entry.<p>
-     * 
+     *
      * @return <code>true</code> if this is a hidden entry
      */
     public boolean isHiddenEntry() {
@@ -257,8 +257,8 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Returns true if this entry is a top-level entry.<p>
-     * 
-     * @return true if this is a top-level entry 
+     *
+     * @return true if this is a top-level entry
      */
     public boolean isRoot() {
 
@@ -267,7 +267,7 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Sets the children of this entry.<p>
-     * 
+     *
      * @param children the children
      */
     public void setChildren(List<CmsSitemapEntryBean> children) {
@@ -277,15 +277,15 @@ public class CmsSitemapEntryBean implements IsSerializable, I_CmsGalleryTreeEntr
 
     /**
      * Sets the site root for this bean.<p>
-     * 
-     * @param siteRoot the site root 
+     *
+     * @param siteRoot the site root
      */
     public void setSiteRoot(String siteRoot) {
 
         m_siteRoot = siteRoot;
     }
 
-    /** 
+    /**
      * @see java.lang.Object#toString()
      */
     @Override

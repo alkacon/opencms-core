@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.jlan;
 
 /**
  * Buffer class which holds file contents for JLAN file access in memory before they are written to the VFS.<p>
- * 
+ *
  * This is implemented as a CmsByteBuffer instance together with a 'position' index which marks the next write position
  */
 public class CmsFileBuffer {
@@ -42,8 +42,8 @@ public class CmsFileBuffer {
 
     /**
      * Gets the contents of this buffer as a byte array.<p>
-     * 
-     * @return the file content 
+     *
+     * @return the file content
      */
     public byte[] getContents() {
 
@@ -54,29 +54,29 @@ public class CmsFileBuffer {
 
     /**
      * Gets the length of the file content.<p>
-     * 
-     * @return the content length 
-     *  
+     *
+     * @return the content length
+     *
      */
     public long getLength() {
 
         return m_buffer.size();
     }
 
-    /** 
+    /**
      * Gets the current write position.<p>
-     * 
-     * @return the current write position 
+     *
+     * @return the current write position
      */
     public long getPosition() {
 
         return m_position;
     }
 
-    /** 
+    /**
      * Initializes the file content data.<p>
-     * 
-     * @param data the file content data 
+     *
+     * @param data the file content data
      */
     public void init(byte[] data) {
 
@@ -86,14 +86,14 @@ public class CmsFileBuffer {
 
     /**
      * Transfers data from this buffer to a byte array.<p>
-     * 
-     * @param dest the target byte array 
-     * 
+     *
+     * @param dest the target byte array
+     *
      * @param length the number of bytes to transfer
-     * @param bufferOffset the start index for the target buffer 
-     * @param fileOffset the start index for this instance 
-     * 
-     * @return the number of bytes read, or -1 if we are at the end of the file 
+     * @param bufferOffset the start index for the target buffer
+     * @param fileOffset the start index for this instance
+     *
+     * @return the number of bytes read, or -1 if we are at the end of the file
      */
     public int read(byte[] dest, int length, int bufferOffset, int fileOffset) {
 
@@ -110,8 +110,8 @@ public class CmsFileBuffer {
 
     /**
      * Changes the write position.<p>
-     * 
-     * @param newPos the new write position 
+     *
+     * @param newPos the new write position
      */
     public void seek(long newPos) {
 
@@ -120,8 +120,8 @@ public class CmsFileBuffer {
 
     /**
      * Changes the size of this buffer.<p>
-     * 
-     * @param size the new size 
+     *
+     * @param size the new size
      */
     public void truncate(int size) {
 
@@ -131,8 +131,8 @@ public class CmsFileBuffer {
 
     /**
      * Writes the data to the internal buffer.<p>
-     * 
-     * @param data the data to write 
+     *
+     * @param data the data to write
      */
     public void write(byte[] data) {
 

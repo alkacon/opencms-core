@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Provides the widget for the full text search tab.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsSearchTab extends A_CmsTab {
@@ -74,16 +74,11 @@ public class CmsSearchTab extends A_CmsTab {
     /** The parameter types of this tab. */
     public enum ParamType {
         /** The creation range type. */
-        creation,
-        /** The expired resources type. */
-        expired,
-        /** The language type. */
-        language,
-        /** The modification range type. */
-        modification,
-        /** The search scope type. */
-        scope,
-        /** Text query type. */
+        creation, /** The expired resources type. */
+        expired, /** The language type. */
+        language, /** The modification range type. */
+        modification, /** The search scope type. */
+        scope, /** Text query type. */
         text
     }
 
@@ -198,13 +193,14 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Constructor for the search tab.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      * @param autoHideParent the auto-hide parent to this dialog if present
      * @param currentLocale the current content locale
      * @param availableLocales the available locales
-     * @param scope the search scope 
-     * @param defaultScope the default search scope 
+     * @param scope the search scope
+     * @param defaultScope the default search scope
+     * @param defaultIncludeExpired true if 'show expired' should be enabled by default
      */
     @SuppressWarnings("deprecation")
     public CmsSearchTab(
@@ -213,7 +209,8 @@ public class CmsSearchTab extends A_CmsTab {
         String currentLocale,
         Map<String, String> availableLocales,
         CmsGallerySearchScope scope,
-        CmsGallerySearchScope defaultScope) {
+        CmsGallerySearchScope defaultScope,
+        boolean defaultIncludeExpired) {
 
         // initialize the tab
         super(GalleryTabId.cms_tab_search.name());
@@ -237,14 +234,15 @@ public class CmsSearchTab extends A_CmsTab {
 
         // add the language selection
         m_localeLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0));
-        CmsLabelSelectCell notSelectedCell = new CmsLabelSelectCell(NOT_SET_OPTION_VALUE, Messages.get().key(
-            Messages.GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0));
+        CmsLabelSelectCell notSelectedCell = new CmsLabelSelectCell(
+            NOT_SET_OPTION_VALUE,
+            Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_NOT_SEL_0));
         notSelectedCell.setVisible(false);
         m_localeSelection.addOption(notSelectedCell);
         for (Map.Entry<String, String> entry : availableLocales.entrySet()) {
             m_localeSelection.addOption(entry.getKey(), entry.getValue());
         }
-        // hide language selection if only one locale is available 
+        // hide language selection if only one locale is available
         if (availableLocales.size() <= 1) {
             m_localeRow.getElement().getStyle().setDisplay(Display.NONE);
         }
@@ -254,7 +252,8 @@ public class CmsSearchTab extends A_CmsTab {
         m_searchLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_TEXT_0));
         m_searchInput.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
         m_searchInput.setGhostModeClear(true);
-        m_includeExpiredCheckBox.setChecked(false);
+        m_includeExpiredCheckBox.setChecked(defaultIncludeExpired);
+        m_tabHandler.setIncludeExpired(defaultIncludeExpired, false);
         m_includeExpiredCheckBox.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_INCLUDE_EXPIRED_0));
         // set the labels for the date box widgets
         m_dateCreatedStartLabel.setText(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0));
@@ -311,7 +310,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Enables the include expired resources form input.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable the include expired resources form input
      */
     public void enableExpiredResourcesSearch(boolean enable) {
@@ -348,8 +347,9 @@ public class CmsSearchTab extends A_CmsTab {
             && CmsStringUtil.isNotEmptyOrWhitespaceOnly(language)
             && !locale.equals(NOT_SET_OPTION_VALUE)) {
 
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LANGUAGE_LABEL_TEXT_0),
+                this);
             panel.setContent(language, ParamType.language.name());
             result.add(panel);
         }
@@ -364,47 +364,56 @@ public class CmsSearchTab extends A_CmsTab {
 
         // append the date created range
         StringBuffer createdResult = new StringBuffer();
-        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdEnd))) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0), this);
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdStart)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdEnd))) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_RANGE_0),
+                this);
             panel.setContent(createdStart + " - " + createdEnd, ParamType.creation.name());
             result.add(panel);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdStart)) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_SINCE_0),
+                this);
             panel.setContent(createdStart, ParamType.creation.name());
             result.add(panel);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(createdEnd)) {
             createdResult.append(Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0)).append(" ").append(
                 createdEnd);
 
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_CREATED_UNTIL_0),
+                this);
             panel.setContent(createdEnd, ParamType.creation.name());
             result.add(panel);
         }
 
         // append the date modified range
-        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedStart) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedEnd))) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0), this);
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedStart)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedEnd))) {
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_RANGE_0),
+                this);
             panel.setContent(modifiedStart + " - " + modifiedEnd, ParamType.modification.name());
             result.add(panel);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedStart)) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_SINCE_0),
+                this);
             panel.setContent(modifiedStart, ParamType.modification.name());
             result.add(panel);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(modifiedEnd)) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_TAB_SEARCH_LABEL_MODIFIED_UNTIL_0),
+                this);
             panel.setContent(modifiedEnd, ParamType.modification.name());
             result.add(panel);
         }
 
         if (m_includeExpiredCheckBox.getFormValue().booleanValue()) {
-            CmsSearchParamPanel panel = new CmsSearchParamPanel(Messages.get().key(
-                Messages.GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0), this);
+            CmsSearchParamPanel panel = new CmsSearchParamPanel(
+                Messages.get().key(Messages.GUI_PARAMS_LABEL_INCLUDING_EXPIRED_0),
+                this);
             panel.setContent("", ParamType.expired.name());
             result.add(panel);
         }
@@ -431,7 +440,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Removes the given parameter type.<p>
-     * 
+     *
      * @param type the parameter type
      */
     public void removeParameter(ParamType type) {
@@ -463,7 +472,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Clears the search tab input.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_clearButton")
@@ -474,7 +483,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles changes of date created range end box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_dateCreatedEndDateBox")
@@ -490,7 +499,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles changes of date created range start box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_dateCreatedStartDateBox")
@@ -506,7 +515,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles changes of date modified range end box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_dateModifiedEndDateBox")
@@ -522,7 +531,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles changes of date modified range start box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_dateModifiedStartDateBox")
@@ -538,19 +547,19 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles changes of the include expired check box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_includeExpiredCheckBox")
     protected void onIncludeExpiredChange(ValueChangeEvent<Boolean> event) {
 
         Boolean value = event.getValue();
-        m_tabHandler.setIncludeExpired(value.booleanValue());
+        m_tabHandler.setIncludeExpired(value.booleanValue(), true);
     }
 
     /**
      * Handles the change event of the locale select box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_localeSelection")
@@ -565,7 +574,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles the change event on the search scope select box.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_scopeSelection")
@@ -578,7 +587,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles search input change events.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_searchInput")
@@ -593,7 +602,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Handles key press events of the search input field.<p>
-     * 
+     *
      * @param event the key press event
      */
     @UiHandler("m_searchInput")
@@ -624,7 +633,7 @@ public class CmsSearchTab extends A_CmsTab {
 
     /**
      * Starts the search.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_searchButton")

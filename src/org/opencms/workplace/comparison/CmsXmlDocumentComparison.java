@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,17 +66,15 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         }
 
         /**
-         * 
+         *
          * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
          */
         public void visit(I_CmsXmlContentValue value) {
 
             // only add simple types
             if (value.isSimpleType()) {
-                m_elementPaths.add(new CmsXmlContentElementComparison(
-                    value.getLocale(),
-                    value.getPath(),
-                    value.getTypeName()));
+                m_elementPaths.add(
+                    new CmsXmlContentElementComparison(value.getLocale(), value.getPath(), value.getTypeName()));
             }
         }
 
@@ -96,11 +94,11 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
 
     /**
      * Creates a new xml document comparison.<p>
-     * 
+     *
      * @param cms the CmsObject to use
      * @param res1 the first file to compare
      * @param res2 the second file to compare
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsXmlDocumentComparison(CmsObject cms, CmsFile res1, CmsFile res2)
@@ -192,7 +190,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
     }
 
     /** Returs a list of all element names of a xml page.<p>
-     * 
+     *
      * @param xmlPage the xml page to read the element names from
      * @return a list of all element names of a xml page
      */

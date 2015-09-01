@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -109,7 +109,9 @@ public class CmsJspTagUgc extends TagSupport {
                     ugcsession = CmsUgcSessionFactory.getInstance().createSession(cms, req, m_configPath);
                     ugcsession.createXmlContent();
                 }
-                pageContext.setAttribute(m_var == null ? DEFAULT_SESSION_ID_ATTR : m_var, ugcsession.getId().toString());
+                pageContext.setAttribute(
+                    m_var == null ? DEFAULT_SESSION_ID_ATTR : m_var,
+                    ugcsession.getId().toString());
             } catch (Exception e) {
                 pageContext.setAttribute(
                     m_error == null ? DEFAULT_ERROR_MESSAGE_ATTR : m_error,
@@ -121,7 +123,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Returns the site path to the edit configuration file.<p>
-     * 
+     *
      * @return site path to the edit configuration file
      */
     public String getConfigPath() {
@@ -131,7 +133,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Returns the structure id of the edit resource.<p>
-     * 
+     *
      * @return structure id of the edit resource
      */
     public String getEditId() {
@@ -141,7 +143,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Returns the file name of the edit resource.<p>
-     * 
+     *
      * @return the file name of the edit resource
      */
     public String getEditName() {
@@ -151,7 +153,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Returns the page context attribute name for the form error message.<p>
-     * 
+     *
      * @return the page context attribute name for the form error message
      */
     public String getError() {
@@ -161,7 +163,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Returns the page context attribute name for the form session id.<p>
-     * 
+     *
      * @return the page context attribute name for the form session id
      */
     public String getVar() {
@@ -171,7 +173,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Sets the site path to the edit configuration file.<p>
-     * 
+     *
      * @param configPath the site path to the edit configuration file
      */
     public void setConfigPath(String configPath) {
@@ -181,7 +183,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Sets the structure id of the edit resource.<p>
-     * 
+     *
      * @param editId the structure id of the edit resource
      */
     public void setEditId(String editId) {
@@ -191,7 +193,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Sets the file name of the edit resource.<p>
-     * 
+     *
      * @param editName the file name of the edit resource
      */
     public void setEditName(String editName) {
@@ -201,7 +203,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Sets the page context attribute name for the form error message.<p>
-     * 
+     *
      * @param error the page context attribute name for the form error message
      */
     public void setError(String error) {
@@ -211,7 +213,7 @@ public class CmsJspTagUgc extends TagSupport {
 
     /**
      * Sets the page context attribute name for the form session id.<p>
-     * 
+     *
      * @param var page context attribute name for the form session id
      */
     public void setVar(String var) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import java.util.List;
 
 /**
  * Generalized organizational unit users view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
@@ -93,7 +93,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -105,9 +105,13 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, searchable
-        ? LIST_COLUMN_NAME
-        : null);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_LOGIN,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_NAME : null);
     }
 
     /**
@@ -132,9 +136,9 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Returns the right icon path for the given list item.<p>
-     * 
+     *
      * @param item the list item to get the icon path for
-     * 
+     *
      * @return the icon path for the given role
      */
     public String getIconPath(CmsListItem item) {
@@ -153,7 +157,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -185,7 +189,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -213,7 +217,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
 
-        // get content        
+        // get content
         List<CmsUser> users = getUsers();
         Iterator<CmsUser> itUsers = users.iterator();
         while (itUsers.hasNext()) {
@@ -231,9 +235,9 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Returns a list of users to display.<p>
-     * 
+     *
      * @return a list of <code><{@link CmsUser}</code>s
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsUser> getUsers() throws CmsException;
@@ -290,14 +294,14 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Sets the optional login default action.<p>
-     * 
+     *
      * @param loginCol the login column
      */
     protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
 
     /**
      * Sets the needed icon action(s).<p>
-     * 
+     *
      * @param iconCol the list column for edition.
      */
     protected abstract void setIconAction(CmsListColumnDefinition iconCol);
@@ -313,7 +317,7 @@ public abstract class A_CmsOrgUnitUsersList extends A_CmsListDialog {
 
     /**
      * Sets the optional state change action column.<p>
-     * 
+     *
      * @param metadata the list metadata object
      */
     protected abstract void setStateActionCol(CmsListMetadata metadata);

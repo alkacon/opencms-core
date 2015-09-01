@@ -37,9 +37,6 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BROADCAST_SEND_BY_1 = "GUI_BROADCAST_SEND_BY_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -83,6 +80,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ABOUT_DIALOG_TITLE_0 = "GUI_ABOUT_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BROADCAST_SEND_BY_1 = "GUI_BROADCAST_SEND_BY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BROKEN_LINK_NO_TITLE_0 = "GUI_BROKEN_LINK_NO_TITLE_0";
@@ -762,6 +762,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNLOCKING_0 = "GUI_UNLOCKING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNPUBLISHED_CHANGES_NEW_TITLE_0 = "GUI_UNPUBLISHED_CHANGES_NEW_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNPUBLISHED_CHANGES_TITLE_0 = "GUI_UNPUBLISHED_CHANGES_TITLE_0";

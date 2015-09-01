@@ -171,7 +171,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      */
     @Override
     public void visitEndTag(Tag tag) {
-        
+
         Node parent = tag.getParent();
         if (parent instanceof LinkTag) {
             if (getLinks()) { // appends the link as text between angle brackets to the output.
@@ -179,8 +179,8 @@ public class StringBean extends NodeVisitor implements Serializable {
                 m_buffer.append(((LinkTag)parent).getLink());
                 m_buffer.append(">");
             }
-        }  
-        
+        }
+
         String name = tag.getTagName().toUpperCase();
         if (name.equals("PRE")) {
             m_isPre = false;
@@ -189,24 +189,24 @@ public class StringBean extends NodeVisitor implements Serializable {
         } else if (name.equals("STYLE")) {
             m_isStyle = false;
         }
-        
+
         if (isHeadTag(name)) {
             carriageReturn();
             carriageReturn(true);
         }
-        
+
         if (isTitleTag(name)) {
-            m_buffer.append(" ]");            
+            m_buffer.append(" ]");
             carriageReturn();
             carriageReturn(true);
         }
     }
 
     private boolean isTitleTag(String name) {
-        
+
         return "TITLE".equals(name);
     }
-    
+
     private boolean isHeadTag(String name) {
 
         return "H1".equals(name)
@@ -247,7 +247,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      */
     @Override
     public void visitTag(Tag tag) {
-            
+
         String name = tag.getTagName();
         if (name.equalsIgnoreCase("PRE")) {
             m_isPre = true;
@@ -256,18 +256,18 @@ public class StringBean extends NodeVisitor implements Serializable {
         } else if (name.equalsIgnoreCase("STYLE")) {
             m_isStyle = true;
         }
-        
+
         if (isHeadTag(name)) {
             carriageReturn(true);
             m_buffer.append("* ");
-        } else if (isTitleTag(name)) { 
-            m_buffer.append("[ ");        
+        } else if (isTitleTag(name)) {
+            m_buffer.append("[ ");
         } else {
             if (tag.breaksFlow()) {
                 carriageReturn();
             }
         }
-        
+
     }
 
     /**
@@ -282,7 +282,7 @@ public class StringBean extends NodeVisitor implements Serializable {
     /**
      * Appends a newline to the buffer if there isn't one there already.
      * Except if the buffer is empty.
-     * 
+     *
      * @param check a parameter the developer forgot to comment
      */
     protected void carriageReturn(boolean check) {
@@ -292,12 +292,12 @@ public class StringBean extends NodeVisitor implements Serializable {
         length = m_buffer.length();
         if ((0 != length) // don't append newlines to the beginning of a buffer
             && (check || ((NEWLINE_SIZE <= length) // not enough chars to hold a NEWLINE
-            && (!m_buffer.substring(length - NEWLINE_SIZE, length).equals(NEWLINE))))) {
+                && (!m_buffer.substring(length - NEWLINE_SIZE, length).equals(NEWLINE))))) {
 
             m_buffer.append(NEWLINE);
         }
     }
-    
+
     /**
      * Add the given text collapsing whitespace.
      * Use a little finite state machine:
@@ -328,9 +328,11 @@ public class StringBean extends NodeVisitor implements Serializable {
         chars = string.length();
         if (0 != chars) {
             length = buffer.length();
-            state = ((0 == length) || (buffer.charAt(length - 1) == ' ') || ((NEWLINE_SIZE <= length) && buffer.substring(
-                length - NEWLINE_SIZE,
-                length).equals(NEWLINE))) ? 0 : 1;
+            state = ((0 == length)
+                || (buffer.charAt(length - 1) == ' ')
+                || ((NEWLINE_SIZE <= length) && buffer.substring(length - NEWLINE_SIZE, length).equals(NEWLINE)))
+                ? 0
+                : 1;
             for (int i = 0; i < chars; i++) {
                 character = string.charAt(i);
                 switch (character) {

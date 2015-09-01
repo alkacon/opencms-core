@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
  * Implementation of a list item selection action where to define name and the column with the value.<p>
- * 
- * @since 6.7.2 
+ *
+ * @since 6.7.2
  */
 public class CmsListItemSelectionCustomAction extends CmsListItemSelectionAction {
 
@@ -50,7 +50,7 @@ public class CmsListItemSelectionCustomAction extends CmsListItemSelectionAction
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param columnValue the name of the column used for the value
      */
@@ -61,7 +61,7 @@ public class CmsListItemSelectionCustomAction extends CmsListItemSelectionAction
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param name the name of the input field
      * @param columnValue the name of the column used for the value

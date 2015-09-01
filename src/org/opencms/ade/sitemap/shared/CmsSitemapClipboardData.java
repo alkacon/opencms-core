@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Sitemap clipboard data bean.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsSitemapClipboardData implements IsSerializable {
@@ -57,7 +57,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param deletions the session stored list of deleted sitemap entries
      * @param modifications the session stored list of modified sitemap entry paths
      */
@@ -71,7 +71,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Adds an entry to the deleted list.<p>
-     * 
+     *
      * @param entry the entry to add
      */
     public void addDeleted(CmsClientSitemapEntry entry) {
@@ -84,7 +84,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Adds an entry to the modified list.<p>
-     * 
+     *
      * @param entry the entry to add
      */
     public void addModified(CmsClientSitemapEntry entry) {
@@ -97,8 +97,8 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Provides a copy of the clip-board data.<p>
-     * 
-     * @return the copied data 
+     *
+     * @return the copied data
      */
     public CmsSitemapClipboardData copy() {
 
@@ -131,7 +131,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Removes an entry from the deleted list.<p>
-     * 
+     *
      * @param entry the entry to remove
      */
     public void removeDeleted(CmsClientSitemapEntry entry) {
@@ -141,7 +141,7 @@ public class CmsSitemapClipboardData implements IsSerializable {
 
     /**
      * Removes an entry from the modified list.<p>
-     * 
+     *
      * @param entry the entry to remove
      */
     public void removeModified(CmsClientSitemapEntry entry) {

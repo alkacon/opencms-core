@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,6 +38,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.solr.CmsSolrIndex;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -55,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -64,7 +67,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * This dialog provides search and replace functionality.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSourceSearchDialog extends CmsWidgetDialog {
@@ -83,7 +86,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSourceSearchDialog(final CmsJspActionElement jsp) {
@@ -93,12 +96,15 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsSourceSearchDialog(final PageContext context, final HttpServletRequest req, final HttpServletResponse res) {
+    public CmsSourceSearchDialog(
+        final PageContext context,
+        final HttpServletRequest req,
+        final HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
 
@@ -137,11 +143,12 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
         // create export file name block
-        result.append(createWidgetBlockStart(key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
+        result.append(createWidgetBlockStart(
+            key(org.opencms.workplace.tools.searchindex.Messages.GUI_SOURCESEARCH_ADMIN_TOOL_BLOCK_0)));
         if (m_solrEnabled) {
-            result.append(createDialogRowsHtml(0, 7));
+            result.append(createDialogRowsHtml(0, 9));
         } else {
-            result.append(createDialogRowsHtml(0, 6));
+            result.append(createDialogRowsHtml(0, 8));
         }
         result.append(createWidgetBlockEnd());
         // close table
@@ -163,6 +170,22 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
         CmsVfsFileWidget vfsw = new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot());
         addWidget(new CmsWidgetDialogParameter(m_settings, "paths", "/", PAGES[0], vfsw, 1, 50));
         addWidget(new CmsWidgetDialogParameter(m_settings, "types", "", PAGES[0], new CmsTypeComboWidget(), 0, 1));
+        // Get list of available locales
+        List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
+        for (final Locale locale : OpenCms.getLocaleManager().getAvailableLocales()) {
+            CmsSelectWidgetOption option = new CmsSelectWidgetOption(locale.toString());
+            options.add(option);
+        }
+        addWidget(new CmsWidgetDialogParameter(m_settings, "locale", "", PAGES[0], new CmsComboWidget(options), 1, 1));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "onlyContentValues",
+                "false",
+                PAGES[0],
+                new CmsCheckboxWidget(),
+                1,
+                1));
         addWidget(new CmsWidgetDialogParameter(m_settings, "xpath", "", PAGES[0], new CmsInputWidget(), 0, 1));
         CmsSelectWidget indexOptions = new CmsSelectWidget(getSolrIndexOptions());
         addWidget(new CmsWidgetDialogParameter(m_settings, "source", "", PAGES[0], indexOptions, 1, 1));
@@ -234,7 +257,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list with the available projects of the current user.<p>
-     * 
+     *
      * @return a list with the available projects of the current user.
      */
     private List<CmsSelectWidgetOption> getProjectSelections() {
@@ -259,16 +282,14 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
     /**
      * Returns select options for all configures Solr Offline indexes.<p>
-     * 
+     *
      * @return select options for all configures Solr Offline indexes
      */
     private List<CmsSelectWidgetOption> getSolrIndexOptions() {
 
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
-        result.add(new CmsSelectWidgetOption(
-            CmsSearchReplaceSettings.VFS,
-            true,
-            CmsSearchReplaceSettings.VFS.toUpperCase()));
+        result.add(
+            new CmsSelectWidgetOption(CmsSearchReplaceSettings.VFS, true, CmsSearchReplaceSettings.VFS.toUpperCase()));
         if (OpenCms.getSearchManager().getSolrServerConfiguration().isEnabled()) {
             for (CmsSearchIndex index : OpenCms.getSearchManager().getAllSolrIndexes()) {
                 if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
@@ -281,7 +302,7 @@ public class CmsSourceSearchDialog extends CmsWidgetDialog {
 
     /**
      * Returns <code>true</code> if Solr search is enabled.<p>
-     * 
+     *
      * @return <code>true</code> if Solr search is enabled
      */
     private boolean isSolrEnabled() {

@@ -27,6 +27,8 @@
 
 package org.opencms.workplace.editors.directedit;
 
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.I_CmsCollectorInfoFactory;
@@ -38,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -144,7 +147,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
     throws JspException {
 
         if (m_cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-            // the metadata is only needed for editing 
+            // the metadata is only needed for editing
             return;
         }
         I_CmsCollectorInfoFactory collectorInfoFactory = AutoBeanFactorySource.create(I_CmsCollectorInfoFactory.class);
@@ -240,7 +243,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      * @param resourceInfo contains information about the resource to edit
      *
      * @return the start HTML for an enabled direct edit button
-     * @throws JSONException if a JSON handling error occurs 
+     * @throws JSONException if a JSON handling error occurs
      */
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo)
     throws JSONException {
@@ -267,6 +270,19 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
             editableData.put(CmsEditorConstants.ATTR_CONTEXT_ID, params.getId().toString());
         }
         editableData.put(CmsEditorConstants.ATTR_POST_CREATE_HANDLER, params.getPostCreateHandler());
+        CmsUUID viewId = CmsUUID.getNullUUID();
+        if ((resourceInfo.getResource() != null) && resourceInfo.getResource().isFile()) {
+            CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                m_cms,
+                resourceInfo.getResource().getRootPath());
+            CmsResourceTypeConfig typeConfig = configData.getResourceType(
+                OpenCms.getResourceManager().getResourceType(resourceInfo.getResource()).getTypeName());
+            if (typeConfig != null) {
+                viewId = typeConfig.getElementView();
+            }
+        }
+        editableData.put(CmsEditorConstants.ATTR_ELEMENT_VIEW, viewId);
+
         if (m_lastPermissionMode == 1) {
 
             try {

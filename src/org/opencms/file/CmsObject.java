@@ -371,8 +371,9 @@ public final class CmsObject {
                 CmsRole role = CmsRole.valueOfRoleName(principalName);
                 // role based permissions can only be set in the system folder
                 if ((role == null)
-                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !res.getRootPath().equals("/") && !res.getRootPath().equals(
-                        "/system"))) {
+                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+                        && !res.getRootPath().equals("/")
+                        && !res.getRootPath().equals("/system"))) {
                     throw e;
                 }
                 acEntry = new CmsAccessControlEntry(res.getResourceId(), role.getId(), permissionString);
@@ -479,10 +480,35 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void chtype(String resourcename, int type) throws CmsException {
+    public void chtype(String resourcename, I_CmsResourceType type) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).chtype(this, m_securityManager, resource, type);
+    }
+
+    /**
+     * Changes the resource type of a resource.<p>
+     *
+     * OpenCms handles resources according to the resource type,
+     * not the file suffix. This is e.g. why a JSP in OpenCms can have the
+     * suffix ".html" instead of ".jsp" only. Changing the resource type
+     * makes sense e.g. if you want to make a plain text file a JSP resource,
+     * or a binary file an image, etc.<p>
+     *
+     * @param resourcename the name of the resource to change the type for (full current site relative path)
+     * @param type the new resource type for this resource
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @deprecated
+     * Use {@link #chtype(String, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public void chtype(String resourcename, int type) throws CmsException {
+
+        chtype(resourcename, getResourceType(type));
     }
 
     /**
@@ -727,7 +753,8 @@ public final class CmsObject {
      *
      * @see #createResource(String, int, byte[], List)
      */
-    public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
+    public CmsResource createResource(String resourcename, I_CmsResourceType type)
+    throws CmsException, CmsIllegalArgumentException {
 
         return createResource(resourcename, type, new byte[0], new ArrayList<CmsProperty>(0));
     }
@@ -746,10 +773,64 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
+    public CmsResource createResource(
+        String resourcename,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException {
+
+        return type.createResource(this, m_securityManager, resourcename, content, properties);
+    }
+
+    /**
+     * Creates a new resource of the given resource type with
+     * empty content and no properties.<p>
+     *
+     * @param resourcename the name of the resource to create (full current site relative path)
+     * @param type the type of the resource to create
+     *
+     * @return the created resource
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the given <code>resourcename</code> is null or of length 0
+     *
+     * @see #createResource(String, int, byte[], List)
+     *
+     * @deprecated
+     * Use {@link #createResource(String, I_CmsResourceType)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
+
+        return createResource(resourcename, getResourceType(type), new byte[0], new ArrayList<CmsProperty>(0));
+    }
+
+    /**
+     * Creates a new resource of the given resource type
+     * with the provided content and properties.<p>
+     *
+     * @param resourcename the name of the resource to create (full current site relative path)
+     * @param type the type of the resource to create
+     * @param content the contents for the new resource
+     * @param properties the properties for the new resource
+     *
+     * @return the created resource
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
+     *
+     * @deprecated
+     * Use {@link #createResource(String, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
     public CmsResource createResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
     throws CmsException, CmsIllegalArgumentException {
 
-        return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
+        return createResource(resourcename, getResourceType(type), content, properties);
     }
 
     /**
@@ -931,9 +1012,8 @@ public final class CmsObject {
 
         // throw the exception if resource name is an empty string
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_DELETE_RESOURCE_1,
-                resourcename));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, resourcename));
         }
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1578,7 +1658,8 @@ public final class CmsObject {
      *
      * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
      */
-    public List<CmsRelation> getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
+    public List<CmsRelation> getRelationsForResource(String resourceName, CmsRelationFilter filter)
+    throws CmsException {
 
         return getRelationsForResource(readResource(resourceName, CmsResourceFilter.ALL), filter);
     }
@@ -1768,7 +1849,12 @@ public final class CmsObject {
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 
-        return m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL).isAllowed();
+        return m_securityManager.hasPermissions(
+            m_context,
+            resource,
+            requiredPermissions,
+            true,
+            CmsResourceFilter.ALL).isAllowed();
     }
 
     /**
@@ -2121,11 +2207,11 @@ public final class CmsObject {
 
     /**
      * Reads all available versions for a given resource.<p>
-     * 
-     * @param resource the resource for which to read the versions 
+     *
+     * @param resource the resource for which to read the versions
      * @return the list of historical versions of the resource
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<I_CmsHistoryResource> readAllAvailableVersions(CmsResource resource) throws CmsException {
 
@@ -2258,13 +2344,41 @@ public final class CmsObject {
      */
     public CmsResource readDefaultFile(String resourceNameOrID) throws CmsException, CmsSecurityException {
 
+        return readDefaultFile(resourceNameOrID, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Returns the default resource for the given folder.<p>
+     *
+     * If the given resource name or id identifies a file, then this file is returned.<p>
+     *
+     * Otherwise, in case of a folder:<br>
+     * <ol>
+     *   <li>the {@link CmsPropertyDefinition#PROPERTY_DEFAULT_FILE} is checked, and
+     *   <li>if still no file could be found, the configured default files in the
+     *       <code>opencms-vfs.xml</code> configuration are iterated until a match is
+     *       found, and
+     *   <li>if still no file could be found, <code>null</code> is returned
+     * </ol>
+     *
+     * @param resourceNameOrID the name or id of the folder to read the default file for#
+     * @param filter the resource filter to use for reading the resources
+     *
+     * @return the default file for the given folder
+     *
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has no permissions to read the resulting file
+     */
+    public CmsResource readDefaultFile(String resourceNameOrID, CmsResourceFilter filter)
+    throws CmsException, CmsSecurityException {
+
         CmsResource resource;
         try {
-            resource = readResource(new CmsUUID(resourceNameOrID));
+            resource = readResource(new CmsUUID(resourceNameOrID), filter);
         } catch (NumberFormatException e) {
-            resource = readResource(resourceNameOrID);
+            resource = readResource(resourceNameOrID, filter);
         }
-        return m_securityManager.readDefaultFile(m_context, resource, CmsResourceFilter.DEFAULT);
+        return m_securityManager.readDefaultFile(m_context, resource, filter);
     }
 
     /**
@@ -3376,11 +3490,36 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
-    throws CmsException {
+    public void replaceResource(
+        String resourcename,
+        I_CmsResourceType type,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
+    }
+
+    /**
+     * Replaces the content, type and properties of a resource.<p>
+     *
+     * @param resourcename the name of the resource to replace (full current site relative path)
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @deprecated
+     * Use {@link #replaceResource(String, I_CmsResourceType, byte[], List)} instead.
+     * Resource types should always be referenced either by its type class (preferred) or by type name.
+     * Use of int based resource type references will be discontinued in a future OpenCms release.
+     */
+    @Deprecated
+    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
+    throws CmsException {
+
+        replaceResource(resourcename, getResourceType(type), content, properties);
     }
 
     /**
@@ -3845,8 +3984,8 @@ public final class CmsObject {
      * @param nameSeq an iterator for generating names for the mapping
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
-     * @param replaceOnPublish if the mapping should replace previous mappings when published 
-     *   
+     * @param replaceOnPublish if the mapping should replace previous mappings when published
+     *
      * @return the name which was actually mapped to the structure id
      *
      * @throws CmsException if something goes wrong
@@ -3870,7 +4009,7 @@ public final class CmsObject {
      * @param structureId the structure id to which the name should be mapped
      * @param locale the locale of the mapping
      * @param replaceOnPublish mappings for which this is set will replace older mappings on publish
-     *   
+     *
      * @return the URL name that was actually used for the mapping
      *
      * @throws CmsException if something goes wrong
@@ -3996,9 +4135,8 @@ public final class CmsObject {
 
         // throw the exception if resource name is an empty string
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_LOCK_RESOURCE_1,
-                resourcename));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(Messages.ERR_LOCK_RESOURCE_1, resourcename));
         }
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).lockResource(this, m_securityManager, resource, type);

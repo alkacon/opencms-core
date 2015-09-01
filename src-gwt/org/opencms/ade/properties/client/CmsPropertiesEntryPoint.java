@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,7 +63,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
     static class PropertyEditorHandler extends CmsSimplePropertyEditorHandler {
 
         /**
-         * Default constructor.<p> 
+         * Default constructor.<p>
          */
         public PropertyEditorHandler() {
 
@@ -72,7 +72,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
 
         /**
          * Override: Always return false, since we want to be free to choose any JSP.
-         * 
+         *
          * @see org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler#useAdeTemplates()
          */
         @Override
@@ -102,7 +102,7 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Starts the property editor for the resource with the given structure id.<p>
-     * 
+     *
      * @param structureId the structure id of a resource
      */
     protected void editProperties(final CmsUUID structureId) {
@@ -122,7 +122,9 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                 I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
                 CmsSimplePropertyEditorHandler handler = new PropertyEditorHandler();
                 handler.setPropertiesBean(result);
-                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
+                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(
+                    result.getPropertyDefinitions(),
+                    handler);
                 editor.setReadOnly(result.isReadOnly());
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);

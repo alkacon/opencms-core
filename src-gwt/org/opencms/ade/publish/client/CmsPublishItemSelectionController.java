@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A helper class for managing the selection status of a resource item in the publish dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 class CmsPublishItemSelectionController {
@@ -61,11 +61,11 @@ class CmsPublishItemSelectionController {
 
     /**
      * Constructs a new instance.<p>
-     * 
+     *
      * @param id the id of the resource
      * @param selectedCheckBox the checkbox representing the selection status of the resource
-     * @param removeCheckBox the checkbox representing the remove status of the resource 
-     * @param removeStyle the style variable to keep track of the "remove" status  
+     * @param removeCheckBox the checkbox representing the remove status of the resource
+     * @param removeStyle the style variable to keep track of the "remove" status
      * @param hasProblems a flag indicating whether there are problems with the resource
      */
     public CmsPublishItemSelectionController(
@@ -88,7 +88,7 @@ class CmsPublishItemSelectionController {
 
     /**
      * Returns the UUID of the resource.<p>
-     * 
+     *
      * @return a UUID string
      */
     public CmsUUID getId() {
@@ -98,8 +98,8 @@ class CmsPublishItemSelectionController {
 
     /**
      * Updates the list item and checkboxes with the current item status from the model.<p>
-     * 
-     * @param status the status which should be used to update the widgets 
+     *
+     * @param status the status which should be used to update the widgets
      */
     public void update(CmsPublishItemStatus status) {
 
@@ -136,15 +136,16 @@ class CmsPublishItemSelectionController {
 
     /**
      * Updates the style of the list item depending on whether it is marked to be removed or not.<p>
-     * 
-     * @param remove true if the item is marked to be removed 
+     *
+     * @param remove true if the item is marked to be removed
      */
     public void updateRemoval(boolean remove) {
 
         I_CmsListItemWidgetCss itemWidgetCss = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
         m_removeStyle.setValue(remove ? itemWidgetCss.disabledItem() : CSS.itemToKeep());
-        m_removeCheckBox.setTitle(remove
-        ? Messages.get().key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
-        : Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
+        m_removeCheckBox.setTitle(
+            remove
+            ? Messages.get().key(Messages.GUI_PUBLISH_UNREMOVE_BUTTON_0)
+            : Messages.get().key(Messages.GUI_PUBLISH_REMOVE_BUTTON_0));
     }
 }

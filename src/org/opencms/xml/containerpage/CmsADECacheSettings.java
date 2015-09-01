@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.xml.containerpage;
 
 /**
  * The cache settings for ADE.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsADECacheSettings {
@@ -62,7 +62,7 @@ public class CmsADECacheSettings {
 
     /**
      * Returns the size of the container page offline cache.<p>
-     * 
+     *
      * @return the size of the container page offline cache
      */
     public int getContainerPageOfflineSize() {
@@ -75,7 +75,7 @@ public class CmsADECacheSettings {
 
     /**
      * Returns the size of the container page online cache.<p>
-     * 
+     *
      * @return the size of the container page online cache
      */
     public int getContainerPageOnlineSize() {
@@ -108,7 +108,7 @@ public class CmsADECacheSettings {
 
     /**
      * Returns the size of the group container offline cache.<p>
-     * 
+     *
      * @return the size of the group container offline cache
      */
     public int getGroupContainerOfflineSize() {
@@ -121,7 +121,7 @@ public class CmsADECacheSettings {
 
     /**
      * Returns the size of the group container online cache.<p>
-     * 
+     *
      * @return the size of the group container online cache
      */
     public int getGroupContainerOnlineSize() {
@@ -154,7 +154,7 @@ public class CmsADECacheSettings {
 
     /**
      * Turns a string into an int.<p>
-     * 
+     *
      * @param str the string to be converted
      * @param defaultValue a default value to be returned in case the string could not be parsed or the parsed int value is <= 0
      * @return the int value of the string

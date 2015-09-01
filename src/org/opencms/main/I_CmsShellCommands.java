@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,14 +31,14 @@ import org.opencms.file.CmsObject;
 
 /**
  * Provides scriptable access to a class from the CmsShell.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsShellCommands {
 
     /**
      * Provides access to the shell CmsObject and the shell itself.<p>
-     * 
+     *
      * @param cms the shell CmsObject
      * @param shell the CmsShell
      */
@@ -46,7 +46,7 @@ public interface I_CmsShellCommands {
 
     /**
      * May be called after shell exit, can e.g. be used to ouput a goodbye message.<p>
-     * 
+     *
      * Please note: This method is not guaranteed to be called. For a shell that has more then
      * one shell command object initialized, only the exit method of one of thouse will be called.<p>
      */
@@ -54,7 +54,7 @@ public interface I_CmsShellCommands {
 
     /**
      * May be called before shell startup, can e.g. be used to ouput a welcome message.<p>
-     * 
+     *
      * Please note: This method is not guaranteed to be called. For a shell that has more then
      * one shell command object initialized, only the start method of one of thouse will be called.<p>
      */

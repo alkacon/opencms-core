@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,11 +45,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * The xml messages overwrite some methods of the general CmsMessages class to get keys from an individual configuration file.<p>
- * 
+ *
  * As fallback if no file was specified or no value was found for the desired key,
  * a common CmsMessages object is used to get the localized value.<p>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public class CmsXmlMessages extends CmsMessages {
 
@@ -70,9 +70,9 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * Creates the necessary member objects using the passed arguments.<p>
-     * 
+     *
      * @param messages the messages object to use as fallback
      * @param configurationFileName the absolute path (including site root!) to the configuration file containing localized keys
      * @param pathPrefix the (optional) xPath prefix to the element nodes
@@ -88,9 +88,9 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Constructor, with parameters.<p>
-     * 
+     *
      * Creates the necessary member objects using the passed arguments.<p>
-     * 
+     *
      * @param bundleName the name of the ResourceBundle to use
      * @param configurationFileName the absolute path (including site root!) to the configuration file containing localized keys
      * @param pathPrefix the (optional) xPath prefix to the element nodes
@@ -116,7 +116,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String)
      */
     @Override
@@ -130,7 +130,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object)
      */
     @Override
@@ -144,7 +144,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object, java.lang.Object)
      */
     @Override
@@ -158,7 +158,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object)
      */
     @Override
@@ -172,7 +172,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object[])
      */
     @Override
@@ -186,7 +186,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the localized resource String from the configuration file, if not found or set from the resource bundle.<p>
-     * 
+     *
      * @see org.opencms.i18n.CmsMessages#keyDefault(java.lang.String, java.lang.String)
      */
     @Override
@@ -230,7 +230,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Returns the substituted value for the given key and arguments from the configuration file.<p>
-     * 
+     *
      * @param key the key to get the value for
      * @param args the arguments that should be substituted
      * @return the substituted value for the given key and arguments
@@ -247,7 +247,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Checks if the given key is provided in the configuration file.<p>
-     * 
+     *
      * @param key the key to check
      * @return true if the given key is provided in the configuration file, otherwise false
      */
@@ -258,7 +258,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Initializes the content used for localizing the output.<p>
-     * 
+     *
      * @param configurationFileName the absolute path including site root to the configuration file containing localized keys
      */
     protected void initLocalizationContent(String configurationFileName) {
@@ -270,9 +270,10 @@ public class CmsXmlMessages extends CmsMessages {
         } catch (CmsException e) {
             // error initializing cms object, log error
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_INVALID_INIT_USER_1,
-                    OpenCms.getDefaultUsers().getUserGuest()));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_INVALID_INIT_USER_1,
+                        OpenCms.getDefaultUsers().getUserGuest()));
             }
         }
         if ((cms != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(configurationFileName)) {
@@ -299,7 +300,7 @@ public class CmsXmlMessages extends CmsMessages {
 
     /**
      * Initializes the (optional) xPath prefix to the element nodes.<p>
-     * 
+     *
      * @param pathPrefix the (optional) xPath prefix to the element nodes
      */
     protected void initPathPrefix(String pathPrefix) {

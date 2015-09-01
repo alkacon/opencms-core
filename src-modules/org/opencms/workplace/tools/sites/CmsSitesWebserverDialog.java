@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import org.apache.commons.lang.SystemUtils;
 /**
  * A dialog that allows to write the sites configured in OpenCms
  * into a web server configuration file, using a template.<p>
- * 
+ *
  * @since 9.0.0
  */
 public class CmsSitesWebserverDialog extends CmsWidgetDialog {
@@ -164,7 +164,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSitesWebserverDialog(CmsJspActionElement jsp) {
@@ -174,7 +174,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -331,8 +331,9 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
         StringBuffer result = new StringBuffer(1024);
         result.append(createWidgetTableStart());
         result.append(createWidgetErrorHeader());
-        result.append(dialogBlockStart(Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
-            Messages.GUI_SITES_WEBSERVER_TITLE_0)));
+        result.append(dialogBlockStart(
+            Messages.get().getBundle(getCms().getRequestContext().getLocale()).key(
+                Messages.GUI_SITES_WEBSERVER_TITLE_0)));
         result.append(createWidgetTableStart());
         result.append(createDialogRowsHtml(0, 5));
         result.append(createWidgetTableEnd());
@@ -368,7 +369,7 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the values of the members.<p>
-     * 
+     *
      * @param params the parameter map to get a value from
      */
     protected void initMembers(Map<String, String> params) {
@@ -417,11 +418,11 @@ public class CmsSitesWebserverDialog extends CmsWidgetDialog {
     /**
      * Returns a parameter value from the module parameters,
      * or a given default value in case the parameter is not set.<p>
-     * 
+     *
      * @param params the parameter map to get a value from
      * @param key the parameter to return the value for
      * @param defaultValue the default value in case there is no value stored for this key
-     * 
+     *
      * @return the parameter value from the module parameters
      */
     private String getParameter(Map<String, String> params, String key, String defaultValue) {

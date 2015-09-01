@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow,
 
     /**
      * Gets the comparator which should be used for this column.<p>
-     * 
-     * @return the comparator used for this column 
+     *
+     * @return the comparator used for this column
      */
     public static Comparator<CmsAliasTableRow> getComparator() {
 
@@ -83,9 +83,9 @@ public class CmsAliasErrorColumn extends A_CmsAliasTableColumn<CmsAliasTableRow,
 
     /**
      * Static helper method to get the value to display in the column from a row.<p>
-     * 
+     *
      * @param row the row
-     * 
+     *
      * @return the value to display
      */
     protected static String getValueInternal(CmsAliasTableRow row) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,10 +31,10 @@ import org.opencms.i18n.CmsMessageContainer;
 
 /**
  * This exeption is thrown by a class which implements org.opencms.main.I_CmsResourceInit.
- * When this exeption is thrown, 
+ * When this exeption is thrown,
  * all other implementations of I_CmsResourceInit will not be executed.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsResourceInitException extends CmsException {
 
@@ -46,8 +46,8 @@ public class CmsResourceInitException extends CmsException {
 
     /**
      * Creates a resource init exception for a given resource init handler class.<p>
-     * 
-     * @param cls the resource init handler class 
+     *
+     * @param cls the resource init handler class
      */
     public CmsResourceInitException(Class<? extends I_CmsResourceInit> cls) {
 
@@ -56,7 +56,7 @@ public class CmsResourceInitException extends CmsException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsResourceInitException(CmsMessageContainer container) {
@@ -66,7 +66,7 @@ public class CmsResourceInitException extends CmsException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
@@ -85,9 +85,9 @@ public class CmsResourceInitException extends CmsException {
     }
 
     /**
-     * If this method returns true, the {@link OpenCmsCore#initResource(org.opencms.file.CmsObject, String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)} 
-     * method should just return null instead of throwing an exception.<p> 
-     * 
+     * If this method returns true, the {@link OpenCmsCore#initResource(org.opencms.file.CmsObject, String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+     * method should just return null instead of throwing an exception.<p>
+     *
      * @return the 'clear errors' flag
      */
     public boolean isClearErrors() {
@@ -98,8 +98,8 @@ public class CmsResourceInitException extends CmsException {
     /**
      * Sets the 'clear errors' flag, which causes the resource init method catching this exception to return null of throwing an exception.
      * This can be useful if you want to redirect inside a resource init handler.<p>
-     * 
-     * @param clearErrors the new value of the 'clear errors' flag 
+     *
+     * @param clearErrors the new value of the 'clear errors' flag
      */
     public void setClearErrors(boolean clearErrors) {
 

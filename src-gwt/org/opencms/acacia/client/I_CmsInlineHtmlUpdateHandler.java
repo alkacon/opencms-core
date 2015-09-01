@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,14 +36,14 @@ public interface I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Reinitializes the editing widget inside the form parent.<p>
-     * 
+     *
      * @param formParent the form parent
      */
     void reinitWidgets(I_CmsInlineFormParent formParent);
 
     /**
      * Updates the HTML inside the form parent according to the currently edited entiy data.<p>
-     * 
+     *
      * @param formParent the form parent
      * @param onSuccess the callback to execute on success
      */

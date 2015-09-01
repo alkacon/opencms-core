@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,10 +60,10 @@ public abstract class A_CmsXmlContentEditorChangeHandler implements I_CmsXmlCont
 
     /**
      * Resolves a relative content value path to an absolute one.<p>
-     * 
+     *
      * @param source the source path
      * @param target the target path
-     * 
+     *
      * @return the resolved path
      */
     public String resolveRelativePath(String source, String target) {
@@ -85,9 +85,9 @@ public abstract class A_CmsXmlContentEditorChangeHandler implements I_CmsXmlCont
     }
 
     /**
-     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setContfiguration(java.lang.String)
+     * @see org.opencms.xml.content.I_CmsXmlContentEditorChangeHandler#setConfiguration(java.lang.String)
      */
-    public void setContfiguration(String configuration) {
+    public void setConfiguration(String configuration) {
 
         m_configuration = configuration;
     }

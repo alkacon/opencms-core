@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,14 +37,14 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * Basic panel class with a horizontal pseudo-padding.<p>
- * 
+ *
  * This padding is implemented by dynamically setting the size and margins of the contained widget
  * after insertion into the DOM.<p>
- * 
- * It only works with a single child widget right now and thus extends SimplePanel. 
- * 
+ *
+ * It only works with a single child widget right now and thus extends SimplePanel.
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsPaddedPanel extends SimplePanel {
 
@@ -56,9 +56,9 @@ public class CmsPaddedPanel extends SimplePanel {
 
     /**
      * Constructs a new instance of this widget.<p>
-     * 
+     *
      * @param paddingX the horizontal padding to use
-     * 
+     *
      */
     public CmsPaddedPanel(int paddingX) {
 
@@ -69,7 +69,7 @@ public class CmsPaddedPanel extends SimplePanel {
 
     /**
      * Sets the horizontal padding of this widget and updates the style for this widget.<p>
-     * 
+     *
      * @param paddingX the new padding value
      */
     public void setPaddingX(int paddingX) {
@@ -80,11 +80,11 @@ public class CmsPaddedPanel extends SimplePanel {
 
     /**
      * Updates the horizontal "padding" for this text box.<p>
-     * 
+     *
      * This isn't done via the CSS padding property, because if we set the width of the widget
      * to 100%, a real padding would make a part of the widget stick outside of its parent element.
      * Instead, we change the width of the textbox and its left and right margins.
-     * 
+     *
      */
     public void updatePadding() {
 
@@ -95,8 +95,8 @@ public class CmsPaddedPanel extends SimplePanel {
 
         int panelWidth = getOffsetWidth();
         // avoid negative widths
-        if (panelWidth > 2 * m_paddingX) {
-            getWidget().setWidth((panelWidth - 2 * m_paddingX) + "px");
+        if (panelWidth > (2 * m_paddingX)) {
+            getWidget().setWidth((panelWidth - (2 * m_paddingX)) + "px");
         }
         getElement().getStyle().setPaddingLeft(m_paddingX, Unit.PX);
         getElement().getStyle().setPaddingRight(m_paddingX, Unit.PX);
@@ -105,7 +105,7 @@ public class CmsPaddedPanel extends SimplePanel {
     /**
      * We override the onLoad method because the width of the internal text box needs
      * to be calculated after the widget is attached to the DOM.<p>
-     * 
+     *
      * @see com.google.gwt.user.client.ui.Widget#onLoad()
      */
     @Override

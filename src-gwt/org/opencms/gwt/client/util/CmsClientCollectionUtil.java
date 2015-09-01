@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.Set;
 
 /**
  * A utility class with functions for dealing with maps.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsClientCollectionUtil {
@@ -50,12 +50,12 @@ public final class CmsClientCollectionUtil {
 
     /**
      * Returns the intersection of two sets without modifying the original sets.<p>
-     * 
+     *
      * @param <A> the type of objects contained in the sets
-     * 
+     *
      * @param first the first set
      * @param second the second set
-     * 
+     *
      * @return the intersection of both sets
      */
     public static <A> Set<A> intersection(Set<A> first, Set<A> second) {
@@ -67,8 +67,8 @@ public final class CmsClientCollectionUtil {
 
     /**
      * Checks whether a collection is empty or null.<p>
-     * 
-     * @param collection a collection 
+     *
+     * @param collection a collection
      * @return true if <code>collection</code> is <code>null</code> or empty.
      */
     public static boolean isEmptyOrNull(Collection<?> collection) {
@@ -78,9 +78,9 @@ public final class CmsClientCollectionUtil {
 
     /**
      * Parses properties from a string and returns them in a map.<p>
-     * 
-     * @param text the text containing the properties 
-     * @return the map with the parsed properties 
+     *
+     * @param text the text containing the properties
+     * @return the map with the parsed properties
      */
     public static Map<String, String> parseProperties(String text) {
 
@@ -104,12 +104,12 @@ public final class CmsClientCollectionUtil {
 
     /**
      * Returns a new map with all entries of the input map except those which have a value of null.<p>
-     * 
+     *
      * @param <A> the key type of the map
-     * @param <B> the value type of the map 
+     * @param <B> the value type of the map
      * @param map the input map
-     *  
-     * @return a map with all null entries removed 
+     *
+     * @return a map with all null entries removed
      */
     public static <A, B> Map<A, B> removeNullEntries(Map<A, B> map) {
 
@@ -126,11 +126,11 @@ public final class CmsClientCollectionUtil {
     /**
      * Copies entries from one map to another and deletes those entries in the target map for which
      * the value in the source map is null.<p>
-     * 
-     * @param <A> the key type of the map 
-     * @param <B> the value type of the map 
+     *
+     * @param <A> the key type of the map
+     * @param <B> the value type of the map
      * @param source the source map
-     * @param target the target map 
+     * @param target the target map
      */
     public static <A, B> void updateMapAndRemoveNulls(Map<A, B> source, Map<A, B> target) {
 

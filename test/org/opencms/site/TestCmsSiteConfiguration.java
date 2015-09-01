@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,17 +39,17 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** 
+/**
  * Tests the site configuration.<p>
- * 
- * 
+ *
+ *
  * @since 9.5
  */
 public class TestCmsSiteConfiguration extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSiteConfiguration(String arg0) {
@@ -59,7 +59,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -91,7 +91,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
 
     /**
      * Tests the basic site configuration.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiteConfiguration() throws Throwable {
@@ -104,7 +104,7 @@ public class TestCmsSiteConfiguration extends OpenCmsTestCase {
         assertNotNull("Configured map of sites must not be null", mapOfSites);
 
         List<CmsSite> sites = new ArrayList<CmsSite>(mapOfSites.values());
-        assertTrue("Expected 4 configured sites but found " + sites.size(), sites.size() == 4);
+        assertTrue("Expected 6 configured sites but found " + sites.size(), sites.size() == 6);
 
         for (CmsSite site : sites) {
             echo("Found configured site: " + site);

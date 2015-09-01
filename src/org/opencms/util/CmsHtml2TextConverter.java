@@ -51,12 +51,12 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Extracts the text from the given html content, assuming the given html encoding.<p>
-     * 
+     *
      * @param html the content to extract the plain text from
      * @param encoding the encoding to use
-     * 
+     *
      * @return the text extracted from the given html content
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public static String html2text(String html, String encoding) throws Exception {
@@ -122,7 +122,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Appends an attribute.<p>
-     * 
+     *
      * @param tag the tag
      * @param text the attribute text
      */
@@ -159,7 +159,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Appends a line break.<p>
-     * 
+     *
      * @param count the number of lines
      */
     private void appendLinebreak(int count) {
@@ -169,7 +169,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Appends line breaks.<p>
-     * 
+     *
      * @param count the number of line breaks
      * @param force if the line break should be forced
      */
@@ -197,7 +197,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Appends line breaks.<p>
-     * 
+     *
      * @param tag the tag
      * @param open the open flag
      */
@@ -212,7 +212,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
                 setIndentation(2, open);
                 appendLinebreak(2);
                 break;
-            case 1: // H2            
+            case 1: // H2
                 setMarker("==", open);
                 setIndentation(3, open);
                 appendLinebreak(2);
@@ -281,13 +281,13 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
             case 19: // TFOOT
                 appendLinebreak(1);
                 break;
-            default: // unknown tag (ignore)                
+            default: // unknown tag (ignore)
         }
     }
 
     /**
      * Appends text.<p>
-     * 
+     *
      * @param text the text
      */
     private void appendText(String text) {
@@ -333,7 +333,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Sets the indentation.<p>
-     * 
+     *
      * @param length the indentation length
      * @param open if the indentation should be added or reduced
      */
@@ -351,7 +351,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /**
      * Sets the marker.<p>
-     * 
+     *
      * @param marker the marker
      * @param open if the marker should be added
      */

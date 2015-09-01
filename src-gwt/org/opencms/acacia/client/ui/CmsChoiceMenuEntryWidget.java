@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,13 +58,13 @@ public class CmsChoiceMenuEntryWidget extends Composite {
 
     /**
       * Creates a new menu entry instance.<p>
-      * 
-      * @param label the entry label 
+      *
+      * @param label the entry label
       * @param help the entry help text
-      * @param menuEntry the menu entry bean 
-      * @param selectHandler the select handler 
-      * @param choiceWidget the root choice menu 
-      * @param submenu the submenu for which this entry is being created 
+      * @param menuEntry the menu entry bean
+      * @param selectHandler the select handler
+      * @param choiceWidget the root choice menu
+      * @param submenu the submenu for which this entry is being created
       */
     public CmsChoiceMenuEntryWidget(
         String label,
@@ -99,18 +99,18 @@ public class CmsChoiceMenuEntryWidget extends Composite {
 
     /**
      * Gets the root choice menu.<p>
-     * 
-     * @return the root choice menu 
+     *
+     * @return the root choice menu
      */
     public CmsAttributeChoiceWidget getAttributeChoiceWidget() {
 
         return m_attributeChoiceWidget;
     }
 
-    /** 
+    /**
      * Gets the menu entry bean.<p>
-     * 
-     * @return the menu entry bean 
+     *
+     * @return the menu entry bean
      */
     public CmsChoiceMenuEntryBean getEntryBean() {
 
@@ -119,8 +119,8 @@ public class CmsChoiceMenuEntryWidget extends Composite {
 
     /**
      * Gets the select handler.<p>
-     * 
-     * @return the select handler 
+     *
+     * @return the select handler
      */
     public AsyncCallback<CmsChoiceMenuEntryBean> getSelectHandler() {
 
@@ -129,8 +129,8 @@ public class CmsChoiceMenuEntryWidget extends Composite {
 
     /**
      * Gets the submenu to which this entry belongs (or null if it belongs to a root menu).<p>
-     * 
-     * @return the submenu of this entry 
+     *
+     * @return the submenu of this entry
      */
     public CmsChoiceSubmenu getSubmenu() {
 

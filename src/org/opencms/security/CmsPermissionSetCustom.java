@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import java.util.StringTokenizer;
 
 /**
  * A custom permission set that can be modified during runtime and contains both allowed and denied permissions as bitsets.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsPermissionSetCustom extends CmsPermissionSet {
 
@@ -46,10 +46,10 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed and denied permissions from another permission set.<p>
-     * 
-     * The permissions are read from a string representation of permissions 
+     *
+     * The permissions are read from a string representation of permissions
      * in the format <code>{{+|-}{r|w|v|c|d}}*</code>.<p>
-     * 
+     *
      * @param permissions the set of allowed and denied permissions
      */
     public CmsPermissionSetCustom(CmsPermissionSet permissions) {
@@ -60,7 +60,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed permissions.<p>
-     * 
+     *
      * @param allowedPermissions bitset of allowed permissions
      */
     public CmsPermissionSetCustom(int allowedPermissions) {
@@ -71,7 +71,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed and denied permissions.<p>
-     * 
+     *
      * @param allowedPermissions the set of permissions to allow
      * @param deniedPermissions the set of permissions to deny
      */
@@ -82,10 +82,10 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Constructor to create a permission set with preset allowed and denied permissions from a String.<p>
-     * 
-     * The permissions are read from a string representation of permissions 
+     *
+     * The permissions are read from a string representation of permissions
      * in the format <code>{{+|-}{r|w|v|c|d}}*</code>.<p>
-     * 
+     *
      * @param permissionString the string representation of allowed and denied permissions
      */
     public CmsPermissionSetCustom(String permissionString) {
@@ -152,7 +152,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
-     * 
+     *
      * @param permissionSet the set of permissions to set additionally.
      */
     public void addPermissions(CmsPermissionSet permissionSet) {
@@ -163,7 +163,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -174,7 +174,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Sets permissions additionally as denied permissions.<p>
-     * 
+     *
      * @param permissions bitset of permissions to deny
      */
     public void denyPermissions(int permissions) {
@@ -184,7 +184,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
 
     /**
      * Sets permissions additionally as allowed permissions.<p>
-     * 
+     *
      * @param permissions bitset of permissions to allow
      */
     public void grantPermissions(int permissions) {
@@ -195,7 +195,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
     /**
      * Set permissions from another permission set both as allowed and denied permissions.<p>
      * Permissions formerly set are overwritten.
-     * 
+     *
      * @param permissionSet the set of permissions
      */
     public void setPermissions(CmsPermissionSet permissionSet) {
@@ -207,7 +207,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
     /**
      * Sets permissions as allowed and denied permissions in the permission set.<p>
      * Permissions formerly set are overwritten.
-     * 
+     *
      * @param allowedPermissions bitset of permissions to allow
      * @param deniedPermissions  bitset of permissions to deny
      */

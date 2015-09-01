@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a subscription visit entry inside the table "cms_subscription_visit".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -67,7 +67,7 @@ public class CmsDAOSubscriptionVisit {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -77,7 +77,7 @@ public class CmsDAOSubscriptionVisit {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -111,7 +111,7 @@ public class CmsDAOSubscriptionVisit {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOSubscriptionVisitPK(String str) {
@@ -142,8 +142,8 @@ public class CmsDAOSubscriptionVisit {
             }
 
             CmsDAOSubscriptionVisitPK other = (CmsDAOSubscriptionVisitPK)obj;
-            return (((m_userId == null) && (other.m_userId == null)) || ((m_userId != null) && m_userId.equals(other.m_userId)))
-                && (m_visitDate == other.m_visitDate);
+            return (((m_userId == null) && (other.m_userId == null))
+                || ((m_userId != null) && m_userId.equals(other.m_userId))) && (m_visitDate == other.m_visitDate);
         }
 
         /**
@@ -153,8 +153,8 @@ public class CmsDAOSubscriptionVisit {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_userId == null) ? 0 : m_userId.hashCode());
-            rs = rs * 37 + (int)(m_visitDate ^ (m_visitDate >>> 32));
+            rs = (rs * 37) + ((m_userId == null) ? 0 : m_userId.hashCode());
+            rs = (rs * 37) + (int)(m_visitDate ^ (m_visitDate >>> 32));
             return rs;
         }
 
@@ -169,7 +169,7 @@ public class CmsDAOSubscriptionVisit {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -211,7 +211,7 @@ public class CmsDAOSubscriptionVisit {
 
     /**
      * A public constructor for generating a new subscription visit object with an unique id.<p>
-     * 
+     *
      * @param userId the user id
      * @param visitDate the visit date
      */

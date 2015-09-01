@@ -230,7 +230,7 @@ public final class CmsContentEditorDialog {
      * @param editableData the editable data
      * @param isNew <code>true</code> when creating a new resource
      * @param mode the content creation mode
-     * @param dlgOptions the additional dialog options 
+     * @param dlgOptions the additional dialog options
      * @param editorHandler the editor handler
      */
     public void openEditDialog(
@@ -278,7 +278,6 @@ public final class CmsContentEditorDialog {
             };
             action.execute();
         }
-
     }
 
     /**
@@ -289,7 +288,7 @@ public final class CmsContentEditorDialog {
         if (m_dialog != null) {
             m_dialog.hide();
             m_dialog = null;
-            m_editorHandler.onClose(m_editableData.getSitePath(), m_isNew);
+            m_editorHandler.onClose(m_editableData.getSitePath(), m_editableData.getStructureId(), m_isNew);
             m_editorHandler = null;
         }
         if (m_form != null) {
@@ -318,9 +317,8 @@ public final class CmsContentEditorDialog {
      */
     protected void onWindowClose() {
 
-        boolean savePage = Window.confirm(Messages.get().key(
-            Messages.GUI_EDITOR_SAVE_BEFORE_LEAVING_1,
-            m_editableData.getSitePath()));
+        boolean savePage = Window.confirm(
+            Messages.get().key(Messages.GUI_EDITOR_SAVE_BEFORE_LEAVING_1, m_editableData.getSitePath()));
         if (savePage) {
             saveEditorContent();
         }
@@ -328,14 +326,15 @@ public final class CmsContentEditorDialog {
 
     /**
      * Opens the dialog for the given sitepath.<p>
-     * 
-     * @param dlgOptions the additional dialog options 
+     *
+     * @param dlgOptions the additional dialog options
      */
     protected void openDialog(DialogOptions dlgOptions) {
 
-        m_dialog = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
-            + " - "
-            + (m_isNew ? m_editableData.getNewTitle() : m_editableData.getSitePath()));
+        m_dialog = new CmsPopup(
+            Messages.get().key(Messages.GUI_DIALOG_CONTENTEDITOR_TITLE_0)
+                + " - "
+                + (m_isNew ? m_editableData.getNewTitle() : m_editableData.getSitePath()));
         m_dialog.addStyleName(I_CmsLayoutBundle.INSTANCE.contentEditorCss().contentEditor());
 
         // calculate width
@@ -365,8 +364,9 @@ public final class CmsContentEditorDialog {
              */
             public void execute() {
 
-                CmsConfirmDialog confirmDlg = new CmsConfirmDialog(Messages.get().key(
-                    Messages.GUI_EDITOR_CLOSE_CAPTION_0), Messages.get().key(Messages.GUI_EDITOR_CLOSE_TEXT_0));
+                CmsConfirmDialog confirmDlg = new CmsConfirmDialog(
+                    Messages.get().key(Messages.GUI_EDITOR_CLOSE_CAPTION_0),
+                    Messages.get().key(Messages.GUI_EDITOR_CLOSE_TEXT_0));
                 confirmDlg.setHandler(new I_CmsConfirmDialogHandler() {
 
                     public void onClose() {

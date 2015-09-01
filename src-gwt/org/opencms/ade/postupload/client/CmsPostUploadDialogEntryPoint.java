@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Dialog entry class.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
@@ -80,11 +80,11 @@ public class CmsPostUploadDialogEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Retrieves the close link global variable as a string.<p>
-     * 
+     *
      * @return the close link
      */
     protected native String getCloseLink() /*-{
 
-        return $wnd[@org.opencms.ade.postupload.shared.I_CmsDialogConstants::ATTR_CLOSE_LINK];
-    }-*/;
+                                           return $wnd[@org.opencms.ade.postupload.shared.I_CmsDialogConstants::ATTR_CLOSE_LINK];
+                                           }-*/;
 }

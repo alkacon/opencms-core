@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * Sitemap session cache.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsSitemapSessionCache {
@@ -48,7 +48,7 @@ public final class CmsSitemapSessionCache {
 
     /**
      * Initializes the session cache.<p>
-     * 
+     *
      * @param cms the cms context
      */
     public CmsSitemapSessionCache(CmsObject cms) {
@@ -59,7 +59,7 @@ public final class CmsSitemapSessionCache {
 
     /**
      * Returns the cached recent list.<p>
-     * 
+     *
      * @return the cached recent list
      */
     public List<CmsClientSitemapEntry> getRecentList() {
@@ -69,7 +69,7 @@ public final class CmsSitemapSessionCache {
 
     /**
      * Caches the given recent list.<p>
-     * 
+     *
      * @param list the recent list to cache
      */
     public void setRecentList(List<CmsClientSitemapEntry> list) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ public interface I_CmsEditWidget extends HasValue<String>, HasFocusHandlers, IsW
 
     /**
      * Returns if the widget is active.<p>
-     * 
+     *
      * @return <code>true</code> if the widget is active
      */
     boolean isActive();
@@ -60,25 +60,25 @@ public interface I_CmsEditWidget extends HasValue<String>, HasFocusHandlers, IsW
 
     /**
      * Returns true if the element should be logically counted as part of the widget for the purpose of determining whether a mouse click is "outside".
-     * 
+     *
      * For example, this is needed if the widget uses a popup.
-     * 
-     * @param element the element to check 
-     * 
-     * @return true if the element counts as part of the widget 
+     *
+     * @param element the element to check
+     *
+     * @return true if the element counts as part of the widget
      */
     boolean owns(Element element);
 
     /**
      * Sets the widget active/inactive.<p>
-     * 
+     *
      * @param active <code>true</code> to activate the widget
      */
     void setActive(boolean active);
 
     /**
      * Sets the name of input fields.<p>
-     * 
+     *
      * @param name of the input field
      */
     void setName(String name);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,9 +76,9 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
         /**
          * Constructor for a structure entry.<p>
-         * 
+         *
          * Immutable object.<p>
-         * 
+         *
          * @param structureId the structure id
          * @param parentId the parent structure id
          * @param resourceId the resource id
@@ -135,7 +135,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestMoveRename3(String arg0) {
@@ -145,7 +145,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -180,7 +180,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test delete and undelete of a moved file.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testDeleteUndeleteMovedFile() throws Exception {
@@ -225,7 +225,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test delete and undelete and publish of a moved file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteUndeletePublishMovedFile() throws Throwable {
@@ -266,7 +266,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test the publish history for a moved file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testMovedFileParent() throws Throwable {
@@ -321,7 +321,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test that renaming a folder fails if a folder with the same name already exists.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testRenameToExistingFolder() throws Exception {
@@ -344,7 +344,7 @@ public class TestMoveRename3 extends OpenCmsTestCase {
 
     /**
      * Test that renaming a folder fails if a folder with the same name already exists.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testRenameToInvalidName() throws Exception {
@@ -367,10 +367,10 @@ public class TestMoveRename3 extends OpenCmsTestCase {
     /**
      * Test all entries in <code>strEntries</code>, and adds the
      * broken entries to the <code>brokenEntries</code> list.<p>
-     * 
+     *
      * @param brokenEntries list, may be empty, to add found broken entries
      * @param strEntries entries to test
-     * 
+     *
      * @return <code>true</code> if at least one broken entry has been found
      */
     private boolean addBrokenEntries(List brokenEntries, Map strEntries) {
@@ -406,7 +406,8 @@ public class TestMoveRename3 extends OpenCmsTestCase {
         ResultSet res = null;
         try {
             conn = OpenCms.getSqlManager().getConnection(OpenCms.getSqlManager().getDefaultDbPoolName());
-            stmt = conn.prepareStatement("SELECT STR.STRUCTURE_ID, STR.PARENT_ID, STR.RESOURCE_ID, STR.RESOURCE_PATH FROM CMS_ONLINE_STRUCTURE STR ORDER BY STR.RESOURCE_PATH");
+            stmt = conn.prepareStatement(
+                "SELECT STR.STRUCTURE_ID, STR.PARENT_ID, STR.RESOURCE_ID, STR.RESOURCE_PATH FROM CMS_ONLINE_STRUCTURE STR ORDER BY STR.RESOURCE_PATH");
             res = stmt.executeQuery();
 
             while (res.next()) {

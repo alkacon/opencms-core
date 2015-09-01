@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,14 +51,14 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the rename images dialog.<p> 
- * 
+ * Provides methods for the rename images dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/renameimages.jsp
  * </ul>
  * <p>
- * 
+ *
  * @since 6.1.3
  */
 public class CmsRenameImages extends CmsDialog {
@@ -107,7 +107,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsRenameImages(CmsJspActionElement jsp) {
@@ -117,7 +117,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -129,7 +129,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Performs the rename images action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionRenameImages() throws JspException {
@@ -152,7 +152,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns information about the image count of the selected gallery folder.<p>
-     * 
+     *
      * @return information about the image count of the selected gallery folder
      */
     public String buildImageInformation() {
@@ -160,7 +160,8 @@ public class CmsRenameImages extends CmsDialog {
         // count all image resources of the gallery folder
         int count = 0;
         try {
-            int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+            int imageId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeImage.getStaticTypeName()).getTypeId();
             CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
             List<CmsResource> images = getCms().readResources(getParamResource(), filter, false);
             count = images.size();
@@ -174,7 +175,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Builds the html for the default copy folder mode select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the default copy folder mode select box
      */
@@ -199,7 +200,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the default prefix shown when opening the dialog.<p>
-     * 
+     *
      * @return the default prefix shown when opening the dialog
      */
     public String getDefaultPrefix() {
@@ -209,7 +210,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the default start count shown when opening the dialog.<p>
-     * 
+     *
      * @return the default start count shown when opening the dialog
      */
     public String getDefaultStartcount() {
@@ -219,7 +220,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the value of the places parameter.<p>
-     * 
+     *
      * @return the value of the places parameter
      */
     public String getParamPlaces() {
@@ -229,7 +230,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the value of the prefix parameter.<p>
-     * 
+     *
      * @return the value of the prefix parameter
      */
     public String getParamPrefix() {
@@ -239,7 +240,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the value of the remove title parameter.<p>
-     * 
+     *
      * @return the value of the remove title parameter
      */
     public String getParamRemovetitle() {
@@ -249,7 +250,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Returns the value of the startcount parameter.<p>
-     * 
+     *
      * @return the value of the startcount parameter
      */
     public String getParamStartcount() {
@@ -259,7 +260,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Sets the value of the places parameter.<p>
-     * 
+     *
      * @param paramPlaces the value of the places parameter
      */
     public void setParamPlaces(String paramPlaces) {
@@ -269,7 +270,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Sets the value of the prefix parameter.<p>
-     * 
+     *
      * @param paramPrefix the value of the prefix parameter
      */
     public void setParamPrefix(String paramPrefix) {
@@ -279,7 +280,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Sets the value of the remove title parameter.<p>
-     * 
+     *
      * @param paramRemovetitle the value of the remove title parameter
      */
     public void setParamRemovetitle(String paramRemovetitle) {
@@ -289,7 +290,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Sets the value of the startcount parameter.<p>
-     * 
+     *
      * @param paramStartcount the value of the startcount parameter
      */
     public void setParamStartcount(String paramStartcount) {
@@ -306,7 +307,7 @@ public class CmsRenameImages extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to rename the resource       
+        // check the required permissions to rename the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -314,7 +315,7 @@ public class CmsRenameImages extends CmsDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_RENAMEIMAGES);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
@@ -333,7 +334,7 @@ public class CmsRenameImages extends CmsDialog {
 
     /**
      * Performs the rename images operation.<p>
-     * 
+     *
      * @return true, if the resources were successfully renamed, otherwise false
      * @throws CmsException if renaming is not successful
      */
@@ -349,7 +350,8 @@ public class CmsRenameImages extends CmsDialog {
         checkLock(getParamResource());
 
         // get all image resources of the folder
-        int imageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()).getTypeId();
+        int imageId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeImage.getStaticTypeName()).getTypeId();
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(imageId);
         List<CmsResource> images = getCms().readResources(getParamResource(), filter, false);
 
@@ -400,10 +402,11 @@ public class CmsRenameImages extends CmsDialog {
                 // only rename resources which have a new resource name
                 if (getCms().existsResource(folder + newName, CmsResourceFilter.ALL)) {
                     // target resource exists, interrupt & show error
-                    throw new CmsException(Messages.get().container(
-                        Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
-                        getCms().getSitePath(res),
-                        folder + newName));
+                    throw new CmsException(
+                        Messages.get().container(
+                            Messages.ERR_MOVE_FAILED_TARGET_EXISTS_2,
+                            getCms().getSitePath(res),
+                            folder + newName));
                 }
 
                 // determine the new title property value

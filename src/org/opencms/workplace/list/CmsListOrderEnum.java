@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Wrapper class for
  * the different types of table cell horizontal alignments.<p>
- * 
+ *
  * The possibles values are:<br>
  * <ul>
  *   <li>AscendingOrder</li>
@@ -45,8 +45,8 @@ import java.util.List;
  *   <li>NoneOrder</li>
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public final class CmsListOrderEnum {
 
@@ -70,7 +70,7 @@ public final class CmsListOrderEnum {
 
     /**
      * Private constructor.<p>
-     * 
+     *
      * @param order internal representation
      */
     private CmsListOrderEnum(String order) {
@@ -82,10 +82,10 @@ public final class CmsListOrderEnum {
      * Parses an string into an element of this enumeration.<p>
      *
      * @param value the align to parse
-     * 
+     *
      * @return the enumeration element
-     * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against a 
+     *
+     * @throws CmsIllegalArgumentException if the given value could not be matched against a
      *         <code>CmsListColumnAlignEnum</code> type.
      */
     public static CmsListOrderEnum valueOf(String value) throws CmsIllegalArgumentException {
@@ -97,15 +97,16 @@ public final class CmsListOrderEnum {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(Messages.get().container(
-            Messages.ERR_LIST_ENUM_PARSE_2,
-            new Integer(value),
-            CmsListOrderEnum.class.getName()));
+        throw new CmsIllegalArgumentException(
+            Messages.get().container(
+                Messages.ERR_LIST_ENUM_PARSE_2,
+                new Integer(value),
+                CmsListOrderEnum.class.getName()));
     }
 
     /**
      * Returns the order string.<p>
-     * 
+     *
      * @return the order string
      */
     public String getOrder() {

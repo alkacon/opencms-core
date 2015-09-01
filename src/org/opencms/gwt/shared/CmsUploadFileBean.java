@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean that holds the upload file infos.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadFileBean implements IsSerializable {
@@ -57,7 +57,7 @@ public class CmsUploadFileBean implements IsSerializable {
 
     /**
      * The constructor with parameters.<p>
-     * 
+     *
      * @param existingFileNames list of filenames that already exist on the VFS
      * @param invalidFileNames list of filenames that are invalid
      * @param active the upload active flag

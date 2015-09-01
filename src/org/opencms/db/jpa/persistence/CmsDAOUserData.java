@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a user data entry inside the table "cms_userdata".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -68,7 +68,7 @@ public class CmsDAOUserData {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -78,7 +78,7 @@ public class CmsDAOUserData {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -112,7 +112,7 @@ public class CmsDAOUserData {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOUserDataPK(String str) {
@@ -143,8 +143,10 @@ public class CmsDAOUserData {
             }
 
             CmsDAOUserDataPK other = (CmsDAOUserDataPK)obj;
-            return (((m_dataKey == null) && (other.m_dataKey == null)) || ((m_dataKey != null) && m_dataKey.equals(other.m_dataKey)))
-                && (((m_userId == null) && (other.m_userId == null)) || ((m_userId != null) && m_userId.equals(other.m_userId)));
+            return (((m_dataKey == null) && (other.m_dataKey == null))
+                || ((m_dataKey != null) && m_dataKey.equals(other.m_dataKey)))
+                && (((m_userId == null) && (other.m_userId == null))
+                    || ((m_userId != null) && m_userId.equals(other.m_userId)));
         }
 
         /**
@@ -174,8 +176,8 @@ public class CmsDAOUserData {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_dataKey == null) ? 0 : m_dataKey.hashCode());
-            rs = rs * 37 + ((m_userId == null) ? 0 : m_userId.hashCode());
+            rs = (rs * 37) + ((m_dataKey == null) ? 0 : m_dataKey.hashCode());
+            rs = (rs * 37) + ((m_userId == null) ? 0 : m_userId.hashCode());
             return rs;
         }
 
@@ -210,7 +212,7 @@ public class CmsDAOUserData {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -262,7 +264,7 @@ public class CmsDAOUserData {
 
     /**
      * A public constructor for generating a new user data object with an unique id.<p>
-     * 
+     *
      * @param dataKey the data key
      * @param userId the user id
      */

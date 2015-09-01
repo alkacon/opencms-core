@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,13 +45,13 @@ import org.apache.lucene.util.Version;
 
 /**
  * Special analyzer for multiple languages, used in the OpenCms gallery search index.<p>
- * 
+ *
  * The gallery search is done in one single index that may contain multiple languages.<p>
- * 
+ *
  * According to the Lucene JavaDocs (3.0 version), the Lucene {@link org.apache.lucene.analysis.standard.StandardAnalyzer} is already using
- * "a good tokenizer for most European-language documents". The only caveat is that a 
+ * "a good tokenizer for most European-language documents". The only caveat is that a
  * list of English only stop words is used.<p>
- * 
+ *
  * This extended analyzer used a compound list of stop words compiled from the following languages:<ul>
  * <li>English
  * <li>German
@@ -64,8 +64,8 @@ import org.apache.lucene.util.Version;
  * <li>Catalan
  * <li>Czech
  * </ul>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
 
@@ -74,24 +74,27 @@ public class CmsGallerySearchAnalyzer extends StopwordAnalyzerBase {
 
     /**
      * Constructor with version parameter.<p>
-     * 
+     *
      * @param version the Lucene standard analyzer version to match
-      * @throws IOException 
+      * @throws IOException
      */
     public CmsGallerySearchAnalyzer(Version version)
     throws IOException {
 
         // initialize superclass
-        super(version, WordlistLoader.getWordSet(
-            new BufferedReader(new InputStreamReader(
-                CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))),
-            "#",
-            CmsSearchIndex.LUCENE_VERSION));
+        super(
+            version,
+            WordlistLoader.getWordSet(
+                new BufferedReader(
+                    new InputStreamReader(
+                        CmsGallerySearchAnalyzer.class.getResourceAsStream("stopwords_multilanguage.txt"))),
+                "#",
+                CmsSearchIndex.LUCENE_VERSION));
     }
 
     /**
      * @see org.apache.lucene.analysis.Analyzer#createComponents(java.lang.String, java.io.Reader)
-     * 
+     *
      * This is take from the Lucene StandardAnalyzer, which is final since 3.1
      */
     @Override

@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,8 +48,8 @@ import org.dom4j.Node;
 
 /**
  * Updates default permissions for explorer access.<p>
- * 
- * @since 6.1.8 
+ *
+ * @since 6.1.8
  */
 public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
 
@@ -85,25 +85,21 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                         changed = (0 < CmsSetupXmlHelper.setValue(
                             document,
                             CmsStringUtil.substitute(xp, "???", "DEFAULT"),
-                            null))
-                            || changed;
+                            null)) || changed;
                         changed = (0 < CmsSetupXmlHelper.setValue(
                             document,
                             CmsStringUtil.substitute(xp, "???", "GROUP.Guests"),
-                            null))
-                            || changed;
+                            null)) || changed;
                     }
                     changed = (0 < CmsSetupXmlHelper.setValue(
                         document,
                         CmsStringUtil.substitute(xp, "???", "GROUP.Administrators"),
-                        null))
-                        || changed;
+                        null)) || changed;
                 }
                 changed = (0 < CmsSetupXmlHelper.setValue(
                     document,
                     CmsStringUtil.substitute(xp, "???", "GROUP.Projectmanagers"),
-                    null))
-                    || changed;
+                    null)) || changed;
                 changed = (0 < CmsSetupXmlHelper.setValue(
                     document,
                     CmsStringUtil.substitute(xp, "???", "GROUP.Users"),
@@ -111,9 +107,10 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                 changed = (0 < CmsSetupXmlHelper.setValue(
                     document,
                     CmsStringUtil.substitute(xp, "???", "GROUP.TestGroup"),
-                    null))
-                    || changed;
-                if (CmsSetupXmlHelper.getValue(document, xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
+                    null)) || changed;
+                if (CmsSetupXmlHelper.getValue(
+                    document,
+                    xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
                     if ((xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0)
                         && (xpath.indexOf("XMLTemplate") < 0)) {
                         changed = (0 < CmsSetupXmlHelper.setValue(document, xpath, null)) || changed;
@@ -127,6 +124,7 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
             } else if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) > 0) {
                 changed = setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c") || changed;
                 changed = setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c") || changed;
+                changed = setAccessEntry(document, xpath, "ROLE.ELEMENT_AUTHOR", "+r+v+w+c") || changed;
             }
         }
         return changed;
@@ -140,7 +138,8 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
 
         // /opencms/workplace/explorertypes
         return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(
+                CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -161,16 +160,19 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
             xp.append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
             m_xpaths = new ArrayList<String>();
             // ${etype}: folder, imagegallery, downloadgallery, xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate, link, upload
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName()));
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeFolder.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "imagegallery"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "downloadgallery"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "xmlcontent"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePlain.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeImage.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeJsp.getStaticTypeName()));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName()));
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypeBinary.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate"));
-            m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName()));
+            m_xpaths.add(
+                CmsStringUtil.substitute(xp.toString(), "${etype}", CmsResourceTypePointer.getStaticTypeName()));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "link"));
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "upload"));
 

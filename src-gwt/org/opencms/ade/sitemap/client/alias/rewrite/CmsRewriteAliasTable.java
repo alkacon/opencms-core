@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
 
     /**
      * Creates a new table instance.<p>
-     * 
-     * @param controller the controller instance for the alias table view 
+     *
+     * @param controller the controller instance for the alias table view
      */
     public CmsRewriteAliasTable(CmsAliasTableController controller) {
 
@@ -112,8 +112,8 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
 
     /**
      * Gets the list of rows internally used by the data provider for this table.<p>
-     * 
-     * @return the internal data list 
+     *
+     * @return the internal data list
      */
     public List<CmsRewriteAliasTableRow> getLiveDataList() {
 
@@ -122,8 +122,8 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
 
     /**
      * Gets the list of selected rows.<p>
-     * 
-     * @return the list of selected rows 
+     *
+     * @return the list of selected rows
      */
     public List<CmsRewriteAliasTableRow> getSelectedRows() {
 
@@ -133,7 +133,7 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
 
     /**
      * @see com.google.gwt.user.cellview.client.AbstractHasData#getSelectionModel()
-     * 
+     *
      * (Overridden to use a less general return type)
      */
     @SuppressWarnings("unchecked")
@@ -145,7 +145,7 @@ public class CmsRewriteAliasTable extends CellTable<CmsRewriteAliasTableRow> {
 
     /**
      * Gets the controller instance for the alias view.<p>
-     * 
+     *
      * @return the controller instance for the alias view
      **/
     CmsAliasTableController getController() {

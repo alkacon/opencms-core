@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Represents the concrete location of an XML content value.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation {
@@ -56,8 +56,8 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
 
     /**
      * Constructs a new XML content value location.<p>
-     * 
-     * @param value the XML content value 
+     *
+     * @param value the XML content value
      */
     public CmsXmlContentValueLocation(I_CmsXmlContentValue value) {
 
@@ -127,9 +127,8 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
         List<I_CmsXmlContentValueLocation> result = new ArrayList<I_CmsXmlContentValueLocation>();
         String requiredLastElement = CmsXmlUtils.getLastXpathElement(subPath);
         Locale locale = m_value.getLocale();
-        List<I_CmsXmlContentValue> subValues = Lists.newArrayList(m_value.getDocument().getValues(
-            CmsXmlUtils.concatXpath(m_value.getPath(), subPath),
-            locale));
+        List<I_CmsXmlContentValue> subValues = Lists.newArrayList(
+            m_value.getDocument().getValues(CmsXmlUtils.concatXpath(m_value.getPath(), subPath), locale));
 
         Collections.sort(subValues, new Comparator<I_CmsXmlContentValue>() {
 
@@ -139,7 +138,9 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
                 String secondPath = CmsXmlUtils.removeXpathIndex(secondValue.getPath());
                 int firstIndex = CmsXmlUtils.getXpathIndexInt(firstValue.getPath());
                 int secondIndex = CmsXmlUtils.getXpathIndexInt(secondValue.getPath());
-                int comparisonResult = ComparisonChain.start().compare(firstPath, secondPath).compare(firstIndex, secondIndex).result();
+                int comparisonResult = ComparisonChain.start().compare(firstPath, secondPath).compare(
+                    firstIndex,
+                    secondIndex).result();
                 return comparisonResult;
             }
         });
@@ -148,7 +149,7 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
             if (subValue != null) {
                 // if subPath is the path of one option of a choice element, getValues() will, strangely,
                 // return all values of the choice, regardless of their name, so we need to check
-                // the name by hand 
+                // the name by hand
                 String lastElement = CmsXmlUtils.getLastXpathElement(subValue.getPath());
                 if (lastElement.equals(requiredLastElement)) {
                     result.add(new CmsXmlContentValueLocation(subValue));
@@ -160,8 +161,8 @@ public class CmsXmlContentValueLocation implements I_CmsXmlContentValueLocation 
 
     /**
      * Returns the content value at the given location.<p>
-     * 
-     * @return the content value at the given location 
+     *
+     * @return the content value at the given location
      */
     public I_CmsXmlContentValue getValue() {
 

@@ -15,14 +15,14 @@ import org.apache.solr.common.SolrDocumentList;
 
 /**
  * Encapsulates a list of 'OpenCms resource documents' ({@link CmsSearchResource}).<p>
- * 
- * This list can be accessed exactly like an {@link ArrayList} which entries are 
+ *
+ * This list can be accessed exactly like an {@link ArrayList} which entries are
  * {@link CmsSearchResource} that extend {@link org.opencms.file.CmsResource} and
  * holds the Solr implementation of {@link org.opencms.search.I_CmsSearchDocument}
- * as member. <b>This enables you to deal with the resulting list as you do with 
- * well known {@link List} and work on it's entries like you do on 
+ * as member. <b>This enables you to deal with the resulting list as you do with
+ * well known {@link List} and work on it's entries like you do on
  * {@link org.opencms.file.CmsResource}.</b><p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
@@ -59,7 +59,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * The public constructor.<p>
-     * 
+     *
      * @param query original Solr query
      * @param queryResponse original query response
      * @param resultDocuments original list of Solr documents
@@ -103,7 +103,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the last index of documents to display.<p>
-     * 
+     *
      * @return the last index of documents to display
      */
     public int getEnd() {
@@ -113,9 +113,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @param name the name
-     * 
+     *
      * @return the facet field
      */
     public FacetField getFacetDate(String name) {
@@ -125,7 +125,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of faceted date fields
      */
     public List<FacetField> getFacetDates() {
@@ -135,9 +135,9 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @param name the name
-     * 
+     *
      * @return the facet field
      */
     public FacetField getFacetField(String name) {
@@ -147,7 +147,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of faceted fields
      */
     public List<FacetField> getFacetFields() {
@@ -157,7 +157,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the facet query
      */
     public Map<String, Integer> getFacetQuery() {
@@ -167,7 +167,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the list of facet ranges
      */
     @SuppressWarnings("rawtypes")
@@ -178,7 +178,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the time in ms when the highlighting is finished.<p>
-     * 
+     *
      * @return the time in ms when the highlighting is finished
      */
     public long getHighlightEndTime() {
@@ -188,7 +188,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the highlighting information.<p>
-     * 
+     *
      * @return the highlighting information
      */
     public Map<String, Map<String, List<String>>> getHighLighting() {
@@ -198,7 +198,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Delegator.<p>
-     * 
+     *
      * @return the limiting facets
      */
     public List<FacetField> getLimitingFacets() {
@@ -208,7 +208,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the score of the best matching document.<p>
-     * 
+     *
      * @return the score of the best matching document
      */
     public Float getMaxScore() {
@@ -218,7 +218,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the count of docs that have been found.<p>
-     * 
+     *
      * @return the count of docs that have been found
      */
     public long getNumFound() {
@@ -228,7 +228,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the current page.<p>
-     * 
+     *
      * @return the current page
      */
     public int getPage() {
@@ -238,7 +238,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * The original Solr query.<p>
-     * 
+     *
      * @return the query
      */
     public SolrQuery getQuery() {
@@ -248,7 +248,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the requested row count.<p>
-     * 
+     *
      * @return the rows
      */
     public Integer getRows() {
@@ -258,7 +258,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the start index (offset).<p>
-     * 
+     *
      * @return the start
      */
     public Long getStart() {
@@ -268,7 +268,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the start time.<p>
-     * 
+     *
      * @return the start time
      */
     public long getStartTime() {
@@ -278,7 +278,7 @@ public class CmsSolrResultList extends ArrayList<CmsSearchResource> {
 
     /**
      * Returns the visible hit count.<p>
-     * 
+     *
      * @return the visible count of documents
      */
     public long getVisibleHitCount() {

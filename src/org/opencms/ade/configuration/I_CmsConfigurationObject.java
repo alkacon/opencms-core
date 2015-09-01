@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,14 +30,14 @@ package org.opencms.ade.configuration;
 /**
  * Interface for a single named configuration object that can either be merged with other configuration
  * objects or disable a configuration object with the same name.<p>
- * 
+ *
  * @author Georg Westenberger
- * 
+ *
  * @version $Revision: 1.0$
- * 
+ *
  * @since 8.0.1
- * 
- * @param <X> the configuration object type which can be merged 
+ *
+ * @param <X> the configuration object type which can be merged
  */
 public interface I_CmsConfigurationObject<X extends I_CmsConfigurationObject<X>> {
 
@@ -46,26 +46,26 @@ public interface I_CmsConfigurationObject<X extends I_CmsConfigurationObject<X>>
 
     /**
      * The name of the configuration object.<p>
-     * 
+     *
      * This name should be unique for each single configuration
-     * 
-     * @return the name 
+     *
+     * @return the name
      */
     String getKey();
 
     /**
      * If true, this configuration object will disable an inherited configuration object of the same name.<p>
-     * 
-     * @return true if this configuration object is marked as "disabled" 
+     *
+     * @return true if this configuration object is marked as "disabled"
      */
     boolean isDisabled();
 
     /**
      * Merges this configuration object with a child configuration object.<p>
-     * 
+     *
      * @param child the child configuration object
-     *  
-     * @return the merged configuration objects 
+     *
+     * @return the merged configuration objects
      */
     X merge(X child);
 }

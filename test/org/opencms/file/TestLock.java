@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,7 +56,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestLock(String arg0) {
@@ -66,7 +66,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -112,7 +112,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests copying a file to a folder locked by another user.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCopyToLockedFolder() throws Exception {
@@ -142,7 +142,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests creating a new file in a folder locked by another user.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testCreationInLockedFolder() throws Exception {
@@ -167,7 +167,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Test the lock filter. see bug #1460.<p>
-     * 
+     *
      * @throws Throwable is something goes wrong
      */
     public void testLockFilter() throws Throwable {
@@ -178,7 +178,7 @@ public class TestLock extends OpenCmsTestCase {
         String fileName = "testLockFilter";
         String folderName = "testLockFilterFolder";
 
-        // create a file and a folder where the file name is a prefix of the folder name 
+        // create a file and a folder where the file name is a prefix of the folder name
         cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
         cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
 
@@ -194,7 +194,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a resource for basic operations.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForBaseOperations() throws Throwable {
@@ -237,7 +237,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a file and its siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForFile() throws Throwable {
@@ -270,7 +270,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a folder and its siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForFolder() throws Throwable {
@@ -289,7 +289,7 @@ public class TestLock extends OpenCmsTestCase {
         // the source folder must have an exclusive lock
         assertLock(cms, folder, CmsLockType.EXCLUSIVE);
 
-        // all resources in the folder must have an inherited lock        
+        // all resources in the folder must have an inherited lock
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
@@ -302,13 +302,13 @@ public class TestLock extends OpenCmsTestCase {
         // all siblings outside the folder must not locked
         assertLock(cms, sibling2, CmsLockType.UNLOCKED);
 
-        // now unlock the folder 
+        // now unlock the folder
         cms.unlockResource(folder);
 
         // the source folder must be unlocked
         assertLock(cms, folder, CmsLockType.UNLOCKED);
 
-        // all resources in the folder must be unlocked      
+        // all resources in the folder must be unlocked
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
         while (i.hasNext()) {
@@ -324,9 +324,9 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a folder and its siblings.<p>
-     * 
+     *
      * In this test, the folder has some pre-locked siblings with exclusive locks in it
-     *  
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForFolderPrelockedExclusive() throws Throwable {
@@ -352,7 +352,7 @@ public class TestLock extends OpenCmsTestCase {
         // lock folder
         cms.lockResource(folder);
 
-        // all resources in the folder must have an inherited lock        
+        // all resources in the folder must have an inherited lock
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
@@ -386,9 +386,9 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a folder and its siblings.<p>
-     * 
+     *
      * In this test, the folder has some prelocked siblings with shared locks in it
-     *  
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForFolderPrelockedShared() throws Throwable {
@@ -414,7 +414,7 @@ public class TestLock extends OpenCmsTestCase {
         // lock folder
         cms.lockResource(folder);
 
-        // all resources in the folder must have an inherited or shared inherited lock        
+        // all resources in the folder must have an inherited or shared inherited lock
         List resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
@@ -438,7 +438,7 @@ public class TestLock extends OpenCmsTestCase {
         // the source folder must be unlocked
         assertLock(cms, folder, CmsLockType.UNLOCKED);
 
-        // all resources in the folder must be unlocked, except those siblings that had a 
+        // all resources in the folder must be unlocked, except those siblings that had a
         // shared inherited lock, they must get a shared exclusive lock
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
@@ -467,7 +467,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status of a resource during sibling creation.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockForSiblings() throws Throwable {
@@ -491,13 +491,13 @@ public class TestLock extends OpenCmsTestCase {
         // copy source again
         cms.copyResource(source, destination2, CmsResource.COPY_AS_SIBLING);
 
-        // since one sibling was already exclusive locked, 
+        // since one sibling was already exclusive locked,
         // new sibling must be shared locked
         assertLock(cms, source, CmsLockType.SHARED_EXCLUSIVE);
         assertLock(cms, destination1, CmsLockType.EXCLUSIVE);
         assertLock(cms, destination2, CmsLockType.SHARED_EXCLUSIVE);
 
-        // same stuff but in a different order 
+        // same stuff but in a different order
         source = "/folder2/page1.html";
         destination1 = "/folder2/page1_sib1.html";
         destination2 = "/folder2/page1_sib2.html";
@@ -512,7 +512,7 @@ public class TestLock extends OpenCmsTestCase {
 
         // create another sibling
         cms.createSibling(destination1, destination2, null);
-        // since one sibling was already exclusive locked, 
+        // since one sibling was already exclusive locked,
         // new sibling must be shared locked
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, destination1, CmsLockType.SHARED_EXCLUSIVE);
@@ -540,7 +540,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests an inherited lock in a resource delete scenario.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockInherit() throws Throwable {
@@ -565,7 +565,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests a lock set by other user.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockOtherUser() throws Throwable {
@@ -600,7 +600,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Ensures that a lock is required for all write/control operations.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockRequired() throws Throwable {
@@ -769,7 +769,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests to steal a lock.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockSteal() throws Throwable {
@@ -871,16 +871,16 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests lock status after a new file has been deleted in offline project.<p>
-     * 
+     *
      * Issue description:
      * User A creates a new file, but deletes it without ever publishing it.
      * Now user B create a new file with the same name / path.
-     * The file was still in the lock manager but for user A, this generated 
+     * The file was still in the lock manager but for user A, this generated
      * an error for user B.<p>
-     * 
+     *
      * Solution:
      * Remove new files that are deleted from the lock manager.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testLockWithDeletedNewFiles() throws Throwable {
@@ -910,7 +910,7 @@ public class TestLock extends OpenCmsTestCase {
 
     /**
      * Tests creating a new temporary file in a folder locked by another user.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testTempFileCreationInLockedFolder() throws Exception {

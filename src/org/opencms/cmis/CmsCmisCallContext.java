@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,9 +46,9 @@ public class CmsCmisCallContext implements CallContext {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param originalContext the context to wrap 
-     * @param objectInfo the object info handler to use 
+     *
+     * @param originalContext the context to wrap
+     * @param objectInfo the object info handler to use
      */
     public CmsCmisCallContext(CallContext originalContext, ObjectInfoHandler objectInfo) {
 
@@ -98,8 +98,8 @@ public class CmsCmisCallContext implements CallContext {
 
     /**
      * The object info handler to use.<p>
-     * 
-     * @return the object info handler 
+     *
+     * @return the object info handler
      */
     public ObjectInfoHandler getObjectInfoHandler() {
 

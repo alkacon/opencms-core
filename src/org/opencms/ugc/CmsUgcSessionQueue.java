@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,10 +49,10 @@ public class CmsUgcSessionQueue {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param enabled true if the queue should be enabled  
-     * @param interval the wait time to use between multiple session requests 
-     * @param maxLength the maximum length of the queue 
+     *
+     * @param enabled true if the queue should be enabled
+     * @param interval the wait time to use between multiple session requests
+     * @param maxLength the maximum length of the queue
      */
     public CmsUgcSessionQueue(boolean enabled, long interval, int maxLength) {
 
@@ -70,22 +70,23 @@ public class CmsUgcSessionQueue {
 
     /**
      * Creates a session queue based on the given configuration.<p>
-     * 
-     * @param config the configuration for which to create the session queue 
-     * @return the newly created session queue 
+     *
+     * @param config the configuration for which to create the session queue
+     * @return the newly created session queue
      */
     public static CmsUgcSessionQueue createQueue(CmsUgcConfiguration config) {
 
-        CmsUgcSessionQueue queue = new CmsUgcSessionQueue(config.needsQueue(), config.getQueueInterval().isPresent()
-        ? config.getQueueInterval().get().longValue()
-        : 0, config.getMaxQueueLength().isPresent() ? config.getMaxQueueLength().get().intValue() : Integer.MAX_VALUE);
+        CmsUgcSessionQueue queue = new CmsUgcSessionQueue(
+            config.needsQueue(),
+            config.getQueueInterval().isPresent() ? config.getQueueInterval().get().longValue() : 0,
+            config.getMaxQueueLength().isPresent() ? config.getMaxQueueLength().get().intValue() : Integer.MAX_VALUE);
         return queue;
     }
 
     /**
      * Updates the queue parameters from the configuration object.<p>
-     * 
-     * @param config the form configuration 
+     *
+     * @param config the form configuration
      */
     public synchronized void updateFromConfiguration(CmsUgcConfiguration config) {
 
@@ -98,8 +99,8 @@ public class CmsUgcSessionQueue {
 
     /**
      * If there are currently any threads waiting on this queue, wait for the interval given on construction after the currenly last thread stops waiting.<p>
-     * 
-     * @return false if the queue was too long to wait, true otherwise   
+     *
+     * @return false if the queue was too long to wait, true otherwise
      */
     public synchronized boolean waitForSlot() {
 
@@ -110,8 +111,8 @@ public class CmsUgcSessionQueue {
             long timeToWait = m_nextScheduleTime - now;
             if (timeToWait <= 0) {
                 // This happens either if this method is called for the first time,
-                // or if the wait interval for the last thread to enter the queue has 
-                // already fully elapsed 
+                // or if the wait interval for the last thread to enter the queue has
+                // already fully elapsed
                 m_nextScheduleTime = now + m_interval;
                 return true;
             } else if (m_waitCount >= m_maxLength) {
@@ -122,8 +123,8 @@ public class CmsUgcSessionQueue {
                 try {
                     // use wait here instead of sleep because it releases the object monitor
 
-                    // note that timeToWait can't be 0 here, because this case is handled in the first if() branch, 
-                    // so wait() always returns after the given period   
+                    // note that timeToWait can't be 0 here, because this case is handled in the first if() branch,
+                    // so wait() always returns after the given period
                     wait(timeToWait);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block

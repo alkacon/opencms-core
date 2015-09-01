@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.commons.logging.Log;
 
 /**
- * This class provides a <code>&lt;cms:device type="..."&gt;</code>-Tag 
+ * This class provides a <code>&lt;cms:device type="..."&gt;</code>-Tag
  * with the attribute <code>type</code> to specify the device.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsJspTagDevice extends BodyTagSupport {
@@ -59,7 +59,7 @@ public class CmsJspTagDevice extends BodyTagSupport {
 
     /**
      * Close the device tag.<p>
-     * 
+     *
      * @return {@link #EVAL_PAGE}
      */
     @Override
@@ -76,10 +76,10 @@ public class CmsJspTagDevice extends BodyTagSupport {
     /**
      * Decides on the base of the device selector interface whether the user's device is in
      * the selected device types or not.<p>
-     * 
+     *
      * If the user's device is in the list of possible devices the content inside the tag is printed out
-     * and otherwise the content won't be printed out.<p> 
-     * 
+     * and otherwise the content won't be printed out.<p>
+     *
      * @return {@link #EVAL_BODY_INCLUDE}<br/>{@link #SKIP_BODY}
      */
     @Override
@@ -117,10 +117,11 @@ public class CmsJspTagDevice extends BodyTagSupport {
                     return SKIP_BODY;
                 }
             } else {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.LOG_WRONG_DEVICE_TYPE_2,
-                    selectedDevice,
-                    controller.getCurrentRequest().getElementUri()));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_WRONG_DEVICE_TYPE_2,
+                        selectedDevice,
+                        controller.getCurrentRequest().getElementUri()));
             }
         }
         return SKIP_BODY;

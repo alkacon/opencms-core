@@ -42,10 +42,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Test;
-
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+
+import junit.framework.Test;
 
 /**
  * Test class for alias methods.
@@ -54,8 +54,8 @@ public class TestAliases extends OpenCmsTestCase {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the test name 
+     *
+     * @param name the test name
      */
     public TestAliases(String name) {
 
@@ -64,7 +64,7 @@ public class TestAliases extends OpenCmsTestCase {
 
     /**
      * Creates a test suite instance.<p>
-     * 
+     *
      * @return the test suite instance
      */
     public static Test suite() {
@@ -76,11 +76,11 @@ public class TestAliases extends OpenCmsTestCase {
     /**
      * Checks whether a resource's alias paths exactly match a given list of paths, and throws an exception
      * otherwise.<p>
-     * 
-     * @param resource the resource  
-     * @param aliasPaths the paths which should match the alias paths of the resource 
-     * 
-     * @throws Exception if the aliases don't match 
+     *
+     * @param resource the resource
+     * @param aliasPaths the paths which should match the alias paths of the resource
+     *
+     * @throws Exception if the aliases don't match
      */
     public void checkAliases(CmsResource resource, String... aliasPaths) throws Exception {
 
@@ -96,16 +96,18 @@ public class TestAliases extends OpenCmsTestCase {
             aliasMapFromParameters.put(aliasPath, Boolean.TRUE);
         }
         MapDifference<String, Boolean> difference = Maps.difference(aliasMapFromDb, aliasMapFromParameters);
-        assertTrue("Aliases for "
-            + resource.getRootPath()
-            + " (left) don't match expected aliases (right): "
-            + difference.toString(), difference.areEqual());
+        assertTrue(
+            "Aliases for "
+                + resource.getRootPath()
+                + " (left) don't match expected aliases (right): "
+                + difference.toString(),
+            difference.areEqual());
     }
 
     /**
-     * Basic test for aliases. 
-     * 
-     * @throws Exception if something goes wrong 
+     * Basic test for aliases.
+     *
+     * @throws Exception if something goes wrong
      */
     public void testAddAlias() throws Exception {
 
@@ -132,7 +134,7 @@ public class TestAliases extends OpenCmsTestCase {
 
     /**
      * Tests reading/writing rewrite aliases.<p>
-     * 
+     *
      * @throws Exception
      */
     public void testRewrites() throws Exception {
@@ -170,9 +172,9 @@ public class TestAliases extends OpenCmsTestCase {
 
     /**
      * Checks if a rewrite alias is contained in a list of rewrite aliases.<p>
-     * 
-     * @param alias the alias to search 
-     * @param aliasesToSearch the list of  aliases in which to search the alias 
+     *
+     * @param alias the alias to search
+     * @param aliasesToSearch the list of  aliases in which to search the alias
      */
     private void checkRewriteAlias(CmsRewriteAlias alias, List<CmsRewriteAlias> aliasesToSearch) {
 

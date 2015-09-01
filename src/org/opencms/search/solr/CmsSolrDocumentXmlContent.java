@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Special document text extraction factory for Solr index.<p>
- * 
- * @since 8.5.0 
+ *
+ * @since 8.5.0
  */
 public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
@@ -75,7 +75,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param name the name for the document type
      */
     public CmsSolrDocumentXmlContent(String name) {
@@ -85,13 +85,13 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Extracts the content of a single XML content resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource
      * @param index the used index
-     * 
+     *
      * @return the extraction result
-     * 
+     *
      * @throws CmsException in case reading or unmarshalling the content fails
      */
     public static CmsExtractionResult extractXmlContent(CmsObject cms, CmsResource resource, CmsSearchIndex index)
@@ -100,9 +100,8 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
         // un-marshal the content
         CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
-            throw new CmsIndexNoContentException(Messages.get().container(
-                Messages.ERR_NO_CONTENT_1,
-                resource.getRootPath()));
+            throw new CmsIndexNoContentException(
+                Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }
         A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
@@ -112,7 +111,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
         Locale resourceLocale = index.getLocaleForResource(cms, resource, xmlContent.getLocales());
         String defaultContent = null;
 
-        // loop over the locales of the content 
+        // loop over the locales of the content
         for (Locale locale : xmlContent.getLocales()) {
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
@@ -208,10 +207,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
     /**
      * Checks whether the resource has associated detail containers.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resource the resource
-     * 
+     *
      * @return <code>true</code> if the resource has associated detail containers
      */
     public boolean hasDetailContainers(CmsObject cms, CmsResource resource) {

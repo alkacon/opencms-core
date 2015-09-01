@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Sitemap hoverbar move button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHandle {
@@ -55,8 +55,8 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsHoverbarMoveButton(final CmsSitemapHoverbar hoverbar) {
 
@@ -70,6 +70,11 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
              * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsHoverbarShowHandler#onShow(org.opencms.ade.sitemap.client.hoverbar.CmsHoverbarShowEvent)
              */
             public void onShow(CmsHoverbarShowEvent event) {
+
+                if (hoverbar.getEntry() == null) {
+                    // Can sometimes happen after deleting an element
+                    return;
+                }
 
                 m_sitePath = hoverbar.getEntry().getSitePath();
                 final CmsSitemapController controller = hoverbar.getController();
@@ -92,7 +97,8 @@ public class CmsHoverbarMoveButton extends CmsPushButton implements I_CmsDragHan
                         CmsHoverbarMoveButton.this.setVisible(true);
                     } else {
                         enable();
-                        m_mouseDownHandlerReg = addMouseDownHandler(CmsSitemapView.getInstance().getTree().getDnDHandler());
+                        m_mouseDownHandlerReg = addMouseDownHandler(
+                            CmsSitemapView.getInstance().getTree().getDnDHandler());
                         CmsHoverbarMoveButton.this.setVisible(true);
                     }
                 } else {

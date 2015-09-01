@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,7 +39,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A client-side bean for representing an OpenCms property.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsClientProperty implements IsSerializable {
@@ -49,10 +49,8 @@ public class CmsClientProperty implements IsSerializable {
      */
     public enum Mode {
         /** The effective value. */
-        effective,
-        /** The resource value. */
-        resource,
-        /** The structure value. */
+        effective, /** The resource value. */
+        resource, /** The structure value. */
         structure;
     }
 
@@ -63,10 +61,10 @@ public class CmsClientProperty implements IsSerializable {
 
         /**
          * Creates a new property.<p>
-         *          
+         *
          * @param name the property name
-         *  
-         * @return the new property 
+         *
+         * @return the new property
          */
         public CmsClientProperty apply(String name) {
 
@@ -116,10 +114,10 @@ public class CmsClientProperty implements IsSerializable {
     /** The structure value of the property. */
     private String m_structureValue;
 
-    /** 
+    /**
      * Copy constructor.<p>
-     * 
-     * @param property the object from which to copy the data 
+     *
+     * @param property the object from which to copy the data
      */
     public CmsClientProperty(CmsClientProperty property) {
 
@@ -130,10 +128,10 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Creates a new client property bean.<p>
-     * 
-     * @param name the property name 
-     * @param structureValue the structure value 
-     * @param resourceValue the resource value 
+     *
+     * @param name the property name
+     * @param structureValue the structure value
+     * @param resourceValue the resource value
      */
     public CmsClientProperty(String name, String structureValue, String resourceValue) {
 
@@ -147,15 +145,15 @@ public class CmsClientProperty implements IsSerializable {
      */
     protected CmsClientProperty() {
 
-        //empty constructor for serialization 
+        //empty constructor for serialization
     }
 
     /**
      * Helper method for copying a map of properties.<p>
-     * 
-     * @param props the property map to copy 
-     * 
-     * @return a copy of the property map  
+     *
+     * @param props the property map to copy
+     *
+     * @return a copy of the property map
      */
     public static Map<String, CmsClientProperty> copyProperties(Map<String, CmsClientProperty> props) {
 
@@ -170,11 +168,11 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Gets the path value for a property object (which may be null) and a property access mode.<p>
-     *  
+     *
      * @param property the property which values to access
-     * @param mode the property access mode 
-     * 
-     * @return the path value for the property and access mode 
+     * @param mode the property access mode
+     *
+     * @return the path value for the property and access mode
      */
     public static CmsPathValue getPathValue(CmsClientProperty property, Mode mode) {
 
@@ -195,10 +193,10 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Checks if a property is null or empty.<p>
-     *  
-     * @param prop the property to check 
-     * 
-     * @return true if the property is null or empty 
+     *
+     * @param prop the property to check
+     *
+     * @return true if the property is null or empty
      */
     public static boolean isPropertyEmpty(CmsClientProperty prop) {
 
@@ -207,10 +205,10 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Makes a "lazy copy" of a map of properties, which will create properties on lookup if they don't already exist.<p>
-     * 
-     * @param properties the properties to copy 
-     * 
-     * @return the lazy copy of the properties 
+     *
+     * @param properties the properties to copy
+     *
+     * @return the lazy copy of the properties
      */
     public static Map<String, CmsClientProperty> makeLazyCopy(Map<String, CmsClientProperty> properties) {
 
@@ -222,8 +220,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Helper method for removing empty properties from a map.<p>
-     * 
-     * @param props the map from which to remove empty properties 
+     *
+     * @param props the map from which to remove empty properties
      */
     public static void removeEmptyProperties(Map<String, CmsClientProperty> props) {
 
@@ -239,9 +237,9 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Creates a lazy property map which creates properties on lookup if they don'T exist.<p>
-     * 
-     * @param properties the properties which should be initially put into the map 
-     * 
+     *
+     * @param properties the properties which should be initially put into the map
+     *
      * @return the lazy property map
      */
     public static Map<String, CmsClientProperty> toLazyMap(Map<String, CmsClientProperty> properties) {
@@ -252,8 +250,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Returns the effective value of the property.<p>
-     *  
-     * @return the effective value of the property 
+     *
+     * @return the effective value of the property
      */
     public String getEffectiveValue() {
 
@@ -262,8 +260,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Returns the name of the property.<p>
-     * 
-     * @return the name of the property 
+     *
+     * @return the name of the property
      */
     public String getName() {
 
@@ -272,8 +270,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Gets the origin of the property (might return null).<p>
-     * 
-     * @return the origin root path of the property, or null 
+     *
+     * @return the origin root path of the property, or null
      */
     public String getOrigin() {
 
@@ -282,8 +280,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Returns the effective path value of the property.<p>
-     * 
-     * @return the effective path value of the property 
+     *
+     * @return the effective path value of the property
      */
     public CmsPathValue getPathValue() {
 
@@ -299,8 +297,8 @@ public class CmsClientProperty implements IsSerializable {
     /**
      * Gets the path value for a specific access mode.<p>
      * @param mode the access mode
-     *  
-     * @return the path value for the access mode 
+     *
+     * @return the path value for the access mode
      */
     public CmsPathValue getPathValue(Mode mode) {
 
@@ -317,8 +315,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Returns the resource value of the property.<p>
-     * 
-     * @return the resource value 
+     *
+     * @return the resource value
      */
     public String getResourceValue() {
 
@@ -327,8 +325,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /***
      * Returns the structure value of the property.<p>
-     * 
-     * @return  the structure value 
+     *
+     * @return  the structure value
      */
     public String getStructureValue() {
 
@@ -337,7 +335,7 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Checks if both values of the property are empty.<p>
-     * 
+     *
      * @return true if both values of the property are empty
      */
     public boolean isEmpty() {
@@ -348,8 +346,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Sets the origin of the property.<p>
-     * 
-     * @param origin the origin root path of the property 
+     *
+     * @param origin the origin root path of the property
      */
     public void setOrigin(String origin) {
 
@@ -358,8 +356,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Sets the resource value .<P>
-     * 
-     * @param resourceValue the new resource value 
+     *
+     * @param resourceValue the new resource value
      */
     public void setResourceValue(String resourceValue) {
 
@@ -368,8 +366,8 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Sets the structure value.<p>
-     * 
-     * @param structureValue the new structure value 
+     *
+     * @param structureValue the new structure value
      */
     public void setStructureValue(String structureValue) {
 
@@ -390,10 +388,10 @@ public class CmsClientProperty implements IsSerializable {
 
     /**
      * Creates a copy of the property, but changes the origin in the copy.<p>
-     * 
-     * @param origin the new origin 
-     * 
-     * @return the copy of the property 
+     *
+     * @param origin the new origin
+     *
+     * @return the copy of the property
      */
     public CmsClientProperty withOrigin(String origin) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * Upload dialog entry class.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUpload extends A_CmsEntryPoint {
@@ -62,7 +62,7 @@ public class CmsUpload extends A_CmsEntryPoint {
 
     /**
      * Opens an empty upload dialog.<p>
-     * 
+     *
      * @param uploadTarget the target folder
      */
     private static void openDialog(String uploadTarget) {
@@ -79,9 +79,10 @@ public class CmsUpload extends A_CmsEntryPoint {
             dialog.setTargetFolder(uploadTarget);
             dialog.loadAndShow();
         } catch (Exception e) {
-            CmsErrorDialog.handleException(new Exception(
-                "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                e));
+            CmsErrorDialog.handleException(
+                new Exception(
+                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                    e));
         }
     }
 
@@ -109,16 +110,17 @@ public class CmsUpload extends A_CmsEntryPoint {
                 dialog.setTargetFolder(getTargetFolder());
                 dialog.loadAndShow();
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of dialog data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
             }
         }
     }
 
     /**
      * Retrieves the close link global variable as a string.<p>
-     * 
+     *
      * @return the close link
      */
     protected native String getCloseLink() /*-{
@@ -129,7 +131,7 @@ public class CmsUpload extends A_CmsEntryPoint {
 
     /**
      * Retrieves the dialog mode global variable as a string.<p>
-     * 
+     *
      * @return the dialog mode
      */
     protected native String getDialogMode() /*-{
@@ -140,7 +142,7 @@ public class CmsUpload extends A_CmsEntryPoint {
 
     /**
      * Retrieves the target folder global variable as a string.<p>
-     * 
+     *
      * @return the target folder
      */
     private native String getTargetFolder() /*-{

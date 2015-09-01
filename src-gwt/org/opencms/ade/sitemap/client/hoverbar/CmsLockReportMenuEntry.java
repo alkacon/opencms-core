@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,6 +27,7 @@
 
 package org.opencms.ade.sitemap.client.hoverbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
@@ -36,15 +37,15 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Sitemap context menu show lock report entry.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsLockReportMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -77,7 +78,19 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        setVisible(true);
+        setVisible(checkVisible());
+    }
+
+    /**
+     * Checks if the menu entry should be visible.<p>
+     *
+     * @return true if the menu entry should be visible
+     */
+    protected boolean checkVisible() {
+
+        return !CmsSitemapView.getInstance().isModelPageMode()
+            && (!CmsSitemapView.getInstance().isGalleryMode()
+                || getHoverbar().getController().getData().isGalleryManager());
     }
 
 }

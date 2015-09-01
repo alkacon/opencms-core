@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.Window;
 
 /**
  * A dialog containing a form.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFormDialog extends CmsPopup {
@@ -62,22 +62,22 @@ public class CmsFormDialog extends CmsPopup {
     /** The OK button of this dialog. */
     private CmsPushButton m_okButton;
 
-    /** 
+    /**
      * Constructs a new form dialog with a given title.<p>
-     * 
+     *
      * @param title the title of the form dialog
-     * @param form the form to use  
+     * @param form the form to use
      */
     public CmsFormDialog(String title, CmsForm form) {
 
         this(title, form, -1);
     }
 
-    /** 
+    /**
      * Constructs a new form dialog with a given title.<p>
-     * 
+     *
      * @param title the title of the form dialog
-     * @param form the form to use  
+     * @param form the form to use
      * @param dialogWidth the dialog width
      */
     public CmsFormDialog(String title, CmsForm form, int dialogWidth) {
@@ -117,8 +117,8 @@ public class CmsFormDialog extends CmsPopup {
 
     /**
      * Gets the form of this dialog.<p>
-     * 
-     * @return the form of this dialog 
+     *
+     * @return the form of this dialog
      */
     public CmsForm getForm() {
 
@@ -127,7 +127,7 @@ public class CmsFormDialog extends CmsPopup {
 
     /**
      * Returns the 'OK' button.<p>
-     * 
+     *
      * @return the 'OK' button
      */
     public CmsPushButton getOkButton() {
@@ -137,8 +137,8 @@ public class CmsFormDialog extends CmsPopup {
 
     /**
      * Sets the form handler for this form dialog.<p>
-     * 
-     * @param formHandler the new form handler 
+     *
+     * @param formHandler the new form handler
      */
     public void setFormHandler(I_CmsFormHandler formHandler) {
 
@@ -146,8 +146,8 @@ public class CmsFormDialog extends CmsPopup {
     }
 
     /**
-     * Enables/disables the OK button.<p> 
-     *    
+     * Enables/disables the OK button.<p>
+     *
      * @param enabled if true, enables the OK button, else disables it
      */
     public void setOkButtonEnabled(final boolean enabled) {
@@ -159,7 +159,7 @@ public class CmsFormDialog extends CmsPopup {
              */
             public void execute() {
 
-                // The event handling of GWT gets confused if we don't execute this as a scheduled command 
+                // The event handling of GWT gets confused if we don't execute this as a scheduled command
                 getOkButton().setDown(false);
                 getOkButton().setEnabled(enabled);
             }
@@ -196,7 +196,7 @@ public class CmsFormDialog extends CmsPopup {
 
     /**
      * Creates the cancel button.<p>
-     * 
+     *
      * @return the cancel button
      */
     private CmsPushButton createCancelButton() {
@@ -221,7 +221,7 @@ public class CmsFormDialog extends CmsPopup {
 
     /**
      * Creates the OK button.<p>
-     * 
+     *
      * @return the OK button
      */
     private CmsPushButton createOkButton() {

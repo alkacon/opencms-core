@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,11 +62,11 @@ import javax.servlet.jsp.JspException;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides basic methods for building the file editors of OpenCms.<p> 
- * 
+ * Provides basic methods for building the file editors of OpenCms.<p>
+ *
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class CmsEditor extends CmsEditorBase {
 
@@ -210,7 +210,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditor(CmsJspActionElement jsp) {
@@ -220,14 +220,14 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Unlocks the edited resource when in direct edit mode or when the resource was not modified.<p>
-     * 
+     *
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
     public abstract void actionClear(boolean forceUnlock);
 
     /**
      * Performs the exit editor action.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      * @throws IOException if a forward fails
      * @throws ServletException if a forward fails
@@ -237,7 +237,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Performs the save content action.<p>
-     * 
+     *
      * @throws IOException if a redirection fails
      * @throws JspException if including an element fails
      */
@@ -245,7 +245,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Builds the html String for the element language selector.<p>
-     *  
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @param resourceName the name of the resource to edit
      * @param selectedLocale the currently selected Locale
@@ -307,14 +307,14 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Generates a button for the OpenCms editor.<p>
-     * 
+     *
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
      * @param image the image name for the button, skin path will be automatically added as prefix
-     * @param label the label for the text of the button 
+     * @param label the label for the text of the button
      * @param type 0: image only (default), 1: image and text, 2: text only
      * @param useCustomImage if true, the button has to be placed in the editors "custom pics" folder
-     * 
+     *
      * @return a button for the OpenCms editor
      */
     public String button(String href, String target, String image, String label, int type, boolean useCustomImage) {
@@ -330,11 +330,11 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the editor action for a "cancel" button.<p>
-     * 
+     *
      * This overwrites the cancel method of the CmsDialog class.<p>
-     * 
+     *
      * Always use this value, do not write anything directly in the html page.<p>
-     * 
+     *
      * @return the default action for a "cancel" button
      */
     public String buttonActionCancel() {
@@ -358,8 +358,8 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
-     * 
-     * @param jsFunction the JavaScript function which will be executed on the mouseup event 
+     *
+     * @param jsFunction the JavaScript function which will be executed on the mouseup event
      * @param type 0: image only (default), 1: image and text, 2: text only
      * @return the html to display the special action button
      */
@@ -423,13 +423,13 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Generates a button for delete locale.<p>
-     * 
+     *
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
      * @param image the image name for the button, skin path will be automatically added as prefix
-     * @param label the label for the text of the button 
+     * @param label the label for the text of the button
      * @param type 0: image only (default), 1: image and text, 2: text only
-     * 
+     *
      * @return a button for the OpenCms workplace
      */
     public String deleteLocaleButton(String href, String target, String image, String label, int type) {
@@ -464,9 +464,9 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the instantiated editor display option class from the workplace manager.<p>
-     * 
+     *
      * This is a convenience method to be used on editor JSPs.<p>
-     * 
+     *
      * @return the instantiated editor display option class
      */
     public CmsEditorDisplayOptions getEditorDisplayOptions() {
@@ -476,16 +476,16 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
-     * 
+     *
      * @return the URI to the editor resource folder
      */
     public abstract String getEditorResourceUri();
 
     /**
      * Returns the OpenCms request context path.<p>
-     * 
+     *
      * This is a convenience method to use in the editor.<p>
-     * 
+     *
      * @return the OpenCms request context path
      */
     public String getOpenCmsContext() {
@@ -495,7 +495,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the back link when closing the editor.<p>
-     * 
+     *
      * @return the back link
      */
     public String getParamBacklink() {
@@ -524,7 +524,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the direct edit flag parameter.<p>
-     *  
+     *
      * @return the direct edit flag parameter
      */
     public String getParamDirectedit() {
@@ -537,7 +537,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the edit as text parameter.<p>
-     * 
+     *
      * @return the edit as text parameter
      */
     public String getParamEditastext() {
@@ -547,7 +547,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the editor mode parameter.<p>
-     *  
+     *
      * @return the editor mode parameter
      */
     public String getParamEditormode() {
@@ -557,7 +557,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the current element language.<p>
-     * 
+     *
      * @return the current element language
      */
     public String getParamElementlanguage() {
@@ -572,7 +572,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the "loaddefault" parameter to determine if the default editor should be loaded.<p>
-     * 
+     *
      * @return the "loaddefault" parameter
      */
     public String getParamLoaddefault() {
@@ -592,7 +592,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the old element language.<p>
-     * 
+     *
      * @return the old element language
      */
     public String getParamOldelementlanguage() {
@@ -602,7 +602,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the name of the temporary file.<p>
-     * 
+     *
      * @return the name of the temporary file
      */
     public String getParamTempfile() {
@@ -612,7 +612,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the path to the images used by this editor.<p>
-     * 
+     *
      * @return the path to the images used by this editor
      */
     public String getPicsUri() {
@@ -625,7 +625,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the back link when closing the editor.<p>
-     * 
+     *
      * @param backLink the back link
      */
     public void setParamBacklink(String backLink) {
@@ -635,7 +635,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the content of the editor.<p>
-     * 
+     *
      * @param content the content of the editor
      */
     public void setParamContent(String content) {
@@ -648,7 +648,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the direct edit flag parameter.<p>
-     * 
+     *
      * @param direct the direct edit flag parameter
      */
     public void setParamDirectedit(String direct) {
@@ -658,7 +658,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the  edit as text parameter.<p>
-     * 
+     *
      * @param editAsText <code>"true"</code> if the resource should be handled like a text file
      */
     public void setParamEditastext(String editAsText) {
@@ -668,7 +668,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the editor mode parameter.<p>
-     * 
+     *
      * @param mode the editor mode parameter
      */
     public void setParamEditormode(String mode) {
@@ -678,7 +678,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the current element language.<p>
-     * 
+     *
      * @param elementLanguage the current element language
      */
     public void setParamElementlanguage(String elementLanguage) {
@@ -688,7 +688,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the "loaddefault" parameter to determine if the default editor should be loaded.<p>
-     * 
+     *
      * @param loadDefault the "loaddefault" parameter
      */
     public void setParamLoaddefault(String loadDefault) {
@@ -708,7 +708,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the old element language.<p>
-     * 
+     *
      * @param oldElementLanguage the old element language
      */
     public void setParamOldelementlanguage(String oldElementLanguage) {
@@ -718,7 +718,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Sets the name of the temporary file.<p>
-     * 
+     *
      * @param fileName the name of the temporary file
      */
     public void setParamTempfile(String fileName) {
@@ -728,8 +728,8 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Closes the editor and forwards to the workplace or the resource depending on the editor mode.<p>
-     * 
-     * @throws IOException if forwarding fails 
+     *
+     * @throws IOException if forwarding fails
      * @throws ServletException if forwarding fails
      * @throws JspException if including a JSP fails
      */
@@ -780,7 +780,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Writes the content of a temporary file back to the original file.<p>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected void commitTempFile() throws CmsException {
@@ -817,10 +817,6 @@ public abstract class CmsEditor extends CmsEditorBase {
                         getParamTempfile(),
                         I_CmsPrincipal.PRINCIPAL_GROUP,
                         OpenCms.getDefaultUsers().getGroupUsers());
-                    cms.rmacc(
-                        getParamTempfile(),
-                        I_CmsPrincipal.PRINCIPAL_GROUP,
-                        OpenCms.getDefaultUsers().getGroupProjectmanagers());
                 }
             } finally {
                 // make sure the project is reset in case of any exception
@@ -828,7 +824,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             }
 
             cms.copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
-            // ensure the content handler is called 
+            // ensure the content handler is called
             CmsFile orgFile = cms.readFile(getParamResource(), CmsResourceFilter.ALL);
             getCloneCms().writeFile(orgFile);
 
@@ -843,7 +839,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Creates a temporary file which is needed while working in an editor with preview option.<p>
-     * 
+     *
      * @return the file name of the temporary file
      * @throws CmsException if something goes wrong
      */
@@ -854,10 +850,10 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Decodes the given content the same way the client would do it.<p>
-     * 
+     *
      * Content is decoded as if it was encoded using the JavaScript
      * "encodeURIComponent()" function.<p>
-     * 
+     *
      * @param content the content to decode
      * @return the decoded content
      */
@@ -868,12 +864,12 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
-     * 
-     * For editors the content is always encoded using the 
+     *
+     * For editors the content is always encoded using the
      * JavaScript encodeURIComponent() method on the client,
-     * which always encodes in UTF-8.<p> 
-     * 
-     * @param paramName the name of the parameter 
+     * which always encodes in UTF-8.<p>
+     *
+     * @param paramName the name of the parameter
      * @param paramValue the unencoded value of the parameter
      * @return the encoded value of the parameter
      */
@@ -900,7 +896,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     }
 
     /**
-     * Deletes a temporary file from the OpenCms VFS, needed when exiting an editor.<p> 
+     * Deletes a temporary file from the OpenCms VFS, needed when exiting an editor.<p>
      */
     protected void deleteTempFile() {
 
@@ -929,10 +925,10 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Encodes the given content so that it can be transfered to the client.<p>
-     * 
+     *
      * Content is encoded so that it is compatible with the JavaScript
      * "decodeURIComponent()" function.<p>
-     * 
+     *
      * @param content the content to encode
      * @return the encoded content
      */
@@ -941,13 +937,13 @@ public abstract class CmsEditor extends CmsEditorBase {
         return CmsEncoder.escapeWBlanks(content, CmsEncoder.ENCODING_UTF_8);
     }
 
-    /** 
-     * Returns a cloned cms instance that prevents the time range resource filter check.<p> 
-     * 
+    /**
+     * Returns a cloned cms instance that prevents the time range resource filter check.<p>
+     *
      * Use it always for unmarshalling and file writing.<p>
-     * 
+     *
      * @return a cloned cms instance that prevents the time range resource filter check
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected CmsObject getCloneCms() throws CmsException {
@@ -959,7 +955,7 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Returns the editor session info bean.<p>
-     * 
+     *
      * @return the editor session info bean
      */
     protected CmsEditorSessionInfo getEditorSessionInfo() {
@@ -980,7 +976,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     /**
      * Helper method to determine the encoding of the given file in the VFS,
      * which must be set using the "content-encoding" property.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param filename the name of the file which is to be checked
      * @return the encoding for the file
@@ -1027,7 +1023,8 @@ public abstract class CmsEditor extends CmsEditorBase {
         CmsEditorSessionInfo info = null;
         if (editedResource != null) {
             HttpSession session = getSession();
-            info = (CmsEditorSessionInfo)session.getAttribute(CmsEditorSessionInfo.getEditorSessionInfoKey(editedResource));
+            info = (CmsEditorSessionInfo)session.getAttribute(
+                CmsEditorSessionInfo.getEditorSessionInfoKey(editedResource));
             if (info == null) {
                 info = new CmsEditorSessionInfo(editedResource.getStructureId());
             }
@@ -1057,23 +1054,23 @@ public abstract class CmsEditor extends CmsEditorBase {
 
     /**
      * Shows the selected error page in case of an exception.<p>
-     * 
+     *
      * @param exception the current exception
      * @throws JspException if inclusion of the error page fails
      */
     protected void showErrorPage(Exception exception) throws JspException {
 
-        // reset the action parameter            
+        // reset the action parameter
         setParamAction("");
         showErrorPage(this, exception);
-        // save not successful, set cancel action 
+        // save not successful, set cancel action
         setAction(ACTION_CANCEL);
         return;
     }
 
     /**
      * Shows the selected error page in case of an exception.<p>
-     * 
+     *
      * @param editor initialized instance of the editor class
      * @param exception the current exception
      * @throws JspException if inclusion of the error page fails

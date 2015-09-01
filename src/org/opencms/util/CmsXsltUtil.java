@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import javax.xml.transform.stream.StreamSource;
 /**
  * Provides utility functions for XSLT transformations.<p>
  *
- * TODO: This class is apparently customer specific and should probably be removed from the core! 
- * 
+ * TODO: This class is apparently customer specific and should probably be removed from the core!
+ *
  * @since 6.2.1
  */
 public final class CmsXsltUtil {
@@ -65,7 +65,7 @@ public final class CmsXsltUtil {
     static final String[] DELIMITERS = {";", ",", "\t"};
 
     /**
-     * Hides the public constructor.<p> 
+     * Hides the public constructor.<p>
      */
     private CmsXsltUtil() {
 
@@ -74,9 +74,9 @@ public final class CmsXsltUtil {
 
     /**
      * Returns the delimiter that most often occures in the CSV content and is therefore best applicable for the CSV data .<p>
-     * 
+     *
      * @param csvData the comma separated values
-     * 
+     *
      * @return the delimiter that is best applicable for the CSV data
      */
     public static String getPreferredDelimiter(String csvData) {
@@ -96,18 +96,18 @@ public final class CmsXsltUtil {
 
     /**
      * Changes content from CSV to xml/html.<p>
-     * 
+     *
      * The method does not use DOM4J, because iso-8859-1 code ist not transformed correctly.
-     * 
+     *
      * @param cms the cms object
      * @param xsltFile the XSLT transformation file
      * @param csvContent the csv content to transform
      * @param delimiter delimiter used to separate csv fields
-     * 
+     *
      * @return the transformed xml
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
-     * @throws CmsException if something goes wrong     
+     * @throws CmsException if something goes wrong
      */
     public static String transformCsvContent(CmsObject cms, String xsltFile, String csvContent, String delimiter)
     throws CmsException, CmsXmlException {
@@ -130,15 +130,15 @@ public final class CmsXsltUtil {
 
     /**
      * Applies a XSLT Transformation to the content.<p>
-     * 
+     *
      * The method does not use DOM4J, because iso-8859-1 code ist not transformed correctly.
-     * 
+     *
      * @param cms the cms object
      * @param xsltFile the XSLT transformation file
      * @param xmlContent the XML content to transform
-     * 
+     *
      * @return the transformed xml
-     * 
+     *
      * @throws CmsXmlException if something goes wrong
      * @throws CmsException if something goes wrong
      */
@@ -172,10 +172,10 @@ public final class CmsXsltUtil {
 
     /**
      * Converts a delimiter separated format string int o colgroup html fragment.<p>
-     * 
+     *
      * @param formatString the formatstring to convert
      * @param delimiter the delimiter the formats (l,r or c) are delimited with
-     * 
+     *
      * @return the resulting colgroup HTML
      */
     private static String getColGroup(String formatString, String delimiter) {
@@ -206,12 +206,12 @@ public final class CmsXsltUtil {
 
     /**
      * Converts CSV data to XML.<p>
-     * 
+     *
      * @return a XML representation of the CSV data
-     * 
+     *
      * @param csvData the CSV data to convert
      * @param delimiter the delimiter to separate the values with
-     * 
+     *
      * @throws IOException if there is an IO problem
      */
     private static String getTableHtml(String csvData, String delimiter) throws IOException {
@@ -276,10 +276,10 @@ public final class CmsXsltUtil {
 
     /**
      * Tests if the given string is a <code>delimiter</code> separated list of formatting information.<p>
-     * 
+     *
      * @param formatString the string to check
      * @param delimiter the list separators
-     * 
+     *
      * @return true if the string is a <code>delimiter</code> separated list of Formatting Information
      */
     private static boolean isFormattingInformation(String formatString, String delimiter) {
@@ -293,13 +293,13 @@ public final class CmsXsltUtil {
         return true;
     }
 
-    /**                                                                                                                              
-     * Removes the string delimiters from a key (as well as any white space                                                          
-     * outside the delimiters).<p>                                                                                                      
-     *                                                                                                                               
-     * @param key the key (including delimiters)                                                                                   
-     *                                                                                                                               
-     * @return the key without delimiters                                                                                           
+    /**
+     * Removes the string delimiters from a key (as well as any white space
+     * outside the delimiters).<p>
+     *
+     * @param key the key (including delimiters)
+     *
+     * @return the key without delimiters
      */
     private static String removeStringDelimiters(String key) {
 

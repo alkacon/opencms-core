@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.resources.client.CssResource;
 
 /**
  * The CSS bundle for sitemap items.<p>
- * 
+ *
  * @since 8.0.0
  */
 
@@ -39,126 +39,133 @@ public interface I_CmsSitemapItemCss extends CssResource {
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String contentHide();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String expiredOrNotReleased();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String galleriesMode();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String hasChildren();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String hasNavChildren();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String hasNoChildren();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String hasNoNavChildren();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String hiddenNavEntry();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String itemTitle();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String marker();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String markUnchanged();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
+     * @return a CSS class
+     **/
+    String modelPageMode();
+
+    /**
+     * CSS class accessor.<p>
+     *
      * @return a CSS class
      **/
     String navigationLevelIcon();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String navMode();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String notInNavigationEntry();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String positionIndicator();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      */
     String sitemapEntryDecoration();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String treeItemOpener();
 
     /**
      * CSS class accessor.<p>
-     * 
+     *
      * @return a CSS class
      **/
     String vfsMode();

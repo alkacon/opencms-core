@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,7 +60,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestPublishHistory(String arg0) {
@@ -70,7 +70,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -180,7 +180,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Test the publish history for a changed file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishChangedFile() throws Throwable {
@@ -200,7 +200,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Test the publish history for a deleted file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishDeletedFile() throws Throwable {
@@ -220,7 +220,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Test the publish history for a moved file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishMovedFile() throws Throwable {
@@ -240,7 +240,7 @@ public class TestPublishHistory extends OpenCmsTestCase implements I_CmsEventLis
 
     /**
      * Test publish history for a new file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishNewFile() throws Throwable {

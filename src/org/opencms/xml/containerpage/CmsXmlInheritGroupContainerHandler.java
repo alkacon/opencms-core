@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,10 +64,10 @@ public class CmsXmlInheritGroupContainerHandler extends CmsDefaultXmlContentHand
 
     /**
      * Returns the elements of the given inheritance group for the request context URI.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the inheritance group resource
-     * 
+     *
      * @return the elements
      */
     public static List<CmsContainerElementBean> loadInheritContainerElements(CmsObject cms, CmsResource resource) {
@@ -102,15 +102,16 @@ public class CmsXmlInheritGroupContainerHandler extends CmsDefaultXmlContentHand
         List<CmsContainerElementBean> containerElements = loadInheritContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
-                    resource.getRootPath(),
-                    elementBean.getResource().getRootPath()));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
+                        resource.getRootPath(),
+                        elementBean.getResource().getRootPath()));
             }
             CmsResource elementResource = elementBean.getResource();
-            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(cms, elementResource).getCSSHeadIncludes(
+            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                elementResource);
+                elementResource).getCSSHeadIncludes(cms, elementResource);
             result.addAll(elementIncludes);
         }
         return result;
@@ -126,15 +127,16 @@ public class CmsXmlInheritGroupContainerHandler extends CmsDefaultXmlContentHand
         List<CmsContainerElementBean> containerElements = loadInheritContainerElements(cms, resource);
         for (CmsContainerElementBean elementBean : containerElements) {
             if (elementBean.isGroupContainer(cms) || elementBean.isInheritedContainer(cms)) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
-                    resource.getRootPath(),
-                    elementBean.getResource().getRootPath()));
+                throw new CmsException(
+                    Messages.get().container(
+                        Messages.ERR_ELEMENT_GROUP_REFERENCES_ANOTHER_GROUP_2,
+                        resource.getRootPath(),
+                        elementBean.getResource().getRootPath()));
             }
             CmsResource elementResource = elementBean.getResource();
-            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(cms, elementResource).getJSHeadIncludes(
+            Set<String> elementIncludes = CmsXmlContentDefinition.getContentHandlerForResource(
                 cms,
-                elementResource);
+                elementResource).getJSHeadIncludes(cms, elementResource);
             result.addAll(elementIncludes);
         }
         return result;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,16 +34,16 @@ import org.opencms.util.CmsFileUtil;
 import java.io.File;
 import java.io.FileInputStream;
 
-/** 
+/**
  * Test cases for the OpenCms shell.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsShell(String arg0) {
@@ -53,7 +53,7 @@ public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Tests the Junit OpenCms VFS test setup using the "base" test class.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSetup() throws Throwable {
@@ -80,7 +80,7 @@ public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Tests the CmsShell and setup procedure.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsShell() throws Throwable {
@@ -94,21 +94,26 @@ public class TestCmsShell extends OpenCmsTestCase {
             null,
             null,
             "${user}@${project}>",
-            null);
+            null,
+            System.out,
+            System.err,
+            false);
 
-        // open the test script 
+        // open the test script
         File script;
         FileInputStream stream;
 
         // start the shell with the base script
         script = new File(getTestDataPath("scripts/script_base.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
+        stream.close();
 
         // add the default folders by script
         script = new File(getTestDataPath("scripts/script_default_folders.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
+        stream.close();
 
         // log in the Admin user and switch to the setup project
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -116,12 +121,13 @@ public class TestCmsShell extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
 
         // import the "simpletest" files
-        importResources(cms, "simpletest", "/sites/default/");
+        importResources(cms, "simpletest", "/");
 
         // publish the current project by script
         script = new File(getTestDataPath("scripts/script_publish.txt"));
         stream = new FileInputStream(script);
-        shell.start(stream);
+        shell.execute(stream);
+        stream.close();
 
         // get the name of the folder for the backup configuration files
         File configBackupDir = new File(getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG_DEFAULT + "backup/"));

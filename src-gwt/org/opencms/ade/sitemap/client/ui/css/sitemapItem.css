@@ -8,12 +8,15 @@
 	gwt-image: "baseImages.placeholderImage";
 	height: 4px;
 	right: 6px;
-	left: 46px;
+	left: 6px;
 	position: absolute;
 	z-index: value("constants.css.zIndexInline");
-	margin-top: -3px;
 	border-left: solid 5px value("constants.css.borderColorHighlight");
 	border-right: solid 5px value("constants.css.borderColorHighlight");
+}
+
+li.positionIndicator {
+	margin-top: -3px;
 }
 
 .positionIndicator {
@@ -56,7 +59,7 @@ div.itemTitle{
 	cursor: text;
 }
 
-.navMode .cms_type_icon, .vfsMode .cms_type_icon, .galleriesMode .cms_type_icon{
+.navMode .cms_type_icon, .vfsMode .cms_type_icon, .galleriesMode .cms_type_icon, .modelPageMode .cms_type_icon {
 	cursor: pointer;
 }
 

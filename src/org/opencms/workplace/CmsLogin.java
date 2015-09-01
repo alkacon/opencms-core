@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,9 +67,9 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Handles the login of Users to the OpenCms workplace.<p> 
- * 
- * @since 6.0.0 
+ * Handles the login of Users to the OpenCms workplace.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsLogin extends CmsJspLoginBean {
 
@@ -177,10 +177,10 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Public constructor for login page.<p>
-     * 
+     *
      * @param context the JSP page context object
-     * @param req the JSP request 
-     * @param res the JSP response 
+     * @param req the JSP request
+     * @param res the JSP response
      */
     public CmsLogin(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -205,7 +205,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the HTML code for selecting an organizational unit.<p>
-     * 
+     *
      * @return the HTML code for selecting an organizational unit
      */
     public String buildOrgUnitSelector() {
@@ -230,9 +230,9 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the HTML for the login dialog in it's current state.<p>
-     * 
+     *
      * @return the HTML for the login dialog
-     * 
+     *
      * @throws IOException in case a redirect fails
      */
     public String displayDialog() throws IOException {
@@ -350,8 +350,10 @@ public class CmsLogin extends CmsJspLoginBean {
 
                     try {
                         CmsProject project = cms.readProject(settings.getStartProject());
-                        if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, project.getOuFqn(), false).contains(
-                            project)) {
+                        if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                            cms,
+                            project.getOuFqn(),
+                            false).contains(project)) {
                             // user has access to the project, set this as current project
                             workplaceSettings.setProject(project.getUuid());
                             cms.getRequestContext().setCurrentProject(project);
@@ -371,7 +373,8 @@ public class CmsLogin extends CmsJspLoginBean {
                     if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is disabled
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
+                    } else
+                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {
@@ -419,7 +422,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;
             }
-            if (!getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_directEditPath)
+                && !getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 // requested resource does either not exist or is not readable by user
                 if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
@@ -439,13 +443,14 @@ public class CmsLogin extends CmsJspLoginBean {
                 }
             }
             if (m_action == ACTION_DISPLAY) {
-                // the login was invalid
+                //the login was invalid
                 m_requestedResource = null;
                 // destroy the generated session
                 HttpSession session = getRequest().getSession(false);
                 if (session != null) {
                     session.invalidate();
                 }
+                setCookieData();
             } else {
                 // successfully logged in, so set the cookie
                 setCookieData();
@@ -523,7 +528,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the available organizational units as JSON array string.<p>
-     * 
+     *
      * @return the available organizational units as JSON array string
      */
     public String getJsonOrgUnitList() {
@@ -545,7 +550,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 // 5: selection flag
                 boolean isSelected = false;
                 if (ou.getName().equals(m_oufqn)
-                    || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn) && ou.getName().equals(m_oufqn.substring(1)))) {
+                    || (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_oufqn)
+                        && ou.getName().equals(m_oufqn.substring(1)))) {
                     isSelected = true;
                 }
                 jsonObj.put("active", isSelected);
@@ -589,7 +595,7 @@ public class CmsLogin extends CmsJspLoginBean {
             ouFqnCookie.setValue(m_oufqn);
             setCookie(ouFqnCookie, false);
         } else if (OpenCms.getLoginManager().isEnableSecurity() && PCTYPE_PUBLIC.equals(m_pcType)) {
-            // delete user name and organizational unit cookies 
+            // delete user name and organizational unit cookies
             Cookie userNameCookie = getCookie(COOKIE_USERNAME);
             setCookie(userNameCookie, true);
             Cookie ouFqnCookie = getCookie(COOKIE_OUFQN);
@@ -600,7 +606,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Appends the JavaScript for the login screen to the given HTML buffer.<p>
-     * 
+     *
      * @param html the HTML buffer to append the script to
      * @param message the message to display after an unsuccessful login
      */
@@ -693,7 +699,8 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t\t}\n");
         html.append("\t\thtml += \"</div>\";\n");
         html.append("\t}\n");
-        html.append("\thtml += \"<div id=\\\"nooufound\\\" style=\\\"display: none;\\\"><span class=\\\"name\\\">\";\n");
+        html.append(
+            "\thtml += \"<div id=\\\"nooufound\\\" style=\\\"display: none;\\\"><span class=\\\"name\\\">\";\n");
         html.append("\thtml += \"");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SEARCH_NORESULTS_0));
         html.append("\";\n");
@@ -711,7 +718,8 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t\tvar currOu = orgUnits[i];\n");
         html.append("\t\tif (searchTerm != \"\") {\n");
         html.append("\t\t\tvar stLower = searchTerm.toLowerCase();\n");
-        html.append("\t\t\tif (currOu.name.toLowerCase().indexOf(stLower )== -1 && currOu.description.toLowerCase().indexOf(stLower) == -1) {\n");
+        html.append(
+            "\t\t\tif (currOu.name.toLowerCase().indexOf(stLower )== -1 && currOu.description.toLowerCase().indexOf(stLower) == -1) {\n");
         html.append("\t\t\t\t$(\"#ou\" + i + \":visible\").slideUp();\n");
         html.append("\t\t\t} else {\n");
         html.append("\t\t\t\t$(\"#ou\" + i + \":hidden\").slideDown();\n");
@@ -800,11 +808,13 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("var isIeLessThan8 = (div.getElementsByTagName(\"i\").length == 1);\n");
         html.append("if (isIeLessThan8) {\n  $('#");
         html.append(PARAM_FORM);
-        html.append("').after('<div style=\"color: #B31B34; font-weight: bold; font-size: 14px; margin: 20px; text-align: center;\">");
+        html.append(
+            "').after('<div style=\"color: #B31B34; font-weight: bold; font-size: 14px; margin: 20px; text-align: center;\">");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_UNSUPPORTED_BROWSER_0));
         html.append("</div>');\n $('#");
         html.append(PARAM_FORM);
-        html.append("').css(\"display\",\"none\"); /** $('input').attr('disabled', 'disabled');\n  alert('wrong browser'); */\n}\n}\n");
+        html.append(
+            "').css(\"display\",\"none\"); /** $('input').attr('disabled', 'disabled');\n  alert('wrong browser'); */\n}\n}\n");
 
         // called when the login form page is loaded
         html.append("function doOnload() {\n checkBrowser();\n");
@@ -834,7 +844,7 @@ public class CmsLogin extends CmsJspLoginBean {
     /**
      * Appends the JavaScript that opens the Direct Edit window after a successful login
      * to the given HTML buffer.<p>
-     * 
+     *
      * @param html the html buffer to append the script to
      */
     protected void appendDirectEditOpenerScript(StringBuffer html) {
@@ -855,7 +865,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Appends the HTML form name/id code for the given id to the given html.<p>
-     * 
+     *
      * @param html the html where to append the id to
      * @param id the id to append
      */
@@ -871,12 +881,15 @@ public class CmsLogin extends CmsJspLoginBean {
     /**
      * Appends the JavaScript that opens the Workplace window after a successful login
      * to the given HTML buffer.<p>
-     * 
+     *
      * @param html the html buffer to append the script to
      * @param requestedResource the requested resource to open in a new window
      * @param message the message to display if the originally requested resource is not available
      */
-    protected void appendWorkplaceOpenerScript(StringBuffer html, String requestedResource, CmsMessageContainer message) {
+    protected void appendWorkplaceOpenerScript(
+        StringBuffer html,
+        String requestedResource,
+        CmsMessageContainer message) {
 
         String winId = "OpenCms" + System.currentTimeMillis();
 
@@ -986,9 +999,11 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
-            html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
+            html.append(
+                "\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
         } else {
-            html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=yes,location=yes,toolbar=yes,menubar=yes,directories=no,status=yes,resizable=yes\";\n");
+            html.append(
+                "\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=yes,location=yes,toolbar=yes,menubar=yes,directories=no,status=yes,resizable=yes\";\n");
         }
         html.append("\tvar OpenCmsWin = window.open(url, name, openerStr);\n");
         html.append("\n");
@@ -1009,7 +1024,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the HTML for the login form.<p>
-     * 
+     *
      * @return the HTML for the login form
      */
     protected String displayLoginForm() {
@@ -1082,9 +1097,10 @@ public class CmsLogin extends CmsJspLoginBean {
                 html.append(" style='display: none;'");
             }
             html.append(">\n");
-            html.append(Messages.get().getBundle(m_locale).key(
-                Messages.GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1,
-                m_ou.getDescription(getCmsObject().getRequestContext().getLocale())));
+            html.append(
+                Messages.get().getBundle(m_locale).key(
+                    Messages.GUI_LOGIN_HEADLINE_SELECTED_ORGUNIT_1,
+                    m_ou.getDescription(getCmsObject().getRequestContext().getLocale())));
             html.append("</div>\n");
         } else if (m_action == ACTION_LOGIN) {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_HEADLINE_ALREADY_IN_0));
@@ -1118,7 +1134,8 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("</td>\n");
             html.append("<td colspan=\"2\" style=\"white-space: nowrap;\">\n");
             html.append("<div style=\"padding-bottom: 5px;\"><b>");
-            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_SECURITY_0)));
+            html.append(
+                CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_SECURITY_0)));
             html.append("</b></div>\n");
             html.append("</td>\n");
             html.append("</tr>\n");
@@ -1134,8 +1151,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 html.append(" checked=\"checked\"");
             }
             html.append(">&nbsp;");
-            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
-                Messages.GUI_LOGIN_PCTYPE_PUBLIC_0)));
+            html.append(
+                CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_PCTYPE_PUBLIC_0)));
             html.append("<br/>");
             html.append("<input type=\"radio\" value=\"");
             html.append(PCTYPE_PRIVATE);
@@ -1146,8 +1163,8 @@ public class CmsLogin extends CmsJspLoginBean {
                 html.append(" checked=\"checked\"");
             }
             html.append(">&nbsp;");
-            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
-                Messages.GUI_LOGIN_PCTYPE_PRIVATE_0)));
+            html.append(
+                CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_PCTYPE_PRIVATE_0)));
             html.append("</div></td>\n");
             html.append("</tr>\n");
         }
@@ -1159,8 +1176,9 @@ public class CmsLogin extends CmsJspLoginBean {
         if (m_action == ACTION_DISPLAY) {
             html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_MESSAGE_0)));
         } else if (m_action == ACTION_LOGIN) {
-            html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
-                Messages.GUI_LOGIN_MESSAGE_ALREADY_IN_0)));
+            html.append(
+                CmsStringUtil.escapeHtml(
+                    Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_MESSAGE_ALREADY_IN_0)));
         }
 
         html.append("</div>\n");
@@ -1188,9 +1206,10 @@ public class CmsLogin extends CmsJspLoginBean {
             }
             appendId(html, PARAM_USERNAME);
             html.append("value=\"");
-            html.append((CmsStringUtil.isEmpty(m_username) || PCTYPE_PUBLIC.equals(m_pcType))
-            ? ""
-            : CmsEncoder.escapeXml(m_username));
+            html.append(
+                (CmsStringUtil.isEmpty(m_username) || PCTYPE_PUBLIC.equals(m_pcType))
+                ? ""
+                : CmsEncoder.escapeXml(m_username));
             html.append("\">");
         } else if (m_action == ACTION_LOGIN) {
             // append name of user that has been logged in
@@ -1221,7 +1240,8 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_0)).append(
                 "</b>&nbsp;&nbsp;\n");
             html.append("</div></td>\n");
-            html.append("<td style=\"width: 300px; white-space: nowrap;\"><div id='ouSearchId' style='display: none;'><input class=\"inactive\" style=\"width: 300px;\" type=\"text\" value=\"");
+            html.append(
+                "<td style=\"width: 300px; white-space: nowrap;\"><div id='ouSearchId' style='display: none;'><input class=\"inactive\" style=\"width: 300px;\" type=\"text\" value=\"");
             html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SEARCH_0));
             html.append("\"");
             appendId(html, PARAM_OUSEARCH);
@@ -1296,24 +1316,6 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("</td></tr></table>\n");
         html.append("</td></tr></table>\n");
 
-        //        html.append("<table style='margin-left:auto; margin-right: auto; margin-bottom: 10px'>");
-        //        Set<String> keys = OpenCms.getSystemInfo().getBuildInfoKeys();
-        //        for (String key : keys) {
-        //            BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);
-        //            html.append("<tr>");
-        //
-        //            html.append("<td>");
-        //            html.append(CmsEncoder.escapeXml(item.getNiceName() + ":"));
-        //            html.append("</td>");
-        //
-        //            html.append("<td>");
-        //            html.append(CmsEncoder.escapeXml(item.getValue()));
-        //            html.append("</td>");
-        //
-        //            html.append("</tr>");
-        //        }
-        //        html.append("</table>");
-
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
         html.append("<a href=\"http://www.opencms.org\" target=\"_blank\">OpenCms</a> ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0));
@@ -1322,15 +1324,18 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2002 - 2014 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2015 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 
         html.append("<noscript>\n");
-        html.append("<div style=\"text-align: center; font-size: 14px; border: 2px solid black; margin: 50px; padding: 20px; background-color: red; color: white; white-space: nowrap;\"><b>");
-        html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
-            Messages.GUI_LOGIN_NOSCRIPT_1,
-            OpenCms.getSiteManager().getWorkplaceSiteMatcher())));
+        html.append(
+            "<div style=\"text-align: center; font-size: 14px; border: 2px solid black; margin: 50px; padding: 20px; background-color: red; color: white; white-space: nowrap;\"><b>");
+        html.append(
+            CmsStringUtil.escapeHtml(
+                Messages.get().getBundle(m_locale).key(
+                    Messages.GUI_LOGIN_NOSCRIPT_1,
+                    OpenCms.getSiteManager().getWorkplaceSiteMatcher())));
         html.append("</b></div>\n");
         html.append("</noscript>\n");
 
@@ -1341,9 +1346,9 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
-     * 
+     *
      * @param name the name of the cookie
-     * 
+     *
      * @return the cookie
      */
     protected Cookie getCookie(String name) {
@@ -1359,7 +1364,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns all organizational units in the system.<p>
-     * 
+     *
      * @return a list of {@link CmsOrganizationalUnit} objects
      */
     protected List<CmsOrganizationalUnit> getOus() {
@@ -1389,9 +1394,9 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the predefined organizational unit fqn.<p>
-     * 
+     *
      * This is normally selected by url, and set by the {@link CmsWorkplaceLoginHandler}.<p>
-     * 
+     *
      * @return the predefined organizational unit fqn
      */
     protected String getPreDefOuFqn() {
@@ -1408,7 +1413,7 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Sets the cookie in the response.<p>
-     * 
+     *
      * @param cookie the cookie to set
      * @param delete flag to determine if the cookir should be deleted
      */
@@ -1434,9 +1439,9 @@ public class CmsLogin extends CmsJspLoginBean {
 
     /**
      * Returns the direct edit path from the user settings, or <code>null</code> if not set.<p>
-     * 
+     *
      * @param userSettings the user settings
-     * 
+     *
      * @return the direct edit path
      */
     private String getDirectEditPath(CmsUserSettings userSettings) {

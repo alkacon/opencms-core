@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Settings object that provides the settings to repair XML content resources in the OpenCms virtual file system (VFS).<p>
- * 
+ *
  * @since 6.2.0
  */
 public final class CmsXmlContentRepairSettings {
@@ -58,7 +58,7 @@ public final class CmsXmlContentRepairSettings {
 
     /**
      * Default constructor with cms object that is used for VFS path validation.<p>
-     * 
+     *
      * @param cms the current users context to check the VFS path information
      */
     public CmsXmlContentRepairSettings(CmsObject cms) {
@@ -68,7 +68,7 @@ public final class CmsXmlContentRepairSettings {
 
     /**
      * Returns the resource type name of the XML contents to process.<p>
-     * 
+     *
      * @return the resource type name of the XML contents to process
      */
     public String getResourceType() {
@@ -78,7 +78,7 @@ public final class CmsXmlContentRepairSettings {
 
     /**
      * Returns the VFS folder under which XML contents will be processed recursively.<p>
-     * 
+     *
      * @return the VFS folder under which XML contents will be processed recursively
      */
     public String getVfsFolder() {
@@ -128,7 +128,7 @@ public final class CmsXmlContentRepairSettings {
 
     /**
      * Sets the resource type name of the XML contents to process.<p>
-     * 
+     *
      * @param resourceType the resource type name of the XML contents to process
      */
     public void setResourceType(String resourceType) {
@@ -141,9 +141,9 @@ public final class CmsXmlContentRepairSettings {
 
     /**
      * Sets the VFS folder under which XML contents will be processed recursively.<p>
-     * 
+     *
      * @param vfsFolder the VFS folder under which XML contents will be processed recursively
-     * 
+     *
      * @throws CmsIllegalArgumentException if the given VFS path is not valid
      */
     public void setVfsFolder(String vfsFolder) throws CmsIllegalArgumentException {
@@ -153,16 +153,15 @@ public final class CmsXmlContentRepairSettings {
         }
         // test if it is a valid path
         if (!m_cms.existsResource(vfsFolder, CmsResourceFilter.ALL.addRequireFolder())) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_VFSFOLDER_1,
-                vfsFolder));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_XMLCONTENT_VFSFOLDER_1, vfsFolder));
         }
         m_vfsFolder = vfsFolder;
     }
 
     /**
      * Returns the resource type ID of the XML contents to process.<p>
-     * 
+     *
      * @return the resource type ID of the XML contents to process
      */
     protected int getResourceTypeId() {

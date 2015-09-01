@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * This class creates all the indexes that are used in the database version 7.<p>
- * 
+ *
  * @since 7.0.0
  */
 public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
@@ -66,7 +66,7 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the query properties cannot be read
      */
     public CmsUpdateDBCreateIndexes7()
@@ -124,10 +124,10 @@ public class CmsUpdateDBCreateIndexes7 extends A_CmsUpdateDBPart {
 
     /**
      * Returns the string of the indexes that shall be dropped before adding the final new indexes.<p>
-     * 
+     *
      * @param dbCon the connection to the database
      * @param tablename the table to drop the indexes from
-     * 
+     *
      * @return the string to drop the temporary indexes
      */
     private String getIndexesToDrop(CmsSetupDb dbCon, String tablename) {

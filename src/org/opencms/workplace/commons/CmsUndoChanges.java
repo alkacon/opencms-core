@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,15 +52,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the undo changes on a resource dialog.<p> 
- * 
+ * Provides methods for the undo changes on a resource dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/undochanges.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUndoChanges extends CmsMultiDialog {
 
@@ -96,7 +96,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUndoChanges(CmsJspActionElement jsp) {
@@ -106,7 +106,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -117,12 +117,12 @@ public class CmsUndoChanges extends CmsMultiDialog {
     }
 
     /**
-     * Returns the original path of given resource, that is the online path for the resource. 
+     * Returns the original path of given resource, that is the online path for the resource.
      * If it differs from the offline path, the resource has been moved.<p>
-     * 
-     * @param cms the cms context 
+     *
+     * @param cms the cms context
      * @param resourceName a site relative resource name
-     * 
+     *
      * @return the online path, or <code>null</code> if resource has not been published
      */
     public static String resourceOriginalPath(CmsObject cms, String resourceName) {
@@ -149,7 +149,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Performs the check for siblings action and returns false in case of existence.<p>
-     * 
+     *
      * @return true if siblings are found.
      */
     public boolean actionCheckSiblings() {
@@ -161,13 +161,13 @@ public class CmsUndoChanges extends CmsMultiDialog {
         while (itResourcePaths.hasNext()) {
             resourcePath = itResourcePaths.next();
             try {
-                foundSibling = this.recursiveCheckSiblings(resourcePath);
+                foundSibling = recursiveCheckSiblings(resourcePath);
                 if (foundSibling) {
                     break; // shortcut
                 }
 
             } catch (CmsException e) {
-                LOG.error(Messages.get().getBundle(this.getLocale()).key(
+                LOG.error(Messages.get().getBundle(getLocale()).key(
                     Messages.ERR_UNDO_CHANGES_1,
                     new String[] {resourcePath}));
             }
@@ -178,7 +178,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Performs the undo changes action, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionUndoChanges() throws JspException {
@@ -225,7 +225,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Returns the HTML for the undo changes options and detailed output for single resource operations.<p>
-     * 
+     *
      * @return the HTML for the undo changes options
      */
     public String buildDialogOptions() {
@@ -235,15 +235,14 @@ public class CmsUndoChanges extends CmsMultiDialog {
         boolean isMoved = isOperationOnMovedResource();
         if (!isMultiOperation()) {
             result.append(dialogSpacer());
-            result.append(key(Messages.GUI_UNDO_LASTMODIFIED_INFO_3, new Object[] {
-                getFileName(),
-                getLastModifiedDate(),
-                getLastModifiedUser()}));
+            result.append(key(
+                Messages.GUI_UNDO_LASTMODIFIED_INFO_3,
+                new Object[] {getFileName(), getLastModifiedDate(), getLastModifiedUser()}));
             if (isMoved) {
                 result.append(dialogSpacer());
-                result.append(key(Messages.GUI_UNDO_MOVE_OPERATION_INFO_2, new Object[] {
-                    getFileName(),
-                    resourceOriginalPath(getCms(), getParamResource())}));
+                result.append(key(
+                    Messages.GUI_UNDO_MOVE_OPERATION_INFO_2,
+                    new Object[] {getFileName(), resourceOriginalPath(getCms(), getParamResource())}));
             }
         }
         result.append(dialogSpacer());
@@ -295,12 +294,12 @@ public class CmsUndoChanges extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the recursive parameter, 
+     * Returns the value of the recursive parameter,
      * or <code>null</code> if this parameter was not provided.<p>
-     * 
+     *
      * The recursive parameter on folders decides if all subresources
      * of the folder should be unchanged, too.<p>
-     * 
+     *
      * @return the value of the recursive parameter
      */
     public String getParamRecursive() {
@@ -320,7 +319,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Sets the value of the recursive parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamRecursive(String value) {
@@ -330,7 +329,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Returns the current CmsResource.<p>
-     * 
+     *
      * @return the CmsResource
      */
     protected CmsResource getCurrentResource() {
@@ -340,7 +339,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Returns the file name without path information of the current resource.<p>
-     * 
+     *
      * @return the name of the current resource
      */
     protected String getFileName() {
@@ -350,7 +349,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Returns the last modified date of the current resource as localized String.<p>
-     * 
+     *
      * @return the date of last modification
      */
     protected String getLastModifiedDate() {
@@ -361,7 +360,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Returns the user who made the last changes to the current resource.<p>
-     * 
+     *
      * @return the user who changed the resource
      */
     protected String getLastModifiedUser() {
@@ -383,7 +382,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to undo changes of the resource       
+        // check the required permissions to undo changes of the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -391,7 +390,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_UNDOCHANGES);
         } else if (DIALOG_CHECKSIBLINGS.equals(getParamAction())) {
@@ -404,7 +403,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
             setAction(ACTION_LOCKS_CONFIRMED);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for undo changes dialog     
+            // build title for undo changes dialog
             setDialogTitle(Messages.GUI_UNDO_CHANGES_1, Messages.GUI_UNDO_CHANGES_MULTI_2);
         }
 
@@ -424,7 +423,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Checks if the resource operation is an operation on at least one moved resource.<p>
-     * 
+     *
      * @return true if the operation an operation on at least one moved resource, otherwise false
      */
     protected boolean isOperationOnMovedResource() {
@@ -443,7 +442,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Performs the undo changes operation on a resource.<p>
-     * 
+     *
      * @return true, if the changes on a resource were undone, otherwise false
      * @throws CmsException if undo changes is not successful
      */
@@ -497,7 +496,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /**
      * Sets the current CmsResource.<p>
-     * 
+     *
      * @param res the CmsResource
      */
     protected void setCurrentResource(CmsResource res) {
@@ -505,28 +504,28 @@ public class CmsUndoChanges extends CmsMultiDialog {
         m_currentResource = res;
     }
 
-    /** 
+    /**
      * Depth first recursion for searching if a file has siblings with early termination.<p>
-     * 
+     *
      * This avoids to read a whole resource tree (which will be hard for e.g.  /sites/).<p>
-     * 
+     *
      * @param path the path to check the siblings in
-     *   
-     * @return true if a resource which is a sibling was found. 
-     * 
+     *
+     * @return true if a resource which is a sibling was found.
+     *
      * @throws CmsException if something goes wrong
      */
     private boolean recursiveCheckSiblings(String path) throws CmsException {
 
         boolean result = false;
-        CmsObject cms = this.getCms();
+        CmsObject cms = getCms();
         /*
          * No trailing slash for the multi dialogs... therefore a read resource first necessary:
          */
         CmsResource resource = cms.readResource(path);
         path = cms.getSitePath(resource);
         if (CmsResource.isFolder(path)) {
-            // only check subresources in case of recursive option checked. 
+            // only check subresources in case of recursive option checked.
             boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
             if (undoRecursive) {
                 // don't read the whole tree, this is  expensive - most likely we will find a sibling faster step by step:
@@ -534,7 +533,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
                 Iterator<CmsResource> itSubResources = subResources.iterator();
                 while (itSubResources.hasNext()) {
                     resource = itSubResources.next();
-                    result = this.recursiveCheckSiblings(cms.getSitePath(resource));
+                    result = recursiveCheckSiblings(cms.getSitePath(resource));
                     if (result) {
                         break; // shortcut
                     }

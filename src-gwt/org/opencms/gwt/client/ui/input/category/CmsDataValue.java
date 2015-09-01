@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,8 +47,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Widget to generate an single row of values.<p> 
- * 
+ * Widget to generate an single row of values.<p>
+ *
  * */
 public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickHandlers {
 
@@ -64,35 +64,35 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
         /**
          * Returns the CSS style name.<p>
-         * 
+         *
          * @return the CSS style name
          */
         String buttonPanel();
 
         /**
          * Returns the CSS style name.<p>
-         * 
+         *
          * @return the CSS style name
          */
         String icon();
 
         /**
          * Returns the CSS style name.<p>
-         * 
+         *
          * @return the CSS style name
          */
         String label();
 
         /**
          * Returns the CSS style name.<p>
-         * 
+         *
          * @return the CSS style name
          */
         String parameter();
 
         /**
          * Returns the CSS style name.<p>
-         * 
+         *
          * @return the CSS style name
          */
         String table();
@@ -139,7 +139,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * @param width the width of this widget.
      * @param part the part of the width that should be used for the label
      * @param parameters the values that should be shown in this widget. The first value is used for the label
-     * @param image the css string for the image that is shown in front of the label 
+     * @param image the css string for the image that is shown in front of the label
      */
     public CmsDataValue(int width, int part, String image, String... parameters) {
 
@@ -153,7 +153,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Adds buttons to the view.
-     * 
+     *
      * @param buttons the buttons that should be added
      * */
     public void addButton(Widget... buttons) {
@@ -182,7 +182,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Gets the label widget.<p>
-     * 
+     *
      * @return the label widget
      */
     public Label getLabelWidget() {
@@ -202,7 +202,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Returns if the category matches the given filter.<p>
-     * 
+     *
      * @param filter the filter to match
      * @param param the search value
      * @return <code>true</code> if the gallery matches the given filter.<p>
@@ -215,11 +215,11 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Returns if the category matches the given filter.<p>
-     * 
+     *
      * @param filter the filter to match
      * @param priValue the first search value
      * @param secValue the second search value
-     * 
+     *
      * @return <code>true</code> if the gallery matches the given filter.<p>
      */
     public boolean matchesFilter(String filter, int priValue, int secValue) {
@@ -231,7 +231,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Sets the color.<p>
-     * 
+     *
      * @param color the color that should be set
      * */
     public void setColor(String color) {
@@ -298,7 +298,7 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
 
     /**
      * Sets the widget width.<p>
-     * 
+     *
      * @param width the widget width
      */
     private void setWidth(int width) {

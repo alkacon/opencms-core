@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Widget dialog that sets the settings to repair XML contents where the XSD was changed below a given VFS folder.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
@@ -83,7 +83,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * Public constructor with JSP action element.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsXmlContentRepairDialog(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -107,6 +107,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -130,6 +131,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(2048);
@@ -141,8 +143,8 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(Messages.get().getBundle(getLocale()).key(
-            Messages.GUI_XMLCONTENTREPAIR_DIALOG_BLOCK_SETTINGS_0)));
+        result.append(createWidgetBlockStart(
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_XMLCONTENTREPAIR_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 3));
         result.append(createWidgetBlockEnd());
 
@@ -155,6 +157,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the settings object to use for the dialog
@@ -163,21 +166,31 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
         // add the widgets to show
-        addWidget(new CmsWidgetDialogParameter(m_settings, "vfsFolder", "/", PAGES[0], new CmsVfsFileWidget(
-            false,
-            getCms().getRequestContext().getSiteRoot()), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(
+            m_settings,
+            "vfsFolder",
+            "/",
+            PAGES[0],
+            new CmsVfsFileWidget(false, getCms().getRequestContext().getSiteRoot()),
+            1,
+            1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget("")));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "force", PAGES[0], new CmsCheckboxWidget("")));
 
-        addWidget(new CmsWidgetDialogParameter(m_settings, "resourceType", PAGES[0], new CmsSelectWidget(
-            getXmlContentResourceTypes())));
+        addWidget(
+            new CmsWidgetDialogParameter(
+                m_settings,
+                "resourceType",
+                PAGES[0],
+                new CmsSelectWidget(getXmlContentResourceTypes())));
     }
 
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -186,6 +199,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -221,6 +235,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings,
      *      javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -232,7 +247,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
 
     /**
      * Returns the selector widget options to build a XML content resource type selector widget.<p>
-     * 
+     *
      * @return the selector widget options to build a XML content resource type selector widget
      */
     private List getXmlContentResourceTypes() {
@@ -267,10 +282,11 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
         }
 
         // add option for generic XML content without "own" resource types at the end
-        result.add(new CmsSelectWidgetOption(
-            TYPE_XMLCONTENT,
-            false,
-            key(Messages.GUI_XMLCONTENTREPAIR_DIALOG_RESTYPE_GENERIC_0)));
+        result.add(
+            new CmsSelectWidgetOption(
+                TYPE_XMLCONTENT,
+                false,
+                key(Messages.GUI_XMLCONTENTREPAIR_DIALOG_RESTYPE_GENERIC_0)));
 
         return result;
     }

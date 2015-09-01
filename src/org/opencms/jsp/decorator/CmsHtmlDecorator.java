@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,11 +44,11 @@ import org.htmlparser.util.Translate;
 
 /**
  * The CmsHtmlDecorator is the main object for processing the text decorations.<p>
- * 
+ *
  * It uses the information of a <code>{@link CmsDecoratorConfiguration}</code> to process the
  * text decorations.
- * 
- * @since 6.1.3 
+ *
+ * @since 6.1.3
  */
 public class CmsHtmlDecorator extends CmsHtmlParser {
 
@@ -120,7 +120,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /**
      * Constructor, creates a new, empty CmsHtmlDecorator.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @throws CmsException if something goes wrong
      */
@@ -137,10 +137,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /**
      * Constructor, creates a new CmsHtmlDecorator with a given configuration.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param config the configuration to be used
-     * 
+     *
      */
     public CmsHtmlDecorator(CmsObject cms, I_CmsDecoratorConfiguration config) {
 
@@ -163,7 +163,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      *
      * @return the List of splitted Substrings
      */
-    public static List<String> splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
+    public static List<String> splitAsList(
+        String source,
+        String[] delimiters,
+        boolean trim,
+        boolean includeDelimiters) {
 
         List<String> result = new ArrayList<String>();
         String delimiter = "";
@@ -189,7 +193,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
                 // add the delimiter to the list as well
-                if (includeDelimiters && (n + delimiter.length() <= l)) {
+                if (includeDelimiters && ((n + delimiter.length()) <= l)) {
                     result.add(source.substring(n, n + delimiter.length()));
                 }
             } else {
@@ -215,7 +219,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             }
 
         }
-        // is there a non - empty String to cut from the tail? 
+        // is there a non - empty String to cut from the tail?
         if (n < 0) {
             n = source.length();
         }
@@ -227,7 +231,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /**
      * Processes a HTML string and adds text decorations according to the decoration configuration.<p>
-     * 
+     *
      * @param html a string holding the HTML code that should be added with text decorations
      * @param encoding the encoding to be used
      * @return a HTML string with the decorations added.
@@ -240,7 +244,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /**
      * Resets the first occurance flags of all decoration objects.<p>
-     * 
+     *
      * This is nescessary if decoration objects should be used for processing more than once.     *
      */
     public void resetDecorationDefinitions() {
@@ -276,11 +280,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /**
      * Appends a text decoration to the output.<p>
-     * 
+     *
      * A lookup is made to find a text decoration for each word in the given text.
      * If a text decoration is found, the word will be decorated and added to the output.
      * If no text decoration is found, the word alone will be added to the output.
-     * 
+     *
      * @param text the text to add a text decoration for
      * @param delimiters delimiters for text seperation
      * @param recursive flag for recusrive search
@@ -300,10 +304,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 String word = wordList.get(i);
                 boolean alreadyDecorated = false;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
-                        word,
-                        Boolean.valueOf(mustDecode(word, wordList, i))));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
+                            word,
+                            Boolean.valueOf(mustDecode(word, wordList, i))));
                 }
 
                 // test if the word must be decoded
@@ -323,10 +328,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
-                        wordDecObj,
-                        word));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
+                            wordDecObj,
+                            word));
                 }
 
                 // if there is a decoration object for this word, we must do the decoration
@@ -339,12 +345,12 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     // add the following symbol if possible to allow the second level decoration
                     // test to make a forward lookup as well
                     String secondLevel = word;
-                    if (i < wordCount - 1) {
+                    if (i < (wordCount - 1)) {
                         String nextWord = wordList.get(i + 1);
                         if (!nextWord.equals(" ")) {
                             //don't allow HTML entities to be split in the middle during the recursion!
                             String afterNextWord = "";
-                            if (i < wordCount - 2) {
+                            if (i < (wordCount - 2)) {
                                 afterNextWord = wordList.get(i + 2);
                             }
                             if (nextWord.contains("&") && afterNextWord.equals(";")) {
@@ -374,31 +380,34 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     if (forwardLookup > FORWARD_LOOKUP) {
                         forwardLookup = FORWARD_LOOKUP;
                     }
-                    if (i < wordCount - forwardLookup) {
+                    if (i < (wordCount - forwardLookup)) {
                         for (int j = 1; j <= forwardLookup; j++) {
                             decKey.append(wordList.get(i + j));
                             decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().getBundle().key(
-                                    Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
-                                    decObj,
-                                    word,
-                                    new Integer(j)));
+                                LOG.debug(
+                                    Messages.get().getBundle().key(
+                                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
+                                        decObj,
+                                        word,
+                                        new Integer(j)));
                             }
                             if (decObj != null) {
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().getBundle().key(
-                                        Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                                        decObj.getContentDecoration(
-                                            m_config,
-                                            decKey.toString(),
-                                            m_cms.getRequestContext().getLocale().toString())));
+                                    LOG.debug(
+                                        Messages.get().getBundle().key(
+                                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                            decObj.getContentDecoration(
+                                                m_config,
+                                                decKey.toString(),
+                                                m_cms.getRequestContext().getLocale().toString())));
                                 }
                                 // decorate the current word with the following delimiter
-                                m_result.append(decObj.getContentDecoration(
-                                    m_config,
-                                    decKey.toString(),
-                                    m_cms.getRequestContext().getLocale().toString()));
+                                m_result.append(
+                                    decObj.getContentDecoration(
+                                        m_config,
+                                        decKey.toString(),
+                                        m_cms.getRequestContext().getLocale().toString()));
                                 // important, we must skip the next element of the list
                                 i += j;
                                 // reset the decObj
@@ -409,9 +418,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     }
                     if ((decObj == null) && (wordDecObj == null)) {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
-                                word));
+                            LOG.debug(
+                                Messages.get().getBundle().key(
+                                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
+                                    word));
                         }
                         // no decoration was found, use the word alone
                         m_result.append(word);
@@ -420,33 +430,34 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 //} else {
                 if ((wordDecObj != null) && !alreadyDecorated) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            wordDecObj.getContentDecoration(
-                                m_config,
-                                word,
-                                m_cms.getRequestContext().getLocale().toString())));
+                        LOG.debug(
+                            Messages.get().getBundle().key(
+                                Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                wordDecObj.getContentDecoration(
+                                    m_config,
+                                    word,
+                                    m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
-                    m_result.append(wordDecObj.getContentDecoration(
-                        m_config,
-                        word,
-                        m_cms.getRequestContext().getLocale().toString()));
+                    m_result.append(
+                        wordDecObj.getContentDecoration(
+                            m_config,
+                            word,
+                            m_cms.getRequestContext().getLocale().toString()));
                 }
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1,
-                    text));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1, text));
             }
             m_result.append(text);
         }
     }
 
-    /** 
+    /**
      * Checks if a word contains a given delimiter.<p>
-     * 
+     *
      * @param word the word to test
      * @param delimiters array of delimiter strings
      * @return true if the word contains the delimiter, false otherwiese
@@ -462,16 +473,16 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         }
         return delim;
     }
-    
+
     /**
      * Checks if a word must be decoded.<p>
-     * 
+     *
      * The given word is compared to a negative list of words which must not be decoded.<p>
-     * 
+     *
      * @param word the word to test
      * @param wordList the list of words which must not be decoded
      * @param count the count in the list
-     * 
+     *
      * @return true if the word must be decoded, false otherweise
      */
     private boolean mustDecode(String word, List<String> wordList, int count) {
@@ -479,7 +490,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         boolean decode = true;
         String nextWord = null;
 
-        if (count < wordList.size() - 1) {
+        if (count < (wordList.size() - 1)) {
             nextWord = wordList.get(count + 1);
         }
         // test if the current word contains a "&" and the following with a ";"
@@ -498,9 +509,9 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         return decode;
     }
 
-    /** 
+    /**
      * Checks if a word starts with a given delimiter.<p>
-     * 
+     *
      * @param word the word to test
      * @param delimiters array of delimiter strings
      * @return true if the word starts with the delimiter, false otherwiese

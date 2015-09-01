@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,43 +31,43 @@ import org.opencms.file.CmsObject;
 
 /**
  * Parameter value wrapper used by the OpenCms workplace widgets.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsWidgetParameter {
 
     /**
      * Returns the default value of this parameter.<p>
-     * 
+     *
      * If no default value has been provided, <code>null</code> is returned.<p>
-     * 
+     *
      * @param cms an initialized instance of an OpenCms user context
-     * 
+     *
      * @return the default value of this parameter
      */
     String getDefault(CmsObject cms);
 
     /**
-     * Returns the form id of this parameter.<p>  
-     * 
+     * Returns the form id of this parameter.<p>
+     *
      * @return the form id of this parameter
      */
     String getId();
 
     /**
-     * Returns the index of this widget parameter, 
+     * Returns the index of this widget parameter,
      * starting with 0.<p>
-     * 
-     * This is usefull in case there are more then one parameters 
-     * with the same name, for example when creating a list of parameters of the same type.<p> 
-     * 
+     *
+     * This is usefull in case there are more then one parameters
+     * with the same name, for example when creating a list of parameters of the same type.<p>
+     *
      * @return the index of this widget parameter
      */
     int getIndex();
 
     /**
-     * Returns the localized key identificator of this parameter.<p>  
-     * 
+     * Returns the localized key identificator of this parameter.<p>
+     *
      * @return the localized key identificator of this parameter
      */
     String getKey();
@@ -95,9 +95,9 @@ public interface I_CmsWidgetParameter {
 
     /**
      * Returns the value of this parameter.<p>
-     * 
+     *
      * @param cms an initialized instance of an OpenCms user context
-     * 
+     *
      * @return the value of this parameter
      */
     String getStringValue(CmsObject cms);
@@ -110,19 +110,19 @@ public interface I_CmsWidgetParameter {
     boolean hasError();
 
     /**
-     * Sets an optional localized key prefix identificator of this parameter.<p>  
-     * 
+     * Sets an optional localized key prefix identificator of this parameter.<p>
+     *
      * @param prefix the optional localized key prefix identificator of this parameter
      */
     void setKeyPrefix(String prefix);
 
     /**
-     * Sets the value of this parameter.<p>  
-     * 
+     * Sets the value of this parameter.<p>
+     *
      * This method does provide processing of the content based on the
-     * users current OpenCms context. This can be used e.g. for link 
+     * users current OpenCms context. This can be used e.g. for link
      * extraction and replacement in the content.<p>
-     * 
+     *
      * @param cms an initialized instance of an OpenCms user context
      * @param value the value to set
      */

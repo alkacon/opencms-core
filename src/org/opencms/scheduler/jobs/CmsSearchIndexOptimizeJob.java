@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,11 +39,11 @@ import java.util.Map;
 
 /**
  * A schedulable OpenCms job that optimizes the Lucene based search indexes at runtime.<p>
- * 
- * Only indexes which return <code>true</code> for  
+ *
+ * Only indexes which return <code>true</code> for
  * {@link CmsSearchIndex#isUpdatedIncremental()} are being optimized.
  * By default, all such indexes are optimized if this job is run.<p>
- * 
+ *
  * Job parameters:<p>
  * <dl>
  * <dt><code>optimizeIndexes={comma separated list of index names}</code></dt>
@@ -52,8 +52,8 @@ import java.util.Map;
  * <dt><code>excludeIndexes={comma separated list of index names}</code></dt>
  * <dd>Specifies list of indexes to be excluded from optimization.</dd>
  * </dl>
- * 
- * @since 8.5.0 
+ *
+ * @since 8.5.0
  */
 public class CmsSearchIndexOptimizeJob implements I_CmsScheduledJob {
 

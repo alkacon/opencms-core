@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,16 +40,16 @@ import org.opencms.report.I_CmsReport;
  */
 public class CmsUgcModuleAction implements I_CmsModuleAction {
 
-    /** 
+    /**
      * The admin-level CMS context.<p>
-     * 
+     *
      */
     private static CmsObject m_adminCms;
 
     /**
      * Returns a CMS context with admin privileges.<p>
-     * 
-     * @return a CMS context with admin privileges   
+     *
+     * @return a CMS context with admin privileges
      */
     protected static CmsObject getAdminCms() {
 
@@ -61,7 +61,7 @@ public class CmsUgcModuleAction implements I_CmsModuleAction {
      */
     public void cmsEvent(CmsEvent event) {
 
-        // ignore 
+        // ignore
     }
 
     /**
@@ -77,7 +77,7 @@ public class CmsUgcModuleAction implements I_CmsModuleAction {
      */
     public void moduleUninstall(CmsModule module) {
 
-        // ignore 
+        // ignore
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsUgcModuleAction implements I_CmsModuleAction {
      */
     public void moduleUpdate(CmsModule module) {
 
-        // ignore 
+        // ignore
     }
 
     /**

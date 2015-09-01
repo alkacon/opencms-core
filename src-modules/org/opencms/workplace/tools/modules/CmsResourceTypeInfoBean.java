@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,7 +28,7 @@
 package org.opencms.workplace.tools.modules;
 
 /**
- * Bean used to hold all information required to add a new XmlContent based resource type.<p> 
+ * Bean used to hold all information required to add a new XmlContent based resource type.<p>
  */
 public class CmsResourceTypeInfoBean {
 
@@ -52,6 +52,9 @@ public class CmsResourceTypeInfoBean {
 
     /** The resource type schema. */
     private String m_schema;
+
+    /** The schema type name. */
+    private String m_schemaTypeName;
 
     /** The small icon image. */
     private String m_smallIcon;
@@ -127,6 +130,16 @@ public class CmsResourceTypeInfoBean {
     public String getSchema() {
 
         return m_schema;
+    }
+
+    /**
+     * Returns the schema type name.<p>
+     *
+     * @return the schema type name
+     */
+    public String getSchemaTypeName() {
+
+        return m_schemaTypeName;
     }
 
     /**
@@ -217,6 +230,16 @@ public class CmsResourceTypeInfoBean {
     public void setSchema(String schema) {
 
         m_schema = schema;
+    }
+
+    /**
+     * Sets the schema type name.<p>
+     *
+     * @param schemaTypeName the schema type name to set
+     */
+    public void setSchemaTypeName(String schemaTypeName) {
+
+        m_schemaTypeName = schemaTypeName;
     }
 
     /**

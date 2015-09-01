@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ public class CmsUpdatePasswordColumn extends A_CmsUpdateDBPart {
 
     /**
      * Gets the new column length.<p>
-     *  
-     * @return the new column length 
+     *
+     * @return the new column length
      */
     public int getNewColumnLength() {
 
@@ -51,8 +51,8 @@ public class CmsUpdatePasswordColumn extends A_CmsUpdateDBPart {
 
     /**
      * Gets the SQL to execute.<p>
-     *  
-     * @return the SQL to execute 
+     *
+     * @return the SQL to execute
      */
     public String getUpdateSql() {
 

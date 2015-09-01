@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -120,7 +120,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
         /**
          * Returns if the timer is already scheduled.<p>
-         * 
+         *
          * @return <code>true</code> if the timer is scheduled
          */
         public boolean isScheduled() {
@@ -236,7 +236,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param referenceElement the reference DOM element, will be highlighted during editing
      * @param formParent the parent widget
      * @param parentEntity the parent of the entity to edit
@@ -272,7 +272,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Creates the inline edit widget and injects it next to the context element.<p>
-     * 
+     *
      * @param element the context element
      * @param formParent the parent widget
      * @param parentEntity the parent entity
@@ -280,7 +280,7 @@ public final class CmsInlineEntityWidget extends Composite {
      * @param attributeIndex the attribute value index
      * @param htmlUpdateHandler handles HTML updates if required
      * @param widgetService the widget service
-     * 
+     *
      * @return the widget instance
      */
     public static CmsInlineEntityWidget createWidgetForEntity(
@@ -307,7 +307,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Returns the attribute value index.<p>
-     * 
+     *
      * @return the attribute value index
      */
     public int getAttributeIndex() {
@@ -317,7 +317,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Sets the visibility of the reference element highlighting border.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the highlighting
      */
     public void setContentHighlightingVisible(boolean visible) {
@@ -325,11 +325,11 @@ public final class CmsInlineEntityWidget extends Composite {
         if (visible) {
             if (m_highlighting == null) {
                 m_highlighting = new CmsHighlightingBorder(
-                    CmsPositionBean.getInnerDimensions(m_referenceElement),
+                    CmsPositionBean.getBoundingClientRect(m_referenceElement),
                     CmsHighlightingBorder.BorderColor.red);
                 RootPanel.get().add(m_highlighting);
             } else {
-                m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(m_referenceElement));
+                m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(m_referenceElement));
             }
         } else {
             if (m_highlighting != null) {
@@ -341,7 +341,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Updates the visibility of the add, remove, up and down buttons.<p>
-     * 
+     *
      * @param hasEditButton <code>true</code> if the edit button should be visible
      * @param hasAddButton <code>true</code> if the add button should be visible
      * @param hasRemoveButton <code>true</code> if the remove button should be visible
@@ -509,7 +509,7 @@ public final class CmsInlineEntityWidget extends Composite {
     }
 
     /** Handles the remove attribute click.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_removeButton")
@@ -525,34 +525,36 @@ public final class CmsInlineEntityWidget extends Composite {
      */
     void positionPopup() {
 
-        if (m_referenceElement != null) {
-            CmsPositionBean referencePosition = CmsPositionBean.getInnerDimensions(m_referenceElement);
-            int currentTop = m_popup.getAbsoluteTop();
-            int windowHeight = Window.getClientHeight();
-            int scrollTop = Window.getScrollTop();
-            int contentHeight = m_popup.getOffsetHeight();
-            int top = referencePosition.getTop();
-            if (((windowHeight + scrollTop) < (top + referencePosition.getHeight() + contentHeight + 20))
-                && ((contentHeight + 40) < top)) {
-                top = top - contentHeight - 5;
-                if ((currentTop < top) && ((top - currentTop) < 200)) {
-                    // keep the current position
-                    top = currentTop;
+        if (m_popup != null) {
+            if (m_referenceElement != null) {
+                CmsPositionBean referencePosition = CmsPositionBean.getBoundingClientRect(m_referenceElement);
+                int currentTop = m_popup.getAbsoluteTop();
+                int windowHeight = Window.getClientHeight();
+                int scrollTop = Window.getScrollTop();
+                int contentHeight = m_popup.getOffsetHeight();
+                int top = referencePosition.getTop();
+                if (((windowHeight + scrollTop) < (top + referencePosition.getHeight() + contentHeight + 20))
+                    && ((contentHeight + 40) < top)) {
+                    top = top - contentHeight - 5;
+                    if ((currentTop < top) && ((top - currentTop) < 200)) {
+                        // keep the current position
+                        top = currentTop;
+                    }
+                } else {
+                    top = top + referencePosition.getHeight() + 5;
+                    if ((currentTop > top) && ((currentTop - top) < 200)) {
+                        // keep the current position
+                        top = currentTop;
+                    }
+                }
+                m_popup.center();
+                m_popup.setPopupPosition(m_popup.getPopupLeft(), top);
+                if (((contentHeight + top) - scrollTop) > windowHeight) {
+                    Window.scrollTo(Window.getScrollLeft(), ((contentHeight + top) - windowHeight) + 20);
                 }
             } else {
-                top = top + referencePosition.getHeight() + 5;
-                if ((currentTop > top) && ((currentTop - top) < 200)) {
-                    // keep the current position
-                    top = currentTop;
-                }
+                m_popup.center();
             }
-            m_popup.center();
-            m_popup.setPopupPosition(m_popup.getPopupLeft(), top);
-            if (((contentHeight + top) - scrollTop) > windowHeight) {
-                Window.scrollTo(Window.getScrollLeft(), ((contentHeight + top) - windowHeight) + 20);
-            }
-        } else {
-            m_popup.center();
         }
     }
 
@@ -577,7 +579,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
     /**
      * Opens the form popup.<p>
-     * 
+     *
      * @param clickEvent the click event
      */
     @UiHandler("m_editButton")
@@ -645,7 +647,7 @@ public final class CmsInlineEntityWidget extends Composite {
 
                 public void onFailure(Throwable caught) {
 
-                    // will not be called 
+                    // will not be called
 
                 }
 

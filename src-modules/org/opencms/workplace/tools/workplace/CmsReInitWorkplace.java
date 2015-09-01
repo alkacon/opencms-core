@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
- * 
- * @since 6.0.0 
+ * Provides an output window for re-initialization of the OpenCms Workplace.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsReInitWorkplace extends CmsDialog {
 
@@ -52,7 +52,7 @@ public class CmsReInitWorkplace extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsReInitWorkplace(CmsJspActionElement jsp) {
@@ -62,7 +62,7 @@ public class CmsReInitWorkplace extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -74,7 +74,7 @@ public class CmsReInitWorkplace extends CmsDialog {
 
     /**
      * Performs the re-initialization report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if including the error JSP element fails
      */
     public void actionReport() throws JspException {
@@ -108,14 +108,14 @@ public class CmsReInitWorkplace extends CmsDialog {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(key(Messages.GUI_WORKPLACE_REINIT_NAME_0));
         }
     }

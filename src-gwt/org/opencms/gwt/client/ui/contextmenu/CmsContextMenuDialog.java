@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,11 +44,11 @@ import com.google.gwt.user.client.Window;
 
 /**
  * A context menu entry command to open any dialog within an iFrame.<p>
- * 
+ *
  * The dialog will be called with the parameter {@link #PARAM_CONTENT_STRUCTURE_ID}
  * containing the structure id of the currently edited content if available.<p>
- * 
- * To close the dialog call from within the dialog frame context 
+ *
+ * To close the dialog call from within the dialog frame context
  * window.parent[{@link #CLOSING_METHOD_NAME}](boolean reload).<p>
  */
 public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
@@ -71,9 +71,9 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
     }
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -90,12 +90,12 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
         int height = 400;
         int width = 300;
         if (menuEntryBean.getParams().containsKey(CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT)) {
-            height = CmsClientStringUtil.parseInt(menuEntryBean.getParams().get(
-                CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT));
+            height = CmsClientStringUtil.parseInt(
+                menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT));
         }
         if (menuEntryBean.getParams().containsKey(CmsMenuCommandParameters.PARAM_DIALOG_WIDTH)) {
-            width = CmsClientStringUtil.parseInt(menuEntryBean.getParams().get(
-                CmsMenuCommandParameters.PARAM_DIALOG_WIDTH));
+            width = CmsClientStringUtil.parseInt(
+                menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_WIDTH));
         }
         String fileName = menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_URI);
         CmsPopup popup = CmsFrameDialog.showFrameDialog(
@@ -150,22 +150,22 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
 
     /**
      * Exports the close method to the window object, so it can be accessed from within the content editor iFrame.<p>
-     * 
-     * @param popup the popup instance 
+     *
+     * @param popup the popup instance
      */
     private native void exportClosingMethod(final CmsPopup popup) /*-{
-        var self = this;
-        $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
-                reload) {
-            popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
-            self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
-            $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
-        };
-    }-*/;
+                                                                  var self = this;
+                                                                  $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
+                                                                  reload) {
+                                                                  popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
+                                                                  self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
+                                                                  $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
+                                                                  };
+                                                                  }-*/;
 
     /**
      * Generates the dialog parameters.<p>
-     * 
+     *
      * @param structureId the structure id of the current content
      * @param menuEntryBean the context menu entry bean
      * @return the dialog parameters

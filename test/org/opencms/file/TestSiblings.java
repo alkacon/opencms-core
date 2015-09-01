@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestSiblings(String arg0) {
@@ -75,10 +75,10 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Creates a copy of a resource as a new sibling.<p>
-     * 
+     *
      * @param tc the OpenCms test case
      * @param cms the current user's Cms object
-     * @param source path/resource name of the existing resource 
+     * @param source path/resource name of the existing resource
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
@@ -118,10 +118,10 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Creates a new sibling of a resource.<p>
-     * 
+     *
      * @param tc the OpenCms test case
      * @param cms the current user's Cms object
-     * @param source path/resource name of the existing resource 
+     * @param source path/resource name of the existing resource
      * @param target path/resource name of the new sibling
      * @throws Exception if something goes wrong
      */
@@ -161,7 +161,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -202,7 +202,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests deletion of a resource together with all siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testDeleteAllSiblings() throws Throwable {
@@ -245,7 +245,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Error scenario where an import is deleted that contains siblings inside the same folders.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testSiblingIssueAfterImport() throws Exception {
@@ -254,14 +254,16 @@ public class TestSiblings extends OpenCmsTestCase {
 
         CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
 
-        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(new String[] {
-            "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
-            "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
-            "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",
-            "s#^/sites/default/download(.*)#/system/galleries/download$1#",
-            "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
-            "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
-            "s#^/sites/default/content(.*)#/system$1#"}, false);
+        CmsResourceTranslator folderTranslator = new CmsResourceTranslator(
+            new String[] {
+                "s#^/sites/default/content/bodys(.*)#/system/bodies$1#",
+                "s#^/sites/default/pics/system(.*)#/system/workplace/resources$1#",
+                "s#^/sites/default/pics(.*)#/system/galleries/pics$1#",
+                "s#^/sites/default/download(.*)#/system/galleries/download$1#",
+                "s#^/sites/default/externallinks(.*)#/system/galleries/externallinks$1#",
+                "s#^/sites/default/htmlgalleries(.*)#/system/galleries/htmlgalleries$1#",
+                "s#^/sites/default/content(.*)#/system$1#"},
+            false);
 
         // set modified folder translator
         OpenCms.getResourceManager().setTranslators(
@@ -314,7 +316,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests the "project last modified" state with sibling operations across different projects.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingProjects() throws Throwable {
@@ -345,8 +347,8 @@ public class TestSiblings extends OpenCmsTestCase {
         // this user will have publish permissions on the test ou project, but not on the root Offline project
         cms.createUser("/test/myuser", "myuser", "blah-blah", null);
         cms.addUserToGroup("/test/myuser", ou.getName() + OpenCms.getDefaultUsers().getGroupUsers());
-        // the default permissions for the user are: +r+w+v+c since it is indirect user of the /Users group, 
-        // so we need to explicitly remove the w flag, but we can not do that on the sibling itself, 
+        // the default permissions for the user are: +r+w+v+c since it is indirect user of the /Users group,
+        // so we need to explicitly remove the w flag, but we can not do that on the sibling itself,
         // since the ACEs are bound to the resource entries, so we do it on the folder
         cms.lockResource("/folder2/");
         cms.chacc("/folder2/", I_CmsPrincipal.PRINCIPAL_USER, "/test/myuser", "-w");
@@ -360,16 +362,18 @@ public class TestSiblings extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(prj);
 
         // check the permissions
-        assertTrue(cms.hasPermissions(
-            cms.readResource(source, CmsResourceFilter.ALL),
-            CmsPermissionSet.ACCESS_WRITE,
-            false,
-            CmsResourceFilter.ALL));
-        assertFalse(cms.hasPermissions(
-            cms.readResource(target, CmsResourceFilter.ALL),
-            CmsPermissionSet.ACCESS_WRITE,
-            false,
-            CmsResourceFilter.ALL));
+        assertTrue(
+            cms.hasPermissions(
+                cms.readResource(source, CmsResourceFilter.ALL),
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.ALL));
+        assertFalse(
+            cms.hasPermissions(
+                cms.readResource(target, CmsResourceFilter.ALL),
+                CmsPermissionSet.ACCESS_WRITE,
+                false,
+                CmsResourceFilter.ALL));
 
         // change a resource attribute
         cms.lockResource(source);
@@ -439,7 +443,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests the "copy as new sibling" function.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingsCopy() throws Throwable {
@@ -459,7 +463,7 @@ public class TestSiblings extends OpenCmsTestCase {
      // this test should do the following:
      // - create a sibling of a resource
      // - e.g. touch the black/unchanged sibling so that it gets red/changed
-     // - make an "undo changes" -> the last-modified-in-project ID in the resource record 
+     // - make an "undo changes" -> the last-modified-in-project ID in the resource record
      // of the resource must be the ID of the current project, and not 0
      // - this is to ensure that the new/changed/deleted other sibling still have a valid
      // state which consist of the last-modified-in-project ID plus the resource state
@@ -467,18 +471,18 @@ public class TestSiblings extends OpenCmsTestCase {
 
      Another issue:
      What happens if a user A has an exclusive lock on a resource X,
-     and user B does a "copy as sibling Y" of X, or "create 
+     and user B does a "copy as sibling Y" of X, or "create
      new sibling Y" of X. The lock status of the resource X is exclusive
      to A, but test implies that it would be switched to B after operation!
      Maybe copy as / create new sibling must not be allowed if original is
-     currently locked by another user? 
+     currently locked by another user?
 
      }
      */
 
     /**
      * Tests the "copy as new sibling" function.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingsCreate() throws Throwable {
@@ -492,7 +496,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests creating 2 new siblings and publishing just one of them.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingsCreateIssue() throws Throwable {
@@ -518,7 +522,7 @@ public class TestSiblings extends OpenCmsTestCase {
     /**
      * Tests an issue, where there is an error in OpenCms V7 when publishing two siblings of the same resource.
      * One sibling is new created, the other one is a deleted one. In OpenCms V8 this scenario should give no error.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSiblingsNewDeletePublishIssue() throws Exception {
@@ -665,7 +669,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests the link management features with siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingsRelations() throws Throwable {
@@ -746,7 +750,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests if setting the flags of a sibling will do any modifications to other siblings.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testSiblingStateIssue() throws Throwable {
@@ -758,7 +762,7 @@ public class TestSiblings extends OpenCmsTestCase {
         String resource1 = "/folder1/page1.html";
         String sibling1 = "/folder1/sibling1.html";
 
-        // create a sibling 
+        // create a sibling
         cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
 
         // verify the state of the resources
@@ -777,7 +781,7 @@ public class TestSiblings extends OpenCmsTestCase {
         String copy1 = "/folder1/copy1.html";
         sibling1 = "/folder1/siblingofcopy1.html";
 
-        // create a copy 
+        // create a copy
         cms.copyResource(resource1, copy1, CmsResource.COPY_AS_NEW);
         cms.copyResource(copy1, sibling1, CmsResource.COPY_AS_SIBLING);
 
@@ -797,14 +801,14 @@ public class TestSiblings extends OpenCmsTestCase {
         resource1 = "/folder1/page2.html";
         sibling1 = "/folder1/sibling2.html";
 
-        // create a sibling 
+        // create a sibling
         cms.copyResource(resource1, sibling1, CmsResource.COPY_AS_SIBLING);
 
         // verify the state of the resources
         assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
         assertState(cms, sibling1, CmsResource.STATE_NEW);
 
-        // after changes of dates the resource states must be the same        
+        // after changes of dates the resource states must be the same
         cms.setDateExpired(sibling1, System.currentTimeMillis() + 1000, false);
         cms.setDateReleased(sibling1, System.currentTimeMillis() - 1000, false);
 
@@ -849,7 +853,7 @@ public class TestSiblings extends OpenCmsTestCase {
 
     /**
      * Tests an issue present in OpenCms 7 where online content was not replaced after publish.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSiblingsV7PublishIssue() throws Exception {

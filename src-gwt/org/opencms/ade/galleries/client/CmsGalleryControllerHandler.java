@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,9 +57,9 @@ import com.google.gwt.user.client.Command;
 
 /**
  * Gallery dialog controller handler.<p>
- * 
+ *
  * Delegates the actions of the gallery controller to the gallery dialog.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGallerySearchBean> {
@@ -72,8 +72,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Constructor.<p>
-     * 
-     * @param galleryDialog the reference to the gallery dialog 
+     *
+     * @param galleryDialog the reference to the gallery dialog
      */
     public CmsGalleryControllerHandler(CmsGalleryDialog galleryDialog) {
 
@@ -82,8 +82,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Returns true if a results tab exists.<p>
-     * 
-     * @return true if a results tab exists 
+     *
+     * @return true if a results tab exists
      */
     public boolean hasResultsTab() {
 
@@ -92,12 +92,12 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Hides or shows the show-preview-button.<p>
-     * 
+     *
      * @param hide <code>true</code> to hide the button
      */
     public void hideShowPreviewButton(boolean hide) {
 
-        // buttons        
+        // buttons
         switch (m_mode) {
             case editor:
             case widget:
@@ -126,8 +126,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Deletes the html content of the categories parameter and removes the style.<p>
-     * 
-     * @param categories the categories to remove from selection 
+     *
+     * @param categories the categories to remove from selection
      */
     public void onClearCategories(List<String> categories) {
 
@@ -138,8 +138,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * The method which is executed when all folders are cleared from the search object.<p>
-     * 
-     * @param folders the folders which have been cleared 
+     *
+     * @param folders the folders which have been cleared
      */
     public void onClearFolders(Collection<String> folders) {
 
@@ -157,7 +157,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Deletes the html content of the galleries parameter and removes the style.<p>
-     * 
+     *
      * @param galleries the galleries to remove from selection
      */
     public void onClearGalleries(List<String> galleries) {
@@ -169,7 +169,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Deletes the html content of the types parameter and removes the style.<p>
-     * 
+     *
      * @param types the types to be removed from selection
      */
     public void onClearTypes(List<String> types) {
@@ -189,11 +189,11 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Will be triggered when the initial search is performed.<p>
-     *  
+     *
      * @param searchObj the current search object
      * @param dialogBean the current dialog data bean
      * @param controller the dialog controller
-     * @param isFirstTime true if this method is called the first time for the gallery dialog instance 
+     * @param isFirstTime true if this method is called the first time for the gallery dialog instance
      */
     public void onInitialSearch(
         final CmsGallerySearchBean searchObj,
@@ -222,7 +222,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
         }
         GalleryTabId startTab = dialogBean.getStartTab();
 
-        // start tab from the search bean may override the start tab from the data bean 
+        // start tab from the search bean may override the start tab from the data bean
         GalleryTabId searchTabId = searchObj.getInitialTabId();
         if ((searchTabId != null) && (m_galleryDialog.getTab(searchTabId) != null)) {
             startTab = searchTabId;
@@ -286,8 +286,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * This method is called when preloaded sitemap tree state data is loaded.<p>
-     * 
-     * @param sitemapPreloadData the sitemap preload data 
+     *
+     * @param sitemapPreloadData the sitemap preload data
      */
     public void onReceiveSitemapPreloadData(CmsSitemapEntryBean sitemapPreloadData) {
 
@@ -299,8 +299,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * This method is called when preloaded VFS tree state data is loaded.<p>
-     * 
-     * @param vfsPreloadData the preload data 
+     *
+     * @param vfsPreloadData the preload data
      */
     public void onReceiveVfsPreloadData(CmsVfsEntryBean vfsPreloadData) {
 
@@ -312,8 +312,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Removes a parameter from the search tab.<p>
-     * 
-     * @param type the parameter type 
+     *
+     * @param type the parameter type
      */
     public void onRemoveSearchParam(ParamType type) {
 
@@ -323,7 +323,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
     /**
      * Will be triggered when the results tab is selected.<p>
      *
-     * @param searchObj the current search object 
+     * @param searchObj the current search object
      */
     public void onResultTabSelection(CmsGallerySearchBean searchObj) {
 
@@ -340,7 +340,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Will be triggered when categories list is sorted.<p>
-     *  
+     *
      * @param categoriesList the updated categories list
      * @param selectedCategories the selected categories
      */
@@ -351,7 +351,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Will be triggered when the tree is selected.<p>
-     * 
+     *
      * @param categoryTreeEntry the category root entry
      * @param selectedCategories the selected categories
      */
@@ -362,7 +362,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Will be triggered when the sort parameters of the galleries list are changed.<p>
-     *  
+     *
      * @param galleries the updated galleries list
      * @param selectedGalleries the list of galleries to select
      */
@@ -373,7 +373,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Updates the gallery tree.<p>
-     * 
+     *
      * @param galleryTreeEntries the gallery tree entries
      * @param selectedGalleries the selected galleries
      */
@@ -384,7 +384,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Will be triggered when the sort parameters of the types list are changed.<p>
-     *  
+     *
      * @param types the updated types list
      * @param selectedTypes the list of types to select
      */
@@ -415,7 +415,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Sets the list content of the category tab.<p>
-     * 
+     *
      * @param categoryRoot the root category tree entry
      */
     public void setCategoriesTabContent(List<CmsCategoryTreeEntry> categoryRoot) {
@@ -425,7 +425,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Sets the list content of the galleries tab.<p>
-     * 
+     *
      * @param galleryInfos the gallery info beans
      * @param selectedGalleries the selected galleries
      */
@@ -436,7 +436,7 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Sets the list content of the types tab.<p>
-     * 
+     *
      * @param typeInfos the type info beans
      * @param selectedTypes the selected types
      */
@@ -456,8 +456,8 @@ public class CmsGalleryControllerHandler implements ValueChangeHandler<CmsGaller
 
     /**
      * Causes the preloaded tree states to be displayed in the tree tabs.<p>
-     * 
-     * @param result the gallery search bean from which to take the preload data 
+     *
+     * @param result the gallery search bean from which to take the preload data
      */
     protected void showPreloadDataInTabs(CmsGallerySearchBean result) {
 

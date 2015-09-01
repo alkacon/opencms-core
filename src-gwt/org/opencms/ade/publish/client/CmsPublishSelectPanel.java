@@ -39,13 +39,13 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox;
 import org.opencms.gwt.client.ui.input.CmsTriStateCheckBox.State;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsMessages;
 import org.opencms.gwt.client.util.CmsScrollToBottomHandler;
@@ -199,7 +199,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 finishLoading();
                 return false;
             }
-            boolean hasMore = CmsPublishSelectPanel.this.addNextItem();
+            boolean hasMore = addNextItem();
             if (!hasMore) {
                 finishLoading();
                 return false;
@@ -359,10 +359,10 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         boolean enableAddContents = false;
         boolean addContent = false;
         try {
-            enableAddContents = Boolean.parseBoolean(publishOptions.getParameters().get(
-                CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
-            addContent = Boolean.parseBoolean(publishOptions.getParameters().get(
-                CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
+            enableAddContents = Boolean.parseBoolean(
+                publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
+            addContent = Boolean.parseBoolean(
+                publishOptions.getParameters().get(CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
         } catch (Exception e) {
             // ignore; enableAddContents remains the default value
         }
@@ -431,7 +431,6 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_projectSelector.setItems(projectSelectItems);
         m_projectSelector.addStyleName(CSS.selector());
         if (!(null == publishOptions.getProjectId()) && m_foundOldProject) {
-            CmsDebugLog.consoleLog("1 - " + publishOptions.getProjectId().toString());
             m_projectSelector.setFormValueAsString(publishOptions.getProjectId().toString());
         }
 
@@ -1029,13 +1028,23 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
 
     /**
      * Gets the context menu handler for the publish items' context menus.<p>
-     * 
-     * @return the context menu handler 
+     *
+     * @return the context menu handler
      */
     CmsContextMenuHandler getContextMenuHandler() {
 
         return m_publishDialog.getContextMenuHandler();
 
+    }
+
+    /**
+     * Returns the content editor handler.<p>
+     *
+     * @return the content editor handler
+     */
+    I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_publishDialog.getEditorHandler();
     }
 
     /**
@@ -1057,6 +1066,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
             m_model,
             m_selectionControllers,
             getContextMenuHandler(),
+            getEditorHandler(),
             m_showProblemsOnly);
         if (m_model.hasSingleGroup()) {
             groupPanel.hideGroupSelectCheckBox();
@@ -1137,7 +1147,8 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         if (numProblems > 0) {
             HorizontalPanel errorBox = new HorizontalPanel();
             Label warnIcon = new Label();
-            warnIcon.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
+            warnIcon.addStyleName(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
             errorBox.add(warnIcon);
             errorBox.add(new Label(message));

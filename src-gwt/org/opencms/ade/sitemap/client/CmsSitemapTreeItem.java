@@ -12,14 +12,14 @@
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details. 
+ * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,6 +34,7 @@ import org.opencms.ade.sitemap.client.ui.css.I_CmsSitemapLayoutBundle;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry.EntryType;
 import org.opencms.ade.sitemap.shared.CmsDetailPageTable;
+import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
@@ -77,9 +78,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Sitemap entry tree item implementation.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.client.ui.tree.CmsLazyTreeItem
  * @see org.opencms.ade.sitemap.shared.CmsClientSitemapEntry
  */
@@ -101,10 +102,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
             return m_detailPageTitle;
         }
 
-        /** 
-         * Sets the title to use for the detail page label. 
-         * 
-         * @param detailPageTitle the title to use 
+        /**
+         * Sets the title to use for the detail page label.
+         *
+         * @param detailPageTitle the title to use
          */
         public void setDetailPageTitle(String detailPageTitle) {
 
@@ -138,7 +139,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param entry the sitemap entry
      */
     public CmsSitemapTreeItem(CmsClientSitemapEntry entry) {
@@ -246,11 +247,11 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         });
     }
 
-    /** 
+    /**
      * Looks up a sitemap tree item by entry id.<p>
-     * 
-     * @param id the sitemap entry id 
-     * @return the corresponding sitemap tree item, or null if there is none 
+     *
+     * @param id the sitemap entry id
+     * @return the corresponding sitemap tree item, or null if there is none
      */
     public static CmsSitemapTreeItem getItemById(CmsUUID id) {
 
@@ -259,10 +260,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Helper method to add an additional info bean to a list.<p>
-     * 
-     * @param infos the list of additional info beans 
-     * @param label the label for the new bean 
-     * @param value the value for the new bean 
+     *
+     * @param infos the list of additional info beans
+     * @param label the label for the new bean
+     * @param value the value for the new bean
      */
     protected static void addInfo(List<CmsAdditionalInfoBean> infos, String label, String value) {
 
@@ -271,10 +272,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Returns the list info bean for the given entry.<p>
-     * 
+     *
      * @param entry the sitemap entry
-     * @param navMode a flag indicating whether we want the info bean for navigation mode or VFS mode 
-     * 
+     * @param navMode a flag indicating whether we want the info bean for navigation mode or VFS mode
+     *
      * @return the list info bean
      */
     static CmsListInfoBean getInfoBean(CmsClientSitemapEntry entry, boolean navMode) {
@@ -283,9 +284,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         infoBean.setTitle(entry.getTitle());
         infoBean.setSubTitle(entry.getSitePath());
         // showing the resource type icon of the default file in navigation mode
-        infoBean.setResourceType(CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
-        ? entry.getDefaultFileType()
-        : entry.getResourceTypeName());
+        infoBean.setResourceType(
+            CmsStringUtil.isNotEmptyOrWhitespaceOnly(entry.getDefaultFileType())
+            ? entry.getDefaultFileType()
+            : entry.getResourceTypeName());
         infoBean.setResourceState(entry.getResourceState());
         CmsMessages msg = Messages.get();
         List<CmsAdditionalInfoBean> infos = new ArrayList<CmsAdditionalInfoBean>();
@@ -293,7 +295,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
         boolean isTitleSet = false;
         if (navMode) {
-            // in nav mode, display the title of the page rather than that of the folder, if available 
+            // in nav mode, display the title of the page rather than that of the folder, if available
             Map<String, CmsClientProperty> defaultFileProps = entry.getDefaultFileProperties();
             CmsClientProperty titleProperty = defaultFileProps == null
             ? null
@@ -341,9 +343,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Generates the list item widget for the tree item.<p>
-     * 
+     *
      * @param entry the sitemap entry
-     * 
+     *
      * @return the list item widget
      */
     private static CmsListItemWidget generateItemWidget(final CmsClientSitemapEntry entry) {
@@ -353,22 +355,25 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
         itemWidget.setUnselectable();
         itemWidget.setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
         itemWidget.setTopRightIcon(null, "");
-        itemWidget.setIconTitle(entry.isSubSitemapType()
-        ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
-        : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
+        itemWidget.setIconTitle(
+            entry.isSubSitemapType()
+            ? Messages.get().key(Messages.GUI_HOVERBAR_GOTO_SUB_0)
+            : Messages.get().key(Messages.GUI_HOVERBAR_GOTO_0));
         setAdditionalStyles(entry, itemWidget);
         return itemWidget;
     }
 
     /**
      * Sets the additional style to mark expired entries or those that have the hide in navigation property set.<p>
-     * 
+     *
      * @param entry the sitemap entry
      * @param itemWidget the item widget
      */
     private static void setAdditionalStyles(CmsClientSitemapEntry entry, CmsListItemWidget itemWidget) {
 
-        if (!entry.isResleasedAndNotExpired()) {
+        if (!entry.isResleasedAndNotExpired()
+            || ((CmsSitemapView.getInstance().getEditorMode() == EditorMode.navigation)
+                && !entry.isDefaultFileReleased())) {
             itemWidget.getContentPanel().addStyleName(
                 I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().expiredOrNotReleased());
         } else {
@@ -386,9 +391,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Given the path of a sitemap entry, this method returns the URL which should be displayed to the user.<p>
-     * 
-     * @param sitePath the site path of a sitemap entry 
-     * 
+     *
+     * @param sitePath the site path of a sitemap entry
+     *
      * @return the URL which should be displayed to the user
      */
     public String getDisplayedUrl(String sitePath) {
@@ -425,7 +430,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Returns the entry id.<p>
-     * 
+     *
      * @return the entry id
      */
     public CmsUUID getEntryId() {
@@ -470,7 +475,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Returns the sitemap entry.<p>
-     * 
+     *
      * @return the sitemap entry
      */
     public CmsClientSitemapEntry getSitemapEntry() {
@@ -490,7 +495,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Turns the highlighting for this item on or off.<p>
-     * 
+     *
      * @param highlightOn if true, the highlighting is turned on, else off
      */
     public void highlight(boolean highlightOn) {
@@ -504,8 +509,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Temporarily highlights an item.<p>
-     * 
-     * @param duration the duration for which  
+     *
+     * @param duration the duration for which
      * @param background the background to color to set when finished
      */
     public void highlightTemporarily(int duration, final Background background) {
@@ -540,7 +545,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
     public boolean isDropEnabled() {
 
         CmsClientSitemapEntry entry = getSitemapEntry();
-        return entry.isEditable() && entry.isInNavigation() && entry.isFolderType() && super.isDropEnabled();
+        return !entry.hasForeignFolderLock() && entry.isInNavigation() && entry.isFolderType() && super.isDropEnabled();
     }
 
     /**
@@ -588,9 +593,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Sets the background color of the list item widget.<p>
-     * 
+     *
      * If the background is <code>null</code>, the widget will be shown with its default style.<p>
-     * 
+     *
      * @param background the background color to set
      */
     public void setBackgroundColor(Background background) {
@@ -661,7 +666,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
      */
     public void updateEditorMode() {
 
-        getListItemWidget().setIcon(CmsSitemapView.getInstance().getIconForEntry(getSitemapEntry()));
+        CmsClientSitemapEntry entry = getSitemapEntry();
+        getListItemWidget().setIcon(CmsSitemapView.getInstance().getIconForEntry(entry));
+        setAdditionalStyles(entry, getListItemWidget());
         for (Widget child : m_children) {
             if (child instanceof CmsSitemapTreeItem) {
                 ((CmsSitemapTreeItem)child).updateEditorMode();
@@ -671,7 +678,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Refreshes the displayed data from the given sitemap entry.<p>
-     * 
+     *
      * @param entry the sitemap entry to update
      */
     public void updateEntry(CmsClientSitemapEntry entry) {
@@ -695,8 +702,8 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Updates the in navigation properties of the displayed entry.<p>
-     * 
-     * @param entry the sitemap entry 
+     *
+     * @param entry the sitemap entry
      */
     public void updateInNavigation(CmsClientSitemapEntry entry) {
 
@@ -719,7 +726,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Updates the recursively the site path.<p>
-     * 
+     *
      * @param sitePath the new site path to set
      */
     public void updateSitePath(String sitePath) {
@@ -745,10 +752,10 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
     * Helper method for adding the marker widget.<p>
-    * 
-    * @param text the text for the marker widget 
-    * 
-    * @return the new marker widget 
+    *
+    * @param text the text for the marker widget
+    *
+    * @return the new marker widget
     */
     protected Widget addMarker(String text) {
 
@@ -760,9 +767,9 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Return the name of this item, which can differ from the entry name for root nodes.<p>
-     * 
-     * @param sitePath the sitemap entry's site path 
-     * 
+     *
+     * @param sitePath the sitemap entry's site path
+     *
      * @return the name
      */
     protected String getName(String sitePath) {
@@ -826,7 +833,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Retrieves the hoverbar, can be <code>null</code> if not attached.<p>
-     * 
+     *
      * @return the hoverbar, or <code>null</code> if not attached
      */
     private CmsSitemapHoverbar getHoverbar() {
@@ -842,7 +849,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
 
     /**
      * Updates the lock icon according to the entry information.<p>
-     * 
+     *
      * @param entry the entry
      */
     private void updateLock(CmsClientSitemapEntry entry) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ public final class CmsValueFocusHandler implements MouseOverHandler, MouseOutHan
 
     /**
      * Returns the highlighting handler instance.<p>
-     * 
+     *
      * @return the highlighting handler instance
      */
     public static CmsValueFocusHandler getInstance() {
@@ -112,7 +112,7 @@ public final class CmsValueFocusHandler implements MouseOverHandler, MouseOutHan
 
     /**
      * Hides all help bubbles.<p>
-     * 
+     *
      * @param formPanel the form panel
      * @param hide <code>true</code> to hide the help bubbles
      */
@@ -132,7 +132,8 @@ public final class CmsValueFocusHandler implements MouseOverHandler, MouseOutHan
 
         event.stopPropagation();
         if (RootPanel.get().equals(event.getSource())) {
-            com.google.gwt.dom.client.Element element = com.google.gwt.dom.client.Element.as(event.getNativeEvent().getEventTarget());
+            com.google.gwt.dom.client.Element element = com.google.gwt.dom.client.Element.as(
+                event.getNativeEvent().getEventTarget());
             if ((m_currentFocus != null) && !m_currentFocus.owns(element)) {
                 m_currentFocus.toggleFocus(false);
                 m_currentFocus = null;
@@ -196,7 +197,7 @@ public final class CmsValueFocusHandler implements MouseOverHandler, MouseOutHan
 
     /**
      * Sets the given attribute value view focused.<p>
-     * 
+     *
      * @param target the target attribute value view
      */
     public void setFocus(CmsAttributeValueView target) {

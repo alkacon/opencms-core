@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,8 +65,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Element comparison list view. <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsElementComparisonList extends A_CmsListDialog {
 
@@ -138,7 +138,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsElementComparisonList(CmsJspActionElement jsp) {
@@ -148,7 +148,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -160,7 +160,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -176,7 +176,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
     @Override
@@ -336,7 +336,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             getCms(),
             new CmsUUID(getParamId2()),
             getParamVersion2());
-        Iterator<CmsElementComparison> diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
+        Iterator<CmsElementComparison> diffs = new CmsXmlDocumentComparison(
+            getCms(),
+            resource1,
+            resource2).getElements().iterator();
         while (diffs.hasNext()) {
             CmsElementComparison comparison = diffs.next();
             String locale = comparison.getLocale().toString();
@@ -362,10 +365,11 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                     item.set(LIST_COLUMN_STATUS, key(Messages.GUI_COMPARE_UNCHANGED_0));
                 }
             }
-            String value1 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(
-                CmsStringUtil.trimToSize(comparison.getVersion1(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
-                "\n",
-                ""));
+            String value1 = CmsStringUtil.escapeHtml(
+                CmsStringUtil.substitute(
+                    CmsStringUtil.trimToSize(comparison.getVersion1(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
+                    "\n",
+                    ""));
 
             // formatting DateTime
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -380,10 +384,11 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_VERSION_1, value1);
 
-            String value2 = CmsStringUtil.escapeHtml(CmsStringUtil.substitute(
-                CmsStringUtil.trimToSize(comparison.getVersion2(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
-                "\n",
-                ""));
+            String value2 = CmsStringUtil.escapeHtml(
+                CmsStringUtil.substitute(
+                    CmsStringUtil.trimToSize(comparison.getVersion2(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
+                    "\n",
+                    ""));
 
             // formatting DateTime
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -405,10 +410,9 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
                 CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
-        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
-            Messages.get().container(
-                Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
+            Messages.GUI_COMPARE_VERSION_1,
+            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         return result;
     }
 
@@ -523,9 +527,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add column for first value
         CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
-        version1Col.setName(Messages.get().container(
-            Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+        version1Col.setName(
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -533,9 +538,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add column for second value
         CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
-        version2Col.setName(Messages.get().container(
-            Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+        version2Col.setName(
+            Messages.get().container(
+                Messages.GUI_COMPARE_VERSION_1,
+                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);

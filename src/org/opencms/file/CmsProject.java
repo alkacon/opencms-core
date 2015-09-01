@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import org.opencms.util.CmsUUID;
 import java.util.List;
 
 /**
- * Describes an OpenCms project, 
+ * Describes an OpenCms project,
  * which contains a set of VFS resources that are being worked on at the same time.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
@@ -62,7 +62,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
         /**
          * Private constructor.<p>
-         * 
+         *
          * @param mode the copy mode integer representation
          */
         private CmsProjectType(int mode) {
@@ -72,9 +72,9 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
         /**
          * Returns the copy mode object from the old copy mode integer.<p>
-         * 
+         *
          * @param mode the old copy mode integer
-         * 
+         *
          * @return the copy mode object
          */
         public static CmsProjectType valueOf(int mode) {
@@ -93,8 +93,8 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
         /**
          * Returns the default flags which should be set when a new project of this type is created.<p>
-         * 
-         * @return the default flags for the project type 
+         *
+         * @return the default flags for the project type
          */
         public int getDefaultFlags() {
 
@@ -166,7 +166,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Creates a new CmsProject.<p>
-     *  
+     *
      * @param projectId the id to use for this project
      * @param projectFqn the name for this project
      * @param description the description for this project
@@ -201,7 +201,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Throws a runtime exception if name is empty.<p>
-     * 
+     *
      * @param name the project name to check
      */
     public static void checkProjectName(String name) {
@@ -214,7 +214,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
     /**
      * Checks if the full resource name (including the site root) of a resource matches
      * any of the project resources of a project.<p>
-     * 
+     *
      * @param projectResources a List of project resources as Strings
      * @param resource the resource to check
      * @return true, if the resource is "inside" the project resources
@@ -228,7 +228,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
     /**
      * Checks if the full resource name (including the site root) of a resource matches
      * any of the project resources of a project.<p>
-     * 
+     *
      * @param projectResources a List of project resources as Strings
      * @param resourcename the resource to check
      * @return true, if the resource is "inside" the project resources
@@ -254,7 +254,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Returns true if the given project id is the online project id.<p>
-     *  
+     *
      * @param projectId the project id to check
      * @return true if the given project id is the online project id
      */
@@ -283,7 +283,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Compares this instance to another given object instance of this class .<p>
-     * 
+     *
      * @param o the other given object instance to compare with
      * @return integer value for sorting the objects
      */
@@ -438,7 +438,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
      * Returns the delete After Publishing flag.<p>
      *
      * @return the delete After Publishing flag
-     * 
+     *
      * @see #getType()
      */
     public boolean isDeleteAfterPublishing() {
@@ -450,7 +450,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
      * Returns the 'hidden' flag.<p>
      *
      * @return the 'hidden' flag
-     * 
+     *
      * @see #getFlags()
      */
     public boolean isHidden() {
@@ -458,10 +458,10 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
         return (getFlags() & PROJECT_FLAG_HIDDEN) == PROJECT_FLAG_HIDDEN;
     }
 
-    /** 
+    /**
      * Checks if the project should be hidden from the project selector in the workplace.<p>
-     * 
-     * @return true if the project should not appear in the workplace's project selector 
+     *
+     * @return true if the project should not appear in the workplace's project selector
      */
     public boolean isHiddenFromSelector() {
 
@@ -470,7 +470,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Returns <code>true</code> if this project is the Online project.<p>
-     * 
+     *
      * @return <code>true</code> if this project is the Online project
      */
     public boolean isOnlineProject() {
@@ -480,7 +480,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Returns true if this is a workflow project.<p>
-     * 
+     *
      * @return true if this is a workflow project
      */
     public boolean isWorkflowProject() {
@@ -531,7 +531,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Sets the 'hidden' flag.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setHidden(boolean value) {
@@ -565,7 +565,7 @@ public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      * Sets the owner id of this project.<p>
-     * 
+     *
      * @param id the id of the new owner
      */
     public void setOwnerId(CmsUUID id) {

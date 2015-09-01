@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The panel for showing links which would be broken by publishing.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsBrokenLinksPanel extends Composite {
@@ -103,7 +103,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param publishDialog the publish dialog to which this broken links panel belongs.
      * @param scrollPanelHeight the available scroll panel height
      */
@@ -122,16 +122,16 @@ public class CmsBrokenLinksPanel extends Composite {
     static {
         SLOT_MAPPING = new int[4];
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_WARNING] = 0;
-        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_PREVIEW] = -1;
+        SLOT_MAPPING[CmsPublishGroupPanel.SLOT_EDIT] = -1;
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_REMOVE] = -1;
         SLOT_MAPPING[CmsPublishGroupPanel.SLOT_MENU] = -1;
     }
 
     /**
       * Adds a resource bean to be displayed.<p>
-      * 
+      *
       * @param res a resource bean
-      * @return the list item widget of the created entry 
+      * @return the list item widget of the created entry
       */
     public CmsListItemWidget addEntry(CmsPublishResource res) {
 
@@ -151,7 +151,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * Returns the buttons which should be shown in the publish dialog's button panel.<p>
-     * 
+     *
      * @return a list of buttons
      */
     public List<CmsPushButton> getButtons() {
@@ -180,9 +180,9 @@ public class CmsBrokenLinksPanel extends Composite {
     }
 
     /**
-     * Sets the resources to be displayed.<p> 
-     * 
-     * @param resourceBeans the resource beans to be displayed 
+     * Sets the resources to be displayed.<p>
+     *
+     * @param resourceBeans the resource beans to be displayed
      * @param actions the available actions
      */
     public void setEntries(Collection<CmsPublishResource> resourceBeans, List<CmsWorkflowAction> actions) {
@@ -212,15 +212,16 @@ public class CmsBrokenLinksPanel extends Composite {
      **/
     public void updateTitle() {
 
-        m_publishDialog.setCaption(Messages.get().key(
-            Messages.GUI_PUBLISH_DIALOG_PROBLEMS_2,
-            m_publishDialog.getSelectedWorkflow().getNiceName(),
-            String.valueOf(m_list.getWidgetCount())));
+        m_publishDialog.setCaption(
+            Messages.get().key(
+                Messages.GUI_PUBLISH_DIALOG_PROBLEMS_2,
+                m_publishDialog.getSelectedWorkflow().getNiceName(),
+                String.valueOf(m_list.getWidgetCount())));
     }
 
     /**
      * The event handler for the back button.<p>
-     * 
+     *
      * @param e the click event
      */
     @UiHandler("m_backButton")
@@ -231,8 +232,8 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * The event handler for the cancel button.<p>
-     * 
-     * @param e the click event 
+     *
+     * @param e the click event
      */
     @UiHandler("m_cancelButton")
     protected void doClickCancel(ClickEvent e) {
@@ -242,7 +243,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * Executes the given action.<p>
-     * 
+     *
      * @param action the action to execute on the selected resources
      */
     protected void executeAction(CmsWorkflowAction action) {
@@ -252,7 +253,7 @@ public class CmsBrokenLinksPanel extends Composite {
 
     /**
      * Sets the text on a button and formats the button.<p>
-     * 
+     *
      * @param button the button
      * @param text the text to put on the button
      */

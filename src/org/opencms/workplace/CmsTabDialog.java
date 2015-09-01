@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,19 +44,19 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for tab styled dialogs.<p> 
- * 
+ * Provides methods for tab styled dialogs.<p>
+ *
  * Extend this class in order to create a tab styled dialog and provide the methods
  * getTabs() and getTabParameterOrder() in the new dialog class which should return lists
- * which represent the tabs of the dialog.<p> 
- * 
+ * which represent the tabs of the dialog.<p>
+ *
  * This class is used for the following dialogs:
  * <ul>
  * <li>User preferences (CmsPreferences.java)
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class CmsTabDialog extends CmsDialog {
 
@@ -84,7 +84,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsTabDialog(CmsJspActionElement jsp) {
@@ -94,7 +94,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -106,7 +106,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Builds the tab content area of the dialog window.<p>
-     * 
+     *
      * @param segment the HTML segment (START / END)
      * @param title the title String for the dialog window
      * @param attributes additional attributes for the content &lt;div&gt; area of the tab dialog
@@ -135,7 +135,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the end html for the tab content area of the dialog window.<p>
-     * 
+     *
      * @return the end html for the tab content area of the dialog window
      */
     public String dialogTabContentEnd() {
@@ -145,7 +145,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the start html for the tab content area of the dialog window.<p>
-     * 
+     *
      * @param title the title for the dialog
      * @return the start html for the tab content area of the dialog window
      */
@@ -156,7 +156,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the start html for the tab content area of the dialog window.<p>
-     * 
+     *
      * @param title the title for the dialog
      * @param attributes additional attributes for the content &lt;div&gt; area of the tab dialog
      * @return the start html for the tab content area of the dialog window
@@ -168,7 +168,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Builds the html for the tab row of the tab dialog.<p>
-     * 
+     *
      * @return the html for the tab row
      */
     public String dialogTabRow() {
@@ -178,7 +178,8 @@ public abstract class CmsTabDialog extends CmsDialog {
         List<String> tabNames = getTabs();
         if (tabNames.size() < 2) {
             // less than 2 tabs present, do not show them and create a border line
-            result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
+            result.append(
+                "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
             result.append("<tr>\n");
             result.append("\t<td class=\"dialogtabrow\"></td>\n");
             result.append("</tr>\n");
@@ -188,7 +189,8 @@ public abstract class CmsTabDialog extends CmsDialog {
         Iterator<String> i = tabNames.iterator();
         int counter = 1;
         int activeTab = getActiveTab();
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
+        result.append(
+            "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\" style=\"empty-cells: show;\">\n");
         result.append("<tr>\n");
         while (i.hasNext()) {
             // build a tab entry
@@ -235,9 +237,9 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the number of the currently active tab depending on the request parameter.<p>
-     * 
+     *
      * This method has to be called once in initWorkplaceRequestValues after filling the request parameters.<p>
-     * 
+     *
      * @return the number of the currently active tab
      */
     public int getActiveTab() {
@@ -265,7 +267,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the localized name of the currently active tab.<p>
-     * 
+     *
      * @return the localized name of the currently active tab or null if no tab name was found
      */
     public String getActiveTabName() {
@@ -287,7 +289,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the value of the setpressed parameter.<p>
-     * 
+     *
      * @return the value of the setpressed parameter
      */
     public String getParamSetPressed() {
@@ -297,7 +299,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the value of the tab parameter.<p>
-     * 
+     *
      * @return the value of the tab parameter
      */
     public String getParamTab() {
@@ -307,13 +309,13 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns the order of the parameter prefixes for each tab.<p>
-     * 
+     *
      * For example, all parameters stored in tab 1 have the prefix "Tab1", i.e.
      * the getter and setter methods must be getParam<b>Tab1</b>MyParameterName().<p>
-     * 
-     * To change the tab order, simply change the order in the String array 
-     * and in the generated tab list.<p> 
-     * 
+     *
+     * To change the tab order, simply change the order in the String array
+     * and in the generated tab list.<p>
+     *
      * @return the ordered parameter prefix List
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
@@ -321,17 +323,17 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Returns a list with localized Strings representing the names of the tabs.<p>
-     * 
+     *
      * @return list with localized String for the tabs
      */
     public abstract List<String> getTabs();
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * This overloads the default method of the parent class.<p>
-     * 
+     *
      * @return the start html of the page
      */
     @Override
@@ -341,11 +343,11 @@ public abstract class CmsTabDialog extends CmsDialog {
     }
 
     /**
-     * Builds the start html of the page, including setting of DOCTYPE and 
+     * Builds the start html of the page, including setting of DOCTYPE and
      * inserting a header with the content-type.<p>
-     * 
+     *
      * This overloads the default method of the parent class.<p>
-     * 
+     *
      * @param helpUrl the key for the online help to include on the page
      * @return the start html of the page
      */
@@ -393,12 +395,12 @@ public abstract class CmsTabDialog extends CmsDialog {
     }
 
     /**
-     * Returns all initialized parameters of the current workplace class 
+     * Returns all initialized parameters of the current workplace class
      * as hidden field tags that can be inserted in a form.<p>
-     * 
-     * This overwrites the method in CmsWorkplace because for each tab, 
-     * only the hidden parameters of the non displayed tabs are added.<p> 
-     * 
+     *
+     * This overwrites the method in CmsWorkplace because for each tab,
+     * only the hidden parameters of the non displayed tabs are added.<p>
+     *
      * @return all initialized parameters of the current workplace class
      * as hidden field tags that can be inserted in a html form
      */
@@ -417,7 +419,8 @@ public abstract class CmsTabDialog extends CmsDialog {
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
                 result.append("\" value=\"");
-                result.append(CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
+                result.append(
+                    CmsEncoder.encode(entry.getValue().toString(), getCms().getRequestContext().getEncoding()));
                 result.append("\">\n");
             }
         }
@@ -426,7 +429,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Sets the value of the setpressed parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamSetPressed(String value) {
@@ -436,7 +439,7 @@ public abstract class CmsTabDialog extends CmsDialog {
 
     /**
      * Sets the value of the tab parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamTab(String value) {

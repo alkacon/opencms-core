@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import org.apache.commons.fileupload.util.Streams;
 
 /**
  * Handles all RPC services related to the upload dialog.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.upload.CmsUploadService
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadService
  * @see org.opencms.gwt.shared.rpc.I_CmsUploadServiceAsync
@@ -66,8 +66,8 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
                 CmsUploadBean.SESSION_ATTRIBUTE_LISTENER_ID);
             CmsUploadListener listener = CmsUploadBean.getCurrentListener(listenerId);
             if ((listener != null) && !listener.isCanceled()) {
-                listener.cancelUpload(new CmsUploadException(Messages.get().getBundle().key(
-                    Messages.ERR_UPLOAD_USER_CANCELED_0)));
+                listener.cancelUpload(
+                    new CmsUploadException(Messages.get().getBundle().key(Messages.ERR_UPLOAD_USER_CANCELED_0)));
                 return Boolean.TRUE;
             }
         }
@@ -124,10 +124,10 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
 
     /**
      * Checks if a resource already exists for the given path.<p>
-     * 
+     *
      * @param path the path
-     *  
-     * @return true if a resource already exists 
+     *
+     * @return true if a resource already exists
      */
     private boolean existsResource(String path) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Abstract class which provides common functionality for workflow managers, like initialization of 
+ * Abstract class which provides common functionality for workflow managers, like initialization of
  * the configuration parameters.<p>
- * 
+ *
  */
 public abstract class A_CmsWorkflowManager implements I_CmsWorkflowManager {
 
@@ -49,8 +49,8 @@ public abstract class A_CmsWorkflowManager implements I_CmsWorkflowManager {
 
     /**
      * Gets the parameters of the workflow manager.<p>
-     * 
-     * @return the configuration parameters of the workflow manager 
+     *
+     * @return the configuration parameters of the workflow manager
      */
     public Map<String, String> getParameters() {
 
@@ -67,8 +67,8 @@ public abstract class A_CmsWorkflowManager implements I_CmsWorkflowManager {
 
     /**
      * Sets the configuration parameters of the workflow manager.<p>
-     * 
-     * @param parameters the map of configuration parameters 
+     *
+     * @param parameters the map of configuration parameters
      */
     public void setParameters(Map<String, String> parameters) {
 
@@ -80,10 +80,10 @@ public abstract class A_CmsWorkflowManager implements I_CmsWorkflowManager {
 
     /**
      * Gets the locale to use for a given CMS context.<p>
-     * 
-     * @param userCms the CMS context 
-     * 
-     * @return the locale to use 
+     *
+     * @param userCms the CMS context
+     *
+     * @return the locale to use
      */
     protected Locale getLocale(CmsObject userCms) {
 
@@ -92,11 +92,11 @@ public abstract class A_CmsWorkflowManager implements I_CmsWorkflowManager {
 
     /**
      * Gets the configuration parameter for a given key, and if it doesn't find one, returns a default value.<p>
-     * 
-     * @param key the configuration key 
-     * @param defaultValue the default value to use when the configuration entry isn't found 
-     * 
-     * @return the configuration value 
+     *
+     * @param key the configuration key
+     * @param defaultValue the default value to use when the configuration entry isn't found
+     *
+     * @return the configuration value
      */
     protected String getParameter(String key, String defaultValue) {
 

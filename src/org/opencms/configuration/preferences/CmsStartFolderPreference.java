@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 public class CmsStartFolderPreference extends CmsBuiltinPreference {
 
     /**
-     * The nice name 
+     * The nice name.<p>
      */
     private static final String NICE_NAME = "%(key."
         + org.opencms.workplace.commons.Messages.GUI_PREF_STARTUP_FOLDER_0
@@ -44,8 +44,8 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the preference name 
+     *
+     * @param name the preference name
      */
     public CmsStartFolderPreference(String name) {
 
@@ -59,16 +59,17 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition() {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            null,//type
-            null,//widget
-            null,//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
+            null, //type
+            null, //widget
+            null, //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;
@@ -80,16 +81,17 @@ public class CmsStartFolderPreference extends CmsBuiltinPreference {
     @Override
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
-        CmsXmlContentProperty prop = new CmsXmlContentProperty(getName(),//name
-            "string",//type
-            "gallery",//widget
-            "configuration:{\"tabconfig\":\"folders\", \"gallerymode\":\"widget\"}",//widgetconfig
-            null,//regex
-            null,//ruletype
-            null,//default
-            NICE_NAME,//nicename
-            null,//description
-            null,//error
+        CmsXmlContentProperty prop = new CmsXmlContentProperty(
+            getName(), //name
+            "string", //type
+            "gallery", //widget
+            "configuration:{\"tabconfig\":\"folders\", \"gallerymode\":\"widget\"}", //widgetconfig
+            null, //regex
+            null, //ruletype
+            null, //default
+            NICE_NAME, //nicename
+            null, //description
+            null, //error
             null//preferfolder
         );
         return prop;

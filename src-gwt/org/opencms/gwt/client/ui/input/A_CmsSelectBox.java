@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -79,11 +79,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Abstract superclass for select box widgets.<p>
- * 
- * @param <OPTION> the widget type of the select options 
- * 
+ *
+ * @param <OPTION> the widget type of the select options
+ *
  * @since 8.0.0
- * 
+ *
  */
 public abstract class A_CmsSelectBox<OPTION extends A_CmsSelectCell> extends Composite
 implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_CmsTruncable {
@@ -97,7 +97,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Drag and drop event preview handler.<p>
-     * 
+     *
      * To be used while dragging.<p>
      */
     protected class ScrollEventPreviewHandler implements NativePreviewHandler {
@@ -209,7 +209,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         addHoverHandlers(m_opener);
         addMainPanelHoverHandlers(m_panel);
         m_openClose = new CmsPushButton(
-            I_CmsImageBundle.INSTANCE.style().triangleRight(),
+            I_CmsImageBundle.INSTANCE.style().triangleDown(),
             I_CmsImageBundle.INSTANCE.style().triangleDown());
         m_openClose.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_openClose.addStyleName(CSS.selectIcon());
@@ -259,8 +259,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Adds a new select option to the select box.<p>
-     * 
-     * @param cell the widget representing the select option 
+     *
+     * @param cell the widget representing the select option
      */
     public void addOption(OPTION cell) {
 
@@ -313,7 +313,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Returns the selector of this widget.<p>
-     * 
+     *
      * @return the selector of this widget
      */
     public Panel getSelectorPopup() {
@@ -353,9 +353,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Helper method to set the current selected option.<p>
-     * 
+     *
      * This method does not trigger the "value changed" event.<p>
-     * 
+     *
      * @param value the new value
      */
     public void selectValue(String value) {
@@ -398,8 +398,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Sets the form value of this select box.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -408,9 +408,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Sets the form value of this select box.<p>
-     * 
+     *
      * @param value the new value
-     * @param fireEvents true if change events should be fired  
+     * @param fireEvents true if change events should be fired
      */
     public void setFormValue(Object value, boolean fireEvents) {
 
@@ -438,8 +438,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
-     * Sets the behavior of the popup if the input is bigger than the selectbox itself. 
-     * @param resize 
+     * Sets the behavior of the popup if the input is bigger than the selectbox itself.
+     * @param resize
      */
     public void setPopupResize(boolean resize) {
 
@@ -467,7 +467,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
-     * Internal method which is called when the selector is closed.<p> 
+     * Internal method which is called when the selector is closed.<p>
      */
     protected void close() {
 
@@ -485,16 +485,16 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Internal method to create a select option for an unknown value.<p>
-     * 
-     * @param value the value for which to create the option 
-     * 
+     *
+     * @param value the value for which to create the option
+     *
      * @return the new option
      */
     protected abstract OPTION createUnknownOption(String value);
 
     /**
      * Handle clicks on the opener.<p>
-     * 
+     *
      * @param e the click event
      */
     @UiHandler("m_opener")
@@ -521,7 +521,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
         }
     }
 
-    /** 
+    /**
      * The implementation of this method should initialize the opener of the select box.<p>
      */
     protected abstract void initOpener();
@@ -538,8 +538,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Handles the focus event on the opener.<p>
-     * 
-     * @param event  
+     *
+     * @param event
      */
     @UiHandler("m_opener")
     protected void onFocus(FocusEvent event) {
@@ -566,8 +566,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * This method is called when a value is selected.<p>
-     * 
-     * @param value the selected value 
+     *
+     * @param value the selected value
      */
     protected void onValueSelect(String value) {
 
@@ -576,9 +576,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Internal handler method which is called when a new value is selected.<p>
-     * 
+     *
      * @param value the new value
-     * @param fireEvents true if change events should be fired 
+     * @param fireEvents true if change events should be fired
      */
     protected void onValueSelect(String value, boolean fireEvents) {
 
@@ -688,22 +688,22 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Abstract method whose implementation should truncate the opener widget(s).<p>
-     * 
+     *
      * @param prefix the text metrics prefix
-     * @param width the widget width 
+     * @param width the widget width
      */
     protected abstract void truncateOpener(String prefix, int width);
 
-    /** 
+    /**
      * The implementation of this method should update the opener when a new value is selected by the user.<p>
-     * 
+     *
      * @param newValue the value selected by the user
      */
     protected abstract void updateOpener(String newValue);
 
     /**
      * Helper method for adding event handlers for a 'hover' effect to the opener.<p>
-     * 
+     *
      * @param panel the opener
      */
     private void addHoverHandlers(FocusPanel panel) {
@@ -736,7 +736,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Helper method for adding event handlers for a 'hover' effect to the main panel.<p>
-     * 
+     *
      * @param panel the main panel
      */
     private void addMainPanelHoverHandlers(Panel panel) {
@@ -763,8 +763,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Initializes the event handlers of a select cell.<p>
-     * 
-     * @param cell the select cell whose event handlers should be initialized 
+     *
+     * @param cell the select cell whose event handlers should be initialized
      */
     private void initSelectCell(final A_CmsSelectCell cell) {
 
@@ -806,7 +806,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Adds a scroll panel to the selector popup.<p>
-     * 
+     *
      * @param availableHeight the available popup height
      */
     private void setScrollingSelector(int availableHeight) {

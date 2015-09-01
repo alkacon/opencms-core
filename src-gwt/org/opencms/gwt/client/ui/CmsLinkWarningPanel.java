@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A widget containing that links to a sitemap item which the user wants to delete will be broken.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsLinkWarningPanel extends Composite {
@@ -82,8 +82,8 @@ public class CmsLinkWarningPanel extends Composite {
 
     /**
      * Fills the panel with the tree list of broken links.<p>
-     * 
-     * @param brokenLinkBeans the beans representing the broken links 
+     *
+     * @param brokenLinkBeans the beans representing the broken links
      */
     public void fill(List<CmsBrokenLinkBean> brokenLinkBeans) {
 
@@ -94,9 +94,9 @@ public class CmsLinkWarningPanel extends Composite {
 
     /**
      * Helper method for creating a list item widget based on a bean.<p>
-     * 
-     * @param brokenLinkBean the bean with the data for the list item widget 
-     * 
+     *
+     * @param brokenLinkBean the bean with the data for the list item widget
+     *
      * @return the new list item widget
      */
     protected CmsListItemWidget createListItemWidget(CmsBrokenLinkBean brokenLinkBean) {
@@ -130,10 +130,10 @@ public class CmsLinkWarningPanel extends Composite {
 
     /**
      * Helper method for creating a tree item from a bean.<p>
-     * 
+     *
      * @param brokenLinkBean the bean containing the data for the tree item
-     * 
-     * @return a tree item 
+     *
+     * @return a tree item
      */
     protected CmsTreeItem createTreeItem(CmsBrokenLinkBean brokenLinkBean) {
 

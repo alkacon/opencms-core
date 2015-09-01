@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,15 +56,15 @@ import java.util.Set;
 
 /**
  * Sitemap context menu edit entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsEditMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -135,7 +135,8 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                         }
                         propConfig.putAll(CmsSitemapView.getInstance().getController().getData().getProperties());
                         A_CmsPropertyEditor editor = createEntryEditor(handler, propConfig);
-                        editor.setPropertyNames(CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
+                        editor.setPropertyNames(
+                            CmsSitemapView.getInstance().getController().getData().getAllPropertyNames());
                         final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
                         CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
 
@@ -180,17 +181,19 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = (entry != null);
+        boolean show = (entry != null)
+            && (!CmsSitemapView.getInstance().isGalleryMode()
+                || getHoverbar().getController().getData().isGalleryManager());
         setVisible(show);
     }
 
     /**
      * Creates the right sitemap entry editor for the current mode.<p>
-     * 
+     *
      * @param handler the entry editor handler
-     * @param  propConfig the property configuration to use  
-     * 
-     * @return a sitemap entry editor instance 
+     * @param  propConfig the property configuration to use
+     *
+     * @return a sitemap entry editor instance
      */
     protected A_CmsPropertyEditor createEntryEditor(
         I_CmsPropertyEditorHandler handler,

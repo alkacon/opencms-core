@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,10 +41,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
-/** 
+/**
  * Wraps an edit widget to supply a widget label.<p>
  **/
-public class CmsFormWidgetWrapper extends Composite implements I_CmsFormEditWidget, HasResizeHandlers, I_HasResizeOnShow {
+public class CmsFormWidgetWrapper extends Composite
+implements I_CmsFormEditWidget, HasResizeHandlers, I_HasResizeOnShow {
 
     /** The edit widget. */
     private I_CmsEditWidget m_editWidget;
@@ -69,7 +70,7 @@ public class CmsFormWidgetWrapper extends Composite implements I_CmsFormEditWidg
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param editWidget the edit widget to wrap
      */
     public CmsFormWidgetWrapper(I_CmsEditWidget editWidget) {
@@ -113,8 +114,8 @@ public class CmsFormWidgetWrapper extends Composite implements I_CmsFormEditWidg
 
     /**
      * Gets the wrapped widget.<p>
-     * 
-     * @return the wrapped widget 
+     *
+     * @return the wrapped widget
      */
     public I_CmsEditWidget getEditWidget() {
 
@@ -185,7 +186,7 @@ public class CmsFormWidgetWrapper extends Composite implements I_CmsFormEditWidg
 
     /**
      * The edit widget needs to set, before the widget may be used.<p>
-     * 
+     *
      * @param editWidget the edit widget to wrap
      */
     public void setEditWidget(I_CmsEditWidget editWidget) {

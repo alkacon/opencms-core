@@ -78,6 +78,11 @@ div.messageWrap{
 div.notificationContainer, .notificationContainer div.messagesPanel > div{
 	text-align: center;
 }
+
+.messagesPanel {
+	margin-top: 30px; 	
+} 
+
 .notificationMessage div.messageContent{
 	dislay: inline-block;
 }

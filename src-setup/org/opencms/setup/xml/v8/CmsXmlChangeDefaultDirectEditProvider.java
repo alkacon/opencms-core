@@ -13,13 +13,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import org.dom4j.Document;
 
 /**
  * Changes the default direct edit provider.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlChangeDefaultDirectEditProvider extends A_CmsXmlWorkplace {
@@ -58,8 +58,8 @@ public class CmsXmlChangeDefaultDirectEditProvider extends A_CmsXmlWorkplace {
 
     /**
      * Returns the xpath for the attribute containing the direct edit provider class name.<p>
-     * 
-     * @return the xpath for the attribute containing the direct edit provider class name 
+     *
+     * @return the xpath for the attribute containing the direct edit provider class name
      */
     public String xpathForClass() {
 
@@ -67,9 +67,9 @@ public class CmsXmlChangeDefaultDirectEditProvider extends A_CmsXmlWorkplace {
     }
 
     /**
-     * Returns the xpath for the direct edit provider node.<p> 
-     * 
-     * @return the xpath 
+     * Returns the xpath for the direct edit provider node.<p>
+     *
+     * @return the xpath
      */
     public String xpathForProvider() {
 

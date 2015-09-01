@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,13 +34,13 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Response wrapper for static export requests, required to access the status code of the response.<p>
- * 
+ *
  * The <code>{@link org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, HttpServletResponse)}</code>
  * method is called by the static export manager. Many implementations set the http status codes for the response.
- * This wrapper enables the export manager to return the status code set on the response 
+ * This wrapper enables the export manager to return the status code set on the response
  * in <code>{@link org.opencms.staticexport.CmsStaticExportManager#export(javax.servlet.http.HttpServletRequest, HttpServletResponse, org.opencms.file.CmsObject, CmsStaticExportData)}</code>.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
 
@@ -49,7 +49,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * Creates a new export response wrapper.<p>
-     * 
+     *
      * @param res the original response to wrap
      */
     public CmsStaticExportResponseWrapper(HttpServletResponse res) {
@@ -61,7 +61,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Returns the status code of this export response, if no status code was set so far,
      * <code>-1</code> is returned.<p>
-     * 
+     *
      * @return the status code of this export response
      */
     public int getStatus() {

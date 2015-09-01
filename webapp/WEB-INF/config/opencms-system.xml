@@ -32,6 +32,7 @@
 			<resourceinithandler
 				class="org.opencms.ade.detailpage.CmsDetailPageResourceHandler" />
 			<resourceinithandler class="org.opencms.main.CmsAliasResourceHandler" />
+			<resourceinithandler class="org.opencms.pdftools.CmsPdfResourceHandler" />
 		</resourceinit>
 		<requesthandlers>
 			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />

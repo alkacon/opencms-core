@@ -29,7 +29,6 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
@@ -75,6 +74,7 @@ public class CmsResourceInfoView extends Composite {
         static {
             m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
             m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+            m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
             for (Class<?> cls : new Class[] {
                 CmsEditUserSettings.class,
                 CmsAbout.class,
@@ -221,9 +221,6 @@ public class CmsResourceInfoView extends Composite {
     @UiField
     protected HasText m_userLastModified;
 
-    /** Resource status bean. */
-    private CmsResourceStatusBean m_status;
-
     /**
      * Creates a new widget instance.<p>
      *
@@ -232,10 +229,9 @@ public class CmsResourceInfoView extends Composite {
     public CmsResourceInfoView(CmsResourceStatusBean status) {
 
         initWidget(uiBinder.createAndBindUi(this));
-        m_status = status;
         CmsListItemWidget infoBox = new CmsListItemWidget(status.getListInfo());
         infoBox.addButton(new CmsContextMenuButton(status.getStructureId(), new ContextMenuHandler()));
-        m_infoBoxContainer.add(new CmsListItem(infoBox));
+        m_infoBoxContainer.add(infoBox);
         m_dateCreated.setText(status.getDateCreated());
         m_dateExpired.setText(status.getDateExpired());
         m_dateLastModified.setText(status.getDateLastModified());

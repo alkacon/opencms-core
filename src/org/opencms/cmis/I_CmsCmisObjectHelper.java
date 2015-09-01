@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,46 +39,46 @@ public interface I_CmsCmisObjectHelper {
 
     /**
      * Deletes a CMIS object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the id of the object to delete 
-     * @param allVersions flag to delete all version 
+     *
+     * @param context the call context
+     * @param objectId the id of the object to delete
+     * @param allVersions flag to delete all version
      */
     void deleteObject(CmsCmisCallContext context, String objectId, boolean allVersions);
 
     /**
      * Gets the ACL for an object.<p>
-     * 
+     *
      * @param context the call context
-     * @param objectId the object id 
-     * @param onlyBasicPermissions flag to only get basic permissions 
-     * 
-     * @return the ACL for the object 
+     * @param objectId the object id
+     * @param onlyBasicPermissions flag to only get basic permissions
+     *
+     * @return the ACL for the object
      */
     Acl getAcl(CmsCmisCallContext context, String objectId, boolean onlyBasicPermissions);
 
     /**
      * Gets the allowable actions for an object.<p>
-     * 
-     * @param context the call context 
-     * @param objectId the object id 
-     * @return the allowable actions 
+     *
+     * @param context the call context
+     * @param objectId the object id
+     * @return the allowable actions
      */
     AllowableActions getAllowableActions(CmsCmisCallContext context, String objectId);
 
     /**
      * Gets the data for a CMIS object.<p>
-     *  
-     * @param context the CMIS call context 
-     * @param objectId the id of the object 
-     * @param filter the property filter 
-     * @param includeAllowableActions flag to include allowable actions 
-     * @param includeRelationships flag to include relationships 
-     * @param renditionFilter the rendition filter string 
-     * @param includePolicyIds flag to include policy ids 
-     * @param includeAcl flag to include ACLs 
-     * 
-     * @return the CMIS object data 
+     *
+     * @param context the CMIS call context
+     * @param objectId the id of the object
+     * @param filter the property filter
+     * @param includeAllowableActions flag to include allowable actions
+     * @param includeRelationships flag to include relationships
+     * @param renditionFilter the rendition filter string
+     * @param includePolicyIds flag to include policy ids
+     * @param includeAcl flag to include ACLs
+     *
+     * @return the CMIS object data
      */
     ObjectData getObject(
         CmsCmisCallContext context,

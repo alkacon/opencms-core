@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Helper class used to perform an action when multiple asynchronous tasks have finished.<p>
- * 
+ *
  * To use this, first, for every action, add a token which uniquely identifies the action. Remove the corresponding
  * token when the action is finished. When all tokens are removed, the final action will be executed.<p>
  */
@@ -44,10 +44,10 @@ public class CmsAsyncJoinHandler {
     /** The set of tokens. */
     protected Set<Object> m_tokens = new HashSet<Object>();
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param joinAction the final action to execute 
+     *
+     * @param joinAction the final action to execute
      */
     public CmsAsyncJoinHandler(Runnable joinAction) {
 
@@ -56,8 +56,8 @@ public class CmsAsyncJoinHandler {
 
     /**
      * Adds tokens.<p>
-     * 
-     * @param tokens the tokens to add 
+     *
+     * @param tokens the tokens to add
      */
     public void addTokens(Object... tokens) {
 
@@ -66,12 +66,12 @@ public class CmsAsyncJoinHandler {
         }
     }
 
-    /** 
+    /**
      * Removes a token.<p>
-     * 
+     *
      * When all tokens have been removed, the final action is executed.<p>
-     * 
-     * @param token the token to remove 
+     *
+     * @param token the token to remove
      */
     public void removeToken(Object token) {
 

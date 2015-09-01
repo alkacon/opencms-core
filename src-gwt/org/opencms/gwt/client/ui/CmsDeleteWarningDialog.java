@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.Command;
 /**
  * A dialog which informs the user that deleting a resource will break links
  * from other resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsDeleteWarningDialog extends CmsConfirmDialog {
@@ -60,6 +60,28 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
 
     /**
      * Constructor.<p>
+     *
+     * @param structureId the structure id of the resource going to be deleted
+     */
+    public CmsDeleteWarningDialog(CmsUUID structureId) {
+
+        this();
+        m_structureId = structureId;
+    }
+
+    /**
+     * Constructor.<p>
+     *
+     * @param sitePath the site-path of the resource going to be deleted
+     */
+    public CmsDeleteWarningDialog(String sitePath) {
+
+        this();
+        m_sitePath = sitePath;
+    }
+
+    /**
+     * Constructor.<p>
      */
     private CmsDeleteWarningDialog() {
 
@@ -74,7 +96,7 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
              */
             public void onClose() {
 
-                // do nothing 
+                // do nothing
             }
 
             /**
@@ -93,67 +115,14 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
     }
 
     /**
-     * Constructor.<p>
-     * 
-     * @param sitePath the site-path of the resource going to be deleted
-     */
-    public CmsDeleteWarningDialog(String sitePath) {
-
-        this();
-        m_sitePath = sitePath;
-    }
-
-    /**
-     * Constructor.<p>
-     * 
-     * @param structureId the structure id of the resource going to be deleted
-     */
-    public CmsDeleteWarningDialog(CmsUUID structureId) {
-
-        this();
-        m_structureId = structureId;
-    }
-
-    /**
      * Loads and shows the delete dialog.<p>
-     * 
+     *
      * @param callback the callback that is executed when the resource was deleted (can be <code>null</code>)
      */
     public void loadAndShow(Command callback) {
 
         m_cmd = callback;
         checkBrokenLinks();
-    }
-
-    /**
-     * Deletes a resource from the vfs.<p>
-     * 
-     * @param sitePath the resource site path 
-     */
-    private void deleteResource(final String sitePath) {
-
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                CmsCoreProvider.getVfsService().deleteResource(sitePath, this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                onAfterDeletion();
-            }
-        };
-        action.execute();
     }
 
     /**
@@ -169,34 +138,21 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
     }
 
     /**
-     * Deletes a resource from the vfs.<p>
-     * 
-     * @param structureId the resource structure id
+     * Displays the broken links information.<p>
+     *
+     * @param brokenLinks the broken links information
      */
-    private void deleteResource(final CmsUUID structureId) {
+    protected void displayBrokenLinks(CmsDeleteResourceBean brokenLinks) {
 
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                CmsCoreProvider.getVfsService().deleteResource(structureId, this);
-
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                onAfterDeletion();
-            }
-        };
-        action.execute();
+        CmsListItemWidget widget = new CmsListItemWidget(brokenLinks.getPageInfo());
+        widget.truncate(TM_DIALOG_LIST, 370);
+        addTopWidget(widget);
+        if (brokenLinks.getBrokenLinks().size() > 0) {
+            m_content.fill(brokenLinks.getBrokenLinks());
+            addBottomWidget(m_content);
+            setWidth(600);
+        }
+        center();
     }
 
     /**
@@ -204,7 +160,8 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
      */
     protected void onAfterDeletion() {
 
-        // do nothing by default 
+        // do nothing
+
     }
 
     /**
@@ -272,21 +229,65 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
     }
 
     /**
-     * Displays the broken links information.<p>
-     * 
-     * @param brokenLinks the broken links information
+     * Deletes a resource from the vfs.<p>
+     *
+     * @param structureId the resource structure id
      */
-    protected void displayBrokenLinks(CmsDeleteResourceBean brokenLinks) {
+    private void deleteResource(final CmsUUID structureId) {
 
-        CmsListItemWidget widget = new CmsListItemWidget(brokenLinks.getPageInfo());
-        widget.truncate(TM_DIALOG_LIST, 370);
-        addTopWidget(widget);
-        if (brokenLinks.getBrokenLinks().size() > 0) {
-            m_content.fill(brokenLinks.getBrokenLinks());
-            addBottomWidget(m_content);
-            setWidth(600);
-        }
-        center();
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                CmsCoreProvider.getVfsService().deleteResource(structureId, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                onAfterDeletion();
+            }
+        };
+        action.execute();
+    }
+
+    /**
+     * Deletes a resource from the vfs.<p>
+     *
+     * @param sitePath the resource site path
+     */
+    private void deleteResource(final String sitePath) {
+
+        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
+             */
+            @Override
+            public void execute() {
+
+                CmsCoreProvider.getVfsService().deleteResource(sitePath, this);
+
+            }
+
+            /**
+             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
+             */
+            @Override
+            protected void onResponse(Void result) {
+
+                onAfterDeletion();
+            }
+        };
+        action.execute();
     }
 
 }

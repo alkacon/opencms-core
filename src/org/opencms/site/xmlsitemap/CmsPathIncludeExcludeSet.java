@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ public class CmsPathIncludeExcludeSet {
 
     /**
      * Adds an excluded path.<p>
-     * 
+     *
      * @param exclude the path to add
      */
     public void addExclude(String exclude) {
@@ -66,7 +66,7 @@ public class CmsPathIncludeExcludeSet {
 
     /**
      * Adds an included path.<p>
-     * 
+     *
      * @param include the path to add
      */
     public void addInclude(String include) {
@@ -78,8 +78,8 @@ public class CmsPathIncludeExcludeSet {
 
     /**
      * Gets the root include paths, i.e. those include paths which don't have an ancestor path which is also an include path.<p>
-     * 
-     * @return the list of root include paths 
+     *
+     * @return the list of root include paths
      */
     public Set<String> getIncludeRoots() {
 
@@ -103,16 +103,16 @@ public class CmsPathIncludeExcludeSet {
 
     /**
      * Checks if the given path is excluded by the include/exclude configuration.<p>
-     * 
-     * @param path the path to check 
-     * 
-     * @return true if the path is excluded 
+     *
+     * @param path the path to check
+     *
+     * @return true if the path is excluded
      */
     public boolean isExcluded(String path) {
 
         path = normalizePath(path);
         List<String> pathList = new ArrayList<String>(m_allPaths);
-        // m_allPaths is already sorted, we need the reverse ordering so children come before their parents 
+        // m_allPaths is already sorted, we need the reverse ordering so children come before their parents
         Collections.reverse(pathList);
         for (String pathInList : pathList) {
             if (CmsStringUtil.isPrefixPath(pathInList, path)) {
@@ -124,10 +124,10 @@ public class CmsPathIncludeExcludeSet {
 
     /**
      * Converts a path to a normalized form.<p>
-     * 
+     *
      * @param path the path to normalize
-     * 
-     * @return the normalized path 
+     *
+     * @return the normalized path
      */
     protected String normalizePath(String path) {
 

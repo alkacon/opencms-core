@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ import org.dom4j.Node;
 
 /**
  * Converts legacy pages (OpenCms 5 and earlier) to XML pages (OpenCms 6).<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @deprecated no longer in use
  */
 @Deprecated
@@ -61,7 +61,7 @@ public final class CmsXmlPageConverter {
 
     /**
      * Converts the contents of a page into an xml page.<p>
-     * 
+     *
      * @param cms the cms object
      * @param content the content used with xml templates
      * @param locale the locale of the body element(s)

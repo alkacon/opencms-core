@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,16 +38,16 @@ import java.io.File;
 
 import org.dom4j.Document;
 
-/** 
+/**
  * Tests the setup xml helper class.<p>
- * 
+ *
  * @since 6.1.8
  */
 public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSetupXmlHelper(String arg0) {
@@ -57,7 +57,7 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
 
     /**
      * Tests reading xml file.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testXmlModification() throws Exception {

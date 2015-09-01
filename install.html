@@ -87,7 +87,7 @@ On Windows-based systems MySQL has to be installed on the
 <code>C:\</code> drive and should be registered as service using 
 <code>%MYSQL_HOME%/bin/mysqld -install</code>.</p>
 
-<p>OpenCms can be used with MySQL 5.0, 5.1 and 5.5.</p>
+<p>OpenCms can be used with MySQL 5.x.</p>
 <p>Start the MySQL server by running the service (WINDOWS) or executing 
 <code>%MYSQL_HOME%/bin/mysqld</code> (UNIX).</p>
 <p>Check that MySQL is running before you continue by starting the MySQL monitor (execute 
@@ -159,11 +159,8 @@ command line.</p>
 <blockquote>
 <p>
 
-<code>use mysql;
-<br /> insert into user values ('localhost', 'opencmsuser', password('XXXXX'),\
-<br /> &nbsp;&nbsp;&nbsp;'N','N','N','N','N','N','N','N','N','N','N','N','N','N');
-<br /> insert into db values ('localhost', 'opencms', 'opencmsuser',\
-<br /> &nbsp;&nbsp;&nbsp;'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
+<code> create user 'opencmsuser'@'localhost' identified by 'XXXXX';
+<br /> grant all privileges on opencms.* to 'opencmsuser'@localhost' identified by 'XXXXX';
 <br /> flush privileges;</code>
 </p>
 </blockquote>

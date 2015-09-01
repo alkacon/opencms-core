@@ -133,7 +133,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String collectorParam,
         Locale locale,
         boolean editable)
-    throws JspException {
+        throws JspException {
 
         this(container, context, collectorName, collectorParam, null, null, locale, editable);
     }
@@ -161,7 +161,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String pageSize,
         Locale locale,
         boolean editable)
-    throws JspException {
+        throws JspException {
 
         this(
             container,
@@ -197,7 +197,7 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String pageSize,
         Locale locale,
         CmsDirectEditMode editMode)
-    throws JspException {
+        throws JspException {
 
         setCollector(collectorName);
         setParam(collectorParam);
@@ -299,7 +299,11 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
                 info.setCollectorName(m_collectorName);
                 info.setCollectorParams(m_collectorParam);
                 info.setId(m_contentInfoBean.getId());
-                CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
+                if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(
+                        pageContext,
+                        info);
+                }
             }
             m_isFirstLoop = false;
             if (!hasMoreContent && m_editEmpty && (m_directEditLinkForNew != null)) {
@@ -505,13 +509,13 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
             usedContainer = this;
             if (CmsStringUtil.isEmpty(m_collector)) {
                 // check if the tag contains a collector attribute
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
             }
             if (CmsStringUtil.isEmpty(m_param)) {
                 // check if the tag contains a param attribute
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
             }
         } else {
             // use provided container (preloading ancestor)
@@ -534,8 +538,8 @@ public class CmsJspTagContentLoad extends CmsJspTagResourceLoad implements I_Cms
         String resourcename = getResourceName(m_cms, usedContainer);
 
         // initialize a string mapper to resolve EL like strings in tag attributes
-        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext).setResourceName(
-            resourcename).setKeepEmptyMacros(true);
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(
+            pageContext).setResourceName(resourcename).setKeepEmptyMacros(true);
 
         // resolve the collector name
         if (container == null) {

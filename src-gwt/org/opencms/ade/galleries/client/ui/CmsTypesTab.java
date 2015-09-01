@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,14 +58,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides the widget for the types tab.<p>
- * 
+ *
  * It displays the available types in the given sort order.
- * 
+ *
  * @since 8.0.
  */
 public class CmsTypesTab extends A_CmsListTab {
 
-    /** 
+    /**
      * Handles the change of the item selection.<p>
      */
     private class SelectionHandler extends A_SelectionHandler {
@@ -75,7 +75,7 @@ public class CmsTypesTab extends A_CmsListTab {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param resourceType as id(name) for the selected type
          * @param checkBox the reference to the checkbox
          */
@@ -138,8 +138,8 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /**
      * Constructor.<p>
-     * 
-     * @param tabHandler the tab handler 
+     *
+     * @param tabHandler the tab handler
      * @param dndHandler the drag and drop handler
      */
     public CmsTypesTab(CmsTypesTabHandler tabHandler, CmsDNDHandler dndHandler) {
@@ -152,8 +152,8 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /**
      * Fill the content of the types tab panel.<p>
-     * 
-     * @param typeInfos the type info beans 
+     *
+     * @param typeInfos the type info beans
      * @param selectedTypes the list of types to select
      */
     public void fillContent(List<CmsResourceTypeBean> typeInfos, List<String> selectedTypes) {
@@ -171,19 +171,27 @@ public class CmsTypesTab extends A_CmsListTab {
             listItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(typeBean.getType(), false));
             listItemWidget.setUnselectable();
             CmsCheckBox checkBox = new CmsCheckBox();
-            SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
-            checkBox.addClickHandler(selectionHandler);
-            listItemWidget.addClickHandler(selectionHandler);
-            if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
-                checkBox.setChecked(true);
-            }
-            listItemWidget.addButton(createSelectButton(selectionHandler));
             CmsListItem listItem = new CmsListItem(checkBox, listItemWidget);
-            listItem.setId(typeBean.getType());
-            if (typeBean.isCreatableType() && (m_dndHandler != null)) {
-                listItem.initMoveHandle(m_dndHandler, true);
-                listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+            if (typeBean.isDeactivated()) {
+                checkBox.disable("");
+                listItem.addStyleName(
+                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().expired());
+            } else {
+                SelectionHandler selectionHandler = new SelectionHandler(typeBean.getType(), checkBox);
+                checkBox.addClickHandler(selectionHandler);
+                listItemWidget.addClickHandler(selectionHandler);
+                if ((selectedTypes != null) && selectedTypes.contains(typeBean.getType())) {
+                    checkBox.setChecked(true);
+                }
+                listItemWidget.addButton(createSelectButton(selectionHandler));
+
+                if (typeBean.isCreatableType() && (m_dndHandler != null)) {
+                    listItem.initMoveHandle(m_dndHandler, true);
+                    listItem.getMoveHandle().setTitle(Messages.get().key(Messages.GUI_TAB_TYPES_CREATE_NEW_0));
+                }
             }
+            listItem.setId(typeBean.getType());
+
             if (typeBean.getVisibility() == TypeVisibility.showOptional) {
                 listItem.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().shouldOnlyShowInFullTypeList());
             }
@@ -216,7 +224,7 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /**
      * Deselect the types  in the types list.<p>
-     * 
+     *
      * @param types the categories to deselect
      */
     public void uncheckTypes(Collection<String> types) {
@@ -231,7 +239,7 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /**
      * Updates the types list.<p>
-     * 
+     *
      * @param types the new types list
      * @param selectedTypes the list of types to select
      */
@@ -300,14 +308,15 @@ public class CmsTypesTab extends A_CmsListTab {
 
     /**
      * Enables/disables full type list mode.<p>
-     * 
-     * @param showAllTypes true if all types should be shown 
+     *
+     * @param showAllTypes true if all types should be shown
      */
     protected void setShowAllTypes(boolean showAllTypes) {
 
-        m_typeListMode.setValue(showAllTypes
-        ? I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesFull()
-        : I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
+        m_typeListMode.setValue(
+            showAllTypes
+            ? I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesFull()
+            : I_CmsLayoutBundle.INSTANCE.galleryDialogCss().typesImportant());
         m_tabHandler.updateSize();
     }
 

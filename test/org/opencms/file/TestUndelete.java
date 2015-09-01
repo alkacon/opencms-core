@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,7 +48,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestUndelete(String arg0) {
@@ -58,7 +58,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -96,11 +96,11 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method to undelete a file.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param file the file to undelete
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public static void undeleteFile(OpenCmsTestCase tc, CmsObject cms, String file) throws Throwable {
@@ -126,11 +126,11 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method to undelete a single folder.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param folder the folder to undelete
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public static void undeleteFolder(OpenCmsTestCase tc, CmsObject cms, String folder) throws Throwable {
@@ -167,11 +167,11 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method to undelete a complete subtree.<p>
-     * 
+     *
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param folder the folder to undelete
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public static void undeleteFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String folder) throws Throwable {
@@ -217,7 +217,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteFile() throws Throwable {
@@ -235,7 +235,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteWithACE() throws Throwable {
@@ -272,7 +272,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a not deleted file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteFileWrong() throws Throwable {
@@ -292,7 +292,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteFolder() throws Throwable {
@@ -310,7 +310,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a folder and recusivly on all resources in the folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteFolderRecursive() throws Throwable {
@@ -328,7 +328,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a not deleted folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteFolderWrong() throws Throwable {
@@ -354,7 +354,7 @@ public class TestUndelete extends OpenCmsTestCase {
 
     /**
      * Test the undelete method on a sibling.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUndeleteSibling() throws Throwable {

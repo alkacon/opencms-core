@@ -16,10 +16,10 @@
  *
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
- * 
+ *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.util.Iterator;
 
 /**
  * Name generator which appends a numeric suffix to a given base string.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsNumberSuffixNameSequence implements Iterator<String> {
 
@@ -46,8 +46,8 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param str the base name which should be used for generating the names 
+     *
+     * @param str the base name which should be used for generating the names
      */
     public CmsNumberSuffixNameSequence(String str) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,10 +51,10 @@ public class CmsPropertiesActionElement extends CmsGwtActionElement {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param context the current page context 
-     * @param req the request 
-     * @param res the response 
+     *
+     * @param context the current page context
+     * @param req the request
+     * @param res the response
      */
     public CmsPropertiesActionElement(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
@@ -72,11 +72,12 @@ public class CmsPropertiesActionElement extends CmsGwtActionElement {
         CmsResource resource = cms.readResource(resourcePath, CmsResourceFilter.IGNORE_EXPIRATION);
         StringBuffer buffer = new StringBuffer();
         buffer.append(exportMeta(I_CmsAdePropertiesConstants.META_RESOURCE, resource.getStructureId().toString()));
-        buffer.append(exportMeta(
-            I_CmsAdePropertiesConstants.META_BACKLINK,
-            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                cms,
-                "/system/workplace/views/explorer/explorer_files.jsp")));
+        buffer.append(
+            exportMeta(
+                I_CmsAdePropertiesConstants.META_BACKLINK,
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    "/system/workplace/views/explorer/explorer_files.jsp")));
         return buffer.toString();
     }
 

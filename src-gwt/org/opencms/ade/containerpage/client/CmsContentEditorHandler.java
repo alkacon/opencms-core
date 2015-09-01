@@ -86,10 +86,13 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
+     * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, org.opencms.util.CmsUUID, boolean)
      */
-    public void onClose(String sitePath, boolean isNew) {
+    public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
+        if (m_currentElementId == null) {
+            m_currentElementId = structureId.toString();
+        }
         if (m_dependingElementId != null) {
             m_handler.reloadElements(m_currentElementId, m_dependingElementId);
             m_dependingElementId = null;
@@ -114,7 +117,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openDialog(
 
-    final CmsContainerPageElementPanel element, final boolean inline) {
+        final CmsContainerPageElementPanel element,
+        final boolean inline) {
 
         m_handler.disableToolbarButtons();
         m_handler.deactivateCurrentButton();
@@ -147,7 +151,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 public void execute() {
 
                     addClosedEditorHistoryItem();
-                    onClose(element.getSitePath(), false);
+                    onClose(element.getSitePath(), new CmsUUID(serverId), false);
                 }
             };
             if (inline && CmsContentEditor.hasEditable(element.getElement())) {
@@ -224,7 +228,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     public void execute() {
 
                         addClosedEditorHistoryItem();
-                        onClose(editableData.getSitePath(), isNew);
+                        onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
                     }
                 });
         }
@@ -237,8 +241,8 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openEditorForHistory(String historyHash) {
 
-        m_handler.m_controller.setContentEditing(true);
         if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+            m_handler.m_controller.setContentEditing(true);
             String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
             if (id.contains(",")) {
                 String[] ids = id.split(",");
@@ -252,13 +256,19 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                 public void execute() {
 
                     addClosedEditorHistoryItem();
-                    onClose(null, false);
+                    onClose(null, new CmsUUID(getCurrentElementId()), false);
                 }
             };
             String editorLocale = CmsCoreProvider.get().getLocale();
             CmsContentEditor.getInstance().openFormEditor(
-
-            getEditorContext(), editorLocale, m_currentElementId, null, null, null, null, onClose);
+                getEditorContext(),
+                editorLocale,
+                m_currentElementId,
+                null,
+                null,
+                null,
+                null,
+                onClose);
         } else {
             closeContentEditor();
         }
@@ -302,7 +312,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
 
     /**
      * Adds a history item for the opened editor.<p>
-     * Use the prihibitReturn flag to deny a return to the opened editor through the browser history.
+     * Use the prohibitReturn flag to deny a return to the opened editor through the browser history.
      * Use this feature for inline editing or when opening the editor for new resources.<p>
      *
      * @param prohibitReturn if <code>true</code> returning to the opened editor through the browser history is denied
@@ -312,9 +322,11 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         if (prohibitReturn) {
             History.newItem(EDITOR_FOR_NO_RETURN_HASH_KEY, false);
         } else {
-            History.newItem(EDITOR_HASH_KEY
-                + CmsContainerpageController.getServerId(getCurrentElementId())
-                + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"), false);
+            History.newItem(
+                EDITOR_HASH_KEY
+                    + CmsContainerpageController.getServerId(getCurrentElementId())
+                    + (m_dependingElementId != null ? "," + m_dependingElementId + ";" : ";"),
+                false);
         }
     }
 
@@ -338,9 +350,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
             + ":'"
             + element.getId()
             + "', "
-            + (m_handler.m_controller.getData().getDetailId() != null ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID
-                + ":'"
-                + m_handler.m_controller.getData().getDetailId() + "', ") : "")
+            + (m_handler.m_controller.getData().getDetailId() != null
+            ? (CmsCntPageData.JSONKEY_DETAIL_ELEMENT_ID + ":'" + m_handler.m_controller.getData().getDetailId() + "', ")
+            : "")
             + CmsCntPageData.JSONKEY_NAME
             + ":'"
             + container.getContainerId()

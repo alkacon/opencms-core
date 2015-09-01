@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,15 +35,15 @@ import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 
 /**
  * Sitemap context menu create gallery entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsCreateGalleryMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -59,7 +59,10 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
 
         final CmsSitemapController controller = getHoverbar().getController();
         final CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(controller, entry.getResourceTypeId(), entry.getId());
+        CmsCreateGalleryDialog dialog = new CmsCreateGalleryDialog(
+            controller,
+            entry.getResourceTypeId(),
+            entry.getId());
         dialog.center();
     }
 
@@ -69,7 +72,9 @@ public class CmsCreateGalleryMenuEntry extends A_CmsSitemapMenuEntry {
     @Override
     public void onShow() {
 
-        if (CmsSitemapView.getInstance().isGalleryMode()) {
+        // only gallery managers are allowed to create galleries
+        if (CmsSitemapView.getInstance().isGalleryMode()
+            && getHoverbar().getController().getData().isGalleryManager()) {
             setVisible(true);
         } else {
             setVisible(false);

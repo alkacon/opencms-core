@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,7 @@
 package org.opencms.ade.publish.shared;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A publish resource.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsPublishResource implements IsSerializable {
 
@@ -56,6 +57,9 @@ public class CmsPublishResource implements IsSerializable {
 
     /** The resource name.*/
     private String m_name;
+
+    /** The permission info. */
+    private CmsPermissionInfo m_permissionInfo;
 
     /** The related resources.*/
     private List<CmsPublishResource> m_related;
@@ -75,17 +79,18 @@ public class CmsPublishResource implements IsSerializable {
     /** Name of the user who last modified the resource. */
     private String m_userLastModified;
 
-    /** 
-     * Creates a new publish group bean.<p> 
-     * 
+    /**
+     * Creates a new publish group bean.<p>
+     *
      * @param id the resource id
      * @param name the resource name
      * @param title the resource title
      * @param resourceType the resource type name
      * @param state the resource state
+     * @param permissionInfo the permission info
      * @param dateLastModified the last modification date
      * @param userLastModified name of the user who last modified the resource
-     * @param dateLastModifiedStr the last modification date as a formatted string 
+     * @param dateLastModifiedStr the last modification date as a formatted string
      * @param removable to indicate if the resource can be removed from the user's publish list
      * @param info the additional information, if any
      * @param related the related resources
@@ -96,6 +101,7 @@ public class CmsPublishResource implements IsSerializable {
         String title,
         String resourceType,
         CmsResourceState state,
+        CmsPermissionInfo permissionInfo,
         long dateLastModified,
         String userLastModified,
         String dateLastModifiedStr,
@@ -108,6 +114,7 @@ public class CmsPublishResource implements IsSerializable {
         m_name = name;
         m_related = ((related == null) ? new ArrayList<CmsPublishResource>() : related);
         m_state = state;
+        m_permissionInfo = permissionInfo;
         m_title = title;
         m_removable = removable;
         m_info = info;
@@ -126,8 +133,8 @@ public class CmsPublishResource implements IsSerializable {
 
     /**
      * Gets the last modification date.<p>
-     * 
-     * @return the last modification date 
+     *
+     * @return the last modification date
      */
     public long getDateLastModified() {
 
@@ -136,8 +143,8 @@ public class CmsPublishResource implements IsSerializable {
 
     /**
      * Gets the modification date formatted as a string.<p>
-     *  
-     * @return the formatted modification date 
+     *
+     * @return the formatted modification date
      */
     public String getDateLastModifiedString() {
 
@@ -175,6 +182,16 @@ public class CmsPublishResource implements IsSerializable {
     }
 
     /**
+     * Returns the permission info.<p>
+     *
+     * @return the permission info
+     */
+    public CmsPermissionInfo getPermissionInfo() {
+
+        return m_permissionInfo;
+    }
+
+    /**
      * Returns the related resources.<p>
      *
      * @return the related resources
@@ -194,10 +211,10 @@ public class CmsPublishResource implements IsSerializable {
         return m_resourceType;
     }
 
-    /** 
+    /**
      * Gets the date to be used for sorting.<p>
-     * 
-     * @return the date which should be used for sorting 
+     *
+     * @return the date which should be used for sorting
      */
     public long getSortDate() {
 
@@ -232,8 +249,8 @@ public class CmsPublishResource implements IsSerializable {
 
     /**
      * Gets the name of the user who last modified the resource.<p>
-     * 
-     * @return the name of the user who last modified the resource 
+     *
+     * @return the name of the user who last modified the resource
      */
     public String getUserLastModified() {
 
@@ -252,7 +269,7 @@ public class CmsPublishResource implements IsSerializable {
 
     /**
      * Sets the publish resource info.<p>
-     * 
+     *
      * @param info the publish resource info
      */
     public void setInfo(CmsPublishResourceInfo info) {
@@ -262,8 +279,8 @@ public class CmsPublishResource implements IsSerializable {
 
     /**
      * Enables/disables removability.<p>
-     * 
-     * @param removable true if the item should be removable 
+     *
+     * @param removable true if the item should be removable
      */
     public void setRemovable(boolean removable) {
 

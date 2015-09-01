@@ -795,7 +795,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createRelation(org.opencms.db.CmsDbContext, CmsUUID, org.opencms.relations.CmsRelation)
      */
-    public void createRelation(CmsDbContext dbc, CmsUUID projectId, CmsRelation relation) throws CmsDataAccessException {
+    public void createRelation(CmsDbContext dbc, CmsUUID projectId, CmsRelation relation)
+    throws CmsDataAccessException {
 
         try {
             I_CmsDAOResourceRelations rr = CmsProject.isOnlineProject(projectId)
@@ -811,10 +812,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             m_sqlManager.persist(dbc, rr);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_CREATE_RELATION_2,
-                    String.valueOf(projectId),
-                    relation));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_CREATE_RELATION_2,
+                        String.valueOf(projectId),
+                        relation));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -832,10 +834,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // check the resource path
         String resourcePath = CmsFileUtil.removeTrailingSeparator(resource.getRootPath());
         if (resourcePath.length() > CmsDriverManager.MAX_VFS_RESOURCE_PATH_LENGTH) {
-            throw new CmsDataAccessException(Messages.get().container(
-                Messages.ERR_RESOURCENAME_TOO_LONG_2,
-                resourcePath,
-                new Integer(CmsDriverManager.MAX_VFS_RESOURCE_PATH_LENGTH)));
+            throw new CmsDataAccessException(
+                Messages.get().container(
+                    Messages.ERR_RESOURCENAME_TOO_LONG_2,
+                    resourcePath,
+                    new Integer(CmsDriverManager.MAX_VFS_RESOURCE_PATH_LENGTH)));
         }
 
         // check if the parent folder of the resource exists and if is not deleted
@@ -843,9 +846,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             String parentFolderName = CmsResource.getParentFolder(resource.getRootPath());
             CmsFolder parentFolder = m_driverManager.getVfsDriver(dbc).readFolder(dbc, projectId, parentFolderName);
             if (parentFolder.getState().isDeleted()) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_PARENT_FOLDER_DELETED_1,
-                    resource.getRootPath()));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_PARENT_FOLDER_DELETED_1, resource.getRootPath()));
             }
         }
 
@@ -903,14 +905,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
                     Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingResource)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                        Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingResource)));
             } else {
                 // we have a collision: there exists already a resource with the same path/name which cannot be removed
-                throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                    Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                    dbc.removeSiteRoot(resource.getRootPath())));
+                throw new CmsVfsResourceAlreadyExistsException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                        dbc.removeSiteRoot(resource.getRootPath())));
             }
         } catch (CmsVfsResourceNotFoundException e) {
             // that's what we want in the best case- anything else should be thrown
@@ -1116,7 +1120,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createSibling(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource)
      */
-    public void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsDataAccessException {
+    public void createSibling(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    throws CmsDataAccessException {
 
         if (!project.getUuid().equals(CmsProject.ONLINE_PROJECT_ID)) {
             // this method is only intended to be used during publishing
@@ -1143,17 +1148,22 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 deletePropertyObjects(dbc, project.getUuid(), existingSibling, propertyDeleteOption);
                 removeFile(dbc, project.getUuid(), existingSibling);
 
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCES, modifiedResources)));
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                    Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingSibling)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
+                        Collections.<String, Object> singletonMap(
+                            I_CmsEventListener.KEY_RESOURCES,
+                            modifiedResources)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
+                        Collections.<String, Object> singletonMap(I_CmsEventListener.KEY_RESOURCE, existingSibling)));
             } else {
                 // we have a collision: there exists already a resource with the same path/name which could not be removed
-                throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                    Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
-                    dbc.removeSiteRoot(resource.getRootPath())));
+                throw new CmsVfsResourceAlreadyExistsException(
+                    Messages.get().container(
+                        Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
+                        dbc.removeSiteRoot(resource.getRootPath())));
             }
         } catch (CmsVfsResourceNotFoundException e) {
             // that's what we want in the best case- anything else should be thrown
@@ -1161,9 +1171,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if a resource with the specified ID already exists
         if (!validateResourceIdExists(dbc, project.getUuid(), resource.getResourceId())) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_CREATE_SIBLING_FILE_NOT_FOUND_1,
-                dbc.removeSiteRoot(resource.getRootPath())));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_CREATE_SIBLING_FILE_NOT_FOUND_1,
+                    dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         // write a new structure referring to the resource
@@ -1243,15 +1254,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#deletePropertyDefinition(org.opencms.db.CmsDbContext, org.opencms.file.CmsPropertyDefinition)
      */
-    public void deletePropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef) throws CmsDataAccessException {
+    public void deletePropertyDefinition(CmsDbContext dbc, CmsPropertyDefinition metadef)
+    throws CmsDataAccessException {
 
         try {
             if ((internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0)
                 || (internalCountProperties(dbc, metadef, CmsUUID.getOpenCmsUUID()) != 0)) { // HACK: to get an offline project
 
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_DELETE_USED_PROPERTY_1,
-                    metadef.getName()));
+                throw new CmsDataAccessException(
+                    Messages.get().container(Messages.ERR_DELETE_USED_PROPERTY_1, metadef.getName()));
             }
             Query q;
             for (int i = 0; i < 2; i++) {
@@ -1515,9 +1526,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if ((successiveDrivers != null) && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
-                    getClass().getName()));
+                LOG.warn(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                        getClass().getName()));
             }
         }
     }
@@ -1614,11 +1626,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         }
                     }
 
-                    throw new CmsVfsOnlineResourceAlreadyExistsException(Messages.get().container(
-                        Messages.ERR_OVERWRITE_MOVED_RESOURCE_3,
-                        dbc.removeSiteRoot(source.getRootPath()),
-                        dbc.removeSiteRoot(destinationPath),
-                        dbc.removeSiteRoot(offlineResource == null ? "__ERROR__" : offlineResource.getRootPath())));
+                    throw new CmsVfsOnlineResourceAlreadyExistsException(
+                        Messages.get().container(
+                            Messages.ERR_OVERWRITE_MOVED_RESOURCE_3,
+                            dbc.removeSiteRoot(source.getRootPath()),
+                            dbc.removeSiteRoot(destinationPath),
+                            dbc.removeSiteRoot(offlineResource == null ? "__ERROR__" : offlineResource.getRootPath())));
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // ok, no online resource
@@ -1793,10 +1806,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if (!resState.isUnchanged()) {
             if (strState.isDeleted()) {
-                resOp = (resState.isDeleted() || (resource.getSiblingCount() == 1) || (countSiblings(
-                    dbc,
-                    dbc.currentProject().getUuid(),
-                    resource.getResourceId()) == 1));
+                resOp = (resState.isDeleted()
+                    || (resource.getSiblingCount() == 1)
+                    || (countSiblings(dbc, dbc.currentProject().getUuid(), resource.getResourceId()) == 1));
             } else {
                 resOp = true;
             }
@@ -1876,11 +1888,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             List<CmsDAOAlias> resultList = query.getResultList();
             List<CmsAlias> result = new ArrayList<CmsAlias>();
             for (CmsDAOAlias bean : resultList) {
-                result.add(new CmsAlias(
-                    new CmsUUID(bean.getStructureId()),
-                    bean.getSiteRoot(),
-                    bean.getAliasPath(),
-                    CmsAliasMode.fromInt(bean.getMode())));
+                result.add(
+                    new CmsAlias(
+                        new CmsUUID(bean.getStructureId()),
+                        bean.getSiteRoot(),
+                        bean.getAliasPath(),
+                        CmsAliasMode.fromInt(bean.getMode())));
             }
             return result;
         } catch (PersistenceException e) {
@@ -1970,10 +1983,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
             if (!resourceExists) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
-                    resourceId,
-                    Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(
+                        Messages.ERR_READ_CONTENT_WITH_RESOURCE_ID_2,
+                        resourceId,
+                        Boolean.valueOf(projectId.equals(CmsProject.ONLINE_PROJECT_ID))));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -1996,9 +2010,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Object[] o = (Object[])q.getSingleResult();
                 folder = createFolder(o, projectId, true);
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_FOLDER_WITH_ID_1,
-                    folderId));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_FOLDER_WITH_ID_1, folderId));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2024,9 +2037,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Object[] o = (Object[])q.getSingleResult();
                 folder = createFolder(o, projectId, true);
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_FOLDER_1,
-                    dbc.removeSiteRoot(folderPath)));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_FOLDER_1, dbc.removeSiteRoot(folderPath)));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2080,9 +2092,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     pd.getPropertyDefName(),
                     CmsPropertyDefinition.CmsPropertyType.valueOf(pd.getPropertyDefType()));
             } catch (NoResultException e) {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
-                    name));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1, name));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2105,10 +2116,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             @SuppressWarnings("unchecked")
             List<I_CmsDAOPropertyDef> res = q.getResultList();
             for (I_CmsDAOPropertyDef pd : res) {
-                propertyDefinitions.add(new CmsPropertyDefinition(
-                    new CmsUUID(pd.getPropertyDefId()),
-                    pd.getPropertyDefName(),
-                    CmsPropertyDefinition.CmsPropertyType.valueOf(pd.getPropertyDefType())));
+                propertyDefinitions.add(
+                    new CmsPropertyDefinition(
+                        new CmsUUID(pd.getPropertyDefId()),
+                        pd.getPropertyDefName(),
+                        CmsPropertyDefinition.CmsPropertyType.valueOf(pd.getPropertyDefType())));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2143,11 +2155,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             for (I_CmsDAOProperties o : res) {
                 if (resultSize >= 2) {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_TOO_MANY_PROPERTIES_3,
-                        key,
-                        resource.getRootPath(),
-                        new Integer(resultSize)));
+                    throw new CmsDbConsistencyException(
+                        Messages.get().container(
+                            Messages.ERR_TOO_MANY_PROPERTIES_3,
+                            key,
+                            resource.getRootPath(),
+                            new Integer(resultSize)));
                 }
 
                 if (property == null) {
@@ -2163,11 +2176,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 } else if (mappingType == CmsProperty.RESOURCE_RECORD_MAPPING) {
                     property.setResourceValue(propertyValue);
                 } else {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
-                        resource.getRootPath(),
-                        new Integer(mappingType),
-                        key));
+                    throw new CmsDbConsistencyException(
+                        Messages.get().container(
+                            Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
+                            resource.getRootPath(),
+                            new Integer(mappingType),
+                            key));
                 }
 
                 resultSize++;
@@ -2227,11 +2241,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     // this property value is mapped to a resource record
                     property.setResourceValue(propertyValue);
                 } else {
-                    throw new CmsDbConsistencyException(Messages.get().container(
-                        Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
-                        resource.getRootPath(),
-                        new Integer(mappingType),
-                        propertyKey));
+                    throw new CmsDbConsistencyException(
+                        Messages.get().container(
+                            Messages.ERR_UNKNOWN_PROPERTY_VALUE_MAPPING_3,
+                            resource.getRootPath(),
+                            new Integer(mappingType),
+                            propertyKey));
                 }
                 property.setOrigin(resource.getRootPath());
             }
@@ -2321,9 +2336,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Object[] o = (Object[])q.getSingleResult();
                 resource = createResource(o, projectId);
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_RESOURCE_WITH_ID_1,
-                    structureId));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_RESOURCE_WITH_ID_1, structureId));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2331,9 +2345,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if ((resource != null) && resource.getState().isDeleted() && !includeDeleted) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_READ_DELETED_RESOURCE_1,
-                dbc.removeSiteRoot(resource.getRootPath())));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_READ_DELETED_RESOURCE_1,
+                    dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         return resource;
@@ -2362,14 +2377,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 // check if the resource is a file, it is not allowed to end with a "/" then
                 if (endsWithSlash && resource.isFile()) {
-                    throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                        Messages.ERR_READ_RESOURCE_1,
-                        dbc.removeSiteRoot(path + "/")));
+                    throw new CmsVfsResourceNotFoundException(
+                        Messages.get().container(Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(path + "/")));
                 }
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_RESOURCE_1,
-                    dbc.removeSiteRoot(path)));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_RESOURCE_1, dbc.removeSiteRoot(path)));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -2377,9 +2390,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
         if ((resource != null) && resource.getState().isDeleted() && !includeDeleted) {
-            throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                Messages.ERR_READ_DELETED_RESOURCE_1,
-                dbc.removeSiteRoot(resource.getRootPath())));
+            throw new CmsVfsResourceNotFoundException(
+                Messages.get().container(
+                    Messages.ERR_READ_DELETED_RESOURCE_1,
+                    dbc.removeSiteRoot(resource.getRootPath())));
         }
 
         return resource;
@@ -2850,10 +2864,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         // the current implementation only deletes empty folders
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(errorResNames.toString())) {
 
-            throw new CmsVfsException(Messages.get().container(
-                Messages.ERR_DELETE_NONEMTY_FOLDER_2,
-                dbc.removeSiteRoot(resource.getRootPath()),
-                errorResNames.toString()));
+            throw new CmsVfsException(
+                Messages.get().container(
+                    Messages.ERR_DELETE_NONEMTY_FOLDER_2,
+                    dbc.removeSiteRoot(resource.getRootPath()),
+                    errorResNames.toString()));
         }
         internalRemoveFolder(dbc, currentProject, resource);
 
@@ -3056,8 +3071,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeLastModifiedProjectId(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, CmsUUID, org.opencms.file.CmsResource)
      */
-    public void writeLastModifiedProjectId(CmsDbContext dbc, CmsProject project, CmsUUID projectId, CmsResource resource)
-    throws CmsDataAccessException {
+    public void writeLastModifiedProjectId(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsUUID projectId,
+        CmsResource resource) throws CmsDataAccessException {
 
         try {
             Query q = m_sqlManager.createQuery(dbc, project, C_RESOURCES_UPDATE_PROJECT_LASTMODIFIED);
@@ -3112,13 +3130,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         property.getName(),
                         CmsPropertyDefinition.TYPE_NORMAL);
                 }
-                OpenCms.fireCmsEvent(new CmsEvent(
-                    I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED,
-                    Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_PROPERTY_DEFINITION_CREATED,
+                        Collections.<String, Object> singletonMap("propertyDefinition", propertyDefinition)));
             } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1,
-                    property.getName()));
+                throw new CmsDbEntryNotFoundException(
+                    Messages.get().container(Messages.ERR_NO_PROPERTYDEF_WITH_NAME_1, property.getName()));
             }
         }
 
@@ -3531,9 +3549,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             try {
                 count = CmsDataTypeUtil.numberToInt((Number)q.getSingleResult());
             } catch (NoResultException e) {
-                throw new CmsDbConsistencyException(Messages.get().container(
-                    Messages.ERR_COUNTING_PROPERTIES_1,
-                    propertyDefinition.getName()));
+                throw new CmsDbConsistencyException(
+                    Messages.get().container(Messages.ERR_COUNTING_PROPERTIES_1, propertyDefinition.getName()));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -3589,9 +3606,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             try {
                 parentId = (String)q.getSingleResult();
             } catch (NoResultException e) {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_READ_PARENT_ID_1,
-                    dbc.removeSiteRoot(resourcename)));
+                throw new CmsVfsResourceNotFoundException(
+                    Messages.get().container(Messages.ERR_READ_PARENT_ID_1, dbc.removeSiteRoot(resourcename)));
             }
         } catch (PersistenceException e) {
             throw new CmsDataAccessException(Messages.get().container(Messages.ERR_JPA_PERSITENCE_1, e), e);
@@ -3810,10 +3826,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             return;
         }
 
-        throw new CmsDataAccessException(Messages.get().container(
-            Messages.ERR_INVALID_RESOURCE_LENGTH_2,
-            new Integer(resource.getLength()),
-            resource.getRootPath()));
+        throw new CmsDataAccessException(
+            Messages.get().container(
+                Messages.ERR_INVALID_RESOURCE_LENGTH_2,
+                new Integer(resource.getLength()),
+                resource.getRootPath()));
     }
 
     /**
@@ -4136,11 +4153,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /**
      * Creates the conditions and query parameters for rewrite aliases from a rewrite alias filter.<p>
-     * 
-     * @param name the name of the JPQL variable for the rewrite alias 
-     * @param filter the filter to select the rewrite aliases 
-     * 
-     * @return a pair consisting of a JPQL condition as a string and a list of query parameters 
+     *
+     * @param name the name of the JPQL variable for the rewrite alias
+     * @param filter the filter to select the rewrite aliases
+     *
+     * @return a pair consisting of a JPQL condition as a string and a list of query parameters
      */
     protected CmsPair<String, List<Object>> prepareRewriteAliasConditions(String name, CmsRewriteAliasFilter filter) {
 
@@ -4463,11 +4480,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
     }
 
-    /** 
+    /**
      * Helper method to convert an alias filter to JPQL conditions.<p>
-     * 
+     *
      * @param filter the alias filter
-     * @return a pair containing a condition string and the parameters which are necessary for the conditions 
+     * @return a pair containing a condition string and the parameters which are necessary for the conditions
      */
     private CmsPair<String, List<String>> buildAliasConditions(CmsAliasFilter filter) {
 
@@ -4492,11 +4509,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /**
      * Helper method to create a full query for aliases from a given base query and an alias filter.<p>
-     * 
-     * @param dbc the database context 
+     *
+     * @param dbc the database context
      * @param baseQuery the base query, which will be used as the prefix for the full query
-     * @param filter the alias filter 
-     * 
+     * @param filter the alias filter
+     *
      * @return the full query
      */
     private Query getAliasQueryForFilter(CmsDbContext dbc, String baseQuery, CmsAliasFilter filter) {

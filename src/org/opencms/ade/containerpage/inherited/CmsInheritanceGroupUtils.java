@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import java.util.Set;
  */
 public final class CmsInheritanceGroupUtils {
 
-    /** 
+    /**
      * Private constructor to prevent instantiation.<p>
      */
     private CmsInheritanceGroupUtils() {
@@ -57,15 +57,15 @@ public final class CmsInheritanceGroupUtils {
 
     /**
      * Finds the inheritance group content with a given internal name.<p>
-     * 
+     *
      * Currently this is implemented as a property search, which may be potentially slow.<p>
-     * 
+     *
      * @param cms the current CMS context
-     * @param name the name to search 
-     *  
+     * @param name the name to search
+     *
      * @return the inheritance group resource
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsResource getInheritanceGroupContentByName(CmsObject cms, String name) throws CmsException {
 
@@ -79,14 +79,16 @@ public final class CmsInheritanceGroupUtils {
             Iterator<CmsResource> resourceIter = resources.iterator();
             while (resourceIter.hasNext()) {
                 CmsResource currentRes = resourceIter.next();
-                if (!OpenCms.getResourceManager().getResourceType(currentRes).getTypeName().equals("inheritance_group")) {
+                if (!OpenCms.getResourceManager().getResourceType(currentRes).getTypeName().equals(
+                    "inheritance_group")) {
                     resourceIter.remove();
                 }
             }
             if (resources.isEmpty()) {
-                throw new CmsVfsResourceNotFoundException(org.opencms.gwt.Messages.get().container(
-                    org.opencms.gwt.Messages.ERR_INHERITANCE_GROUP_NOT_FOUND_1,
-                    name));
+                throw new CmsVfsResourceNotFoundException(
+                    org.opencms.gwt.Messages.get().container(
+                        org.opencms.gwt.Messages.ERR_INHERITANCE_GROUP_NOT_FOUND_1,
+                        name));
             }
             return resources.get(0);
         } finally {
@@ -97,13 +99,13 @@ public final class CmsInheritanceGroupUtils {
     /**
      * Parses an inheritance group configuration C and returns the names of inheritance groups in C in which a given resource
      * is defined as a new element.<p>
-     *   
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param inheritanceConfig the inheritance configuration resource
      * @param target the resource to search in the inheritance configuration
-     * 
+     *
      * @return the names of the inheritance groups in which the target resource is defined as  a new element
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static Set<String> getNamesOfGroupsContainingResource(

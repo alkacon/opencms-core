@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -82,6 +82,9 @@ public class CmsTemplateContextManager {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateContextManager.class);
 
+    /** Request attribute used to set the template context during RPC calls. */
+    public static final String ATTR_RPC_CONTEXT_OVERRIDE = "ATTR_RPC_CONTEXT_OVERRIDE";
+
     /** The CMS context. */
     private CmsObject m_cms;
 
@@ -90,7 +93,7 @@ public class CmsTemplateContextManager {
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param cms the CMS context to use
      */
     public CmsTemplateContextManager(CmsObject cms) {
@@ -103,21 +106,22 @@ public class CmsTemplateContextManager {
 
     /**
      * Checks if the property value starts with the prefix which marks a dynamic template provider.<p>
-     * 
-     * @param propertyValue the property value to check 
-     * @return true if the value has the format of a dynamic template provider 
+     *
+     * @param propertyValue the property value to check
+     * @return true if the value has the format of a dynamic template provider
      */
     public static boolean hasPropertyPrefix(String propertyValue) {
 
         return (propertyValue != null)
-            && (propertyValue.startsWith(DYNAMIC_TEMPLATE_PREFIX) || propertyValue.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX));
+            && (propertyValue.startsWith(DYNAMIC_TEMPLATE_PREFIX)
+                || propertyValue.startsWith(DYNAMIC_TEMPLATE_LEGACY_PREFIX));
     }
 
     /**
      * Checks if a template property value refers to a  template context provider.<p>
-     * 
-     * @param templatePath the template property value 
-     * @return true if this value refers to a template context provider 
+     *
+     * @param templatePath the template property value
+     * @return true if this value refers to a template context provider
      */
     public static boolean isProvider(String templatePath) {
 
@@ -131,10 +135,10 @@ public class CmsTemplateContextManager {
 
     /**
      * Removes the prefix which marks a property value as a dynamic template provider.<p>
-     * 
-     * @param propertyValue the value from which to remove the prefix 
-     * 
-     * @return the string with the prefix removed 
+     *
+     * @param propertyValue the value from which to remove the prefix
+     *
+     * @return the string with the prefix removed
      */
     public static String removePropertyPrefix(String propertyValue) {
 
@@ -152,11 +156,11 @@ public class CmsTemplateContextManager {
 
     /**
      * Creates a bean with information about the current template context, for use in the client-side code.<p>
-     *  
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param request the current request
-     * 
-     * @return the bean with the template context information  
+     *
+     * @return the bean with the template context information
      */
     public CmsTemplateContextInfo getContextInfoBean(CmsObject cms, HttpServletRequest request) {
 
@@ -200,13 +204,13 @@ public class CmsTemplateContextManager {
 
     /**
      * Gets the template context to use.<p>
-     * 
-     * @param providerName the name of the template context provider 
+     *
+     * @param providerName the name of the template context provider
      * @param cms the current CMS context
-     * @param request the current request 
+     * @param request the current request
      * @param resource the current resource
-     *  
-     * @return the current template context 
+     *
+     * @return the current template context
      */
     public CmsTemplateContext getTemplateContext(
         String providerName,
@@ -246,13 +250,13 @@ public class CmsTemplateContextManager {
 
     /**
      * Gets the template context provider for a given path.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param path the path for which the template context provider should be determined 
-     * 
-     * @return the template context provider for the given path 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param path the path for which the template context provider should be determined
+     *
+     * @return the template context provider for the given path
+     *
+     * @throws CmsException if something goes wrong
      */
     public I_CmsTemplateContextProvider getTemplateContextProvider(CmsObject cms, String path) throws CmsException {
 
@@ -274,12 +278,12 @@ public class CmsTemplateContextManager {
         }
     }
 
-    /** 
+    /**
      * Retrieves an instance of a template context provider given its name (optionally prefixed by the 'dynamic:' prefix).<p>
-     * 
-     * @param providerName the name of the provider 
-     * 
-     * @return an instance of the provider class 
+     *
+     * @param providerName the name of the provider
+     *
+     * @return an instance of the provider class
      */
     public I_CmsTemplateContextProvider getTemplateContextProvider(String providerName) {
 
@@ -314,13 +318,13 @@ public class CmsTemplateContextManager {
 
     /**
      * Utility method which either reads a property from the template used for a specific resource, or from the template context provider used for the resource if available.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param res the resource from whose template or template context provider the property should be read 
-     * @param propertyName the property name 
+     *
+     * @param cms the CMS context to use
+     * @param res the resource from whose template or template context provider the property should be read
+     * @param propertyName the property name
      * @param fallbackValue the fallback value
-     *  
-     * @return the property value 
+     *
+     * @return the property value
      */
     public String readPropertyFromTemplate(CmsObject cms, CmsResource res, String propertyName, String fallbackValue) {
 
@@ -341,29 +345,29 @@ public class CmsTemplateContextManager {
 
     /**
      * Helper method to check whether a given type should not be shown in a context.<p>
-     * 
-     * @param context the template context 
-     * @param typeName the type name 
-     * 
-     * @return true if the context does not prohibit showing the type 
+     *
+     * @param contextKey the key of the template context
+     * @param typeName the type name
+     *
+     * @return true if the context does not prohibit showing the type
      */
-    public boolean shouldShowType(CmsTemplateContext context, String typeName) {
+    public boolean shouldShowType(String contextKey, String typeName) {
 
         Map<String, CmsDefaultSet<String>> allowedContextMap = safeGetAllowedContextMap();
         CmsDefaultSet<String> allowedContexts = allowedContextMap.get(typeName);
         if (allowedContexts == null) {
             return true;
         }
-        return allowedContexts.contains(context.getKey());
+        return allowedContexts.contains(contextKey);
     }
 
     /**
      * Creates the setting definition for the templateContexts setting.<p>
-     * 
-     * @param contextProvider the context provider 
+     *
+     * @param contextProvider the context provider
      * @param locale the current locale
-     *  
-     * @return the setting definition  
+     *
+     * @return the setting definition
      */
     protected CmsXmlContentProperty createTemplateContextsPropertyDefinition(
         I_CmsTemplateContextProvider contextProvider,
@@ -397,7 +401,7 @@ public class CmsTemplateContextManager {
 
     /**
      * Helper method for getting the forbidden contexts from the resource manager without a try-catch block.<p>
-     * 
+     *
      * @return the forbidden context map
      */
     protected Map<String, CmsDefaultSet<String>> safeGetAllowedContextMap() {

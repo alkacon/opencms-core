@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * Provides a simple progress bar.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsProgressBar extends FlowPanel {
@@ -47,7 +47,7 @@ public class CmsProgressBar extends FlowPanel {
 
     /**
      * Creates a progress bar.<p>
-     * 
+     *
      * Initializes the progress bar with 0 percent.<p>
      */
     public CmsProgressBar() {
@@ -67,7 +67,7 @@ public class CmsProgressBar extends FlowPanel {
 
     /**
      * Sets the progress.<p>
-     * 
+     *
      * @param percent the percent to set
      */
     public void setValue(int percent) {

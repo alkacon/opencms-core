@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -52,23 +51,19 @@ import junit.framework.TestSuite;
 public class TestRoles extends OpenCmsTestCase {
 
     /**
-     * Check the given message.<p>
-     * 
-     * @param message the message to check
+     * Default JUnit constructor.<p>
+     *
+     * @param arg0 JUnit parameters
      */
-    private static void checkMessage(String message) {
+    public TestRoles(String arg0) {
 
-        System.out.println(message);
-        // check if a key could not be resolved
-        assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
-        // very simple check if message still containes unresolved '{n}'
-        assertFalse(message.indexOf('{') >= 0);
+        super(arg0);
     }
 
     /**
      * Test suite for this test class.<p>
      * Setup is done without importing vfs data.
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -83,6 +78,7 @@ public class TestRoles extends OpenCmsTestCase {
         suite.addTest(new TestRoles("testSubRoles"));
         suite.addTest(new TestRoles("testVirtualRoleGroups"));
         suite.addTest(new TestRoles("testRoleDelegating"));
+        suite.addTest(new TestRoles("testSpecialUserConfirmation"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -103,18 +99,22 @@ public class TestRoles extends OpenCmsTestCase {
     }
 
     /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
+     * Check the given message.<p>
+     *
+     * @param message the message to check
      */
-    public TestRoles(String arg0) {
+    private static void checkMessage(String message) {
 
-        super(arg0);
+        System.out.println(message);
+        // check if a key could not be resolved
+        assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
+        // very simple check if message still containes unresolved '{n}'
+        assertFalse(message.indexOf('{') >= 0);
     }
 
     /**
      * Tests role assignments.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testRoleAssignments() throws Exception {
@@ -135,15 +135,17 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.getManageableUsers(cms, "", false).isEmpty());
         assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
-        assertFalse(roleMan.getRolesOfUser(
-            cms,
-            cms.getRequestContext().getCurrentUser().getName(),
-            "",
-            true,
-            false,
-            false).isEmpty());
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().getCurrentUser()));
+        assertFalse(
+            roleMan.getRolesOfUser(
+                cms,
+                cms.getRequestContext().getCurrentUser().getName(),
+                "",
+                true,
+                false,
+                false).isEmpty());
+        assertTrue(
+            roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
+                cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, true).isEmpty());
         assertEquals(1, roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).size());
 
@@ -156,12 +158,14 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.hasRoleForResource(cms, user.getName(), CmsRole.WORKPLACE_MANAGER, "/"));
         assertFalse(roleMan.hasRole(cms, user.getName(), CmsRole.WORKPLACE_MANAGER));
 
-        assertEquals(1, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
+        assertEquals(5, roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).size());
         assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(user));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().getCurrentUser()));
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
-            cms.getRequestContext().getCurrentUser()));
+        assertTrue(
+            roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
+                cms.getRequestContext().getCurrentUser()));
+        assertTrue(
+            roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
+                cms.getRequestContext().getCurrentUser()));
 
         // login as test user to check if it can create a user
         cms.loginUser(user.getName(), "test1");
@@ -197,17 +201,19 @@ public class TestRoles extends OpenCmsTestCase {
         assertFalse(roleMan.getOrgUnitsForRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), false).isEmpty());
 
         assertFalse(roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false).isEmpty());
-        assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
-            cms.getRequestContext().getCurrentUser()));
+        assertTrue(
+            roleMan.getUsersOfRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(""), true, false).contains(
+                cms.getRequestContext().getCurrentUser()));
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true, true).isEmpty());
         assertTrue(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(cms.readUser("Admin")));
-        assertFalse(roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
-            cms.getRequestContext().getCurrentUser()));
+        assertFalse(
+            roleMan.getUsersOfRole(cms, CmsRole.ROOT_ADMIN, true, false).contains(
+                cms.getRequestContext().getCurrentUser()));
     }
 
     /**
      * Tests role delegating.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testRoleDelegating() throws Exception {
@@ -234,7 +240,7 @@ public class TestRoles extends OpenCmsTestCase {
 
     /**
      * Tests if all keys in the system roles exception messages can be resolved.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testRoleExceptionMessages() throws Exception {
@@ -257,8 +263,114 @@ public class TestRoles extends OpenCmsTestCase {
     }
 
     /**
+     * Tests special user based role confirmation.<p>
+     *
+     * @throws Exception if the test fails
+     */
+    public void testSpecialUserConfirmation() throws Exception {
+
+        echo("Testing special user based role confirmation");
+        CmsObject cms = getCmsObject();
+
+        CmsRoleManager roleMan = OpenCms.getRoleManager();
+
+        // check standard: Workplace user has roles CATEGORY_EDITOR, GALLERY_EDITOR
+        CmsUser user = cms.createUser("specUser", "specUser", "specUser", null);
+        roleMan.addUserToRole(cms, CmsRole.WORKPLACE_USER, user.getName());
+        cms.loginUser(user.getName(), "specUser");
+
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // configure individual confirmation for CATEGORY_EDITOR
+        OpenCms.setRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR", "true");
+        OpenCms.getMemoryMonitor().clearCache();
+
+        // we know user has no individual confirmation by default
+        assertFalse(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // configure individual confirmation for GALLERY_EDITOR
+        OpenCms.setRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR", "true");
+        OpenCms.getMemoryMonitor().clearCache();
+
+        // we know user has no individual confirmation by default still
+        assertFalse(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now add individual confirmation for the user as CATEGORY_EDITOR
+        user.setAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR", "true");
+        cms.writeUser(user);
+        OpenCms.getMemoryMonitor().clearCache();
+        // must login again otherwise additional info will not be updated
+        cms.loginUser(user.getName(), "specUser");
+
+        // access to the CATEGORY_EDITOR must be available now
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now add individual confirmation for the user as GALLERY_EDITOR
+        user.setAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR", "true");
+        cms.writeUser(user);
+        OpenCms.getMemoryMonitor().clearCache();
+        cms.loginUser(user.getName(), "specUser");
+
+        // access to the GALLERY_EDITOR must be available now
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now test higher ranking user
+        // here access must be available even if no individual confirmation is present
+        cms.loginUser("Admin", "admin");
+        CmsUser devUser = cms.createUser("devUser", "devUser", "devUser", null);
+        roleMan.addUserToRole(cms, CmsRole.DEVELOPER, devUser.getName());
+        cms.loginUser(devUser.getName(), "devUser");
+
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(devUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(devUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now test lower ranking user GALLERY_EDITOR
+        // if a user has _only_ CATEGORY_EDITOR / GALLERY_EDITOR but not WORKPLACE_USER he should get access
+        // otherwise having the role CATEGORY_EDITOR / GALLERY_EDITOR would be pointless
+        cms.loginUser("Admin", "admin");
+        CmsUser galUser = cms.createUser("galUser", "galUser", "galUser", null);
+        roleMan.addUserToRole(cms, CmsRole.GALLERY_EDITOR, galUser.getName());
+        cms.loginUser(galUser.getName(), "galUser");
+
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(galUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
+        // the user is only GALLERY_EDITOR but not CATEGORY_EDITOR
+        assertFalse(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(galUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
+        // the user should have the CATEGORY_EDITOR role without individual confirmation
+        assertTrue(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+
+        // now test lower ranking user CATEGORY_EDITOR
+        // if a user has _only_ CATEGORY_EDITOR / GALLERY_EDITOR but not WORKPLACE_USER he should get access
+        // otherwise having the role CATEGORY_EDITOR / GALLERY_EDITOR would be pointless
+        cms.loginUser("Admin", "admin");
+        CmsUser catUser = cms.createUser("catUser", "catUser", "catUser", null);
+        roleMan.addUserToRole(cms, CmsRole.CATEGORY_EDITOR, catUser.getName());
+        cms.loginUser(catUser.getName(), "catUser");
+
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR")));
+        assertTrue(catUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "CATEGORY_EDITOR") == null);
+        // the user should have the CATEGORY_EDITOR role without individual confirmation
+        assertTrue(roleMan.hasRole(cms, CmsRole.CATEGORY_EDITOR));
+        assertTrue("true".equals(OpenCms.getRuntimeProperty(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR")));
+        assertTrue(catUser.getAdditionalInfo(CmsRole.CONFIRM_ROLE_PREFIX + "GALLERY_EDITOR") == null);
+        // the user is only CATEGORY_EDITOR but not GALLERY_EDITOR
+        assertFalse(roleMan.hasRole(cms, CmsRole.GALLERY_EDITOR));
+    }
+
+    /**
      * Tests subroles operations.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSubRoles() throws Exception {
@@ -279,7 +391,10 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(adminRoles.contains(CmsRole.ROOT_ADMIN));
 
         // should do nothing
-        roleMan.addUserToRole(cms, CmsRole.DEVELOPER.forOrgUnit(""), cms.getRequestContext().getCurrentUser().getName());
+        roleMan.addUserToRole(
+            cms,
+            CmsRole.DEVELOPER.forOrgUnit(""),
+            cms.getRequestContext().getCurrentUser().getName());
 
         // check again
         adminRoles = roleMan.getRolesOfUser(
@@ -300,15 +415,12 @@ public class TestRoles extends OpenCmsTestCase {
         roleMan.addUserToRole(cms, CmsRole.VFS_MANAGER.forOrgUnit(user.getOuFqn()), user.getName());
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, true, false);
-        assertEquals(2, roles.size());
+        assertEquals(1, roles.size());
         assertTrue(roles.contains(CmsRole.VFS_MANAGER.forOrgUnit(user.getOuFqn())));
-        assertTrue(roles.contains(CmsRole.WORKPLACE_USER.forOrgUnit(user.getOuFqn())));
 
         roles = roleMan.getRolesOfUser(cms, user.getName(), "", true, false, false);
         List children = CmsRole.VFS_MANAGER.forOrgUnit("").getChildren(true);
         children.add(CmsRole.VFS_MANAGER.forOrgUnit(""));
-        children.addAll(CmsRole.WORKPLACE_USER.forOrgUnit("").getChildren(true));
-        children.add(CmsRole.WORKPLACE_USER.forOrgUnit(""));
         assertEquals(children.size(), roles.size());
         Iterator it = roles.iterator();
         while (it.hasNext()) {
@@ -337,7 +449,7 @@ public class TestRoles extends OpenCmsTestCase {
 
     /**
      * Tests virtual role groups.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testVirtualRoleGroups() throws Exception {
@@ -370,13 +482,6 @@ public class TestRoles extends OpenCmsTestCase {
         cms.deleteGroup(group.getName());
         assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
 
-        // the workplace user role has been automatically added
-        assertEquals(
-            Collections.singletonList(CmsRole.WORKPLACE_USER.forOrgUnit("")),
-            OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true));
-        // so we have to remove it
-        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
-
         // check the roles for the user
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
 
@@ -386,19 +491,9 @@ public class TestRoles extends OpenCmsTestCase {
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
         cms.addUserToGroup("Guest", group.getName());
         assertEquals(3, cms.getGroupsOfUser("Guest", false).size());
-        assertEquals(2, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
+        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
 
         cms.removeUserFromGroup("Guest", group.getName());
-        assertEquals(2, cms.getGroupsOfUser("Guest", false).size());
-        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
-
-        // assert remaining workplace user role, that was automatically added
-        assertEquals(1, OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).size());
-        assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).contains(
-            CmsRole.WORKPLACE_USER.forOrgUnit("")));
-
-        OpenCms.getRoleManager().removeUserFromRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit(""), "Guest");
-
         assertEquals(1, cms.getGroupsOfUser("Guest", false).size());
         assertTrue(OpenCms.getRoleManager().getRolesOfUser(cms, "Guest", "", true, true, true).isEmpty());
     }

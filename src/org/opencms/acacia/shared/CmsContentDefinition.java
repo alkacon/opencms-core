@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -72,7 +72,7 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param entities the locale specific entities
      * @param configurations the attribute configurations
@@ -109,16 +109,16 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Extracts the attribute index from the given attribute name where the index is appended to the name like 'attributename[1]'.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the extracted index
      */
     public static int extractIndex(String attributeName) {
 
         int index = 0;
         // check if the value index is appended to the attribute name
-        if (attributeName.endsWith("]") && attributeName.contains("[")) {
+        if (hasIndex(attributeName)) {
             try {
                 String temp = attributeName.substring(attributeName.lastIndexOf("[") + 1, attributeName.length() - 1);
 
@@ -131,15 +131,27 @@ public class CmsContentDefinition implements IsSerializable {
     }
 
     /**
+     * Checks if the given XPATH component has an index.<p>
+     *
+     * @param pathComponent the path component
+     *
+     * @return true if the argument contains an index
+     */
+    public static boolean hasIndex(String pathComponent) {
+
+        return pathComponent.endsWith("]") && pathComponent.contains("[");
+    }
+
+    /**
      * Removes an attribute index suffix from the given attribute name.<p>
-     * 
+     *
      * @param attributeName the attribute name
-     * 
+     *
      * @return the attribute name
      */
     public static String removeIndex(String attributeName) {
 
-        if (attributeName.endsWith("]") && attributeName.contains("[")) {
+        if (hasIndex(attributeName)) {
             attributeName = attributeName.substring(0, attributeName.lastIndexOf("["));
         }
         return attributeName;
@@ -157,7 +169,7 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Returns the locale specific entities of the content.<p>
-     * 
+     *
      * @return the locale specific entities of the content
      */
     public Map<String, CmsEntity> getEntities() {
@@ -177,7 +189,7 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Returns the entity id.<p>
-     * 
+     *
      * @return the entity id
      */
     public String getEntityId() {
@@ -187,7 +199,7 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Returns the entity type name.<p>
-     * 
+     *
      * @return the entity type name
      */
     public String getEntityTypeName() {
@@ -227,7 +239,7 @@ public class CmsContentDefinition implements IsSerializable {
 
     /**
      * Returns if optional fields should be grouped together.<p>
-     * 
+     *
      * @return <code>true</code> if optional fields should be grouped together
      */
     public boolean isGroupOptionalFields() {

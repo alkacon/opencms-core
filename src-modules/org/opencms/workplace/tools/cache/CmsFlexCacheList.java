@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Flex Cache content view.<p>
- * 
- * @since 7.0.5 
+ *
+ * @since 7.0.5
  */
 public class CmsFlexCacheList extends A_CmsListDialog {
 
@@ -81,7 +81,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsFlexCacheList(CmsJspActionElement jsp) {
@@ -97,7 +97,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -110,6 +110,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -118,6 +119,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -126,6 +128,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -134,6 +137,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         CmsObject cms = getCms();
@@ -175,6 +179,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -183,7 +188,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
             CmsFlexController.ATTRIBUTE_NAME);
         CmsFlexCache cache = controller.getCmsCache();
 
-        // get content        
+        // get content
         Iterator itResources = new ArrayList(cache.getCachedResources(getCms())).iterator();
         while (itResources.hasNext()) {
             String resource = (String)itResources.next();
@@ -210,6 +215,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -221,6 +227,7 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -263,29 +270,31 @@ public class CmsFlexCacheList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add variations details
         CmsListItemDetails variationsDetails = new CmsListItemDetails(LIST_DETAIL_VARIATIONS);
         variationsDetails.setAtColumn(LIST_COLUMN_RESOURCE);
         variationsDetails.setVisible(false);
-        variationsDetails.setShowActionName(Messages.get().container(
-            Messages.GUI_FLEXCACHE_DETAIL_SHOW_VARIATIONS_NAME_0));
-        variationsDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_FLEXCACHE_DETAIL_SHOW_VARIATIONS_HELP_0));
-        variationsDetails.setHideActionName(Messages.get().container(
-            Messages.GUI_FLEXCACHE_DETAIL_HIDE_VARIATIONS_NAME_0));
-        variationsDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_FLEXCACHE_DETAIL_HIDE_VARIATIONS_HELP_0));
+        variationsDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_SHOW_VARIATIONS_NAME_0));
+        variationsDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_SHOW_VARIATIONS_HELP_0));
+        variationsDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_HIDE_VARIATIONS_NAME_0));
+        variationsDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_HIDE_VARIATIONS_HELP_0));
         variationsDetails.setName(Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_VARIATIONS_NAME_0));
-        variationsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_FLEXCACHE_DETAIL_VARIATIONS_NAME_0)));
+        variationsDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_FLEXCACHE_DETAIL_VARIATIONS_NAME_0)));
         metadata.addItemDetails(variationsDetails);
     }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no multi actions

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a publish history entry inside the table "cms_publish_history".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -67,7 +67,7 @@ public class CmsDAOPublishHistory {
 
             /**
              * The constructor for this tokenizer.<p>
-             * 
+             *
              * @param str the String to tokenize.<p>
              */
             public Tokenizer(String str) {
@@ -77,7 +77,7 @@ public class CmsDAOPublishHistory {
 
             /**
              * Returns the next token.<p>
-             * 
+             *
              * @return the next token
              */
             public String nextToken() {
@@ -117,7 +117,7 @@ public class CmsDAOPublishHistory {
 
         /**
          * A public constructor to generate a primary key from a given String.<p>
-         * 
+         *
          * @param str the String to generate the id from
          */
         public CmsDAOPublishHistoryPK(String str) {
@@ -148,10 +148,13 @@ public class CmsDAOPublishHistory {
             }
 
             CmsDAOPublishHistoryPK other = (CmsDAOPublishHistoryPK)obj;
-            return (((m_historyId == null) && (other.m_historyId == null)) || ((m_historyId != null) && m_historyId.equals(other.m_historyId)))
+            return (((m_historyId == null) && (other.m_historyId == null))
+                || ((m_historyId != null) && m_historyId.equals(other.m_historyId)))
                 && (m_publishTag == other.m_publishTag)
-                && (((m_resourcePath == null) && (other.m_resourcePath == null)) || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)))
-                && (((m_structureId == null) && (other.m_structureId == null)) || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
+                && (((m_resourcePath == null) && (other.m_resourcePath == null))
+                    || ((m_resourcePath != null) && m_resourcePath.equals(other.m_resourcePath)))
+                && (((m_structureId == null) && (other.m_structureId == null))
+                    || ((m_structureId != null) && m_structureId.equals(other.m_structureId)));
         }
 
         /**
@@ -201,10 +204,10 @@ public class CmsDAOPublishHistory {
         public int hashCode() {
 
             int rs = 17;
-            rs = rs * 37 + ((m_historyId == null) ? 0 : m_historyId.hashCode());
-            rs = rs * 37 + m_publishTag;
-            rs = rs * 37 + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
-            rs = rs * 37 + ((m_structureId == null) ? 0 : m_structureId.hashCode());
+            rs = (rs * 37) + ((m_historyId == null) ? 0 : m_historyId.hashCode());
+            rs = (rs * 37) + m_publishTag;
+            rs = (rs * 37) + ((m_resourcePath == null) ? 0 : m_resourcePath.hashCode());
+            rs = (rs * 37) + ((m_structureId == null) ? 0 : m_structureId.hashCode());
             return rs;
         }
 
@@ -259,7 +262,7 @@ public class CmsDAOPublishHistory {
 
         /**
          * Parses the publish tag from and the resource id from a given String.<p>
-         *  
+         *
          * @param str the String to parse
          */
         private void fromString(String str) {
@@ -338,7 +341,7 @@ public class CmsDAOPublishHistory {
 
     /**
      * A public constructor for generating a new publish history object with an unique id.<p>
-     * 
+     *
      * @param historyId the history id
      * @param publishTag the publish tag
      * @param resourcePath the resource path

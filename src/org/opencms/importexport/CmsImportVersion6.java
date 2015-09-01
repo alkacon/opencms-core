@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,15 +44,15 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
+ * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for
  * the import version 6.<p>
- * 
+ *
  * This import format is used in OpenCms since 6.5.6.<p>
- * 
- * @since 6.5.6 
- * 
+ *
+ * @since 6.5.6
+ *
  * @see org.opencms.importexport.A_CmsImport
- * 
+ *
  * @deprecated this import class is no longer in use and should only be used to import old export files
  */
 @Deprecated
@@ -83,7 +83,7 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
 
     /**
      * Imports the OpenCms users.<p>
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      */
     @Override

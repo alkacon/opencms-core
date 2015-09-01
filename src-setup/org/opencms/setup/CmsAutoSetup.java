@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,6 +37,7 @@ import org.opencms.setup.comptest.CmsSetupTests;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * A bean to perform a OpenCms setup automatically.<p>
- * 
+ *
  * @since 9.0
  */
 public class CmsAutoSetup {
@@ -62,9 +63,12 @@ public class CmsAutoSetup {
     /** The setup properties to use. */
     private CmsAutoSetupProperties m_props;
 
+    /** Horizontal ruler - ASCII style. */
+    private static final String HR = "-----------------------------------------------------------";
+
     /**
      * A bean for a automatically performed setup of OpenCms.<p>
-     * 
+     *
      * @param props the properties to use
      */
     public CmsAutoSetup(CmsAutoSetupProperties props) {
@@ -82,14 +86,14 @@ public class CmsAutoSetup {
     public static void main(String[] args) {
 
         System.out.println();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Setup started at: (" + new Date(System.currentTimeMillis()) + ")");
-        System.out.println("-------------------------------------------------");
+        System.out.println(HR);
+        System.out.println("OpenCms setup started at: " + new Date(System.currentTimeMillis()));
+        System.out.println(HR);
         System.out.println();
 
         String path = null;
 
-        if ((args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
+        if ((args.length > 0) && (args[0] != null) && args[0].startsWith(PARAM_CONFIG_PATH)) {
             if ((args.length == 2) && (args[1] != null) && new File(args[1]).exists()) {
                 path = args[1];
             } else {
@@ -97,10 +101,16 @@ public class CmsAutoSetup {
             }
         }
 
-        if (new File(path).exists()) {
-            System.out.println("Using config file: " + path + ":");
+        if ((null != path) && (new File(path).exists())) {
+            System.out.println("Using config file: " + path + "\n");
             try {
                 CmsAutoSetupProperties props = new CmsAutoSetupProperties(path);
+                System.out.println("Webapp path     : " + props.getSetupWebappPath());
+                System.out.println("Ethernet address: " + props.getEthernetAddress());
+                System.out.println("Server URL      : " + props.getServerUrl());
+                System.out.println("Server name     : " + props.getServerName());
+                System.out.println("Show progress   : " + props.isShowProgress());
+                System.out.println();
                 for (Map.Entry<String, String[]> entry : props.toParameterMap().entrySet()) {
                     System.out.println(entry.getKey() + " = " + entry.getValue()[0]);
                 }
@@ -115,7 +125,8 @@ public class CmsAutoSetup {
             }
         } else {
             System.out.println("");
-            System.err.println("Config file not found, please specify a path where to find the setup properties to use.");
+            System.err.println(
+                "Config file not found, please specify a path where to find the setup properties to use.");
             System.out.println("Usage example (Unix): setup.sh  -path /path/to/setup.properties");
             System.out.println("Usage example (Win):  setup.bat -path C:\\setup.properties");
             System.out.println("");
@@ -127,7 +138,8 @@ public class CmsAutoSetup {
 
     /**
      * Performs the setup.<p>
-     * @throws Exception 
+     *
+     * @throws Exception in case the setup fails
      */
     public void run() throws Exception {
 
@@ -162,9 +174,10 @@ public class CmsAutoSetup {
 
             m_bean.setServerName(m_props.getServerName());
             m_bean.setWorkplaceSite(m_props.getServerUrl());
-            m_bean.setEthernetAddress(m_props.getEthernetAddress() == null
-            ? CmsStringUtil.getEthernetAddress()
-            : m_props.getEthernetAddress());
+            m_bean.setEthernetAddress(
+                m_props.getEthernetAddress() == null
+                ? CmsStringUtil.getEthernetAddress()
+                : m_props.getEthernetAddress());
 
             // initialize the available modules
             m_bean.getAvailableModules();
@@ -182,7 +195,8 @@ public class CmsAutoSetup {
                         m_bean.getDbWorkConStr(),
                         m_bean.getDbConStrParams(),
                         m_bean.getDbWorkUser(),
-                        m_bean.getDbWorkPwd());
+                        m_bean.getDbWorkPwd(),
+                        false);
                     if (!db.noErrors()) {
                         // try to connect as the setup user
                         db.closeConnection();
@@ -210,7 +224,7 @@ public class CmsAutoSetup {
             if (m_bean.isInitialized()) {
                 if (m_props.isCreateDb() || m_props.isCreateTables()) {
                     db = new CmsSetupDb(m_bean.getWebAppRfsPath());
-                    /* check if database exists */
+                    // check if database exists
                     if (m_bean.getDatabase().startsWith("oracle")
                         || m_bean.getDatabase().startsWith("db2")
                         || m_bean.getDatabase().startsWith("as400")) {
@@ -226,7 +240,8 @@ public class CmsAutoSetup {
                             m_bean.getDbWorkConStr(),
                             m_bean.getDbConStrParams(),
                             m_bean.getDbCreateUser(),
-                            m_bean.getDbCreatePwd());
+                            m_bean.getDbCreatePwd(),
+                            false);
                         dbExists = db.noErrors();
                         if (dbExists) {
                             db.closeConnection();
@@ -270,7 +285,7 @@ public class CmsAutoSetup {
                 if (!db.noErrors()) {
                     for (String error : db.getErrors()) {
                         System.err.println(error + "\n");
-                        System.err.println("-------------------------------------------\n");
+                        System.err.println(HR + "\n");
                     }
                     db.clearErrors();
                     throw new Exception("Error ocurred while dropping the DB!");
@@ -284,7 +299,7 @@ public class CmsAutoSetup {
                 if (!db.noErrors()) {
                     for (String error : db.getErrors()) {
                         System.err.println(error + "\n");
-                        System.err.println("-------------------------------------------\n");
+                        System.err.println(HR + "\n");
                     }
                     db.clearErrors();
                     throw new Exception("Error ocurred while creating the DB!");
@@ -316,7 +331,7 @@ public class CmsAutoSetup {
                 if (!db.noErrors()) {
                     for (String error : db.getErrors()) {
                         System.err.println(error + "\n");
-                        System.err.println("-------------------------------------------\n");
+                        System.err.println(HR + "\n");
                     }
                     db.clearErrors();
                     throw new Exception("Error ocurred while creating tables.");
@@ -333,18 +348,38 @@ public class CmsAutoSetup {
                 System.out.println("Configuration files written successfully.");
                 m_bean.prepareStep8b();
             }
-            while (m_bean.isImportRunning()) {
-                Thread.sleep(500);
+
+            if (m_props.isShowProgress()) {
+                // show a simple progress indicator
+                // this is only needed in case you do an automated installation and watch the console
+                System.out.print("Importing modules.");
+                // System.out will be redirected by the setup bean, so keep a reference for the progress indicator
+                PrintStream out = System.out;
+                int count = 0;
+                while (m_bean.isImportRunning()) {
+                    if ((++count % 4) == 0) {
+                        out.print(".");
+                    }
+                    Thread.sleep(500);
+                }
+                System.out.println("[finished].");
+            } else {
+                // no progress indicator
+                System.out.println("Importing modules.");
+                while (m_bean.isImportRunning()) {
+                    Thread.sleep(500);
+                }
             }
-            System.out.println("Modules imported successfully");
+            System.out.println("Modules imported successfully.");
 
             m_bean.prepareStep10();
             System.out.println();
-            System.out.println("-------------------------------------------");
-            System.out.println("Setup finished successfully in: "
-                + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
-                + " seconds.");
-            System.out.println("-------------------------------------------");
+            System.out.println(HR);
+            System.out.println(
+                "OpenCms setup finished successfully in "
+                    + Math.round((System.currentTimeMillis() - timeStarted) / 1000)
+                    + " seconds.");
+            System.out.println(HR);
         } else {
             throw new Exception("Error starting Alkacon OpenCms setup wizard.");
         }

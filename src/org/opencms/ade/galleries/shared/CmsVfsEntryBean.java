@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,13 +63,13 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Creates a new VFS entry bean.<p>
-     * 
-     * @param rootPath the root path 
+     *
+     * @param rootPath the root path
      * @param structureId the structure id
      * @param title the folder title
      * @param isRoot flag indicating whether this is entry should be displayed at the top level of the tree
      * @param editable <code>true</code> if the user has write permissions to the folder
-     * @param preloadedChildren the preloaded child nodes 
+     * @param preloadedChildren the preloaded child nodes
      */
     public CmsVfsEntryBean(
         String rootPath,
@@ -93,7 +93,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
      */
     protected CmsVfsEntryBean() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -117,7 +117,7 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Gets the name which should be displayed in the widget representing this VFS entry.<p>
-     * 
+     *
      * @return the name to display
      */
     public String getDisplayName() {
@@ -139,8 +139,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Gets the root path of the VFS entry.<p>
-     * 
-     * @return the root path of the VFS entry 
+     *
+     * @return the root path of the VFS entry
      */
     public String getRootPath() {
 
@@ -149,8 +149,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Gets the site root of this tree entry.<p>
-     * 
-     * @return the site root of this entry 
+     *
+     * @return the site root of this entry
      */
     public String getSiteRoot() {
 
@@ -179,8 +179,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Returns true if this entry is a top-level entry.<p>
-     * 
-     * @return true if this is a top-level entry 
+     *
+     * @return true if this is a top-level entry
      */
     public boolean isRoot() {
 
@@ -189,8 +189,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Sets the list of children.<p>
-     * 
-     * @param children the list of children 
+     *
+     * @param children the list of children
      */
     public void setChildren(List<CmsVfsEntryBean> children) {
 
@@ -209,8 +209,8 @@ public class CmsVfsEntryBean implements IsSerializable, I_CmsGalleryTreeEntry<Cm
 
     /**
      * Sets the site root of this tree entry.<p>
-     * 
-     * @param siteRoot the site root of this tree entry 
+     *
+     * @param siteRoot the site root of this tree entry
      */
     public void setSiteRoot(String siteRoot) {
 

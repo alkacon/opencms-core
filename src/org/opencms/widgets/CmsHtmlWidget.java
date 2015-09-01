@@ -78,10 +78,11 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     private I_CmsWidget m_editorWidget;
 
     /** Labels for the default block format options. */
-    public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(CmsStringUtil.splitAsMap(
-        "p:Paragraph|address:Address|pre:Pre|h1:Header 1|h2:Header 2|h3:Header 3|h4:Header 4|h5:Header 5|h6:Header 6",
-        "|",
-        ":"));
+    public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(
+        CmsStringUtil.splitAsMap(
+            "p:Paragraph|address:Address|pre:Pre|h1:Header 1|h2:Header 2|h3:Header 3|h4:Header 4|h5:Header 5|h6:Header 6",
+            "|",
+            ":"));
 
     /**
      * Creates a new html editing widget.<p>
@@ -265,17 +266,16 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
     }
 
     /**
+     * Adds the configuration for embedded gallery widgets the the JSON object.<p>
+     *
      * @param result the  JSON object to modify
+     * @param cms the OpenCms context
+     * @param schemaType the schema type
+     * @param messages the messages
+     * @param resource the edited resource
+     * @param contentLocale the content locale
      *
-     * For descriptions of the other  parameters, see the getConfiguration() method.<p>
-     *
-     * @param cms
-     * @param schemaType
-     * @param messages
-     * @param resource
-     * @param contentLocale
-     * @throws JSONException
-     *
+     * @throws JSONException in case JSON manipulation fails
      */
     protected void addEmbeddedGalleryOptions(
         JSONObject result,
@@ -286,7 +286,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
         Locale contentLocale) throws JSONException {
 
         String embeddedImageGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("imagegallery");
-        String embeddedDownloadGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get("downloadgallery");
+        String embeddedDownloadGalleryOptions = getHtmlWidgetOption().getEmbeddedConfigurations().get(
+            "downloadgallery");
 
         if (embeddedDownloadGalleryOptions != null) {
             CmsAdeDownloadGalleryWidget widget = new CmsAdeDownloadGalleryWidget();
@@ -407,10 +408,9 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                         cms,
                         OpenCmsSpellcheckHandler.getSpellcheckHandlerPath()));
 
-                result.put("spellcheck_language", "+"
-                    + contentLocale.getDisplayLanguage(workplaceLocale)
-                    + "="
-                    + contentLocale.getLanguage());
+                result.put(
+                    "spellcheck_language",
+                    "+" + contentLocale.getDisplayLanguage(workplaceLocale) + "=" + contentLocale.getLanguage());
             }
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
@@ -425,12 +425,13 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
      */
     private void filterEmbeddedGalleryOptions(JSONObject json) {
 
-        Set<String> validKeys = Sets.newHashSet(Arrays.asList(
-            I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES,
-            I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH,
-            I_CmsGalleryProviderConstants.CONFIG_USE_FORMATS,
-            I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES,
-            I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMATS));
+        Set<String> validKeys = Sets.newHashSet(
+            Arrays.asList(
+                I_CmsGalleryProviderConstants.CONFIG_GALLERY_TYPES,
+                I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH,
+                I_CmsGalleryProviderConstants.CONFIG_USE_FORMATS,
+                I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMAT_NAMES,
+                I_CmsGalleryProviderConstants.CONFIG_IMAGE_FORMATS));
 
         // delete all keys not listed above
         Set<String> toDelete = new HashSet<String>(Sets.difference(json.keySet(), validKeys));
@@ -475,7 +476,8 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                 }
             } catch (Exception e) {
                 // failed to create widget instance
-                LOG.error(Messages.get().container(Messages.LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1, widgetClassName).key());
+                LOG.error(
+                    Messages.get().container(Messages.LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1, widgetClassName).key());
             }
 
         }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * This class inserts formerly deleted users/groups in the CMS_HISTORY_PRINCIPALS table.<p>
- * 
+ *
  * These users/groups are read out of the following tables:
  * <ul>
  * <li>CMS_BACKUP_RESOURCES</li>
@@ -53,7 +53,7 @@ public class CmsUpdateDBHistoryPrincipals extends org.opencms.setup.db.update6to
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBHistoryPrincipals()
@@ -65,9 +65,9 @@ public class CmsUpdateDBHistoryPrincipals extends org.opencms.setup.db.update6to
 
     /**
      * Creates the CMS_HISTORY_PRINCIPALS table if it does not exist yet.<p>
-     *  
+     *
      * @param dbCon the db connection interface
-     * 
+     *
      * @throws SQLException if something goes wrong
      */
     @Override

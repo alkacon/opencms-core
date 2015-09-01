@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides methods to write export points to the "real" file system.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsExportPointDriver {
@@ -75,8 +75,8 @@ public class CmsExportPointDriver {
     }
 
     /**
-     * If required, creates the folder with the given root path in the real file system.<p> 
-     * 
+     * If required, creates the folder with the given root path in the real file system.<p>
+     *
      * @param resourceName the root path of the folder to create
      * @param exportpoint the export point to create the folder in
      */
@@ -90,11 +90,11 @@ public class CmsExportPointDriver {
      *
      * If the given resource name points to a folder, then this folder is only deleted if it is empty.
      * This is required since the same export point RFS target folder may be used by multiple export points.
-     * For example, this is usually the case with the <code>/WEB-INF/classes/</code> and 
+     * For example, this is usually the case with the <code>/WEB-INF/classes/</code> and
      * <code>/WEB-INF/lib/</code> folders which are export point for multiple modules.
-     * If all resources in the RFS target folder where deleted, uninstalling one module would delete the 
-     * export <code>classes</code> and <code>lib</code> resources of all other modules.<p> 
-     * 
+     * If all resources in the RFS target folder where deleted, uninstalling one module would delete the
+     * export <code>classes</code> and <code>lib</code> resources of all other modules.<p>
+     *
      * @param resourceName the root path of the resource to be deleted
      * @param exportpoint the name of the export point
      */
@@ -104,7 +104,7 @@ public class CmsExportPointDriver {
         if (file.exists() && file.canWrite()) {
             // delete the file (or folder)
             file.delete();
-            // also delete empty parent directories 
+            // also delete empty parent directories
             File parent = file.getParentFile();
             if (parent.canWrite()) {
                 parent.delete();
@@ -114,11 +114,11 @@ public class CmsExportPointDriver {
 
     /**
      * Returns the export point path for the given resource root path,
-     * or <code>null</code> if the resource is not contained in 
+     * or <code>null</code> if the resource is not contained in
      * any export point.<p>
      *
      * @param rootPath the root path of a resource in the OpenCms VFS
-     * @return the export point path for the given resource, or <code>null</code> if the resource is not contained in 
+     * @return the export point path for the given resource, or <code>null</code> if the resource is not contained in
      *      any export point
      */
     public String getExportPoint(String rootPath) {
@@ -135,7 +135,7 @@ public class CmsExportPointDriver {
 
     /**
      * Returns the set of all VFS paths that are exported as an export point.<p>
-     * 
+     *
      * @return the set of all VFS paths that are exported as an export point
      */
     public Set<String> getExportPointPaths() {
@@ -145,9 +145,9 @@ public class CmsExportPointDriver {
 
     /**
      * Writes the file with the given root path to the real file system.<p>
-     * 
+     *
      * If required, missing parent folders in the real file system are automatically created.<p>
-     * 
+     *
      * @param resourceName the root path of the file to write
      * @param exportpoint the export point to write file to
      * @param content the contents of the file to write
@@ -173,8 +173,8 @@ public class CmsExportPointDriver {
     }
 
     /**
-     * Writes (if required creates) a resource with the given name to the real file system.<p>  
-     * 
+     * Writes (if required creates) a resource with the given name to the real file system.<p>
+     *
      * @param resourceName the root path of the resource to write
      * @param exportpoint the name of the export point
      * @param content the contents of the file to write
@@ -195,9 +195,8 @@ public class CmsExportPointDriver {
             if (!folder.exists()) {
                 boolean success = folder.mkdirs();
                 if (!success) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_CREATE_FOLDER_FAILED_1,
-                        folder.getAbsolutePath()));
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.LOG_CREATE_FOLDER_FAILED_1, folder.getAbsolutePath()));
                 }
             }
             if (content != null) {

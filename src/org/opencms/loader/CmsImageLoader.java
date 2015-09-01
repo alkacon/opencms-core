@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,15 +50,15 @@ import org.apache.commons.logging.Log;
 
 /**
  * Loader for images from the OpenCms VSF with integrated image scaling and processing capabilities.<p>
- * 
+ *
  * To scale or process an image, the parameter <code>{@link org.opencms.loader.CmsImageScaler#PARAM_SCALE}</code>
  * has to be appended to the image URI. The value for the parameter needs to be composed from the <code>SCALE_PARAM</code>
  * options provided by the constants in the <code>{@link org.opencms.file.types.CmsResourceTypeImage}</code> class.<p>
- * 
- * For example, to scale an image to exact 800x600 pixel with center fitting and a background color of grey, 
- * the following parameter String can be used: <code>w:800,h:600,t:0,c:c0c0c0</code>.<p> 
- * 
- * @since 6.2.0 
+ *
+ * For example, to scale an image to exact 800x600 pixel with center fitting and a background color of grey,
+ * the following parameter String can be used: <code>w:800,h:600,t:0,c:c0c0c0</code>.<p>
+ *
+ * @since 6.2.0
  */
 public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener {
 
@@ -116,11 +116,11 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     }
 
     /**
-     * Returns the image down scale parameters, 
-     * which is set with the {@link #CONFIGURATION_DOWNSCALE} configuration option.<p> 
-     * 
+     * Returns the image down scale parameters,
+     * which is set with the {@link #CONFIGURATION_DOWNSCALE} configuration option.<p>
+     *
      * If no down scale parameters have been set in the configuration, this will return <code>null</code>.
-     * 
+     *
      * @return the image down scale parameters
      */
     public static String getDownScaleParams() {
@@ -130,8 +130,8 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
 
     /**
      * Returns the path of the image cache repository folder in the RFS,
-     * which is set with the {@link #CONFIGURATION_IMAGE_FOLDER} configuration option.<p> 
-     * 
+     * which is set with the {@link #CONFIGURATION_IMAGE_FOLDER} configuration option.<p>
+     *
      * @return the path of the image cache repository folder in the RFS
      */
     public static String getImageRepositoryPath() {
@@ -140,11 +140,11 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     }
 
     /**
-     * The maximum blur size for image re-scale operations, 
+     * The maximum blur size for image re-scale operations,
      * which is set with the {@link #CONFIGURATION_MAX_BLUR_SIZE} configuration option.<p>
-     * 
+     *
      * The default is 2500 * 2500 pixel.<p>
-     * 
+     *
      * @return the maximum blur size for image re-scale operations
      */
     public static int getMaxBlurSize() {
@@ -153,18 +153,18 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     }
 
     /**
-     * Returns <code>true</code> if the image scaling and processing capabilities for the 
+     * Returns <code>true</code> if the image scaling and processing capabilities for the
      * OpenCms VFS images have been enabled, <code>false</code> if not.<p>
-     * 
+     *
      * Image scaling is enabled by setting the loader parameter <code>image.scaling.enabled</code>
      * to the value <code>true</code> in the configuration file <code>opencms-vfs.xml</code>.<p>
-     * 
+     *
      * Enabling image processing in OpenCms may require several additional configuration steps
      * on the server running OpenCms, especially in UNIX systems. Here it is often required to have an X window server
      * configured and accessible so that the required Java ImageIO operations work.
      * Therefore the image scaling capabilities in OpenCms are disabled by default.<p>
-     * 
-     * @return <code>true</code> if the image scaling and processing capabilities for the 
+     *
+     * @return <code>true</code> if the image scaling and processing capabilities for the
      *      OpenCms VFS images have been enabled
      */
     public static boolean isEnabled() {
@@ -186,7 +186,10 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
                 m_imageRepositoryFolder = paramValue.trim();
             }
             if (CONFIGURATION_MAX_SCALE_SIZE.equals(paramName)) {
-                m_maxScaleSize = CmsStringUtil.getIntValue(paramValue, CmsImageScaler.SCALE_DEFAULT_MAX_SIZE, paramName);
+                m_maxScaleSize = CmsStringUtil.getIntValue(
+                    paramValue,
+                    CmsImageScaler.SCALE_DEFAULT_MAX_SIZE,
+                    paramName);
             }
             if (CONFIGURATION_MAX_BLUR_SIZE.equals(paramName)) {
                 m_maxBlurSize = CmsStringUtil.getIntValue(
@@ -286,12 +289,12 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
         OpenCms.addCmsEventListener(this);
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_IMAGE_REPOSITORY_PATH_1,
-                m_vfsDiskCache.getRepositoryPath()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_IMAGE_SCALING_ENABLED_1,
-                Boolean.valueOf(m_enabled)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_IMAGE_REPOSITORY_PATH_1,
+                    m_vfsDiskCache.getRepositoryPath()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_IMAGE_SCALING_ENABLED_1, Boolean.valueOf(m_enabled)));
         }
     }
 
@@ -321,17 +324,17 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
 
     /**
      * Returns a scaled version of the given OpenCms VFS image resource.<p>
-     * 
+     *
      * All results are cached in disk.
-     * If the scaled version does not exist in the cache, it is created. 
+     * If the scaled version does not exist in the cache, it is created.
      * Unscaled versions of the images are also stored in the cache.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param resource the base VFS resource for the image
      * @param scaler the configured image scaler
-     * 
+     *
      * @return a scaled version of the given OpenCms VFS image resource
-     * 
+     *
      * @throws IOException in case of errors accessing the disk based cache
      * @throws CmsException in case of errors accessing the OpenCms VFS
      */

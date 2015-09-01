@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,7 +38,7 @@ import com.google.gwt.dom.client.Style;
 
 /**
  * A chain of ancestors of a DOM element whose Z-Index can be manipulated.<p>
- * 
+ *
  * @since 8.0.0
  */
 public final class CmsZIndexChain {
@@ -59,7 +59,7 @@ public final class CmsZIndexChain {
 
         /**
          * Creates a new entry from an element.<p>
-         * 
+         *
          * @param element the entry's element
          */
         public Entry(Element element) {
@@ -79,8 +79,8 @@ public final class CmsZIndexChain {
 
         /**
          * Bumps the entry's z index to a given value.<p>
-         * 
-         * @param newZIndex the new value for the z index 
+         *
+         * @param newZIndex the new value for the z index
          */
         public void bump(int newZIndex) {
 
@@ -91,8 +91,8 @@ public final class CmsZIndexChain {
 
         /**
          * Returns the original Z index of the element.<p>
-         * 
-         * @return the original z index 
+         *
+         * @return the original z index
          */
         public int getOriginalZIndex() {
 
@@ -120,7 +120,7 @@ public final class CmsZIndexChain {
 
     /**
      * Private constructor to create a Z index chain from a list of entries.<p>
-     * 
+     *
      * @param entries the list of entries
      */
     private CmsZIndexChain(List<Entry> entries) {
@@ -130,9 +130,9 @@ public final class CmsZIndexChain {
 
     /**
      * Creates a z index chain from an element's ancestors.<p>
-     * 
+     *
      * @param elem the element whose ancestors should be put in the Z index chain
-     *  
+     *
      * @return the z index chain for the element's ancestors
      */
     public static CmsZIndexChain get(Element elem) {
@@ -148,8 +148,8 @@ public final class CmsZIndexChain {
 
     /**
      * Bumps all entries of the chain to a given z index value.<p>
-     * 
-     * @param zIndex a z index value 
+     *
+     * @param zIndex a z index value
      */
     public void bump(int zIndex) {
 
@@ -160,8 +160,8 @@ public final class CmsZIndexChain {
 
     /**
      * Returns the maximum z index found in the chain.<p>
-     * 
-     * @return the maximum z index found in the chain 
+     *
+     * @return the maximum z index found in the chain
      */
     public int getMaxZIndex() {
 

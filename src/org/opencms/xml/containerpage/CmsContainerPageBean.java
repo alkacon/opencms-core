@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.apache.commons.collections.Transformer;
 
 /**
  * Describes one locale of a container page.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsContainerPageBean {
@@ -65,14 +65,14 @@ public class CmsContainerPageBean {
     /** The supported types. */
     private final Set<String> m_types;
 
-    /** 
-     * Creates a new container page bean.<p> 
-     * 
+    /**
+     * Creates a new container page bean.<p>
+     *
      * @param containers the containers
      **/
     public CmsContainerPageBean(List<CmsContainerBean> containers) {
 
-        // we want to preserve container order 
+        // we want to preserve container order
         Map<String, CmsContainerBean> cnts = new LinkedHashMap<String, CmsContainerBean>();
         Set<String> types = new HashSet<String>();
         List<String> names = new ArrayList<String>();
@@ -88,9 +88,9 @@ public class CmsContainerPageBean {
 
     /**
      * Returns <code>true</code> if the element with the provided id is contained in this container.<p>
-     *  
+     *
      * @param elementId the element id to check
-     * 
+     *
      * @return <code>true</code> if the element with the provided id is contained in this container
      */
     public boolean containsElement(CmsUUID elementId) {
@@ -110,7 +110,7 @@ public class CmsContainerPageBean {
 
     /**
      * Returns a lazy initialized map that describes if a certain element if part of this container.<p>
-     * 
+     *
      * @return a lazy initialized map that describes if a certain element if part of this container
      */
     public Map<CmsUUID, Boolean> getContainsElement() {
@@ -145,7 +145,7 @@ public class CmsContainerPageBean {
 
     /**
      * Returns the elements of all containers in this page.<p>
-     * 
+     *
      * @return the elements of all containers in this page
      */
     public List<CmsContainerElementBean> getElements() {

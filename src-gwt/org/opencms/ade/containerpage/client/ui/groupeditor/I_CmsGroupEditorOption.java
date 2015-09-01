@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,21 +31,21 @@ import com.google.gwt.event.dom.client.ClickEvent;
 
 /**
  * Common interface for option buttons within the inheritance container editor.<p>
- * 
+ *
  * @since 8.5.0
  */
 public interface I_CmsGroupEditorOption {
 
     /**
      * Checks if this button should be visible according to the elements state.<p>
-     * 
+     *
      * @return <code>true</code> if the button should be visible
      */
     boolean checkVisibility();
 
     /**
      * Executed on button click.<p>
-     * 
+     *
      * @param event the click event
      */
     void onClick(ClickEvent event);

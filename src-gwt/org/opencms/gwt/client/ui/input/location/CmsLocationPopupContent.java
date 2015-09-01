@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -144,7 +144,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the location controller
      * @param addressOracle the address suggest oracle to use for the address suggest box
      * @param modeItems the available map modes
@@ -172,7 +172,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Displays the location value fields.<p>
-     * 
+     *
      * @param value the location value
      */
     protected void displayValues(CmsLocationValue value) {
@@ -189,7 +189,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Returns the map canvas element.<p>
-     * 
+     *
      * @return the map canvas element
      */
     protected Element getMapCanvas() {
@@ -199,7 +199,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setAddressVisible(boolean visible) {
@@ -214,7 +214,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setLatLngVisible(boolean visible) {
@@ -232,7 +232,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setMapVisible(boolean visible) {
@@ -247,7 +247,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setModeVisible(boolean visible) {
@@ -262,7 +262,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setSizeVisible(boolean visible) {
@@ -277,7 +277,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setTypeVisible(boolean visible) {
@@ -292,7 +292,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Sets the field visibility.<p>
-     * 
+     *
      * @param visible <code>true</code> to show the field
      */
     protected void setZoomVisible(boolean visible) {
@@ -307,7 +307,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On address field value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_addressField")
@@ -318,7 +318,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On address suggest selection.<p>
-     * 
+     *
      * @param event the selection event
      */
     @UiHandler("m_addressField")
@@ -329,7 +329,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Handles the cancel click.<p>
-     * 
+     *
      * @param event the mouse event
      */
     @UiHandler("m_cancelButton")
@@ -340,7 +340,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On height value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_heightField")
@@ -351,7 +351,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On latitude value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_latitudeField")
@@ -362,7 +362,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On longitude value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_longitudeField")
@@ -373,7 +373,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On mode value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_modeField")
@@ -384,7 +384,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * Handles the OK click.<p>
-     * 
+     *
      * @param event the mouse event
      */
     @UiHandler("m_okButton")
@@ -395,7 +395,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On type value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_typeField")
@@ -406,7 +406,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On width value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_widthField")
@@ -417,7 +417,7 @@ public class CmsLocationPopupContent extends Composite {
 
     /**
      * On zoom value change.<p>
-     * 
+     *
      * @param event the change event
      */
     @UiHandler("m_zoomField")

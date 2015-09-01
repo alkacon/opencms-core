@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -65,7 +65,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestPublishing(String arg0) {
@@ -75,7 +75,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -133,11 +133,11 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test an issue with the publish queue when trying to publish a folder that has already a subresource that is being published.<p>
-     * 
+     *
      * SECOND TRY:
      * - modify and lock a file, publish the file
      * - lock the folder, modify a second file, publish the folder
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishQueueIssue2() throws Throwable {
@@ -203,11 +203,11 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test an issue with the publish queue when trying to publish a folder that has already a subresource that is being published.<p>
-     * 
+     *
      * THIRD TRY:
      * - modify and lock a file, publish the file
      * - modify and lock the folder, publish the folder
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishQueueIssue3() throws Throwable {
@@ -277,11 +277,11 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test an issue with the publish queue when trying to publish a folder that has already a subresource that is being published.<p>
-     * 
+     *
      * FIRST TRY:
      * - modify and lock a file, publish the file
      * - modify and lock a second file, publish the folder
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishQueueIssue1() throws Throwable {
@@ -346,7 +346,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing changed files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishChangedFiles() throws Throwable {
@@ -367,7 +367,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsProperty prop3;
         CmsProperty prop4;
 
-        // make changes to the resources 
+        // make changes to the resources
         // do not need to make any changes to resource3 and resource4 as they are
         // siblings of resource2!
 
@@ -467,7 +467,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the behaviour during publishing depending on the content date.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishContentDate() throws Throwable {
@@ -658,12 +658,12 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of a fresh created sibling.<p>
-     * 
+     *
      * take a modified resource:
-     * - create a sibling of it 
-     * - publish only the sibling 
+     * - create a sibling of it
+     * - publish only the sibling
      * - compare online/offline versions of the sibling
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishCopySibling() throws Throwable {
@@ -697,7 +697,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing deleted files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishDeletedFiles() throws Throwable {
@@ -716,7 +716,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // publish a deleted resource without siblings
         //
 
-        // delete the resources 
+        // delete the resources
         cms.lockResource(resource1);
         cms.deleteResource(resource1, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource(resource1);
@@ -735,10 +735,10 @@ public class TestPublishing extends OpenCmsTestCase {
 
         cms.getRequestContext().setCurrentProject(offlineProject);
 
-        // publish a deleted resource with siblings, 
+        // publish a deleted resource with siblings,
         // delete the siblings also, but publish only the resource itself
 
-        // delete the resources 
+        // delete the resources
         cms.lockResource(resource2);
         cms.deleteResource(resource2, CmsResource.DELETE_REMOVE_SIBLINGS);
         cms.unlockResource(resource2);
@@ -810,13 +810,13 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of deleted siblings.<p>
-     * 
+     *
      * take 2 siblings (s1 and s2):
-     *  - delete one 
-     *  - publish the deleted one 
+     *  - delete one
+     *  - publish the deleted one
      *  - the remaining sibling should be readable in online project
      *  - the deleted sibling should be eligible for restoration
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishDeletedSiblings() throws Throwable {
@@ -915,13 +915,13 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of deleted siblings, 2nd issue.<p>
-     * 
+     *
      * take 2 siblings (s1 and s2):
      *  - delete all
      *  - publish all
      *  - non of them should be readable
      *  - both siblings should be eligible for restoration
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishDeletedSiblings2() throws Throwable {
@@ -996,7 +996,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a folder with locked files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishFolderWithLockedFiles() throws Throwable {
@@ -1040,7 +1040,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing changed files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishLockedFiles() throws Throwable {
@@ -1057,7 +1057,7 @@ public class TestPublishing extends OpenCmsTestCase {
         String resource1 = "/folder2/image1_new.gif";
         String resource2 = "/folder2/image1_sibling1.gif";
 
-        // make changes to the resources 
+        // make changes to the resources
         // do not need to make any changes to resource3 and resource4 as they are
         // siblings of resource2!
 
@@ -1111,7 +1111,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing moved files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishMovedFiles() throws Throwable {
@@ -1125,7 +1125,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsProject onlineProject = cms.readProject("Online");
         CmsProject offlineProject = cms.readProject("Offline");
 
-        // move the resource 
+        // move the resource
         cms.lockResource(resource1);
         cms.moveResource(resource1, target1);
         cms.unlockResource(target1);
@@ -1191,7 +1191,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing new files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishNewFiles() throws Throwable {
@@ -1220,7 +1220,7 @@ public class TestPublishing extends OpenCmsTestCase {
         storeResources(cms, destination4);
 
         // unlock all new resources
-        // do not neet do unlock destination3 as it is a sibling of destination2     
+        // do not neet do unlock destination3 as it is a sibling of destination2
         cms.unlockResource(destination1);
         cms.unlockResource(destination2);
 
@@ -1312,7 +1312,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing files within a new unpublished folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishNewFilesInNewFolder() throws Throwable {
@@ -1417,7 +1417,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a project with an iteration.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishProjectGalore() throws Throwable {
@@ -1447,7 +1447,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests publishing resources within a distinct project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishProjectLastmodified() throws Throwable {
@@ -1537,7 +1537,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests publishing a folder containing resources modified within a distinct project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishProjectLastmodifiedFolder() throws Throwable {
@@ -1570,7 +1570,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing of related files.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishRelatedFiles() throws Throwable {
@@ -1580,7 +1580,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         String resName = "index.html";
 
-        // touch the file to publish        
+        // touch the file to publish
         cms.lockResource(resName);
         cms.setDateLastModified(resName, System.currentTimeMillis(), false);
         CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
@@ -1644,7 +1644,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing of related files taken a whole folder structure.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishRelatedFilesInFolder() throws Throwable {
@@ -1654,7 +1654,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         String resName = "/folder1/";
 
-        // touch the file to publish        
+        // touch the file to publish
         cms.lockResource(resName);
         cms.setDateLastModified(resName, System.currentTimeMillis(), true);
         CmsResource resource = cms.readResource(resName, CmsResourceFilter.DEFAULT);
@@ -1690,7 +1690,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing of related files in an unpublished folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishRelatedFilesInNewFolder() throws Throwable {
@@ -1702,7 +1702,7 @@ public class TestPublishing extends OpenCmsTestCase {
         String fileName = "/testFolder/testFile.gif";
         String srcName = "sourceTest.html";
 
-        // create folder and file        
+        // create folder and file
         cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         cms.createResource(fileName, CmsResourceTypeImage.getStaticTypeId());
 
@@ -1761,7 +1761,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a replaced file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishReplacedFile() throws Throwable {
@@ -1802,7 +1802,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a single resource with an iteration.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishResourceGalore() throws Throwable {
@@ -1833,12 +1833,12 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of resource property.<p>
-     * 
+     *
      * take 2 siblings (s1 and s2):
      * - change a shared property of s1
      * - s2 will be marked as changed also
      * - direct publishing s1, should also change s2
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishResourceProperty() throws Throwable {
@@ -1882,7 +1882,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a resource with related resources with an iteration.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishResourceWithRelatedGalore() throws Throwable {
@@ -1932,12 +1932,12 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of structure/shared properties.<p>
-     * 
+     *
      * take 2 siblings (s1 and s2):
-     * - change a individual property of s1 
-     * - change a shared property of s2 
+     * - change a individual property of s1
+     * - change a shared property of s2
      * - direct publishing s2, should not change s1
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishSiblings() throws Throwable {
@@ -1995,12 +1995,12 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Tests the publishing of structure property.<p>
-     * 
+     *
      * take 2 siblings (s1 and s2):
      * - change a individual property of s1
      * - s2 remains unchanged
      * - direct publishing s1, should not change s2
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishStructureProperty() throws Throwable {
@@ -2044,7 +2044,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Test publishing a temporary project.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testPublishTemporaryProject() throws Throwable {
@@ -2081,12 +2081,13 @@ public class TestPublishing extends OpenCmsTestCase {
         try {
             cms.readResource(source);
         } catch (CmsException e) {
-            fail("Resource "
-                + source
-                + " not found in project "
-                + cms.getRequestContext().getCurrentProject().toString()
-                + ":"
-                + e);
+            fail(
+                "Resource "
+                    + source
+                    + " not found in project "
+                    + cms.getRequestContext().getCurrentProject().toString()
+                    + ":"
+                    + e);
         }
 
         // now try to read the resource in the online project
@@ -2094,12 +2095,13 @@ public class TestPublishing extends OpenCmsTestCase {
         try {
             cms.readResource(source);
         } catch (CmsException e) {
-            fail("Resource "
-                + source
-                + " not found in project "
-                + cms.getRequestContext().getCurrentProject().toString()
-                + ":"
-                + e);
+            fail(
+                "Resource "
+                    + source
+                    + " not found in project "
+                    + cms.getRequestContext().getCurrentProject().toString()
+                    + ":"
+                    + e);
         }
 
         // check if the state of the resource is ok
@@ -2121,9 +2123,9 @@ public class TestPublishing extends OpenCmsTestCase {
 
     /**
      * Returns a project for testing purposes.<p>
-     * 
+     *
      * @param cms the cms object
-     * 
+     *
      * @return a project for testing purposes
      */
     private CmsProject getTestProject(CmsObject cms) {

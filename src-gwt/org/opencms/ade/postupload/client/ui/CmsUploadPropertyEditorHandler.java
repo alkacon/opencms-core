@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,9 +58,9 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param dialog the dialog containing the property editor 
-     * @param data the data for editing the properties 
+     *
+     * @param dialog the dialog containing the property editor
+     * @param data the data for editing the properties
      */
     public CmsUploadPropertyEditorHandler(CmsUploadPropertyDialog dialog, CmsPostUploadDialogPanelBean data) {
 
@@ -182,7 +182,7 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
         boolean editedName,
         CmsReloadMode reloadMode) {
 
-        // ignore reloadMode; it's only relevant for the sitemap editor 
+        // ignore reloadMode; it's only relevant for the sitemap editor
 
         final I_CmsVfsServiceAsync vfsService = CmsCoreProvider.getVfsService();
         CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
@@ -242,8 +242,8 @@ public class CmsUploadPropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /**
      * Sets the dialog instance.<p>
-     *  
-     * @param dialog the dialog used for editing the properties 
+     *
+     * @param dialog the dialog used for editing the properties
      */
     public void setDialog(CmsUploadPropertyDialog dialog) {
 

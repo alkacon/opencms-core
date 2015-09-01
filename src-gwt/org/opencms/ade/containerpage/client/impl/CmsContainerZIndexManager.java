@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Implementation of the Z index manager for IE.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
@@ -45,7 +45,8 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
     private Map<String, CmsZIndexChain> m_chains = new HashMap<String, CmsZIndexChain>();
 
     /** The constant which should be added to the bumped z index. */
-    public static final int BUMP_OFFSET = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.constants().css().zIndexHighlighting() + 1;
+    public static final int BUMP_OFFSET = org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.constants().css().zIndexHighlighting()
+        + 1;
 
     /** The maximum z index found in the container ancestors. */
     private int m_maxZIndex;
@@ -68,8 +69,8 @@ public class CmsContainerZIndexManager implements I_CmsContainerZIndexManager {
 
     /**
      * Bumps the z indices for the ancestor elements of a given container.<p>
-     * 
-     * @param containerName the name of the container 
+     *
+     * @param containerName the name of the container
      */
     public void bump(String containerName) {
 

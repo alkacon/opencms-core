@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,24 +45,33 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     /** A link to the resource. */
     private String m_link;
 
+    /** The permission info. */
+    private CmsPermissionInfo m_permissionInfo;
+
     /** The site path of the resource. */
     private String m_sitePath;
 
     /** The structure id of the resource. */
     private CmsUUID m_structureId;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param infoBean the list info bean 
-     * @param link the link to the resource 
-     * @param structureId the structure id of the resource 
+     *
+     * @param infoBean the list info bean
+     * @param link the link to the resource
+     * @param structureId the structure id of the resource
+     * @param permissionInfo the permission info
      */
-    public CmsResourceStatusRelationBean(CmsListInfoBean infoBean, String link, CmsUUID structureId) {
+    public CmsResourceStatusRelationBean(
+        CmsListInfoBean infoBean,
+        String link,
+        CmsUUID structureId,
+        CmsPermissionInfo permissionInfo) {
 
         m_infoBean = infoBean;
         m_link = link;
         m_structureId = structureId;
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -75,18 +84,18 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Gets the list info bean.<p>
-     * 
-     * @return the list info bean 
+     *
+     * @return the list info bean
      */
     public CmsListInfoBean getInfoBean() {
 
         return m_infoBean;
     }
 
-    /** 
+    /**
      * Gets the link to the resource.<p>
-     * 
-     * @return the link to the resource 
+     *
+     * @return the link to the resource
      */
     public String getLink() {
 
@@ -94,9 +103,19 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     }
 
     /**
+     * Returns the permission info.<p>
+     *
+     * @return the permission info
+     */
+    public CmsPermissionInfo getPermissionInfo() {
+
+        return m_permissionInfo;
+    }
+
+    /**
      * Gets the site path of the resource.<p>
-     * 
-     * @return the site path of the resource 
+     *
+     * @return the site path of the resource
      */
     public String getSitePath() {
 
@@ -105,8 +124,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Returns the structure id of the resource.<p>
-     * 
-     * @return the structure id of the resource 
+     *
+     * @return the structure id of the resource
      */
     public CmsUUID getStructureId() {
 
@@ -115,8 +134,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Returns true if the resource is an XML content.<p>
-     * 
-     * @return true if the resource is an XML content 
+     *
+     * @return true if the resource is an XML content
      */
     public boolean isXmlContent() {
 
@@ -125,17 +144,18 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Sets the list info bean.<p>
-     * 
-     * @param infoBean the new list info bean 
+     *
+     * @param infoBean the new list info bean
      */
     public void setInfoBean(CmsListInfoBean infoBean) {
 
         m_infoBean = infoBean;
     }
 
-    /** 
+    /**
      * Marks this bean as belonging to an XML content resource.<p>
-     * @param isXmlContent
+     *
+     * @param isXmlContent if the resource is an XML content
      */
     public void setIsXmlContent(boolean isXmlContent) {
 
@@ -145,8 +165,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Sets the link for the resource.<p>
-     * 
-     * @param link the link for the resource 
+     *
+     * @param link the link for the resource
      */
     public void setLink(String link) {
 
@@ -155,8 +175,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Sets the site path for the resource.<p>
-     * 
-     * @param path the new site path 
+     *
+     * @param path the new site path
      */
     public void setSitePath(String path) {
 
@@ -165,8 +185,8 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
 
     /**
      * Sets the structure id for the resource.<p>
-     * 
-     * @param structureId the new structure id 
+     *
+     * @param structureId the new structure id
      */
     public void setStructureId(CmsUUID structureId) {
 

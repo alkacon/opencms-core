@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,17 +41,17 @@ import org.htmlparser.lexer.Page;
 import org.htmlparser.util.ParserException;
 
 /**
- * 
+ *
  * Html parser / visitor combination that visits a document and replaces Tag names by using the
  * replacement configuration of a {@link org.opencms.workplace.tools.content.CmsTagReplaceSettings}
  * instance.
  * <p>
- * 
+ *
  * Instances are reusable.
  * <p>
- * 
+ *
  * @since 6.1.7
- * 
+ *
  */
 public final class CmsTagReplaceParser extends CmsHtmlParser {
 
@@ -71,7 +71,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * Default constructor that turns echo on and uses the settings for replacing tags.
      * <p>
-     * 
+     *
      * @param settings the settings to use for tag replacement.
      */
     public CmsTagReplaceParser(CmsTagReplaceSettings settings) {
@@ -92,9 +92,10 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * Overridden to also return the attributes of the Tag.
      * <p>
-     * 
+     *
      * @see org.opencms.util.CmsHtmlParser#getTagHtml(org.htmlparser.Tag)
      */
+    @Override
     public String getTagHtml(Tag tag) {
 
         if (CmsStringUtil.isEmpty(tag.getTagName())) {
@@ -121,20 +122,21 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
      * <p>
      * Additionally tags are replaced / removed according to the configuration of this instance.
      * <p>
-     * 
+     *
      * <h3>Please note:</h3>
      * There are static process methods in the superclass that will not do the replacements /
      * removals. Don't mix them up with this method.
      * <p>
-     * 
+     *
      * @param html the content to extract the plain text from.
-     * 
+     *
      * @param encoding the encoding to use.
-     * 
+     *
      * @return the text extracted from the given html content.
-     * 
+     *
      * @throws ParserException if something goes wrong.
      */
+    @Override
     public String process(String html, String encoding) throws ParserException {
 
         // clear from potential previous run:
@@ -157,6 +159,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * @see org.opencms.util.CmsHtmlParser#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         boolean change = m_settings.replace(tag);
@@ -169,6 +172,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * @see org.opencms.util.CmsHtmlParser#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         boolean change = m_settings.replace(tag);
@@ -181,7 +185,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * Returns the changedContent.
      * <p>
-     * 
+     *
      * @return the changedContent
      */
     public boolean isChangedContent() {

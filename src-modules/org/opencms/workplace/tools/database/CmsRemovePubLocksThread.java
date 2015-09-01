@@ -16,25 +16,25 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * companys website: http://www.alkacon.com.
- * 
+ *
  * For further information about OpenCms, please see the OpenCms project
  * website: http://www.opencms.org.
- * 
- * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used 
- * to endorse or promote products derived from this software without prior 
+ *
+ * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used
+ * to endorse or promote products derived from this software without prior
  * written permission. For written permission, please contact info@alkacon.com.
- * 
- * Products derived from this software may not be called "Alkacon", 
- * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH" 
- * or "OpenCms" appear in their name, without prior written permission of 
- * Alkacon Software GmbH. 
+ *
+ * Products derived from this software may not be called "Alkacon",
+ * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH"
+ * or "OpenCms" appear in their name, without prior written permission of
+ * Alkacon Software GmbH.
  *
  * This program is also available under a commercial non-GPL license. For
  * pricing and ordering information, please inquire at sales@alkacon.com.
@@ -57,7 +57,7 @@ import java.util.List;
 
 /**
  * Remove the publish locks.<p>
- * 
+ *
  * @since 7.0.2
  */
 public class CmsRemovePubLocksThread extends A_CmsReportThread {
@@ -70,7 +70,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
 
     /**
      * Creates an Thread to remove the publish locks.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param resources a list of resource names
      */
@@ -83,9 +83,10 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
 
     /**
      * Returns the last error.<p>
-     * 
+     *
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -93,9 +94,10 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
 
     /**
      * Updates the report.<p>
-     * 
+     *
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -103,13 +105,16 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
 
     /**
      * Starts the report thread.<p>
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         try {
-            getReport().println(Messages.get().container(Messages.RPT_DB_PUBLOCKS_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+            getReport().println(
+                Messages.get().container(Messages.RPT_DB_PUBLOCKS_BEGIN_0),
+                I_CmsReport.FORMAT_HEADLINE);
             CmsObject cms = getCms();
             CmsLockFilter filter = CmsLockFilter.FILTER_ALL;
             filter = filter.filterType(CmsLockType.PUBLISH);
@@ -142,7 +147,9 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
             }
             getReport().println(Messages.get().container(Messages.RPT_DB_PUBLOCKS_END_0), I_CmsReport.FORMAT_HEADLINE);
         } catch (Throwable exc) {
-            getReport().println(Messages.get().container(Messages.RPT_DB_PUBLOCKS_FAILED_0), I_CmsReport.FORMAT_WARNING);
+            getReport().println(
+                Messages.get().container(Messages.RPT_DB_PUBLOCKS_FAILED_0),
+                I_CmsReport.FORMAT_WARNING);
             getReport().println(exc);
             m_error = exc;
         }

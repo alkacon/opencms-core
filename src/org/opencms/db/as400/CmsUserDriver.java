@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,9 +27,9 @@
 
 package org.opencms.db.as400;
 
+import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.CmsSimpleQueryFragment;
 import org.opencms.db.I_CmsQueryFragment;
-import org.opencms.db.CmsSelectQuery.TableAlias;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.CmsUserQueryBuilder;
 
@@ -37,13 +37,13 @@ import com.google.common.base.Joiner;
 
 /**
  * AS400 implementation of the user driver methods.<p>
- * 
+ *
  * @since 7.0.4
  */
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * 
+     *
      * @see org.opencms.db.generic.CmsUserDriver#createUserQueryBuilder()
      */
     @Override
@@ -57,8 +57,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             @Override
             protected I_CmsQueryFragment createFlagCondition(TableAlias users, int flags) {
 
-                return new CmsSimpleQueryFragment("BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ", new Integer(
-                    flags), new Integer(flags));
+                return new CmsSimpleQueryFragment(
+                    "BITAND(" + users.column("USER_FLAGS") + ", ?) = ? ",
+                    new Integer(flags),
+                    new Integer(flags));
             }
 
             /**

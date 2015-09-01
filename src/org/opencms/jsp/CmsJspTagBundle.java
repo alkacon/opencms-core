@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,11 +47,11 @@ import org.apache.taglibs.standard.tag.el.fmt.BundleTag;
 
 /**
  * Provides tag access to OpenCms resource bundles.<p>
- * 
+ *
  * This replaces the <code>&lt;fmt:bundle basename=""&gt;</code> tag which is not capable of using OpenCms resource bundles.<p>
- * 
+ *
  * You can use <code>&lt;fmt:message key=""&gt;</code> tags inside the <code>&lt;cms:bundle basename=""&gt;</code> tag as usual.
- * 
+ *
  * @since 8.5.2
  */
 public class CmsJspTagBundle extends BundleTag {
@@ -79,7 +79,7 @@ public class CmsJspTagBundle extends BundleTag {
      * Returns the initialized localization context.<p>
      * @param pc the current page context
      * @param basename the bas name of the bundle
-     * 
+     *
      * @return the initialized localization context
      */
     public static LocalizationContext getLocalizationContext(PageContext pc, String basename) {
@@ -183,74 +183,25 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Gets the resource bundle with the given base name and preferred locale.
-     * 
-     * This method calls java.util.ResourceBundle.getBundle(), but ignores
-     * its return value unless its locale represents an exact or language match
-     * with the given preferred locale.
      *
      * @param basename the resource bundle base name
      * @param pref the preferred locale
-     *
-     * @return the requested resource bundle, or <tt>null</tt> if no resource
-     * bundle with the given base name exists or if there is no exact- or
-     * language-match between the preferred locale and the locale of
-     * the bundle returned by java.util.ResourceBundle.getBundle().
      */
     private static ResourceBundle findMatch(String basename, Locale pref) {
 
         ResourceBundle match = null;
-
         try {
             ResourceBundle bundle = CmsResourceBundleLoader.getBundle(basename, pref);
-            Locale avail = bundle.getLocale();
-            if (pref.equals(avail)) {
-                // Exact match
-                match = bundle;
-            } else {
-                /*
-                 * We have to make sure that the match we got is for
-                 * the specified locale. The way ResourceBundle.getBundle()
-                 * works, if a match is not found with (1) the specified locale,
-                 * it tries to match with (2) the current default locale as 
-                 * returned by Locale.getDefault() or (3) the root resource 
-                 * bundle (basename).
-                 * We must ignore any match that could have worked with (2) or (3).
-                 * So if an exact match is not found, we make the following extra
-                 * tests:
-                 *     - avail locale must be equal to preferred locale
-                 *     - avail country must be empty or equal to preferred country
-                 *       (the equality match might have failed on the variant)
-                */
-                if (pref.getLanguage().equals(avail.getLanguage())
-                    && ("".equals(avail.getCountry()) || pref.getCountry().equals(avail.getCountry()))) {
-                    /*
-                     * Language match.
-                     * By making sure the available locale does not have a 
-                     * country and matches the preferred locale's language, we
-                     * rule out "matches" based on the container's default
-                     * locale. For example, if the preferred locale is 
-                     * "en-US", the container's default locale is "en-UK", and
-                     * there is a resource bundle (with the requested base
-                     * name) available for "en-UK", ResourceBundle.getBundle()
-                     * will return it, but even though its language matches
-                     * that of the preferred locale, we must ignore it,
-                     * because matches based on the container's default locale
-                     * are not portable across different containers with
-                     * different default locales.
-                     */
-                    match = bundle;
-                }
-            }
+            match = bundle;
         } catch (MissingResourceException mre) {
             // ignored
         }
-
         return match;
     }
 
     /**
      * Internal action method.<p>
-     * 
+     *
      * @return EVAL_BODY_BUFFERED
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
@@ -263,7 +214,7 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Returns the basename attribute value.<p>
-     * 
+     *
      * @return the basename attribute value
      */
     public String getBasename() {
@@ -273,7 +224,7 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Returns the localization context to use.<p>
-     * 
+     *
      * @see org.apache.taglibs.standard.tag.common.fmt.BundleSupport#getLocalizationContext()
      */
     @Override
@@ -285,9 +236,9 @@ public class CmsJspTagBundle extends BundleTag {
 
     /**
      * Sets the basename attribute value.<p>
-     * 
+     *
      * @param bn the basename attribute value
-     * 
+     *
      * @see org.apache.taglibs.standard.tag.el.fmt.BundleTag#setBasename(java.lang.String)
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import org.dom4j.Element;
  * Describes the XML content type "OpenCmsVfsFile".<p>
  *
  * This type allows links to internal VFS resources only.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
@@ -81,7 +81,7 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Creates a new XML content value of type "OpenCmsCategoryValue".<p>
-     * 
+     *
      * @param document the XML content instance this value belongs to
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
@@ -94,7 +94,7 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Creates a new schema type descriptor for the type "OpenCmsCategoryValue".<p>
-     * 
+     *
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurrences of this type according to the XML schema
      * @param maxOccurs maximum number of occurrences of this type according to the XML schema
@@ -106,7 +106,7 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Fills the given element with a {@link CmsXmlCategoryValue} for the given data.<p>
-     * 
+     *
      * @param element the element to fill
      * @param id the id to use
      * @param rootPath the path to use
@@ -152,9 +152,9 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Returns the link objects represented by this XML content value.<p>
-     * 
+     *
      * @param cms the cms context, can be <code>null</code> but in this case no link check is performed
-     * 
+     *
      * @return  a list of link objects represented by this XML content value
      */
     public List<CmsLink> getLinks(CmsObject cms) {
@@ -241,9 +241,9 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Sets the value as a structure id.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param id the structure id which should be stored in the category value  
+     *
+     * @param cms the current CMS context
+     * @param id the structure id which should be stored in the category value
      */
     public void setIdValue(CmsObject cms, CmsUUID id) {
 
@@ -317,9 +317,9 @@ public class CmsXmlCategoryValue extends A_CmsXmlContentValue {
 
     /**
      * Creates the String value for this category value element.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @return the String value for this category value element
      */
     private String createStringValue(CmsObject cms) {

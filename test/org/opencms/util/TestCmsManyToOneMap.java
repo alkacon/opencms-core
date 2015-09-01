@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,16 +27,16 @@
 
 package org.opencms.util;
 
-import java.util.Collections;
+import org.opencms.test.OpenCmsTestCase;
 
-import junit.framework.TestCase;
+import java.util.Collections;
 
 import com.google.common.collect.Sets;
 
 /**
  * Tests for CmsManyToOneMap.<p>
  */
-public class TestCmsManyToOneMap extends TestCase {
+public class TestCmsManyToOneMap extends OpenCmsTestCase {
 
     /**
      * Test for adding entries.<p>

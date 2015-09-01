@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Collector to provide {@link CmsResource} objects for a explorer List.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public abstract class A_CmsListResourceCollector implements I_CmsListResourceCollector {
 
@@ -81,7 +81,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Constructor, creates a new list collector.<p>
-     * 
+     *
      * @param wp the workplace object where the collector is used from
      */
     protected A_CmsListResourceCollector(A_CmsListExplorerDialog wp) {
@@ -183,11 +183,11 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns a list of list items from a list of resources.<p>
-     * 
+     *
      * @param parameter the collector parameter or <code>null</code> for default.<p>
-     * 
+     *
      * @return a list of {@link CmsListItem} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public List<CmsListItem> getListItems(String parameter) throws CmsException {
@@ -204,9 +204,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
             List<CmsResource> resources = getInternalResources(getWp().getCms(), params);
             List<CmsListItem> ret = new ArrayList<CmsListItem>();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
-                    new Integer(resources.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_PROCESS_ITEMS_START_1,
+                        new Integer(resources.size())));
             }
             getWp().applyColumnVisibilities();
             CmsHtmlList list = getWp().getList();
@@ -258,14 +259,16 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 if (thread != null) {
                     count++;
                     if (thread.isInterrupted()) {
-                        throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
-                            org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
+                        throw new CmsIllegalStateException(
+                            org.opencms.workplace.commons.Messages.get().container(
+                                org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
                     }
                     thread.setProgress(((count * 40) / resources.size()) + progressOffset);
-                    thread.setDescription(org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
-                        org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
-                        new Integer(count),
-                        new Integer(resources.size())));
+                    thread.setDescription(
+                        org.opencms.workplace.commons.Messages.get().getBundle(thread.getLocale()).key(
+                            org.opencms.workplace.commons.Messages.GUI_PROGRESS_PUBLISH_STEP2_2,
+                            new Integer(count),
+                            new Integer(resources.size())));
                 }
 
                 Object obj = itRes.next();
@@ -303,7 +306,8 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                     if ((metadata.getColumnDefinition(state.getColumn()) != null)
                         && metadata.getColumnDefinition(state.getColumn()).isSorteable()) {
                         // sort
-                        I_CmsListItemComparator c = metadata.getColumnDefinition(state.getColumn()).getListItemComparator();
+                        I_CmsListItemComparator c = metadata.getColumnDefinition(
+                            state.getColumn()).getListItemComparator();
                         Collections.sort(ret, c.getComparator(state.getColumn(), getWp().getLocale()));
                         if (state.getOrder().equals(CmsListOrderEnum.ORDER_DESCENDING)) {
                             Collections.reverse(ret);
@@ -312,9 +316,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 }
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
-                    new Integer(ret.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_PROCESS_ITEMS_END_1,
+                        new Integer(ret.size())));
             }
             return ret;
         }
@@ -330,10 +335,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns the resource for the given item.<p>
-     * 
+     *
      * @param cms the cms object
      * @param item the item
-     * 
+     *
      * @return the resource
      */
     public CmsResource getResource(CmsObject cms, CmsListItem item) {
@@ -358,14 +363,14 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns all, unsorted and unfiltered, resources.<p>
-     * 
+     *
      * Be sure to cache the resources.<p>
-     * 
+     *
      * @param cms the cms object
      * @param params the parameter map
-     * 
+     *
      * @return a list of {@link CmsResource} objects
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public abstract List<CmsResource> getResources(CmsObject cms, Map<String, String> params) throws CmsException;
@@ -380,7 +385,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * The parameter must follow the syntax "page:nr" where nr is the number of the page to be displayed.<p>
-     * 
+     *
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     public List<CmsResource> getResults(CmsObject cms, String collectorName, String parameter) throws CmsException {
@@ -407,9 +412,10 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 resources = getInternalResources(cms, params);
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
-                    new Integer(resources.size())));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_COLLECTOR_GET_RESULTS_END_1,
+                        new Integer(resources.size())));
             }
             return resources;
         }
@@ -448,9 +454,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     }
 
     /**
-     * The parameter must follow the syntax "mode|projectId" where mode is either "new", "changed", "deleted" 
+     * The parameter must follow the syntax "mode|projectId" where mode is either "new", "changed", "deleted"
      * or "modified" and projectId is the id of the project to be displayed.<p>
-     * 
+     *
      * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorParam(java.lang.String)
      */
     public void setDefaultCollectorParam(String param) {
@@ -468,7 +474,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Sets the current display page.<p>
-     * 
+     *
      * @param page the new display page
      */
     public void setPage(int page) {
@@ -479,7 +485,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 String params = "";
                 int endPos = m_collectorParameter.indexOf(I_CmsListResourceCollector.SEP_PARAM, pos);
                 if (pos > 0) {
-                    pos -= I_CmsListResourceCollector.SEP_PARAM.length(); // remove also the SEP_PARAM 
+                    pos -= I_CmsListResourceCollector.SEP_PARAM.length(); // remove also the SEP_PARAM
                     params += m_collectorParameter.substring(0, pos);
                 }
                 if (endPos >= 0) {
@@ -504,7 +510,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns a list item created from the resource information, differs between valid resources and invalid resources.<p>
-     * 
+     *
      * @param resource the resource to create the list item from
      * @param list the list
      * @param showPermissions if to show permissions
@@ -517,7 +523,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * @param showState if to show the state
      * @param showLockedBy if to show the lock user
      * @param showSite if to show the site
-     * 
+     *
      * @return a list item created from the resource information
      */
     protected CmsListItem createResourceListItem(
@@ -579,9 +585,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns a dummy list item.<p>
-     * 
+     *
      * @param list the list object to create the entry for
-     * 
+     *
      * @return a dummy list item
      */
     protected CmsListItem getDummyListItem(CmsHtmlList list) {
@@ -605,13 +611,13 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Wrapper method for caching the result of {@link #getResources(CmsObject, Map)}.<p>
-     * 
+     *
      * @param cms the cms object
      * @param params the parameter map
-     * 
+     *
      * @return the result of {@link #getResources(CmsObject, Map)}
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getInternalResources(CmsObject cms, Map<String, String> params) throws CmsException {
 
@@ -630,11 +636,11 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns the list of resource names from the parameter map.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return the list of resource names
-     * 
+     *
      * @see I_CmsListResourceCollector#PARAM_RESOURCES
      */
     protected List<String> getResourceNamesFromParam(Map<String, String> params) {
@@ -651,9 +657,9 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Returns the state of the parameter map.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return the state of the list from the parameter map
      */
     protected CmsListState getState(Map<String, String> params) {
@@ -684,17 +690,17 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * Set additional column entries for a resource.<p>
-     * 
+     *
      * Overwrite this method to set additional column entries.<p>
-     * 
-     * @param item the current list item 
+     *
+     * @param item the current list item
      * @param resUtil the resource util object for getting the info from
      */
     protected abstract void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil);
 
     /**
      * Sets the resources parameter.<p>
-     * 
+     *
      * @param resources the list of resource names to use
      */
     protected void setResourcesParam(List<String> resources) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import org.apache.lucene.index.IndexableField;
 
 /**
  * Contains the data of a single item in a search result.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSearchResult> {
 
@@ -75,7 +75,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
 
     /**
      * Creates a new search result.<p>
-     * 
+     *
      * @param score the score of this search result
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
@@ -203,8 +203,8 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * Returns the description.<p>
      *
      * @return the description
-     * 
-     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
+     *
+     * @Deprecated use {@link #getField(String)} instead with the name of the field,
      *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_DESCRIPTION} to get the description (if available)
      */
     public String getDescription() {
@@ -214,15 +214,15 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
 
     /**
      * Returns the document type of the search result document.<p>
-     * 
-     * Usually this will be a VFS resource type String that can be used in the 
+     *
+     * Usually this will be a VFS resource type String that can be used in the
      * resource type manager with {@link org.opencms.loader.CmsResourceManager#getResourceType(String)}.
      * However, what is stored in the document type field depends only on the indexer used, and therefore it
      * may also be some String not referring  a VFS resource type but some external type or application.
-     * It may also be <code>null</code> in case it has not been set by a non-standard indexer.<p>  
-     * 
+     * It may also be <code>null</code> in case it has not been set by a non-standard indexer.<p>
+     *
      * @return the document type of the search result document
-     * 
+     *
      * @see org.opencms.loader.CmsResourceManager#getResourceType(String)
      */
     public String getDocumentType() {
@@ -242,9 +242,9 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
 
     /**
      * Returns the text stored in the search index field with the given name.<p>
-     * 
+     *
      * @param fieldName the name of the field to get the stored text for
-     * 
+     *
      * @return the text stored in the search index field with the given name
      */
     public String getField(String fieldName) {
@@ -256,8 +256,8 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * Returns the key words.<p>
      *
      * @return the key words
-     * 
-     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
+     *
+     * @Deprecated use {@link #getField(String)} instead with the name of the field,
      *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_KEYWORDS} to get the keywords (if available)
      */
     public String getKeywords() {
@@ -321,8 +321,8 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSe
      * Returns the title.<p>
      *
      * @return the title
-     * 
-     * @Deprecated use {@link #getField(String)} instead with the name of the field, 
+     *
+     * @Deprecated use {@link #getField(String)} instead with the name of the field,
      *      for example use {@link org.opencms.search.fields.CmsLuceneField#FIELD_TITLE} to get the title (if available)
      */
     public String getTitle() {

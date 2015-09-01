@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.io.Serializable;
 
 /**
  *  Enumeration class for the different resource states.<p>
- * 
- * @since 6.5.3 
+ *
+ * @since 6.5.3
  */
 public class CmsResourceState implements Serializable {
 
@@ -67,8 +67,8 @@ public class CmsResourceState implements Serializable {
 
     /**
      * Default constructor for serialization.<p>
-     * 
-     * @deprecated Don't use this constructor! 
+     *
+     * @deprecated Don't use this constructor!
      * It is only used to transfer the resource state via RPC call.
      */
     @Deprecated
@@ -79,8 +79,8 @@ public class CmsResourceState implements Serializable {
 
     /**
      * protected constructor.<p>
-     * 
-     * @param state an integer representing the state 
+     *
+     * @param state an integer representing the state
      * @param abbrev an abbreviation character
      */
     protected CmsResourceState(int state, char abbrev) {
@@ -91,9 +91,9 @@ public class CmsResourceState implements Serializable {
 
     /**
      * Returns the resource state object from the resource state integer.<p>
-     * 
+     *
      * @param state the resource state integer
-     * 
+     *
      * @return the resource state object
      */
     public static CmsResourceState valueOf(int state) {
@@ -124,7 +124,7 @@ public class CmsResourceState implements Serializable {
 
     /**
      * Returns resource state abbreviation.<p>
-     * 
+     *
      * @return resource state abbreviation
      */
     public char getAbbreviation() {
@@ -134,7 +134,7 @@ public class CmsResourceState implements Serializable {
 
     /**
      * Returns the resource state integer for this resource state object.<p>
-     * 
+     *
      * @return the resource state integer for this resource state object
      */
     public int getState() {
@@ -153,52 +153,52 @@ public class CmsResourceState implements Serializable {
 
     /**
      * Returns if this is {@link CmsResource#STATE_CHANGED}.<p>
-     * 
+     *
      * @return if this is {@link CmsResource#STATE_CHANGED}
      */
     public boolean isChanged() {
 
-        return (this.equals(CmsResource.STATE_CHANGED));
+        return (equals(CmsResource.STATE_CHANGED));
     }
 
     /**
      * Returns if this is {@link CmsResource#STATE_DELETED}.<p>
-     * 
+     *
      * @return if this is {@link CmsResource#STATE_DELETED}
      */
     public boolean isDeleted() {
 
-        return (this.equals(CmsResource.STATE_DELETED));
+        return (equals(CmsResource.STATE_DELETED));
     }
 
     /**
      * Returns if this is {@link CmsResource#STATE_KEEP}.<p>
-     * 
+     *
      * @return if this is {@link CmsResource#STATE_KEEP}
      */
     public boolean isKeep() {
 
-        return (this.equals(CmsResource.STATE_KEEP));
+        return (equals(CmsResource.STATE_KEEP));
     }
 
     /**
      * Returns if this is {@link CmsResource#STATE_NEW}.<p>
-     * 
+     *
      * @return if this is {@link CmsResource#STATE_NEW}
      */
     public boolean isNew() {
 
-        return (this.equals(CmsResource.STATE_NEW));
+        return (equals(CmsResource.STATE_NEW));
     }
 
     /**
      * Returns if this is {@link CmsResource#STATE_UNCHANGED}.<p>
-     * 
+     *
      * @return if this is {@link CmsResource#STATE_UNCHANGED}
      */
     public boolean isUnchanged() {
 
-        return (this.equals(CmsResource.STATE_UNCHANGED));
+        return (equals(CmsResource.STATE_UNCHANGED));
     }
 
     /**

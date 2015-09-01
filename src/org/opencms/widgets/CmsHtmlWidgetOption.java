@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,25 +50,25 @@ import com.google.common.collect.Maps;
 
 /**
  * An option of a HTML type widget.<p>
- * 
+ *
  * Options can be defined for each element of the type <code>OpenCmsHtml</code> using the widget <code>HtmlWidget</code>.
- * They have to be placed in the annotation section of a XSD describing an XML content. The <code>configuration</code> attribute 
+ * They have to be placed in the annotation section of a XSD describing an XML content. The <code>configuration</code> attribute
  * in the <code>layout</code> node for the element must contain the activated options as a comma separated String value:<p>
- * 
+ *
  * <code><layout element="Text" widget="HtmlWidget" configuration="height:400px,link,anchor,imagegallery,downloadgallery,formatselect,source" /></code><p>
- * 
+ *
  * Available options are:
  * <ul>
  * <li><code>anchor</code>: the anchor dialog button</li>
- * <li><code>buttonbar:${button bar items, separated by ';'}</code>: an individual button bar configuration, 
+ * <li><code>buttonbar:${button bar items, separated by ';'}</code>: an individual button bar configuration,
  *     see {@link #BUTTONBAR_DEFAULT} for an example.</li>
- * <li><code>css:/vfs/path/to/cssfile.css</code>: the absolute path in the OpenCms VFS to the CSS style sheet 
+ * <li><code>css:/vfs/path/to/cssfile.css</code>: the absolute path in the OpenCms VFS to the CSS style sheet
  *     to use to render the contents in the editor (availability depends on the integrated editor)</li>
  * <li><code>formatselect</code>: the format selector for selecting text format like paragraph or headings</li>
  * <li><code>formatselect.options:${list of options, separated by ';'}</code>: the options that should be available in the format selector,
  *     e.g. <code>formatselect.options:p;h1;h2</code></li>
  * <li><code>fullpage</code>: the editor creates an entire HTML page code</li>
- * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code> displays 
+ * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code> displays
  *     the image gallery button or <code>downloadgallery</code> displays the download gallery button</li>
  * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
  * <li><code>hidebuttons:${list of buttons to hide, separated by ';'}</code>: the buttons to hide that usually appear in
@@ -83,7 +83,7 @@ import com.google.common.collect.Maps;
  * <li><code>table</code>: the table dialog button (availability depends on the integrated editor)</li>
  * </ul>
  * Some things like the button bar items should be defined in the global widget configuration of the file <code>opencms-vfs.xml</code>.<p>
- * 
+ *
  * @since 6.0.1
  */
 public class CmsHtmlWidgetOption {
@@ -329,7 +329,8 @@ public class CmsHtmlWidgetOption {
     public static final List<String> OPTIONAL_BUTTONS_LIST = Arrays.asList(OPTIONAL_BUTTONS);
 
     /** Pattern used for matching embedded gallery configurations. */
-    public static final Pattern PATTERN_EMBEDDED_GALLERY_CONFIG = Pattern.compile("(?<![a-zA-Z0-9_])(imagegallery|downloadgallery)(\\{.*?\\})");
+    public static final Pattern PATTERN_EMBEDDED_GALLERY_CONFIG = Pattern.compile(
+        "(?<![a-zA-Z0-9_])(imagegallery|downloadgallery)(\\{.*?\\})");
 
     /** Holds the global button bar configuration options to increase performance. */
     private static List<String> m_globalButtonBarOption;
@@ -384,7 +385,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Creates a new HTML widget object object, configured by the given configuration String.<p>
-     * 
+     *
      * @param configuration configuration String to parse
      */
     public CmsHtmlWidgetOption(String configuration) {
@@ -395,9 +396,9 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns a HTML widget configuration String created from the given HTML widget option.<p>
-     * 
+     *
      * @param option the HTML widget options to create the configuration String for
-     * 
+     *
      * @return a select widget configuration String created from the given HTML widget option object
      */
     public static String createConfigurationString(CmsHtmlWidgetOption option) {
@@ -433,9 +434,8 @@ public class CmsHtmlWidgetOption {
             if (added) {
                 result.append(DELIMITER_OPTION);
             }
-            result.append(CmsStringUtil.collectionAsString(
-                option.getAdditionalButtons(),
-                String.valueOf(DELIMITER_OPTION)));
+            result.append(
+                CmsStringUtil.collectionAsString(option.getAdditionalButtons(), String.valueOf(DELIMITER_OPTION)));
             added = true;
         }
         if (!option.getHiddenButtons().isEmpty()) {
@@ -471,10 +471,10 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Parses and removes embedded gallery configuration strings.
-     * 
+     *
      * @param configuration the configuration string to parse
-     *  
-     * @return a map containing both the string resulting from removing the embedded configurations, and the embedded configurations as a a map 
+     *
+     * @return a map containing both the string resulting from removing the embedded configurations, and the embedded configurations as a a map
      */
     public static CmsPair<String, Map<String, String>> parseEmbeddedGalleryOptions(String configuration) {
 
@@ -497,7 +497,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the buttons to show additionally as list with button names.<p>
-     * 
+     *
      * @return the buttons to show additionally as list with button names
      */
     public List<String> getAdditionalButtons() {
@@ -507,13 +507,13 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the specific editor button bar string generated from the configuration.<p>
-     * 
+     *
      * The lookup map can contain translations for the button names, the separator and the block names.
      * The button bar will be automatically surrounded by block start and end items if they are not explicitly defined.<p>
-     * 
+     *
      * It may be necessary to write your own method to generate the button bar string for a specific editor widget.
      * In this case, use the method {@link #getButtonBarShownItems()} to get the calculated list of shown button bar items.<p>
-     * 
+     *
      * @param buttonNamesLookUp the lookup map with translations for the button names, the separator and the block names or <code>null</code>
      * @param itemSeparator the separator for the tool bar items
      * @return the button bar string generated from the configuration
@@ -525,12 +525,12 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the specific editor button bar string generated from the configuration.<p>
-     * 
+     *
      * The lookup map can contain translations for the button names, the separator and the block names.<p>
-     * 
+     *
      * It may be necessary to write your own method to generate the button bar string for a specific editor widget.
      * In this case, use the method {@link #getButtonBarShownItems()} to get the calculated list of shown button bar items.<p>
-     * 
+     *
      * @param buttonNamesLookUp the lookup map with translations for the button names, the separator and the block names or <code>null</code>
      * @param itemSeparator the separator for the tool bar items
      * @param addMissingBlock flag indicating if the button bar should be automatically surrounded by a block if not explicitly defined
@@ -583,7 +583,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the individual button bar configuration option.<p>
-     *  
+     *
      * @return the individual button bar configuration option
      */
     public List<String> getButtonBarOption() {
@@ -603,7 +603,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the individual button bar configuration option string.<p>
-     *  
+     *
      * @return the individual button bar configuration option string
      */
     public String getButtonBarOptionString() {
@@ -613,10 +613,10 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the calculated button bar items, including blocks and separators, considering the current widget configuration.<p>
-     * 
+     *
      * Use this method to get the calculated list of button bar items if {@link #getButtonBar(Map, String)} can not
-     * be used for a specific editor widget.<p> 
-     * 
+     * be used for a specific editor widget.<p>
+     *
      * @return the calculated button bar items
      */
     public List<String> getButtonBarShownItems() {
@@ -630,7 +630,8 @@ public class CmsHtmlWidgetOption {
                     // global configuration not yet parsed, check it now
                     String defaultConf = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(
                         CmsHtmlWidget.class.getName());
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defaultConf) && defaultConf.contains(OPTION_BUTTONBAR)) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(defaultConf)
+                        && defaultConf.contains(OPTION_BUTTONBAR)) {
                         // found a global configuration containing a button bar definition, parse it
                         CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(defaultConf);
                         // set global configuration in static member
@@ -705,23 +706,17 @@ public class CmsHtmlWidgetOption {
                         // check optional buttons
                         if (CmsAjaxImageGallery.GALLERYTYPE_NAME.equals(barItem)) {
                             // special handling of image button to keep compatibility
-                            if (!(getAdditionalButtons().contains(barItem) || getAdditionalButtons().contains(
-                                OPTION_IMAGE))) {
+                            if (!(getAdditionalButtons().contains(barItem)
+                                || getAdditionalButtons().contains(OPTION_IMAGE))) {
                                 // skip image gallery as it is not defined as additional button
                                 continue;
                             }
                         } else if (OPTION_UNLINK.equals(barItem)) {
                             // special handling of unlink button to show only if anchor, editor link or link button are active
                             if (!(getAdditionalButtons().contains(OPTION_LINK)
-                                || getAdditionalButtons().contains(OPTION_EDITORLINK) || getAdditionalButtons().contains(
-                                OPTION_ANCHOR))) {
+                                || getAdditionalButtons().contains(OPTION_EDITORLINK)
+                                || getAdditionalButtons().contains(OPTION_ANCHOR))) {
                                 // skip unlink button because no link buttons are defined as additional buttons
-                                continue;
-                            }
-                        } else if (OPTION_STYLE.equals(barItem)) {
-                            // special handling of style select box to be shown only if a path to the styles XML had been defined
-                            if ((!showStylesXml()) && (!showStylesFormat())) {
-                                // skip if no path has been defined
                                 continue;
                             }
                         } else if (!getAdditionalButtons().contains(barItem)) {
@@ -743,7 +738,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the original configuration String that was used to initialize the HTML widget options.<p>
-     * 
+     *
      * @return the original configuration String
      */
     public String getConfiguration() {
@@ -763,7 +758,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the widget editor height.<p>
-     * 
+     *
      * @return the widget editor height
      */
     public String getEditorHeight() {
@@ -773,8 +768,8 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Gets the embedded gallery configurations.<p>
-     * 
-     * @return the embedded gallery configurations 
+     *
+     * @return the embedded gallery configurations
      */
     public Map<String, String> getEmbeddedConfigurations() {
 
@@ -783,7 +778,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the options for the format select box as String.<p>
-     * 
+     *
      * @return the options for the format select box as String
      */
     public String getFormatSelectOptions() {
@@ -793,7 +788,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the buttons to hide as list with button names.<p>
-     * 
+     *
      * @return the buttons to hide as list with button names
      */
     public List<String> getHiddenButtons() {
@@ -823,7 +818,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Initializes the widget options from the given configuration String.<p>
-     * 
+     *
      * @param configuration the configuration String
      */
     public void init(String configuration) {
@@ -839,9 +834,9 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns if the button with the given name should be additionally shown.<p>
-     * 
+     *
      * @param buttonName the button name to check
-     * 
+     *
      * @return <code>true</code> if the button with the given name should be additionally shown, otherwise <code>false</code>
      */
     public boolean isButtonAdditional(String buttonName) {
@@ -851,9 +846,9 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns if the button with the given name should be hidden.<p>
-     * 
+     *
      * @param buttonName the button name to check
-     * 
+     *
      * @return <code>true</code> if the button with the given name should be hidden, otherwise <code>false</code>
      */
     public boolean isButtonHidden(String buttonName) {
@@ -863,9 +858,9 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns if the button with the given name is optional.<p>
-     * 
+     *
      * @param buttonName the button name to check
-     * 
+     *
      * @return <code>true</code> if the button with the given name is optional, otherwise <code>false</code>
      */
     public boolean isButtonOptional(String buttonName) {
@@ -875,7 +870,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns if the editor should be used in full page mode.<p>
-     * 
+     *
      * @return true if the editor should be used in full page mode, otherwise false
      */
     public boolean isFullPage() {
@@ -885,7 +880,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the buttons to show additionally as list with button names.<p>
-     * 
+     *
      * @param buttons the buttons to show additionally as list with button names
      */
     public void setAdditionalButtons(List<String> buttons) {
@@ -895,7 +890,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the individual button bar configuration option.<p>
-     * 
+     *
      * @param buttonBar the individual button bar configuration option
      */
     public void setButtonBarOption(List<String> buttonBar) {
@@ -905,7 +900,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the individual button bar configuration option string.<p>
-     * 
+     *
      * @param buttonBar the individual button bar configuration option string
      */
     public void setButtonBarOptionString(String buttonBar) {
@@ -925,7 +920,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the widget editor height.<p>
-     * 
+     *
      * @param editorHeight the widget editor height
      */
     public void setEditorHeight(String editorHeight) {
@@ -935,7 +930,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the options for the format select box as String.<p>
-     * 
+     *
      * @param formatSelectOptions the options for the format select box as String
      */
     public void setFormatSelectOptions(String formatSelectOptions) {
@@ -945,7 +940,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets if the editor should be used in full page mode.<p>
-     * 
+     *
      * @param fullPage true if the editor should be used in full page mode, otherwise false
      */
     public void setFullPage(boolean fullPage) {
@@ -955,7 +950,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Sets the buttons to hide as list with button names.<p>
-     * 
+     *
      * @param buttons the buttons to hide as list with button names
      */
     public void setHiddenButtons(List<String> buttons) {
@@ -985,7 +980,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the anchor dialog button should be available.<p>
-     * 
+     *
      * @return if the anchor dialog button should be available
      */
     public boolean showAnchorDialog() {
@@ -995,7 +990,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the format selector should be available.<p>
-     * 
+     *
      * @return if the format selector should be available
      */
     public boolean showFormatSelect() {
@@ -1005,7 +1000,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the specified gallery type dialog button is shown.<p>
-     * 
+     *
      * @param galleryType the gallery type to check
      * @return true if the specified gallery type dialog button is shown, otherwise false
      */
@@ -1026,7 +1021,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the link dialog button should be available.<p>
-     * 
+     *
      * @return if the link dialog button should be available
      */
     public boolean showLinkDialog() {
@@ -1036,7 +1031,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the source code button should be available.<p>
-     * 
+     *
      * @return if the source code button should be available
      */
     public boolean showSourceEditor() {
@@ -1076,7 +1071,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns true if the widget editor should use a defined CSS style sheet.<p>
-     * 
+     *
      * @return if the widget editor should use a defined CSS style sheet
      */
     public boolean useCss() {
@@ -1086,7 +1081,7 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Adds a button to the list of defined additional buttons.<p>
-     * 
+     *
      * @param buttonName the button name to add
      */
     protected void addAdditionalButton(String buttonName) {
@@ -1096,9 +1091,9 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Returns the real button name matched with the look up map.<p>
-     * 
+     *
      * If no value is found in the look up map, the button name is returned unchanged.<p>
-     * 
+     *
      * @param barItem the button bar item name to look up
      * @param buttonNamesLookUp the look up map containing the button names and/or separator name to use
      * @return the translated button name
@@ -1117,14 +1112,15 @@ public class CmsHtmlWidgetOption {
 
     /**
      * Parses the given configuration String.<p>
-     * 
+     *
      * @param configuration the configuration String to parse
      */
     protected void parseOptions(String configuration) {
 
         if (CmsStringUtil.isNotEmpty(configuration)) {
 
-            CmsPair<String, Map<String, String>> simplifiedStringAndGalleryOptions = parseEmbeddedGalleryOptions(configuration);
+            CmsPair<String, Map<String, String>> simplifiedStringAndGalleryOptions = parseEmbeddedGalleryOptions(
+                configuration);
             configuration = simplifiedStringAndGalleryOptions.getFirst();
             m_embeddedConfigurations = simplifiedStringAndGalleryOptions.getSecond();
 

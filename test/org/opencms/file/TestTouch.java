@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,13 +40,13 @@ import junit.framework.TestSuite;
 
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
- * 
+ *
  */
 public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestTouch(String arg0) {
@@ -56,7 +56,7 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -206,7 +206,7 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test the touch method on a file.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testTouchFile() throws Throwable {
@@ -218,7 +218,7 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test the touch method on a folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testTouchFolder() throws Throwable {
@@ -230,7 +230,7 @@ public class TestTouch extends OpenCmsTestCase {
 
     /**
      * Test the touch method on a folder and recusivly on all resources in the folder.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testTouchFolderRecursive() throws Throwable {

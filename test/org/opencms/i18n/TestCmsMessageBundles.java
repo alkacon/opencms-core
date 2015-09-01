@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,7 @@
 package org.opencms.i18n;
 
 import org.opencms.gwt.I_CmsClientMessageBundle;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -46,14 +47,12 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the CmsMessageBundles.<p>
- * 
+ *
  * @since 6.0.0
  */
-public abstract class TestCmsMessageBundles extends TestCase {
+public abstract class TestCmsMessageBundles extends OpenCmsTestCase {
 
     /** Prefix for the error messages in the bundles. */
     private static final String KEY_PREFIX_ERR = "ERR_";
@@ -84,7 +83,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Checks all message bundles for the DE locale.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLocale_DE_MessagesBundles() throws Exception {
@@ -94,7 +93,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Checks all message bundles for the EN locale.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testLocale_EN_MessagesBundles() throws Exception {
@@ -104,12 +103,12 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Performs some key and language independent tests.<p>
-     * 
+     *
      * @param className the bundle implementing class name
      * @param bundleName the bundle name to test
      * @param locale the locale to test
      * @param client if the bundle to test is a client bundle
-     * 
+     *
      * @return a description of all errors found
      */
     protected String doPreTestBundle(String className, String bundleName, Locale locale, boolean client) {
@@ -135,19 +134,19 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 return "Bundle '" + className + "' has no input for locale '" + locale + "'.\n";
             }
         }
-        // in case of no errors, return the empty String 
+        // in case of no errors, return the empty String
         return "";
     }
 
     /**
      * Tests an individual message bundle.<p>
-     * 
+     *
      * @param clazz the  bundle class
      * @param bundleName the bundle class name
      * @param locale the locale to test
-     * 
+     *
      * @return a description of all errors found
-     * 
+     *
      * @throws Exception if the test fails
      */
     protected String doTestBundle(Class<?> clazz, String bundleName, Locale locale) throws Exception {
@@ -187,7 +186,10 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 testKeyValue = true;
             } else {
                 boolean isAdditionalKey = !key.toUpperCase().equals(key);
-                testKeyValue = (isAdditionalKey || key.startsWith(KEY_PREFIX_ERR) || key.startsWith(KEY_PREFIX_GUI) || key.startsWith(KEY_PREFIX_RPT));
+                testKeyValue = (isAdditionalKey
+                    || key.startsWith(KEY_PREFIX_ERR)
+                    || key.startsWith(KEY_PREFIX_GUI)
+                    || key.startsWith(KEY_PREFIX_RPT));
             }
             if (testKeyValue && !isPresent) {
                 errorMessages.add("No message for '" + key + "' in bundle.");
@@ -205,7 +207,8 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 || (!key.startsWith(KEY_PREFIX_ERR)
                     && !key.startsWith(KEY_PREFIX_GUI)
                     && !key.startsWith(KEY_PREFIX_INIT)
-                    && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
+                    && !key.startsWith(KEY_PREFIX_LOG)
+                    && !key.startsWith(KEY_PREFIX_RPT))) {
                 errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
                 continue;
             }
@@ -221,26 +224,16 @@ public abstract class TestCmsMessageBundles extends TestCase {
                     String arg = "{" + j;
                     int pos = message.indexOf(arg);
                     if (pos < 0) {
-                        errorMessages.add("Message '"
-                            + message
-                            + "' for key '"
-                            + key
-                            + "' misses argument {"
-                            + j
-                            + "}.");
+                        errorMessages.add(
+                            "Message '" + message + "' for key '" + key + "' misses argument {" + j + "}.");
                     }
                 }
                 for (int j = argCount; j < 10; j++) {
                     String arg = "{" + j;
                     int pos = message.indexOf(arg);
                     if (pos >= 0) {
-                        errorMessages.add("Message '"
-                            + message
-                            + "' for key '"
-                            + key
-                            + "' contains unused argument {"
-                            + j
-                            + "}.");
+                        errorMessages.add(
+                            "Message '" + message + "' for key '" + key + "' contains unused argument {" + j + "}.");
                     }
                 }
             }
@@ -292,22 +285,24 @@ public abstract class TestCmsMessageBundles extends TestCase {
                         int pos = keyValue.indexOf(arg);
                         if ((pos < 0) && (args[j])) {
                             // not in locale bundle but in master bundle
-                            errorMessages.add("Additional message '"
-                                + keyValue
-                                + "' for key '"
-                                + bundleKey
-                                + "' misses argument {"
-                                + j
-                                + "} from master bundle.");
+                            errorMessages.add(
+                                "Additional message '"
+                                    + keyValue
+                                    + "' for key '"
+                                    + bundleKey
+                                    + "' misses argument {"
+                                    + j
+                                    + "} from master bundle.");
                         } else if ((pos >= 0) && (!args[j])) {
                             // in locale bundle but not in master bundle
-                            errorMessages.add("Additional message '"
-                                + keyValue
-                                + "' for key '"
-                                + bundleKey
-                                + "' contains argument {"
-                                + j
-                                + "} not used in master bundle.");
+                            errorMessages.add(
+                                "Additional message '"
+                                    + keyValue
+                                    + "' for key '"
+                                    + bundleKey
+                                    + "' contains argument {"
+                                    + j
+                                    + "} not used in master bundle.");
                         }
                     }
                 }
@@ -329,9 +324,9 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Returns the resource bundles to be excluded from additional locales tests.<p>
-     * 
+     *
      * @param locale the locale to get the excluded bundles for
-     * 
+     *
      * @return the resource bundles to be excluded from additional locales tests
      */
     protected List<I_CmsMessageBundle> getExcludedLocalizedBundles(Locale locale) {
@@ -393,12 +388,12 @@ public abstract class TestCmsMessageBundles extends TestCase {
     /**
      * Prepares the test for the given bundle and locale and
      * returns a message bundle that DOES NOT include the default keys.<p>
-     * 
+     *
      * @param bundleName the resource bundle to prepare
      * @param locale the locale to prepare the resource bundle for
-     * 
+     *
      * @return a message bundle that DOES NOT include the default keys
-     * 
+     *
      * @throws IOException if something goes wrong
      */
     protected CmsMessages getMessageBundle(String bundleName, Locale locale) throws IOException {
@@ -416,10 +411,10 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Returns the file name of the source message bundle.<p>
-     * 
+     *
      * @param bundleName the resource bundle to get the file name for
      * @param locale the locale to get the file name for
-     * 
+     *
      * @return the file name of the source message bundle
      */
     protected String getMessageBundleSourceName(String bundleName, Locale locale) {
@@ -444,10 +439,10 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Returns the file name of the source message bundle from the module.<p>
-     * 
+     *
      * @param bundleName the resource bundle to get the file name for
      * @param locale the locale to get the file name for
-     * 
+     *
      * @return the file name of the source message bundle of the module
      */
     protected String getModuleMessagesBundleSourceName(String bundleName, Locale locale) {
@@ -472,36 +467,36 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
     /**
      * Returns a list of bundles not to be localized.<p>
-     * 
-     * @param locale the locale to get the not localized bundles for 
-     * 
+     *
+     * @param locale the locale to get the not localized bundles for
+     *
      * @return a list of bundles not to be localized
      */
     protected abstract List<I_CmsMessageBundle> getNotLocalizedBundles(Locale locale);
 
     /**
-     * Template method that has to be overwritten to return the client class that will be tested.<p> 
-     * 
-     * @return the classes to test 
-     * 
+     * Template method that has to be overwritten to return the client class that will be tested.<p>
+     *
+     * @return the classes to test
+     *
      * @throws Exception if the test fails
      */
     protected abstract List<I_CmsClientMessageBundle> getTestClientMessageBundles() throws Exception;
 
     /**
-     * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code> 
-     * instances that will be tested.<p> 
-     * 
-     * @return the <code>I_CmsMessageBundle</code> instances to test: these will be the 
-     *         singleton instances of the <code>Messages</code> classes residing in every localized package. 
+     * Template method that has to be overwritten to return the <code>I_CmsMessageBundle</code>
+     * instances that will be tested.<p>
+     *
+     * @return the <code>I_CmsMessageBundle</code> instances to test: these will be the
+     *         singleton instances of the <code>Messages</code> classes residing in every localized package.
      */
     protected abstract I_CmsMessageBundle[] getTestMessageBundles();
 
     /**
      * Checks all OpenCms internal message bundles if the are correctly build.<p>
-     * 
+     *
      * @param locale the locale to test
-     * 
+     *
      * @throws Exception if the test fails
      */
     protected void messagesBundleConstantTest(Locale locale) throws Exception {

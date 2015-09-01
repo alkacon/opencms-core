@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,12 +38,12 @@ import java.util.Map;
 
 /**
  * This class creates the new tables for the database version of OpenCms 8.<p>
- * 
+ *
  * The new tables in OpenCms 8 are:
  * <ul>
  * <li><code>CMS_LOG</code></li>
  * </ul>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpdateDBNewTables {
@@ -53,7 +53,7 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBNewTables()
@@ -71,16 +71,17 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.db.update7to8.CmsUpd
 
         System.out.println(new Exception().getStackTrace()[0].toString());
 
-        List<String> elements = Arrays.asList(new String[] {
-            "CMS_LOG",
-            "CMS_COUNTERS",
-            "CMS_OFFLINE_URLNAME_MAPPINGS",
-            "CMS_ONLINE_URLNAME_MAPPINGS",
-            "CMS_SUBSCRIPTION",
-            "CMS_SUBSCRIPTION_VISIT",
-            "CMS_ALIASES",
-            "CMS_REWRITES",
-            "CMS_USER_PUBLISH_LIST"});
+        List<String> elements = Arrays.asList(
+            new String[] {
+                "CMS_LOG",
+                "CMS_COUNTERS",
+                "CMS_OFFLINE_URLNAME_MAPPINGS",
+                "CMS_ONLINE_URLNAME_MAPPINGS",
+                "CMS_SUBSCRIPTION",
+                "CMS_SUBSCRIPTION_VISIT",
+                "CMS_ALIASES",
+                "CMS_REWRITES",
+                "CMS_USER_PUBLISH_LIST"});
 
         Map<String, String> replacer = Collections.singletonMap("${tableEngine}", m_poolData.get("engine"));
         for (String table : elements) {

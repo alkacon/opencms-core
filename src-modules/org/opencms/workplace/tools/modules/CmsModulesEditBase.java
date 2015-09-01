@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Base class to edit an exiting module.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsModulesEditBase extends CmsWidgetDialog {
 
@@ -93,7 +93,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsModulesEditBase(CmsJspActionElement jsp) {
@@ -103,7 +103,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -113,7 +113,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /** 
+    /**
      * Commits the edited module.<p>
      */
     @Override
@@ -162,7 +162,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -170,7 +170,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -274,11 +274,11 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Creates all module folders that are selected in the input form.<p>
-     * 
+     *
      * @param module the module
-     * 
+     *
      * @return the updated module
-     * 
+     *
      * @throws CmsException if somehting goes wrong
      */
     private CmsModule createModuleFolders(CmsModule module) throws CmsException {
@@ -302,7 +302,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
         int folderId = CmsResourceTypeFolder.getStaticTypeId();
         if (module.isCreateModuleFolder()) {
             getCms().createResource(modulePath, folderId);
-            // add the module folder to the resource list        
+            // add the module folder to the resource list
             resources.add(modulePath);
             module.setResources(resources);
         }
@@ -366,7 +366,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /**
      * Checks if the new module dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new module dialog has to be displayed
      */
     private boolean isNewModule() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,7 +56,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSearchOffline(String arg0) {
@@ -66,7 +66,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -100,7 +100,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
     /**
      * Creates a new search index setup for this test.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testSearchIndexSetup() throws Exception {
@@ -130,7 +130,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         searchBean.setIndex(INDEX_SPECIAL);
         searchBean.setQuery(">>SearchEgg1<<");
 
-        // assert one file is found in the default site     
+        // assert one file is found in the default site
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
@@ -138,7 +138,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
     /**
      * Delays execution.<p>
-     * 
+     *
      * @throws InterruptedException if sth. goes wrong
      */
     protected void waitForUpdate() throws InterruptedException {
@@ -149,7 +149,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
     /**
      * Tests automatic index update after modification of a resource.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testIndexUpdateOnModification() throws Exception {
@@ -183,10 +183,9 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         assertEquals(8, results.size());
         assertEquals("/sites/default/test/test.txt", results.get(7).getPath());
 
-        cms.writePropertyObject(fileName, new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_TITLE,
-            "Alkacon OpenCms IN THE NEW FILE",
-            ""));
+        cms.writePropertyObject(
+            fileName,
+            new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Alkacon OpenCms IN THE NEW FILE", ""));
 
         // wait for the offline index
         waitForUpdate();

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,13 +47,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * Holds all information to build the explorer context menu of a resource type 
+ * Holds all information to build the explorer context menu of a resource type
  * and information for the new resource dialog.<p>
- * 
+ *
  * Objects of this type are sorted by their order value which specifies the order
  * in the new resource dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettings> {
 
@@ -161,7 +161,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Adds a menu entry to the list of context menu items.<p>
-     * 
+     *
      * @param item the entry item to add to the list
      */
     public void addContextMenuEntry(CmsExplorerContextMenuItem item) {
@@ -175,7 +175,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Adds a menu separator to the list of context menu items.<p>
-     * 
+     *
      * @param item the separator item to add to the list
      */
     public void addContextMenuSeparator(CmsExplorerContextMenuItem item) {
@@ -189,10 +189,10 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Adds a new icon rule to this explorer type.<p>
-     * 
-     * @param extension the extension for the icon rule 
+     *
+     * @param extension the extension for the icon rule
      * @param icon the small icon
-     * @param bigIcon the big icon 
+     * @param bigIcon the big icon
      */
     public void addIconRule(String extension, String icon, String bigIcon) {
 
@@ -202,7 +202,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Adds a property definition name to the list of editable properties.<p>
-     * 
+     *
      * @param propertyName the name of the property definition to add
      * @return true if the property definition was added properly
      */
@@ -291,8 +291,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Adds all context menu entries to the context menu object.<p>
-     * 
-     * This method has to be called when all context menu entries have been 
+     *
+     * This method has to be called when all context menu entries have been
      * added to the list of entries.<p>
      */
     public void createContextMenu() {
@@ -318,7 +318,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Gets the access object of the type settings.<p>
-     * 
+     *
      * @return access object of the type settings
      */
     public CmsExplorerTypeAccess getAccess() {
@@ -334,8 +334,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the big icon.<p>
-     * 
-     * @return an icon name 
+     *
+     * @return an icon name
      */
     public String getBigIcon() {
 
@@ -344,7 +344,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the biggest icon available.<p>
-     * 
+     *
      * @return the biggest icon available
      */
     public String getBigIconIfAvailable() {
@@ -359,14 +359,15 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public CmsExplorerContextMenu getContextMenu() {
 
         if ((m_reference != null) && (m_contextMenu.isEmpty())) {
-            m_contextMenu = (CmsExplorerContextMenu)OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_reference).getContextMenu().clone();
+            m_contextMenu = (CmsExplorerContextMenu)OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                m_reference).getContextMenu().clone();
         }
         return m_contextMenu;
     }
 
     /**
      * Returns the list of context menu entries of the explorer type setting.<p>
-     * 
+     *
      * @return the list of context menu entries of the explorer type setting
      */
     public List<CmsExplorerContextMenuItem> getContextMenuEntries() {
@@ -386,7 +387,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the icon path and file name of the explorer type setting.<p>
-     * 
+     *
      * @return the icon path and file name of the explorer type setting
      */
     public String getIcon() {
@@ -400,8 +401,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns a map from file extensions to icon rules for this explorer type.<p>
-     * 
-     * @return a map from file extensions to icon rules 
+     *
+     * @return a map from file extensions to icon rules
      */
     public Map<String, CmsIconRule> getIconRules() {
 
@@ -420,11 +421,11 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Builds the Javascript to create the context menu.<p>
-     * 
+     *
      * @param settings the explorer type settings for which the context menu is created
      * @param resTypeId the id of the resource type which uses the context menu
      * @param messages the messages to generate the context menu with (should be the workplace messages)
-     * 
+     *
      * @return the JavaScript output to create the context menu
      */
     public String getJSEntries(CmsExplorerTypeSettings settings, int resTypeId, CmsMessages messages) {
@@ -448,7 +449,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the key name of the explorer type setting.<p>
-     * 
+     *
      * @return the key name of the explorer type setting
      */
     public String getKey() {
@@ -458,7 +459,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the name of the explorer type setting.<p>
-     * 
+     *
      * @return the name of the explorer type setting
      */
     public String getName() {
@@ -468,7 +469,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the class name of the new resource handler used to create new resources of a specified resource type.<p>
-     * 
+     *
      * @return the class name of the new resource handler
      */
     public String getNewResourceHandlerClassName() {
@@ -478,7 +479,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the order for the new resource dialog of the explorer type setting.<p>
-     * 
+     *
      * @return the order for the new resource dialog of the explorer type setting
      */
     public String getNewResourceOrder() {
@@ -498,7 +499,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the URI for the new resource dialog of the explorer type setting.<p>
-     * 
+     *
      * @return the URI for the new resource dialog of the explorer type setting
      */
     public String getNewResourceUri() {
@@ -508,8 +509,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Gets the original icon name from the configuration.<p>
-     * 
-     * @return an icon name 
+     *
+     * @return an icon name
      */
     public String getOriginalIcon() {
 
@@ -527,7 +528,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns the reference of the explorer type setting.<p>
-     * 
+     *
      * @return the reference of the explorer type setting
      */
     public String getReference() {
@@ -547,7 +548,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns true if this explorer type entry has explicit edit options set.<p>
-     *  
+     *
      * @return true if this explorer type entry has explicit edit options set
      */
     public boolean hasEditOptions() {
@@ -566,7 +567,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Indicates that this is an additional explorer type which is defined in a module.<p>
-     * 
+     *
      * @return true or false
      */
     public boolean isAddititionalModuleExplorerType() {
@@ -576,7 +577,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns true if navigation properties should automatically be added on resource creation.<p>
-     * 
+     *
      * @return true if navigation properties should automatically be added on resource creation, otherwise false
      */
     public boolean isAutoSetNavigation() {
@@ -586,7 +587,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns true if the title property should automatically be added on resource creation.<p>
-     * 
+     *
      * @return true if the title property should automatically be added on resource creation, otherwise false
      */
     public boolean isAutoSetTitle() {
@@ -596,10 +597,10 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Checks if the current user has write permissions on the given resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource to check
-     * 
+     *
      * @return <code>true</code> if the current user has write permissions on the given resource
      */
     public boolean isEditable(CmsObject cms, CmsResource resource) {
@@ -615,7 +616,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns if this explorer type setting uses a special properties dialog.<p>
-     * 
+     *
      * @return true, if this explorer type setting uses a special properties dialog
      */
     public boolean isPropertiesEnabled() {
@@ -625,7 +626,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Returns if this explorer type setting displays the navigation properties in the special properties dialog.<p>
-     * 
+     *
      * @return true, if this explorer type setting displays the navigation properties in the special properties dialog
      */
     public boolean isShowNavigation() {
@@ -635,7 +636,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the access object of the type settings.<p>
-     * 
+     *
      * @param access access object
      */
     public void setAccess(CmsExplorerTypeAccess access) {
@@ -645,7 +646,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the additional explorer type flag.<p>
-     * 
+     *
      * @param addititionalModuleExplorerType true or false
      */
     public void setAddititionalModuleExplorerType(boolean addititionalModuleExplorerType) {
@@ -681,8 +682,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the file name of the big icon for this explorer type.<p>
-     * 
-     * @param bigIcon the file name of the big icon 
+     *
+     * @param bigIcon the file name of the big icon
      */
     public void setBigIcon(String bigIcon) {
 
@@ -691,7 +692,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the list of context menu entries of the explorer type setting.<p>
-     * 
+     *
      * @param entries the list of context menu entries of the explorer type setting
      */
     public void setContextMenuEntries(List<CmsExplorerContextMenuItem> entries) {
@@ -708,15 +709,14 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
         m_descriptionImage = descriptionImage;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1,
-                descriptionImage));
+            LOG.debug(
+                Messages.get().getBundle().key(Messages.LOG_SET_NEW_RESOURCE_DESCRIPTION_IMAGE_1, descriptionImage));
         }
     }
 
-    /** 
+    /**
      * Sets the flag if this explorer type entry has explicit edit options set.<p>
-     * 
+     *
      * This is determined by the presence of the &lt;editoptions&gt; node in the Cms workplace configuration.<p>
      */
     public void setEditOptions() {
@@ -726,7 +726,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the icon path and file name of the explorer type setting.<p>
-     * 
+     *
      * @param icon the icon path and file name of the explorer type setting
      */
     public void setIcon(String icon) {
@@ -752,7 +752,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the key name of the explorer type setting.<p>
-     * 
+     *
      * @param key the key name of the explorer type setting
      */
     public void setKey(String key) {
@@ -765,7 +765,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the name of the explorer type setting.<p>
-     * 
+     *
      * @param name the name of the explorer type setting
      */
     public void setName(String name) {
@@ -778,7 +778,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the class name of the new resource handler used to create new resources of a specified resource type.<p>
-     * 
+     *
      * @param newResourceHandlerClassName the class name of the new resource handler
      */
     public void setNewResourceHandlerClassName(String newResourceHandlerClassName) {
@@ -788,7 +788,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the order for the new resource dialog of the explorer type setting.<p>
-     * 
+     *
      * @param newResourceOrder the order for the new resource dialog of the explorer type setting
      */
     public void setNewResourceOrder(String newResourceOrder) {
@@ -819,7 +819,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the URI for the new resource dialog of the explorer type setting.<p>
-     * 
+     *
      * @param newResourceUri the URI for the new resource dialog of the explorer type setting
      */
     public void setNewResourceUri(String newResourceUri) {
@@ -832,7 +832,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the list of properties of the explorer type setting.<p>
-     * 
+     *
      * @param properties the list of properties of the explorer type setting
      */
     public void setProperties(List<String> properties) {
@@ -842,7 +842,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets if this explorer type setting uses a special properties dialog.<p>
-     * 
+     *
      * @param enabled true, if this explorer type setting uses a special properties dialog
      */
     public void setPropertiesEnabled(boolean enabled) {
@@ -852,7 +852,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the default settings for the property display dialog.<p>
-     * 
+     *
      * @param enabled true, if this explorer type setting uses a special properties dialog
      * @param showNavigation true, if this explorer type setting displays the navigation properties in the special properties dialog
      */
@@ -867,7 +867,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the reference of the explorer type setting.<p>
-     * 
+     *
      * @param reference the reference of the explorer type setting
      */
     public void setReference(String reference) {
@@ -880,7 +880,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets if this explorer type setting displays the navigation properties in the special properties dialog.<p>
-     * 
+     *
      * @param navigation true, if this explorer type setting displays the navigation properties in the special properties dialog
      */
     public void setShowNavigation(boolean navigation) {
@@ -903,9 +903,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the basic attributes of the type settings.<p>
-     * 
+     *
      * @param name the name of the type setting
-     * @param key the key name of the explorer type setting 
+     * @param key the key name of the explorer type setting
      * @param icon the icon path and file name of the explorer type setting
      */
     public void setTypeAttributes(String name, String key, String icon) {
@@ -917,9 +917,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /**
      * Sets the basic attributes of the type settings.<p>
-     * 
+     *
      * @param name the name of the type setting
-     * @param key the key name of the explorer type setting 
+     * @param key the key name of the explorer type setting
      * @param icon the icon path and file name of the explorer type setting
      * @param bigIcon the file name of the big icon
      * @param reference the reference of the explorer type setting

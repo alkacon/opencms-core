@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,8 +53,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Explorer dialog for the project files view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
@@ -78,7 +78,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsProjectFilesDialog(CmsJspActionElement jsp) {
@@ -88,7 +88,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -187,7 +187,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Returns the project id parameter value.<p>
-     * 
+     *
      * @return the project id parameter value
      */
     public String getParamProjectid() {
@@ -212,7 +212,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Sets the project id parameter value.<p>
-     * 
+     *
      * @param projectId the project id parameter value
      */
     public void setParamProjectid(String projectId) {
@@ -237,9 +237,9 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     protected java.util.Map<String, String[]> getAdditionalParametersForExplorerForward() {
 
         Map<String, String[]> result = new HashMap<String, String[]>();
-        result.put(CmsExplorer.PARAMETER_CONTEXTMENUPARAMS, new String[] {CmsToolDialog.PARAM_ADMIN_PROJECT
-            + "="
-            + m_paramProjectid});
+        result.put(
+            CmsExplorer.PARAMETER_CONTEXTMENUPARAMS,
+            new String[] {CmsToolDialog.PARAM_ADMIN_PROJECT + "=" + m_paramProjectid});
         return result;
     }
 
@@ -330,8 +330,8 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Gets the stored project id from the session.<p>
-     * 
-     * @return the stored project id 
+     *
+     * @return the stored project id
      */
     private String getStoredProject() {
 
@@ -340,8 +340,8 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
     /**
      * Sets the stored project id.<p>
-     * 
-     * @param project the project id to be stored 
+     *
+     * @param project the project id to be stored
      */
     private void setStoredProject(String project) {
 

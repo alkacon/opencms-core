@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import org.opencms.util.CmsUUID;
 
 /**
  * A list item widget class which also contains a resource type info bean, for use in creating new sitemap entries.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCreatableListItem extends CmsListItem {
@@ -42,10 +42,8 @@ public class CmsCreatableListItem extends CmsListItem {
     /** The types of creatable sitemap entries. */
     public enum NewEntryType {
         /** A detail page. */
-        detailpage,
-        /** A redirect entry. */
-        redirect,
-        /** A regular entry. */
+        detailpage, /** A redirect entry. */
+        redirect, /** A regular entry. */
         regular
     }
 
@@ -57,9 +55,9 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Creates a new list item with a given resource type info bean.<p>
-     * 
-     * @param content the content for the list item widget 
-     * @param typeInfo the resource type info bean 
+     *
+     * @param content the content for the list item widget
+     * @param typeInfo the resource type info bean
      * @param newEntryType the type of the creatable sitemap entry type
      */
     public CmsCreatableListItem(CmsListItemWidget content, CmsNewResourceInfo typeInfo, NewEntryType newEntryType) {
@@ -71,7 +69,7 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Returns the copy resource structure id.<p>
-     * 
+     *
      * @return the copy resource structure id
      */
     public CmsUUID getCopyResourceId() {
@@ -81,7 +79,7 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Returns the new sitemap entry type.<p>
-     * 
+     *
      * @return the new sitemap entry type
      */
     public NewEntryType getNewEntryType() {
@@ -91,7 +89,7 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Returns the resource type information bean.<p>
-     * 
+     *
      * @return the resource type info bean
      */
     public CmsNewResourceInfo getResourceTypeInfo() {
@@ -101,7 +99,7 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Returns the resource type id.<p>
-     * 
+     *
      * @return the resource type id
      */
     public int getTypeId() {
@@ -111,7 +109,7 @@ public class CmsCreatableListItem extends CmsListItem {
 
     /**
      * Returns the resource type name.<p>
-     * 
+     *
      * @return the resource type name
      */
     public String getTypeName() {

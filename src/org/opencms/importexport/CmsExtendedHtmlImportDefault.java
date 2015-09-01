@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ package org.opencms.importexport;
  * The CmsExtendedHtmlImportManager keeps the default values for the HTML-> OpenCms Template converter.<p>
  *
  * This default values are saved in the configuration file <code>opencms-importexport.xml</code>.<p>
- * 
+ *
  * @see org.opencms.importexport.CmsImportExportManager#getExtendedHtmlImportDefault()
- * 
+ *
  * @since 7.0.2
  */
 public class CmsExtendedHtmlImportDefault {

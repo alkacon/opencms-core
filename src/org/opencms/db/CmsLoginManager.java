@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,16 +44,16 @@ import java.util.Set;
 
 /**
  * Provides functions used to check the validity of a user login.<p>
- * 
- * Stores invalid login attempts and disables a user account temporarily in case 
+ *
+ * Stores invalid login attempts and disables a user account temporarily in case
  * the configured threshold of invalid logins is reached.<p>
- * 
- * The invalid login attempt storage operates on a combination of user name, login remote IP address and 
+ *
+ * The invalid login attempt storage operates on a combination of user name, login remote IP address and
  * user type. This means that a user can be disabled for one remote IP, but still be enabled for
  * another remote IP.<p>
- * 
+ *
  * Also allows to temporarily disallow logins (for example in case of maintenance work on the system).<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsLoginManager {
@@ -79,8 +79,8 @@ public class CmsLoginManager {
         }
 
         /**
-         * Returns the bad attempt count for this user.<p>  
-         * 
+         * Returns the bad attempt count for this user.<p>
+         *
          * @return the bad attempt count for this user
          */
         protected Integer getInvalidLoginCount() {
@@ -90,7 +90,7 @@ public class CmsLoginManager {
 
         /**
          * Returns the date this disabled user is released again.<p>
-         * 
+         *
          * @return the date this disabled user is released again
          */
         protected Date getReleaseDate() {
@@ -116,7 +116,7 @@ public class CmsLoginManager {
 
         /**
          * Returns <code>true</code> in case this user has been temporarily disabled.<p>
-         * 
+         *
          * @return <code>true</code> in case this user has been temporarily disabled
          */
         protected boolean isDisabled() {
@@ -165,7 +165,7 @@ public class CmsLoginManager {
 
     /**
      * Creates a new storage for invalid logins.<p>
-     * 
+     *
      * @param disableMinutes the minutes to disable an account if the threshold is reached
      * @param maxBadAttempts the number of bad login attempts allowed before an account is temporarily disabled
      * @param enableSecurity flag to determine if the security option should be enabled on the login dialog
@@ -184,10 +184,10 @@ public class CmsLoginManager {
 
     /**
      * Returns the key to use for looking up the user in the invalid login storage.<p>
-     * 
+     *
      * @param userName the name of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
-     * 
+     *
      * @return the key to use for looking up the user in the invalid login storage
      */
     private static String createStorageKey(String userName, String remoteAddress) {
@@ -201,12 +201,12 @@ public class CmsLoginManager {
 
     /**
      * Checks if the threshold for the invalid logins has been reached for the given user.<p>
-     * 
+     *
      * In case the configured threshold is reached, an Exception is thrown.<p>
-     * 
+     *
      * @param userName the name of the user
      * @param remoteAddress the remote address (IP) from which the login attempt was made
-     * 
+     *
      * @throws CmsAuthentificationException in case the threshold of invalid login attempts has been reached
      */
     public void checkInvalidLogins(String userName, String remoteAddress) throws CmsAuthentificationException {
@@ -221,26 +221,30 @@ public class CmsLoginManager {
         CmsUserData userData = m_storage.get(key);
         if ((userData != null) && (userData.isDisabled())) {
             // threshold of invalid logins is reached
-            throw new CmsUserDisabledException(Messages.get().container(
-                Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4,
-                new Object[] {userName, remoteAddress, userData.getReleaseDate(), userData.getInvalidLoginCount()}));
+            throw new CmsUserDisabledException(
+                Messages.get().container(
+                    Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4,
+                    new Object[] {
+                        userName,
+                        remoteAddress,
+                        userData.getReleaseDate(),
+                        userData.getInvalidLoginCount()}));
         }
     }
 
     /**
      * Checks if a login is currently allowed.<p>
-     * 
+     *
      * In case no logins are allowed, an Exception is thrown.<p>
-     * 
+     *
      * @throws CmsAuthentificationException in case no logins are allowed
      */
     public void checkLoginAllowed() throws CmsAuthentificationException {
 
         if ((m_loginMessage != null) && (m_loginMessage.isLoginCurrentlyForbidden())) {
-            // login message has been set and is active                      
-            throw new CmsAuthentificationException(Messages.get().container(
-                Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1,
-                m_loginMessage.getMessage()));
+            // login message has been set and is active
+            throw new CmsAuthentificationException(
+                Messages.get().container(Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1, m_loginMessage.getMessage()));
         }
     }
 
@@ -256,9 +260,9 @@ public class CmsLoginManager {
 
     /**
      * Returns the current login message that is displayed if a user logs in.<p>
-     * 
+     *
      * if <code>null</code> is returned, no login message has been currently set.<p>
-     * 
+     *
      * @return  the current login message that is displayed if a user logs in
      */
     public CmsLoginMessage getLoginMessage() {
@@ -278,7 +282,7 @@ public class CmsLoginManager {
 
     /**
      * Returns if the security option ahould be enabled on the login dialog.<p>
-     * 
+     *
      * @return <code>true</code> if the security option ahould be enabled on the login dialog, otherwise <code>false</code>
      */
     public boolean isEnableSecurity() {
@@ -288,10 +292,10 @@ public class CmsLoginManager {
 
     /**
      * Checks if a user is locked due to too many failed logins.<p>
-     * 
-     * @param user the user to check 
-     * 
-     * @return true if the user is locked 
+     *
+     * @param user the user to check
+     *
+     * @return true if the user is locked
      */
     public boolean isUserLocked(CmsUser user) {
 
@@ -307,11 +311,11 @@ public class CmsLoginManager {
 
     /**
      * Removes the current login message.<p>
-     * 
+     *
      * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
-     * 
+     *
      * @throws CmsRoleViolationException in case the current user does not have the required role permissions
      */
     public void removeLoginMessage(CmsObject cms) throws CmsRoleViolationException {
@@ -322,12 +326,12 @@ public class CmsLoginManager {
 
     /**
      * Sets the login message to display if a user logs in.<p>
-     * 
+     *
      * This operation requires that the current user has role permissions of <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param message the message to set
-     * 
+     *
      * @throws CmsRoleViolationException in case the current user does not have the required role permissions
      */
     public void setLoginMessage(CmsObject cms, CmsLoginMessage message) throws CmsRoleViolationException {
@@ -345,11 +349,11 @@ public class CmsLoginManager {
     /**
      * Unlocks a user who has exceeded his number of failed login attempts so that he can try to log in again.<p>
      * This requires the "account manager" role.
-     * 
-     * @param cms the current CMS context 
-     * @param user the user to unlock 
-     * 
-     * @throws CmsRoleViolationException if the permission check fails 
+     *
+     * @param cms the current CMS context
+     * @param user the user to unlock
+     *
+     * @throws CmsRoleViolationException if the permission check fails
      */
     public void unlockUser(CmsObject cms, CmsUser user) throws CmsRoleViolationException {
 
@@ -362,9 +366,9 @@ public class CmsLoginManager {
 
     /**
      * Adds an invalid attempt to login for the given user / IP to the storage.<p>
-     * 
+     *
      * In case the configured threshold is reached, the user is disabled for the configured time.<p>
-     * 
+     *
      * @param userName the name of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
@@ -390,7 +394,7 @@ public class CmsLoginManager {
 
     /**
      * Removes all invalid attempts to login for the given user / IP.<p>
-     * 
+     *
      * @param userName the name of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
@@ -408,10 +412,10 @@ public class CmsLoginManager {
 
     /**
      * Helper method to get all the storage keys that match a user's name.<p>
-     * 
-     * @param user the user for which to get the storage keys 
-     * 
-     * @return the set of storage keys 
+     *
+     * @param user the user for which to get the storage keys
+     *
+     * @return the set of storage keys
      */
     private Set<String> getKeysForUser(CmsUser user) {
 

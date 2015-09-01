@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,11 +48,11 @@ public class CmsPreferenceData {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param name the preference name 
-     * @param value the preference value 
-     * @param prop the preference configuration 
-     * @param tab the tab on which to display the preference 
+     *
+     * @param name the preference name
+     * @param value the preference value
+     * @param prop the preference configuration
+     * @param tab the tab on which to display the preference
      */
     public CmsPreferenceData(String name, String value, CmsXmlContentProperty prop, String tab) {
 
@@ -64,8 +64,8 @@ public class CmsPreferenceData {
 
     /**
      * Gets the default value for the preference.<p>
-     * 
-     * @return the default value for the preference 
+     *
+     * @return the default value for the preference
      */
     public String getDefaultValue() {
 
@@ -74,8 +74,8 @@ public class CmsPreferenceData {
 
     /**
      * Gets the name of the preference.<p>
-     * 
-     * @return the preference name 
+     *
+     * @return the preference name
      */
     public String getName() {
 
@@ -84,18 +84,18 @@ public class CmsPreferenceData {
 
     /**
      * Gets the preference definition.<p>
-     * 
-     * @return the preference definition 
+     *
+     * @return the preference definition
      */
     public CmsXmlContentProperty getPropertyDefinition() {
 
         return m_propDef;
     }
 
-    /** 
-     * Gets the tab on which the preference should be displayed 
-     * 
-     * @return the tab on which the preference should be displayed 
+    /**
+     * Gets the tab on which the preference should be displayed.<p>
+     *
+     * @return the tab on which the preference should be displayed
      */
     public String getTab() {
 

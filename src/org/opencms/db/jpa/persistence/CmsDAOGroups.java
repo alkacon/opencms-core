@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,11 +36,11 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * This data access object represents a cms group entry inside the table "cms_groups".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
-@Table(name = "CMS_GROUPS", uniqueConstraints = @UniqueConstraint(columnNames = {"GROUP_NAME", "GROUP_OU"}))
+@Table(name = "CMS_GROUPS", uniqueConstraints = @UniqueConstraint(columnNames = {"GROUP_NAME", "GROUP_OU"}) )
 public class CmsDAOGroups {
 
     /** The description of this group. */
@@ -83,7 +83,7 @@ public class CmsDAOGroups {
 
     /**
      * A public constructor for this DAO.<p>
-     * 
+     *
      * @param groupId the id of the group
      */
     public CmsDAOGroups(String groupId) {
@@ -93,7 +93,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the description of this group.<p>
-     * 
+     *
      * @return the description of this group
      */
     public String getGroupDescription() {
@@ -103,7 +103,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the flag of this group.<p>
-     * 
+     *
      * @return the flag of this group
      */
     public int getGroupFlags() {
@@ -113,7 +113,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the id of this group.<p>
-     * 
+     *
      * @return the id of this group
      */
     public String getGroupId() {
@@ -123,7 +123,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the name of this group.<p>
-     * 
+     *
      * @return the name of this group
      */
     public String getGroupName() {
@@ -133,7 +133,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the OU of this group.<p>
-     * 
+     *
      * @return the OU pf this group
      */
     public String getGroupOu() {
@@ -143,7 +143,7 @@ public class CmsDAOGroups {
 
     /**
      * Returns the ID of the parent group.<p>
-     * 
+     *
      * @return the ID of the parent group
      */
     public String getParentGroupId() {
@@ -153,7 +153,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the description of this group.<p>
-     * 
+     *
      * @param groupDescription the description to set
      */
     public void setGroupDescription(String groupDescription) {
@@ -163,7 +163,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the flag for this group.<p>
-     * 
+     *
      * @param groupFlags the flag to set
      */
     public void setGroupFlags(int groupFlags) {
@@ -173,7 +173,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the id of this group.<p>
-     * 
+     *
      * @param groupId the id to set
      */
     public void setGroupId(String groupId) {
@@ -183,7 +183,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the name of this group.<p>
-     * 
+     *
      * @param groupName the name to set
      */
     public void setGroupName(String groupName) {
@@ -193,7 +193,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the OU of this group.<p>
-     * 
+     *
      * @param groupOu the OU to set
      */
     public void setGroupOu(String groupOu) {
@@ -203,7 +203,7 @@ public class CmsDAOGroups {
 
     /**
      * Sets the ID of the parent group.<p>
-     * 
+     *
      * @param parentGroupId the id to set
      */
     public void setParentGroupId(String parentGroupId) {

@@ -15,11 +15,11 @@
  * Lesser General Public License for more details.
  *
  * For further information about Alkacon Software GmbH, please see the
- * company website: http://www.alkacon.com 
+ * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,8 +76,8 @@ import com.google.common.collect.Multimaps;
 
 /**
  * Import/Export master configuration class.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
@@ -563,7 +563,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the explorer type rules to the given digester.<p>
-     * 
+     *
      * @param digester the digester to add the rules to
      */
     public static void addExplorerTypeXmlRules(Digester digester) {
@@ -609,7 +609,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL, "setAccess");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY,
+            "addAccessEntry",
+            2);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
 
@@ -623,39 +626,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             1,
             A_SHOWNAVIGATION);
 
-        digester.addCallMethod("*/"
-            + N_EXPLORERTYPE
-            + "/"
-            + N_EDITOPTIONS
-            + "/"
-            + N_DEFAULTPROPERTIES
-            + "/"
-            + N_PROPERTY, "addProperty", 1);
-        digester.addCallParam("*/"
-            + N_EXPLORERTYPE
-            + "/"
-            + N_EDITOPTIONS
-            + "/"
-            + N_DEFAULTPROPERTIES
-            + "/"
-            + N_PROPERTY, 0, A_NAME);
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY,
+            "addProperty",
+            1);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_PROPERTY,
+            0,
+            A_NAME);
 
-        digester.addCallMethod("*/"
-            + N_EXPLORERTYPE
-            + "/"
-            + N_EDITOPTIONS
-            + "/"
-            + N_DEFAULTPROPERTIES
-            + "/"
-            + N_DEFAULTPROPERTY, "addProperty", 1);
-        digester.addCallParam("*/"
-            + N_EXPLORERTYPE
-            + "/"
-            + N_EDITOPTIONS
-            + "/"
-            + N_DEFAULTPROPERTIES
-            + "/"
-            + N_DEFAULTPROPERTY, 0, A_NAME);
+        digester.addCallMethod(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_DEFAULTPROPERTY,
+            "addProperty",
+            1);
+        digester.addCallParam(
+            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_DEFAULTPROPERTIES + "/" + N_DEFAULTPROPERTY,
+            0,
+            A_NAME);
 
         addContextMenuItemRules(digester, "*");
 
@@ -665,7 +652,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Creates the xml output for explorer type nodes.<p>
-     * 
+     *
      * @param startNode the startnode to add all rescource types to
      * @param explorerTypes the list of explorer types
      * @param module true if the XML tree for the module config should be generated, false otherwise
@@ -715,7 +702,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
 
                 newResElement.addAttribute(A_KEY, settings.getTitleKey());
-                // create subnode <accesscontrol>            
+                // create subnode <accesscontrol>
                 CmsExplorerTypeAccess access = settings.getAccess();
                 if (access != defaultAccess) {
                     // don't output the node if this is in fact the default access settings
@@ -739,7 +726,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                     Element editOptionsElement = explorerTypeElement.addElement(N_EDITOPTIONS);
                     Element defaultPropertiesElement = editOptionsElement.addElement(N_DEFAULTPROPERTIES);
                     defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
-                    defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
+                    defaultPropertiesElement.addAttribute(
+                        A_SHOWNAVIGATION,
+                        String.valueOf(settings.isShowNavigation()));
                     Iterator<String> m = settings.getProperties().iterator();
                     while (m.hasNext()) {
                         defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, m.next());
@@ -775,7 +764,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the context menu item rules to the given digester.<p>
-     *  
+     *
      * @param digester the digester to add the rules to
      * @param xPathPrefix the path prefix (should be the path to the contextmenu or the multicontextmenu node)
      */
@@ -813,7 +802,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Creates the xml output for context menu item nodes and eventual subnodes.<p>
-     * 
+     *
      * @param parentElement the parent element to add the item node to
      * @param menuRuleTranslator the menu rule translator to use for legacy rules
      * @param item the context menu item to create the node for
@@ -883,7 +872,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
 
-        // creation of the import/export manager        
+        // creation of the import/export manager
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);
         // import/export manager finished
         digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
@@ -977,7 +966,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DIRECTEDITPROVIDER, "setDirectEditProvider");
 
-        // add rules for the workplace export points 
+        // add rules for the workplace export points
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, "addExportPoint", 2);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, 0, A_URI);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_EXPORTPOINTS + "/" + N_EXPORTPOINT, 1, A_DESTINATION);
@@ -1025,7 +1014,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_ISLOGFILE);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_WINDOWSIZE);
 
-        // Cms specific rule similar to SetNextRule with implicit first CmsObject argument (remains null). 
+        // Cms specific rule similar to SetNextRule with implicit first CmsObject argument (remains null).
         digester.addRule(xPathPrefix, new CmsSetNextRule("setFileViewSettings", CmsRfsFileViewer.class));
 
         // add explorer type rules
@@ -1205,9 +1194,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
         // add the <defaultaccesscontrol> node
         Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);
-        // create subnode <accesscontrol>            
+        // create subnode <accesscontrol>
         List<String> accessEntries = new ArrayList<String>();
-        // sort accessEntries   
+        // sort accessEntries
         CmsExplorerTypeAccess access = m_workplaceManager.getDefaultAccess();
         Iterator<String> iter = access.getAccessEntries().keySet().iterator();
         while (iter.hasNext()) {
@@ -1533,7 +1522,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             workplaceFootCustom.addElement(N_BACKGROUNDCOLOR).setText(
                 m_workplaceManager.getCustomFoot().getBackgroundColor());
             Element textElement = workplaceFootCustom.addElement(N_TEXT);
-            textElement.addAttribute(A_REPLACE, Boolean.toString(m_workplaceManager.getCustomFoot().isReplaceDefault()));
+            textElement.addAttribute(
+                A_REPLACE,
+                Boolean.toString(m_workplaceManager.getCustomFoot().isReplaceDefault()));
             textElement.setText(m_workplaceManager.getCustomFoot().getText());
         }
 
@@ -1579,7 +1570,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Returns the initialized workplace manager.<p>
-     * 
+     *
      * @return the initialized workplace manager
      */
     public CmsWorkplaceManager getWorkplaceManager() {
@@ -1588,7 +1579,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Will be called when configuration of this object is finished.<p> 
+     * Will be called when configuration of this object is finished.<p>
      */
     public void initializeFinished() {
 
@@ -1599,7 +1590,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the generated workplace manager.<p>
-     * 
+     *
      * @param manager the workplace manager to set
      */
     public void setWorkplaceManager(CmsWorkplaceManager manager) {
@@ -1612,7 +1603,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the digester rules for the menurules node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addContextMenuRules(Digester digester) {
@@ -1634,98 +1625,85 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             0,
             A_NAME);
         // add a single menu item rule to the list of rules
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MENURULES
-            + "/"
-            + N_MENURULE
-            + "/"
-            + N_MENUITEMRULE, "addMenuItemRuleName", 1);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MENURULES
-            + "/"
-            + N_MENURULE
-            + "/"
-            + N_MENUITEMRULE, 0, A_CLASS);
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE + "/" + N_MENUITEMRULE,
+            "addMenuItemRuleName",
+            1);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MENURULES + "/" + N_MENURULE + "/" + N_MENUITEMRULE,
+            0,
+            A_CLASS);
     }
 
     /**
      * Adds the digester rules for the defaultaccesscontrol node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addDefaultAccessControlRules(Digester digester) {
 
-        digester.addObjectCreate("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
-        digester.addSetNext("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL, "setDefaultAccess");
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL,
+            CmsExplorerTypeAccess.class);
+        digester.addSetNext(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL,
+            "setDefaultAccess");
 
-        digester.addCallMethod("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, "addAccessEntry", 2);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, 0, A_PRINCIPAL);
-        digester.addCallParam("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_DEFAULTACCESSCONTROL
-            + "/"
-            + N_ACCESSCONTROL
-            + "/"
-            + N_ACCESSENTRY, 1, A_PERMISSIONS);
+        digester.addCallMethod(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            "addAccessEntry",
+            2);
+        digester.addCallParam(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            0,
+            A_PRINCIPAL);
+        digester.addCallParam(
+            "*/"
+                + N_WORKPLACE
+                + "/"
+                + N_EXPLORERTYPES
+                + "/"
+                + N_DEFAULTACCESSCONTROL
+                + "/"
+                + N_ACCESSCONTROL
+                + "/"
+                + N_ACCESSENTRY,
+            1,
+            A_PERMISSIONS);
     }
 
     /**
      * Adds the digester rules for the default-preferences node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addDefaultPreferencesRules(Digester digester) {
 
-        // creation of the default user settings              
+        // creation of the default user settings
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, CmsDefaultUserSettings.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, "setDefaultUserSettings");
 
         // TODO: most of these settings are not user dependent, so they should not be stored in the CmsDefaultUserSettings class
 
-        // add workplace preferences general options rules 
+        // add workplace preferences general options rules
         String xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
@@ -1911,7 +1889,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the digester rules for the multicontextmenu node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addMultiContextMenuRules(Digester digester) {
@@ -1924,7 +1902,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the digester rules for the tool-manager node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addToolManagerRules(Digester digester) {
@@ -1945,7 +1923,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Adds the digester rules for the user-infos node.<p>
-     * 
+     *
      * @param digester the digester object
      */
     protected void addUserInfoRules(Digester digester) {
@@ -1954,7 +1932,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         String rulePath = "*/" + N_USERINFOS;
         digester.addObjectCreate(rulePath, CmsWorkplaceUserInfoManager.class);
         digester.addSetNext(rulePath, "setUserInfoManager");
-        // create a new block 
+        // create a new block
         rulePath += "/" + N_INFOBLOCK;
         digester.addObjectCreate(rulePath, CmsWorkplaceUserInfoBlock.class);
         // set the title

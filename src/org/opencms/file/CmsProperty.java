@@ -179,7 +179,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a new CmsProperty object.<p>
-     * 
+     *
      * The structure and resource property values are initialized to null. The structure and
      * resource IDs are initialized to {@link org.opencms.util.CmsUUID#getNullUUID()}.<p>
      */
@@ -190,10 +190,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a new CmsProperty object using the provided values.<p>
-     * 
+     *
      * If the property definition does not exist for the resource type it
      * is automatically created when this property is written.
-     * 
+     *
      * @param name the name of the property definition
      * @param structureValue the value to write as structure property
      * @param resourceValue the value to write as resource property
@@ -205,10 +205,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a new CmsProperty object using the provided values.<p>
-     * 
+     *
      * If <code>null</code> is supplied for the resource or structure value, this
      * value will not be available for this property.<p>
-     * 
+     *
      * @param name the name of the property definition
      * @param structureValue the value to write as structure property, or <code>null</code>
      * @param resourceValue the value to write as resource property , or <code>null</code>
@@ -234,10 +234,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Searches in a list for the first occurrence of a {@link CmsProperty} object with the given name.<p>
-     * 
+     *
      * To check if the "null property" has been returned if a property was
      * not found, use {@link #isNullProperty()} on the result.<p>
-     * 
+     *
      * @param name a property name
      * @param list a list of {@link CmsProperty} objects
      * @return the index of the first occurrence of the name in they specified list,
@@ -270,7 +270,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the null property object.<p>
-     * 
+     *
      * @return the null property object
      */
     public static final CmsProperty getNullProperty() {
@@ -281,14 +281,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Calls <code>{@link #setAutoCreatePropertyDefinition(boolean)}</code> for each
      * property object in the given List with the given <code>value</code> parameter.<p>
-     * 
+     *
      * This method will modify the objects in the input list directly.<p>
-     * 
+     *
      * @param list a list of {@link CmsProperty} objects to modify
      * @param value boolean value
-     * 
+     *
      * @return the modified list of {@link CmsProperty} objects
-     * 
+     *
      * @see #setAutoCreatePropertyDefinition(boolean)
      */
     public static final List<CmsProperty> setAutoCreatePropertyDefinitions(List<CmsProperty> list, boolean value) {
@@ -315,13 +315,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Calls <code>{@link #setFrozen(boolean)}</code> for each
      * {@link CmsProperty} object in the given List if it is not already frozen.<p>
-     * 
+     *
      * This method will modify the objects in the input list directly.<p>
-     * 
+     *
      * @param list a list of {@link CmsProperty} objects
-     * 
+     *
      * @return the modified list of properties
-     * 
+     *
      * @see #setFrozen(boolean)
      */
     public static final List<CmsProperty> setFrozen(List<CmsProperty> list) {
@@ -353,9 +353,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
      * Transforms a Map of String values into a list of
      * {@link CmsProperty} objects with the property name set from the
      * Map key, and the structure value set from the Map value.<p>
-     * 
+     *
      * @param map a Map with String keys and String values
-     * 
+     *
      * @return a list of {@link CmsProperty} objects
      */
     public static List<CmsProperty> toList(Map<String, String> map) {
@@ -378,9 +378,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Transforms a list of {@link CmsProperty} objects into a Map which uses the property name as
      * Map key (String), and the property value as Map value (String).<p>
-     * 
+     *
      * @param list a list of {@link CmsProperty} objects
-     * 
+     *
      * @return a Map which uses the property names as
      *      Map keys (String), and the property values as Map values (String)
      */
@@ -418,9 +418,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Stores a collection of properties in a map, with the property names as keys.<p>
-     * 
+     *
      * @param properties the properties to store in the map
-     * 
+     *
      * @return the map with the property names as keys and the property objects as values
      */
     public static Map<String, CmsProperty> toObjectMap(Iterable<CmsProperty> properties) {
@@ -432,12 +432,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
         return result;
     }
 
-    /** 
+    /**
      * Wraps a null value into a null property, and returns all other values unchanged.<p>
-     * 
+     *
      * @param prop the value to wrap
-     *  
-     * @return a wrapped null property, or the original prop if it wasn't null 
+     *
+     * @return a wrapped null property, or the original prop if it wasn't null
      */
     public static CmsProperty wrapIfNull(CmsProperty prop) {
 
@@ -451,7 +451,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Checks if the property definition for this property will be
      * created implicitly on any write operation if doesn't already exist.<p>
-     * 
+     *
      * @return <code>true</code>, if the property definition for this property will be created implicitly on any write operation
      */
     public boolean autoCreatePropertyDefinition() {
@@ -461,9 +461,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a clone of this property.<p>
-     * 
+     *
      * @return a clone of this property
-     * 
+     *
      * @see #cloneAsProperty()
      */
     @Override
@@ -474,9 +474,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Creates a clone of this property that already is of type <code>{@link CmsProperty}</code>.<p>
-     * 
+     *
      * The cloned property will not be frozen.<p>
-     * 
+     *
      * @return a clone of this property that already is of type <code>{@link CmsProperty}</code>
      */
     public CmsProperty cloneAsProperty() {
@@ -500,7 +500,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Compares this property to another Object.<p>
-     * 
+     *
      * @param obj the other object to be compared
      * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object,
      *      a value less than zero if the name of this property is lexicographically less than the name of the argument,
@@ -516,15 +516,15 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Tests if a specified object is equal to this CmsProperty object.<p>
-     * 
+     *
      * Two property objects are equal if their names are equal.<p>
-     * 
+     *
      * In case you want to compare the values as well as the name,
      * use {@link #isIdentical(CmsProperty)} instead.<p>
-     * 
+     *
      * @param obj another object
      * @return true, if the specified object is equal to this CmsProperty object
-     * 
+     *
      * @see #isIdentical(CmsProperty)
      */
     @Override
@@ -541,7 +541,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the name of this property.<p>
-     * 
+     *
      * @return the name of this property
      */
     public String getName() {
@@ -551,7 +551,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the root path of the resource from which the property was read.<p>
-     * 
+     *
      * @return the root path of the resource from which the property was read
      */
     public String getOrigin() {
@@ -561,7 +561,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the resource record.<p>
-     * 
+     *
      * @return the value of this property attached to the resource record
      */
     public String getResourceValue() {
@@ -571,11 +571,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the resource record, split as a list.<p>
-     * 
+     *
      * This list is build form the resource value, which is split into separate values
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the list will contain one entry which is equal to <code>{@link #getResourceValue()}</code>.<p>
-     * 
+     *
      * @return the value of this property attached to the resource record, split as a (unmodifiable) list of Strings
      */
     public List<String> getResourceValueList() {
@@ -590,13 +590,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the resource record as a map.<p>
-     * 
+     *
      * This map is build from the used value, which is split into separate key/value pairs
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the map will contain one entry.<p>
-     * 
+     *
      * The key/value pairs are separated with the <code>=</code>.<p>
-     * 
+     *
      * @return the value of this property attached to the resource record, as an (unmodifiable) map of Strings
      */
     public Map<String, String> getResourceValueMap() {
@@ -611,7 +611,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the structure record.<p>
-     * 
+     *
      * @return the value of this property attached to the structure record
      */
     public String getStructureValue() {
@@ -621,11 +621,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the structure record, split as a list.<p>
-     * 
+     *
      * This list is build form the structure value, which is split into separate values
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the list will contain one entry which is equal to <code>{@link #getStructureValue()}</code>.<p>
-     * 
+     *
      * @return the value of this property attached to the structure record, split as a (unmodifiable) list of Strings
      */
     public List<String> getStructureValueList() {
@@ -640,13 +640,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the value of this property attached to the structure record as a map.<p>
-     * 
+     *
      * This map is build from the used value, which is split into separate key/value pairs
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the map will contain one entry.<p>
-     * 
+     *
      * The key/value pairs are separated with the <code>=</code>.<p>
-     * 
+     *
      * @return the value of this property attached to the structure record, as an (unmodifiable) map of Strings
      */
     public Map<String, String> getStructureValueMap() {
@@ -661,10 +661,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the compound value of this property.<p>
-     * 
+     *
      * The value returned is the value of {@link #getStructureValue()}, if it is not <code>null</code>.
      * Otherwise the value if {@link #getResourceValue()} is returned (which may also be <code>null</code>).<p>
-     * 
+     *
      * @return the compound value of this property
      */
     public String getValue() {
@@ -675,12 +675,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Returns the compound value of this property, or a specified default value,
      * if both the structure and resource values are null.<p>
-     * 
+     *
      * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
-     * 
+     *
      * @param defaultValue a default value which is returned if both the structure and resource values are <code>null</code>
-     * 
+     *
      * @return the compound value of this property, or the default value
      */
     public String getValue(String defaultValue) {
@@ -692,21 +692,21 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null)
-        ? m_resourceValue
-        : defaultValue);
+        return (m_structureValue != null)
+        ? m_structureValue
+        : ((m_resourceValue != null) ? m_resourceValue : defaultValue);
     }
 
     /**
      * Returns the compound value of this property, split as a list.<p>
-     * 
+     *
      * This list is build form the used value, which is split into separate values
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the list will contain one entry.<p>
-     * 
+     *
      * The value returned is the value of {@link #getStructureValueList()}, if it is not <code>null</code>.
      * Otherwise the value of {@link #getResourceValueList()} is returned (which may also be <code>null</code>).<p>
-     * 
+     *
      * @return the compound value of this property, split as a (unmodifiable) list of Strings
      */
     public List<String> getValueList() {
@@ -717,12 +717,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Returns the compound value of this property, split as a list, or a specified default value list,
      * if both the structure and resource values are null.<p>
-     * 
+     *
      * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
-     * 
+     *
      * @param defaultValue a default value list which is returned if both the structure and resource values are <code>null</code>
-     * 
+     *
      * @return the compound value of this property, split as a (unmodifiable) list of Strings
      */
     public List<String> getValueList(List<String> defaultValue) {
@@ -734,23 +734,23 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? getStructureValueList() : ((m_resourceValue != null)
-        ? getResourceValueList()
-        : defaultValue);
+        return (m_structureValue != null)
+        ? getStructureValueList()
+        : ((m_resourceValue != null) ? getResourceValueList() : defaultValue);
     }
 
     /**
      * Returns the compound value of this property as a map.<p>
-     * 
+     *
      * This map is build from the used value, which is split into separate key/value pairs
      * using the <code>|</code> char as delimiter. If the delimiter is not found,
      * then the map will contain one entry.<p>
-     * 
+     *
      * The key/value pairs are separated with the <code>=</code>.<p>
-     * 
+     *
      * The value returned is the value of {@link #getStructureValueMap()}, if it is not <code>null</code>.
      * Otherwise the value of {@link #getResourceValueMap()} is returned (which may also be <code>null</code>).<p>
-     * 
+     *
      * @return the compound value of this property as a (unmodifiable) map of Strings
      */
     public Map<String, String> getValueMap() {
@@ -761,12 +761,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Returns the compound value of this property as a map, or a specified default value map,
      * if both the structure and resource values are null.<p>
-     * 
+     *
      * In other words, this method returns the defaultValue if this property object
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
-     * 
+     *
      * @param defaultValue a default value map which is returned if both the structure and resource values are <code>null</code>
-     * 
+     *
      * @return the compound value of this property as a (unmodifiable) map of Strings
      */
     public Map<String, String> getValueMap(Map<String, String> defaultValue) {
@@ -778,19 +778,19 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? getStructureValueMap() : ((m_resourceValue != null)
-        ? getResourceValueMap()
-        : defaultValue);
+        return (m_structureValue != null)
+        ? getStructureValueMap()
+        : ((m_resourceValue != null) ? getResourceValueMap() : defaultValue);
     }
 
     /**
      * Returns the hash code of the property, which is based only on the property name, not on the values.<p>
-     * 
+     *
      * The resource and structure values are not taken into consideration for the hashcode generation
      * because the {@link #equals(Object)} implementation also does not take these into consideration.<p>
-     * 
+     *
      * @return the hash code of the property
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -802,7 +802,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Checks if the resource value of this property should be deleted when this
      * property object is written to the database.<p>
-     * 
+     *
      * @return true, if the resource value of this property should be deleted
      * @see CmsProperty#DELETE_VALUE
      */
@@ -814,7 +814,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Checks if the structure value of this property should be deleted when this
      * property object is written to the database.<p>
-     * 
+     *
      * @return true, if the structure value of this property should be deleted
      * @see CmsProperty#DELETE_VALUE
      */
@@ -825,7 +825,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns <code>true</code> if this property is frozen, that is read only.<p>
-     * 
+     *
      * @return <code>true</code> if this property is frozen, that is read only
      */
     public boolean isFrozen() {
@@ -835,10 +835,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
-     * 
+     *
      * The property object are identical if their name, structure and
      * resource values are all equals.<p>
-     * 
+     *
      * @param property another property object
      * @return true, if the specified object is equal to this CmsProperty object
      */
@@ -872,7 +872,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Checks if this property object is the null property object.<p>
-     * 
+     *
      * @return true if this property object is the null property object
      */
     public boolean isNullProperty() {
@@ -883,7 +883,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Sets the boolean flag to decide if the property definition for this property should be
      * created implicitly on any write operation if doesn't exist already.<p>
-     * 
+     *
      * @param value true, if the property definition for this property should be created implicitly on any write operation
      */
     public void setAutoCreatePropertyDefinition(boolean value) {
@@ -894,10 +894,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the frozen state of the property, if set to <code>true</code> then this property is read only.<p>
-     * 
+     *
      * If the property is already frozen, then setting the frozen state to <code>true</code> again is allowed,
      * but setting the value to <code>false</code> causes a <code>{@link CmsRuntimeException}</code>.<p>
-     * 
+     *
      * @param frozen the frozen state to set
      */
     public void setFrozen(boolean frozen) {
@@ -910,7 +910,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the name of this property.<p>
-     * 
+     *
      * @param name the name to set
      */
     public void setName(String name) {
@@ -921,7 +921,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the path of the resource from which the property was read.<p>
-     * 
+     *
      * @param originRootPath the root path of the root path from which the property was read
      */
     public void setOrigin(String originRootPath) {
@@ -932,7 +932,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the resource record.<p>
-     * 
+     *
      * @param resourceValue the value of this property attached to the resource record
      */
     public void setResourceValue(String resourceValue) {
@@ -944,10 +944,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the resource record from the given list of Strings.<p>
-     * 
+     *
      * The value will be created from the individual values of the given list, which are appended
      * using the <code>|</code> char as delimiter.<p>
-     * 
+     *
      * @param valueList the list of value (Strings) to attach to the resource record
      */
     public void setResourceValueList(List<String> valueList) {
@@ -965,10 +965,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the resource record from the given map of Strings.<p>
-     * 
+     *
      * The value will be created from the individual values of the given map, which are appended
      * using the <code>|</code> char as delimiter, the map keys and values are separated by a <code>=</code>.<p>
-     * 
+     *
      * @param valueMap the map of key/value (Strings) to attach to the resource record
      */
     public void setResourceValueMap(Map<String, String> valueMap) {
@@ -986,7 +986,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the structure record.<p>
-     * 
+     *
      * @param structureValue the value of this property attached to the structure record
      */
     public void setStructureValue(String structureValue) {
@@ -998,10 +998,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the structure record from the given list of Strings.<p>
-     * 
+     *
      * The value will be created from the individual values of the given list, which are appended
      * using the <code>|</code> char as delimiter.<p>
-     * 
+     *
      * @param valueList the list of value (Strings) to attach to the structure record
      */
     public void setStructureValueList(List<String> valueList) {
@@ -1019,10 +1019,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Sets the value of this property attached to the structure record from the given map of Strings.<p>
-     * 
+     *
      * The value will be created from the individual values of the given map, which are appended
      * using the <code>|</code> char as delimiter, the map keys and values are separated by a <code>=</code>.<p>
-     * 
+     *
      * @param valueMap the map of key/value (Strings) to attach to the structure record
      */
     public void setStructureValueMap(Map<String, String> valueMap) {
@@ -1041,11 +1041,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     /**
      * Sets the value of this property as either shared or
      * individual value.<p>
-     * 
+     *
      * If the given type equals {@link CmsProperty#TYPE_SHARED} then
      * the value is set as a shared (resource) value, otherwise it
      * is set as individual (structure) value.<p>
-     * 
+     *
      * @param value the value to set
      * @param type the value type to set
      */
@@ -1064,7 +1064,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns a string representation of this property object.<p>
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -1096,11 +1096,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the list value representation for the given String.<p>
-     * 
+     *
      * The given value is split along the <code>|</code> char.<p>
-     * 
+     *
      * @param value the value to create the list representation for
-     * 
+     *
      * @return the list value representation for the given String
      */
     private List<String> createListFromValue(String value) {
@@ -1124,11 +1124,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the map value representation for the given String.<p>
-     * 
+     *
      * The given value is split along the <code>|</code> char, the map keys and values are separated by a <code>=</code>.<p>
-     * 
+     *
      * @param value the value to create the map representation for
-     * 
+     *
      * @return the map value representation for the given String
      */
     private Map<String, String> createMapFromValue(String value) {
@@ -1166,9 +1166,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the single String value representation for the given value list.<p>
-     * 
+     *
      * @param valueList the value list to create the single String value for
-     * 
+     *
      * @return the single String value representation for the given value list
      */
     private String createValueFromList(List<String> valueList) {
@@ -1179,7 +1179,8 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
         StringBuffer result = new StringBuffer(valueList.size() * 32);
         Iterator<String> i = valueList.iterator();
         while (i.hasNext()) {
-            result.append(replaceDelimiter(i.next().toString(), VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
+            result.append(
+                replaceDelimiter(i.next().toString(), VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
             if (i.hasNext()) {
                 result.append(VALUE_LIST_DELIMITER);
             }
@@ -1189,9 +1190,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Returns the single String value representation for the given value map.<p>
-     * 
+     *
      * @param valueMap the value map to create the single String value for
-     * 
+     *
      * @return the single String value representation for the given value map
      */
     private String createValueFromMap(Map<String, String> valueMap) {
@@ -1221,7 +1222,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Rebuilds the given delimiter character from the replacement string.<p>
-     * 
+     *
      * @param value the string that is scanned
      * @param delimiter the delimiter character to rebuild
      * @param delimiterReplacement the replacement string for the delimiter character
@@ -1234,7 +1235,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
 
     /**
      * Replaces the given delimiter character with the replacement string.<p>
-     *  
+     *
      * @param value the string that is scanned
      * @param delimiter the delimiter character to replace
      * @param delimiterReplacement the replacement string for the delimiter character

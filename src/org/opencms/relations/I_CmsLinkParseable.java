@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,31 +34,31 @@ import java.util.List;
 
 /**
  * This interface serves to retrieve all links from a given file by parsing.<p>
- * 
- * Relation validation for a file is only enabled if the file's resource type 
- * implements this interface. so, files with resource types that do not implement 
- * this interface don't get validated for broken links, during publsihing, for 
+ *
+ * Relation validation for a file is only enabled if the file's resource type
+ * implements this interface. so, files with resource types that do not implement
+ * this interface don't get validated for broken links, during publsihing, for
  * instance.<p>
- * 
- * This interface is used to build the internal relation information, but it is 
+ *
+ * This interface is used to build the internal relation information, but it is
  * not directly used to validate the relations.<p>
- * 
- * @since 6.3.0 
+ *
+ * @since 6.3.0
  */
 public interface I_CmsLinkParseable {
 
     /**
      * Returns a list of all links from the specified file.<p>
-     * 
-     * Implementations of this method must return an empty list, or better 
+     *
+     * Implementations of this method must return an empty list, or better
      * {@link java.util.Collections#EMPTY_LIST}, if no link is found at all.<p>
-     * 
-     * Implementations of this method should return the list of links including internal 
+     *
+     * Implementations of this method should return the list of links including internal
      * (OpenCms VFS) and external links (http, https, mailto, ftp, etc.).<p>
-     * 
+     *
      * @param cms the current user's context
      * @param file the file to be parsed
-     * 
+     *
      * @return a list of {@link CmsLink} objects with the URIs of all linked resources
      */
     List<CmsLink> parseLinks(CmsObject cms, CmsFile file);

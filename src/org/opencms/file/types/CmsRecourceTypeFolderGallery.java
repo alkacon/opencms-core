@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import org.opencms.util.CmsStringUtil;
  *
  * This type extends a folder but has a configurable type id and type name.
  * Optionally, a workplace class name for the type and a parameter String can be provided.<p>
- * 
- * @since 7.6.0 
+ *
+ * @since 7.6.0
  */
 public class CmsRecourceTypeFolderGallery extends CmsResourceTypeFolderExtended {
 

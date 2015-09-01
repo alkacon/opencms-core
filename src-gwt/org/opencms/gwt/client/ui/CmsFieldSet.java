@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel that behaves like a HTML fieldset.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFieldSet extends Composite
@@ -110,7 +110,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * Because this class has a default constructor, it can
      * be used as a binder template. In other words, it can be used in other
      * *.ui.xml files:
@@ -141,7 +141,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Adds a widget to this field set.<p>
-     * 
+     *
      * @param w the widget to add
      */
     public void addContent(Widget w) {
@@ -167,7 +167,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Returns the content panel.<p>
-     * 
+     *
      * @return the content panel
      */
     public FlowPanel getContentPanel() {
@@ -177,7 +177,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Returns the count of widgets inside this fieldset.<p>
-     * 
+     *
      * @return the count of widgets inside this fieldset
      */
     public int getWidgetCount() {
@@ -197,7 +197,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Returns if the fieldset is opened.<p>
-     * 
+     *
      * @return <code>true</code> if the fieldset is opened
      */
     public boolean isOpen() {
@@ -221,9 +221,9 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
         return m_content.remove(widget);
     }
 
-    /** 
+    /**
      * Sets the animation duration.
-     * @param animDuration the animation duration 
+     * @param animDuration the animation duration
      */
     public void setAnimationDuration(int animDuration) {
 
@@ -232,7 +232,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Sets the text for the legend of this field set.<p>
-     * 
+     *
      * @param legendText the legend text
      */
     public void setLegend(String legendText) {
@@ -242,7 +242,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Sets the fieldset open, showing the content.<p>
-     * 
+     *
      * @param open <code>true</code> to open the fieldset
      */
     public void setOpen(boolean open) {
@@ -250,9 +250,10 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
         m_opened = open;
         if (m_opened) {
             // show content
-            m_visibilityStyle.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
-                + " "
-                + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
+            m_visibilityStyle.setValue(
+                I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll()
+                    + " "
+                    + I_CmsLayoutBundle.INSTANCE.fieldsetCss().fieldsetVisible());
             m_image.setResource(I_CmsImageBundle.INSTANCE.arrowBottomImage());
         } else {
             // hide content
@@ -264,7 +265,7 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Sets the opener visible.<p>
-     * 
+     *
      * @param visible <code>true</code> to set the opener visible
      */
     public void setOpenerVisible(boolean visible) {
@@ -291,9 +292,9 @@ implements HasOpenHandlers<CmsFieldSet>, HasCloseHandlers<CmsFieldSet>, HasWidge
 
     /**
      * Adds a click handler to the image icon of this fieldset.<p>
-     * 
-     * On click the 
-     * 
+     *
+     * On click the
+     *
      * @param e the event
      */
     @UiHandler("m_image")

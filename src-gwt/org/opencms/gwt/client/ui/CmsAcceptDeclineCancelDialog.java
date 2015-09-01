@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Provides a confirmation dialog with yes, no and cancel button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
@@ -51,7 +51,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the dialog title
      * @param content the dialog content
      */
@@ -100,7 +100,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the accept button icon class.<p>
-     * 
+     *
      * @param iconClass the icon class
      */
     public void setAcceptIconClass(String iconClass) {
@@ -110,7 +110,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the accept button text.<p>
-     * 
+     *
      * @param text the button text
      */
     public void setAcceptText(String text) {
@@ -120,7 +120,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the decline button icon class.<p>
-     * 
+     *
      * @param iconClass the icon class
      */
     public void setDeclineIconClass(String iconClass) {
@@ -130,7 +130,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the decline button text.<p>
-     * 
+     *
      * @param text the button text
      */
     public void setDeclineText(String text) {
@@ -140,7 +140,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the dialog handler.<p>
-     * 
+     *
      * @param handler the handler to set
      */
     public void setHandler(I_CmsAcceptDeclineCancelHandler handler) {
@@ -151,7 +151,7 @@ public class CmsAcceptDeclineCancelDialog extends CmsAlertDialog {
 
     /**
      * Sets the buttons enabled.<p>
-     * 
+     *
      * @param activate <code>true</code> to activate, <code>false</code> to deactivate
      */
     protected void activateButtons(boolean activate) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Provides a UI list item.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSimpleListItem extends Composite implements I_CmsListItem {
@@ -49,7 +49,7 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
     protected CmsFlowPanel m_panel;
 
     /**
-     * Constructor.<p> 
+     * Constructor.<p>
      */
     public CmsSimpleListItem() {
 
@@ -60,7 +60,7 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param widget the widget to use
      */
     public CmsSimpleListItem(CmsListItemWidget widget) {
@@ -114,9 +114,9 @@ public class CmsSimpleListItem extends Composite implements I_CmsListItem {
 
     /**
      * Returns the child widget with the given index.<p>
-     * 
+     *
      * @param index the index
-     * 
+     *
      * @return the child widget
      */
     public Widget getWidget(int index) {

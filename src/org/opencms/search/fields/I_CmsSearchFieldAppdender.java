@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,30 +41,30 @@ import java.util.List;
 
 /**
  * Adds fields to the configuration and appends fields to a document during index process.<p>
- * 
+ *
  * @since 9.0.0
  */
 public interface I_CmsSearchFieldAppdender {
 
     /**
      * Add the additional fields to the configuration.<p>
-     * 
+     *
      * {@link #appendFields(I_CmsSearchDocument, CmsObject, CmsResource, I_CmsExtractionResult, List, List)}
      */
     void addAdditionalFields();
 
     /**
      * Can append one or more fields to an document.<p>
-     * 
+     *
      * @param document the document to append field(s)
      * @param cms the CMS object used during indexing process
      * @param resource the resource that is currently indexed
      * @param extractionResult the extraction result of this resource
      * @param properties {@link org.opencms.file.CmsObject#readPropertyObjects(CmsResource, boolean)} with false
      * @param propertiesSearched {@link org.opencms.file.CmsObject#readPropertyObjects(CmsResource, boolean)} with true
-     * 
+     *
      * @see  org.opencms.file.CmsObject#readPropertyObjects(CmsResource, boolean)
-     * 
+     *
      * @return the document
      */
     I_CmsSearchDocument appendFields(

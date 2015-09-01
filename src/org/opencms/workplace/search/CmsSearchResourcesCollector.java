@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,6 +35,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.search.galleries.CmsGallerySearchIndex;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
@@ -52,8 +53,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Collector for receiving CmsResources from a search result set.<p>
- * 
- * @since 6.1.0 
+ *
+ * @since 6.1.0
  */
 public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
@@ -93,11 +94,14 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /** Cached search results. */
     private List<CmsSearchResult> m_searchResults;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
+
     /**
      * Constructor, creates a new instance.<p>
-     * 
+     *
      * @param wp the workplace object
-     * @param query the search query 
+     * @param query the search query
      * @param sort the sort by parameter
      * @param fields the comma separated list of fields to search
      * @param searchRoots a list of search roots
@@ -176,9 +180,6 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         return Arrays.asList(COLLECTOR_NAME);
     }
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSearchResourcesCollector.class);
-
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
@@ -208,9 +209,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search result object for the given structure id.<p>
-     * 
+     *
      * @param structureId the structure id
-     * 
+     *
      * @return the resource
      */
     public CmsSearchResult getSearchResult(String structureId) {
@@ -256,9 +257,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search bean object.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return the used search bean
      */
     private CmsSearch getSearchBean(Map<String, String> params) {
@@ -276,6 +277,11 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             List<String> resources = getResourceNamesFromParam(params);
             String[] searchRoots = new String[resources.size()];
             resources.toArray(searchRoots);
+            if (CmsGallerySearchIndex.GALLERY_INDEX_NAME.equals(m_searchBean.getIndex())) {
+                for (int i = 0; i < searchRoots.length; i++) {
+                    searchRoots[i] = getWp().getCms().addSiteRoot(searchRoots[i]);
+                }
+            }
             m_searchBean.setSearchRoots(searchRoots);
         } else {
             int page = Integer.parseInt(params.get(I_CmsListResourceCollector.PARAM_PAGE));
@@ -289,9 +295,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns a new search parameters object from the request parameters.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return a search parameters object
      */
     private CmsSearchParameters getSearchParameters(Map<String, String> params) {
@@ -325,9 +331,9 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /**
      * Returns the search result list.<p>
-     * 
+     *
      * @param params the parameter map
-     * 
+     *
      * @return a list of {@link org.opencms.search.CmsSearchResult} objects
      */
     private List<CmsSearchResult> getSearchResults(Map<String, String> params) {

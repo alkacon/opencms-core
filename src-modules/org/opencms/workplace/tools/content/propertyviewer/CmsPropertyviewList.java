@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -68,10 +68,10 @@ import org.apache.commons.logging.Log;
 /**
  * A list that displays properties .
  * <p>
- * 
+ *
  * Caution: The list ID argument has to be dynamic to prevent caching causing exception in case of varying collumns.
  * <p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsPropertyviewList extends A_CmsListDialog {
@@ -133,9 +133,9 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     /**
      * Public constructor.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -151,7 +151,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the list name
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -170,7 +170,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * @param sortedColId the a priory sorted column
      * @param sortOrder the order of the sorted column
      * @param searchableColId the column to search into
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -182,7 +182,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
         String sortedColId,
         CmsListOrderEnum sortOrder,
         String searchableColId)
-    throws FileNotFoundException, CmsException {
+        throws FileNotFoundException, CmsException {
 
         super(jsp, listId, listName, sortedColId, sortOrder, searchableColId);
         m_messages = new CmsMessages(
@@ -193,13 +193,13 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     /**
      * Public constructor.
      * <p>
-     * 
+     *
      * Public constructor with JSP variables.
      * <p>
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * 
+     *
      * @throws CmsException if something goes wrong.
      * @throws FileNotFoundException if something goes wrong.
      */
@@ -247,8 +247,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
     /**
      * Returns the property value parameter.<p>
-     * 
-     * @return the property value 
+     *
+     * @return the property value
      *
      */
     public String getParamPropvalue() {
@@ -259,7 +259,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     /**
      * Returns true if siblings are shown.
      * <p>
-     * 
+     *
      * @return true if siblings are shown.
      */
     public String getParamSiblings() {
@@ -285,8 +285,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
     /**
      * Sets the property value parameter.<p>
-     * 
-     * @param propvalue the property value to set 
+     *
+     * @param propvalue the property value to set
      */
     public void setParamPropvalue(final String propvalue) {
 
@@ -296,7 +296,7 @@ public class CmsPropertyviewList extends A_CmsListDialog {
     /**
      * Set if siblings should be shown.
      * <p>
-     * 
+     *
      * @param showSiblings if siblings should be shown.
      */
     public void setParamSiblings(final String showSiblings) {
@@ -433,9 +433,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
         CmsListColumnDefinition propCol;
         for (String property : m_props) {
             propCol = new CmsListColumnDefinition(getPropertyColumnID(property));
-            propCol.setName(Messages.get().container(
-                Messages.GUI_LIST_PROPERTYVIEW_COL_PROPERTY_NAME_1,
-                new Object[] {property}));
+            propCol.setName(
+                Messages.get().container(Messages.GUI_LIST_PROPERTYVIEW_COL_PROPERTY_NAME_1, new Object[] {property}));
             propCol.setHelpText(Messages.get().container(Messages.GUI_LIST_PROPERTYVIEW_COL_PROPERTY_HELP_0));
             propCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
             propCol.setSorteable(false);
@@ -471,9 +470,13 @@ public class CmsPropertyviewList extends A_CmsListDialog {
      * @param isSibling if false no boldface markup will be marked.
      * @param id used for the ID column.
      *
-     * @return true if the item contains at least one property with content, false if there is no property with content 
+     * @return true if the item contains at least one property with content, false if there is no property with content
      */
-    private boolean fillItem(final CmsResource resource, final CmsListItem item, final boolean isSibling, final int id) {
+    private boolean fillItem(
+        final CmsResource resource,
+        final CmsListItem item,
+        final boolean isSibling,
+        final int id) {
 
         item.set(LIST_COLUMN_ID, ID_NUMBER_FORMAT.format(id));
         I_CmsResourceType type;
@@ -560,8 +563,8 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
     /**
      * Internally reads the resources to use.<p>
-     * 
-     * @return the resources to use. 
+     *
+     * @return the resources to use.
      */
     private List<CmsResource> getResources() {
 
@@ -584,9 +587,9 @@ public class CmsPropertyviewList extends A_CmsListDialog {
 
     /**
      * Checks if the resource is in the selected path.<p>
-     * 
+     *
      * @param resource the resource to check
-     * 
+     *
      * @return true, if the resource is in the selected path, otherwise false
      */
     private boolean isInPaths(final CmsResource resource) {

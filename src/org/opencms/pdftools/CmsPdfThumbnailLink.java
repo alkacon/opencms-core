@@ -32,6 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -118,9 +119,15 @@ public class CmsPdfThumbnailLink {
         m_height = height;
         m_format = format.toLowerCase();
         m_options = "w:" + m_width + ",h:" + m_height;
-        m_link = OpenCms.getLinkManager().substituteLink(
-            cms,
-            "/" + MARKER + "/" + pdfResource.getStructureId() + "." + format);
+        cms.getRequestContext().setAttribute(CmsDefaultLinkSubstitutionHandler.ATTR_IS_IMAGE_LINK, "true");
+        try {
+            m_link = OpenCms.getLinkManager().substituteLink(
+                cms,
+                "/" + MARKER + "/" + pdfResource.getStructureId() + "." + format);
+        } finally {
+            cms.getRequestContext().removeAttribute(CmsDefaultLinkSubstitutionHandler.ATTR_IS_IMAGE_LINK);
+        }
+
     }
 
     /**

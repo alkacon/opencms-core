@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -96,7 +96,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Provides an upload dialog.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadDialog {
@@ -297,27 +297,27 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Creates a bean that can be used for the list item widget.<p>
-     * 
+     *
      * @param file the info to create the bean for
-     * 
+     *
      * @return a list info bean
      */
     public abstract CmsListInfoBean createInfoBean(CmsFileInfo file);
 
     /**
      * Returns the massage for too large files.<p>
-     * 
+     *
      * @param file the file
-     * 
+     *
      * @return the message
      */
     public abstract String getFileSizeTooLargeMessage(CmsFileInfo file);
 
     /**
      * Returns <code>true</code> if the file is too large, <code>false</code> otherwise.<p>
-     * 
+     *
      * @param cmsFileInfo the file to check
-     * 
+     *
      * @return <code>true</code> if the file is too large, <code>false</code> otherwise
      */
     public abstract boolean isTooLarge(CmsFileInfo cmsFileInfo);
@@ -363,7 +363,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Parses the upload response of the server and decides what to do.<p>
-     * 
+     *
      * @param results a JSON Object
      */
     public void parseResponse(String results) {
@@ -375,7 +375,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             JSONObject jsonObject = JSONParser.parseStrict(results).isObject();
             boolean success = jsonObject.get(I_CmsUploadConstants.KEY_SUCCESS).isBoolean().booleanValue();
             // If the upload is done so fast that we did not receive any progress information, then
-            // the content length is unknown. For that reason take the request size to show how 
+            // the content length is unknown. For that reason take the request size to show how
             // much bytes were uploaded.
             double size = jsonObject.get(I_CmsUploadConstants.KEY_REQUEST_SIZE).isNumber().doubleValue();
             long requestSize = new Double(size).longValue();
@@ -445,7 +445,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Sets the upload context.<p>
-     * 
+     *
      * @param context the new upload context
      */
     public void setContext(I_CmsUploadContext context) {
@@ -455,8 +455,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Sets the boolean flag to control whether the target folder is interpreted as a root path.<p>
-     * 
-     * @param isTargetRootPath true if the target folder should be treated as a root path 
+     *
+     * @param isTargetRootPath true if the target folder should be treated as a root path
      */
     public void setIsTargetRootPath(boolean isTargetRootPath) {
 
@@ -465,8 +465,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Sets the target folder.<p>
-     * 
-     * @param target the target folder to set 
+     *
+     * @param target the target folder to set
      */
     public void setTargetFolder(String target) {
 
@@ -476,7 +476,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Shows the error report.<p>
-     * 
+     *
      * @param message the message to show
      * @param stacktrace the stacktrace to show
      */
@@ -521,7 +521,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Adds the given file input field to this dialog.<p>
-     * 
+     *
      * @param fileInput the file input field to add
      */
     protected void addFileInput(CmsFileInput fileInput) {
@@ -536,8 +536,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Adds the given file input field to this dialog.<p>
-     * 
-     * @param fileInfos the file info objects 
+     *
+     * @param fileInfos the file info objects
      */
     protected void addFiles(List<CmsFileInfo> fileInfos) {
 
@@ -614,18 +614,20 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Creates the loading animation HTML and adds is to the content wrapper.<p>
-     * 
+     *
      * @param msg the message to display below the animation
      */
     protected void createLoadingAnimation(String msg) {
 
         m_clientLoading = true;
         m_loadingPanel = new FlowPanel();
-        m_loadingPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
+        m_loadingPanel.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
         m_loadingPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
 
         HTML animationDiv = new HTML();
-        animationDiv.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
+        animationDiv.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
         m_loadingPanel.add(animationDiv);
 
         HTML messageDiv = new HTML();
@@ -639,7 +641,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Disables the OK button.<p>
-     * 
+     *
      * @param disabledReason the reason for disabling the OK button
      */
     protected void disableOKButton(String disabledReason) {
@@ -648,7 +650,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
-     * Required to be called when the content has changed.<p> 
+     * Required to be called when the content has changed.<p>
      */
     protected void doResize() {
 
@@ -685,11 +687,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Returns the list of file names that have to unziped.<p>
-     * 
-     * @param all <code>true</code> if the returned list should contain those filenames that 
-     * are not inside the map of files to upload. <code>false</code> only those filenames are 
+     *
+     * @param all <code>true</code> if the returned list should contain those filenames that
+     * are not inside the map of files to upload. <code>false</code> only those filenames are
      * returned that are also inside the map of files to upload
-     * 
+     *
      * @return the list of file names that have to unziped
      */
     protected List<String> getFilesToUnzip(boolean all) {
@@ -718,7 +720,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Returns "files" or "file" depending on the files to upload.<p>
-     * 
+     *
      * @return "files" or "file" depending on the files to upload
      */
     protected String getFileText() {
@@ -732,9 +734,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Returns the resource type name for a given filename.<p>
-     * 
+     *
      * @param file the file info
-     * 
+     *
      * @return the resource type name
      */
     protected String getResourceType(CmsFileInfo file) {
@@ -754,7 +756,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Returns the upload service instance.<p>
-     * 
+     *
      * @return the upload service instance
      */
     protected I_CmsUploadServiceAsync getUploadService() {
@@ -769,7 +771,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Returns the upload JSP uri.<p>
-     * 
+     *
      * @return the upload JSP uri
      */
     protected String getUploadUri() {
@@ -779,7 +781,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Inserts a hidden form into.<p>
-     *  
+     *
      * @param form the form to insert
      */
     protected void insertUploadForm(FormPanel form) {
@@ -790,7 +792,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * The action that is executed if the user clicks on the OK button.<p>
-     * 
+     *
      * If the selection dialog is currently shown the selected files are checked
      * otherwise the upload is triggered.<p>
      */
@@ -805,16 +807,16 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Decides how to go on depending on the information of the server response.<p>
-     * 
+     *
      * Shows a warning if there is another upload process active (inside the same session).<p>
-     * 
+     *
      * Otherwise if the list of files to upload contains already existent resources on the VFS or if there
      * are files selected that have invalid file names the overwrite dialog is shown.<p>
-     * 
+     *
      * Only if there is no other upload process running and none of the selected files
      * is already existent on the VFS the upload is triggered.<p>
-     * 
-     * @param result the bean that contains the information to evaluate 
+     *
+     * @param result the bean that contains the information to evaluate
      */
     protected void proceedWorkflow(CmsUploadFileBean result) {
 
@@ -887,8 +889,8 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Sets the HTML of the selection summary.<p>
-     * 
-     * @param html the HTML to set as String 
+     *
+     * @param html the HTML to set as String
      */
     protected void setSummaryHTML(String html) {
 
@@ -935,7 +937,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Updates the progress bar.<p>
-     * 
+     *
      * @param info the progress info
      */
     protected void updateProgressBar(CmsUploadProgessInfo info) {
@@ -965,7 +967,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Adds a click handler for the given check box.<p>
-     * 
+     *
      * @param check the check box
      * @param unzip the un-zip check box
      * @param file the file
@@ -1008,7 +1010,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Adds a file to the list.<p>
-     * 
+     *
      * @param file the file to add
      * @param invalid signals if the filename is invalid
      * @param isTooLarge signals if the file size limit is exceeded
@@ -1078,9 +1080,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
-     * Before the upload data is effectively submited we have to check 
+     * Before the upload data is effectively submited we have to check
      * for already existent resources in the VFS.<p>
-     * 
+     *
      * Executes the RPC call that checks the VFS for existing resources.
      * Passes the response object to a method that evaluates the result.<p>
      */
@@ -1217,9 +1219,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Creates the unzip checkbox.<p>
-     * 
+     *
      * @param file the file to create the checkbox for
-     * 
+     *
      * @return the unzip checkbox
      */
     private CmsCheckBox createUnzipCheckBox(final CmsFileInfo file) {
@@ -1251,7 +1253,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Sets the user info.<p>
-     *  
+     *
      * @param msg the message to display
      * @param warning signals whether the message should be a warning or nor
      */
@@ -1303,7 +1305,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Shows the overwrite dialog.<p>
-     * 
+     *
      * @param infoBean the info bean containing the existing and invalid file names
      */
     private void showOverwriteDialog(CmsUploadFileBean infoBean) {
@@ -1359,9 +1361,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /**
      * Starts the loading animation.<p>
-     * 
+     *
      * Used while client is loading files from hard disk into memory.<p>
-     * 
+     *
      * @param msg the message that should be displayed below the loading animation (can also be HTML as String)
      * @param delayMillis the delay to start the animation with
      */

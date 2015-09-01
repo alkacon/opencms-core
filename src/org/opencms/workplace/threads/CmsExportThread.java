@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Exports selected resources of the OpenCms into an OpenCms export file.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExportThread extends A_CmsReportThread {
 
@@ -50,7 +50,7 @@ public class CmsExportThread extends A_CmsReportThread {
 
     /**
      * Creates a new data export thread.<p>
-     * 
+     *
      * @param cms the current OpenCms context object
      * @param handler export handler containing the export data
      * @param old flag for old report mode

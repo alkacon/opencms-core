@@ -107,7 +107,6 @@
 			<user-guest>Guest</user-guest>
 			<user-export>Export</user-export>
 			<group-administrators>Administrators</group-administrators>
-			<group-projectmanagers>Projectmanagers</group-projectmanagers>
 			<group-users>Users</group-users>
 			<group-guests>Guests</group-guests>
 		</defaultusers>		

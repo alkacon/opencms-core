@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,7 +29,7 @@ package org.opencms.newsletter;
 
 /**
  * Type definition class for email content types.<p>
- * 
+ *
  * @since 6.2.0
  */
 public final class CmsNewsletterContentType {
@@ -45,7 +45,7 @@ public final class CmsNewsletterContentType {
 
     /**
      * Creates a new newsletter content type.<p>
-     * 
+     *
      * @param typeName the type name to use
      */
     private CmsNewsletterContentType(String typeName) {

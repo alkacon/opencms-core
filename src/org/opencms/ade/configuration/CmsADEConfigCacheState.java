@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.collect.Maps;
 
 /**
- * An immutable object which represents the complete ADE configuration (sitemap and module configurations) 
+ * An immutable object which represents the complete ADE configuration (sitemap and module configurations)
  * at a certain instant in time.<p>
  */
 public class CmsADEConfigCacheState {
@@ -78,25 +78,30 @@ public class CmsADEConfigCacheState {
     /** The configurations from the sitemap / VFS. */
     private Map<String, CmsADEConfigDataInternal> m_siteConfigurationsByPath = new HashMap<String, CmsADEConfigDataInternal>();
 
+    /** The available element views. */
+    private Map<CmsUUID, CmsElementView> m_elementViews;
+
     /**
      * Creates a new configuration cache state.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param siteConfigurations the map of sitemap configuration beans by structure id 
+     *
+     * @param cms the CMS context to use
+     * @param siteConfigurations the map of sitemap configuration beans by structure id
      * @param moduleConfigs the complete list of module configurations
+     * @param elementViews the available element views
      */
-    public CmsADEConfigCacheState(CmsObject cms,
-
-    Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
-
-    List<CmsADEConfigDataInternal> moduleConfigs) {
+    public CmsADEConfigCacheState(
+        CmsObject cms,
+        Map<CmsUUID, CmsADEConfigDataInternal> siteConfigurations,
+        List<CmsADEConfigDataInternal> moduleConfigs,
+        Map<CmsUUID, CmsElementView> elementViews) {
 
         m_cms = cms;
         m_siteConfigurations = siteConfigurations;
         m_moduleConfigurations = moduleConfigs;
+        m_elementViews = elementViews;
         for (CmsADEConfigDataInternal data : siteConfigurations.values()) {
             if (data.getBasePath() != null) {
-                // In theory, the base path should never be null 
+                // In theory, the base path should never be null
                 m_siteConfigurationsByPath.put(data.getBasePath(), data);
             } else {
                 LOG.warn("Empty base path for sitemap configuration!");
@@ -111,31 +116,32 @@ public class CmsADEConfigCacheState {
         }
     }
 
-    /** 
+    /**
      * Creates an empty ADE configuration cache state.<p>
-     * 
-     * @param cms the CMS context 
-     * @return the empty configuration cache state 
+     *
+     * @param cms the CMS context
+     * @return the empty configuration cache state
      */
     public static CmsADEConfigCacheState emptyState(CmsObject cms) {
 
         return new CmsADEConfigCacheState(
             cms,
             Collections.<CmsUUID, CmsADEConfigDataInternal> emptyMap(),
-            Collections.<CmsADEConfigDataInternal> emptyList());
+            Collections.<CmsADEConfigDataInternal> emptyList(),
+            Collections.<CmsUUID, CmsElementView> emptyMap());
     }
 
     /**
      * Computes the map from folder paths to content types for this ADE configuration state.<p>
-     * 
-     * @return the map of content types by folder root paths  
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the map of content types by folder root paths
+     *
+     * @throws CmsException if something goes wrong
      */
     public Map<String, String> computeFolderTypes() throws CmsException {
 
         Map<String, String> folderTypes = Maps.newHashMap();
-        // do this first, since folder types from modules should be overwritten by folder types from sitemaps 
+        // do this first, since folder types from modules should be overwritten by folder types from sitemaps
         if (m_moduleConfiguration != null) {
             folderTypes.putAll(m_moduleConfiguration.getFolderTypes());
         }
@@ -148,18 +154,20 @@ public class CmsADEConfigCacheState {
         return folderTypes;
     }
 
-    /** 
+    /**
      * Creates a new object which represents the changed configuration state given some updates, without
      * changing the current configuration state (this object instance).
-     * 
-     * @param sitemapUpdates a map containing changed sitemap configurations indexed by structure id (the map values are null if the corresponding sitemap configuration is not valid or could not be found) 
+     *
+     * @param sitemapUpdates a map containing changed sitemap configurations indexed by structure id (the map values are null if the corresponding sitemap configuration is not valid or could not be found)
      * @param moduleUpdates the list of *all* module configurations, or null if no module configuration update is needed
-     *  
-     * @return the new configuration state 
+     * @param elementViewUpdates the updated element views, or null if no update needed
+     *
+     * @return the new configuration state
      */
     public CmsADEConfigCacheState createUpdatedCopy(
         Map<CmsUUID, CmsADEConfigDataInternal> sitemapUpdates,
-        List<CmsADEConfigDataInternal> moduleUpdates) {
+        List<CmsADEConfigDataInternal> moduleUpdates,
+        Map<CmsUUID, CmsElementView> elementViewUpdates) {
 
         Map<CmsUUID, CmsADEConfigDataInternal> newSitemapConfigs = Maps.newHashMap(m_siteConfigurations);
         if (sitemapUpdates != null) {
@@ -177,13 +185,18 @@ public class CmsADEConfigCacheState {
         if (moduleUpdates != null) {
             newModuleConfigs = moduleUpdates;
         }
-        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs);
+        Map<CmsUUID, CmsElementView> newElementViews = m_elementViews;
+        if (elementViewUpdates != null) {
+            newElementViews = elementViewUpdates;
+        }
+
+        return new CmsADEConfigCacheState(m_cms, newSitemapConfigs, newModuleConfigs, newElementViews);
     }
 
     /**
      * Gets the set of type names for which detail pages are configured in any sitemap configuration.<p>
-     * 
-     * @return the set of type names with configured detail pages  
+     *
+     * @return the set of type names with configured detail pages
      */
     public Set<String> getDetailPageTypes() {
 
@@ -201,10 +214,20 @@ public class CmsADEConfigCacheState {
         return result;
     }
 
-    /** 
+    /**
+     * Returns the element views.<p>
+     *
+     * @return the element views
+     */
+    public Map<CmsUUID, CmsElementView> getElementViews() {
+
+        return Collections.unmodifiableMap(m_elementViews);
+    }
+
+    /**
      * Gets the map of folder types.<p>
-     * 
-     * @return the map of folder types 
+     *
+     * @return the map of folder types
      */
     public Map<String, String> getFolderTypes() {
 
@@ -213,9 +236,9 @@ public class CmsADEConfigCacheState {
 
     /**
      * Helper method to retrieve the parent folder type or <code>null</code> if none available.<p>
-     * 
-     * @param rootPath the path of a resource 
-     * @return the parent folder content type 
+     *
+     * @param rootPath the path of a resource
+     * @return the parent folder content type
      */
     public String getParentFolderType(String rootPath) {
 
@@ -230,7 +253,7 @@ public class CmsADEConfigCacheState {
 
     /**
      * Returns the root paths to all configured sites and sub sites.<p>
-     * 
+     *
      * @return the root paths to all configured sites and sub sites
      */
     public Set<String> getSiteConfigurationPaths() {
@@ -238,11 +261,11 @@ public class CmsADEConfigCacheState {
         return m_siteConfigurationsByPath.keySet();
     }
 
-    /** 
+    /**
      * Looks up the sitemap configuration for a root path.<p>
      * @param rootPath the root path for which to look up the configuration
-     *  
-     * @return the sitemap configuration for the given root path 
+     *
+     * @return the sitemap configuration for the given root path
      */
     public CmsADEConfigData lookupConfiguration(String rootPath) {
 
@@ -256,13 +279,13 @@ public class CmsADEConfigCacheState {
         return result;
     }
 
-    /** 
-     * Wraps an internal sitemap configuration bean into a CmsADEConfigData object, together with 
+    /**
+     * Wraps an internal sitemap configuration bean into a CmsADEConfigData object, together with
      * a reference to this cache state.<p>
-     * 
+     *
      * @param config the configuration object to wrap
-     *  
-     * @return the wrapped configuration object 
+     *
+     * @return the wrapped configuration object
      */
     public CmsADEConfigData wrap(CmsADEConfigDataInternal config) {
 
@@ -271,8 +294,8 @@ public class CmsADEConfigCacheState {
 
     /**
      * Gets all detail page info beans which are defined anywhere in the configuration.<p>
-     * 
-     * @return the list of detail page info beans 
+     *
+     * @return the list of detail page info beans
      */
     protected List<CmsDetailPageInfo> getAllDetailPages() {
 
@@ -283,9 +306,9 @@ public class CmsADEConfigCacheState {
         return result;
     }
 
-    /** 
+    /**
      * Gets the CMS context used for VFS operations.<p>
-     * 
+     *
      * @return the CMS context used for VFS operations
      */
     protected CmsObject getCms() {
@@ -295,10 +318,10 @@ public class CmsADEConfigCacheState {
 
     /**
      * Gets all the detail pages for a given type.<p>
-     * 
-     * @param type the name of the type 
-     * 
-     * @return the detail pages for that type 
+     *
+     * @param type the name of the type
+     *
+     * @return the detail pages for that type
      */
     protected List<String> getDetailPages(String type) {
 
@@ -321,16 +344,16 @@ public class CmsADEConfigCacheState {
     }
 
     /**
-     * Helper method for getting the best matching sitemap configuration object for a given root path, ignoring the module 
+     * Helper method for getting the best matching sitemap configuration object for a given root path, ignoring the module
      * configuration.<p>
-     * 
-     * For example, if there are configurations available for the paths /a, /a/b/c, /a/b/x and /a/b/c/d/e, then 
+     *
+     * For example, if there are configurations available for the paths /a, /a/b/c, /a/b/x and /a/b/c/d/e, then
      * the method will return the configuration object for /a/b/c when passed the path /a/b/c/d.
-     * 
-     * If no configuration data is found for the path, null will be returned.<p> 
-     * 
-     * @param path a root path  
-     * @return the configuration data for the given path, or null if none was found 
+     *
+     * If no configuration data is found for the path, null will be returned.<p>
+     *
+     * @param path a root path
+     * @return the configuration data for the given path, or null if none was found
      */
     protected CmsADEConfigDataInternal getSiteConfigData(String path) {
 
@@ -364,11 +387,11 @@ public class CmsADEConfigCacheState {
 
     /**
      * Checks whether the given resource is configured as a detail page.<p>
-     * 
-     * @param cms the current CMS context  
-     * @param resource the resource to test 
-     * 
-     * @return true if the resource is configured as a detail page 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource to test
+     *
+     * @return true if the resource is configured as a detail page
      */
     protected boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
@@ -387,7 +410,7 @@ public class CmsADEConfigCacheState {
             folder = resource;
         }
         List<CmsDetailPageInfo> allDetailPages = new ArrayList<CmsDetailPageInfo>();
-        // First collect all detail page infos 
+        // First collect all detail page infos
         for (CmsADEConfigDataInternal configData : m_siteConfigurationsByPath.values()) {
             List<CmsDetailPageInfo> detailPageInfos = wrap(configData).getAllDetailPages();
             allDetailPages.addAll(detailPageInfos);
@@ -401,7 +424,7 @@ public class CmsADEConfigCacheState {
                 return true;
             }
         }
-        // Second pass: configured detail pages may be actual container pages rather than folders 
+        // Second pass: configured detail pages may be actual container pages rather than folders
         String normalizedFolderRootPath = CmsStringUtil.joinPaths(folder.getRootPath(), "/");
         for (CmsDetailPageInfo info : allDetailPages) {
             String parentPath = CmsResource.getParentFolder(info.getUri());
@@ -422,10 +445,10 @@ public class CmsADEConfigCacheState {
 
     /**
      * Merges a list of multiple configuration objects into a single configuration object.<p>
-     * 
+     *
      * @param configurations the list of configuration objects.<p>
-     * 
-     * @return the merged configuration object 
+     *
+     * @return the merged configuration object
      */
     protected CmsADEConfigDataInternal mergeConfigurations(List<CmsADEConfigDataInternal> configurations) {
 

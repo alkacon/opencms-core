@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -138,9 +138,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Constructor.<p>
-     * 
-     * @param service the content service 
-     * @param widgetService the widget service to use 
+     *
+     * @param service the content service
+     * @param widgetService the widget service to use
      */
     public CmsEditorBase(I_CmsContentServiceAsync service, I_CmsWidgetService widgetService) {
 
@@ -184,7 +184,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
             }
         });
 
-        // we may want to explicitly use the default renderer for specific attributes. 
+        // we may want to explicitly use the default renderer for specific attributes.
         m_widgetService.addRenderer(new CmsRenderer(CmsEntityBackend.getInstance(), getWidgetService()));
         m_widgetService.addRenderer(new CmsNativeComplexWidgetRenderer());
         m_validationHandler = new CmsValidationHandler();
@@ -193,10 +193,10 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the formated message.<p>
-     * 
+     *
      * @param key the message key
      * @param args  the parameters to insert into the placeholders
-     * 
+     *
      * @return the formated message
      */
     public static String getMessageForKey(String key, Object... args) {
@@ -218,7 +218,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns if the messages dictionary is set.<p>
-     * 
+     *
      * @return <code>true</code> if the messages dictionary is set
      */
     public static boolean hasDictionary() {
@@ -228,7 +228,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Marks the given element to receive focus once the inline editing is initialized.<p>
-     * 
+     *
      * @param element the element to mark
      */
     public static void markForInlineFocus(Element element) {
@@ -248,9 +248,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Checks whether the given element is marked to receive focus once the inline editing is initialized.<p>
-     * 
+     *
      * @param element the element to check
-     * 
+     *
      * @return <code>true</code> if the given element is marked to receive focus once the inline editing is initialized
      */
     public static boolean shouldFocusOnInlineEdit(Element element) {
@@ -260,7 +260,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Adds the value change handler to the entity with the given id.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param handler the change handler
      */
@@ -274,9 +274,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Adds a validation change handler.<p>
-     * 
+     *
      * @param handler the validation change handler
-     * 
+     *
      * @return the handler registration
      */
     public HandlerRegistration addValidationChangeHandler(ValueChangeHandler<CmsValidationContext> handler) {
@@ -286,7 +286,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Destroys the form and related resources. Also clears all entities from the entity back-end<p>
-     * 
+     *
      * @param clearEntities <code>true</code> to also clear all entities
      */
     public void destroyForm(boolean clearEntities) {
@@ -299,7 +299,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the currently edited entity.<p>
-     * 
+     *
      * @return the currently edited entity
      */
     public CmsEntity getCurrentEntity() {
@@ -309,7 +309,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the content service instance.<p>
-     * 
+     *
      * @return the content service
      */
     public I_CmsContentServiceAsync getService() {
@@ -319,7 +319,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Loads the content definition for the given entity and executes the callback on success.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param callback the callback
      */
@@ -343,7 +343,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Registers the types and entities of the given content definition.<p>
-     * 
+     *
      * @param definition the content definition
      */
     public void registerContentDefinition(CmsContentDefinition definition) {
@@ -364,12 +364,12 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Renders the entity form within the given context.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-
+    
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 
@@ -407,7 +407,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Renders the entity form within the given context.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
@@ -443,7 +443,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Renders the entity form within the given context.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param formParent the form parent widget
      */
@@ -451,20 +451,24 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
         m_entity = m_entityBackend.getEntity(entityId);
         if (m_entity != null) {
-            m_rootHandler = new CmsRootHandler();
+            if (m_rootHandler == null) {
+                m_rootHandler = new CmsRootHandler();
+            } else {
+                m_rootHandler.clearHandlers();
+            }
             m_validationHandler.setContentService(m_service);
             m_validationHandler.registerEntity(m_entity);
             m_validationHandler.setRootHandler(m_rootHandler);
             CmsType type = m_entityBackend.getType(m_entity.getTypeName());
             CmsButtonBarHandler.INSTANCE.setWidgetService(m_widgetService);
-            m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this);
+            m_widgetService.getRendererForType(type).renderInline(m_entity, formParent, this, m_rootHandler, 0);
             CmsUndoRedoHandler.getInstance().initialize(m_entity, this, m_rootHandler);
         }
     }
 
     /**
      * Re-renders the form with the given entity data.<p>
-     * 
+     *
      * @param newContent the entity data
      */
     public void rerenderForm(CmsEntity newContent) {
@@ -493,7 +497,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Saves the given entities.<p>
-     * 
+     *
      * @param entities the entities to save
      * @param clearOnSuccess <code>true</code> to clear the entity back-end instance on success
      * @param callback the call back command
@@ -523,7 +527,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Saves the given entity.<p>
-     * 
+     *
      * @param entityIds the entity ids
      * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
@@ -542,7 +546,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Saves the given entity.<p>
-     * 
+     *
      * @param entity the entity
      * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
@@ -569,7 +573,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Saves the given entity.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param clearOnSuccess <code>true</code> to clear all entities from entity back-end on success
      * @param callback the callback executed on success
@@ -582,7 +586,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Saves the given entity.<p>
-     * 
+     *
      * @param entityId the entity id
      * @param callback the callback executed on success
      */
@@ -606,8 +610,10 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
             public void onSuccess(CmsEntityHtml result) {
 
-                formParent.replaceHtml(result.getHtmlContent());
-                onSuccess.execute();
+                if (result.getHtmlContent() != null) {
+                    formParent.replaceHtml(result.getHtmlContent());
+                    onSuccess.execute();
+                }
             }
         };
         getService().updateEntityHtml(getCurrentEntity(), getContextUri(), getHtmlContextInfo(), callback);
@@ -615,9 +621,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Adds a click handler to the edit overlay.<p>
-     * 
+     *
      * @param handler the click handler
-     * 
+     *
      * @return the click handler registration
      */
     protected HandlerRegistration addOverlayClickHandler(ClickHandler handler) {
@@ -643,9 +649,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     /**
      * Returns the context URI.<p>
      * Needed when updating the HTML due to content data changes.<p>
-     * 
+     *
      * Override to supply the required info.<p>
-     * 
+     *
      * @return the context URI
      */
     protected String getContextUri() {
@@ -656,9 +662,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
     /**
      * Returns the in-line HTML context info.<p>
      * Needed when updating the HTML due to content data changes.<p>
-     * 
+     *
      * Override to supply the required info.<p>
-     * 
+     *
      * @return the HTML context info
      */
     protected String getHtmlContextInfo() {
@@ -668,7 +674,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the root attribute handler.<p>
-     * 
+     *
      * @return the root attribute handler
      */
     protected CmsRootHandler getRootAttributeHandler() {
@@ -678,7 +684,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the validation handler.<p>
-     * 
+     *
      * @return the validation handler
      */
     protected CmsValidationHandler getValidationHandler() {
@@ -688,7 +694,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Returns the widget service.<p>
-     * 
+     *
      * @return the widget service
      */
     protected I_CmsWidgetService getWidgetService() {
@@ -698,7 +704,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Initializes the edit overlay to be positioned around the given element.<p>
-     * 
+     *
      * @param element the element
      */
     protected void initEditOverlay(Element element) {
@@ -741,9 +747,9 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
 
     /**
      * Handles RPC errors.<p>
-     * 
+     *
      * Override this for better error handling
-     * 
+     *
      * @param caught the error caught from the RPC
      */
     protected void onRpcError(Throwable caught) {

@@ -19,14 +19,13 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 package org.opencms.gwt.client.ui.input.upload;
-
 
 /**
  * Handler interface for upload buttons which is mainly used to perform actions when the selected file
@@ -36,22 +35,22 @@ public interface I_CmsUploadButtonHandler {
 
     /**
      * Custom setup method for newly created file inputs.<p>
-     * 
-     * @param fileInput the new file input 
+     *
+     * @param fileInput the new file input
      */
     void initializeFileInput(CmsFileInput fileInput);
 
     /**
      * Notifies the button handler that the file input field's value has changed.<p>
-     * 
-     * @param fileInput the file input 
+     *
+     * @param fileInput the file input
      */
     void onChange(CmsFileInput fileInput);
 
     /**
      * This method should be called when the handler is set on a button.<p>
-     * 
-     * @param button the button for which the handler instance has been set 
+     *
+     * @param button the button for which the handler instance has been set
      */
     void setButton(CmsUploadButton button);
 }

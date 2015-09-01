@@ -66,7 +66,7 @@ public class CmsContainerElementBean implements Cloneable {
     private transient String m_editorHash;
 
     /** The element's structure id. */
-    private final CmsUUID m_elementId;
+    private CmsUUID m_elementId;
 
     /** The formatter's structure id. */
     private CmsUUID m_formatterId;
@@ -128,6 +128,15 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Constructor to enable wrapped elements.<p>
+     */
+    protected CmsContainerElementBean() {
+
+        m_elementId = null;
+        m_createNew = false;
+    }
+
+    /**
      * Cloning constructor.<p>
      *
      * @param createNew create new flag
@@ -176,7 +185,9 @@ public class CmsContainerElementBean implements Cloneable {
      *
      * @return the element bean
      */
-    public static CmsContainerElementBean cloneWithSettings(CmsContainerElementBean source, Map<String, String> settings) {
+    public static CmsContainerElementBean cloneWithSettings(
+        CmsContainerElementBean source,
+        Map<String, String> settings) {
 
         CmsContainerElementBean result = new CmsContainerElementBean(
             source.m_elementId,
@@ -226,7 +237,7 @@ public class CmsContainerElementBean implements Cloneable {
             CmsUUID.getNullUUID(),
             null,
             individualSettings,
-            true);
+            false);
         elementBean.m_inMemoryOnly = true;
         elementBean.m_editorHash = resourceType.getTypeName() + elementBean.getSettingsHash();
         byte[] content = new byte[0];
@@ -358,7 +369,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Returns the element instance id.<p>
-     * 
+     *
      * @return the element instance id
      */
     public String getInstanceId() {
@@ -433,8 +444,8 @@ public class CmsContainerElementBean implements Cloneable {
             }
             // the resource object may have a wrong root path, e.g. if it was created before the resource was moved
             if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
-                m_resource = cms.readResource(id);
-                m_releasedAndNotExpired = true;
+                m_resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                m_releasedAndNotExpired = m_resource.isReleasedAndNotExpired(cms.getRequestContext().getRequestTime());
             } else {
                 if (!isTemporaryContent()) {
                     m_resource = cms.readResource(getId(), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -451,7 +462,7 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Initializes the element settings.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param formatterBean the formatter configuration bean
      */
@@ -497,8 +508,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(OpenCms.getResourceManager().getResourceType(
-            m_resource).getTypeName());
+        return CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME.equals(
+            OpenCms.getResourceManager().getResourceType(m_resource).getTypeName());
     }
 
     /**
@@ -515,7 +526,8 @@ public class CmsContainerElementBean implements Cloneable {
         if (m_resource == null) {
             initResource(cms);
         }
-        return OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
+        return OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME).getTypeId() == m_resource.getTypeId();
     }
 
     /**
@@ -576,8 +588,8 @@ public class CmsContainerElementBean implements Cloneable {
 
     /**
      * Sets a historical file.<p>
-     * 
-     * @param file the historical file 
+     *
+     * @param file the historical file
      */
     public void setHistoryFile(CmsFile file) {
 

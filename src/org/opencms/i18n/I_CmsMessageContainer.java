@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ public interface I_CmsMessageContainer {
 
     /**
      * Gets the real message for the given locale.<p>
-     * 
-     * @param locale the locale 
-     * 
-     * @return the message for the given locale 
+     *
+     * @param locale the locale
+     *
+     * @return the message for the given locale
      */
     String key(Locale locale);
 

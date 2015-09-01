@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Class to upload a zip file containing VFS resources with HTTP upload.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
 
@@ -61,7 +61,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDatabaseImportFromHttp(CmsJspActionElement jsp) {
@@ -71,7 +71,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -84,6 +84,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         try {
@@ -95,7 +96,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
         }
         Map params = new HashMap();
         params.put(PARAM_FILE, getParamImportfile());
-        params.put(PARAM_KEEPPERMISSIONS, getParamKeeppermissions());
+        params.put(PARAM_KEEPPERMISSIONS.toLowerCase(), getParamKeepPermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
@@ -107,6 +108,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getDialogReturnUri()
      */
+    @Override
     public String getDialogReturnUri() {
 
         return DIALOG_URI;
@@ -115,6 +117,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getImportMessage()
      */
+    @Override
     public String getImportMessage() {
 
         return key(Messages.GUI_DATABASE_IMPORT_FILE_0);
@@ -125,7 +128,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      *
      * @return the keepPermissions parameter
      */
-    public String getParamKeeppermissions() {
+    public String getParamKeepPermissions() {
 
         return m_keepPermissions;
     }
@@ -133,6 +136,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getStarttext()
      */
+    @Override
     public String getStarttext() {
 
         return key(Messages.GUI_DATABASE_IMPORT_BLOCK_0);
@@ -143,7 +147,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
      *
      * @param keepPermissions the keepPermissions parameter
      */
-    public void setParamKeeppermissions(String keepPermissions) {
+    public void setParamKeepPermissions(String keepPermissions) {
 
         m_keepPermissions = keepPermissions;
     }
@@ -151,6 +155,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

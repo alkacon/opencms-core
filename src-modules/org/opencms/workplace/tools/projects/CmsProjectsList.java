@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,8 +66,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Main project management view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsProjectsList extends A_CmsListDialog {
 
@@ -148,7 +148,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsProjectsList(CmsJspActionElement jsp) {
@@ -164,7 +164,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -176,7 +176,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /**
      * Deletes the project and closes the dialog.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void actionDeleteProject() throws Exception {
@@ -189,11 +189,11 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
     @Override
     public void executeListMultiActions() throws CmsRuntimeException {
@@ -495,11 +495,12 @@ public class CmsProjectsList extends A_CmsListDialog {
             }
         };
 
-        publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
-        publishEnabledAction.setHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
-        publishEnabledAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
+        publishEnabledAction.setName(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
+        publishEnabledAction.setHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
+        publishEnabledAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
         publishEnabledAction.setIconPath(PATH_BUTTONS + "project_publish.png");
         publishCol.addDirectAction(publishEnabledAction);
 
@@ -522,12 +523,12 @@ public class CmsProjectsList extends A_CmsListDialog {
                 return super.isVisible();
             }
         };
-        publishDisabledAction.setName(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
-        publishDisabledAction.setHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0));
-        publishDisabledAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
+        publishDisabledAction.setName(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
+        publishDisabledAction.setHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0));
+        publishDisabledAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
         publishDisabledAction.setIconPath(PATH_BUTTONS + "project_publish_disabled.png");
         publishDisabledAction.setEnabled(false);
         publishCol.addDirectAction(publishDisabledAction);
@@ -629,15 +630,17 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListItemDetails resourcesDetails = new CmsListItemDetails(LIST_DETAIL_RESOURCES);
         resourcesDetails.setAtColumn(LIST_COLUMN_NAME);
         resourcesDetails.setVisible(false);
-        resourcesDetails.setShowActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
-        resourcesDetails.setShowActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0));
-        resourcesDetails.setHideActionName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
-        resourcesDetails.setHideActionHelpText(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0));
+        resourcesDetails.setShowActionName(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0));
+        resourcesDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0));
+        resourcesDetails.setHideActionName(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0));
+        resourcesDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0));
         resourcesDetails.setName(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0));
-        resourcesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0)));
+        resourcesDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_PROJECTS_DETAIL_RESOURCES_NAME_0)));
         metadata.addItemDetails(resourcesDetails);
 
         // makes the list searchable
@@ -656,7 +659,8 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListMultiAction unlockProject = new CmsListMultiAction(LIST_MACTION_UNLOCK);
         unlockProject.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0));
         unlockProject.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0));
-        unlockProject.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0));
+        unlockProject.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0));
         unlockProject.setIconPath(PATH_BUTTONS + "project_unlock.png");
         metadata.addMultiAction(unlockProject);
 
@@ -664,8 +668,8 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListMultiAction deleteMultiAction = new CmsListMultiAction(LIST_MACTION_DELETE);
         deleteMultiAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_NAME_0));
         deleteMultiAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_HELP_0));
-        deleteMultiAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_PROJECTS_LIST_MACTION_DELETE_CONF_0));
+        deleteMultiAction.setConfirmationMessage(
+            Messages.get().container(Messages.GUI_PROJECTS_LIST_MACTION_DELETE_CONF_0));
         deleteMultiAction.setIconPath(ICON_MULTI_DELETE);
         metadata.addMultiAction(deleteMultiAction);
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,8 +39,8 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * A bean containing a configuration for the gallery dialog's available tabs, 
- * consisting of a list of tabs and a default tab to display first. 
+ * A bean containing a configuration for the gallery dialog's available tabs,
+ * consisting of a list of tabs and a default tab to display first.
  */
 public class CmsGalleryTabConfiguration implements IsSerializable {
 
@@ -52,6 +52,9 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     /** Gallery configuration id. */
     public static final String TC_FOLDERS = "folders";
+
+    /** Gallery configuration id. */
+    public static final String TC_GALLERIES = "galleries";
 
     /** Gallery configuration id. */
     public static final String TC_SELECT_ALL = "selectAll";
@@ -67,8 +70,8 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     /**
      * Creates  a new gallery tab configuration based on a list of tabs.<p>
-     * 
-     * @param tabsList the list of tabs 
+     *
+     * @param tabsList the list of tabs
      */
     public CmsGalleryTabConfiguration(List<GalleryTabId> tabsList) {
 
@@ -80,7 +83,7 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
      */
     protected CmsGalleryTabConfiguration() {
 
-        // only used for serialization 
+        // only used for serialization
     }
 
     static {
@@ -89,13 +92,14 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
         defaultConfigs.put(TC_SELECT_DOC, parse("types,*galleries,categories,vfstree,search,results"));
         defaultConfigs.put(TC_ADE_ADD, parse("*types,galleries,categories,vfstree,search,results"));
         defaultConfigs.put(TC_FOLDERS, parse("*vfstree"));
+        defaultConfigs.put(TC_GALLERIES, parse("*galleries,vfstree,results"));
         DEFAULT_CONFIGURATIONS = Collections.unmodifiableMap(defaultConfigs);
     }
 
     /**
      * Gets the default tab configuration.<p>
-     * 
-     * @return the default tab configuration 
+     *
+     * @return the default tab configuration
      */
     public static CmsGalleryTabConfiguration getDefault() {
 
@@ -104,19 +108,19 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     /**
      * Creates a gallery tab configuration from a configuration string.<p>
-     * 
+     *
      * The string should consist of a comma-separated list of tab ids, omitting the cms_tab_ prefix of the corresponding enum values.
      * The tab which should be used as a default tab should be prefixed with an asterisk '*'.
-     * 
-     * @param configStr the configuration string 
-     * 
-     * @return the parsed tab configuration 
+     *
+     * @param configStr the configuration string
+     *
+     * @return the parsed tab configuration
      */
     public static CmsGalleryTabConfiguration parse(String configStr) {
 
         String[] tokens = configStr.split(" *, *");
         GalleryTabId defaultTabId = null;
-        // use LinkedHashMap to preserve both order and uniqueness of tabs 
+        // use LinkedHashMap to preserve both order and uniqueness of tabs
         LinkedHashMap<GalleryTabId, Object> tabs = new LinkedHashMap<GalleryTabId, Object>();
         for (String token : tokens) {
             token = token.trim();
@@ -144,12 +148,12 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     }
 
-    /** 
+    /**
      * Parses a tab id from a gallery configuration string.<p>
-     * 
-     * @param tabId the tab id to parse 
-     * 
-     * @return the gallery tab id enum value 
+     *
+     * @param tabId the tab id to parse
+     *
+     * @return the gallery tab id enum value
      */
     public static GalleryTabId parseTabId(String tabId) {
 
@@ -164,10 +168,10 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
     /**
      * Given a string which is either the name of a predefined tab configuration or a configuration string, returns
      * the corresponding tab configuration.
-     * 
-     * @param configStr a configuration string or predefined configuration name 
-     * 
-     * @return the gallery tab configuration 
+     *
+     * @param configStr a configuration string or predefined configuration name
+     *
+     * @return the gallery tab configuration
      */
     public static CmsGalleryTabConfiguration resolve(String configStr) {
 
@@ -183,8 +187,8 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     /**
      * Gets the default tab.<p>
-     * 
-     * @return the default tab 
+     *
+     * @return the default tab
      */
     public GalleryTabId getDefaultTab() {
 
@@ -193,8 +197,8 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     /**
      * Gets the list of tabs.<p>
-     * 
-     * @return the list of tabs 
+     *
+     * @return the list of tabs
      */
     public List<GalleryTabId> getTabs() {
 
@@ -202,11 +206,11 @@ public class CmsGalleryTabConfiguration implements IsSerializable {
 
     }
 
-    /** 
+    /**
      * Creates a new tab configuration based on this one, but changes its default tab.<P>
-     * 
-     * @param defaultTab the new default tab 
-     * @return the copy with the changed default tab 
+     *
+     * @param defaultTab the new default tab
+     * @return the copy with the changed default tab
      */
     public CmsGalleryTabConfiguration withDefault(GalleryTabId defaultTab) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,8 +27,8 @@
 
 package org.opencms.ugc.client.export;
 
-import org.opencms.ugc.client.CmsUgcWrapper;
 import org.opencms.ugc.client.CmsJsUtils;
+import org.opencms.ugc.client.CmsUgcWrapper;
 import org.opencms.ugc.shared.CmsUgcConstants;
 import org.opencms.ugc.shared.CmsUgcContent;
 import org.opencms.ugc.shared.CmsUgcException;
@@ -65,11 +65,11 @@ public class CmsClientUgcSession implements Exportable {
     /** The form wrapper widget. */
     private CmsUgcWrapper m_formWrapper;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param apiRoot the CmsXmlContentFormApi instance which was used to create this session object 
-     * @param content the form data returned from the server 
+     *
+     * @param apiRoot the CmsXmlContentFormApi instance which was used to create this session object
+     * @param content the form data returned from the server
      */
     public CmsClientUgcSession(CmsXmlContentUgcApi apiRoot, CmsUgcContent content) {
 
@@ -92,7 +92,7 @@ public class CmsClientUgcSession implements Exportable {
 
             public void onSuccess(Void result) {
 
-                // do nothing 
+                // do nothing
 
             }
         });
@@ -101,7 +101,7 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Gets the content form API instance.<p>
-     * 
+     *
      * @return the content form API instance
      */
     @NoExport
@@ -113,10 +113,10 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Fetches the link for a given path from the server.<p>
-     * 
-     * @param path the path for which we want the link 
-     * 
-     * @param callback the callback to call with the result 
+     *
+     * @param path the path for which we want the link
+     *
+     * @param callback the callback to call with the result
      */
     public void getLink(String path, final I_CmsStringCallback callback) {
 
@@ -137,7 +137,7 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Gets the session id.<p>
-     * 
+     *
      * @return the session id
      */
     public String getSessionId() {
@@ -147,7 +147,7 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Gets the site path of the edited content.<p>
-     * 
+     *
      * @return the site path of the edited content
      */
     public String getSitePath() {
@@ -155,10 +155,10 @@ public class CmsClientUgcSession implements Exportable {
         return m_content.getSitePath();
     }
 
-    /** 
+    /**
      * Gets the old content values as a Javascript object.<p>
-     *  
-     * @return a Javascript object whose properties are the xpaths of the existing content values 
+     *
+     * @return a Javascript object whose properties are the xpaths of the existing content values
      */
     public JavaScriptObject getValues() {
 
@@ -167,7 +167,7 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Initializes the form belonging to this session.<p>
-     * 
+     *
      * @param formElement the form element
      */
     @NoExport
@@ -179,8 +179,8 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Gets the session id as a UUID.<p>
-     * 
-     * @return the session id 
+     *
+     * @return the session id
      */
     @NoExport
     public CmsUUID internalGetSessionId() {
@@ -191,9 +191,9 @@ public class CmsClientUgcSession implements Exportable {
     /**
      * Asks the server to save the values set via setNewValue in the XML content.<p>
      *
-     * @param newValues the new values to set 
-     * @param onSuccess the callback to be called in case of success 
-     * @param onFailure the callback to be called in case of failure 
+     * @param newValues the new values to set
+     * @param onSuccess the callback to be called in case of success
+     * @param onFailure the callback to be called in case of failure
      */
     public void saveContent(
         JavaScriptObject newValues,
@@ -228,10 +228,10 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Uploads multiple files.<p>
-     * 
-     * @param fieldNames the array of form field names containing files to upload  
-     * @param fileCallback the callback for the results 
-     * @param errorCallback the error handling callback 
+     *
+     * @param fieldNames the array of form field names containing files to upload
+     * @param fileCallback the callback for the results
+     * @param errorCallback the error handling callback
      */
     public void uploadFiles(
         String[] fieldNames,
@@ -255,10 +255,10 @@ public class CmsClientUgcSession implements Exportable {
 
     /**
      * Validates the new content values.<p>
-     * 
+     *
      * @param newValues a Javascript object with the value xpaths as keys and the corresponding content values as values.<p>
-     * 
-     * @param onSuccess the callback to call with the validation results 
+     *
+     * @param onSuccess the callback to call with the validation results
      */
     public void validate(JavaScriptObject newValues, final I_CmsJavaScriptObjectCallback onSuccess) {
 

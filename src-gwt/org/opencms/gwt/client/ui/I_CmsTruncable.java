@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,18 +27,17 @@
 
 package org.opencms.gwt.client.ui;
 
-
 /**
  * Interface for truncable UI elements.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsTruncable {
 
     /**
      * Truncates long text and sets the original text to the title attribute.<p>
-     *  
-     * @param textMetricsKey the key identifying the text metrics to use  
+     *
+     * @param textMetricsKey the key identifying the text metrics to use
      * @param clientWidth the width to use in pixels
      */
     void truncate(String textMetricsKey, int clientWidth);

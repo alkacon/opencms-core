@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,17 +51,17 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * This is the session class to work with the {@link CmsRepository}.<p> 
- * 
- * You can get an instance of this class by calling 
+ * This is the session class to work with the {@link CmsRepository}.<p>
+ *
+ * You can get an instance of this class by calling
  * {@link CmsRepository#login(String, String)}.<p>
  *
  * This class provides basic file and folder operations on the resources
  * in the VFS of OpenCms.<p>
- * 
+ *
  * @see A_CmsRepositorySession
  * @see I_CmsRepositorySession
- * 
+ *
  * @since 6.5.6
  */
 public class CmsRepositorySession extends A_CmsRepositorySession {
@@ -73,9 +73,9 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     private final CmsObjectWrapper m_cms;
 
     /**
-     * Constructor with an initialized {@link CmsObjectWrapper} and a 
+     * Constructor with an initialized {@link CmsObjectWrapper} and a
      * {@link CmsRepositoryFilter} to use.<p>
-     * 
+     *
      * @param cms the initialized CmsObject
      * @param filter the repository filter to use
      */
@@ -444,7 +444,7 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
     /**
      * Adds the site root to the path name and checks then if the path
      * is filtered.<p>
-     * 
+     *
      * @see org.opencms.repository.A_CmsRepositorySession#isFiltered(java.lang.String)
      */
     @Override
@@ -464,11 +464,11 @@ public class CmsRepositorySession extends A_CmsRepositorySession {
 
     /**
      * Validates (translates) the given path and checks if it is filtered out.<p>
-     * 
+     *
      * @param path the path to validate
-     * 
+     *
      * @return the validated path
-     * 
+     *
      * @throws CmsSecurityException if the path is filtered out
      */
     private String validatePath(String path) throws CmsSecurityException {

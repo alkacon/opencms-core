@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,14 +33,15 @@ import org.opencms.main.OpenCms;
 /**
  * Static export tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStaticExportToolHandler extends CmsDatabaseToolHandler {
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
+    @Override
     public boolean isEnabled(CmsObject cms) {
 
         return OpenCms.getStaticExportManager().isStaticExportEnabled() && super.isEnabled(cms);

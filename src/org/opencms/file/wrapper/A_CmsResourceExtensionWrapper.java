@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,9 +41,9 @@ import org.opencms.main.CmsIllegalArgumentException;
 import java.util.List;
 
 /**
- * Abstract base class which implements {@link I_CmsResourceWrapper} and 
+ * Abstract base class which implements {@link I_CmsResourceWrapper} and
  * makes it possible to add and remove file extensions to resources.<p>
- * 
+ *
  * @since 6.5.6
  */
 public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper {
@@ -167,9 +167,8 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
             // check if destination name is valid
             if (!destination.endsWith("." + getExtension())) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_BAD_RESOURCE_EXTENSION_1,
-                    destination));
+                throw new CmsIllegalArgumentException(
+                    Messages.get().container(Messages.ERR_BAD_RESOURCE_EXTENSION_1, destination));
             }
 
             cms.moveResource(
@@ -296,7 +295,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
     /**
      * Checks if the type id belongs to this resource wrapper.<p>
-     * 
+     *
      * @param typeId the type id to check
      * @return true if the type id belongs to this wrapper otherwise false
      */
@@ -304,7 +303,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
 
     /**
      * Returns the extension to add and/or remove to/from the resource.<p>
-     * 
+     *
      * @return the extension to use
      */
     protected abstract String getExtension();
@@ -312,10 +311,10 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
     /**
      * Trys to read the resourcename after removing the file extension and return the
      * resource if the type id is correct.<p>
-     * 
+     *
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource to read
-     * 
+     *
      * @return the resource or null if not found
      */
     private CmsResource getResource(CmsObject cms, String resourcename) {
@@ -326,11 +325,11 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
     /**
      * Trys to read the resourcename after removing the file extension and return the
      * resource if the type id is correct.<p>
-     * 
+     *
      * @param cms the initialized CmsObject
      * @param resourcename the name of the resource to read
      * @param filter the resource filter to use while reading
-     * 
+     *
      * @return the resource or null if not found
      */
     private CmsResource getResource(CmsObject cms, String resourcename, CmsResourceFilter filter) {

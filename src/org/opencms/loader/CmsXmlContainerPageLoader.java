@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
  * OpenCms loader for resources of type <code>{@link org.opencms.file.types.CmsResourceTypeXmlContainerPage}</code>.<p>
  *
  * It is just a xml-content loader with template capabilities.<p>
- * 
+ *
  * @since 7.6
  */
 public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
@@ -75,8 +75,8 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
     /**
      * Returns a String describing this resource loader, which is (localized to the system default locale)
      * <code>"The OpenCms default resource loader for container page"</code>.<p>
-     * 
-     * @return a describing String for the ResourceLoader 
+     *
+     * @return a describing String for the ResourceLoader
      */
     @Override
     public String getResourceLoaderInfo() {
@@ -107,9 +107,9 @@ public class CmsXmlContainerPageLoader extends CmsXmlContentLoader {
             getTemplatePropertyDefinition());
         CmsTemplateContext context = loaderFacade.getTemplateContext();
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
-        TemplateBean templateBean = new TemplateBean(context != null
-        ? context.getKey()
-        : loaderFacade.getTemplateName(), loaderFacade.getTemplate());
+        TemplateBean templateBean = new TemplateBean(
+            context != null ? context.getKey() : loaderFacade.getTemplateName(),
+            loaderFacade.getTemplate());
         templateBean.setForced((context != null) && context.isForced());
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);

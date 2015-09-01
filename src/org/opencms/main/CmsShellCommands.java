@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -69,12 +70,12 @@ import java.util.StringTokenizer;
 
 /**
  * Provides additional commands for the CmsShell.<p>
- * 
+ *
  * Such additional commands can access OpenCms functions not available on "regular" OpenCms classes.
  * Also, wrapping methods to access some important functions in the CmsObject that
  * require complex data type parameters are provided.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -86,9 +87,9 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Generate a new instance of the command processor.<p>
-     * 
-     * To initilize the command processor, you must call {@link #initShellCmsObject(CmsObject, CmsShell)}.
-     * 
+     *
+     * To initialize the command processor, you must call {@link #initShellCmsObject(CmsObject, CmsShell)}.
+     *
      * @see #initShellCmsObject(CmsObject, CmsShell)
      */
     protected CmsShellCommands() {
@@ -97,8 +98,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Add the user to the given role.<p>
+     *
+     * @param user name of the user
+     * @param role name of the role, for example 'EDITOR'
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void addUserToRole(String user, String role) throws CmsException {
+
+        OpenCms.getRoleManager().addUserToRole(m_cms, CmsRole.valueOfRoleName(role), user);
+    }
+
+    /**
      * Changes the current folder (i.e. the URI in the VFS).<p>
-     * 
+     *
      * @param target the new URI
      * @throws Exception if something goes wrong
      * @see org.opencms.file.CmsRequestContext#setUri(String)
@@ -112,16 +126,18 @@ class CmsShellCommands implements I_CmsShellCommands {
         String resolvedTarget = CmsLinkManager.getAbsoluteUri(target, folder);
         CmsResource res = m_cms.readResource(resolvedTarget);
         if (!res.isFolder()) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
         }
         m_cms.getRequestContext().setUri(resolvedTarget);
-        System.out.println('\n' + getMessages().key(Messages.GUI_SHELL_CURRENT_FOLDER_1, new Object[] {resolvedTarget}));
-        System.out.println();
+        m_shell.getOut().println(
+            '\n' + getMessages().key(Messages.GUI_SHELL_CURRENT_FOLDER_1, new Object[] {resolvedTarget}));
+        m_shell.getOut().println();
     }
 
     /**
      * Changes the access control for a given resource and a given principal(user/group).
-     * 
+     *
      * @param resourceName name of the resource
      * @param principalType the type of the principal (group or user)
      * @param principalName name of the principal
@@ -143,7 +159,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Clears all OpenCms internal caches.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void clearCaches() throws Exception {
@@ -158,19 +174,19 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String[] copy = Messages.COPYRIGHT_BY_ALKACON;
         for (int i = 0; i < copy.length; i++) {
-            System.out.println(copy[i]);
+            m_shell.getOut().println(copy[i]);
         }
     }
 
     /**
      * Creates a default project.<p>
-     * 
+     *
      * This created project has the following properties:<ul>
-     * <li>The users groups is the default user group
-     * <li>The project managers group is the default project manager group
+     * <li>The users group is the default user group
+     * <li>The users group is also the default project manager group
      * <li>All resources are contained in the project
      * <li>The project will remain after publishing</ul>
-     * 
+     *
      * @param name the name of the project to create
      * @param description the description for the new project
      * @throws Exception if something goes wrong
@@ -184,7 +200,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 name,
                 description,
                 OpenCms.getDefaultUsers().getGroupUsers(),
-                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                OpenCms.getDefaultUsers().getGroupUsers(),
                 CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
@@ -199,7 +215,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Creates a new folder in the given target folder.<p>
-     * 
+     *
      * @param targetFolder the target folder
      * @param folderName the new folder to create in the target folder
      * @return the created folder
@@ -239,11 +255,11 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Creates a new user.<p>
-     * 
+     *
      * @param name the name for the new user
      * @param password the password for the new user
      * @param description the description for the new user
-     * 
+     *
      * @throws Exception if something goes wrong
      * @see CmsObject#createUser(String, String, String, java.util.Map)
      * @return the created user
@@ -257,15 +273,15 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Creates a user with some additional information.<p>
      *
      * @param name the name of the new user
-     * @param password the password 
+     * @param password the password
      * @param description the description
-     * @param firstname the users first name 
+     * @param firstname the users first name
      * @param lastname the users he last name
      * @param email the users email address
      * @return the created user
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsObject#createUser(String, String, String, java.util.Map)
      */
     public CmsUser createUser(
@@ -286,24 +302,27 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Deletes the versions from the history tables that are older then the given number of versions.<p>
-     * 
-     * @param versionsToKeep number of versions to keep, is ignored if negative 
+     *
+     * @param versionsToKeep number of versions to keep, is ignored if negative
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsObject#deleteHistoricalVersions( int, int, long, I_CmsReport)
      */
     public void deleteHistoricalVersions(int versionsToKeep, int versionsDeleted, long timeDeleted) throws Exception {
 
-        m_cms.deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, new CmsShellReport(
-            m_cms.getRequestContext().getLocale()));
+        m_cms.deleteHistoricalVersions(
+            versionsToKeep,
+            versionsDeleted,
+            timeDeleted,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
      * Deletes a module.<p>
-     * 
+     *
      * @param moduleName the name of the module
      * @throws Exception if something goes wrong
      */
@@ -322,7 +341,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param name the name of the project to delete
 
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsObject#deleteProject(CmsUUID)
      */
     public void deleteProject(String name) throws Exception {
@@ -334,9 +353,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Delete a property definition for a resource.<p>
      *
      * @param name the name of the property definition to delete
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsObject#deletePropertyDefinition(String)
      */
     public void deletepropertydefinition(String name) throws Exception {
@@ -346,10 +365,10 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Deletes a resource.<p>
-     * 
-     * @param name the name of the resource to delete 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param name the name of the resource to delete
+     *
+     * @throws Exception if something goes wrong
      */
     public void deleteResource(String name) throws Exception {
 
@@ -357,12 +376,12 @@ class CmsShellCommands implements I_CmsShellCommands {
         m_cms.deleteResource(name, CmsResource.DELETE_PRESERVE_SIBLINGS);
     }
 
-    /** 
+    /**
      * Deletes a resource together with its siblings.<p>
-     * 
-     * @param name the name of the resource to delete 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param name the name of the resource to delete
+     *
+     * @throws Exception if something goes wrong
      */
     public void deleteResourceWithSiblings(String name) throws Exception {
 
@@ -383,9 +402,9 @@ class CmsShellCommands implements I_CmsShellCommands {
         boolean b = "on".equalsIgnoreCase(echo.trim());
         m_shell.setEcho(b);
         if (b) {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_ON_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_ECHO_ON_0));
         } else {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_OFF_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_ECHO_OFF_0));
         }
     }
 
@@ -400,7 +419,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Exports all resources from the current site root to a ZIP file.<p>
      *
-     * @param exportFile the name (absolute path) of the ZIP file to export to 
+     * @param exportFile the name (absolute path) of the ZIP file to export to
      * @throws Exception if something goes wrong
      */
     public void exportAllResources(String exportFile) throws Exception {
@@ -431,9 +450,9 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Exports the module with the given name to the default location.<p>
-     * 
+     *
      * @param moduleName the name of the module to export
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void exportModule(String moduleName) throws Exception {
@@ -459,9 +478,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         moduleExportHandler.setFileName(filename);
         moduleExportHandler.setAdditionalResources(resources);
         moduleExportHandler.setModuleName(module.getName().replace('\\', '/'));
-        moduleExportHandler.setDescription(getMessages().key(
-            Messages.GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1,
-            new Object[] {moduleExportHandler.getModuleName()}));
+        moduleExportHandler.setDescription(
+            getMessages().key(
+                Messages.GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1,
+                new Object[] {moduleExportHandler.getModuleName()}));
 
         // export the module
         OpenCms.getImportExportManager().exportData(
@@ -472,10 +492,10 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Exports a list of resources from the current site root to a ZIP file.<p>
-     * 
+     *
      * The resource names in the list must be separated with a ";".<p>
      *
-     * @param exportFile the name (absolute path) of the ZIP file to export to 
+     * @param exportFile the name (absolute path) of the ZIP file to export to
      * @param pathList the list of resource to export, separated with a ";"
      * @throws Exception if something goes wrong
      */
@@ -515,10 +535,10 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Exports a list of resources from the current site root and the user data to a ZIP file.<p>
-     * 
+     *
      * The resource names in the list must be separated with a ";".<p>
      *
-     * @param exportFile the name (absolute path) of the ZIP file to export to 
+     * @param exportFile the name (absolute path) of the ZIP file to export to
      * @param pathList the list of resource to export, separated with a ";"
      * @throws Exception if something goes wrong
      */
@@ -558,11 +578,11 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Displays the access control list of a given resource.<p>
-     * 
+     *
      * @param resourceName the name of the resource
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see CmsObject#getAccessControlList(String)
      */
     public void getAcl(String resourceName) throws Exception {
@@ -571,23 +591,23 @@ class CmsShellCommands implements I_CmsShellCommands {
         Iterator<CmsUUID> principals = acList.getPrincipals().iterator();
         while (principals.hasNext()) {
             I_CmsPrincipal p = m_cms.lookupPrincipal(principals.next());
-            System.out.println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
+            m_shell.getOut().println(p.getName() + ": " + acList.getPermissions(p.getId()).getPermissionString());
         }
     }
 
     /**
-     * Returns the Locales available on the system ready to use on Method 
+     * Returns the Locales available on the system ready to use on Method
      * {@link #setLocale(String)} from the <code>{@link CmsShell}</code>. <p>
-     * 
-     * Note that the full name containing language, country and optional variant seperated 
+     *
+     * Note that the full name containing language, country and optional variant seperated
      * by underscores is returned always but the latter two parts may be left out. <p>
      */
     public void getLocales() {
 
-        System.out.println(getMessages().key(Messages.GUI_SHELL_LOCALES_AVAILABLE_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOCALES_AVAILABLE_0));
         Locale[] locales = Locale.getAvailableLocales();
         for (int i = locales.length - 1; i >= 0; i--) {
-            System.out.println("  \"" + locales[i].toString() + "\"");
+            m_shell.getOut().println("  \"" + locales[i].toString() + "\"");
         }
     }
 
@@ -596,12 +616,12 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void help() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP1_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP2_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP3_0));
-        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP4_0));
-        System.out.println();
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP1_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP2_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP3_0));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_HELP4_0));
+        m_shell.getOut().println();
     }
 
     /**
@@ -624,9 +644,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Imports a module.<p>
      *
      * @param importFile the absolute path of the import module file
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)
      */
     public void importModule(String importFile) throws Exception {
@@ -640,13 +660,13 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Imports a module (zipfile) from the default module directory, 
+     * Imports a module (zipfile) from the default module directory,
      * creating a temporary project for this.<p>
      *
      * @param importFile the name of the import module located in the default module directory
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)
      */
     public void importModuleFromDefault(String importFile) throws Exception {
@@ -673,10 +693,10 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Imports a resource into the Cms.<p>
-     * 
+     *
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void importResources(String importFile, String importPath) throws Exception {
@@ -694,11 +714,11 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Imports a resource into the Cms.<p>
-     * 
+     *
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param keepPermissions if set, the permissions set on existing resources will not be modified
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void importResources(String importFile, String importPath, boolean keepPermissions) throws Exception {
@@ -715,9 +735,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Imports a folder or a ZIP file to the root folder of the 
+     * Imports a folder or a ZIP file to the root folder of the
      * current site, creating a temporary project for this.<p>
-     * 
+     *
      * @param importFile the absolute path of the import resource
      * @throws Exception if something goes wrong
      */
@@ -756,19 +776,20 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Displays a list of all currently installed modules.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void listModules() throws Exception {
 
         Set<String> modules = OpenCms.getModuleManager().getModuleNames();
-        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
+        m_shell.getOut().println(
+            "\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
         Iterator<String> i = modules.iterator();
         while (i.hasNext()) {
             String moduleName = i.next();
-            System.out.println(moduleName);
+            m_shell.getOut().println(moduleName);
         }
-        System.out.println();
+        m_shell.getOut().println();
     }
 
     /**
@@ -784,20 +805,20 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.loginUser(username, password);
             // reset the settings, this will switch the startup site root etc.
             m_shell.initSettings();
-            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_1, whoami().getName()));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOGIN_1, whoami().getName()));
             // output the login message if required
             CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
             if ((message != null) && (message.isActive())) {
-                System.out.println(message.getMessage());
+                m_shell.getOut().println(message.getMessage());
             }
         } catch (Exception exc) {
-            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_FAILED_0));
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_LOGIN_FAILED_0));
         }
     }
 
     /**
      * Displays a list of all resources in the current folder.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
      */
@@ -805,18 +826,19 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List<CmsResource> resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
+        m_shell.getOut().println(
+            "\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
         Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = i.next();
-            System.out.println(m_cms.getSitePath(r));
+            m_shell.getOut().println(m_cms.getSitePath(r));
         }
-        System.out.println();
+        m_shell.getOut().println();
     }
 
     /**
      * Lists the access control entries of a given resource.<p>
-     * 
+     *
      * @param resourceName the name of the resource
      * @throws Exception if something goes wrong
      */
@@ -827,13 +849,13 @@ class CmsShellCommands implements I_CmsShellCommands {
             CmsAccessControlEntry ace = acList.get(i);
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-            System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+            m_shell.getOut().println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
         }
     }
 
     /**
      * Lists the access control entries belonging to the given principal.<p>
-     *  
+     *
      * @param resourceName the name of the resource
      * @param principalName the name of the principal
      * @throws Exception if something goes wrong
@@ -847,14 +869,14 @@ class CmsShellCommands implements I_CmsShellCommands {
             I_CmsPrincipal acePrincipal = m_cms.lookupPrincipal(ace.getPrincipal());
             if (principal.equals(acePrincipal)) {
                 String pName = (acePrincipal != null) ? acePrincipal.getName() : ace.getPrincipal().toString();
-                System.out.println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
+                m_shell.getOut().println(pName + ": " + ace.getPermissions().getPermissionString() + " " + ace);
             }
         }
     }
 
     /**
      * Does performance measurements of the OpenCms core.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void perf() throws Exception {
@@ -867,12 +889,12 @@ class CmsShellCommands implements I_CmsShellCommands {
             // create a resource filter to get the resources with
             List<CmsResource> testResources = m_cms.readResources("/", CmsResourceFilter.ALL);
             int resourceCount = testResources.size();
-            System.out.println("#Resources:\t" + resourceCount);
+            m_shell.getOut().println("#Resources:\t" + resourceCount);
             long start, time;
             long totalTime = 0;
             long minTime = Long.MAX_VALUE;
             long maxTime = Long.MIN_VALUE;
-            System.out.print("readFileHeader:\t");
+            m_shell.getOut().print("readFileHeader:\t");
             for (int i = maxTests; i > 0; --i) {
                 int index = random.nextInt(resourceCount);
                 CmsResource resource = testResources.get(index);
@@ -887,16 +909,11 @@ class CmsShellCommands implements I_CmsShellCommands {
                     maxTime = time;
                 }
                 if ((i % 100) == 0) {
-                    System.out.print('.');
+                    m_shell.getOut().print('.');
                 }
             }
-            System.out.println("\nreadFileHeader:\t"
-                + minTime
-                + "\t"
-                + maxTime
-                + "\t"
-                + (((float)totalTime) / maxTests)
-                + " ms");
+            m_shell.getOut().println(
+                "\nreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / maxTests) + " ms");
 
         } finally {
             m_cms.getRequestContext().setSiteRoot(storedSiteRoot);
@@ -916,7 +933,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Publishes the current project and waits until it finishes.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void publishProjectAndWait() throws Exception {
@@ -927,21 +944,20 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Purges the jsp repository.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.flex.CmsFlexCache#cmsEvent(org.opencms.main.CmsEvent)
      */
     public void purgeJspRepository() throws Exception {
 
-        OpenCms.fireCmsEvent(new CmsEvent(
-            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
-            new HashMap<String, Object>()));
+        OpenCms.fireCmsEvent(
+            new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new HashMap<String, Object>()));
     }
 
     /**
      * Returns the current folder set as URI in the request context.<p>
-     * 
+     *
      * @return the current folder
      * @throws Exception if something goes wrong
      * @see org.opencms.file.CmsRequestContext#getUri()
@@ -954,7 +970,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Exits the shell.<p>
-     * 
+     *
      * @see #exit()
      */
     public void quit() {
@@ -964,7 +980,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Returns the selected files contentsls as a String.<p>
-     * 
+     *
      * @param filename the file to read the contents from
      * @throws CmsException if something goes wrong
      * @return the selected files contents
@@ -980,7 +996,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Returns the users group of a project.<p>
-     * 
+     *
      * @param project the id of the project to return the users group for
      * @return the users group of the project
      * @throws Exception if something goes wrong
@@ -992,7 +1008,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Returns the manager group of a project.<p>
-     * 
+     *
      * @param project the id of the project to return the manager group for
      * @return the manager group of the project
      * @throws Exception if something goes wrong
@@ -1004,7 +1020,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Returns the owner of a project.<p>
-     * 
+     *
      * @param project the id of the project
      * @return the owner of the project
      * @throws Exception if something goes wrong
@@ -1016,9 +1032,9 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Rebuilds (if required creates) all configured search indexes.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
-     * 
+     *
      * @see org.opencms.search.CmsSearchManager#rebuildAllIndexes(org.opencms.report.I_CmsReport)
      */
     public void rebuildAllIndexes() throws Exception {
@@ -1029,7 +1045,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Rebuilds (if required creates) the given search index.<p>
-     * 
+     *
      * @param index name of the index to update
      * @throws Exception if something goes wrong
      * @see org.opencms.search.CmsSearchManager#rebuildIndex(String, org.opencms.report.I_CmsReport)
@@ -1041,10 +1057,10 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Replaces a module with another revision.<p>
-     * 
+     *
      * @param moduleName the name of the module
      * @param importFile the name of the import file
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void replaceModule(String moduleName, String importFile) throws Exception {
@@ -1062,7 +1078,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Replaces a module with another revision.<p>
-     * 
+     *
      * @param moduleName the name of the module
      * @param importFile the name of the import file
      * @throws Exception if something goes wrong
@@ -1082,7 +1098,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Sets the current project to the provided project id.<p>
-     * 
+     *
      * @param id the project id to set
      * @return the project set
      * @throws Exception if something goes wrong
@@ -1094,7 +1110,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
     /**
      * Sets the current project to the provided project name.<p>
-     * 
+     *
      * @param name the project name to set
      * @return the project set
      * @throws Exception if something goes wrong
@@ -1105,33 +1121,34 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Set the locale of the current user logged in. <p> 
-     * 
+     * Set the locale of the current user logged in. <p>
+     *
      * This method will always set a valid Locale for the current user!
      * If the provided locale name is not valid (i.e. leads to an Exception
-     * when trying to create the Locale, then the configured default Locale is set.<p> 
+     * when trying to create the Locale, then the configured default Locale is set.<p>
      *
-     * The full name must consist of language code, 
+     * The full name must consist of language code,
      * country code(optional), variant(optional) separated by "_".<p>
-     * 
-     * @see Locale#getLanguage() 
+     *
+     * @see Locale#getLanguage()
      * @see Locale#getCountry()
-     * @see Locale#getVariant() 
+     * @see Locale#getVariant()
      * @param localeName the full locale name
      *
      * @throws CmsException if something goes wrong
-     * 
+     *
      */
     public void setLocale(String localeName) throws CmsException {
 
         Locale locale = CmsLocaleManager.getLocale(localeName);
-        System.out.println(getMessages().key(
-            Messages.GUI_SHELL_SETLOCALE_2,
-            locale,
-            m_cms.getRequestContext().getCurrentUser().getName()));
+        m_shell.getOut().println(
+            getMessages().key(
+                Messages.GUI_SHELL_SETLOCALE_2,
+                locale,
+                m_cms.getRequestContext().getCurrentUser().getName()));
 
         m_shell.setLocale(locale);
-        System.out.println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
     }
 
     /**
@@ -1139,8 +1156,8 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void shellExit() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_GOODBYE_0));
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_GOODBYE_0));
     }
 
     /**
@@ -1148,16 +1165,18 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void shellStart() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_WELCOME_0));
-        System.out.println();
+        m_shell.getOut().println();
+        m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_WELCOME_0));
+        m_shell.getOut().println();
 
         // print the version information
         version();
         // print the copyright message
         copyright();
-        // print the help information
-        help();
+        if (m_shell.isInteractive()) {
+            // print the help information for interactive terminals
+            help();
+        }
     }
 
     /**
@@ -1178,9 +1197,9 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param type the type of the new file in the VFS
      * @return the createed file
      * @throws Exception if something goes wrong
-     * @throws CmsIllegalArgumentException if the concatenation of String arguments 
+     * @throws CmsIllegalArgumentException if the concatenation of String arguments
      *         <code>folder</code> and <code>localfile</code> is of length 0
-     * 
+     *
      */
     public CmsResource uploadFile(String localfile, String folder, String filename, String type)
     throws Exception, CmsIllegalArgumentException {
@@ -1190,17 +1209,28 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Returns the current users name.<p>
+     *
+     * @return the current users name
+     */
+    public String userName() {
+
+        return m_cms.getRequestContext().getCurrentUser().getName();
+    }
+
+    /**
      * Returns the version information for this OpenCms instance.<p>
      */
     public void version() {
 
-        System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionNumber()));
+        m_shell.getOut().println();
+        m_shell.getOut().println(
+            getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionNumber()));
     }
 
     /**
      * Returns the current user.<p>
-     * 
+     *
      * @return the current user
      */
     public CmsUser whoami() {
@@ -1209,8 +1239,23 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Writes the given property to the resource as structure value.<p>
+     *
+     * @param resourceName the resource to write the value to
+     * @param propertyName the property to write the value to
+     * @param value the value to write
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void writeProperty(String resourceName, String propertyName, String value) throws CmsException {
+
+        m_cms.lockResource(resourceName);
+        m_cms.writePropertyObject(resourceName, new CmsProperty(propertyName, value, null));
+    }
+
+    /**
      * Returns the localized messages object for the current user.<p>
-     * 
+     *
      * @return the localized messages object for the current user
      */
     protected CmsMessages getMessages() {

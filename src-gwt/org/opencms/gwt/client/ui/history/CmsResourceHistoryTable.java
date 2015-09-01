@@ -49,7 +49,7 @@ import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Cell table used to display historical versions of a content.<p>
- * 
+ *
  * Has buttons to preview or restore a previous version.<p>
  */
 public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
@@ -70,11 +70,11 @@ public class CmsResourceHistoryTable extends CellTable<CmsHistoryResourceBean> {
 
         /**
          * Template for a span with a title.<p>
-         * 
-         * @param text the span text 
-         * @param title the span title 
-         * 
-         * @return the HTML for the span 
+         *
+         * @param text the span text
+         * @param title the span title
+         *
+         * @return the HTML for the span
          */
         @Template("<span title=\"{1}\">{0}</span>")
         SafeHtml textSpanWithTitle(String text, String title);

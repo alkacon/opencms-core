@@ -1,4 +1,4 @@
-<%@page taglibs="cms" import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*" trimDirectiveWhitespaces="true" %><!DOCTYPE html>
+<%@page taglibs="cms" import="java.util.*,java.text.*,org.opencms.main.*,org.opencms.i18n.*"%><!DOCTYPE html>
 <html>
 <head>
 <cms:jquery js="jquery" />
@@ -10,29 +10,8 @@
     a:visited { color:#b31b34; text-decoration:none; }
     a:hover { color:#b31b34; text-decoration:underline; }
    .center { text-align: center; }
+   body { overflow: hidden; }
 </style>
-
-<script type="text/javascript">
-$(function() { 
-    setTimeout(function() {
-        window.timerId = setInterval(function() {
-            scrollBy(0, 1);
-            if($(window).scrollTop() + $(window).height() == $(document).height()) {
-                clearInterval(window.timerId);
-            }
-        } , 20);
-    } , 1000);
-    
-    $("body").click(function() {
-        clearInterval(window.timerId);
-    }); 
-    
-    
-});
-
-
-</script>
-
 </head>
 <body>
     <div class="center">
@@ -44,10 +23,10 @@ $(function() {
     <table>
     <tr><td>Version:</td><td><%= OpenCms.getSystemInfo().getVersionNumber() %></td></tr>
 <%
-    String mailBody = "OpenCms Version: " + OpenCms.getSystemInfo().getVersionNumber() + "\r\n\r\n";
-    for (String key : OpenCms.getSystemInfo().getBuildInfoKeys()) {
-        CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfoItem(key);        
-        mailBody += item.getNiceName() + ": " + item.getValue() + "\r\n";
+        String mailBody = "OpenCms Version: " + OpenCms.getSystemInfo().getVersionNumber() + "\r\n\r\n";
+        for (String key : OpenCms.getSystemInfo().getBuildInfo().keySet()) {
+            CmsSystemInfo.BuildInfoItem item = OpenCms.getSystemInfo().getBuildInfo().get(key);        
+            mailBody += item.getNiceName() + ": " + item.getValue() + "\r\n";
 %>
     <tr><td><%= CmsEncoder.escapeXml(item.getNiceName())%>:</td><td><%= CmsEncoder.escapeXml(item.getValue()) %></td></tr>
 <%

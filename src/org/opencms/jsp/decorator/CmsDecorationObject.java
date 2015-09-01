@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,12 +33,12 @@ import java.util.Locale;
 
 /**
  * The CmsDecorationObject defines a single text decoration.<p>
- * 
+ *
  * It uses the information of a <code>{@link CmsDecorationDefintion}</code> to create the
  * pre- and postfix for a text decoration.
- 
- * 
- * @since 6.1.3 
+
+ *
+ * @since 6.1.3
  */
 public class CmsDecorationObject {
 
@@ -76,7 +76,7 @@ public class CmsDecorationObject {
 
     /**
      * Constructor, creates a new decoration object with given values.<p>
-     * 
+     *
      * @param decorationKey the decoration key
      * @param decoration the decoration for this decoration key
      * @param decDef the decoration defintion to be used
@@ -92,7 +92,7 @@ public class CmsDecorationObject {
 
     /**
      * Gets the decorated content for this decoration object.<p>
-     * 
+     *
      * @param config the configuration used
      * @param text the text to be decorated
      * @param contentLocale the locale of the content to be decorated
@@ -176,10 +176,10 @@ public class CmsDecorationObject {
 
     /**
      * Replaces the macros in the given message.<p>
-     * 
+     *
      * @param msg the message in which the macros are replaced
      * @param contentLocale the locale of the content that is currently decorated
-     * 
+     *
      * @return the message with the macros replaced
      */
     private String replaceMacros(String msg, String contentLocale) {

@@ -19,24 +19,24 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
+ *
  * This file is based on:
  * - org.apache.catalina.util.MD5Encoder
  * from the Apache Tomcat project.
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,11 +48,11 @@ package org.opencms.webdav;
 
 /**
  * Encode an MD5 digest into a String.<p>
- * 
+ *
  * The 128 bit MD5 hash is converted into a 32 character long String.
  * Each character of the String is the hexadecimal representation of 4 bits
  * of the digest.
- * 
+ *
  * @since 6.5.6
  */
 public final class CmsMD5Encoder {
@@ -80,7 +80,7 @@ public final class CmsMD5Encoder {
      * Encodes the 128 bit (16 bytes) MD5 into a 32 character String.<p>
      *
      * @param binaryData array containing the digest
-     * 
+     *
      * @return encoded MD5, or null if encoding failed
      */
     public String encode(byte[] binaryData) {

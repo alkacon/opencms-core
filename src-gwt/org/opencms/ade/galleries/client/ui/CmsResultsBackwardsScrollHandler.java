@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,8 +67,8 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
 
     /**
      * Creates a new handler instance for a given results tab.<p>
-     * 
-     * @param resultsTab the results tab for which to create the handler 
+     *
+     * @param resultsTab the results tab for which to create the handler
      */
     public CmsResultsBackwardsScrollHandler(CmsResultsTab resultsTab) {
 
@@ -77,8 +77,8 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
 
     /**
      * Checks whether more items can be loaded at the front of the list.<p>
-     * 
-     * @return true if more items can be loaded at the front of the list 
+     *
+     * @return true if more items can be loaded at the front of the list
      */
     public boolean hasMore() {
 
@@ -121,8 +121,8 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
 
     /**
      * Updates the handler with a new search bean.<p>
-     * 
-     * @param searchBean the search bean 
+     *
+     * @param searchBean the search bean
      */
     public void updateSearchBean(CmsGallerySearchBean searchBean) {
 
@@ -130,8 +130,8 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
         if (searchBean != null) {
             m_pageSize = searchBean.getMatchesPerPage();
             int lastPage = searchBean.getLastPage();
-            // we don't just store the search bean because it gets reused for multiple searches 
-            // and so the result list may change. 
+            // we don't just store the search bean because it gets reused for multiple searches
+            // and so the result list may change.
             m_resultBeans = searchBean.getResults();
             if (lastPage != -1) {
                 loadPage(lastPage);
@@ -148,8 +148,8 @@ public class CmsResultsBackwardsScrollHandler implements ScrollHandler {
 
     /**
      * Loads a page with a given index.<p>
-     * 
-     * @param pageNum the index of the page to load 
+     *
+     * @param pageNum the index of the page to load
      */
     protected void loadPage(int pageNum) {
 

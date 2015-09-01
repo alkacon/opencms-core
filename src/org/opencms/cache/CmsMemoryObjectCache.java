@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,9 +37,9 @@ import org.apache.commons.logging.Log;
 
 /**
  * A singleton memory cache, that stores objects related with keys.<p>
- * 
+ *
  * This cache listens to the {@link I_CmsEventListener#EVENT_CLEAR_CACHES} event only.<p>
- * 
+ *
  * @since 6.2.3
  */
 public final class CmsMemoryObjectCache implements I_CmsEventListener {
@@ -61,7 +61,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
 
     /**
      * Returns the singleton memory Object cache instance.<p>
-     * 
+     *
      * @return the singleton memory Object cache instance
      */
     public static CmsMemoryObjectCache getInstance() {
@@ -79,11 +79,12 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                // flush cache   
+                // flush cache
                 OpenCms.getMemoryMonitor().flushCache(CmsMemoryMonitor.CacheType.MEMORY_OBJECT);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(org.opencms.xml.Messages.get().getBundle().key(
-                        org.opencms.xml.Messages.LOG_ERR_FLUSHED_CACHES_0));
+                    LOG.debug(
+                        org.opencms.xml.Messages.get().getBundle().key(
+                            org.opencms.xml.Messages.LOG_ERR_FLUSHED_CACHES_0));
                 }
                 break;
             default:
@@ -93,10 +94,10 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
 
     /**
      * Returns an object from the cache.<p>
-     * 
+     *
      * @param owner the owner class of the cached object (used to ensure keys don't overlap)
      * @param key the key to lookup the object for
-     *  
+     *
      * @return an object from the cache, or <code>null</code> if no object matches the given key
      */
     public Object getCachedObject(Class<?> owner, String key) {
@@ -107,7 +108,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
 
     /**
      * Puts an object into the cache.<p>
-     * 
+     *
      * @param owner the owner class of the cached object (used to ensure keys don't overlap)
      * @param key the key to store the object at
      * @param value the object to store

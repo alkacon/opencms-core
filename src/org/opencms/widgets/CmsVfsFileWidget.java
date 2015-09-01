@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.file.CmsObject;
@@ -59,8 +60,8 @@ import com.google.common.base.Objects;
 
 /**
  * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -75,7 +76,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param cms the CMS context
          * @param resource the resource
          */
@@ -96,6 +97,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** Configuration parameter to set the flag to include files in popup resource tree. */
     public static final String CONFIGURATION_EXCLUDEFILES = "excludefiles";
+
+    /** Configuration parameter to restrict the widget to gallery selection only. */
+    public static final String CONFIGURATION_GALLERYSELECT = "galleryselect";
 
     /** Configuration parameter to set the flag to show the site selector in popup resource tree. */
     public static final String CONFIGURATION_HIDESITESELECTOR = "hidesiteselector";
@@ -130,6 +134,9 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsFileWidget.class);
 
+    /** Flag which, when set, restricts the user to select only galleries or folders. */
+    private boolean m_gallerySelect;
+
     /** Flag to determine if files should be shown in popup window. */
     private boolean m_includeFiles;
 
@@ -162,7 +169,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
-     * 
+     *
      * @param showSiteSelector true if the site selector should be shown in the popup window
      * @param startSite the start site root for the popup window
      */
@@ -173,7 +180,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
-     * 
+     *
      * @param showSiteSelector true if the site selector should be shown in the popup window
      * @param startSite the start site root for the popup window
      * @param includeFiles true if files should be shown in the popup window
@@ -185,7 +192,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new vfs file widget with the parameters to configure the popup tree window behavior.<p>
-     * 
+     *
      * @param showSiteSelector true if the site selector should be shown in the popup window
      * @param startSite the start site root for the popup window
      * @param includeFiles <code>true</code> if files should be shown in the popup window
@@ -201,7 +208,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Creates a new vfs file widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     public CmsVfsFileWidget(String configuration) {
@@ -211,11 +218,11 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Returns a comma separated list of the default search type names.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param resource the edited resource
-     * 
-     * @return a comma separated list of the default search type names 
+     *
+     * @return a comma separated list of the default search type names
      */
     public static String getDefaultSearchTypes(CmsObject cms, CmsResource resource) {
 
@@ -270,6 +277,11 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             result.append(CONFIGURATION_INCLUDEFILES);
         } else {
             result.append(CONFIGURATION_EXCLUDEFILES);
+        }
+
+        if (m_gallerySelect) {
+            result.append("|");
+            result.append(CONFIGURATION_GALLERYSELECT);
         }
 
         // append flag for project awareness
@@ -377,7 +389,8 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         StringBuffer result = new StringBuffer(128);
 
         result.append("<td class=\"xmlTd\">");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td style=\"width: 100%;\">");
+        result.append(
+            "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\"><tr><td style=\"width: 100%;\">");
         result.append("<input style=\"width: 99%;\" class=\"xmlInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
@@ -390,7 +403,8 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         result.append(id);
         result.append("\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
         StringBuffer buttonJs = new StringBuffer(8);
         buttonJs.append("javascript:openTreeWin('EDITOR',  '");
@@ -411,12 +425,13 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
         buttonJs.append(m_projectAware);
         buttonJs.append(");return false;");
 
-        result.append(widgetDialog.button(
-            buttonJs.toString(),
-            null,
-            "folder",
-            org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                buttonJs.toString(),
+                null,
+                "folder",
+                org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_SEARCH_0,
+                widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
         result.append("</td></tr></table>");
 
@@ -444,7 +459,7 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
     /**
      * Returns the start site root shown by the widget when first displayed.<p>
      *
-     * If <code>null</code> is returned, the dialog will display the current site of 
+     * If <code>null</code> is returned, the dialog will display the current site of
      * the current user.<p>
      *
      * @return the start site root shown by the widget when first displayed
@@ -519,6 +534,10 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
                 // files should not be included
                 m_includeFiles = false;
             }
+            if (configuration.contains(CONFIGURATION_GALLERYSELECT)) {
+                m_gallerySelect = true;
+            }
+
             if (configuration.contains(CONFIGURATION_NOTPROJECTAWARE)) {
                 // resources outside of the current project should not be disabled
                 m_projectAware = false;
@@ -534,9 +553,8 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             }
             int selectableTypesIndex = configuration.indexOf(CONFIGURATION_SELECTABLETYPES);
             if (selectableTypesIndex != -1) {
-                String selectableTypes = configuration.substring(selectableTypesIndex
-                    + CONFIGURATION_SELECTABLETYPES.length()
-                    + 1);
+                String selectableTypes = configuration.substring(
+                    selectableTypesIndex + CONFIGURATION_SELECTABLETYPES.length() + 1);
                 if (selectableTypes.contains("|")) {
                     m_selectableTypes = selectableTypes.substring(0, selectableTypes.indexOf("|"));
                 } else {
@@ -558,14 +576,14 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Gets the JSON configuration.<p>
-     * 
-     * @param cms the current CMS context 
+     *
+     * @param cms the current CMS context
      * @param schemaType the schema type
-     * @param messages the messages 
-     * @param resource the content resource 
-     * @param contentLocale the content locale 
-     * 
-     * @return the JSON configuration object 
+     * @param messages the messages
+     * @param resource the content resource
+     * @param contentLocale the content locale
+     *
+     * @return the JSON configuration object
      */
     protected JSONObject getJsonConfig(
         CmsObject cms,
@@ -606,6 +624,13 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
             String treeToken = ""
                 + Objects.hashCode(m_startSite, cms.getRequestContext().getSiteRoot(), "" + m_selectableTypes);
             config.put(I_CmsGalleryProviderConstants.CONFIG_TREE_TOKEN, treeToken);
+
+            if (m_gallerySelect) {
+                config.put(I_CmsGalleryProviderConstants.CONFIG_GALLERIES_SELECTABLE, "true");
+                config.put(I_CmsGalleryProviderConstants.CONFIG_RESULTS_SELECTABLE, "false");
+                config.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, CmsGalleryTabConfiguration.TC_GALLERIES);
+            }
+
         } catch (JSONException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -614,15 +639,19 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /**
      * Computes the tree token, which is used to decide which preloaded tree, if any, to load for the VFS/sitemap tabs.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param value the content value 
+     *
+     * @param cms the current CMS context
+     * @param value the content value
      * @param resource the content resource
      * @param contentLocale the content locale
-     *  
+     *
      * @return the tree token
      */
-    protected String getTreeToken(CmsObject cms, A_CmsXmlContentValue value, CmsResource resource, Locale contentLocale) {
+    protected String getTreeToken(
+        CmsObject cms,
+        A_CmsXmlContentValue value,
+        CmsResource resource,
+        Locale contentLocale) {
 
         return cms.getRequestContext().getSiteRoot();
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
- *  
+ *
  * */
 public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
@@ -94,8 +94,8 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Creates a new display widget.<p>
-     * 
-     * @param config the widget configuration 
+     *
+     * @param config the widget configuration
      */
     public CmsTextboxWidget(String config) {
 
@@ -149,7 +149,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 
@@ -266,8 +266,8 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Fires the value change event, if the value has changed.<p>
-     * 
-     * @param force <code>true</code> to force firing the event, not regarding an actually changed value 
+     *
+     * @param force <code>true</code> to force firing the event, not regarding an actually changed value
      */
     protected void fireValueChange(boolean force) {
 
@@ -280,7 +280,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Handles fade panel clicks.<p>
-     * 
+     *
      * @param event the click event
      */
     @UiHandler("m_fadePanel")
@@ -292,7 +292,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Handles text box blur.<p>
-     * 
+     *
      * @param event the blur event
      */
     @UiHandler("m_textbox")
@@ -304,7 +304,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Handles text box focus.<p>
-     * 
+     *
      * @param event the focus event
      */
     @UiHandler("m_textbox")
@@ -317,7 +317,7 @@ public class CmsTextboxWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Handles text box value change.<p>
-     * 
+     *
      * @param event the value change event
      */
     @UiHandler("m_textbox")

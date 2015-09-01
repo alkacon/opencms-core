@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,41 +32,41 @@ import org.opencms.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Convenience interface to provide core server-side data to the client.<p> 
- * 
+ * Convenience interface to provide core server-side data to the client.<p>
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.gwt.client.CmsCoreProvider
  */
 public interface I_CmsCoreProvider {
 
     /**
      * Returns the JSON code for the core provider and the given message bundle.<p>
-     * 
-     * @param request the current request 
-     * 
+     *
+     * @param request the current request
+     *
      * @return the JSON code
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     String export(HttpServletRequest request) throws Exception;
 
     /**
      * Returns the JSON code for the provider with dependencies.<p>
-     * 
-     * @param request the current request 
-     * 
+     *
+     * @param request the current request
+     *
      * @return the JSON code
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     String exportAll(HttpServletRequest request) throws Exception;
 
     /**
      * Returns the provided json data.<p>
-     * 
-     * @param request the current request 
-     * 
+     *
+     * @param request the current request
+     *
      * @return the provided json data
      */
     JSONObject getData(HttpServletRequest request);

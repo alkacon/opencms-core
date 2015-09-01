@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,7 +61,7 @@ import org.apache.chemistry.opencmis.commons.spi.Holder;
 
 /**
  * The CMIS service class for OpenCms repositories.<p>
- * 
+ *
  * Typically, a new instance of this class will be created for every CMIS service request. This class delegates the
  * actual work to an implementation of the {@link I_CmsCmisRepository} class.<p>
  */
@@ -72,8 +72,8 @@ public class CmsCmisService extends AbstractCmisService {
 
     /**
      * Creates a new CMIS service instance.<p>
-     * 
-     * @param context the CMIS call context 
+     *
+     * @param context the CMIS call context
      */
     public CmsCmisService(CallContext context) {
 
@@ -306,7 +306,7 @@ public class CmsCmisService extends AbstractCmisService {
     }
 
     /**
-     * 
+     *
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#getCheckedOutDocs(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Boolean, org.apache.chemistry.opencmis.commons.enums.IncludeRelationships, java.lang.String, java.math.BigInteger, java.math.BigInteger, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
@@ -615,7 +615,8 @@ public class CmsCmisService extends AbstractCmisService {
     public List<RepositoryInfo> getRepositoryInfos(ExtensionsData extension) {
 
         List<RepositoryInfo> result = new ArrayList<RepositoryInfo>();
-        for (I_CmsCmisRepository repository : OpenCms.getRepositoryManager().getRepositories(I_CmsCmisRepository.class)) {
+        for (I_CmsCmisRepository repository : OpenCms.getRepositoryManager().getRepositories(
+            I_CmsCmisRepository.class)) {
             result.add(repository.getRepositoryInfo());
         }
         return result;
@@ -712,7 +713,11 @@ public class CmsCmisService extends AbstractCmisService {
      * @see org.apache.chemistry.opencmis.commons.impl.server.AbstractCmisService#removeObjectFromFolder(java.lang.String, java.lang.String, java.lang.String, org.apache.chemistry.opencmis.commons.data.ExtensionsData)
      */
     @Override
-    public void removeObjectFromFolder(String repositoryId, String objectId, String folderId, ExtensionsData extension) {
+    public void removeObjectFromFolder(
+        String repositoryId,
+        String objectId,
+        String folderId,
+        ExtensionsData extension) {
 
         getRepository(repositoryId).removeObjectFromFolder(makeContext(), objectId, folderId);
     }
@@ -762,10 +767,10 @@ public class CmsCmisService extends AbstractCmisService {
 
     /**
      * Gets the repository for a given repository id.<p>
-     * 
-     * @param repositoryId the repository id 
-     * 
-     * @return the repository with the given id 
+     *
+     * @param repositoryId the repository id
+     *
+     * @return the repository with the given id
      */
     protected I_CmsCmisRepository getRepository(String repositoryId) {
 
@@ -780,8 +785,8 @@ public class CmsCmisService extends AbstractCmisService {
 
     /**
      * Creates a call context wrapper.<p>
-     * 
-     * @return the created wrapper 
+     *
+     * @return the created wrapper
      */
     private CmsCmisCallContext makeContext() {
 

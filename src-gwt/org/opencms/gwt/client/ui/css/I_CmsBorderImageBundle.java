@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
 /**
  * Resource bundle to access border image resources.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsBorderImageBundle extends ClientBundle {
@@ -43,9 +43,9 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
     /** The bundle instance. */
     I_CmsBorderImageBundle INSTANCE = GWT.create(I_CmsBorderImageBundle.class);
 
-    /** 
+    /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/bottomNewBorderHighlight.gif")
@@ -54,7 +54,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/bottomChangedBorderHighlight.gif")
@@ -63,7 +63,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/leftNewBorderHighlight.gif")
@@ -72,7 +72,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/leftChangedBorderHighlight.gif")
@@ -81,7 +81,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/rightNewBorderHighlight.gif")
@@ -90,7 +90,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/rightChangedBorderHighlight.gif")
@@ -99,7 +99,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/topNewBorderHighlight.gif")
@@ -108,7 +108,7 @@ public interface I_CmsBorderImageBundle extends ClientBundle {
 
     /**
      * Access method.<p>
-     * 
+     *
      * @return the image resource
      */
     @Source("images/borders/topChangedBorderHighlight.gif")

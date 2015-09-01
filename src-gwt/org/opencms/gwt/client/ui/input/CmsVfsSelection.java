@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,15 +50,15 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Basic gallery widget for forms.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasValueChangeHandlers<String> {
 
     /**
      * Event preview handler.<p>
-     * 
+     *
      * To be used while popup open.<p>
      */
     protected class CloseEventPreviewHandler implements NativePreviewHandler {
@@ -164,7 +164,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * VsfSelection widget to open the gallery selection.<p>
-     * @param iconImage the image of the icon shown in the 
+     * @param iconImage the image of the icon shown in the
      * @param type the type of this widget
      * @param config the configuration for this widget
      */
@@ -201,7 +201,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
             public void onBlur(BlurEvent event) {
 
-                if ((m_selectionInput.m_textbox.getValue().length() * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
+                if ((m_selectionInput.m_textbox.getValue().length()
+                    * 6.88) > m_selectionInput.m_textbox.getOffsetWidth()) {
                     setTitle(m_selectionInput.m_textbox.getValue());
                 }
                 m_selectionInput.showFader();
@@ -268,8 +269,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Returns the selected link as a bean.<p>
-     * 
-     * @return the selected link as a bean 
+     *
+     * @return the selected link as a bean
      */
     public CmsLinkBean getLinkBean() {
 
@@ -282,7 +283,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Returns the text contained in the text area.<p>
-     * 
+     *
      * @return the text in the text area
      */
     public String getText() {
@@ -292,7 +293,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Returns the text box container of this widget.<p>
-     * 
+     *
      * @return the text box container
      */
     public CmsSelectionInput getTextAreaContainer() {
@@ -342,8 +343,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -368,8 +369,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Sets the link from a bean.<p>
-     * 
-     * @param link the link bean 
+     *
+     * @param link the link bean
      */
     public void setLinkBean(CmsLinkBean link) {
 
@@ -381,7 +382,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     public void setName(String name) {
@@ -392,7 +393,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Sets the text in the text area.<p>
-     * 
+     *
      * @param text the new text
      */
     public void setText(String text) {
@@ -411,8 +412,8 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
 
     /**
      * Creates the URL for the gallery dialog IFrame.<p>
-     * 
-     * @return the URL for the gallery dialog IFrame 
+     *
+     * @return the URL for the gallery dialog IFrame
      */
     protected String buildGalleryUrl() {
 
@@ -447,7 +448,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
         }
         basePath += m_config;
 
-        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary  
+        //basePath += "&gwt.codesvr=127.0.0.1:9996"; //to start the hosted mode just remove commentary
         return CmsCoreProvider.get().link(basePath);
     }
 

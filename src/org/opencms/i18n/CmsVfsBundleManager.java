@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,107 +50,12 @@ import org.apache.commons.logging.Log;
 /**
  * Manages message bundles loaded from the VFS.<p>
  */
-public class CmsVfsBundleManager {
-
-    /**
-     * Event listener class which updates the cache based on publish events.
-     */
-    public class Listener implements I_CmsEventListener {
-
-        /** Thread generation counter. */
-        private int m_threadCount;
-
-        /**
-         * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
-         */
-        public void cmsEvent(CmsEvent event) {
-
-            // wrap in try-catch so that errors don't affect other handlers 
-            try {
-                handleEvent(event);
-            } catch (Throwable t) {
-                LOG.error(t.getLocalizedMessage(), t);
-            }
-        }
-
-        /**
-         * This actually handles the event.<p> 
-         * 
-         * @param event the received event 
-         */
-        private void handleEvent(CmsEvent event) {
-
-            switch (event.getType()) {
-                case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                    //System.out.print(getEventName(event.getType()));
-                    String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
-                    if (publishIdStr != null) {
-                        CmsUUID publishId = new CmsUUID(publishIdStr);
-                        try {
-                            List<CmsPublishedResource> publishedResources = getCmsObject().readPublishedResources(
-                                publishId);
-                            if (publishedResources.isEmpty()) {
-                                scheduleReload();
-                            } else {
-                                String[] typesToMatch = new String[] {TYPE_PROPERTIES_BUNDLE, TYPE_XML_BUNDLE};
-                                boolean reload = false;
-                                for (CmsPublishedResource res : publishedResources) {
-                                    for (String typeName : typesToMatch) {
-                                        if (OpenCms.getResourceManager().matchResourceType(typeName, res.getType())) {
-                                            reload = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (reload) {
-                                    scheduleReload();
-                                }
-                            }
-                        } catch (CmsException e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-                    break;
-                case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                default:
-                    scheduleReload();
-                    break;
-            }
-        }
-
-        /**
-         * Schedules a bundle reload.<p>
-         */
-        private void scheduleReload() {
-
-            if (!isReloadScheduled() && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)) {
-                // only schedule a reload if the system is not going down already
-                m_threadCount++;
-                Thread thread = new Thread("Bundle reload Thread " + m_threadCount) {
-
-                    @Override
-                    public void run() {
-
-                        setReloadScheduled(true);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                            // ignore 
-                        }
-                        reload(false);
-                        setReloadScheduled(false);
-                    }
-                };
-                thread.start();
-            }
-        }
-
-    }
+public class CmsVfsBundleManager implements I_CmsEventListener {
 
     /**
      * Data holder for a base name and locale of a message bundle.<p>
      */
-    public class NameAndLocale {
+    private class NameAndLocale {
 
         /** The locale. */
         private Locale m_locale;
@@ -160,9 +65,9 @@ public class CmsVfsBundleManager {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param name the base name 
-         * @param locale the locale 
+         *
+         * @param name the base name
+         * @param locale the locale
          */
         public NameAndLocale(String name, Locale locale) {
 
@@ -172,8 +77,8 @@ public class CmsVfsBundleManager {
 
         /**
          * Gets the locale.<p>
-         * 
-         * @return the locale 
+         *
+         * @return the locale
          */
         public Locale getLocale() {
 
@@ -182,14 +87,17 @@ public class CmsVfsBundleManager {
 
         /**
          * Gets the base name.<p>
-         * 
-         * @return the base name 
+         *
+         * @return the base name
          */
         public String getName() {
 
             return m_name;
         }
     }
+
+    /** Thread generation counter. */
+    private int m_threadCount;
 
     /** Indicated if a reload is already scheduled. */
     private boolean m_reloadIsScheduled;
@@ -209,16 +117,10 @@ public class CmsVfsBundleManager {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
-    /** The event listener used by this class. */
-    private Listener m_eventListener = new Listener();
-
-    /** True if errors while reading the bundles should be logged to the error channel rather than the info channel. */
-    private boolean m_logToErrorChannel;
-
     /**
      * Creates a new instance.<p>
-     *  
-     * @param cms the CMS  context to use 
+     *
+     * @param cms the CMS  context to use
      */
     public CmsVfsBundleManager(CmsObject cms) {
 
@@ -226,14 +128,16 @@ public class CmsVfsBundleManager {
         m_bundleBaseNames = new HashSet<String>();
         CmsVfsResourceBundle.setCmsObject(cms);
         OpenCms.getEventManager().addCmsEventListener(
-            new Listener(),
+            this,
             new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES});
+        // immediately load all bundles for the first time
+        reload(true);
     }
 
     /**
      * Collects all locales possibly used in the system.<p>
-     * 
-     * @return the collection of all locales 
+     *
+     * @return the collection of all locales
      */
     private static Collection<Locale> getAllLocales() {
 
@@ -244,18 +148,21 @@ public class CmsVfsBundleManager {
     }
 
     /**
-     * Gets the event listener used by this object.<p>
-     * 
-     * @return the event listener used by this object 
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
-    public Listener getEventListener() {
+    public void cmsEvent(CmsEvent event) {
 
-        return m_eventListener;
+        // wrap in try-catch so that errors don't affect other handlers
+        try {
+            handleEvent(event);
+        } catch (Throwable t) {
+            LOG.error(t.getLocalizedMessage(), t);
+        }
     }
 
     /**
      * Indicates if a reload thread is currently scheduled.
-     * 
+     *
      * @return <code>true</code> if a reload is currently scheduled
      */
     public boolean isReloadScheduled() {
@@ -265,14 +172,12 @@ public class CmsVfsBundleManager {
 
     /**
      * Re-initializes the resource bundles.<p>
-     * 
-     * @param isStartup true when this is called during startup 
+     *
+     * @param isStartup true when this is called during startup
      */
     public synchronized void reload(boolean isStartup) {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
-            // we only need to reload if the system is initialized
-            m_logToErrorChannel = isStartup;
             flushBundles();
             try {
                 int xmlType = OpenCms.getResourceManager().getResourceType(TYPE_XML_BUNDLE).getTypeId();
@@ -284,7 +189,7 @@ public class CmsVfsBundleManager {
                     addXmlBundle(xmlBundle);
                 }
             } catch (Exception e) {
-                logError(e);
+                logError(e, isStartup);
             }
             try {
                 int propType = OpenCms.getResourceManager().getResourceType(TYPE_PROPERTIES_BUNDLE).getTypeId();
@@ -296,14 +201,14 @@ public class CmsVfsBundleManager {
                     addPropertyBundle(propertyBundle);
                 }
             } catch (Exception e) {
-                logError(e);
+                logError(e, isStartup);
             }
         }
     }
 
     /**
      * Sets the information if a reload thread is currently scheduled.
-     * 
+     *
      * @param reloadIsScheduled if <code>true</code> there is a reload currently scheduled
      */
     public void setReloadScheduled(boolean reloadIsScheduled) {
@@ -312,23 +217,32 @@ public class CmsVfsBundleManager {
     }
 
     /**
-     * Gets the current CMS context.<p>
-     * 
-     * @return the current CMS context 
+     * Shuts down the VFS bundle manager.<p>
+     *
+     * This will cause the internal reloading Thread not reload in case it is still running.<p>
      */
-    protected CmsObject getCmsObject() {
+    public void shutDown() {
 
-        return m_cms;
+        // we don't want to listen to further events
+        OpenCms.getEventManager().removeCmsEventListener(this);
+        setReloadScheduled(false);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(
+                org.opencms.staticexport.Messages.get().getBundle().key(
+                    org.opencms.staticexport.Messages.INIT_SHUTDOWN_1,
+                    this.getClass().getName()));
+        }
     }
 
     /**
      * Logs an exception that occurred.<p>
-     * 
-     * @param e the exception to log 
+     *
+     * @param e the exception to log
+     * @param logToErrorChannel if true erros should be written to the error channel instead of the info channel
      */
-    protected void logError(Exception e) {
+    protected void logError(Exception e, boolean logToErrorChannel) {
 
-        if (m_logToErrorChannel) {
+        if (logToErrorChannel) {
             LOG.error(e.getLocalizedMessage(), e);
         } else {
             LOG.info(e.getLocalizedMessage(), e);
@@ -339,10 +253,10 @@ public class CmsVfsBundleManager {
 
     /**
      * Internal method for adding a resource bundle to the internal cache.<p>
-     * 
-     * @param baseName the base name of the resource bundle 
-     * @param locale the locale of the resource bundle 
-     * @param bundle the resource bundle to add 
+     *
+     * @param baseName the base name of the resource bundle
+     * @param locale the locale of the resource bundle
+     * @param bundle the resource bundle to add
      */
     private void addBundle(String baseName, Locale locale, I_CmsResourceBundle bundle) {
 
@@ -351,8 +265,8 @@ public class CmsVfsBundleManager {
 
     /**
      * Adds a resource bundle based on a properties file in the VFS.<p>
-     * 
-     * @param bundleResource the properties file 
+     *
+     * @param bundleResource the properties file
      */
     private void addPropertyBundle(CmsResource bundleResource) {
 
@@ -361,11 +275,12 @@ public class CmsVfsBundleManager {
 
         String baseName = nameAndLocale.getName();
         m_bundleBaseNames.add(baseName);
-        LOG.info(String.format(
-            "Adding property VFS bundle (path=%s, name=%s, locale=%s)",
-            bundleResource.getRootPath(),
-            baseName,
-            "" + locale));
+        LOG.info(
+            String.format(
+                "Adding property VFS bundle (path=%s, name=%s, locale=%s)",
+                bundleResource.getRootPath(),
+                baseName,
+                "" + locale));
         Locale paramLocale = locale != null ? locale : CmsLocaleManager.getDefaultLocale();
         CmsVfsBundleParameters params = new CmsVfsBundleParameters(
             nameAndLocale.getName(),
@@ -379,8 +294,8 @@ public class CmsVfsBundleManager {
 
     /**
      * Adds an XML based message bundle.<p>
-     * 
-     * @param xmlBundle the XML content containing the message bundle data 
+     *
+     * @param xmlBundle the XML content containing the message bundle data
      */
     private void addXmlBundle(CmsResource xmlBundle) {
 
@@ -426,9 +341,9 @@ public class CmsVfsBundleManager {
 
     /**
      * Extracts the locale and base name from a resource's file name.<p>
-     * 
-     * @param bundleRes the resource for which to get the base name and locale 
-     * @return a bean containing the base name and locale 
+     *
+     * @param bundleRes the resource for which to get the base name and locale
+     * @return a bean containing the base name and locale
      */
     private NameAndLocale getNameAndLocale(CmsResource bundleRes) {
 
@@ -446,6 +361,79 @@ public class CmsVfsBundleManager {
             }
         } else {
             return new NameAndLocale(fileName, null);
+        }
+    }
+
+    /**
+     * This actually handles the event.<p>
+     *
+     * @param event the received event
+     */
+    private void handleEvent(CmsEvent event) {
+
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                //System.out.print(getEventName(event.getType()));
+                String publishIdStr = (String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID);
+                if (publishIdStr != null) {
+                    CmsUUID publishId = new CmsUUID(publishIdStr);
+                    try {
+                        List<CmsPublishedResource> publishedResources = m_cms.readPublishedResources(publishId);
+                        if (publishedResources.isEmpty()) {
+                            scheduleReload();
+                        } else {
+                            String[] typesToMatch = new String[] {TYPE_PROPERTIES_BUNDLE, TYPE_XML_BUNDLE};
+                            boolean reload = false;
+                            for (CmsPublishedResource res : publishedResources) {
+                                for (String typeName : typesToMatch) {
+                                    if (OpenCms.getResourceManager().matchResourceType(typeName, res.getType())) {
+                                        reload = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (reload) {
+                                scheduleReload();
+                            }
+                        }
+                    } catch (CmsException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                break;
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+            default:
+                scheduleReload();
+                break;
+        }
+    }
+
+    /**
+     * Schedules a bundle reload.<p>
+     */
+    private void scheduleReload() {
+
+        if (!isReloadScheduled() && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT)) {
+            // only schedule a reload if the system is not going down already
+            m_threadCount++;
+            Thread thread = new Thread("Bundle reload Thread " + m_threadCount) {
+
+                @Override
+                public void run() {
+
+                    setReloadScheduled(true);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                    if (isReloadScheduled()) {
+                        reload(false);
+                    }
+                    setReloadScheduled(false);
+                }
+            };
+            thread.start();
         }
     }
 }

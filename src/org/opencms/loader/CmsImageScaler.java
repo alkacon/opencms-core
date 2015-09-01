@@ -79,7 +79,7 @@ public class CmsImageScaler {
     public static final int SCALE_DEFAULT_MAX_BLUR_SIZE = 2500 * 2500;
 
     /** The default maximum image size (width or height) to allow when up or down scaling an image using request parameters. */
-    public static final int SCALE_DEFAULT_MAX_SIZE = 1500;
+    public static final int SCALE_DEFAULT_MAX_SIZE = 2500;
 
     /** The scaler parameter to indicate the requested image background color (if required). */
     public static final String SCALE_PARAM_COLOR = "c";
@@ -1115,7 +1115,7 @@ public class CmsImageScaler {
 
                 // image rescale operation
                 switch (getType()) {
-                // select the "right" method of scaling according to the "t" parameter
+                    // select the "right" method of scaling according to the "t" parameter
                     case 1:
                         // thumbnail generation mode (like 0 but no image enlargement)
                         image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
@@ -1178,7 +1178,9 @@ public class CmsImageScaler {
             }
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()), e);
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, rootPath, toString()),
+                    e);
             }
         }
         return result;

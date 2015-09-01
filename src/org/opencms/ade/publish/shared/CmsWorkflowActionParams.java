@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ public class CmsWorkflowActionParams implements IsSerializable {
 
     /**
      * Creates a new instance based on a publish list token.<p>
-     * 
-     * @param token the publish list token 
+     *
+     * @param token the publish list token
      */
     public CmsWorkflowActionParams(CmsPublishListToken token) {
 
@@ -60,9 +60,9 @@ public class CmsWorkflowActionParams implements IsSerializable {
 
     /**
      * Creates a new instance based on lists of resources.<p>
-     * 
-     * @param publishIds the list of structure ids of resources to publish 
-     * @param removeIds the list of structure ids of resources to remove 
+     *
+     * @param publishIds the list of structure ids of resources to publish
+     * @param removeIds the list of structure ids of resources to remove
      */
     public CmsWorkflowActionParams(List<CmsUUID> publishIds, List<CmsUUID> removeIds) {
 
@@ -75,7 +75,7 @@ public class CmsWorkflowActionParams implements IsSerializable {
      */
     protected CmsWorkflowActionParams() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -100,11 +100,11 @@ public class CmsWorkflowActionParams implements IsSerializable {
 
     /**
      * Gets the publish list token,  if it is set, else returns null.<p>
-     * 
+     *
      * The publish list token is a bean which can be used to reconstruct a publish list on the server side.
      * It is used instead of sending the list of resources when that list is deemed to long to be displayed.<p>
-     * 
-     * @return the publish list token 
+     *
+     * @return the publish list token
      */
     public CmsPublishListToken getToken() {
 

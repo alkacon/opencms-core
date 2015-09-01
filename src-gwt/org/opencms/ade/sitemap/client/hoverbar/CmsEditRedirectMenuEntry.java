@@ -35,6 +35,7 @@ import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.util.CmsUUID;
 
 /**
  * Sitemap context menu new entry.<p>
@@ -74,10 +75,7 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
             dlgOptions,
             new I_CmsContentEditorHandler() {
 
-                /**
-                 * @see org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler#onClose(java.lang.String, boolean)
-                 */
-                public void onClose(String sitePath, boolean isNew) {
+                public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
 
                     getHoverbar().getController().updateEntry(sitePath);
 
@@ -92,7 +90,7 @@ public class CmsEditRedirectMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsClientSitemapEntry entry = getHoverbar().getEntry();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && (entry != null)
             && (entry.getEntryType() == EntryType.redirect);
         setVisible(show);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Group dependencies list view.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
@@ -88,7 +88,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupPrincipalDependenciesList(CmsJspActionElement jsp) {
@@ -99,7 +99,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -112,7 +112,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -148,7 +148,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Returns the group id parameter value.<p>
-     * 
+     *
      * @return the group id parameter value
      */
     public String getParamGroupid() {
@@ -158,7 +158,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Sets the group id parameter value.<p>
-     * 
+     *
      * @param groupId the group id parameter value
      */
     public void setParamGroupid(String groupId) {
@@ -182,7 +182,10 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
     protected List<CmsListItem> getListItems() throws CmsException {
 
         CmsIdentifiableObjectContainer<CmsListItem> ret = new CmsIdentifiableObjectContainer<CmsListItem>(true, false);
-        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(
+            getParamGroupid(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
         try {
             getCms().getRequestContext().setSiteRoot("/");
@@ -204,10 +207,11 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
                         while (itAces.hasNext()) {
                             CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(group.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
-                                    item.set(LIST_COLUMN_PERMISSIONS, group.getName()
-                                        + ": "
-                                        + ace.getPermissions().getPermissionString());
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                                    ace.getPermissions().getPermissionString())) {
+                                    item.set(
+                                        LIST_COLUMN_PERMISSIONS,
+                                        group.getName() + ": " + ace.getPermissions().getPermissionString());
                                 }
                                 break;
                             }
@@ -221,7 +225,8 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
                         while (itAces.hasNext()) {
                             CmsAccessControlEntry ace = itAces.next();
                             if (ace.getPrincipal().equals(group.getId())) {
-                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ace.getPermissions().getPermissionString())) {
+                                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                                    ace.getPermissions().getPermissionString())) {
                                     String data = group.getName() + ": " + ace.getPermissions().getPermissionString();
                                     if (oldData != null) {
                                         data = oldData + ", " + data;
@@ -319,7 +324,7 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
 
     /**
      * Sets the right icon actions for the dialog.<p>
-     * 
+     *
      * @param iconCol the column to set the actions
      */
     protected void setIconActions(CmsListColumnDefinition iconCol) {
@@ -330,7 +335,8 @@ public class CmsGroupPrincipalDependenciesList extends A_CmsListDialog {
             CmsDependencyIconActionType.RESOURCE,
             getCms());
         resourceIconAction.setName(Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_NAME_0));
-        resourceIconAction.setHelpText(Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_HELP_0));
+        resourceIconAction.setHelpText(
+            Messages.get().container(Messages.GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_HELP_0));
         resourceIconAction.setEnabled(false);
         iconCol.addDirectAction(resourceIconAction);
 

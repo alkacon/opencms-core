@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,8 +33,8 @@ import java.util.List;
 
 /**
  * Simple data structure to describe a type sequence in a XML schema.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 class CmsXmlComplexTypeSequence {
 
@@ -55,7 +55,7 @@ class CmsXmlComplexTypeSequence {
 
     /**
      * Creates a new complex type sequence data structure.<p>
-     * 
+     *
      * @param name the name of the sequence
      * @param sequence the type sequence element list
      * @param hasLanguageAttribute indicates if a "language" attribute is present
@@ -108,7 +108,7 @@ class CmsXmlComplexTypeSequence {
 
     /**
      * Returns the type of this sequence.<p>
-     * 
+     *
      * @return the type of this sequence
      */
     public CmsXmlContentDefinition.SequenceType getSequenceType() {

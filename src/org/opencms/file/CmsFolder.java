@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,10 +39,10 @@ import org.apache.commons.logging.Log;
 
 /**
  * A folder resource in the OpenCms VFS.<p>
- * 
+ *
  * A folder resource is a CmsResource object that can contain sub-resources.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsFolder extends CmsResource {
 
@@ -52,8 +52,8 @@ public class CmsFolder extends CmsResource {
     private static final long serialVersionUID = 5527163725725725452L;
 
     /**
-     * Constructor, creates a new CmsFolder Object from the given CmsResource.<p> 
-     * 
+     * Constructor, creates a new CmsFolder Object from the given CmsResource.<p>
+     *
      * @param resource the base resource object to create a folder from
      */
     public CmsFolder(CmsResource resource) {
@@ -77,7 +77,7 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Constructor, creates a new CmsFolder object.<p>
-     * 
+     *
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param path the filename of this resouce
@@ -132,11 +132,11 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Returns <code>true</code> if the given resource size describes a folder type.<p>
-     * 
+     *
      * This is <code>true</code> in case <code>size &lt; 0</code>.<p>
-     * 
-     * @param size the resource size to check 
-     * 
+     *
+     * @param size the resource size to check
+     *
      * @return true if the given resource size describes a folder type or false if it is no folder
      */
     public static final boolean isFolderSize(long size) {
@@ -146,9 +146,9 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Returns <code>true</code> if the given resource type id describes a folder type.<p>
-     * 
-     * @param typeId the resource type id to check 
-     * 
+     *
+     * @param typeId the resource type id to check
+     *
      * @return true if the given resource type id describes a folder type or false if it is no folder or an unknown type.
      */
     public static final boolean isFolderType(int typeId) {
@@ -165,9 +165,9 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Returns <code>true</code> if the given resource type name describes a folder type.<p>
-     * 
-     * @param typeName the resource type name to check 
-     * 
+     *
+     * @param typeName the resource type name to check
+     *
      * @return true if the given resource type name describes a folder type
      */
     public static final boolean isFolderType(String typeName) {
@@ -175,15 +175,15 @@ public class CmsFolder extends CmsResource {
         try {
             return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
         } catch (CmsLoaderException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
-                typeName), e);
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, typeName),
+                e);
         }
     }
 
     /**
      * Returns a clone of this Objects instance.<p>
-     * 
+     *
      * @return a clone of this instance
      */
     @Override
@@ -214,7 +214,7 @@ public class CmsFolder extends CmsResource {
 
     /**
      * A folder does always have the content date <code>-1</code>.<p>
-     * 
+     *
      * @see org.opencms.file.CmsResource#getDateContent()
      */
     @Override
@@ -225,7 +225,7 @@ public class CmsFolder extends CmsResource {
 
     /**
      * A folder does always have length <code>-1</code>.<p>
-     * 
+     *
      * @see org.opencms.file.CmsResource#getLength()
      */
     @Override
@@ -236,7 +236,7 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Since this is a folder, not a file, <code>false</code> is always returned.<p>
-     * 
+     *
      * @see org.opencms.file.CmsResource#isFile()
      */
     @Override
@@ -247,7 +247,7 @@ public class CmsFolder extends CmsResource {
 
     /**
      * Since this is a folder, <code>true</code> is always returned.<p>
-     * 
+     *
      * @see org.opencms.file.CmsResource#isFolder()
      */
     @Override

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,11 +35,11 @@ import java.util.List;
 
 /**
  * Concrete OnDemandExportHandler.<p>
- * 
+ *
  * The published files and folders are purged, as also all the html files in each subtree.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see I_CmsStaticExportHandler
  */
 public class CmsOnDemandHtmlSubTreeHandler extends A_CmsOnDemandStaticExportHandler {

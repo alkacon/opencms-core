@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,15 +58,15 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the change navigation dialog.<p> 
- * 
+ * Provides methods for the change navigation dialog.<p>
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/chnav.jsp
  * </ul>
  * <p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsChnav extends CmsDialog {
 
@@ -93,7 +93,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsChnav(CmsJspActionElement jsp) {
@@ -103,7 +103,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -115,12 +115,12 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Builds the HTML for the select box of the navigation position.<p>
-     * 
+     *
      * @param cms the CmsObject
      * @param filename the current file
      * @param attributes optional attributes for the &lt;select&gt; tag, do not add the "name" atribute!
      * @param messages the localized workplace messages
-     * 
+     *
      * @return the HTML for a navigation position select box
      */
     public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsMessages messages) {
@@ -188,9 +188,9 @@ public class CmsChnav extends CmsDialog {
 
             // if the element is the current file, mark it in selectbox
             if ((curNav != null) && curNav.getNavText().equals(navText) && (curNav.getNavPosition() == navPos)) {
-                options.add(CmsEncoder.escapeHtml(messages.key(
-                    Messages.GUI_CHNAV_POS_CURRENT_1,
-                    new Object[] {ne.getFileName()})));
+                options.add(
+                    CmsEncoder.escapeHtml(
+                        messages.key(Messages.GUI_CHNAV_POS_CURRENT_1, new Object[] {ne.getFileName()})));
                 values.add("-1");
             } else {
                 options.add(CmsEncoder.escapeHtml(navText + " [" + ne.getFileName() + "]"));
@@ -227,7 +227,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Performs the navigation change.<p>
-     * 
+     *
      * @throws JspException if including a JSP subelement is not successful
      */
     public void actionChangeNav() throws JspException {
@@ -286,7 +286,7 @@ public class CmsChnav extends CmsDialog {
                     newResourceValue = CmsProperty.DELETE_VALUE;
                 }
 
-                // change nav text only if it has been changed            
+                // change nav text only if it has been changed
                 if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
                     getCms().writePropertyObject(getParamResource(), newNavText);
                 }
@@ -338,7 +338,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Builds the HTML for the select box of the navigation position.<p>
-     * 
+     *
      * @return the HTML for a navigation position select box
      */
     public String buildNavPosSelector() {
@@ -348,7 +348,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Returns the escaped NavText property value of the current resource.<p>
-     * 
+     *
      * @return the NavText property value of the current resource
      */
     public String getCurrentNavText() {
@@ -373,12 +373,12 @@ public class CmsChnav extends CmsDialog {
     }
 
     /**
-     * Returns the value of the navigation position parameter, 
+     * Returns the value of the navigation position parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The navigation position parameter defines the new value for 
+     *
+     * The navigation position parameter defines the new value for
      * the NavPos property.<p>
-     * 
+     *
      * @return the value of the target parameter
      */
     public String getParamNavpos() {
@@ -387,12 +387,12 @@ public class CmsChnav extends CmsDialog {
     }
 
     /**
-     * Returns the value of the navigation text parameter, 
+     * Returns the value of the navigation text parameter,
      * or null if this parameter was not provided.<p>
-     * 
-     * The navigation text parameter defines the new value for 
+     *
+     * The navigation text parameter defines the new value for
      * the NavText property.<p>
-     * 
+     *
      * @return the value of the target parameter
      */
     public String getParamNavtext() {
@@ -402,7 +402,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Sets the value of the navigation position parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamNavpos(String value) {
@@ -412,7 +412,7 @@ public class CmsChnav extends CmsDialog {
 
     /**
      * Sets the value of the navigation text parameter.<p>
-     * 
+     *
      * @param value the value to set
      */
     public void setParamNavtext(String value) {
@@ -429,7 +429,7 @@ public class CmsChnav extends CmsDialog {
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
-        // check the required permissions to change navigation of the resource       
+        // check the required permissions to change navigation of the resource
         if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
@@ -437,7 +437,7 @@ public class CmsChnav extends CmsDialog {
 
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_CHNAV);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
@@ -446,7 +446,7 @@ public class CmsChnav extends CmsDialog {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for chnav dialog     
+            // build title for chnav dialog
             setParamTitle(key(Messages.GUI_CHNAV_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }

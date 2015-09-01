@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean holding all info to be displayed in {@link org.opencms.gwt.client.ui.CmsListItemWidget}s.<p>
- * 
+ *
  * @see org.opencms.gwt.client.ui.CmsListItemWidget
- * 
+ *
  * @since 8.0.0
  */
 public class CmsListInfoBean implements IsSerializable {
@@ -46,14 +46,10 @@ public class CmsListInfoBean implements IsSerializable {
     /** Lock icons. */
     public enum LockIcon {
         /** Closed lock. */
-        CLOSED,
-        /** No lock. */
-        NONE,
-        /** Open lock. */
-        OPEN,
-        /** Shared closed lock. */
-        SHARED_CLOSED,
-        /** Shared open lock. */
+        CLOSED, /** No lock. */
+        NONE, /** Open lock. */
+        OPEN, /** Shared closed lock. */
+        SHARED_CLOSED, /** Shared open lock. */
         SHARED_OPEN
     }
 
@@ -62,12 +58,9 @@ public class CmsListInfoBean implements IsSerializable {
      */
     public enum StateIcon {
         /** copy page icon. */
-        copy,
-        /** export page icon. */
-        export,
-        /** secure page icon. */
-        secure,
-        /** standard page icon. */
+        copy, /** export page icon. */
+        export, /** secure page icon. */
+        secure, /** standard page icon. */
         standard
     }
 
@@ -102,7 +95,7 @@ public class CmsListInfoBean implements IsSerializable {
     private String m_title;
 
     /**
-     * Default constructor.<p> 
+     * Default constructor.<p>
      */
     public CmsListInfoBean() {
 
@@ -111,7 +104,7 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the title
      * @param subtitle the subtitle
      * @param additionalInfo the additional info
@@ -124,8 +117,8 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Sets a new additional info.<p> 
-     * 
+     * Sets a new additional info.<p>
+     *
      * @param name the additional info name
      * @param value the additional info value
      */
@@ -135,8 +128,8 @@ public class CmsListInfoBean implements IsSerializable {
     }
 
     /**
-     * Sets a new additional info.<p> 
-     * 
+     * Sets a new additional info.<p>
+     *
      * @param name the additional info name
      * @param value the additional info value
      * @param style the CSS style to apply to the info
@@ -201,7 +194,7 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Returns the state icon.<p>
-     * 
+     *
      * The state icon indicates if a resource is exported, secure etc.<p>
      *
      * @return the state Icon
@@ -233,7 +226,7 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Returns if the bean has additional info elements.<p>
-     * 
+     *
      * @return <code>true</code> if the bean has additional info elements
      */
     public boolean hasAdditionalInfo() {
@@ -243,7 +236,7 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Returns true if the 'changed' resource state should be marked by an icon.<p>
-     * 
+     *
      * @return true if the 'changed' resource state should be marked by an icon.<p>
      */
     public boolean isMarkChangedState() {
@@ -283,8 +276,8 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Enables or disables the display of the 'changed' icon for the 'changed' resource state.<p>
-     * 
-     * @param markChanged true if the 'changed' state should be displayed 
+     *
+     * @param markChanged true if the 'changed' state should be displayed
      */
     public void setMarkChangedState(boolean markChanged) {
 
@@ -313,7 +306,7 @@ public class CmsListInfoBean implements IsSerializable {
 
     /**
      * Sets the state icon.<p>
-     * 
+     *
      * The state icon indicates if a resource is exported, secure etc.<p>
      *
      * @param stateIcon the state icon to set

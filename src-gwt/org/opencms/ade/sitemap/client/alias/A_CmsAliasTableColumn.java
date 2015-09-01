@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,18 +33,18 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 
 /**
- * Abstract column class for the alias cell table columns.<p> 
- * 
- * @param <R> the row type 
- * @param <V> the cell value type 
- * @param <T> the celll table type 
+ * Abstract column class for the alias cell table columns.<p>
+ *
+ * @param <R> the row type
+ * @param <V> the cell value type
+ * @param <T> the celll table type
  */
 public abstract class A_CmsAliasTableColumn<R, V, T extends CellTable<R>> extends Column<R, V> {
 
     /**
      * Delegates to the superclass constructor.<p>
-     *  
-     * @param cell the cell for this column 
+     *
+     * @param cell the cell for this column
      */
     public A_CmsAliasTableColumn(Cell<V> cell) {
 
@@ -53,7 +53,7 @@ public abstract class A_CmsAliasTableColumn<R, V, T extends CellTable<R>> extend
 
     /**
      * Adds the column to the table.<p>
-     * 
+     *
      * Subclasses can override this to also set e.g. the column width
      * @param table
      */
@@ -61,11 +61,11 @@ public abstract class A_CmsAliasTableColumn<R, V, T extends CellTable<R>> extend
 
     /**
      * Initializes the sort handler to use this column.<p>
-     * 
-     * @param sortHandler the sort handler 
+     *
+     * @param sortHandler the sort handler
      */
     public void initSortHandler(ListHandler<R> sortHandler) {
 
-        // do nothing by default 
+        // do nothing by default
     }
 }

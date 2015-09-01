@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,9 +58,9 @@ import org.apache.solr.core.CoreContainer;
 import org.apache.solr.core.SolrCore;
 
 /**
- * CmsSolrSpellchecker is used to perform spellchecking in OpenCms by using Solr. The JSON-formatted result of the 
- * spellchecking operation contains suggestions for misspelled words and is compatible with the expected structure 
- * of the tinyMCE editor.  
+ * CmsSolrSpellchecker is used to perform spellchecking in OpenCms by using Solr. The JSON-formatted result of the
+ * spellchecking operation contains suggestions for misspelled words and is compatible with the expected structure
+ * of the tinyMCE editor.
  */
 public final class CmsSolrSpellchecker {
 
@@ -116,10 +116,10 @@ public final class CmsSolrSpellchecker {
     private static final String HTTP_PARAMETER_CHECKREBUILD = "check";
 
     /**
-     * Private constructor due to usage of the Singleton pattern. 
-     *  
-     * @param container Solr CoreContainer container object. 
-     * @param core The Solr Core object. 
+     * Private constructor due to usage of the Singleton pattern.
+     *
+     * @param container Solr CoreContainer container object.
+     * @param core The Solr Core object.
      */
     private CmsSolrSpellchecker(CoreContainer container, SolrCore core) {
 
@@ -134,7 +134,7 @@ public final class CmsSolrSpellchecker {
 
     /**
      * Return an instance of this class.
-     * 
+     *
      * @return instance of CmsSolrSpellchecker
      */
     public static CmsSolrSpellchecker getInstance() {
@@ -143,10 +143,10 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Return an instance of this class. 
-     * 
-     * @param container Solr CoreContainer container object in order to create a server object. 
-     * @param core The Solr Core object in order to create a server object. 
+     * Return an instance of this class.
+     *
+     * @param container Solr CoreContainer container object in order to create a server object.
+     * @param core The Solr Core object in order to create a server object.
      * @return instance of CmsSolrSpellchecker
      */
     public static CmsSolrSpellchecker getInstance(CoreContainer container, SolrCore core) {
@@ -163,12 +163,12 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Performs spellchecking using Solr and returns the spellchecking results using JSON.  
-     * 
-     * @param res The HttpServletResponse object. 
-     * @param servletRequest The ServletRequest object. 
-     * @param cms The CmsObject object. 
-     * 
+     * Performs spellchecking using Solr and returns the spellchecking results using JSON.
+     *
+     * @param res The HttpServletResponse object.
+     * @param servletRequest The ServletRequest object.
+     * @param cms The CmsObject object.
+     *
      * @throws CmsPermissionViolationException in case of the anonymous guest user
      * @throws IOException if writing the response fails
      */
@@ -196,9 +196,9 @@ public final class CmsSolrSpellchecker {
             // Perform the actual spellchecking
             final SpellCheckResponse spellCheckResponse = performSpellcheckQuery(cmsSpellcheckingRequest);
 
-            /* 
+            /*
              * The field spellCheckResponse is null when exactly one correctly spelled word is passed to the spellchecker.
-             * In this case it's safe to return an empty JSON formatted map, as the passed word is correct. Otherwise, 
+             * In this case it's safe to return an empty JSON formatted map, as the passed word is correct. Otherwise,
              * convert the spellchecker response into a new JSON formatted map.
              */
             if (null == spellCheckResponse) {
@@ -213,21 +213,21 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Parses and adds dictionaries to the Solr index. 
-     * 
-     * @param cms The OpenCms object. 
+     * Parses and adds dictionaries to the Solr index.
+     *
+     * @param cms The OpenCms object.
      */
     void parseAndAddDictionaries(CmsObject cms) {
 
-        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(this.m_solrServer, cms);
-        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(this.m_solrServer, cms);
+        CmsSpellcheckDictionaryIndexer.parseAndAddZippedDictionaries(m_solrServer, cms);
+        CmsSpellcheckDictionaryIndexer.parseAndAddDictionaries(m_solrServer, cms);
     }
 
     /**
-     * Converts the suggestions from the Solrj format to JSON format. 
-     * 
-     * @param response The SpellCheckResponse object containing the spellcheck results. 
-     * @return The spellcheck suggestions as JSON object or null if something goes wrong. 
+     * Converts the suggestions from the Solrj format to JSON format.
+     *
+     * @param response The SpellCheckResponse object containing the spellcheck results.
+     * @return The spellcheck suggestions as JSON object or null if something goes wrong.
      */
     private JSONObject getConvertedResponseAsJson(SpellCheckResponse response) {
 
@@ -238,10 +238,10 @@ public final class CmsSolrSpellchecker {
         final JSONObject suggestions = new JSONObject();
         final Map<String, Suggestion> solrSuggestions = response.getSuggestionMap();
 
-        // Add suggestions to the response 
+        // Add suggestions to the response
         for (final String key : solrSuggestions.keySet()) {
 
-            // Indicator to ignore words that are erroneously marked as misspelled. 
+            // Indicator to ignore words that are erroneously marked as misspelled.
             boolean ignoreWord = false;
 
             // Suggestions that are in the form "Xxxx" -> "xxxx" should be ignored.
@@ -268,10 +268,10 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Returns the result of the performed spellcheck formatted in JSON. 
-     * 
+     * Returns the result of the performed spellcheck formatted in JSON.
+     *
      * @param request The CmsSpellcheckingRequest.
-     * @return JSONObject that contains the result of the performed spellcheck.  
+     * @return JSONObject that contains the result of the performed spellcheck.
      */
     private JSONObject getJsonFormattedSpellcheckResult(CmsSpellcheckingRequest request) {
 
@@ -296,12 +296,12 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Returns the body of the request. This method is used to read posted JSON data. 
-     * 
+     * Returns the body of the request. This method is used to read posted JSON data.
+     *
      * @param request The request.
-     *  
-     * @return String representation of the request's body. 
-     * 
+     *
+     * @return String representation of the request's body.
+     *
      * @throws IOException in case reading the request fails
      */
     private String getRequestBody(ServletRequest request) throws IOException {
@@ -318,11 +318,11 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Parse parameters from this request using HTTP. 
-     * 
-     * @param req The ServletRequest containing all request parameters. 
-     * @param cms The OpenCms object. 
-     * @return CmsSpellcheckingRequest object that contains parsed parameters. 
+     * Parse parameters from this request using HTTP.
+     *
+     * @param req The ServletRequest containing all request parameters.
+     * @param cms The OpenCms object.
+     * @return CmsSpellcheckingRequest object that contains parsed parameters.
      */
     private CmsSpellcheckingRequest parseHttpRequest(final ServletRequest req, final CmsObject cms) {
 
@@ -365,11 +365,11 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Parse JSON parameters from this request. 
-     *  
-     * @param jsonRequest The request in the JSON format. 
-     * @return CmsSpellcheckingRequest object that contains parsed parameters or null, if JSON input is not well 
-     * defined.  
+     * Parse JSON parameters from this request.
+     *
+     * @param jsonRequest The request in the JSON format.
+     * @return CmsSpellcheckingRequest object that contains parsed parameters or null, if JSON input is not well
+     * defined.
      */
     private CmsSpellcheckingRequest parseJsonRequest(JSONObject jsonRequest) {
 
@@ -403,10 +403,10 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Perform a security check against OpenCms. 
-     * 
-     * @param cms The OpenCms object. 
-     * 
+     * Perform a security check against OpenCms.
+     *
+     * @param cms The OpenCms object.
+     *
      * @throws CmsPermissionViolationException in case of the anonymous guest user
      */
     private void performPermissionCheck(CmsObject cms) throws CmsPermissionViolationException {
@@ -417,11 +417,11 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Performs the actual spell check query using Solr. 
-     * 
-     * @param request the spell check request 
-     * 
-     * @return Results of the Solr spell check of type SpellCheckResponse or null if something goes wrong. 
+     * Performs the actual spell check query using Solr.
+     *
+     * @param request the spell check request
+     *
+     * @return Results of the Solr spell check of type SpellCheckResponse or null if something goes wrong.
      */
     private SpellCheckResponse performSpellcheckQuery(CmsSpellcheckingRequest request) {
 
@@ -436,7 +436,7 @@ public final class CmsSolrSpellchecker {
         params.set("spellcheck.dictionary", request.m_dictionaryToUse);
         params.set("spellcheck.extendedResults", "true");
 
-        // Build one string from array of words and use it as query. 
+        // Build one string from array of words and use it as query.
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < wordsToCheck.length; i++) {
             builder.append(wordsToCheck[i] + " ");
@@ -459,11 +459,11 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Sends the JSON-formatted spellchecking results to the client. 
-     * 
-     * @param res The HttpServletResponse object. 
-     * @param request The spellchecking request object. 
-     * 
+     * Sends the JSON-formatted spellchecking results to the client.
+     *
+     * @param res The HttpServletResponse object.
+     * @param request The spellchecking request object.
+     *
      * @throws IOException in case writing the response fails
      */
     private void sendResponse(final HttpServletResponse res, final CmsSpellcheckingRequest request) throws IOException {
@@ -475,9 +475,9 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
-     * Sets the appropriate headers to response of this request. 
-     * 
-     * @param response The HttpServletResponse response object. 
+     * Sets the appropriate headers to response of this request.
+     *
+     * @param response The HttpServletResponse response object.
      */
     private void setResponeHeaders(HttpServletResponse response) {
 

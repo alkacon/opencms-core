@@ -16,25 +16,25 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * companys website: http://www.alkacon.com.
- * 
+ *
  * For further information about OpenCms, please see the OpenCms project
  * website: http://www.opencms.org.
- * 
- * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used 
- * to endorse or promote products derived from this software without prior 
+ *
+ * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used
+ * to endorse or promote products derived from this software without prior
  * written permission. For written permission, please contact info@alkacon.com.
- * 
- * Products derived from this software may not be called "Alkacon", 
- * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH" 
- * or "OpenCms" appear in their name, without prior written permission of 
- * Alkacon Software GmbH. 
+ *
+ * Products derived from this software may not be called "Alkacon",
+ * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH"
+ * or "OpenCms" appear in their name, without prior written permission of
+ * Alkacon Software GmbH.
  *
  * This program is also available under a commercial non-GPL license. For
  * pricing and ordering information, please inquire at sales@alkacon.com.
@@ -53,8 +53,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Implements methods for <code>CmsReport</code> to display the indexing progress.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsIndexingReport extends CmsReport {
 
@@ -63,7 +63,7 @@ public class CmsIndexingReport extends CmsReport {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsIndexingReport(CmsJspActionElement jsp) {
@@ -73,7 +73,7 @@ public class CmsIndexingReport extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -85,7 +85,7 @@ public class CmsIndexingReport extends CmsReport {
 
     /**
      * Performs the report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
@@ -119,7 +119,7 @@ public class CmsIndexingReport extends CmsReport {
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (REPORT_UPDATE.equals(getParamAction())) {
@@ -132,7 +132,7 @@ public class CmsIndexingReport extends CmsReport {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(key("title." + getParamDialogtype()));
         }
     }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,8 +62,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Explorer dialog for the project files view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
@@ -78,7 +78,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsListExplorerFrameset(CmsJspActionElement jsp) {
@@ -88,7 +88,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -100,7 +100,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
      */
     public String defaultActionHtml() {
@@ -115,20 +115,22 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "tool_content",
             getJsp().link(CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/list-explorer.jsp") + "?" + params);
         StringBuffer html = new StringBuffer(1024);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
+        html.append("<!DOCTYPE html>\n");
         html.append("<html>\n");
         html.append("\t<head>\n");
-        html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
-            "\">\n");
+        html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(
+            getEncoding()).append("\">\n");
         String uplink = "/opencms_a/opencms/system/workplace/views/admin/admin-main.jsp?path=/projects/files&action=initial&projectid=fa9f561f-be30-11e2-bac3-21ebf444feef&showexplorer=true";
-        html.append("<script type='text/javascript'>var uplink = \""
-            + CmsStringUtil.escapeJavaScript(uplink)
-            + "\";</script>\n");
+        html.append(
+            "<script type='text/javascript'>var uplink = \""
+                + CmsStringUtil.escapeJavaScript(uplink)
+                + "\";</script>\n");
         html.append("\t\t<title>\n");
-        html.append("\t\t\t").append(
-            key(
-                org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1,
-                new Object[] {getSettings().getUser().getFullName()})).append("\n");
+        html.append(
+            "\t\t\t").append(
+                key(
+                    org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1,
+                    new Object[] {getSettings().getUser().getFullName()})).append("\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
@@ -192,12 +194,13 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         if (size > 1) {
             html.append("<select name='").append(PARAM_PAGE);
             html.append("' class='location' onchange='this.form.submit()'>\n");
-            html.append(CmsHtmlList.htmlPageSelector(
-                size,
-                getSettings().getUserSettings().getExplorerFileEntries(),
-                items,
-                getSettings().getExplorerPage(),
-                getLocale()));
+            html.append(
+                CmsHtmlList.htmlPageSelector(
+                    size,
+                    getSettings().getUserSettings().getExplorerFileEntries(),
+                    items,
+                    getSettings().getExplorerPage(),
+                    getLocale()));
             html.append("</select>\n");
         }
         // list view button
@@ -237,7 +240,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws ServletException if forwarding explorer view fails
      * @throws IOException if forwarding explorer view fails
      */
@@ -255,7 +258,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Validates the needed parameters and display the frameset.<p>
-     * 
+     *
      * @throws IOException in case of errros displaying to the required page
      */
     public void displayFrameSet() throws IOException {
@@ -303,7 +306,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
 
     /**
      * Returns the form contents.<p>
-     * 
+     *
      * @return the form contents
      */
     protected String getFormContent() {

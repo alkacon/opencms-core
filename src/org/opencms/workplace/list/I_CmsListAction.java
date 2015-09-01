@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,39 +32,39 @@ import org.opencms.workplace.tools.I_CmsHtmlIconButton;
 
 /**
  * Interface for list actions.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsListAction extends I_CmsHtmlIconButton {
 
     /**
      * The same using {@link #getWp()}.<p>
-     * 
+     *
      * @return the buttons html code
-     * 
+     *
      * @see I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
     String buttonHtml();
 
     /**
      * Returns an optional confirmation message for the action.<p>
-     * 
-     * It will be escaped for usage in java script code.<p> 
-     * 
+     *
+     * It will be escaped for usage in java script code.<p>
+     *
      * @return confirmation message
      */
     CmsMessageContainer getConfirmationMessage();
 
     /**
      * Returns the id of the associated list.<p>
-     * 
+     *
      * @return the id of the associated list
      */
     String getListId();
 
     /**
      * Returns the related workplace dialog object, to be able to access dynamic data.<p>
-     * 
+     *
      * @return the related workplace dialog object
      */
     A_CmsListDialog getWp();
@@ -85,7 +85,7 @@ public interface I_CmsListAction extends I_CmsHtmlIconButton {
 
     /**
      * Sets the workplace dialog object.<p>
-     * 
+     *
      * @param wp the workplace dialog object
      */
     void setWp(A_CmsListDialog wp);

@@ -310,7 +310,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             }
 
             if (m_cloneInfo.isRewriteContainerPages()) {
-                CmsResourceFilter f = CmsResourceFilter.requireType(CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
+                CmsResourceFilter f = CmsResourceFilter.requireType(
+                    CmsResourceTypeXmlContainerPage.getContainerPageTypeId());
                 List<CmsResource> allContainerPages = cloneCms.readResources("/", f);
                 replacePath(sourceModulePath, targetModulePath, allContainerPages);
             }
@@ -351,8 +352,9 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
             // replace resource type names in formatter configurations
             List<CmsResource> resources = cms.readResources(
                 modPath,
-                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
-                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId()));
+                CmsResourceFilter.requireType(
+                    OpenCms.getResourceManager().getResourceType(
+                        CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG)));
             String source = "<Type><!\\[CDATA\\[" + m_cloneInfo.getSourceNamePrefix();
             String target = "<Type><!\\[CDATA\\[" + m_cloneInfo.getTargetNamePrefix();
             Function<String, String> replaceType = new ReplaceAll(source, target);
@@ -367,22 +369,22 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         try {
             CmsResource config = cms.readResource(
                 modPath + CmsADEManager.CONFIG_FILE_NAME,
-                CmsResourceFilter.requireType(OpenCms.getResourceManager().getResourceType(
-                    CmsADEManager.MODULE_CONFIG_TYPE).getTypeId()));
+                CmsResourceFilter.requireType(
+                    OpenCms.getResourceManager().getResourceType(CmsADEManager.MODULE_CONFIG_TYPE)));
             Function<String, String> substitution = Functions.identity();
             // compose the substitution functions from simple substitution functions for each type
 
             for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-                substitution = Functions.compose(new ReplaceAll(
-                    mapping.getKey().getTypeName(),
-                    mapping.getValue().getTypeName()), substitution);
+                substitution = Functions.compose(
+                    new ReplaceAll(mapping.getKey().getTypeName(), mapping.getValue().getTypeName()),
+                    substitution);
             }
 
             // Either replace prefix in or prepend it to the folder name value
 
-            Function<String, String> replaceFolderName = new ReplaceAll("(<Folder>[ \n]*<Name><!\\[CDATA\\[)("
-                + m_cloneInfo.getSourceNamePrefix()
-                + ")?", "$1" + m_cloneInfo.getTargetNamePrefix());
+            Function<String, String> replaceFolderName = new ReplaceAll(
+                "(<Folder>[ \n]*<Name><!\\[CDATA\\[)(" + m_cloneInfo.getSourceNamePrefix() + ")?",
+                "$1" + m_cloneInfo.getTargetNamePrefix());
             substitution = Functions.compose(replaceFolderName, substitution);
             transformResource(config, substitution);
         } catch (CmsVfsResourceNotFoundException e) {
@@ -462,7 +464,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         }
 
         for (Map.Entry<I_CmsResourceType, I_CmsResourceType> mapping : resTypeMap.entrySet()) {
-            CmsResourceFilter filter = CmsResourceFilter.requireType(mapping.getKey().getTypeId());
+            CmsResourceFilter filter = CmsResourceFilter.requireType(mapping.getKey());
             List<CmsResource> resources = cloneCms.readResources("/", filter);
             String sourceSchemaPath = mapping.getKey().getConfiguration().get("schema");
             String targetSchemaPath = mapping.getValue().getConfiguration().get("schema");
@@ -502,7 +504,7 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
         for (Map.Entry<String, String> entry : iconPaths.entrySet()) {
             String source = ICON_PATH + entry.getKey();
             String target = ICON_PATH + entry.getValue();
-            if (!getCms().existsResource(target)) {
+            if (getCms().existsResource(source) && !getCms().existsResource(target)) {
                 getCms().copyResource(source, target);
             }
         }
@@ -515,7 +517,10 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      * @param iconPaths the path to the location where the icons are located
      * @param descKeys a map that contains a mapping of the explorer type definitions messages
      */
-    private void cloneExplorerTypes(CmsModule targetModule, Map<String, String> iconPaths, Map<String, String> descKeys) {
+    private void cloneExplorerTypes(
+        CmsModule targetModule,
+        Map<String, String> iconPaths,
+        Map<String, String> descKeys) {
 
         List<CmsExplorerTypeSettings> targetExplorerTypes = targetModule.getExplorerTypes();
         for (CmsExplorerTypeSettings expSetting : targetExplorerTypes) {
@@ -532,37 +537,38 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 m_cloneInfo.getTargetNamePrefix());
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
-            expSetting.setName(alterPrefix(
-                expSetting.getName(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
-            String newResourcePage = expSetting.getNewResourcePage();
-            if (newResourcePage != null) {
-                expSetting.setNewResourcePage(alterPrefix(
-                    newResourcePage,
+            expSetting.setName(
+                alterPrefix(
+                    expSetting.getName(),
                     m_cloneInfo.getSourceNamePrefix(),
                     m_cloneInfo.getTargetNamePrefix()));
+            String newResourcePage = expSetting.getNewResourcePage();
+            if (newResourcePage != null) {
+                expSetting.setNewResourcePage(
+                    alterPrefix(newResourcePage, m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
             }
-            expSetting.setKey(alterPrefix(
-                expSetting.getKey(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setIcon(alterPrefix(
-                expSetting.getIcon(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setBigIcon(alterPrefix(
-                expSetting.getBigIconIfAvailable(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setNewResourceUri(alterPrefix(
-                expSetting.getNewResourceUri(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setInfo(alterPrefix(
-                expSetting.getInfo(),
-                m_cloneInfo.getSourceNamePrefix(),
-                m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setKey(
+                alterPrefix(expSetting.getKey(), m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setIcon(
+                alterPrefix(
+                    expSetting.getIcon(),
+                    m_cloneInfo.getSourceNamePrefix(),
+                    m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setBigIcon(
+                alterPrefix(
+                    expSetting.getBigIconIfAvailable(),
+                    m_cloneInfo.getSourceNamePrefix(),
+                    m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setNewResourceUri(
+                alterPrefix(
+                    expSetting.getNewResourceUri(),
+                    m_cloneInfo.getSourceNamePrefix(),
+                    m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setInfo(
+                alterPrefix(
+                    expSetting.getInfo(),
+                    m_cloneInfo.getSourceNamePrefix(),
+                    m_cloneInfo.getTargetNamePrefix()));
         }
     }
 
@@ -645,12 +651,14 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                     A_CmsResourceType concreteTargetResType = (A_CmsResourceType)targetResType;
                     for (CmsProperty prop : sourceResType.getConfiguredDefaultProperties()) {
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
-                            prop.setStructureValue(prop.getStructureValue().replaceAll(
-                                sourceModule.getName(),
-                                targetModule.getName()).replaceAll(sourcePathPart, targetPathPart));
-                            prop.setResourceValue(prop.getResourceValue().replaceAll(
-                                sourceModule.getName(),
-                                targetModule.getName()).replaceAll(sourcePathPart, targetPathPart));
+                            prop.setStructureValue(
+                                prop.getStructureValue().replaceAll(
+                                    sourceModule.getName(),
+                                    targetModule.getName()).replaceAll(sourcePathPart, targetPathPart));
+                            prop.setResourceValue(
+                                prop.getResourceValue().replaceAll(
+                                    sourceModule.getName(),
+                                    targetModule.getName()).replaceAll(sourcePathPart, targetPathPart));
                         }
                         concreteTargetResType.addDefaultProperty(prop);
                     }
@@ -913,7 +921,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
      */
     private void replaceModuleName() throws CmsException, UnsupportedEncodingException {
 
-        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
+        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(
+            CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
         List<CmsResource> resources = getCms().readResources(
             CmsWorkplace.VFS_PATH_MODULES + m_cloneInfo.getName() + "/",
             filter);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,11 +43,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.lucene.document.Document;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.apache.lucene.document.Document;
 
 /**
  * Unit test for special search features added for OpenCms 7.5.<p>
@@ -59,7 +59,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSearchSpecialFeatures(String arg0) {
@@ -69,7 +69,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -103,7 +103,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
     /**
      * Creates a new search index setup for this test.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testSearchIndexSetup() throws Exception {
@@ -135,7 +135,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         searchBean.setIndex(INDEX_SPECIAL);
         searchBean.setQuery(">>SearchEgg1<<");
 
-        // assert one file is found in the default site     
+        // assert one file is found in the default site
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", (searchResult.get(0)).getPath());
@@ -143,7 +143,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
     /**
      * Tests incremental index updates with the new content blob feature.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testIncrementalIndexUpdate() throws Exception {
@@ -176,10 +176,9 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.lockResource(fileName);
-        cms.writePropertyObject(fileName, new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_TITLE,
-            "Title of the PDF",
-            null));
+        cms.writePropertyObject(
+            fileName,
+            new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "Title of the PDF", null));
 
         // publish the project and update the search index
         report = new CmsShellReport(cms.getRequestContext().getLocale());
@@ -189,7 +188,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
     /**
      * Ensures the content and content blob fields are loaded lazy.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testLazyContentFields() throws Exception {

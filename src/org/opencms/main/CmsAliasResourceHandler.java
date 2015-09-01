@@ -71,8 +71,11 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException, CmsSecurityException {
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsResourceInitException, CmsSecurityException {
 
         // check if the resource was already found or the path starts with '/system/'
         boolean abort = (resource != null) || cms.getRequestContext().getUri().startsWith(CmsWorkplace.VFS_PATH_SYSTEM);
@@ -151,13 +154,13 @@ public class CmsAliasResourceHandler implements I_CmsResourceInit {
 
     /**
      * Helper method for sending a redirect to a new URI.<p>
-     * 
-     * @param req the current request 
-     * @param res the current response 
-     * @param link the redirect target 
+     *
+     * @param req the current request
+     * @param res the current response
+     * @param link the redirect target
      * @param isPermanent if true, sends a 'moved permanently' redirect
-     * 
-     * @throws IOException 
+     *
+     * @throws IOException
      * @throws CmsResourceInitException
      */
     private void redirectToTarget(HttpServletRequest req, HttpServletResponse res, String link, boolean isPermanent)

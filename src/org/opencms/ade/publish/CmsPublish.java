@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.gwt.CmsVfsService;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * ADE publishing features.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPublish {
@@ -89,9 +90,9 @@ public class CmsPublish {
 
         /**
          * Checks if the given resource is present in at least one of the sets.<p>
-         * 
+         *
          * @param resource the resource to test
-         * 
+         *
          * @return <code>true</code> if the given resource is present in at least one of the sets
          */
         public boolean contains(CmsResource resource) {
@@ -146,8 +147,8 @@ public class CmsPublish {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      */
     public CmsPublish(CmsObject cms) {
 
@@ -156,7 +157,7 @@ public class CmsPublish {
 
     /**
      * Constructor with options.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param options the options to use
      */
@@ -169,9 +170,9 @@ public class CmsPublish {
 
     /**
      * Constructor with default options.<p>
-     * 
+     *
      * @param cms the current cms context
-     * @param params the additional publish parameters 
+     * @param params the additional publish parameters
      */
     public CmsPublish(CmsObject cms, Map<String, String> params) {
 
@@ -180,10 +181,10 @@ public class CmsPublish {
 
     /**
      * Returns the simple name if the ou is the same as the current user's ou.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      * @param name the fully qualified name to check
-     * 
+     *
      * @return the simple name if the ou is the same as the current user's ou
      */
     protected static String getOuAwareName(CmsObject cms, String name) {
@@ -197,10 +198,10 @@ public class CmsPublish {
 
     /**
      * Checks for possible broken links when the given list of resources would be published.<p>
-     * 
+     *
      * @param pubResources list of resources to be published
-     * 
-     * @return a list of resources that would produce broken links when published 
+     *
+     * @return a list of resources that would produce broken links when published
      */
     public List<CmsPublishResource> getBrokenResources(List<CmsResource> pubResources) {
 
@@ -286,8 +287,8 @@ public class CmsPublish {
 
     /**
      * Gets the relation validator instance.<p>
-     * 
-     * @return the relation validator 
+     *
+     * @return the relation validator
      */
     public CmsRelationPublishValidator getRelationValidator() {
 
@@ -296,9 +297,9 @@ public class CmsPublish {
 
     /**
      * Publishes the given list of resources.<p>
-     * 
+     *
      * @param resources list of resources to publish
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void publishResources(List<CmsResource> resources) throws CmsException {
@@ -314,19 +315,26 @@ public class CmsPublish {
 
     /**
      * Creates a publish resource bean from the target information of a relation object.<p>
-     * 
+     *
      * @param relation the relation to use
-     *  
-     * @return the publish resource bean for the relation target 
+     *
+     * @return the publish resource bean for the relation target
+     *
+     * @throws CmsException if something goes wrong
      */
-    public CmsPublishResource relationToBean(CmsRelation relation) {
+    public CmsPublishResource relationToBean(CmsRelation relation) throws CmsException {
 
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+            m_cms,
+            relation.getTarget(m_cms, CmsResourceFilter.ALL),
+            null);
         return new CmsPublishResource(
             relation.getTargetId(),
             relation.getTargetPath(),
             relation.getTargetPath(),
             CmsResourceTypePlain.getStaticTypeName(),
             CmsResourceState.STATE_UNCHANGED,
+            permissionInfo,
             0,
             null,
             null,
@@ -337,9 +345,9 @@ public class CmsPublish {
 
     /**
      * Removes the given resources from the user's publish list.<p>
-     * 
+     *
      * @param idsToRemove list of structure ids identifying the resources to be removed
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void removeResourcesFromPublishList(Collection<CmsUUID> idsToRemove) throws CmsException {
@@ -349,27 +357,31 @@ public class CmsPublish {
 
     /**
      * Creates a publish resource bean instance from the given parameters.<p>
-     * 
+     *
      * @param resource the resource
      * @param info the publish information, if any
      * @param removable if removable
      * @param related the list of related resources
-     * 
+     *
      * @return the publish resource bean
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsPublishResource resourceToBean(
         CmsResource resource,
         CmsPublishResourceInfo info,
         boolean removable,
-        List<CmsPublishResource> related) {
+        List<CmsPublishResource> related) throws CmsException {
 
         CmsResourceUtil resUtil = new CmsResourceUtil(m_cms, resource);
+        CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(m_cms, resource, null);
         CmsPublishResource pubResource = new CmsPublishResource(
             resource.getStructureId(),
             resUtil.getFullPath(),
             resUtil.getTitle(),
             resUtil.getResourceTypeName(),
             resource.getState(),
+            permissionInfo,
             resource.getDateLastModified(),
             resUtil.getUserLastModified(),
             CmsVfsService.formatDateTime(m_cms, resource.getDateLastModified()),

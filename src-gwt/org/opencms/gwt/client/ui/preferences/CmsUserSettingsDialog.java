@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,6 +29,8 @@ package org.opencms.gwt.client.ui.preferences;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
+import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
@@ -40,12 +42,18 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsWidgetFactoryRegistry;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormWidgetMultiFactory;
+import org.opencms.gwt.client.util.CmsDomUtil;
+import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Dialog used for changing the user settings.<p>
@@ -58,15 +66,18 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
     /** The panel used to edit the preferences. */
     CmsUserSettingsFormFieldPanel m_panel;
 
-    /** 
+    /** The old tab index. */
+    private int m_oldTabIndex;
+
+    /**
      * Creates a new widget instance.<p>
-     * 
-     * @param userSettings the current user settings 
-     * @param finishAction the action to execute when the user has edited the user settings 
+     *
+     * @param userSettings the current user settings
+     * @param finishAction the action to execute when the user has edited the user settings
      */
     public CmsUserSettingsDialog(CmsUserSettingsBean userSettings, Runnable finishAction) {
 
-        super("User settings", new CmsForm(false), 1000);
+        super("User settings", new CmsForm(false), -1);
         m_finishAction = finishAction;
         m_panel = new CmsUserSettingsFormFieldPanel(userSettings);
 
@@ -100,19 +111,17 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         handler.setSubmitHandler(this);
         getForm().setFormHandler(handler);
         getForm().render();
-        m_panel.truncate("asdfasdfmjsdb", 1000);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dialogCss().hideCaption());
         setMainContent(m_panel);
         setModal(true);
-        setHeight(600);
         setGlassEnabled(true);
         removePadding();
     }
 
     /**
      * Loads the user settings dialog.<p>
-     * 
-     * @param finishAction  the action to execute after the user has changed his preferences 
+     *
+     * @param finishAction  the action to execute after the user has changed his preferences
      */
     public static void loadAndShow(final Runnable finishAction) {
 
@@ -131,7 +140,8 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
 
                 stop(false);
                 CmsUserSettingsDialog dlg = new CmsUserSettingsDialog(result, finishAction);
-                dlg.centerHorizontally(90);
+                dlg.centerHorizontally(50);
+                dlg.initWidth();
             }
         };
 
@@ -163,6 +173,61 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             }
         };
         action.execute();
+    }
+
+    /**
+     * Initializes the width of the dialog contents.<p>
+     */
+    protected void initWidth() {
+
+        m_panel.truncate("user_settings", getWidth() - 12);
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onLoad()
+     */
+    @Override
+    protected void onLoad() {
+
+        super.onLoad();
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+
+            public boolean execute() {
+
+                if (!CmsUserSettingsDialog.this.isAttached() || !CmsUserSettingsDialog.this.isVisible()) {
+                    return false;
+                }
+                updateHeight();
+                return true;
+            }
+
+        }, 200);
+    }
+
+    /**
+     * Updates the panel height depending on the content of the current tab.<p>
+     */
+    protected void updateHeight() {
+
+        CmsPopup dialog = this;
+        int tabIndex = m_panel.getTabPanel().getSelectedIndex();
+        boolean changedTab = tabIndex != m_oldTabIndex;
+        m_oldTabIndex = tabIndex;
+        CmsScrollPanel tabWidget = m_panel.getTabPanel().getWidget(tabIndex);
+        Element innerElement = tabWidget.getWidget().getElement();
+        int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
+        int spaceLeft = dialog.getAvailableHeight(0);
+        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
+        boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
+        if (changedHeight || changedTab) {
+            m_panel.getTabPanel().setHeight(newHeight + "px");
+            int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
+            CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
+            widget.setHeight((newHeight - 44) + "px");
+            widget.onResizeDescendant();
+            //dialog.center();
+        }
     }
 
 }

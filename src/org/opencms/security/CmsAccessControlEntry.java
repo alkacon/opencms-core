@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,11 +34,11 @@ import java.util.StringTokenizer;
 
 /**
  * An access control entry defines the permissions of a user or group for a distinct resource.<p>
- * 
+ *
  * Besides the <code>CmsPermissionSet</code> to define the permissions, the access control entry
  * contains the UUID of the resource and of the principal (user or group) who has the defined permissions.
  * Since the principal is identified by its UUID, any other entity may act as principal also.
- * 
+ *
  * <p>Additionally, the entry stores various flags:<br>
  * <code>ACCESS_FLAGS_DELETED</code> indicates that this entry is deleted<br>
  * <code>ACCESS_FLAGS_INHERIT</code> indicates that this entry should be inherited<br>
@@ -47,8 +47,8 @@ import java.util.StringTokenizer;
  * <code>ACCESS_FLAGS_USER</code> indicates that the principal is a single user<br>
  * <code>ACCESS_FLAGS_GROUP</code> indicates that the principal is a group
  * </p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAccessControlEntry {
 
@@ -81,9 +81,9 @@ public class CmsAccessControlEntry {
 
     /**
      * ACE comparator.<p>
-     * 
+     *
      * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
-     * 
+     *
      * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
      */
     public static final Comparator<CmsAccessControlEntry> COMPARATOR_ACE = new Comparator<CmsAccessControlEntry>() {
@@ -104,9 +104,9 @@ public class CmsAccessControlEntry {
 
     /**
      * ACE principals comparator.<p>
-     * 
+     *
      * Sorts the given list of {@link CmsAccessControlEntry} objects.<p>
-     * 
+     *
      * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
      */
     public static final Comparator<CmsUUID> COMPARATOR_PRINCIPALS = new Comparator<CmsUUID>() {
@@ -172,7 +172,7 @@ public class CmsAccessControlEntry {
     /**
      * Constructor to create a new access control entry for a given resource
      * based on an existing access control entry.<p>
-     * 
+     *
      * @param resource the resource
      * @param base the base for the created access control entry
      */
@@ -187,7 +187,7 @@ public class CmsAccessControlEntry {
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions are specified as permission set, flags as bitset.
-     * 
+     *
      * @param resource the resource
      * @param principal the id of a principal (user or group)
      * @param permissions the set of allowed and denied permissions as permission set
@@ -204,9 +204,9 @@ public class CmsAccessControlEntry {
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions and flags are specified as bitsets.
-     * 
+     *
      * @see CmsPermissionSet
-     * 
+     *
      * @param resource the resource
      * @param principal the id of a principal (user or group)
      * @param allowed the set of allowed permissions
@@ -224,7 +224,7 @@ public class CmsAccessControlEntry {
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permission and flags are specified as string of the format {{+|-}{r|w|v|c|i}}*
-     * 
+     *
      * @param resource the resource
      * @param principal the id of a principal (user or group)
      * @param acPermissionString allowed and denied permissions and also flags
@@ -287,7 +287,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Sets the explicitly denied permissions in the access control entry.<p>
-     * 
+     *
      * @param denied the denied permissions as bitset
      */
     public void denyPermissions(int denied) {
@@ -328,7 +328,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the currently allowed permissions as bitset.<p>
-     * 
+     *
      * @return the allowed permissions
      */
     public int getAllowedPermissions() {
@@ -338,7 +338,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the currently denied permissions as bitset.<p>
-     * 
+     *
      * @return the denied permissions
      */
     public int getDeniedPermissions() {
@@ -348,7 +348,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the current flags of the access control entry.<p>
-     * 
+     *
      * @return bitset with flag values
      */
     public int getFlags() {
@@ -358,7 +358,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the string representation of the "inherit" flag.<p>
-     * 
+     *
      * @return string of the format {{+|-}i}*
      */
     public String getInheritingString() {
@@ -372,7 +372,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the current permission set (both allowed and denied permissions).<p>
-     * 
+     *
      * @return the set of permissions
      */
     public CmsPermissionSet getPermissions() {
@@ -382,7 +382,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the principal assigned with this access control entry.<p>
-     * 
+     *
      * @return the principal
      */
     public CmsUUID getPrincipal() {
@@ -392,8 +392,8 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the resource assigned with this access control entry.<p>
-     * 
-     * @return the resource 
+     *
+     * @return the resource
      */
     public CmsUUID getResource() {
 
@@ -402,7 +402,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns the string representation of the "responsible" flag.<p>
-     * 
+     *
      * @return string of the format {{+|-}l}*
      */
     public String getResponsibleString() {
@@ -416,7 +416,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Sets the allowed permissions in the access control entry.<p>
-     * 
+     *
      * @param allowed the allowed permissions as bitset
      */
     public void grantPermissions(int allowed) {
@@ -438,7 +438,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Checks if the {@link #ACCESS_FLAGS_ALLOTHERS} flag is set.<p>
-     * 
+     *
      * @return <code>true</code> if the {@link #ACCESS_FLAGS_ALLOTHERS} flag is set
      */
     public boolean isAllOthers() {
@@ -450,7 +450,7 @@ public class CmsAccessControlEntry {
      * Returns if this access control entry has the inherited flag set.<p>
      * Note: to check if an access control entry is inherited, also the
      * resource id and the id of the current resource must be different.
-     * 
+     *
      * @return true, if the inherited flag is set
      */
     public boolean isInherited() {
@@ -460,7 +460,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns if this ace is being inherited to the folder subresources.<p>
-     * 
+     *
      * @return  <code>true</code>, if this ace is being inherited to the folder subresources
      */
     public boolean isInheriting() {
@@ -470,7 +470,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Checks if the {@link #ACCESS_FLAGS_OVERWRITE_ALL} flag is set.<p>
-     * 
+     *
      * @return <code>true</code> if the {@link #ACCESS_FLAGS_OVERWRITE_ALL} flag is set
      */
     public boolean isOverwriteAll() {
@@ -480,7 +480,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Returns if the principal is responsible for the current resource.<p>
-     * 
+     *
      * @return  true ,if the principal is responsible for the current resource
      */
     public boolean isResponsible() {
@@ -490,7 +490,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Resets the given flags in the access control entry.<p>
-     * 
+     *
      * @param flags bitset with flag values to reset
      */
     public void resetFlags(int flags) {
@@ -500,7 +500,7 @@ public class CmsAccessControlEntry {
 
     /**
      * Sets the given flags in the access control entry.<p>
-     * 
+     *
      * @param flags bitset with flag values to set
      */
     public void setFlags(int flags) {
@@ -510,19 +510,18 @@ public class CmsAccessControlEntry {
 
     /**
      * Sets the access flags to identify the given principal type.<p>
-     * 
+     *
      * @param principal the principal to set the flags for
      */
     public void setFlagsForPrincipal(I_CmsPrincipal principal) {
 
-        setFlags(principal.isGroup()
-        ? CmsAccessControlEntry.ACCESS_FLAGS_GROUP
-        : CmsAccessControlEntry.ACCESS_FLAGS_USER);
+        setFlags(
+            principal.isGroup() ? CmsAccessControlEntry.ACCESS_FLAGS_GROUP : CmsAccessControlEntry.ACCESS_FLAGS_USER);
     }
 
     /**
      * Sets the allowed and denied permissions of the access control entry.<p>
-     * 
+     *
      * @param permissions the set of permissions
      */
     public void setPermissions(CmsPermissionSet permissions) {

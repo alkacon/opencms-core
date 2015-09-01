@@ -271,7 +271,7 @@ UGC.prototype.getXpath = function() {
         var xpath = this.mappings[name].contentPath;
         var parentName = xpath.substring(0, xpath.lastIndexOf("/"));
         for (var key in this.contentClone) {
-            if (this.content.hasOwnProperty(key) && (key.indexOf(parentName) == 0)) {
+            if (this.contentClone.hasOwnProperty(key) && (key.indexOf(parentName) == 0)) {
                 delete this.contentClone[key];
             }
         }

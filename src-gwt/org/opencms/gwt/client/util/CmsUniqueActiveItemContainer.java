@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,15 +29,15 @@ package org.opencms.gwt.client.util;
 
 /**
  * Container which contains at most one {@link org.opencms.gwt.client.util.I_CmsUniqueActiveItem}.<p>
- * 
- * If a new value is set while this container already contains an item, the previous item is removed and notified of that removal.<p> 
+ *
+ * If a new value is set while this container already contains an item, the previous item is removed and notified of that removal.<p>
  */
 public class CmsUniqueActiveItemContainer {
 
     /** The current item. */
     private I_CmsUniqueActiveItem m_activeItem;
 
-    /** 
+    /**
      * Removes the current item.
      */
     public void clear() {
@@ -48,10 +48,10 @@ public class CmsUniqueActiveItemContainer {
         }
     }
 
-    /** 
+    /**
      * Removes the current item only if it is the same object as the given parameter.<p>
-     * 
-     * @param item the item to match 
+     *
+     * @param item the item to match
      */
     public void clearIfMatches(I_CmsUniqueActiveItem item) {
 
@@ -60,12 +60,12 @@ public class CmsUniqueActiveItemContainer {
         }
     }
 
-    /** 
+    /**
      * Sets the active item.<p>
-     * 
+     *
      * If this container already contains an item, it is replaced with the given item, and its onDeactivate() method is called.<p>
-     *  
-     * @param item the new item 
+     *
+     * @param item the new item
      */
     public void setActiveItem(I_CmsUniqueActiveItem item) {
 

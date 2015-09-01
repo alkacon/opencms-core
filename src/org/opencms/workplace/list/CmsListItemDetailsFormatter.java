@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import java.util.Locale;
 /**
  * This list item detail formatter creates a two column table, in the first column
  * the message is put and in the second the content self.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListItemDetailsFormatter implements I_CmsListFormatter {
 
@@ -44,7 +44,7 @@ public class CmsListItemDetailsFormatter implements I_CmsListFormatter {
 
     /**
      * Default constructor that sets the mask to use.<p>
-     * 
+     *
      * @param message header for item detail
      */
     public CmsListItemDetailsFormatter(CmsMessageContainer message) {

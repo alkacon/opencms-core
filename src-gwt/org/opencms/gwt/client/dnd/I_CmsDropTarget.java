@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,18 +33,18 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Interface defining all methods needed for a drag and drop target. These will mostly be called by the drag and drop handler.<p>
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsDropTarget {
 
     /**
      * Returns true if the given cursor position is over the drop target.<p>
-     * 
+     *
      * @param x the cursor client x position
      * @param y the cursor client y position
      * @param orientation the drag and drop orientation
-     * 
+     *
      * @return <code>true</code> if the given cursor position is over the drop target
      */
     boolean checkPosition(int x, int y, Orientation orientation);
@@ -52,21 +52,21 @@ public interface I_CmsDropTarget {
     /**
      * Returns the drop target element.<p>
      * This must be the element, where all children will be attached.<p>
-     * 
+     *
      * @return the element
      */
     Element getElement();
 
     /**
      * Returns the index of the placeholder or -1 if no placeholder is attached.<p>
-     * 
+     *
      * @return the index
      */
     int getPlaceholderIndex();
 
     /**
      * Inserts a new placeholder.<p>
-     * 
+     *
      * @param placeholder the placeholder element
      * @param x the cursor client x position
      * @param y the cursor client y position
@@ -76,7 +76,7 @@ public interface I_CmsDropTarget {
 
     /**
      * Executed on drop.<p>
-     * 
+     *
      * @param draggable the draggable being dropped
      */
     void onDrop(I_CmsDraggable draggable);
@@ -88,7 +88,7 @@ public interface I_CmsDropTarget {
 
     /**
      * Repositions the placeholder.<p>
-     * 
+     *
      * @param x the cursor client x position
      * @param y the cursor client y position
      * @param orientation the drag and drop orientation

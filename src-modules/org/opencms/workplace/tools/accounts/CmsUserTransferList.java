@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -71,8 +71,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Allows to select an user to transfer the permissions and attributes from list of previous selected users.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUserTransferList extends A_CmsListDialog {
 
@@ -117,7 +117,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserTransferList(CmsJspActionElement jsp) {
@@ -127,9 +127,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsUserTransferList(CmsJspActionElement jsp, boolean lazy) {
 
@@ -138,7 +138,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -150,11 +150,11 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res, boolean lazy) {
 
@@ -163,7 +163,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -180,10 +180,10 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
-     * @param lazy the lazy flag 
+     * @param lazy the lazy flag
      */
     protected CmsUserTransferList(String listId, CmsJspActionElement jsp, boolean lazy) {
 
@@ -200,6 +200,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -208,6 +209,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_TRANSFER) || getParamListAction().equals(LIST_DEFACTION_TRANSFER)) {
@@ -221,9 +223,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
                 CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
                 setForwarded(true);
             } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_TRANSFER_USER_1,
-                    getSelectedItem().get(LIST_COLUMN_NAME)), e);
+                throw new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_TRANSFER_USER_1, getSelectedItem().get(LIST_COLUMN_NAME)),
+                    e);
             }
         } else {
             throwListUnsupportedActionException();
@@ -233,7 +235,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -253,7 +255,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
@@ -264,10 +266,12 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_USERS_TRANSFER_NOTICE_0).key(getLocale())));
+        result.append(
+            dialogBlockStart(Messages.get().container(Messages.GUI_USERS_TRANSFER_NOTICE_0).key(getLocale())));
         result.append("\n");
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_USER_DEPENDENCIES_SELECTED_USERS_0));
@@ -291,6 +295,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -341,6 +346,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         if (!m_lazy) {
@@ -379,10 +385,10 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Returns the search parameters for lazy list paging.<p>
-     *  
+     *
      * @return the search parameters for lazy list paging
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsUserSearchParameters getSearchParams() throws CmsException {
 
@@ -398,9 +404,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Returns the sort key for lazy list paging.<p>
-     * 
-     * @param column the current column  
-     * @return the sort key to use 
+     *
+     * @param column the current column
+     * @return the sort key to use
      */
     protected SortKey getSortKey(String column) {
 
@@ -419,9 +425,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Returns the list of users to display.<p>
-     * 
+     *
      * @return the list of users to display
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsUser> getUsers() throws CmsException {
@@ -432,6 +438,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -443,6 +450,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         if (m_lazy) {
@@ -470,8 +478,8 @@ public class CmsUserTransferList extends A_CmsListDialog {
         // create default transfer action
         CmsListDefaultAction defTransferAction = new CmsListDefaultAction(LIST_DEFACTION_TRANSFER);
         defTransferAction.setName(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0));
-        defTransferAction.setHelpText(Messages.get().container(
-            Messages.GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0));
+        defTransferAction.setHelpText(
+            Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0));
         loginCol.addDefaultAction(defTransferAction);
 
         // add it to the list definition
@@ -500,6 +508,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user address details
@@ -507,12 +516,14 @@ public class CmsUserTransferList extends A_CmsListDialog {
         userAddressDetails.setAtColumn(LIST_COLUMN_LOGIN);
         userAddressDetails.setVisible(false);
         userAddressDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_NAME_0));
-        userAddressDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0));
+        userAddressDetails.setShowActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ADDRESS_HELP_0));
         userAddressDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_NAME_0));
-        userAddressDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0));
+        userAddressDetails.setHideActionHelpText(
+            Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ADDRESS_HELP_0));
         userAddressDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0));
-        userAddressDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0)));
+        userAddressDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_ADDRESS_NAME_0)));
         metadata.addItemDetails(userAddressDetails);
 
         // add user groups details
@@ -524,8 +535,8 @@ public class CmsUserTransferList extends A_CmsListDialog {
         userGroupsDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_NAME_0));
         userGroupsDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_GROUPS_HELP_0));
         userGroupsDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_GROUPS_NAME_0));
-        userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
+        userGroupsDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
 
         // makes the list searchable
@@ -537,6 +548,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
@@ -544,7 +556,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Sets the icon actions for the transfer list.<p>
-     * 
+     *
      * @param transferCol the column to set the action
      */
     protected void setTransferAction(CmsListColumnDefinition transferCol) {
@@ -558,7 +570,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
 
     /**
      * Sets all needed data of the user into the list item object.<p>
-     * 
+     *
      * @param user the user to set the data for
      * @param item the list item object to set the data into
      */
@@ -573,6 +585,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         m_userName = "";

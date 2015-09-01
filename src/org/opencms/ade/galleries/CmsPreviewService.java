@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
@@ -141,21 +142,17 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     standardContext.setContainer(containerBean);
                     standardContext.setElement(element);
                     standardContext.setEdited(true);
-                    standardContext.setPage(new CmsContainerPageBean(
-                        Collections.<CmsContainerBean> singletonList(containerBean)));
+                    standardContext.setPage(
+                        new CmsContainerPageBean(Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = response.getCharacterEncoding();
                     CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
                         OpenCms.getResourceManager().getLoader(formatterResource),
                         element.getResource(),
                         formatterResource);
                     CmsResource loaderRes = loaderFacade.getLoaderStartResource();
-                    return (new String(loaderFacade.getLoader().dump(
-                        tempCms,
-                        loaderRes,
-                        null,
-                        locale,
-                        request,
-                        response), encoding)).trim();
+                    return (new String(
+                        loaderFacade.getLoader().dump(tempCms, loaderRes, null, locale, request, response),
+                        encoding)).trim();
                 }
             }
         } catch (Exception e) {
@@ -340,12 +337,12 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
 
         CmsResource resource = null;
         try {
-            resource = cms.readResource(name);
+            resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsVfsResourceNotFoundException e) {
             String originalSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("");
-                resource = cms.readResource(name);
+                resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
             } finally {
                 cms.getRequestContext().setSiteRoot(originalSiteRoot);
             }

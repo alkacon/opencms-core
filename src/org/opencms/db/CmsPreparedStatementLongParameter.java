@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,13 +27,12 @@
 
 package org.opencms.db;
 
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
  * A prepared statement of type 'long'.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPreparedStatementLongParameter implements I_CmsPreparedStatementParameter {
@@ -41,10 +40,10 @@ public class CmsPreparedStatementLongParameter implements I_CmsPreparedStatement
     /** The 'long' value of the parameter. */
     private long m_param;
 
-    /** 
+    /**
      * Constructs a new prepared statement parameter with a 'long' value.<p>
-     *  
-     * @param param a value of type 'long' 
+     *
+     * @param param a value of type 'long'
      */
     public CmsPreparedStatementLongParameter(long param) {
 

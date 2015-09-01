@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource init handler that loads historical versions of resources.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistoryResourceHandler implements I_CmsResourceInit {
@@ -68,11 +68,11 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     private static final Log LOG = CmsLog.getLog(CmsHistoryResourceHandler.class);
 
     /**
-     * Returns the historical version of a resource, 
-     * if the given request is displaying a history version.<p> 
-     * 
+     * Returns the historical version of a resource,
+     * if the given request is displaying a history version.<p>
+     *
      * @param req the request to check
-     * 
+     *
      * @return the historical resource if the given request is displaying an historical version
      */
     public static I_CmsHistoryResource getHistoryResource(ServletRequest req) {
@@ -82,10 +82,10 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
 
     /**
      * Appends the <code>version</code> parameter to the URI if needed.<p>
-     * 
+     *
      * @param uri the resource URI
      * @param req the current request
-     * 
+     *
      * @return the same URI, with additional parameters in case of a historical request
      */
     public static String getHistoryResourceURI(String uri, ServletRequest req) {
@@ -99,14 +99,14 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns the correct resource for the given URI, taken into account historical versions 
-     * marked by the <code>version</code> parameter.<p> 
-     * 
-     * @param cms the current CMS context 
+     * Returns the correct resource for the given URI, taken into account historical versions
+     * marked by the <code>version</code> parameter.<p>
+     *
+     * @param cms the current CMS context
      * @param resourceUri the resource URI
-     * 
+     *
      * @return the resource, which can be an instance of {@link org.opencms.file.history.I_CmsHistoryResource}
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public static CmsResource getResourceWithHistory(CmsObject cms, String resourceUri) throws CmsException {
@@ -130,10 +130,10 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     }
 
     /**
-     * Returns <code>true</code> if the given request is displaying an historical version.<p> 
-     * 
+     * Returns <code>true</code> if the given request is displaying an historical version.<p>
+     *
      * @param req the request to check
-     * 
+     *
      * @return <code>true</code> if the given request is displaying a historical version
      */
     public static boolean isHistoryRequest(ServletRequest req) {
@@ -144,8 +144,11 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsResourceInitException {
 
         // we only have to check for history resources if the handler was called
         // during a real request and NOT during a dummy-request while doing
@@ -176,9 +179,9 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                                 // get the current resource
                                 CmsResource currRes = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
                                 // get the historical version of the resource
-                                CmsHistoryFile hisRes = (CmsHistoryFile)cms.readResource(cms.readResource(
-                                    uri,
-                                    CmsResourceFilter.IGNORE_EXPIRATION).getStructureId(), id);
+                                CmsHistoryFile hisRes = (CmsHistoryFile)cms.readResource(
+                                    cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION).getStructureId(),
+                                    id);
 
                                 // the resource root path is not changed after the resource is moved or renamed
                                 // change the resource root path to current root path, so e.g. properties can be read if necessary
@@ -218,10 +221,9 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(Messages.get().getBundle().key(Messages.ERR_HISTORYRESOURCE_2, uri, version));
                             }
-                            throw new CmsResourceInitException(Messages.get().container(
-                                Messages.ERR_SHOWVERSION_2,
-                                uri,
-                                version), e);
+                            throw new CmsResourceInitException(
+                                Messages.get().container(Messages.ERR_SHOWVERSION_2, uri, version),
+                                e);
                         } finally {
                             // restore the siteroot and modify the uri to the one of the correct resource
                             cms.getRequestContext().setSiteRoot(storedSiteRoot);

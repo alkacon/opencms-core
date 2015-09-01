@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestDeletion(String arg0) {
@@ -63,7 +63,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -104,7 +104,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests an advanced group deletion.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testAdvancedGroupDeletion() throws Throwable {
@@ -176,7 +176,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder after deleting a subresource with lock.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderAfterDeleteWithLock() throws Exception {
@@ -211,7 +211,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder after moving a subresource.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderAfterMove() throws Exception {
@@ -241,7 +241,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder after moving a subresource with lock.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderAfterMoveWithLock() throws Exception {
@@ -282,7 +282,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder structure with (from other user) locked resources inside.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderWithLockedResources() throws Exception {
@@ -326,7 +326,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder structure with (from other user) locked siblings inside.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderWithLockedSiblings() throws Exception {
@@ -369,7 +369,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder structure with invisible resources inside.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteFolderWithUnvisibleResources() throws Exception {
@@ -407,7 +407,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests to delete a folder with no write permission on a subresource.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDeleteWithoutWritePermissions() throws Exception {
@@ -445,15 +445,15 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        assertEquals("there missing files after deletion try", files, cms.readResources(
-            folder,
-            CmsResourceFilter.ALL,
-            true).size());
+        assertEquals(
+            "there missing files after deletion try",
+            files,
+            cms.readResources(folder, CmsResourceFilter.ALL, true).size());
     }
 
     /**
      * Tests user group deletion.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testGroupDeletion() throws Throwable {
@@ -478,7 +478,7 @@ public class TestDeletion extends OpenCmsTestCase {
 
     /**
      * Tests user deletion.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testUserDeletion() throws Throwable {

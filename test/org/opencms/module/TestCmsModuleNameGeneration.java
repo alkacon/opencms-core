@@ -19,43 +19,34 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.module;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
 /**
  * Tests the module name generation.<p>
  */
-public class TestCmsModuleNameGeneration extends TestCase {
-    
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */    
-    public TestCmsModuleNameGeneration(String arg0) {
-        super(arg0);
-    }
+public class TestCmsModuleNameGeneration extends OpenCmsTestCase {
 
     /**
      * Tests version increment.<p>
      */
     public void testNameGeneration() {
-        
+
         String name;
         name = CmsModuleXmlHandler.makeValidJavaClassName("org.opencms.welcome");
         assertEquals("org.opencms.welcome", name);
-        
+
         name = CmsModuleXmlHandler.makeValidJavaClassName("com.alkacon.documentation.howto-httpd-modproxy");
         assertEquals("com.alkacon.documentation.howto_httpd_modproxy", name);
 
         name = CmsModuleXmlHandler.makeValidJavaClassName("com.alkacon.documentation.examples-flex-1");
         assertEquals("com.alkacon.documentation.examples_flex_1", name);
-    }        
+    }
 }

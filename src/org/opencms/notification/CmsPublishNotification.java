@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Class to send a notification to an OpenCms user with a summary of warnings and
  * errors occurred while publishing the project.<p>
- * 
+ *
  * @since 6.5.3
  */
 public class CmsPublishNotification extends A_CmsNotification {
@@ -50,7 +50,7 @@ public class CmsPublishNotification extends A_CmsNotification {
 
     /**
      * Creates a new CmsPublishNotification.<p>
-     * 
+     *
      * @param cms the cms object to use
      * @param receiver the notification receiver
      * @param report the report to write the output to
@@ -101,7 +101,7 @@ public class CmsPublishNotification extends A_CmsNotification {
 
     /**
      * Appends the contents of a list to the buffer with every entry in a new line.<p>
-     * 
+     *
      * @param buffer The buffer were the entries of the list will be appended.
      * @param list The list with the entries to append to the buffer.
      */

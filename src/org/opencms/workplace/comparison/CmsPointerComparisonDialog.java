@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,9 +36,9 @@ import org.opencms.workplace.commons.CmsHistoryList;
 import javax.servlet.jsp.JspWriter;
 
 /**
- * Provides a GUI for displaying two images.<p> 
- * 
- * @since 6.0.0 
+ * Provides a GUI for displaying two images.<p>
+ *
+ * @since 6.0.0
  */
 public class CmsPointerComparisonDialog extends CmsDialog {
 
@@ -56,7 +56,7 @@ public class CmsPointerComparisonDialog extends CmsDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPointerComparisonDialog(CmsJspActionElement jsp) {
@@ -66,7 +66,7 @@ public class CmsPointerComparisonDialog extends CmsDialog {
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws Exception if writing to the JSP out fails
      */
     public void displayDialog() throws Exception {
@@ -88,13 +88,15 @@ public class CmsPointerComparisonDialog extends CmsDialog {
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
         out.println("<table cellpadding='0' cellspacing='0' border='0' class='maxwidth'><tr align='center'><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
-            m_paramVersion1,
-            getLocale())}));
+        out.println(
+            key(
+                Messages.GUI_COMPARE_VERSION_1,
+                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion1, getLocale())}));
         out.println("</th><th>");
-        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {CmsHistoryList.getDisplayVersion(
-            m_paramVersion2,
-            getLocale())}));
+        out.println(
+            key(
+                Messages.GUI_COMPARE_VERSION_1,
+                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion2, getLocale())}));
         out.println("</th></tr>");
         out.print("<tr><td><a href=\"");
         out.print(linkTarget1);

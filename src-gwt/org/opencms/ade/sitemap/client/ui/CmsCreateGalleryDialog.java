@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,17 +80,19 @@ public class CmsCreateGalleryDialog extends CmsPopup {
     /** The title input. */
     private CmsTextBox m_titleInput;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the controller
      * @param resourceTypeId the gallery type id
      * @param parentId the parent folder id
      */
     public CmsCreateGalleryDialog(CmsSitemapController controller, int resourceTypeId, CmsUUID parentId) {
 
-        super(org.opencms.ade.sitemap.client.Messages.get().key(
-            org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_0), DIALOG_WIDTH);
+        super(
+            org.opencms.ade.sitemap.client.Messages.get().key(
+                org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_0),
+            DIALOG_WIDTH);
         m_resourceTypeId = resourceTypeId;
         m_parentId = parentId;
         m_controller = controller;
@@ -115,7 +117,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
             org.opencms.ade.sitemap.client.Messages.get().key(
                 org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_LABEL_TITLE_0),
             m_titleInput);
-        this.addDialogClose(null);
+        addDialogClose(null);
 
         CmsPushButton closeButton = new CmsPushButton();
         closeButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
@@ -163,7 +165,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
 
     /**
      * Enables or disables the OK button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the button
      */
     protected void setOkEnabled(boolean enabled) {
@@ -171,14 +173,15 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         if (enabled) {
             m_okButton.enable();
         } else {
-            m_okButton.disable(org.opencms.ade.sitemap.client.Messages.get().key(
-                org.opencms.ade.sitemap.client.Messages.GUI_NEW_GALLERY_VALIDATION_0));
+            m_okButton.disable(
+                org.opencms.ade.sitemap.client.Messages.get().key(
+                    org.opencms.ade.sitemap.client.Messages.GUI_NEW_GALLERY_VALIDATION_0));
         }
     }
 
     /**
      * Adds a row to the form.<p>
-     * 
+     *
      * @param label the label
      * @param inputWidget the input widget
      */

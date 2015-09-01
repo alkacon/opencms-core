@@ -60,6 +60,9 @@
 			<suffix key=".doc" />
 			<suffix key=".xls" />
 			<suffix key=".ppt" />
+            <suffix key=".docx" />
+            <suffix key=".xlsx" />
+            <suffix key=".pptx" />			
 			<suffix key=".pdf" />
 			<suffix key=".txt" />
 			<suffix key=".css" />

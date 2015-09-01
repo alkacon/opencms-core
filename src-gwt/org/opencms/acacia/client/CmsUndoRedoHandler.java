@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -75,7 +75,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param hasUndo if there are changes to be undone
          * @param hasRedo if there are changes to be re done
          */
@@ -87,7 +87,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns if there are changes to be re done.
-         * 
+         *
          * @return <code>true</code> if there are changes to be re done.
          */
         public boolean hasRedo() {
@@ -97,7 +97,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns if there are changes to be undone.
-         * 
+         *
          * @return <code>true</code> if there are changes to be undone.
          */
         public boolean hasUndo() {
@@ -107,7 +107,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
     }
 
     /**
-     * A timer to delay the addition of a change.<p> 
+     * A timer to delay the addition of a change.<p>
      */
     protected class ChangeTimer extends Timer {
 
@@ -125,7 +125,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param valuePath the entity value path
          * @param attributeName the attribute name
          * @param valueIndex the value index
@@ -150,11 +150,11 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Checks whether the timer change properties match the given ones.<p>
-         * 
+         *
          * @param valuePath the entity value path
          * @param attributeName the attribute name
          * @param valueIndex the value index
-         * 
+         *
          * @return <code>true</code> if the timer change properties match the given ones
          */
         protected boolean matches(String valuePath, String attributeName, int valueIndex) {
@@ -187,7 +187,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param entity the chane entity data
          * @param entityId the entity id
          * @param attributeName the attribute name
@@ -205,7 +205,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns the attribute name.<p>
-         * 
+         *
          * @return the attribute name
          */
         public String getAttributeName() {
@@ -215,7 +215,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns the change entity data.<p>
-         * 
+         *
          * @return the change entity data
          */
         public CmsEntity getEntityData() {
@@ -225,7 +225,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns the change entity id.<p>
-         * 
+         *
          * @return the entity id
          */
         public String getEntityId() {
@@ -235,7 +235,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * The change type.<p>
-         * 
+         *
          * @return the change type
          */
         public ChangeType getType() {
@@ -245,7 +245,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
         /**
          * Returns the value index.<p>
-         * 
+         *
          * @return the value index
          */
         public int getValueIndex() {
@@ -295,7 +295,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Returns the undo redo handler instance.<p>
-     * 
+     *
      * @return the handler instance
      */
     public static CmsUndoRedoHandler getInstance() {
@@ -308,7 +308,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Adds a change to the undo stack.<p>
-     * 
+     *
      * @param valuePath the entity value path
      * @param attributeName the attribute name
      * @param valueIndex the value index
@@ -319,7 +319,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
         if (ChangeType.value.equals(changeType)) {
             if (m_changeTimer != null) {
                 if (!m_changeTimer.matches(valuePath, attributeName, valueIndex)) {
-                    // only in case the change properties of the timer do not match the current change, 
+                    // only in case the change properties of the timer do not match the current change,
                     // add the last change and start a new timer
                     m_changeTimer.cancel();
                     m_changeTimer.run();
@@ -369,7 +369,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Indicates if there are changes to be undone.<p>
-     * 
+     *
      * @return <code>true</code> if there are changes to be undone
      */
     public boolean hasRedo() {
@@ -379,7 +379,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Indicates if there are changes to be undone.<p>
-     * 
+     *
      * @return <code>true</code> if there are changes to be undone
      */
     public boolean hasUndo() {
@@ -389,7 +389,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Initializes the handler to be used for the given entity.<p>
-     * 
+     *
      * @param entity the edited entity
      * @param editor the editor instance
      * @param rootHandler the root attribute handler
@@ -407,7 +407,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Indicates if the handler has been initialized.<p>
-     * 
+     *
      * @return <code>true</code> if the handler has been initialized
      */
     public boolean isIntitalized() {
@@ -452,7 +452,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Adds this handler to the widget.
-     * 
+     *
      * @param <H> the type of handler to add
      * @param type the event type
      * @param handler the handler
@@ -465,7 +465,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Internally adds a change to the undo stack.<p>
-     * 
+     *
      * @param valuePath the entity value path
      * @param attributeName the attribute name
      * @param valueIndex the value index
@@ -486,7 +486,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Sets the editor to the given state.<p>
-     * 
+     *
      * @param newContent the state content
      * @param entityId the value path elements
      * @param attributeName the attribute name
@@ -519,7 +519,7 @@ public final class CmsUndoRedoHandler implements HasValueChangeHandlers<UndoRedo
 
     /**
      * Lazy initializing the handler manager.<p>
-     * 
+     *
      * @return the handler manager
      */
     private SimpleEventBus ensureHandlers() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,9 +44,9 @@ import java.util.Locale;
 
 /**
  * Base class for select widgets.<p>
- * 
- * @since 6.0.0 
- * 
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.widgets.CmsSelectWidgetOption
  */
 public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEWidget {
@@ -71,11 +71,11 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Creates a select widget with the select options specified in the given configuration List.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public A_CmsSelectWidget(List<CmsSelectWidgetOption> configuration) {
@@ -86,12 +86,12 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Creates a select widget with the select options specified in the given configuration String.<p>
-     * 
-     * Please see <code>{@link CmsSelectWidgetOption}</code> for a description of the syntax 
+     *
+     * Please see <code>{@link CmsSelectWidgetOption}</code> for a description of the syntax
      * of the configuration String.<p>
-     * 
+     *
      * @param configuration the configuration (possible options) for the select widget
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     public A_CmsSelectWidget(String configuration) {
@@ -101,7 +101,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Adds a new select option to this widget.<p>
-     * 
+     *
      * @param option the select option to add
      */
     public void addSelectOption(CmsSelectWidgetOption option) {
@@ -153,9 +153,9 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns a list of CSS resources required by the widget.<p>
-     * 
+     *
      * @param cms the current OpenCms context
-     * 
+     *
      * @return the required CSS resource links
      */
     public List<String> getCssResourceLinks(CmsObject cms) {
@@ -173,7 +173,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns the java script initialization call.<p>
-     * 
+     *
      * @return the java script initialization call
      */
     public String getInitCall() {
@@ -183,9 +183,9 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns a list of java script resources required by the widget.<p>
-     * 
+     *
      * @param cms the current OpenCms context
-     * 
+     *
      * @return the required java script resource links
      */
     public List<String> getJavaScriptResourceLinks(CmsObject cms) {
@@ -204,7 +204,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
     /**
      * Returns if this is an internal widget.<p>
      * Only widgets belonging to the OpenCms core should be marked as internal.<p>
-     * 
+     *
      * @return <code>true</code> if this is an internal widget
      */
     public boolean isInternal() {
@@ -235,7 +235,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Gets the configured select widget height.<p>
-     * 
+     *
      * @return the configured select widget height
      */
     protected String getHeight() {
@@ -243,12 +243,12 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
         return m_height;
     }
 
-    /** 
+    /**
      * Gets the resource path for the given dialog.<p>
      * @param cms TODO
-     * @param dialog the dialog 
-     * 
-     * @return the resource path 
+     * @param dialog the dialog
+     *
+     * @return the resource path
      */
     protected String getResourcePath(CmsObject cms, I_CmsWidgetDialog dialog) {
 
@@ -266,14 +266,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns the currently selected value of the select widget.<p>
-     * 
-     * If a value is found in the given parameter, this is used. Otherwise 
+     *
+     * If a value is found in the given parameter, this is used. Otherwise
      * the default value of the select options are used. If there is neither a parameter value
-     * nor a default value, <code>null</code> is returned.<p> 
-     * 
+     * nor a default value, <code>null</code> is returned.<p>
+     *
      * @param cms the current users OpenCms context
      * @param param the widget parameter of this dialog
-     * 
+     *
      * @return the currently selected value of the select widget
      */
     protected String getSelectedValue(CmsObject cms, I_CmsWidgetParameter param) {
@@ -290,14 +290,14 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns the currently selected values of the select widget.<p>
-     * 
-     * If a value is found in the given parameter, this is used. Otherwise 
+     *
+     * If a value is found in the given parameter, this is used. Otherwise
      * the default value of the select options are used. If there is neither a parameter value
-     * nor a default value, <code>null</code> is used.<p> 
-     * 
+     * nor a default value, <code>null</code> is used.<p>
+     *
      * @param cms the current users OpenCms context
      * @param param the widget parameter of this dialog
-     * 
+     *
      * @return a list of the currently selected values of the select widget
      */
     protected List<String> getSelectedValues(CmsObject cms, I_CmsWidgetParameter param) {
@@ -305,7 +305,8 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
         List<String> values = new ArrayList<String>();
         String paramValue = param.getStringValue(cms);
         if (CmsStringUtil.isEmpty(paramValue)) {
-            Iterator<CmsSelectWidgetOption> itOptions = CmsSelectWidgetOption.getDefaultOptions(m_selectOptions).iterator();
+            Iterator<CmsSelectWidgetOption> itOptions = CmsSelectWidgetOption.getDefaultOptions(
+                m_selectOptions).iterator();
             while (itOptions.hasNext()) {
                 CmsSelectWidgetOption option = itOptions.next();
                 values.add(option.getValue());
@@ -318,9 +319,9 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns the list of configured select options.<p>
-     * 
+     *
      * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @return the list of select options
      */
     protected List<CmsSelectWidgetOption> getSelectOptions() {
@@ -330,16 +331,16 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Returns the list of configured select options, parsing the configuration String if required.<p>
-     * 
+     *
      * The list elements are of type <code>{@link CmsSelectWidgetOption}</code>.
      * The configuration String is parsed only once and then stored internally.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param widgetDialog the dialog of this widget
      * @param param the widget parameter of this dialog
-     * 
+     *
      * @return the list of select options
-     * 
+     *
      * @see CmsSelectWidgetOption
      */
     protected List<CmsSelectWidgetOption> parseSelectOptions(
@@ -364,9 +365,9 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget implements I_CmsADEW
 
     /**
      * Sets the list of configured select options.<p>
-     * 
+     *
      * The list elements must be of type <code>{@link CmsSelectWidgetOption}</code>.<p>
-     * 
+     *
      * @param selectOptions the list of select options to set
      */
     protected void setSelectOptions(List<CmsSelectWidgetOption> selectOptions) {

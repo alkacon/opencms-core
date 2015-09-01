@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
- * @since 6.0.0 
+ * Convenience class to access the localized messages of this OpenCms package.<p>
+ *
+ * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -152,19 +152,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0 = "GUI_ROLE_DESCRIPTION_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_CATEGORY_EDITOR_0 = "GUI_ROLE_DESCRIPTION_CATEGORY_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_ELEMENT_AUTHOR_0 = "GUI_ROLE_DESCRIPTION_ELEMENT_AUTHOR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0 = "GUI_ROLE_DESCRIPTION_DATABASE_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_DEVELOPER_0 = "GUI_ROLE_DESCRIPTION_DEVELOPER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLE_DESCRIPTION_DIRECT_EDIT_USER_0 = "GUI_ROLE_DESCRIPTION_DIRECT_EDIT_USER_0";
+    public static final String GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0 = "GUI_ROLE_DESCRIPTION_GALLERY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0 = "GUI_ROLE_DESCRIPTION_PROJECT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0 = "GUI_ROLE_DESCRIPTION_ROOT_ADMIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLE_DESCRIPTION_EDITOR_0 = "GUI_ROLE_DESCRIPTION_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLE_DESCRIPTION_VFS_MANAGER_0 = "GUI_ROLE_DESCRIPTION_VFS_MANAGER_0";
@@ -182,19 +191,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ROLENAME_ADMINISTRATOR_0 = "GUI_ROLENAME_ADMINISTRATOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_CATEGORY_EDITOR_0 = "GUI_ROLENAME_CATEGORY_EDITOR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_ELEMENT_AUTHOR_0 = "GUI_ROLENAME_ELEMENT_AUTHOR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_DATABASE_MANAGER_0 = "GUI_ROLENAME_DATABASE_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_DEVELOPER_0 = "GUI_ROLENAME_DEVELOPER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ROLENAME_DIRECT_EDIT_USER_0 = "GUI_ROLENAME_DIRECT_EDIT_USER_0";
+    public static final String GUI_ROLENAME_GALLERY_EDITOR_0 = "GUI_ROLENAME_GALLERY_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_PROJECT_MANAGER_0 = "GUI_ROLENAME_PROJECT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_ROOT_ADMIN_0 = "GUI_ROLENAME_ROOT_ADMIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ROLENAME_EDITOR_0 = "GUI_ROLENAME_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_VFS_MANAGER_0 = "GUI_ROLENAME_VFS_MANAGER_0";
@@ -209,29 +227,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_AUTHENTICATE_PROPERTY_2 = "LOG_AUTHENTICATE_PROPERTY_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_SCRYPT_PARAMETERS_1 = "LOG_SCRYPT_PARAMETERS_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_PERMISSION_RESOURCE_USER_4 = "LOG_NO_PERMISSION_RESOURCE_USER_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SCRYPT_PARAMETERS_1 = "LOG_SCRYPT_PARAMETERS_1";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.security.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /**
-     * Returns an instance of this localized message accessor.<p>
-     * 
-     * @return an instance of this localized message accessor
-     */
-    public static I_CmsMessageBundle get() {
-
-        return INSTANCE;
-    }
 
     /**
      * Hides the public constructor for this utility class.<p>
@@ -242,8 +250,18 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
+     * Returns an instance of this localized message accessor.<p>
+     *
+     * @return an instance of this localized message accessor
+     */
+    public static I_CmsMessageBundle get() {
+
+        return INSTANCE;
+    }
+
+    /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ import org.apache.commons.mail.EmailException;
 /**
  * The basic class for the content notification feature in OpenCms. Collects all resources that require a notification,
  * creates and sends notifications to their responsible users.<p/>
- * 
+ *
  */
 public class CmsNotificationCandidates {
 
@@ -72,9 +72,9 @@ public class CmsNotificationCandidates {
 
     /**
      * Collects all resources that will expire in short time, or will become valid, or are not modified since a long time.<p>
-     * 
+     *
      * @param cms the CmsObject
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public CmsNotificationCandidates(CmsObject cms)
@@ -82,7 +82,8 @@ public class CmsNotificationCandidates {
 
         m_resources = new ArrayList<CmsExtendedNotificationCause>();
         m_cms = cms;
-        m_cms.getRequestContext().setCurrentProject(m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()));
+        m_cms.getRequestContext().setCurrentProject(
+            m_cms.readProject(OpenCms.getSystemInfo().getNotificationProject()));
         String folder = "/";
         GregorianCalendar now = new GregorianCalendar(TimeZone.getDefault(), CmsLocaleManager.getDefaultLocale());
         now.setTimeInMillis(System.currentTimeMillis());
@@ -93,13 +94,16 @@ public class CmsNotificationCandidates {
 
         // read all files with the 'notification-interval' property set
         try {
-            resources = m_cms.readResourcesWithProperty(folder, CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL).iterator();
+            resources = m_cms.readResourcesWithProperty(
+                folder,
+                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL).iterator();
             while (resources.hasNext()) {
                 resource = resources.next();
-                int notification_interval = Integer.parseInt(m_cms.readPropertyObject(
-                    resource,
-                    CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-                    true).getValue());
+                int notification_interval = Integer.parseInt(
+                    m_cms.readPropertyObject(
+                        resource,
+                        CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                        true).getValue());
                 GregorianCalendar intervalBefore = new GregorianCalendar(
                     TimeZone.getDefault(),
                     CmsLocaleManager.getDefaultLocale());
@@ -110,10 +114,11 @@ public class CmsNotificationCandidates {
 
                 for (int i = 0; (i < 100) && intervalAfter.getTime().before(now.getTime()); i++) {
                     if (intervalBefore.getTime().after(now.getTime())) {
-                        m_resources.add(new CmsExtendedNotificationCause(
-                            resource,
-                            CmsExtendedNotificationCause.RESOURCE_UPDATE_REQUIRED,
-                            intervalBefore.getTime()));
+                        m_resources.add(
+                            new CmsExtendedNotificationCause(
+                                resource,
+                                CmsExtendedNotificationCause.RESOURCE_UPDATE_REQUIRED,
+                                intervalBefore.getTime()));
                     }
                     intervalBefore.add(Calendar.DAY_OF_YEAR, notification_interval);
                     intervalAfter.add(Calendar.DAY_OF_YEAR, notification_interval);
@@ -127,26 +132,30 @@ public class CmsNotificationCandidates {
         GregorianCalendar oneYearAgo = (GregorianCalendar)now.clone();
         oneYearAgo.add(Calendar.DAY_OF_YEAR, -OpenCms.getSystemInfo().getNotificationTime());
         // create a resource filter to get the resources with
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireLastModifiedBefore(oneYearAgo.getTimeInMillis());
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireLastModifiedBefore(
+            oneYearAgo.getTimeInMillis());
         resources = m_cms.readResources(folder, filter).iterator();
         while (resources.hasNext()) {
             resource = resources.next();
-            m_resources.add(new CmsExtendedNotificationCause(
-                resource,
-                CmsExtendedNotificationCause.RESOURCE_OUTDATED,
-                new Date(resource.getDateLastModified())));
+            m_resources.add(
+                new CmsExtendedNotificationCause(
+                    resource,
+                    CmsExtendedNotificationCause.RESOURCE_OUTDATED,
+                    new Date(resource.getDateLastModified())));
         }
 
         // get all resources that will expire within the next week
-        CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireExpireBefore(inOneWeek.getTimeInMillis());
+        CmsResourceFilter resourceFilter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireExpireBefore(
+            inOneWeek.getTimeInMillis());
         resourceFilter = resourceFilter.addRequireExpireAfter(now.getTimeInMillis());
         resources = m_cms.readResources(folder, resourceFilter).iterator();
         while (resources.hasNext()) {
             resource = resources.next();
-            m_resources.add(new CmsExtendedNotificationCause(
-                resource,
-                CmsExtendedNotificationCause.RESOURCE_EXPIRES,
-                new Date(resource.getDateExpired())));
+            m_resources.add(
+                new CmsExtendedNotificationCause(
+                    resource,
+                    CmsExtendedNotificationCause.RESOURCE_EXPIRES,
+                    new Date(resource.getDateExpired())));
         }
 
         // get all resources that will release within the next week
@@ -155,25 +164,27 @@ public class CmsNotificationCandidates {
         resources = m_cms.readResources(folder, resourceFilter).iterator();
         while (resources.hasNext()) {
             resource = resources.next();
-            m_resources.add(new CmsExtendedNotificationCause(
-                resource,
-                CmsExtendedNotificationCause.RESOURCE_RELEASE,
-                new Date(resource.getDateReleased())));
+            m_resources.add(
+                new CmsExtendedNotificationCause(
+                    resource,
+                    CmsExtendedNotificationCause.RESOURCE_RELEASE,
+                    new Date(resource.getDateReleased())));
         }
     }
 
     /**
      * Sends all notifications to the responsible users.<p>
-     * 
+     *
      * @return a string listing all responsibles that a notification was sent to
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public String notifyResponsibles() throws CmsException {
 
         Iterator<CmsContentNotification> notifications = filterConfirmedResources(getContentNotifications()).iterator();
         if (notifications.hasNext()) {
-            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
+            StringBuffer result = new StringBuffer(
+                Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
             result.append(' ');
             while (notifications.hasNext()) {
                 CmsContentNotification contentNotification = notifications.next();
@@ -195,9 +206,9 @@ public class CmsNotificationCandidates {
 
     /**
      * Returns a collection of CmsContentNotifications, one for each responsible that receives a notification.<p>
-     * 
+     *
      * @return the list of CmsContentNotifications, one for each responsible that receives a notification
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected Collection<CmsContentNotification> getContentNotifications() throws CmsException {
@@ -249,7 +260,7 @@ public class CmsNotificationCandidates {
      * Updates the resources that were confirmed by the user. That means deletes the resources that need not a
      * notification any more.
      * removes all resources which do not occur in the candidate list.<p>
-     * 
+     *
      * @param contentNotifications the list of {@link CmsContentNotification} objects to remove from the set of confirmed resources
      * @return a new CmsConfirmedResources Object which all the resource removed
      */
@@ -261,7 +272,8 @@ public class CmsNotificationCandidates {
             CmsContentNotification contentNotification = notifications.next();
             CmsUser responsible = contentNotification.getResponsible();
             // check, if user was already notified
-            List<?> confirmedResourcesList = (List<?>)responsible.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES);
+            List<?> confirmedResourcesList = (List<?>)responsible.getAdditionalInfo(
+                CmsUserSettings.ADDITIONAL_INFO_CONFIRMED_RESOURCES);
             if (confirmedResourcesList == null) {
                 confirmedResourcesList = new ArrayList<Object>();
                 responsible.setAdditionalInfo(
@@ -273,7 +285,7 @@ public class CmsNotificationCandidates {
 
             List<CmsExtendedNotificationCause> notificationResources = new ArrayList<CmsExtendedNotificationCause>(
                 notificationCandidates);
-            // remove already confirmed resources            
+            // remove already confirmed resources
             Iterator<?> i = confirmedResourcesList.iterator();
             while (i.hasNext()) {
                 Object o = i.next();

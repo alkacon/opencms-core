@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Draggable menu element. Needed for favorite list.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsMenuListItem extends CmsListItem {
@@ -62,15 +62,15 @@ public class CmsMenuListItem extends CmsListItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the element data
      */
     public CmsMenuListItem(CmsContainerElementData element) {
 
         super(new CmsListItemWidget(new CmsListInfoBean(element.getTitle(), element.getSitePath(), null)));
         if (!m_listItemWidget.hasAdditionalInfo()) {
-            m_listItemWidget.addAdditionalInfo(new CmsAdditionalInfoBean("", Messages.get().key(
-                Messages.GUI_NO_SETTINGS_TITLE_0), null));
+            m_listItemWidget.addAdditionalInfo(
+                new CmsAdditionalInfoBean("", Messages.get().key(Messages.GUI_NO_SETTINGS_TITLE_0), null));
         }
         setId(element.getClientId());
         getListItemWidget().setIcon(CmsIconUtil.getResourceIconClasses(element.getResourceType(), false));
@@ -93,8 +93,8 @@ public class CmsMenuListItem extends CmsListItem {
         m_editButton = new CmsPushButton();
         m_editButton.setImageClass(I_CmsImageBundle.INSTANCE.style().editIcon());
         m_editButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        m_editButton.setTitle(org.opencms.gwt.client.Messages.get().key(
-            org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
+        m_editButton.setTitle(
+            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_BUTTON_ELEMENT_EDIT_0));
         m_editButton.setEnabled(false);
         getListItemWidget().addButton(m_editButton);
     }
@@ -109,7 +109,7 @@ public class CmsMenuListItem extends CmsListItem {
 
     /**
      * Disables the edit button with the given reason.<p>
-     * 
+     *
      * @param reason the disable reason
      * @param locked <code>true</code> if the resource is locked
      */
@@ -123,7 +123,7 @@ public class CmsMenuListItem extends CmsListItem {
 
     /**
      * Enables the edit button with the given click handler.<p>
-     * 
+     *
      * @param editClickHandler the edit click handler
      */
     public void enableEdit(ClickHandler editClickHandler) {

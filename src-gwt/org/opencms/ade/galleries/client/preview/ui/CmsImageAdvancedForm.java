@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Advanced image tag properties form, use in editor mode only.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImageAdvancedForm extends Composite {
@@ -182,10 +182,10 @@ public class CmsImageAdvancedForm extends Composite {
 
     /**
      * Displays the provided image information.<p>
-     * 
+     *
      * @param imageInfo the image information
      * @param imageAttributes the image attributes
-     * @param initialFill flag to indicate that a new image has been selected 
+     * @param initialFill flag to indicate that a new image has been selected
      */
     public void fillContent(CmsImageInfoBean imageInfo, CmsJSONMap imageAttributes, boolean initialFill) {
 
@@ -203,7 +203,7 @@ public class CmsImageAdvancedForm extends Composite {
 
     /**
      * Adds necessary attributes to the map.<p>
-     * 
+     *
      * @param attributes the attribute map
      * @return the attribute map
      */

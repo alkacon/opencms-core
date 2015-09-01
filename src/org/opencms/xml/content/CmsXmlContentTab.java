@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,9 +48,9 @@ public class CmsXmlContentTab {
 
     /**
      * Constructor with the start element name.<p>
-     * 
+     *
      * The tab name is equal to the element name and the first level should not be shown in the editor.<p>
-     * 
+     *
      * @param startName the XML element name where this tab starts
      */
     public CmsXmlContentTab(String startName) {
@@ -60,7 +60,7 @@ public class CmsXmlContentTab {
 
     /**
      * Constructor with all possible tab parameter settings.<p>
-     * 
+     *
      * @param startName XML element name where this tab starts
      * @param collapsed indicates if the first level of left labels should be shown in the editor
      * @param tabName the name to display on the tab
@@ -89,7 +89,7 @@ public class CmsXmlContentTab {
 
     /**
      * Returns the name for the tab ID, generated from the start name.<p>
-     * 
+     *
      * @return the name for the tab ID, generated from the start name
      */
     public String getIdName() {
@@ -107,7 +107,7 @@ public class CmsXmlContentTab {
 
     /**
      * Returns the XML element name where this tab starts.<p>
-     * 
+     *
      * @return the XML element name where this tab starts
      */
     public String getStartName() {
@@ -117,7 +117,7 @@ public class CmsXmlContentTab {
 
     /**
      * Returns the name to display on the tab.<p>
-     * 
+     *
      * @return the name to display on the tab
      */
     public String getTabName() {
@@ -136,7 +136,7 @@ public class CmsXmlContentTab {
 
     /**
      * Indicates if the first level of left labels should be shown in the editor.<p>
-     * 
+     *
      * @return <code>true</code> if the first level of left labels should NOT be shown in the editor
      */
     public boolean isCollapsed() {

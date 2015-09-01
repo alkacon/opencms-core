@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit the roles of a user.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsUserRoleDialog extends CmsWidgetDialog {
@@ -59,7 +59,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserRoleDialog(CmsJspActionElement jsp) {
@@ -69,7 +69,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -82,6 +82,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -89,7 +90,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Returns the simple name of the user object.<p>
-     * 
+     *
      * @return the simple name of the user object
      */
     public String getName() {
@@ -99,7 +100,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -109,7 +110,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * This method is needed only for displaying reasons.<p>
-     * 
+     *
      * @param name nothing to do with this parameter
      */
     public void setName(String name) {
@@ -120,7 +121,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
@@ -130,12 +131,13 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -159,6 +161,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -167,6 +170,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -183,6 +187,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -204,6 +209,7 @@ public class CmsUserRoleDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

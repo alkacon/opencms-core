@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,11 +38,11 @@ import org.opencms.workplace.editors.Messages;
 
 /**
  * Provider for the OpenCms graphical "direct edit" buttons. <p>
- * 
+ *
  * Uses the JQuery library to create the buttons and place it to the correct position.<p>
- * 
+ *
  * This provider DOES NOT support {@link CmsDirectEditMode#MANUAL} mode.<p>
- * 
+ *
  * @since 7.0.3
  */
 public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
@@ -54,7 +54,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     private String m_closeLink;
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#getDirectEditIncludes(org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
     @Override
@@ -88,7 +88,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditDisabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
     @Override
@@ -98,7 +98,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditEnabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
     @Override
@@ -126,7 +126,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
 
     /**
      * Appends the data for the direct edit buttons, which are dynamically created with jQuery.<p>
-     * 
+     *
      * Generates the following code:<p>
      * <pre>
      *  &#60;script type="text/javascript" &#62;
@@ -137,10 +137,10 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
      *      };
      *  &#60;/script &#62;
      *  </pre>
-     * 
+     *
      * @param params the direct edit parameters
      * @param disabled if the buttons are disabled or not
-     * 
+     *
      * @return the data needed for the direct edit buttons
      */
     private String appendDirectEditData(CmsDirectEditParams params, boolean disabled) {
@@ -192,10 +192,10 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
 
     /**
      * Helper method to read the content of an included Javascript file.<p>
-     * 
-     * @param path the root path of a Javascript file 
-     * 
-     * @return the content of the Javascript file 
+     *
+     * @param path the root path of a Javascript file
+     *
+     * @return the content of the Javascript file
      */
     private String readFile(String path) {
 

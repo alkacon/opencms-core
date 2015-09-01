@@ -141,18 +141,20 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
-        CollectionUtils.addAll(m_previewMimeTypes, (new String[] {
-            "application/msword",
-            "application/pdf",
-            "application/excel",
-            "application/mspowerpoint",
-            "application/zip"}));
+        CollectionUtils.addAll(
+            m_previewMimeTypes,
+            (new String[] {
+                "application/msword",
+                "application/pdf",
+                "application/excel",
+                "application/mspowerpoint",
+                "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -289,12 +291,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Loads the data needed for editing the properties of a resource.<p>
-     * 
-     * @param cms the CMS context 
-     * @param id the structure id of the resource 
-     * @return the data needed for editing the properties 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context
+     * @param id the structure id of the resource
+     * @return the data needed for editing the properties
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsPropertiesBean loadPropertyData(CmsObject cms, CmsUUID id) throws CmsException {
 
@@ -370,13 +372,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Gets page information of a resource and adds it to the given list info bean.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param resource the resource
      * @param listInfo the list info bean to add the information to
-     * 
+     *
      * @return the list info bean
-     * 
+     *
      * @throws CmsException if the resource info can not be read
      */
     protected static CmsListInfoBean addPageInfo(CmsObject cms, CmsResource resource, CmsListInfoBean listInfo)
@@ -416,10 +418,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Converts CmsProperty objects to CmsClientProperty objects.<p>
-     * 
-     * @param properties a list of server-side properties 
-     * 
-     * @return a map of client-side properties 
+     *
+     * @param properties a list of server-side properties
+     *
+     * @return a map of client-side properties
      */
     protected static Map<String, CmsClientProperty> convertProperties(List<CmsProperty> properties) {
 
@@ -437,10 +439,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Helper method to get the default property configuration for the given resource type.<p>
-     * 
-     * @param typeName the name of the resource type 
-     * 
-     * @return the default property configuration for the given type 
+     *
+     * @param typeName the name of the resource type
+     *
+     * @return the default property configuration for the given type
      */
     protected static Map<String, CmsXmlContentProperty> getDefaultPropertiesForType(String typeName) {
 
@@ -469,12 +471,12 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Internal method for computing the default property configurations for a list of structure ids.<p>
-     * 
-     * @param cms the cms context 
-     * @param structureIds the structure ids for which we want the default property configurations 
-     * @return a map from the given structure ids to their default property configurations 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the cms context
+     * @param structureIds the structure ids for which we want the default property configurations
+     * @return a map from the given structure ids to their default property configurations
+     *
+     * @throws CmsException if something goes wrong
      */
     protected static Map<CmsUUID, Map<String, CmsXmlContentProperty>> internalGetDefaultProperties(
         CmsObject cms,
@@ -727,7 +729,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             CmsObject cms = getCmsObject();
             CmsResource previewResource = null;
             if (versionBean.getVersionNumber() != null) {
-                previewResource = (CmsResource)(cms.readResource(structureId, versionBean.getVersionNumber().intValue()));
+                previewResource = (CmsResource)(cms.readResource(
+                    structureId,
+                    versionBean.getVersionNumber().intValue()));
             } else if (versionBean.isOffline()) {
                 previewResource = cms.readResource(structureId, CmsResourceFilter.ALL);
             } else if (versionBean.isOnline()) {
@@ -1429,21 +1433,21 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Adds additional info items for broken links.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param resource the resource from which the additional infos should be read 
-     * @param result the result in which to store the additional info 
+     *
+     * @param cms the CMS context to use
+     * @param resource the resource from which the additional infos should be read
+     * @param result the result in which to store the additional info
      */
     private void addBrokenLinkAdditionalInfo(CmsObject cms, CmsResource resource, CmsBrokenLinkBean result) {
 
         String dateLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-            org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
+                org.opencms.workplace.commons.Messages.GUI_LABEL_DATE_LAST_MODIFIED_0);
         String dateLastModified = CmsVfsService.formatDateTime(cms, resource.getDateLastModified());
 
         String userLastModifiedLabel = org.opencms.workplace.commons.Messages.get().getBundle(
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
-            org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
+                org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0);
         String userLastModified = "" + resource.getUserLastModified();
         try {
             userLastModified = cms.readUser(resource.getUserLastModified()).getName();
@@ -1457,14 +1461,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Creates a bean representing a historical resource version.<p>
-     * 
+     *
      * @param cms the current CMS context
      * @param historyRes the historical resource
      * @param offline true if this resource was read from the offline project
-     * @param maxVersion the largest version number found  
-     *  
-     * @return the bean representing the historical resource  
-     * @throws CmsException if something goes wrong 
+     * @param maxVersion the largest version number found
+     *
+     * @return the bean representing the historical resource
+     * @throws CmsException if something goes wrong
      */
     private CmsHistoryResourceBean createHistoryResourceBean(
         CmsObject cms,
@@ -1494,14 +1498,17 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             long publishDate = project.getPublishingDate();
             result.setDatePublished(formatDate(publishDate, locale));
             int version = ((I_CmsHistoryResource)historyRes).getVersion();
-            result.setVersion(new CmsHistoryVersion(Integer.valueOf(historyRes.getVersion()), maxVersion == version
-            ? OfflineOnline.online
-            : null));
+            result.setVersion(
+                new CmsHistoryVersion(
+                    Integer.valueOf(historyRes.getVersion()),
+                    maxVersion == version ? OfflineOnline.online : null));
 
             List<CmsProperty> historyProperties = cms.readHistoryPropertyObjects((I_CmsHistoryResource)historyRes);
             Map<String, CmsProperty> historyPropertyMap = CmsProperty.toObjectMap(historyProperties);
-            CmsProperty titleProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
-            CmsProperty descProp = CmsProperty.wrapIfNull(historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
+            CmsProperty titleProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_TITLE));
+            CmsProperty descProp = CmsProperty.wrapIfNull(
+                historyPropertyMap.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION));
             result.setTitle(titleProp.getValue());
             result.setDescription(descProp.getValue());
         } else {
@@ -1549,11 +1556,11 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
     /**
      * Converts a date to a date bean.<p>
-     * 
-     * @param date the date to convert 
+     *
+     * @param date the date to convert
      * @param locale the locale to use for the conversion
-     * 
-     * @return the date bean 
+     *
+     * @return the date bean
      */
     private CmsClientDateBean formatDate(long date, Locale locale) {
 
@@ -1688,7 +1695,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             }
         }
 
-        // now convert multimap representation to parent/child representation 
+        // now convert multimap representation to parent/child representation
         for (CmsBrokenLinkBean parent : resultMap.keySet()) {
             for (CmsBrokenLinkBean child : resultMap.get(parent)) {
                 parent.addChild(child);
@@ -1754,7 +1761,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @return the list of resources which link to the given id
      *
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
     throws CmsException {
@@ -1764,7 +1771,10 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         for (CmsRelation relation : relations) {
             // only add related resources that are not going to be deleted
             if (!deleteIds.contains(relation.getSourceId())) {
-                result.add(relation.getSource(cms, CmsResourceFilter.IGNORE_EXPIRATION));
+                CmsResource source = relation.getSource(cms, CmsResourceFilter.ALL);
+                if (!source.getState().isDeleted()) {
+                    result.add(source);
+                }
             }
         }
         return result;
@@ -1789,7 +1799,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /**
      * Returns the preview info for the given resource.<p>
      *
-     *@param cms the CMS context 
+     *@param cms the CMS context
      * @param resource the resource
      * @param locale the requested locale
      *
@@ -1857,23 +1867,31 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             return result;
         }
         if (CmsResourceTypeXmlContainerPage.isContainerPage(resource) || CmsResourceTypeXmlPage.isXmlPage(resource)) {
-            CmsPreviewInfo result = new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                cms,
-                resource.getRootPath())
-                + "?"
-                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-                + "=true"
-                + "&__locale="
-                + locale.toString(), false, title, cms.getSitePath(resource), locale.toString());
+            CmsPreviewInfo result = new CmsPreviewInfo(
+                null,
+                OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                    + "?"
+                    + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                    + "=true"
+                    + "&__locale="
+                    + locale.toString(),
+                false,
+                title,
+                cms.getSitePath(resource),
+                locale.toString());
             result.setLocales(locales);
             return result;
         }
-        return new CmsPreviewInfo(null, OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            cms,
-            resource.getRootPath())
-            + "?"
-            + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-            + "=true", true, title, cms.getSitePath(resource), locale.toString());
+        return new CmsPreviewInfo(
+            null,
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
+                + "?"
+                + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+                + "=true",
+            true,
+            title,
+            cms.getSitePath(resource),
+            locale.toString());
     }
 
     /**
@@ -1948,8 +1966,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         return (properties == null)
             || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE) == null)
             || (properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue() == null)
-            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null) && properties.get(
-                CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
-                properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
+            || ((properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null)
+                && properties.get(CmsPropertyDefinition.PROPERTY_TITLE).getValue().equals(
+                    properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT).getValue()));
     }
 }

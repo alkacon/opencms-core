@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,8 +31,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 
 /**
  * Value change event with additional data.<p>
- * 
- * @param <T> the value type 
+ *
+ * @param <T> the value type
  */
 public class CmsExtendedValueChangeEvent<T> extends ValueChangeEvent<T> {
 
@@ -41,8 +41,8 @@ public class CmsExtendedValueChangeEvent<T> extends ValueChangeEvent<T> {
 
     /**
      * Creates a new value change event instance.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public CmsExtendedValueChangeEvent(T value) {
 
@@ -51,8 +51,8 @@ public class CmsExtendedValueChangeEvent<T> extends ValueChangeEvent<T> {
     }
 
     /**
-     * Return true if validation shouldn't be triggered by this event.<p> 
-     * 
+     * Return true if validation shouldn't be triggered by this event.<p>
+     *
      * @return true if validation shouldn't be triggered by this event
      */
     public boolean isInhibitValidation() {
@@ -62,8 +62,8 @@ public class CmsExtendedValueChangeEvent<T> extends ValueChangeEvent<T> {
 
     /**
      * Sets the inhibitValidation flag.<p>
-     * 
-     * @param inhibitValidation the new flag value 
+     *
+     * @param inhibitValidation the new flag value
      */
     public void setInhibitValidation(boolean inhibitValidation) {
 

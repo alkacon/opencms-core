@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,7 +58,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
- * Helping class for manipulating the Solr spellchecker indices. 
+ * Helping class for manipulating the Solr spellchecker indices.
  */
 public final class CmsSpellcheckDictionaryIndexer {
 
@@ -68,19 +68,19 @@ public final class CmsSpellcheckDictionaryIndexer {
     /** The default directory that's holding the dictionary files. */
     public static final String DEFAULT_DICTIONARY_DIRECTORY = "/system/modules/org.opencms.workplace.spellcheck/resources";
 
-    /** A regex pattern that applies to the Solr spellcheck directories. 
+    /** A regex pattern that applies to the Solr spellcheck directories.
      * Matching string example: "spellchecker_en" */
     public static final String INDEXES_REGEX = "spellchecker_[a-z]{2}";
 
-    /** A regex pattern that applies to custom dictionaries. 
+    /** A regex pattern that applies to custom dictionaries.
      * Matching string example: "custom_dict_en.txt" */
     public static final String CUSTOM_DICTIONARY = "custom_dict_[a-z]{2}.txt";
 
-    /** A regex pattern that applies to the naming of the dictionary files. 
+    /** A regex pattern that applies to the naming of the dictionary files.
      * Matching string example: "dict_en.txt" */
     public static final String DICTIONARY_NAME_REGEX = "dict_[a-z]{2}.txt";
 
-    /** A regex pattern that applies to the naming of zipped dictionary files. 
+    /** A regex pattern that applies to the naming of zipped dictionary files.
      * Matching string example: "dict_en.zip" */
     public static final String ZIP_NAME_REGEX = "dict_[a-z]{2}.zip";
 
@@ -91,7 +91,7 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * FileFilter implementation that returns only directories whose name matches
-     * the spellchecker indices regex. 
+     * the spellchecker indices regex.
      */
     private static final FileFilter SPELLCHECKING_DIRECTORY_NAME_FILTER = new FileFilter() {
 
@@ -102,7 +102,7 @@ public final class CmsSpellcheckDictionaryIndexer {
     };
 
     /**
-     * Default constructor is private as each method is static. 
+     * Default constructor is private as each method is static.
      */
     private CmsSpellcheckDictionaryIndexer() {
 
@@ -110,8 +110,8 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * Adds all dictionaries that are available in the default directory. <p>
-     *  
-     * @param server The SolrServer instance object. 
+     *
+     * @param server The SolrServer instance object.
      * @param cms the cms context
      */
     public static void parseAndAddDictionaries(SolrServer server, CmsObject cms) {
@@ -169,8 +169,8 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * 
-     * @param server The SolrServer instance object. 
+     *
+     * @param server The SolrServer instance object.
      * @param cms The OpenCms instance object.
      */
     public static void parseAndAddZippedDictionaries(SolrServer server, CmsObject cms) {
@@ -188,15 +188,16 @@ public final class CmsSpellcheckDictionaryIndexer {
                 if (zipFileName.matches(ZIP_NAME_REGEX)) {
                     final CmsFile cmsFile = cms.readFile(resource);
 
-                    // Read zip file content 
-                    final ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(cmsFile.getContents()));
+                    // Read zip file content
+                    final ZipInputStream zipStream = new ZipInputStream(
+                        new ByteArrayInputStream(cmsFile.getContents()));
 
                     // Holds several entries (files) of the zipfile
                     ZipEntry entry = zipStream.getNextEntry();
 
                     // Iterate over each files in the zip file
                     while (null != entry) {
-                        // Extract name to check if name matches the regex and to guess the 
+                        // Extract name to check if name matches the regex and to guess the
                         // language from the filename
                         final String name = entry.getName();
 
@@ -205,7 +206,7 @@ public final class CmsSpellcheckDictionaryIndexer {
                             // The (matching) filename reveals the language
                             final String lang = name.substring(5, 7);
 
-                            // Parse and add documents 
+                            // Parse and add documents
                             readAndAddDocumentsFromStream(server, lang, zipStream, documents, false);
 
                             // Get the next file in the zip
@@ -228,23 +229,23 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Checks whether a built of the indices is necessary. 
-     * @param cms The appropriate CmsObject instance. 
+     * Checks whether a built of the indices is necessary.
+     * @param cms The appropriate CmsObject instance.
      * @return true, if the spellcheck indices have to be rebuilt, otherwise false
      */
     public static boolean updatingIndexNecessesary(CmsObject cms) {
 
-        // Set request to the offline project. 
+        // Set request to the offline project.
         setCmsOfflineProject(cms);
 
         // Check whether the spellcheck index directories are empty.
-        // If they are, the index has to be built obviously.  
+        // If they are, the index has to be built obviously.
         if (isSolrSpellcheckIndexDirectoryEmpty()) {
             return true;
         }
 
         // Compare the most recent date of a dictionary with the oldest timestamp
-        // that determines when an index has been built. 
+        // that determines when an index has been built.
         long dateMostRecentDictionary = getMostRecentDate(cms);
         long dateOldestIndexWrite = getOldestIndexDate(cms);
 
@@ -253,11 +254,11 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * Add a list of documents to the Solr server.<p>
-     * 
-     * @param server The SolrServer instance object. 
+     *
+     * @param server The SolrServer instance object.
      * @param documents The documents that should be added.
      * @param commit boolean flag indicating whether a "commit" call should be made after adding the documents
-     *   
+     *
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
@@ -278,10 +279,10 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Deletes all documents from the Solr server.<p> 
-     * 
-     * @param server The SolrServer instance object. 
-     * 
+     * Deletes all documents from the Solr server.<p>
+     *
+     * @param server The SolrServer instance object.
+     *
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
@@ -297,11 +298,11 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * Deletes a single document from the Solr server.<p>
-     * 
-     * @param server The SolrServer instance object. 
-     * @param lang The affected language. 
-     * @param word The word that should be removed. 
-     * 
+     *
+     * @param server The SolrServer instance object.
+     * @param lang The affected language.
+     * @param word The word that should be removed.
+     *
      * @throws IOException in case something goes wrong
      * @throws SolrServerException in case something goes wrong
      */
@@ -313,8 +314,8 @@ public final class CmsSpellcheckDictionaryIndexer {
             return;
         }
 
-        // Make sure the parameter holding the word that should be deleted 
-        // contains just a single word 
+        // Make sure the parameter holding the word that should be deleted
+        // contains just a single word
         if (word.trim().contains(" ")) {
             final String query = String.format("entry_%s:%s", lang, word);
             server.deleteByQuery(query);
@@ -323,9 +324,9 @@ public final class CmsSpellcheckDictionaryIndexer {
 
     /**
      * Determines and returns the timestamp of the most recently modified spellchecker file.<p>
-     * 
-     * @param cms the OpenCms instance. 
-     * @return timestamp of type long. 
+     *
+     * @param cms the OpenCms instance.
+     * @return timestamp of type long.
      */
     private static long getMostRecentDate(CmsObject cms) {
 
@@ -355,11 +356,11 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Returns the timestamp of the index whose index-built operation lies the 
+     * Returns the timestamp of the index whose index-built operation lies the
      * furthest back in the past.<p>
-     * 
-     * @param cms the OpenCms instance. 
-     * @return timestamp as type long. 
+     *
+     * @param cms the OpenCms instance.
+     * @return timestamp as type long.
      */
     private static long getOldestIndexDate(CmsObject cms) {
 
@@ -378,7 +379,7 @@ public final class CmsSpellcheckDictionaryIndexer {
 
         // If no file(s) have been found oldestIndexDate is still holding
         // Long.MAX_VALUE. In that case return Long.MIN_VALUE to ensure
-        // that no indexing operation takes place. 
+        // that no indexing operation takes place.
         if (Long.MAX_VALUE == oldestIndexDate) {
             LOG.warn("It appears that no spellcheck indices have been found in " + getSolrSpellcheckRfsPath() + ". ");
             return Long.MIN_VALUE;
@@ -388,8 +389,8 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Returns the path in the RFS where the Solr spellcheck files reside. 
-     * @return String representation of Solrs spellcheck RFS path. 
+     * Returns the path in the RFS where the Solr spellcheck files reside.
+     * @return String representation of Solrs spellcheck RFS path.
      */
     private static String getSolrSpellcheckRfsPath() {
 
@@ -403,9 +404,9 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Returns whether the Solr spellchecking index directories are empty 
-     * (not initiliazed) or not. 
-     * @return true, if the directories contain no indexed data, otherwise false. 
+     * Returns whether the Solr spellchecking index directories are empty
+     * (not initiliazed) or not.
+     * @return true, if the directories contain no indexed data, otherwise false.
      */
     private static boolean isSolrSpellcheckIndexDirectoryEmpty() {
 
@@ -414,7 +415,7 @@ public final class CmsSpellcheckDictionaryIndexer {
 
         // Each directory that has been created by Solr but hasn't been indexed yet
         // contains exactly two files. If there are more files, at least one index has
-        // already been built, so return false in that case. 
+        // already been built, so return false in that case.
         if (directories != null) {
             for (final File directory : directories) {
                 if (directory.list().length > 2) {
@@ -426,14 +427,14 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Parses the dictionary from an InputStream. 
-     * 
-     * @param server The SolrServer instance object. 
-     * @param lang The language of the dictionary. 
-     * @param is The InputStream object. 
-     * @param documents List to put the assembled SolrInputObjects into. 
+     * Parses the dictionary from an InputStream.
+     *
+     * @param server The SolrServer instance object.
+     * @param lang The language of the dictionary.
+     * @param is The InputStream object.
+     * @param documents List to put the assembled SolrInputObjects into.
      * @param closeStream boolean flag that determines whether to close the inputstream
-     * or not. 
+     * or not.
      */
     private static void readAndAddDocumentsFromStream(
         final SolrServer server,
@@ -450,7 +451,7 @@ public final class CmsSpellcheckDictionaryIndexer {
 
                 final SolrInputDocument document = new SolrInputDocument();
                 // Each field is named after the schema "entry_xx" where xx denotes
-                // the two digit language code. See the file spellcheck/conf/schema.xml. 
+                // the two digit language code. See the file spellcheck/conf/schema.xml.
                 document.addField("entry_" + lang, line);
                 documents.add(document);
 
@@ -478,8 +479,8 @@ public final class CmsSpellcheckDictionaryIndexer {
     }
 
     /**
-     * Sets the appropriate OpenCms context. 
-     * @param cms The OpenCms instance object. 
+     * Sets the appropriate OpenCms context.
+     * @param cms The OpenCms instance object.
      */
     private static void setCmsOfflineProject(CmsObject cms) {
 

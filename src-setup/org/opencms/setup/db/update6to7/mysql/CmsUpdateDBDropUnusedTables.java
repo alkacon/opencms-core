@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import java.io.IOException;
 
 /**
  * This class drops the outdated tables from the OpenCms database.<p>
- * 
+ *
  * These tables are
  * CMS_SYSTEMID
  * CMS_TASK
@@ -46,7 +46,7 @@ public class CmsUpdateDBDropUnusedTables extends org.opencms.setup.db.update6to7
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @throws IOException if the sql queries properties file could not be read
      */
     public CmsUpdateDBDropUnusedTables()

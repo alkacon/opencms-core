@@ -206,7 +206,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 buttonMap.put(Integer.valueOf(200), m_new);
                 m_new.addClickHandler(handler);
             }
-            if ((this.getWidgetCount() > 0) || m_editableData.hasEdit()) {
+            buttonMap.putAll(getAdditionalButtons());
+            if ((buttonMap.size() > 0) || m_editableData.hasEdit()) {
                 m_edit = new CmsPushButton();
                 m_edit.setImageClass(I_CmsButton.ButtonData.SELECTION.getIconClass());
                 m_edit.addStyleName(I_CmsButton.ButtonData.SELECTION.getIconClass());
@@ -222,7 +223,6 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 }
             }
 
-            buttonMap.putAll(getAdditionalButtons());
             for (CmsPushButton button : buttonMap.values()) {
                 add(button);
                 button.addClickHandler(new ClickHandler() {
@@ -237,7 +237,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             if (m_editableData.isUnreleasedOrExpired()) {
                 m_expiredOverlay = DOM.createDiv();
-                m_expiredOverlay.setClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
+                m_expiredOverlay.setClassName(
+                    org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.directEditCss().expiredListElementOverlay());
                 m_markerTag.getParentElement().insertBefore(m_expiredOverlay, m_markerTag);
             }
 
@@ -265,8 +266,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Creates the button for displaying element information.<p>
-     * 
-     * @return the created button 
+     *
+     * @return the created button
      */
     public CmsPushButton createInfoButton() {
 
@@ -309,7 +310,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
             m_highlighting = new CmsHighlightingBorder(m_position, CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 
@@ -389,7 +390,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns a map of additional buttons in a map, with the button position as key (buttons will be ordered by their position).<p>
-     *  
+     *
      * @return the map of additional buttons
      */
     protected Map<Integer, CmsPushButton> getAdditionalButtons() {

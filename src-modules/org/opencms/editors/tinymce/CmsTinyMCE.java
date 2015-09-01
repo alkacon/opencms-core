@@ -25,7 +25,7 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsTinyMCE(CmsJspActionElement jsp) {
@@ -35,9 +35,9 @@ public class CmsTinyMCE extends CmsSimplePageEditor {
 
     /**
      * Builds toolbar javascript file for TinyMCE.<p>
-     * 
+     *
      * @param buttonString button names and block separators delimited by comma
-     * 
+     *
      * @return returns the toolbar buttons
      */
     public static String buildToolbar(String buttonString) {

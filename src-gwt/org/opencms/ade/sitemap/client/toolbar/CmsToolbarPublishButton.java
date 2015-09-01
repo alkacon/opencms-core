@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 
 import java.util.HashMap;
 
@@ -43,19 +44,23 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Sitemap toolbar publish button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarPublishButton extends CmsPushButton {
 
+    /** The content editor handler. */
+    private I_CmsContentEditorHandler m_editorHandler;
+
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolbar the toolbar instance
-     * @param controller the sitemap controller 
+     * @param controller the sitemap controller
      */
     public CmsToolbarPublishButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
+        m_editorHandler = toolbar.getToolbarHandler().getEditorHandler();
         setImageClass(I_CmsButton.ButtonData.PUBLISH.getIconClass());
         setTitle(I_CmsButton.ButtonData.PUBLISH.getTitle());
         setButtonStyle(ButtonStyle.IMAGE, null);
@@ -95,6 +100,6 @@ public class CmsToolbarPublishButton extends CmsPushButton {
                 openPublish();
             }
 
-        });
+        }, m_editorHandler);
     }
 }

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Hoverbar detach event.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  * @see org.opencms.ade.sitemap.client.control.CmsSitemapController
  */
 public class CmsHoverbarHideEvent extends GwtEvent<I_CmsHoverbarHideHandler> {
@@ -51,7 +51,7 @@ public class CmsHoverbarHideEvent extends GwtEvent<I_CmsHoverbarHideHandler> {
 
     /**
      * Gets the event type associated with change events.<p>
-     * 
+     *
      * @return the handler type
      */
     public static Type<I_CmsHoverbarHideHandler> getType() {

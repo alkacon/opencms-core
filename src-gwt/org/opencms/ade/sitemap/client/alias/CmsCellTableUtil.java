@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,18 +52,18 @@ public final class CmsCellTableUtil {
      */
     private CmsCellTableUtil() {
 
-        // nothing 
+        // nothing
     }
 
     /**
      * Ensures that surrounding scroll panels are notified when a table changes size.<p>
-     * 
-     * @param table the table for which the parent scroll panels should be notified 
+     *
+     * @param table the table for which the parent scroll panels should be notified
      */
     public static void ensureCellTableParentResize(final CellTable<?> table) {
 
         // we need to update the scroll panel when the table is redrawn, but the redraw() method of the table is asynchronous,
-        // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a 
+        // i.e. it only schedules an actual redraw. However, the method which is responsible for the actual redrawing triggers a
         // loading state event before it does the redrawing. Using a timer at this point, we can execute code after the redrawing
         // has happend.
         table.addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
@@ -85,10 +85,10 @@ public final class CmsCellTableUtil {
 
     /**
      * Formats the HTML for the error column of a cell table given an error message.<p>
-     * 
-     * @param error the error message (null for no error) 
-     * 
-     * @return the SafeHtml representing the contents of the error cell 
+     *
+     * @param error the error message (null for no error)
+     *
+     * @return the SafeHtml representing the contents of the error cell
      */
     public static SafeHtml formatErrorHtml(String error) {
 

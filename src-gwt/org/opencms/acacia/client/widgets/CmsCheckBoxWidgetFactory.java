@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  */
 public class CmsCheckBoxWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
 
-    /** 
+    /**
      * Wrapper class for checkboxes, which is needed because the help text needs to be set on the check box widgets themselves.
      */
     class CheckboxWrapper extends CmsFormWidgetWrapper {

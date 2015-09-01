@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,7 +57,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestMoveRename2(String arg0) {
@@ -67,7 +67,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -109,7 +109,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests to move a big folder.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveBigFolder() throws Exception {
@@ -134,7 +134,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests to move a folder structure with invisible resources inside.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveFolderWithInvisibleResources() throws Exception {
@@ -169,7 +169,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests renaming a folder containing a new resource.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testMoveFolderWithNewResource() throws Throwable {
@@ -213,7 +213,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests to move a deep folder structure with real permission check.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveFolderWithPermissionCheck() throws Exception {
@@ -241,7 +241,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests the move to lost and found folder operation.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveLostAndFound() throws Exception {
@@ -295,7 +295,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests to move a file over a deleted one.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveOverDeleted() throws Exception {
@@ -326,7 +326,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests moving a sibling.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testMoveSibling() throws Exception {
@@ -377,7 +377,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests to publish a moved deleted folder with a unpublished moved resource.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testPublishMovedDeletedFolderWithMovedResource() throws Exception {
@@ -427,8 +427,8 @@ public class TestMoveRename2 extends OpenCmsTestCase {
     }
 
     /**
-     * Tests renaming a file to the same name with a different case.<p> 
-     * 
+     * Tests renaming a file to the same name with a different case.<p>
+     *
      * @throws Exception if the test fails
      */
     public void testRenameFileUpperLowerCase() throws Exception {
@@ -467,13 +467,13 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         assertLock(cms, destination, CmsLockType.EXCLUSIVE);
         // set filter mapping
         setMapping(destination, source);
-        // now assert the filter for the rest of the attributes        
+        // now assert the filter for the rest of the attributes
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
     }
 
     /**
-     * Tests renaming a folder to the same name with a different case.<p> 
-     * 
+     * Tests renaming a folder to the same name with a different case.<p>
+     *
      * @throws Exception if the test fails
      */
     public void testRenameFolderUpperLowerCase() throws Exception {
@@ -521,7 +521,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
     /**
      * Tests renaming a new folder with content.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRenameNewFolder() throws Throwable {

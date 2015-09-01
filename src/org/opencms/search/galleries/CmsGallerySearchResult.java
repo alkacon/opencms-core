@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -54,8 +55,8 @@ import org.apache.lucene.index.IndexableField;
 
 /**
  * Contains a single search result from the gallery search index.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 /**
  *
@@ -121,14 +122,15 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Creates a fake gallery search result by reading the necessary data from a VFS resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param res the resource from which the data should be read 
+     *
+     * @param cms the current CMS context
+     * @param res the resource from which the data should be read
      */
     public CmsGallerySearchResult(CmsObject cms, CmsResource res) {
 
         try {
-            Map<String, String> props = CmsProperty.toMap(cms.readPropertyObjects(res, true));
+            Map<String, String> props = CmsProperty.toMap(
+                cms.readPropertyObjects(res, CmsResourceTypeXmlContainerPage.isContainerPage(res)));
             m_title = props.get(CmsPropertyDefinition.PROPERTY_TITLE);
             m_description = props.get(CmsPropertyDefinition.PROPERTY_DESCRIPTION);
         } catch (CmsException e) {
@@ -138,7 +140,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_description = "";
         }
         if (m_title == null) {
-            m_title = "";
+            m_title = res.getName();
         }
         m_dateCreated = new Date(res.getDateCreated());
         m_dateExpired = new Date(res.getDateExpired());
@@ -168,7 +170,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Creates a new gallery search result.<p>
-     * 
+     *
      * @param cms the current CMS context (used for reading information missing from the index)
      * @param score the score of this search result
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
@@ -209,7 +211,8 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
             m_description = f.stringValue();
         }
         if (m_description == null) {
-            f = doc.getField(CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_DESCRIPTION, locale));
+            f = doc.getField(
+                CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_DESCRIPTION, locale));
             if (f != null) {
                 m_description = f.stringValue();
             }
@@ -325,7 +328,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Creates a new gallery search result.<p>
-     * 
+     *
      * @param score the score of this search result
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
@@ -338,10 +341,10 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Compares two search results based on the score of the result.<p>
-     * 
+     *
      * @param other the result to compare this result with
      * @return the comparison result
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(CmsGallerySearchResult other) {
@@ -370,7 +373,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the additional information stored for this search result in the gallery search index.<p>
-     * 
+     *
      * @return the additional information stored for this search result in the gallery search index
      */
     public String getAdditonalInfo() {
@@ -380,7 +383,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the containers supported by this resource.<p>
-     * 
+     *
      * @return the containers supported by this resource
      */
     public List<String> getContainerTypes() {
@@ -400,9 +403,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the date the resource expires.<p>
-     * 
+     *
      * @return the date the resource expires
-     * 
+     *
      * @see org.opencms.file.CmsResource#getDateExpired()
      */
     public Date getDateExpired() {
@@ -422,9 +425,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the date the resource is released.<p>
-     * 
+     *
      * @return the date the resource is released
-     * 
+     *
      * @see  org.opencms.file.CmsResource#getDateReleased()
      */
     public Date getDateReleased() {
@@ -454,9 +457,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the length of the resource.<p>
-     * 
+     *
      * @return the length of the resource
-     * 
+     *
      * @see org.opencms.file.CmsResource#getLength()
      */
     public int getLength() {
@@ -466,7 +469,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the list of locales this search result is available for.<p>
-     * 
+     *
      * @return the list of locales this search result is available for
      */
     public List<String> getLocales() {
@@ -478,7 +481,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
      * Returns the resource root path.<p>
      *
      * @return the resource root path
-     * 
+     *
      * @see org.opencms.file.CmsResource#getRootPath()
      */
     public String getPath() {
@@ -488,9 +491,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the resource type of the search result document.<p>
-     * 
+     *
      * @return the resource type of the search result document
-     * 
+     *
      * @see org.opencms.loader.CmsResourceManager#getResourceType(String)
      */
     public String getResourceType() {
@@ -510,9 +513,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the state of the resource.<p>
-     * 
+     *
      * @return the state of the resource
-     * 
+     *
      * @see org.opencms.file.CmsResource#getState()
      */
     public int getState() {
@@ -522,7 +525,7 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the structure id of the resource.<p>
-     * 
+     *
      * @return the structure id of the resource
      */
     public String getStructureId() {
@@ -542,9 +545,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the name of the user who created the resource.<p>
-     * 
+     *
      * @return the name of the user who created the resource
-     * 
+     *
      * @see org.opencms.file.CmsResource#getUserCreated()
      */
     public String getUserCreated() {
@@ -554,9 +557,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns the name of the user who last modified the resource.<p>
-     * 
+     *
      * @return the name of the user who last modified the resource
-     * 
+     *
      * @see org.opencms.file.CmsResource#getUserLastModified()
      */
     public String getUserLastModified() {
@@ -575,9 +578,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Returns if the related resource is released and not expired.<p>
-     * 
+     *
      * @param cms the cms context
-     * 
+     *
      * @return <code>true</code> if the related resource is released and not expired
      */
     public boolean isReleaseAndNotExpired(CmsObject cms) {
@@ -589,9 +592,9 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
 
     /**
      * Initializes missing fields by reading the information from the VFS.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param structureId the current structure id 
+     *
+     * @param cms the current CMS context
+     * @param structureId the current structure id
      */
     protected void initializeMissingFieldsFromVfs(CmsObject cms, CmsUUID structureId) {
 
@@ -605,13 +608,22 @@ public class CmsGallerySearchResult implements Comparable<CmsGallerySearchResult
         try {
             CmsResource res = cms.readResource(structureId);
             if (m_description == null) {
-                CmsProperty descProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_DESCRIPTION, true);
+                CmsProperty descProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
+                    CmsResourceTypeXmlContainerPage.isContainerPage(res));
                 m_description = descProp.getValue();
             }
 
             if (m_title == null) {
-                CmsProperty titleProp = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, true);
+                CmsProperty titleProp = cms.readPropertyObject(
+                    res,
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    CmsResourceTypeXmlContainerPage.isContainerPage(res));
                 m_title = titleProp.getValue();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_title)) {
+                    m_title = res.getName();
+                }
             }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

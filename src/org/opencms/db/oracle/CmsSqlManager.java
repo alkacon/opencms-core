@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,8 +41,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Oracle implementation of the SQL manager.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
@@ -63,7 +63,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
     /**
      * Attempts to close the connection, statement and result set after a statement has been executed.<p>
-     * 
+     *
      * @param sqlManager the sql manager to use
      * @param dbc the current database context
      * @param con the JDBC connection

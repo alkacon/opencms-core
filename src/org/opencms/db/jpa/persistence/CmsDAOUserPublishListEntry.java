@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,14 +61,14 @@ public class CmsDAOUserPublishListEntry {
          */
         public PK() {
 
-            // do nothing 
+            // do nothing
         }
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param userId the user id 
-         * @param structureId the structure id 
+         *
+         * @param userId the user id
+         * @param structureId the structure id
          */
         public PK(CmsUUID userId, CmsUUID structureId) {
 
@@ -116,19 +116,19 @@ public class CmsDAOUserPublishListEntry {
     protected String m_userId;
 
     /**
-     * Empty default constructor.<p> 
+     * Empty default constructor.<p>
      */
     public CmsDAOUserPublishListEntry() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Creates a new entry.<p>
-     * 
-     * @param userId the user id 
-     * @param structureId the structure id 
-     * @param dateChanged the modification date 
+     *
+     * @param userId the user id
+     * @param structureId the structure id
+     * @param dateChanged the modification date
      */
     public CmsDAOUserPublishListEntry(CmsUUID userId, CmsUUID structureId, long dateChanged) {
 
@@ -139,8 +139,8 @@ public class CmsDAOUserPublishListEntry {
 
     /**
      * Gets the modification date.<p>
-     * 
-     * @return the modification date 
+     *
+     * @return the modification date
      */
     public long getDateChanged() {
 
@@ -149,8 +149,8 @@ public class CmsDAOUserPublishListEntry {
 
     /**
      * Gets the structure id of the resource.<p>
-     * 
-     * @return the structure id 
+     *
+     * @return the structure id
      */
     public String getStructureId() {
 
@@ -159,8 +159,8 @@ public class CmsDAOUserPublishListEntry {
 
     /**
      * Gets the user id of the publish list entry.<p>
-     * 
-     * @return the user id 
+     *
+     * @return the user id
      */
     public String getUserId() {
 

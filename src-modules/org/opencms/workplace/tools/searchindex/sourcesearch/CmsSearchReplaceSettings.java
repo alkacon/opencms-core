@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,9 +35,9 @@ import java.util.List;
 /**
  * Settings bean for the dialog.
  * <p>
- * 
+ *
  * @since 7.5.3
- * 
+ *
  */
 
 public class CmsSearchReplaceSettings {
@@ -51,8 +51,14 @@ public class CmsSearchReplaceSettings {
     /** The force replacement flag. */
     private boolean m_forceReplace;
 
+    /** When replacing XML content, replace-operation only applies to this locale. */
+    private String m_locale;
+
     /** Display message. */
     private String m_message;
+
+    /** Flag indicating if only content values should be searched and replaced. */
+    private boolean m_onlyContentValues;
 
     /** The paths to collect resources. */
     private List<String> m_paths = new LinkedList<String>();
@@ -88,6 +94,16 @@ public class CmsSearchReplaceSettings {
 
         super();
         m_paths.add("/");
+    }
+
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return m_locale;
     }
 
     /**
@@ -142,7 +158,7 @@ public class CmsSearchReplaceSettings {
 
     /**
      * Returns the resources paths in an array.<p>
-     * 
+     *
      * @return the resources paths in an array.
      */
     public String[] getResourcesArray() {
@@ -201,7 +217,7 @@ public class CmsSearchReplaceSettings {
     /**
      * Returns the force replace flag, if <code>true</code> the replacement
      * will also be performed if the replacement String is empty.<p>
-     * 
+     *
      * @return the force replace flag
      */
     public boolean isForceReplace() {
@@ -210,8 +226,18 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Returns if only content values should be searched and replaced.<p>
+     *
+     * @return if only content values should be searched and replaced
+     */
+    public boolean isOnlyContentValues() {
+
+        return m_onlyContentValues;
+    }
+
+    /**
      * Returns <code>true</code> if Solr index is selected and a query was entered.<p>
-     * 
+     *
      * @return <code>true</code> if Solr index is selected and a query was entered
      */
     public boolean isSolrSearch() {
@@ -221,7 +247,8 @@ public class CmsSearchReplaceSettings {
             return false;
         }
         // index selected and query entered --> Solr search else VFS
-        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_source) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query));
+        return (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_source)
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_query));
     }
 
     /**
@@ -235,6 +262,16 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
+    }
+
+    /**
      * @param message the message to set
      */
     public void setMessage(final String message) {
@@ -243,8 +280,18 @@ public class CmsSearchReplaceSettings {
     }
 
     /**
+     * Sets if only content values should be searched and replaced.<p>
+     *
+     * @param onlyContentValue if only content values should be searched and replaced
+     */
+    public void setOnlyContentValues(boolean onlyContentValue) {
+
+        m_onlyContentValues = onlyContentValue;
+    }
+
+    /**
      * Sets the paths.<p>
-     * 
+     *
      * @param paths the paths to set
      */
     public void setPaths(final List<String> paths) {
@@ -272,7 +319,7 @@ public class CmsSearchReplaceSettings {
 
     /**
      * Sets the replace pattern.<p>
-     * 
+     *
      * @param replacepattern the replace pattern
      */
     public void setReplacepattern(String replacepattern) {
@@ -292,7 +339,7 @@ public class CmsSearchReplaceSettings {
 
     /**
      * Sets the search pattern.<p>
-     * 
+     *
      * @param searchpattern the search pattern
      */
     public void setSearchpattern(String searchpattern) {

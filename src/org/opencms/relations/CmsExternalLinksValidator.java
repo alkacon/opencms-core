@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,8 +51,8 @@ import java.util.Map;
 
 /**
  * Class to validate pointer links.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
@@ -64,7 +64,7 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
      *
      * @param check the url to check
      * @param cms a OpenCms context object
-     * 
+     *
      * @return false if the url could not be accessed
      */
     public static boolean checkUrl(CmsObject cms, String check) {
@@ -98,11 +98,11 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
     /**
      * This method is called by the cron scheduler.<p>
-     * 
+     *
      * @param cms a OpenCms context object
      * @param parameters link check parameters
      * @return the String that is written to the OpenCms log
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     public String launch(CmsObject cms, Map<String, String> parameters) throws CmsException {
 
@@ -113,9 +113,9 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
         return "CmsExternLinkValidator.launch(): Links checked.";
     }
 
-    /** 
+    /**
      * Sets the report for the output.<p>
-     * 
+     *
      * @param report the report for the output
      */
     public void setReport(I_CmsReport report) {
@@ -125,10 +125,10 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
 
     /**
      * Validate all links.<p>
-     * 
+     *
      * @param cms a OpenCms context object
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void validateLinks(CmsObject cms) throws CmsException {
 
@@ -141,15 +141,15 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             I_CmsReport.FORMAT_HEADLINE);
 
         // get all links
-        int pointerId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeName()).getTypeId();
-        List<CmsResource> links = cms.readResources(
-            "/",
-            CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId));
+        int pointerId = OpenCms.getResourceManager().getResourceType(
+            CmsResourceTypePointer.getStaticTypeName()).getTypeId();
+        CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(pointerId);
+        List<CmsResource> links = cms.readResources("/", filter);
         Iterator<CmsResource> iterator = links.iterator();
         Map<String, String> brokenLinks = new HashMap<String, String>();
 
         for (int i = 1; iterator.hasNext(); i++) {
-            CmsFile link = cms.readFile(cms.getSitePath(iterator.next()));
+            CmsFile link = cms.readFile(cms.getSitePath(iterator.next()), filter);
             String linkUrl = new String(link.getContents());
 
             // print to the report
@@ -160,13 +160,13 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
                     new Integer(links.size())),
                 I_CmsReport.FORMAT_NOTE);
             m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.FORMAT_NOTE);
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                link.getRootPath()));
+            m_report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    link.getRootPath()));
             m_report.print(Messages.get().container(Messages.GUI_LINK_POINTING_TO_0), I_CmsReport.FORMAT_NOTE);
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                linkUrl));
+            m_report.print(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, linkUrl));
             m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             // check link and append it to the list of broken links, if test fails

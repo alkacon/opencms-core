@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ import java.util.List;
 /**
  * Holds the functionality to import resources from the file system
  * or a zip file into the OpenCms VFS.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsImport {
 
@@ -67,12 +67,12 @@ public class CmsImport {
     }
 
     /**
-     * Constructs a new import object which imports the resources from an OpenCms 
+     * Constructs a new import object which imports the resources from an OpenCms
      * export zip file or a folder in the "real" file system.<p>
      *
      * @param cms the cms context
      * @param report the output report
-     *  
+     *
      * @throws CmsRoleViolationException if the current user dies not have role permissions to import the database
      */
     public CmsImport(CmsObject cms, I_CmsReport report)
@@ -88,11 +88,11 @@ public class CmsImport {
     }
 
     /**
-     * Imports the resources and writes them to the cms VFS, even if there 
+     * Imports the resources and writes them to the cms VFS, even if there
      * already exist files with the same name.<p>
-     * 
+     *
      * @param parameters the import parameters
-     * 
+     *
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsXmlException if the manifest of the import file could not be unmarshalled
      */
@@ -101,14 +101,16 @@ public class CmsImport {
         boolean run = false;
 
         try {
-            // now find the correct import implementation         
+            // now find the correct import implementation
             Iterator<I_CmsImport> i = m_importImplementations.iterator();
             while (i.hasNext()) {
                 I_CmsImport importVersion = i.next();
                 if (importVersion.matches(parameters)) {
-                    m_report.println(Messages.get().container(
-                        Messages.RPT_IMPORT_VERSION_1,
-                        String.valueOf(importVersion.getVersion())), I_CmsReport.FORMAT_NOTE);
+                    m_report.println(
+                        Messages.get().container(
+                            Messages.RPT_IMPORT_VERSION_1,
+                            String.valueOf(importVersion.getVersion())),
+                        I_CmsReport.FORMAT_NOTE);
                     // this is the correct import version, so call it for the import process
                     importVersion.importData(m_cms, m_report, parameters);
                     OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, null));
@@ -122,9 +124,8 @@ public class CmsImport {
                     I_CmsReport.FORMAT_WARNING);
             }
         } finally {
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES,
-                Collections.<String, Object> emptyMap()));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES, Collections.<String, Object> emptyMap()));
         }
     }
 }

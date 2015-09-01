@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,14 +38,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The content service used to load and persist entity and type information.<p>
- * 
+ *
  * Use this asynchronous interface on the client side.<p>
  */
 public interface I_CmsContentServiceAsync {
 
     /**
      * Loads the content definition for a given type.<p>
-     * 
+     *
      * @param entityId the entity id/URI
      * @param callback the asynchronous callback
      */
@@ -53,7 +53,7 @@ public interface I_CmsContentServiceAsync {
 
     /**
      * Saves the given entities and returns a validation result in case of invalid entities.<p>
-     * 
+     *
      * @param entities the entities to save
      * @param callback the asynchronous callback
      */
@@ -61,7 +61,7 @@ public interface I_CmsContentServiceAsync {
 
     /**
      * Saves the given entity and returns a validation result in case of invalid entities.<p>
-     * 
+     *
      * @param entity the entity to save
      * @param callback the asynchronous callback
      */
@@ -70,17 +70,21 @@ public interface I_CmsContentServiceAsync {
     /**
      * Retrieves the updated entity HTML representation.<p>
      * The entity data will be validated but not persisted on the server.<p>
-     * 
+     *
      * @param entity the entity
      * @param contextUri the context URI
      * @param htmlContextInfo information about the HTML context
      * @param callback the asynchronous callback
      */
-    void updateEntityHtml(CmsEntity entity, String contextUri, String htmlContextInfo, AsyncCallback<CmsEntityHtml> callback);
+    void updateEntityHtml(
+        CmsEntity entity,
+        String contextUri,
+        String htmlContextInfo,
+        AsyncCallback<CmsEntityHtml> callback);
 
     /**
      * Validates the given entities and returns maps of error and warning messages in case of invalid attributes.<p>
-     * 
+     *
      * @param changedEntities the entities to validate
      * @param callback the asynchronous callback
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,12 +31,12 @@ import java.util.Locale;
 
 /**
  * Report class used to write the output of a report to a StringBuffer.<p>
- * 
- * It stores everything and generates no output. 
+ *
+ * It stores everything and generates no output.
  * After the report is finished, you can access to result of the
  * report using the {@link #toString()} method.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsStringBufferReport extends A_CmsReport {
 
@@ -45,7 +45,7 @@ public class CmsStringBufferReport extends A_CmsReport {
 
     /**
      * Constructs a new report using the provided locale for the output language.<p>
-     *  
+     *
      * @param locale the locale to use for the output language
      */
     public CmsStringBufferReport(Locale locale) {

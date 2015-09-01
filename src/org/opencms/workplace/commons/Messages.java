@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
- * 
- * @since 6.0.0 
+ * Convenience class to access the localized messages of this OpenCms package.<p>
+ *
+ * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -132,13 +132,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0 = "ERR_PREF_UPLOAD_VARIANT_NOT_FOUND_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_INTERRUPTED_0 = "ERR_PROGRESS_INTERRUPTED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_INVALID_LIST_0 = "ERR_PROGRESS_START_INVALID_LIST_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PROGRESS_START_THREAD_EXISTS_0 = "ERR_PROGRESS_START_THREAD_EXISTS_0";
 
@@ -1043,6 +1040,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_EDITOR_BEST_0 = "GUI_PREF_EDITOR_BEST_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_ELEMENT_VIEW_0 = "GUI_PREF_ELEMENT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1101,6 +1101,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_RESTRICT_EXPLORER_VIEW_0 = "GUI_PREF_RESTRICT_EXPLORER_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_0 = "GUI_PREF_REUSE_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_ASK_0 = "GUI_PREF_REUSE_MODE_ASK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_COPY_0 = "GUI_PREF_REUSE_MODE_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0 = "GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_REUSE_MODE_REUSE_0 = "GUI_PREF_REUSE_MODE_REUSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SEARCH_RESULT_0 = "GUI_PREF_SEARCH_RESULT_0";
@@ -1658,7 +1673,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Returns an instance of this localized message accessor.<p>
-     * 
+     *
      * @return an instance of this localized message accessor
      */
     public static I_CmsMessageBundle get() {
@@ -1668,7 +1683,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /**
      * Returns the bundle name for this OpenCms package.<p>
-     * 
+     *
      * @return the bundle name for this OpenCms package
      */
     public String getBundleName() {

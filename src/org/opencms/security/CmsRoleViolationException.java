@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,10 +31,10 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * A role violation occurs if a user without permissions tries to access a protected OpenCms system feature that can only 
+ * A role violation occurs if a user without permissions tries to access a protected OpenCms system feature that can only
  * be accessed by users in certain roles.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsRoleViolationException extends CmsSecurityException {
 
@@ -43,7 +43,7 @@ public class CmsRoleViolationException extends CmsSecurityException {
 
     /**
      * Creates a new localized Exception.<p>
-     * 
+     *
      * @param container the localized message container to use
      */
     public CmsRoleViolationException(CmsMessageContainer container) {
@@ -53,7 +53,7 @@ public class CmsRoleViolationException extends CmsSecurityException {
 
     /**
      * Creates a new localized Exception that also containes a root cause.<p>
-     * 
+     *
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */

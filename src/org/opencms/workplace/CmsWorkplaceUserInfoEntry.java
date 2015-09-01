@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import java.lang.reflect.Constructor;
 
 /**
  * Represents an user additional information entry.<p>
- * 
+ *
  * @since 6.5.6
  */
 public final class CmsWorkplaceUserInfoEntry {
@@ -56,7 +56,7 @@ public final class CmsWorkplaceUserInfoEntry {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param key the key for this entry
      * @param type the class name of the stored data type
      * @param widget the widget to use

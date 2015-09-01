@@ -13,13 +13,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.dom4j.Node;
 
 /**
  * Adds the new mime types node.<p>
- * 
+ *
  * @since 6.2.3
  */
 public class CmsXmlAddMimeTypes extends A_CmsXmlVfs {
@@ -610,7 +610,7 @@ public class CmsXmlAddMimeTypes extends A_CmsXmlVfs {
             // /opencms/vfs/resources/mimetypes/mimetype[@extension='${ext}']
             String xp = new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
                 CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
-                CmsVfsConfiguration.N_MIMETYPES).toString()
+                    CmsVfsConfiguration.N_MIMETYPES).toString()
                 + "/"
                 + CmsVfsConfiguration.N_MIMETYPE
                 + "[@"

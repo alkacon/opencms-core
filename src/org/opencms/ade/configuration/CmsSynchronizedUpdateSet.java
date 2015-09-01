@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,20 +32,20 @@ import java.util.Set;
 
 /**
  * Helper class which keeps track of a set of updates to be performed in a different thread.
- * 
+ *
  * New updates can be added, and all updates can be fetched and removed at the same time.
- * 
- * @param <U> the type representing the updates 
+ *
+ * @param <U> the type representing the updates
  */
 public class CmsSynchronizedUpdateSet<U> {
 
     /** The set of updates to perform. */
     private Set<U> m_set = new HashSet<U>();
 
-    /** 
+    /**
      * Adds a new update.<p>
-     * 
-     * @param update 
+     *
+     * @param update the update
      */
     public synchronized void add(U update) {
 
@@ -54,8 +54,8 @@ public class CmsSynchronizedUpdateSet<U> {
 
     /**
      * Removes all updates from the internal set and returns a new set containing the removed updates.<p>
-     * 
-     * @return the removed updates 
+     *
+     * @return the removed updates
      */
     public synchronized Set<U> removeAll() {
 

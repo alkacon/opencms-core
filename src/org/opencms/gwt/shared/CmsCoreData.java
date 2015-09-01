@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Runtime data bean for prefetching.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCoreData implements IsSerializable {
@@ -61,22 +61,27 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
 
+        /** True if the user is a category manager. */
+        private boolean m_isCategoryManager;
+
         /** True if the user is a template developer. */
         private boolean m_isDeveloper;
 
         /** The user name. */
         private String m_name;
 
-        /** 
+        /**
          * Creates a new instance.<p>
-         * 
-         * @param name the user name 
-         * @param isAdmin true if the user is an administrator 
-         * @param isDeveloper true if the user is a template developer 
+         *
+         * @param name the user name
+         * @param isAdmin true if the user is an administrator
+         * @param isDeveloper true if the user is a template developer
+         * @param isCategoryManager true if the user is a category manager
          */
-        public UserInfo(String name, boolean isAdmin, boolean isDeveloper) {
+        public UserInfo(String name, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
 
             m_isDeveloper = isDeveloper;
+            m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_name = name;
         }
@@ -86,13 +91,13 @@ public class CmsCoreData implements IsSerializable {
          */
         protected UserInfo() {
 
-            // empty 
+            // empty
         }
 
         /**
          * Gets the user name.<p>
-         * 
-         * @return the user name 
+         *
+         * @return the user name
          */
         public String getName() {
 
@@ -101,8 +106,8 @@ public class CmsCoreData implements IsSerializable {
 
         /**
          * Returns true if the user is an administrator.<p>
-         * 
-         * @return true if the user is an administrator 
+         *
+         * @return true if the user is an administrator
          */
         public boolean isAdmin() {
 
@@ -110,9 +115,19 @@ public class CmsCoreData implements IsSerializable {
         }
 
         /**
+         * Returns true if the user is a category manager.<p>
+         *
+         * @return true if the user is a category manager
+         */
+        public boolean isCategoryManager() {
+
+            return m_isCategoryManager;
+        }
+
+        /**
          * Returns true if the user is a template developer.<p>
-         * 
-         * @return true if the user is a template developer 
+         *
+         * @return true if the user is a template developer
          */
         public boolean isDeveloper() {
 
@@ -205,8 +220,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Clone constructor.<p>
-     * 
-     * @param clone the instance to clone 
+     *
+     * @param clone the instance to clone
      */
     public CmsCoreData(CmsCoreData clone) {
 
@@ -236,7 +251,7 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param contentEditorUrl the XML content editor URL
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
      * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
@@ -246,18 +261,18 @@ public class CmsCoreData implements IsSerializable {
      * @param locale the current request locale
      * @param wpLocale the workplace locale
      * @param uri the current uri
-     * @param structureId the structure id of tbe resource 
+     * @param structureId the structure id of tbe resource
      * @param navigationUri the current navigation URI
      * @param extensionMapping the mappings of file extensions to resource types
-     * @param serverTime the current time  
+     * @param serverTime the current time
      * @param isShowEditorHelp the show editor help flag
      * @param toolbarVisible a flag to indicate whether the toolbar should be visible initially
      * @param defaultWorkplaceLink the default link to use for opening the workplace
-     * @param aboutLink the link to the "About" page   
-     * @param userInfo information about the current user 
+     * @param aboutLink the link to the "About" page
+     * @param userInfo information about the current user
      * @param uploadFileSizeLimit the file upload size limit
-     * @param isKeepAlive the keep-alive mode 
-     * @param adeParameters the map of ADE configuration parameters 
+     * @param isKeepAlive the keep-alive mode
+     * @param adeParameters the map of ADE configuration parameters
      */
     public CmsCoreData(
         String contentEditorUrl,
@@ -307,18 +322,18 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Gets the "About" link.<p>
-     * 
-     * @return the "about" link 
+     *
+     * @return the "about" link
      */
     public String getAboutLink() {
 
         return m_aboutLink;
     }
 
-    /** 
+    /**
      * Gets the map of ADE configuration parameters.<p>
-     * 
-     * @return the ADE configuration parameters 
+     *
+     * @return the ADE configuration parameters
      */
     public Map<String, String> getAdeParameters() {
 
@@ -337,7 +352,7 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Returns the XML content editor delete-link URL.<p>
-     * 
+     *
      * @return the XML content editor delete-link URL
      */
     public String getContentEditorDeleteLinkUrl() {
@@ -357,8 +372,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Gets the default link to use for opening the workplace.<p>
-     * 
-     * @return the default workplace link 
+     *
+     * @return the default workplace link
      */
     public String getDefaultWorkplaceLink() {
 
@@ -397,8 +412,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Returns the current navigation (sitemap) URI.<p>
-     *  
-     * @return the current navigation URI 
+     *
+     * @return the current navigation URI
      */
     public String getNavigationUri() {
 
@@ -407,8 +422,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Returns the time of the server when the data was loaded.<p>
-     * 
-     * @return the time of the server when the data was loaded 
+     *
+     * @return the time of the server when the data was loaded
      */
     public long getServerTime() {
 
@@ -427,8 +442,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Gets the structure id of the current resource.<p>
-     *  
-     * @return the structure id of the current resource 
+     *
+     * @return the structure id of the current resource
      */
     public CmsUUID getStructureId() {
 
@@ -457,8 +472,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Gets the information about the current user.<p>
-     * 
-     * @return the information about the current user 
+     *
+     * @return the information about the current user
      */
     public UserInfo getUserInfo() {
 
@@ -487,8 +502,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Returns true if the session should be kept alive even without user actions.<p>
-     * 
-     * @return true if keep-alive mode is active 
+     *
+     * @return true if keep-alive mode is active
      */
     public boolean isKeepAlive() {
 
@@ -507,8 +522,8 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Returns true if the toolbar should be visible initially.<p>
-     * 
-     * @return true if the toolbar should be visible initially 
+     *
+     * @return true if the toolbar should be visible initially
      */
     public boolean isToolbarVisible() {
 
@@ -517,7 +532,7 @@ public class CmsCoreData implements IsSerializable {
 
     /**
      * Sets the show editor help flag.<p>
-     * 
+     *
      * @param show <code>true</code> to show editor help
      */
     protected void setShowEditorHelp(boolean show) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,27 +54,27 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implementation of the <code>&lt;cms:editable/&gt;</code> tag.<p>
- * 
- * This class is also used to generate the direct edit buttons for the 
+ *
+ * This class is also used to generate the direct edit buttons for the
  * <code>&lt;cms:include editable="..." /&gt;</code> and <code>&lt;cms:contentload editable="..." /&gt;</code> tags.<p>
- * 
+ *
  * Since OpenCms version 6.2.3, the direct edit button HTML generated is controlled by an instance of {@link I_CmsDirectEditProvider}.
- * The default direct edit provider used can be configured in <code>opencms-workplace.xml</code> in the 
+ * The default direct edit provider used can be configured in <code>opencms-workplace.xml</code> in the
  * <code>&lt;directeditprovider class="..." /&gt;</code> node. The standard provider is
  * {@link org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider}.
- * It's possible to override the default provider onm a page-by-page basis by initializing direct edit with 
+ * It's possible to override the default provider onm a page-by-page basis by initializing direct edit with
  * <code>&lt;cms:editable provider="...." /&gt;</code> on top of the page.<p>
- * 
+ *
  * Since OpenCms version 6.2.3, it is also possible to place the HTML of the direct edit buttons manually.
  * This is intended for pages where the template HTML is not compatible with the direct edit HTML,
  * which usually results in a funny placement of the direct edit buttons in a totally wrong position.
  * To do manual placement of the direct edit buttons, you need to place <code>&lt;cms:editable mode="manual"&gt;</code> and
- * <code>&lt;/cms:editable&gt;</code> around your HTML. Both tags (start and end) will insert HTML according to 
- * the used {@link I_CmsDirectEditProvider}. The direct edit provider used must also support manual 
- * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
+ * <code>&lt;/cms:editable&gt;</code> around your HTML. Both tags (start and end) will insert HTML according to
+ * the used {@link I_CmsDirectEditProvider}. The direct edit provider used must also support manual
+ * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position.
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsJspTagEditable extends BodyTagSupport {
 
@@ -104,12 +104,12 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Editable action method.<p>
-     * 
+     *
      * @param context the current JSP page context
      * @param provider the class name of the direct edit privider to use (may be <code>null</code>, which means use the default)
      * @param mode the direct edit mode to use (may be <code>null</code>, which means current use mode on page)
      * @param fileName optional filename parameter for the direct edit provider (may be <code>null</code>, which means use the default)
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public static void editableTagAction(PageContext context, String provider, CmsDirectEditMode mode, String fileName)
@@ -169,9 +169,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Closes the current direct edit element.<p>
-     * 
+     *
      * @param context the current JSP page context
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public static void endDirectEdit(PageContext context) throws JspException {
@@ -187,9 +187,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Returns the current initialized instance of the direct edit provider.<p>
-     * 
+     *
      * @param context the current JSP page context
-     * 
+     *
      * @return the current initialized instance of the direct edit provider
      */
     public static I_CmsDirectEditProvider getDirectEditProvider(PageContext context) {
@@ -201,14 +201,14 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Inserts direct edit for empty collector lists.<p>
-     * 
+     *
      * @param context the current JSP page context
      * @param container the parent content load container
      * @param mode the direct edit mode to use (may be <code>null</code>, which means current use mode on page)
-     * @param id an id for the content info bean, if available 
-     * 
+     * @param id an id for the content info bean, if available
+     *
      * @throws CmsException in case of invalid collector settings
-     * @throws JspException in case writing to page context fails 
+     * @throws JspException in case writing to page context fails
      */
     public static void insertEditEmpty(
         PageContext context,
@@ -226,9 +226,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
             I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(
                 container.getCollectorName());
             if (collector == null) {
-                throw new CmsException(Messages.get().container(
-                    Messages.ERR_COLLECTOR_NOT_FOUND_1,
-                    container.getCollectorName()));
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, container.getCollectorName()));
             }
             String createParam = collector.getCreateParam(
                 cms,
@@ -239,7 +238,10 @@ public class CmsJspTagEditable extends BodyTagSupport {
                 container.getCollectorName(),
                 container.getCollectorParam());
             if ((createParam != null)
-                && (collector.getCreateTypeId(cms, container.getCollectorName(), container.getCollectorParam()) != -1)) {
+                && (collector.getCreateTypeId(
+                    cms,
+                    container.getCollectorName(),
+                    container.getCollectorParam()) != -1)) {
                 String createFolderName = CmsResource.getFolderPath(createLink);
                 createParam = CmsEncoder.encode(container.getCollectorName() + "|" + createParam);
                 CmsDirectEditParams params = new CmsDirectEditParams(
@@ -257,9 +259,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Returns if direct edit is disabled for the current request.<p>
-     * 
+     *
      * @param request the servlet request
-     * 
+     *
      * @return <code>true</code> if direct edit is disabled for the current request
      */
     public static boolean isDirectEditDisabled(ServletRequest request) {
@@ -269,11 +271,11 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
-     * Checks if the current request should be direct edit enabled. 
+     * Checks if the current request should be direct edit enabled.
      * Online-, history-requests and temporary files will not be editable.
-     * 
+     *
      * @param req the servlet request
-     * 
+     *
      * @return <code>true</code> if the current request should be direct edit enabled
      */
     public static boolean isEditableRequest(ServletRequest req) {
@@ -292,14 +294,14 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
-     * Includes the "direct edit" start element that adds HTML for the editable area to 
+     * Includes the "direct edit" start element that adds HTML for the editable area to
      * the output page.<p>
-     * 
-     * @param context the current JSP page context    
+     *
+     * @param context the current JSP page context
      * @param params the direct edit parameters
-     * 
+     *
      * @return <code>true</code> in case a direct edit element has been opened
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public static boolean startDirectEdit(PageContext context, CmsDirectEditParams params) throws JspException {
@@ -324,11 +326,11 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Returns the current initialized instance of the direct edit provider parameters from the given page context.<p>
-     * 
+     *
      * Also removes the parameters from the given page context.<p>
-     * 
+     *
      * @param context the current JSP page context
-     * 
+     *
      * @return the current initialized instance of the direct edit provider parameters
      */
     protected static CmsDirectEditParams getDirectEditProviderParams(PageContext context) {
@@ -336,7 +338,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
         // get the current request
         ServletRequest req = context.getRequest();
         // get the direct edit params from the request attributes
-        CmsDirectEditParams result = (CmsDirectEditParams)req.getAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
+        CmsDirectEditParams result = (CmsDirectEditParams)req.getAttribute(
+            I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
         if (result != null) {
             req.removeAttribute(I_CmsDirectEditProvider.ATTRIBUTE_DIRECT_EDIT_PROVIDER_PARAMS);
         }
@@ -345,9 +348,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Sets the current initialized instance of the direct edit provider.<p>
-     * 
+     *
      * @param context the current JSP page context
-     * 
+     *
      * @param provider the current initialized instance of the direct edit provider to set
      */
     protected static void setDirectEditProvider(PageContext context, I_CmsDirectEditProvider provider) {
@@ -358,7 +361,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Sets the current initialized instance of the direct edit provider parameters to the page context.<p>
-     * 
+     *
      * @param context the current JSP page context
      * @param params the current initialized instance of the direct edit provider parameters to set
      */
@@ -370,9 +373,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Close the direct edit tag, also prints the direct edit HTML to the current page.<p>
-     * 
+     *
      * @return {@link #EVAL_PAGE}
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -391,11 +394,11 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
-     * Opens the direct edit tag, if manual mode is set then the next 
+     * Opens the direct edit tag, if manual mode is set then the next
      * start HTML for the direct edit buttons is printed to the page.<p>
-     * 
+     *
      * @return {@link #EVAL_BODY_INCLUDE}
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -434,7 +437,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Gets the file with elements for direct editing.<p>
-     * 
+     *
      * @return the file
      */
     public String getFile() {
@@ -499,8 +502,8 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Sets the file with elements for direct editing.<p>
-     * 
-     * @param file the file to set 
+     *
+     * @param file the file to set
      */
     public void setFile(String file) {
 
@@ -529,9 +532,9 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
     /**
      * Inserts direct edit for empty collector lists.<p>
-     * 
+     *
      * @throws CmsException in case of invalid collector settings
-     * @throws JspException in case writing to page context fails 
+     * @throws JspException in case writing to page context fails
      */
     private void insertEditEmpty() throws CmsException, JspException {
 

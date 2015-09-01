@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -53,11 +53,12 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
 
     /**
      * Gets the dialog which this button is used for.<p>
-     * 
-     * @return the dialog for this button 
+     *
+     * @return the dialog for this button
      */
     public CmsFormDialog getDialog() {
-        return m_dialog; 
+
+        return m_dialog;
     }
 
     /**
@@ -81,8 +82,8 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
 
     /**
      * Installs the button on a dialog if the user has sufficient permissions.<p>
-     * 
-     * @param dialog the dialog to which the button should be added 
+     *
+     * @param dialog the dialog to which the button should be added
      */
     public void installOnDialog(CmsFormDialog dialog) {
 
@@ -110,8 +111,8 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
 
     /**
      * Sets the dialog instance.<p>
-     * 
-     * @param dialog the dialog instance 
+     *
+     * @param dialog the dialog instance
      */
     public void setDialog(CmsFormDialog dialog) {
 

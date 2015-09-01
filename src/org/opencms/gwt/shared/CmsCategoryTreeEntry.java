@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,29 +28,28 @@
 package org.opencms.gwt.shared;
 
 import org.opencms.relations.CmsCategory;
+import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * Recursive category tree entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /** The children. */
-    private List<CmsCategoryTreeEntry> m_children;
+    private List<CmsCategoryTreeEntry> m_children = Lists.newArrayList();
 
     /**
      * Clone constructor.<p>
-     * 
+     *
      * @param category the category to clone
-     * 
-     * @throws Exception will never happen 
      */
-    public CmsCategoryTreeEntry(CmsCategory category)
-    throws Exception {
+    public CmsCategoryTreeEntry(CmsCategory category) {
 
         super(category);
     }
@@ -65,14 +64,11 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
 
     /**
      * Adds a child entry.<p>
-     * 
+     *
      * @param child the child to add
      */
     public void addChild(CmsCategoryTreeEntry child) {
 
-        if (m_children == null) {
-            m_children = new ArrayList<CmsCategoryTreeEntry>();
-        }
         m_children.add(child);
     }
 
@@ -84,6 +80,20 @@ public class CmsCategoryTreeEntry extends CmsCategoryBean {
     public List<CmsCategoryTreeEntry> getChildren() {
 
         return m_children;
+    }
+
+    /**
+     * Gets the title of the category, or the name if the title is not set.<p>
+     *
+     * @return the title or name
+     */
+    public Object getTitleOrName() {
+
+        String result = getTitle();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = getPath();
+        }
+        return result;
     }
 
     /**

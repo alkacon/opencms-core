@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,9 +31,9 @@ import java.util.Comparator;
 
 /**
  * Comparator for objects with a path property.<p>
- * 
+ *
  * @see I_CmsHasPath
- * 
+ *
  * @since 8.0.0
  */
 public class CmsComparatorPath implements Comparator<I_CmsHasPath> {
@@ -43,7 +43,7 @@ public class CmsComparatorPath implements Comparator<I_CmsHasPath> {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param ascending if <code>true</code> order is ascending
      */
     public CmsComparatorPath(boolean ascending) {

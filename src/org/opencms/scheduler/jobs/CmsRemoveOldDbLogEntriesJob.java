@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,11 +39,11 @@ import org.apache.commons.logging.Log;
 /**
  * A scheduled job which removes entries older than a given amount of time from the CMS_LOG table, to improve
  * database performance.<p>
- * 
+ *
  * This job has a single parameter named 'max-age', whose value consists of a number, followed by one or more spaces and
- * finall a unit which is either 'hours', 'days', or 'weeks', which controls how old values have to be before they are 
+ * finall a unit which is either 'hours', 'days', or 'weeks', which controls how old values have to be before they are
  * deleted by the job.<p>
- * 
+ *
  * To delete the CMS_LOG entries, this scheduled job needs to be executed as a user who has the role WORKPLACE_MANAGER.<p>
  */
 public class CmsRemoveOldDbLogEntriesJob implements I_CmsScheduledJob {
@@ -78,9 +78,9 @@ public class CmsRemoveOldDbLogEntriesJob implements I_CmsScheduledJob {
 
     /**
      * Parses the 'max-age' parameter and returns a value in hours.<p>
-     * 
-     * @param maxAgeStr the value of the 'max-age' parameter 
-     * 
+     *
+     * @param maxAgeStr the value of the 'max-age' parameter
+     *
      * @return the maximum age in hours
      */
     public int parseMaxAge(String maxAgeStr) {
@@ -119,8 +119,8 @@ public class CmsRemoveOldDbLogEntriesJob implements I_CmsScheduledJob {
 
     /**
      * Shows an error with the format of the 'max-age' parameter value.<p>
-     * 
-     * @param paramValue the parameter value 
+     *
+     * @param paramValue the parameter value
      */
     private void showFormatError(String paramValue) {
 

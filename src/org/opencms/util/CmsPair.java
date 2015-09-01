@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,10 +37,10 @@ import com.google.common.base.Objects;
 
 /**
  * Generic pair class.<p>
- * 
+ *
  * @param <A> type of the first component of the pair
  * @param <B> type of the second component of the pair
- * 
+ *
  * @since 8.0.0
  */
 public class CmsPair<A, B> implements Serializable {
@@ -64,7 +64,7 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Creates a new pair containing two objects.<p>
-     * 
+     *
      * @param a the first component
      * @param b the second component
      */
@@ -76,13 +76,13 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Helper method for constructing a pair which avoids having to explicitly write the generic type parameters.<p>
-     * 
-     * @param <A> the type for the first component 
+     *
+     * @param <A> the type for the first component
      * @param <B> the type for the second component
-     * 
+     *
      * @param a the first component
-     * @param b the second component 
-     * 
+     * @param b the second component
+     *
      * @return the pair (a, b)
      */
     public static <A, B> CmsPair<A, B> create(A a, B b) {
@@ -92,15 +92,15 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Utility method which creates a new comparator for lexically ordering pairs.<p>
-     * 
+     *
      * Lexical ordering means that a pair is considered "less" than another if either its
      * first component is less than that of the other one, or their first components are equal
      * and the second component of the first pair is less than that of the other one.<p>
-     * 
+     *
      * @param <A> the type parameter for the first pair component
      * @param <B> the type parameter for the second pair component
-     * 
-     * @return a new comparator for lexically ordering pairs 
+     *
+     * @return a new comparator for lexically ordering pairs
      */
     public static <A extends Comparable<A>, B extends Comparable<B>> Comparator<CmsPair<A, B>> getLexicalComparator() {
 
@@ -122,13 +122,13 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Helper method for converting a list of string pairs to a string map.<p>
-     * 
-     * The first component of each pair is used as a map key, the second component as the 
+     *
+     * The first component of each pair is used as a map key, the second component as the
      * value for the key.
-     * 
-     * @param pairs the list of pairs 
-     * 
-     * @return a string map 
+     *
+     * @param pairs the list of pairs
+     *
+     * @return a string map
      */
     public static Map<String, String> pairsToMap(List<CmsPair<String, String>> pairs) {
 
@@ -155,7 +155,7 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Returns the first component of the pair.<p>
-     * 
+     *
      * @return the first component of the pair
      */
     public A getFirst() {
@@ -165,7 +165,7 @@ public class CmsPair<A, B> implements Serializable {
 
     /**
      * Returns the second component of the pair.<p>
-     * 
+     *
      * @return the second component of the pair
      */
     public B getSecond() {

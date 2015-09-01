@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,8 +46,8 @@ import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  */
 public class CmsFormatterBeanParser {
 
-    /** 
+    /**
      * Exception for the errors in the configuration file not covered by other exception types.<p>
      */
     public static class ParseException extends Exception {
@@ -70,8 +70,8 @@ public class CmsFormatterBeanParser {
 
         /**
          * Creates a new exception.<p>
-         * 
-         * @param message the error message 
+         *
+         * @param message the error message
          */
         public ParseException(String message) {
 
@@ -194,14 +194,14 @@ public class CmsFormatterBeanParser {
     private String m_resourceType;
 
     /** Parsed field. */
-    private Map<String, CmsXmlContentProperty> m_settings = new HashMap<String, CmsXmlContentProperty>();
+    private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
     /**
      * Creates a new parser instance.<p>
-     * 
+     *
      * A  new parser instance should be created for every formatter configuration you want to parse.<p>
-     * 
-     * @param cms the CMS context to use for parsing 
+     *
+     * @param cms the CMS context to use for parsing
      */
     public CmsFormatterBeanParser(CmsObject cms) {
 
@@ -210,10 +210,10 @@ public class CmsFormatterBeanParser {
 
     /**
      * Creates an xpath from the given components.<p>
-     * 
-     * @param components the xpath componentns 
-     * 
-     * @return the composed xpath 
+     *
+     * @param components the xpath componentns
+     *
+     * @return the composed xpath
      */
     public static String path(String... components) {
 
@@ -221,16 +221,16 @@ public class CmsFormatterBeanParser {
     }
 
     /**
-     * Reads the formatter bean from the given XML content.<p> 
-     * 
-     * @param content the formatter configuration XML content 
-     * @param location a string indicating the location of the configuration 
+     * Reads the formatter bean from the given XML content.<p>
+     *
+     * @param content the formatter configuration XML content
+     * @param location a string indicating the location of the configuration
      * @param id the id to use as the formatter id
-     *  
-     * @return the parsed formatter bean 
-     * 
-     * @throws ParseException if parsing goes wrong 
-     * @throws CmsException if something else goes wrong 
+     *
+     * @return the parsed formatter bean
+     *
+     * @throws ParseException if parsing goes wrong
+     * @throws CmsException if something else goes wrong
      */
     public CmsFormatterBean parse(CmsXmlContent content, String location, String id)
     throws CmsException, ParseException {
@@ -312,14 +312,14 @@ public class CmsFormatterBeanParser {
         return formatterBean;
     }
 
-    /** 
+    /**
      * Gets an XML string value.<p>
-     * 
-     * @param val the location of the parent value 
-     * @param path the path of the sub-value 
+     *
+     * @param val the location of the parent value
+     * @param path the path of the sub-value
      * @param defaultValue the default value to use if no value was found
-     *  
-     * @return the found value 
+     *
+     * @return the found value
      */
     private String getString(I_CmsXmlContentLocation val, String path, String defaultValue) {
 
@@ -334,10 +334,10 @@ public class CmsFormatterBeanParser {
 
     /**
      * Parses the head includes.<p>
-     * 
+     *
      * @param formatterLoc the parent value location
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void parseHeadIncludes(I_CmsXmlContentLocation formatterLoc) throws CmsException {
 
@@ -374,10 +374,10 @@ public class CmsFormatterBeanParser {
 
     /**
      * Parses the matching criteria (container types or widths) for the formatter.<p>
-     * 
-     * @param linkFormatterLoc the formatter value location 
-     * 
-     * @throws ParseException if parsing goes wrong 
+     *
+     * @param linkFormatterLoc the formatter value location
+     *
+     * @throws ParseException if parsing goes wrong
      */
     private void parseMatch(I_CmsXmlContentLocation linkFormatterLoc) throws ParseException {
 
@@ -411,7 +411,7 @@ public class CmsFormatterBeanParser {
 
     /**
      * Parses the settings.<p>
-     * 
+     *
      * @param formatterLoc the formatter value location
      */
     private void parseSettings(I_CmsXmlContentLocation formatterLoc) {

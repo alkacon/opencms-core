@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,8 +36,8 @@ import java.util.List;
 /**
  * This is an admin tool group, it just generates the html code for
  * the group structure.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsToolGroup {
 
@@ -53,8 +53,8 @@ public class CmsToolGroup {
     private final String m_name;
 
     /**
-     * Default Constructor.<p> 
-     * 
+     * Default Constructor.<p>
+     *
      * @param id a unique id
      * @param name the name of the group
      */
@@ -66,9 +66,9 @@ public class CmsToolGroup {
 
     /**
      * Adds an admin tool.<p>
-     * 
+     *
      * @param adminTool the admin tool
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object)
      */
     public void addAdminTool(CmsTool adminTool) {
@@ -78,10 +78,10 @@ public class CmsToolGroup {
 
     /**
      * Adds an admin tool at the given position.<p>
-     * 
+     *
      * @param adminTool the admin tool
      * @param position the position
-     * 
+     *
      * @see org.opencms.workplace.tools.CmsIdentifiableObjectContainer#addIdentifiableObject(String, Object, float)
      */
     public void addAdminTool(CmsTool adminTool, float position) {
@@ -91,7 +91,7 @@ public class CmsToolGroup {
 
     /**
      * Returns a list of admin tools.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsTool}</code>s
      */
     public List<CmsTool> getAdminTools() {
@@ -101,7 +101,7 @@ public class CmsToolGroup {
 
     /**
      * Returns the id.<p>
-     * 
+     *
      * @return the id
      */
     public String getId() {
@@ -121,9 +121,9 @@ public class CmsToolGroup {
 
     /**
      * Returns the necessary html code.<p>
-     * 
+     *
      * @param wp the jsp page to write the code to
-     * 
+     *
      * @return html code
      */
     public String groupHtml(CmsWorkplace wp) {

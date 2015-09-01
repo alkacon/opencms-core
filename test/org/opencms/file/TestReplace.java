@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ public class TestReplace extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestReplace(String arg0) {
@@ -56,7 +56,7 @@ public class TestReplace extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -89,7 +89,7 @@ public class TestReplace extends OpenCmsTestCase {
 
     /**
      * Tests the "replace resource" operation.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReplaceResourceContent() throws Throwable {
@@ -124,7 +124,7 @@ public class TestReplace extends OpenCmsTestCase {
 
     /**
      * Tests the "replace resource" operation for jsp without permissions.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testReplaceResourceJsp() throws Throwable {

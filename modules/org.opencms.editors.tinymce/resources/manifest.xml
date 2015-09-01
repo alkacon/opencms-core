@@ -14,8 +14,8 @@
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
-                              <p>The version of TinyMCE is 4.0.16</p>]]></description>
-		<version>9.4.8</version>
+                              <p>The version of TinyMCE is 4.1.3</p>]]></description>
+		<version>9.5.2</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated />
@@ -40,10 +40,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>e730fa05-3faf-11e3-a93a-13c7f20aeb68</uuidstructure>
-			<datelastmodified>Mon, 28 Oct 2013 09:04:08 GMT</datelastmodified>
+			<uuidstructure>394350d6-26e0-11e4-a5f1-9723befcacf3</uuidstructure>
+			<datelastmodified>Mon, 18 Aug 2014 14:02:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 28 Oct 2013 09:04:08 GMT</datecreated>
+			<datecreated>Mon, 18 Aug 2014 14:02:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -62,10 +62,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>e8e5d631-3faf-11e3-a93a-13c7f20aeb68</uuidstructure>
-			<datelastmodified>Mon, 28 Oct 2013 09:04:11 GMT</datelastmodified>
+			<uuidstructure>3b584d62-26e0-11e4-a5f1-9723befcacf3</uuidstructure>
+			<datelastmodified>Mon, 18 Aug 2014 14:02:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 28 Oct 2013 09:04:11 GMT</datecreated>
+			<datecreated>Mon, 18 Aug 2014 14:02:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -189,7 +189,24 @@
 				</property>
 			</properties>
 			<relations />
-			<accesscontrol />
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/editors/tinymce</destination>
@@ -555,11 +572,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/license.txt
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb22632e-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb22632f-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e7886ffd-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7886ffe-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -577,11 +594,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/tinymce.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb24ad21-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb24ad22-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
+			<uuidstructure>e78366ea-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e78366eb-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1168,8 +1185,8 @@
 					<value><![CDATA[gd]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/langs/gl.js
@@ -2399,10 +2416,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba0de690-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e78ed8a4-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2413,10 +2430,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/advlist
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba105792-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e84493fc-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2429,11 +2446,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/advlist/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba127a74-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba127a75-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e84668be-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e84668bf-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2449,10 +2466,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/anchor
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba151287-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e840ea77-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2465,11 +2482,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/anchor/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba175c79-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba175c7a-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e842bf39-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e842bf3a-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2485,10 +2502,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autolink
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba19cd7c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e83d40f2-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2501,11 +2518,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autolink/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba1c176e-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba1c176f-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e83f15b4-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e83f15b5-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2521,10 +2538,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autoresize
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba1e8871-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e839976d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2537,11 +2554,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autoresize/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba20d263-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba20d264-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e83b451f-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e83b4520-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2557,10 +2574,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autosave
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba234366-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e835ede8-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2573,11 +2590,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/autosave/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba258d58-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba258d59-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e8379b9a-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8379b9b-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2593,10 +2610,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/bbcode
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba28256b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e8321d53-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2609,11 +2626,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/bbcode/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba2a484d-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba2a484e-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:31 GMT</datelastmodified>
+			<uuidstructure>e833f215-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e833f216-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2629,10 +2646,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/charmap
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba2d0670-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e82e4cbe-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2645,11 +2662,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/charmap/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba2f5062-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba2f5063-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8302180-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8302181-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2665,10 +2682,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/code
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba31e875-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e82a7c29-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2681,11 +2698,47 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/code/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba343267-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba343268-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e82c50eb-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e82c50ec-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[plugin.min]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/colorpicker
+			</destination>
+			<type>folder</type>
+			<uuidstructure>e8268484-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/colorpicker/plugin.min.js
+			</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/colorpicker/plugin.min.js
+			</destination>
+			<type>plain</type>
+			<uuidstructure>e8285946-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8285947-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2701,10 +2754,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/contextmenu
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba36a36a-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e8228cdf-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2717,11 +2770,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/contextmenu/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba38ed5c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba38ed5d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e82488b1-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e82488b2-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2737,10 +2790,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/directionality
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba3b5e5f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e81ebc4a-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2753,11 +2806,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/directionality/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba3d8141-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba3d8142-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e820910c-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e820910d-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2773,10 +2826,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba401954-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e81aebb5-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2789,11 +2842,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba68fe58-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba68fe59-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e81ce787-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e81ce788-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2809,10 +2862,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba428a56-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e8795fdb-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -2825,11 +2878,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-cool.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba445f18-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba445f19-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8a57929-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8a5792a-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2851,11 +2904,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-cry.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba46a90c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba46a90d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8a292f5-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8a292f6-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2877,11 +2930,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-embarassed.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba48f300-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba48f301-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e89fd3d1-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e89fd3d2-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2903,11 +2956,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-foot-in-mouth.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba4b3cf4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba4b3cf5-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e89ced9d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e89ced9e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2929,11 +2982,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-frown.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba4d86e8-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba4d86e9-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e89a5589-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e89a558a-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2955,11 +3008,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-innocent.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba4fd0dc-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba4fd0dd-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8979665-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8979666-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -2981,11 +3034,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-kiss.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba521ad0-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba521ad1-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e894d741-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e894d742-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3007,11 +3060,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-laughing.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba5464c4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba5464c5-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e892181d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e892181e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3033,11 +3086,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-money-mouth.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba56aeb8-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba56aeb9-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e88f58f9-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e88f58fa-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3059,11 +3112,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-sealed.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba58f8ac-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba58f8ad-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e88c99d5-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e88c99d6-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3085,11 +3138,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-smile.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba5b42a0-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba5b42a1-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e889dab1-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e889dab2-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3111,11 +3164,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-surprised.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba5d8c94-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba5d8c95-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8871b8d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8871b8e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3137,11 +3190,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-tongue-out.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba5fd688-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba5fd689-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8843559-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e884355a-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3163,11 +3216,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-undecided.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba62207c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba62207d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8814f25-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8814f26-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3189,11 +3242,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-wink.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba646a70-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba646a71-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e87e9001-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e87e9002-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3215,11 +3268,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/emoticons/img/smiley-yell.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>ba66b464-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba66b465-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e87bd0dd-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e87bd0de-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3239,13 +3292,35 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba6b484b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e814d12d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example/dialog.html
+			</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example/dialog.html
+			</destination>
+			<type>plain</type>
+			<uuidstructure>e818efe2-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e818efe3-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog]]></value>
+				</property>
+			</properties>
 			<relations />
 			<accesscontrol />
 		</file>
@@ -3255,11 +3330,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba6d1d0d-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba6d1d0e-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e816a5ef-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e816a5f0-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3275,10 +3350,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example_dependency
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba6f6700-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e8110098-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3291,11 +3366,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/example_dependency/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba713bc2-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba713bc3-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e812d55a-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e812d55b-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3311,10 +3386,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/fullpage
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba735ea5-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e80d08f3-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3327,11 +3402,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/fullpage/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba753367-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba753368-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e80eddb5-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e80eddb6-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3347,10 +3422,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/fullscreen
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba77564a-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e809114e-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3363,11 +3438,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/fullscreen/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba792b0c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba792b0d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e80b0d20-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e80b0d21-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3383,10 +3458,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/hr
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba7b4def-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e80540b9-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3399,11 +3474,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/hr/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba7d49c1-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba7d49c2-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e807157b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e807157c-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3419,10 +3494,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/image
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba7f6ca4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e8017024-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3435,11 +3510,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/image/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba814166-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba814167-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e8036bf6-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8036bf7-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3455,10 +3530,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/importcss
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba836449-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7fdc79f-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3471,11 +3546,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/importcss/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba85390b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba85390c-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e7ff9b61-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7ff9b62-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3491,10 +3566,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/insertdatetime
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba8782fe-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7f9f70a-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3507,11 +3582,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/insertdatetime/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba8b7aa0-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba8b7aa1-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:32 GMT</datelastmodified>
+			<uuidstructure>e7fbcbcc-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7fbcbcd-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3527,10 +3602,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/layer
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba8d9d83-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7f62675-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3543,11 +3618,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/layer/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba8f9955-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba8f9956-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7f7fb37-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7f7fb38-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3563,10 +3638,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/legacyoutput
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba91bc38-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7f255e0-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3579,11 +3654,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/legacyoutput/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba9390fa-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba9390fb-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7f451b2-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7f451b3-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3599,10 +3674,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/link
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba95b3dd-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7eeac5b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3615,11 +3690,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/link/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba97889f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba9788a0-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7f0811d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7f0811e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3635,10 +3710,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/lists
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba99d292-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:24 GMT</datelastmodified>
+			<uuidstructure>e7eab4b6-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:24 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3651,11 +3726,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/lists/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>ba9ba754-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba9ba755-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7ecb088-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7ecb089-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3671,10 +3746,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/media
 			</destination>
 			<type>folder</type>
-			<uuidstructure>ba9df147-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7e49a2e-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3687,11 +3762,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/media/moxieplayer.swf
 			</destination>
 			<type>binary</type>
-			<uuidstructure>ba9fed19-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>ba9fed1a-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7e8b8e3-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7e8b8e4-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3709,11 +3784,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/media/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baa2370c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baa2370d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7e69600-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7e69601-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3729,10 +3804,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/nonbreaking
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baa480ff-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7e0c999-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3745,11 +3820,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/nonbreaking/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baa67cd1-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baa67cd2-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7e2c56b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7e2c56c-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3765,10 +3840,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/noneditable
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baa8c6c4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7dcf904-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3781,11 +3856,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/noneditable/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baaa9b86-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baaa9b87-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7decdc6-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7decdc7-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3801,10 +3876,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/pagebreak
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baace579-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7d9286f-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3817,11 +3892,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/pagebreak/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baaeba3b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baaeba3c-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7db2441-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7db2442-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3837,10 +3912,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/paste
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bab12b3e-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7d557da-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3853,11 +3928,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/paste/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bab32710-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bab32711-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7d72c9c-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7d72c9d-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3873,10 +3948,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/preview
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bab549f3-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7d18745-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3889,11 +3964,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/preview/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bab745c5-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bab745c6-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7d35c07-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7d35c08-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3909,10 +3984,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/print
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bab968a8-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7cdb6b0-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3925,11 +4000,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/print/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>babb647a-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>babb647b-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7cf8b72-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7cf8b73-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3945,10 +4020,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/save
 			</destination>
 			<type>folder</type>
-			<uuidstructure>babd875d-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7c9e61b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3961,11 +4036,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/save/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>babf5c1f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>babf5c20-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7cbbadd-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7cbbade-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -3981,10 +4056,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/searchreplace
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bac1a612-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7c63c96-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -3997,11 +4072,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/searchreplace/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bac3a1e4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bac3a1e5-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7c81158-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7c81159-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4017,10 +4092,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/spellchecker
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bac5ebd7-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7c26c01-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4033,11 +4108,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/spellchecker/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bac7c099-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bac7c09a-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7c440c3-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7c440c4-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4053,10 +4128,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/tabfocus
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baca0a8c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7bec27c-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4069,11 +4144,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/tabfocus/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bacbdf4e-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bacbdf4f-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7c0973e-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7c0973f-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4089,10 +4164,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/table
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bace2941-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7bacad7-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4105,11 +4180,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/table/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bacffe03-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bacffe04-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7bcc6a9-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7bcc6aa-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4125,10 +4200,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/template
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bad247f6-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7b72152-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4141,11 +4216,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/template/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bad443c8-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bad443c9-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7b8f614-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7b8f615-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4161,10 +4236,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/textcolor
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bad666ab-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7b329ad-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4177,11 +4252,47 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/textcolor/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bad8627d-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bad8627e-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7b5257f-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7b52580-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[plugin.min]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/textpattern
+			</destination>
+			<type>folder</type>
+			<uuidstructure>e7af5918-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/textpattern/plugin.min.js
+			</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/textpattern/plugin.min.js
+			</destination>
+			<type>plain</type>
+			<uuidstructure>e7b12dda-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7b12ddb-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4197,10 +4308,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualblocks
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bada8560-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7ab8883-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4213,11 +4324,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualblocks/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bae09fe7-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bae09fe8-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7ad5d45-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7ad5d46-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4233,10 +4344,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualblocks/css
 			</destination>
 			<type>folder</type>
-			<uuidstructure>badc8132-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e8754126-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4249,11 +4360,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualblocks/css/visualblocks.css
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bade55f4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bade55f5-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e8773cf8-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8773cf9-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4269,10 +4380,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualchars
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bae2c2ca-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7a7b7ee-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4285,11 +4396,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/visualchars/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bae4be9c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bae4be9d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7a98cb0-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7a98cb1-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4305,10 +4416,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/wordcount
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bae6e17f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e7a3e759-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4321,11 +4432,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/wordcount/plugin.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bae8b641-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bae8b642-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7a5bc1b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7a5bc1c-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4341,10 +4452,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baeb0034-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e78cdcd2-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4355,10 +4466,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baecfc06-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e797642b-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4371,11 +4482,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/content.inline.min.css
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb1347eb-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb1347ec-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e7a1c476-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7a1c477-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4393,11 +4504,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/content.min.css
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb1591de-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb1591df-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e79f5373-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e79f5374-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4415,11 +4526,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/skin.ie7.min.css
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb17b4c1-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb17b4c2-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
+			<uuidstructure>e79c9450-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e79c9451-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4437,11 +4548,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/skin.min.css
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb19feb4-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb19feb5-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
+			<uuidstructure>e799ae1d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e799ae1e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4457,10 +4568,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts
 			</destination>
 			<type>folder</type>
-			<uuidstructure>baeef7d8-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e857a6e3-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4473,11 +4584,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/readme.md
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baf0cc9a-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baf0cc9b-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e8731e43-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8731e44-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4490,16 +4601,38 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.dev.svg
+			</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.dev.svg
+			</destination>
+			<type>plain</type>
+			<uuidstructure>e8705f20-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e8705f21-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[tinymce-small.dev]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.eot
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.eot
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baf3168d-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baf3168e-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e86dee1d-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e86dee1e-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4517,11 +4650,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.svg
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baf53870-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baf53871-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e86b560a-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e86b560b-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4539,11 +4672,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.ttf
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baf78263-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baf78264-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e86896e7-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e86896e8-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4561,11 +4694,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce-small.woff
 			</destination>
 			<type>plain</type>
-			<uuidstructure>baf9cc56-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>baf9cc57-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e86625e4-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e86625e5-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4578,16 +4711,38 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.dev.svg
+			</source>
+			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.dev.svg
+			</destination>
+			<type>plain</type>
+			<uuidstructure>e86366c1-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e86366c2-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[tinymce.dev]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.eot
 			</source>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.eot
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bafcb289-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bafcb28a-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e860f5be-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e860f5bf-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4605,11 +4760,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.svg
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bafefc7c-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bafefc7d-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e85e84bb-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e85e84bc-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4627,11 +4782,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.ttf
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb01466f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb014670-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e85c13b8-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e85c13b9-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4649,11 +4804,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/fonts/tinymce.woff
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb036952-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb036953-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e859a2b5-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e859a2b6-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4669,10 +4824,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bb05da55-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e8488ba1-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4685,11 +4840,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/anchor.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>bb07af17-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb07af18-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e85535df-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e85535e0-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4711,11 +4866,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/loader.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>bb09f90b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb09f90c-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e85276bb-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e85276bc-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4737,11 +4892,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/object.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>bb0c6a0f-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb0c6a10-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:33 GMT</datelastmodified>
+			<uuidstructure>e84fb797-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e84fb798-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4763,11 +4918,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/trans.gif
 			</destination>
 			<type>image</type>
-			<uuidstructure>bb0eb403-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb0eb404-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
+			<uuidstructure>e84cd163-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e84cd164-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -4784,39 +4939,13 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/wline.gif
-			</source>
-			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/skins/lightgray/img/wline.gif
-			</destination>
-			<type>image</type>
-			<uuidstructure>bb10fdf7-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb10fdf8-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[wline]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:4,h:3]]></value>
-				</property>
-			</properties>
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/themes
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bb1c6fb7-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e78ae100-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4827,10 +4956,10 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/themes/modern
 			</destination>
 			<type>folder</type>
-			<uuidstructure>bb1e4479-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<datelastmodified>Mon, 25 Nov 2013 07:32:25 GMT</datelastmodified>
+			<uuidstructure>e790fb86-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties />
@@ -4843,11 +4972,11 @@
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/themes/modern/theme.min.js
 			</destination>
 			<type>plain</type>
-			<uuidstructure>bb20193b-55a3-11e3-9554-3fb9e22d18cd</uuidstructure>
-			<uuidresource>bb20193c-55a3-11e3-9554-3fb9e22d18cd</uuidresource>
-			<datelastmodified>Mon, 25 Nov 2013 07:30:34 GMT</datelastmodified>
+			<uuidstructure>e7951a38-279b-11e4-a042-9723befcacf3</uuidstructure>
+			<uuidresource>e7951a39-279b-11e4-a042-9723befcacf3</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 12:25:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Nov 2013 07:32:25 GMT</datecreated>
+			<datecreated>Tue, 19 Aug 2014 12:25:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

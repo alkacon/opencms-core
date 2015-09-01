@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,11 +51,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.antlr.stringtemplate.StringTemplate;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.antlr.stringtemplate.StringTemplate;
 
 /**
  * Tests the OpenCms XML container pages.<p>
@@ -64,7 +64,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param name JUnit parameters
      */
     public TestCmsXmlContainerPage(String name) {
@@ -74,11 +74,11 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Helper method which generates the XML for a container page with the specified contents.<p>
-     * 
-     * @param formatter the formatter resource to use 
-     * @param pageData a map from locale names to maps from container names to lists of container element resources 
-     * 
-     * @return the container page XML  
+     *
+     * @param formatter the formatter resource to use
+     * @param pageData a map from locale names to maps from container names to lists of container element resources
+     *
+     * @return the container page XML
      */
     public static String generateContainerPage(
         CmsResource formatter,
@@ -124,7 +124,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -160,9 +160,9 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Creates a resourc with a random file name for use as a container element and returns it.<p>
-     * 
-     * @return the created resource 
-     * 
+     *
+     * @return the created resource
+     *
      * @throws CmsException if anything goes wrong
      */
     public CmsResource createElementResource() throws CmsException {
@@ -176,7 +176,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Tests that the container bean is loaded from the master locale if that locale is present in the XML content.<p>
-     * 
+     *
      * @throws Exception if anything goes wrong
      */
     public void testContainerBeanIsFromMasterLocaleIfAvailable() throws Exception {
@@ -209,9 +209,9 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
         assertEquals("structure id of the variable 'a' expected", a.getStructureId(), elems.get(0).getId());
     }
 
-    /** 
+    /**
      * Tests that, if the master locale is not available, the container page bean will be loaded from a different locale.<p>
-     * 
+     *
      * @throws Exception if anything goes wrong
      */
     public void testGetContainerBeanFromDifferentLocaleIfMasterLocaleNotAvailable() throws Exception {
@@ -241,7 +241,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Tests that when the container page is saved, the data is saved to the master locale, and all other locales are removed.<p>
-     * 
+     *
      * @throws Exception if anything goes wrong
      */
     public void testOverwriteExistingLocales() throws Exception {
@@ -269,10 +269,20 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
         CmsContainerpageService service = new CmsContainerpageService();
         service.setCms(cms);
-        service.setSessionCache(new CmsADESessionCache(cms));
+        service.setSessionCache(new CmsADESessionCache(cms, null));
         CmsContainerElement element = new CmsContainerElement();
         element.setClientId("" + c.getStructureId());
-        CmsContainer container = new CmsContainer("cnt", "content", 500, 999, false, Arrays.asList(element), null, null);
+        CmsContainer container = new CmsContainer(
+            "cnt",
+            "content",
+            null,
+            500,
+            999,
+            false,
+            false,
+            Arrays.asList(element),
+            null,
+            null);
         service.saveContainerpage(containerPage.getStructureId(), Arrays.asList(container));
 
         CmsXmlContainerPage cntPage = CmsXmlContainerPageFactory.unmarshal(cms, containerPage);
@@ -286,7 +296,7 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
 
     /**
      * Tests unmarshalling a container page.
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testUnmarshal() throws Exception {
@@ -330,7 +340,10 @@ public class TestCmsXmlContainerPage extends OpenCmsTestCase {
             List<String> expectedTypes = typesMap.get(locale);
             for (int i = 0; i < expectedTypes.size(); i++) {
                 String expectedType = expectedTypes.get(i);
-                I_CmsXmlContentValue cnt = xmlCntPage.getValue(CmsXmlContainerPage.XmlNode.Containers.name(), locale, i);
+                I_CmsXmlContentValue cnt = xmlCntPage.getValue(
+                    CmsXmlContainerPage.XmlNode.Containers.name(),
+                    locale,
+                    i);
                 String name = xmlCntPage.getStringValue(
                     cms,
                     CmsXmlUtils.concatXpath(cnt.getPath(), CmsXmlContainerPage.XmlNode.Name.name()),

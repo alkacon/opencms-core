@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsResourceInfoLine extends Composite implements HasText {
 
-    /** 
+    /**
      * The uibinder interface for this widget.<p>
      */
     interface I_CmsResourceInfoLineUiBinder extends UiBinder<Widget, CmsResourceInfoLine> {
@@ -81,8 +81,8 @@ public class CmsResourceInfoLine extends Composite implements HasText {
 
     /**
      * Sets the label text.<p>
-     * 
-     * @param label the label text 
+     *
+     * @param label the label text
      */
     public void setLabel(String label) {
 
@@ -108,8 +108,8 @@ public class CmsResourceInfoLine extends Composite implements HasText {
 
     /**
      * Enables or disables the use of HTML in the content field.<p>
-     * 
-     * @param useHtml if true, enables HTML usage 
+     *
+     * @param useHtml if true, enables HTML usage
      */
     public void setUseHtml(boolean useHtml) {
 

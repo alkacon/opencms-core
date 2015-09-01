@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Main class for the color picker. 
+ * Main class for the color picker.
  * */
 public class CmsColorSelector extends Composite implements KeyPressHandler, ClickHandler, ChangeHandler {
 
@@ -590,7 +590,7 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
 
     /**
      * Fired when a keyboard action generates a character. This occurs after onKeyDown and onKeyUp are fired for the physical key that was pressed.<p>
-     * It should be noted that many browsers do not generate keypress events for non-printing keyCode values.<p> 
+     * It should be noted that many browsers do not generate keypress events for non-printing keyCode values.<p>
      * Such as KEY_ENTER or arrow keys.
      *
      * @param event the widget that was focused when the event occurred.
@@ -812,7 +812,7 @@ public class CmsColorSelector extends Composite implements KeyPressHandler, Clic
      * Divides the first value by 256 then multiplies it by the second value.<p>
      * @param first value.
      * @param second value.
-     * @return result (first / 256) * second 
+     * @return result (first / 256) * second
      */
     private int percentOf(float first, float second) {
 

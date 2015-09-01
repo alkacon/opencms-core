@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,7 +28,6 @@
 package org.opencms.ade.containerpage.client;
 
 import org.opencms.ade.containerpage.client.ui.CmsAddToFavoritesButton;
-import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarAllGalleriesMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarClipboardMenu;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarEditButton;
@@ -45,8 +44,8 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsBroadcastTimer;
+import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
@@ -60,16 +59,11 @@ import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -87,7 +81,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The container page editor.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerpageEditor extends A_CmsEntryPoint {
@@ -161,9 +155,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
 
-    /** 
-     * Returns the Z index manager for the container page editor.<p> 
-     * 
+    /**
+     * Returns the Z index manager for the container page editor.<p>
+     *
      * @return the Z index manager
      **/
     public static I_CmsContainerZIndexManager getZIndexManager() {
@@ -173,7 +167,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Opens a message dialog with the given content.<p>
-     * 
+     *
      * @param title the dialog title
      * @param displayHtmlContent the dialog content
      */
@@ -193,12 +187,12 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Disables the edit functionality.<p>
-     * 
-     * @param reason the text stating the reason why the edit functionality was disabled 
+     *
+     * @param reason the text stating the reason why the edit functionality was disabled
      */
     public void disableEditing(String reason) {
 
-        reinitializeButtons();
+        CmsContainerpageController.get().reinitializeButtons();
         m_save.disable(reason);
         m_add.disable(reason);
         m_clipboard.disable(reason);
@@ -220,13 +214,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Enables the toolbar buttons.<p>
-     * 
-     * @param hasChanges if the page has changes 
+     *
+     * @param hasChanges if the page has changes
      */
     public void enableToolbarButtons(boolean hasChanges) {
 
         for (Widget button : m_toolbar.getAll()) {
-            // enable all buttons that are not equal save or reset or the page has changes 
+            // enable all buttons that are not equal save or reset or the page has changes
             if ((button instanceof I_CmsToolbarButton) && (((button != m_save) && (button != m_reset)) || hasChanges)) {
                 ((I_CmsToolbarButton)button).setEnabled(true);
             }
@@ -267,7 +261,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns the available context menu commands as a map by class name.<p>
-     * 
+     *
      * @return the available context menu commands as a map by class name
      */
     public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
@@ -321,7 +315,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns the tool-bar widget.<p>
-     * 
+     *
      * @return the tool-bar widget
      */
     public CmsToolbar getToolbar() {
@@ -331,7 +325,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /**
      * Returns if the tool-bar is visible.<p>
-     * 
+     *
      * @return <code>true</code> if the tool-bar is visible
      */
     public boolean isToolbarVisible() {
@@ -350,6 +344,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         CmsBroadcastTimer.start();
         JavaScriptObject window = CmsDomUtil.getWindow();
         CmsDomUtil.setAttribute(window, "__hideEditorCloseButton", "true");
+
         I_CmsLayoutBundle.INSTANCE.containerpageCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.dragdropCss().ensureInjected();
         I_CmsLayoutBundle.INSTANCE.groupcontainerCss().ensureInjected();
@@ -385,8 +380,10 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
         m_toggleToolbarButton.setSize(Size.small);
         m_toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        m_toggleToolbarButton.removeStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        m_toggleToolbarButton.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
+        m_toggleToolbarButton.removeStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_toggleToolbarButton.addStyleName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
         root.add(m_toggleToolbarButton);
         m_toggleToolbarButton.addClickHandler(new ClickHandler() {
 
@@ -447,9 +444,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar.addRight(m_context);
 
         m_sitemap = new CmsToolbarSitemapButton(containerpageHandler);
-        m_sitemap.addClickHandler(clickHandler);
-        m_toolbar.addRight(m_sitemap);
-
+        if (controller.getData().isSitemapManager()) {
+            m_sitemap.addClickHandler(clickHandler);
+            m_toolbar.addRight(m_sitemap);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
+                m_sitemap.setEnabled(false);
+            }
+        }
         Window.addCloseHandler(new CloseHandler<Window>() {
 
             public void onClose(CloseEvent<Window> event) {
@@ -462,10 +463,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
-            m_sitemap.setEnabled(false);
-        }
-
         m_reset = new CmsToolbarResetButton(containerpageHandler);
         m_reset.addClickHandler(clickHandler);
         m_toolbar.addRight(m_reset);
@@ -473,7 +470,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_reset.setVisible(false);
         containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
-        m_toolbarVisibility.setValue(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+        m_toolbarVisibility.setValue(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         if (CmsCoreProvider.get().isToolbarVisible()) {
             showToolbar(true);
             containerpageHandler.activateSelection();
@@ -494,47 +492,13 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Reinitializes the buttons in the container element menus.<p>
-     */
-    public void reinitializeButtons() {
-
-        List<CmsContainerPageElementPanel> elemWidgets = getAllContainerPageElements();
-        for (CmsContainerPageElementPanel elemWidget : elemWidgets) {
-            CmsContainerpageController.get().getContainerpageUtil().addOptionBar(elemWidget);
-        }
-    }
-
-    /**
      * Shows the tool-bar.<p>
-     * 
+     *
      * @param show if <code>true</code> the tool-bar will be shown
      */
     public void showToolbar(boolean show) {
 
         CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
-    }
-
-    /**
-     * Helper method to get all current container page elements.<p>
-     * 
-     * @return the list of current container page elements 
-     */
-    protected List<CmsContainerPageElementPanel> getAllContainerPageElements() {
-
-        List<CmsContainerPageElementPanel> elemWidgets = new ArrayList<CmsContainerPageElementPanel>();
-        for (Entry<String, org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer> entry : CmsContainerpageController.get().getContainerTargets().entrySet()) {
-            Iterator<Widget> elIt = entry.getValue().iterator();
-            while (elIt.hasNext()) {
-                try {
-                    org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel elementWidget = (org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel)elIt.next();
-                    elemWidgets.add(elementWidget);
-                } catch (ClassCastException e) {
-                    // no proper container element, skip it (this should never happen!)
-                    CmsDebugLog.getInstance().printLine("WARNING: there is an inappropriate element within a container");
-                }
-            }
-        }
-        return elemWidgets;
     }
 
     /**

@@ -281,11 +281,11 @@ public interface I_CmsVfsDriver {
 
     /**
      * Deletes rewrite aliases matching a given filter.<p>
-     * 
-     * @param dbc the current database context 
-     * @param filter the filter describing which rewrite aliases to delete 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
+     *
+     * @param dbc the current database context
+     * @param filter the filter describing which rewrite aliases to delete
+     *
+     * @throws CmsDataAccessException if something goes wrong
      */
     void deleteRewriteAliases(CmsDbContext dbc, CmsRewriteAliasFilter filter) throws CmsDataAccessException;
 
@@ -366,13 +366,13 @@ public interface I_CmsVfsDriver {
 
     /**
      * Adds a list of rewrite aliases.<p>
-     * 
+     *
      * When adding a rewrite alias, make sure that no alias with the same id is present in the database.<p>
-     * 
-     * @param dbc the current database context  
-     * @param rewriteAliases the rewrite aliases to save 
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
+     *
+     * @param dbc the current database context
+     * @param rewriteAliases the rewrite aliases to save
+     *
+     * @throws CmsDataAccessException if something goes wrong
      */
     void insertRewriteAliases(CmsDbContext dbc, Collection<CmsRewriteAlias> rewriteAliases)
     throws CmsDataAccessException;
@@ -734,13 +734,13 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads the rewrite aliases matching a given filter.<p>
-     * 
-     * @param dbc the current database context 
-     * @param filter the filter describing which rewrite aliases should be returned 
-     * 
+     *
+     * @param dbc the current database context
+     * @param filter the filter describing which rewrite aliases should be returned
+     *
      * @return the rewrite aliases which were found
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
+     *
+     * @throws CmsDataAccessException if something goes wrong
      */
     List<CmsRewriteAlias> readRewriteAliases(CmsDbContext dbc, CmsRewriteAliasFilter filter)
     throws CmsDataAccessException;

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -88,10 +88,10 @@ public class CmsXmlAddUnknownFile extends A_CmsXmlWorkplace {
 
     /**
      * Creates a dom4j element from an XML string.<p>
-     * 
-     * @param xml the xml string 
-     * @return the dom4j element 
-     * 
+     *
+     * @param xml the xml string
+     * @return the dom4j element
+     *
      * @throws DocumentException if the XML parsing fails
      */
     public static org.dom4j.Element createElementFromXml(String xml) throws DocumentException {

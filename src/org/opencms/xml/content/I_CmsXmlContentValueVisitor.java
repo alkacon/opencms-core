@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,19 +30,19 @@ package org.opencms.xml.content;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
- * Visitor interface that allows looping through all the values in a XML content document.<p> 
- * 
- * An implementation of this interface can be passed to 
- * {@link org.opencms.xml.content.CmsXmlContent#visitAllValuesWith(I_CmsXmlContentValueVisitor)} in 
+ * Visitor interface that allows looping through all the values in a XML content document.<p>
+ *
+ * An implementation of this interface can be passed to
+ * {@link org.opencms.xml.content.CmsXmlContent#visitAllValuesWith(I_CmsXmlContentValueVisitor)} in
  * order to call the {@link #visit(I_CmsXmlContentValue)} method on all values of that document.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public interface I_CmsXmlContentValueVisitor {
 
     /**
      * Visits the given value.<p>
-     * 
+     *
      * @param value the value to visit
      */
     void visit(I_CmsXmlContentValue value);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,15 +56,15 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class CmsConfirmRemoveWidget extends Composite {
 
-    /** 
+    /**
      * Interface with message string constants.<p>
      */
     public static class MessageStrings {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String cancel() {
 
@@ -73,8 +73,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String caption() {
 
@@ -83,8 +83,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String checkboxText() {
 
@@ -93,8 +93,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String confirmText() {
 
@@ -103,8 +103,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String noReferenceText() {
 
@@ -113,8 +113,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
         /**
          * Message string provider.<p>
-         * 
-         * @return a message string 
+         *
+         * @return a message string
          */
         public static String ok() {
 
@@ -126,7 +126,7 @@ public class CmsConfirmRemoveWidget extends Composite {
      * UiBinder interface for this dialog.<p>
      */
     interface I_UiBinder extends UiBinder<Panel, CmsConfirmRemoveWidget> {
-        // empty uibinder interface 
+        // empty uibinder interface
     }
 
     /** UiBinder instance for this dialog. */
@@ -159,7 +159,7 @@ public class CmsConfirmRemoveWidget extends Composite {
     @UiField
     protected CmsPushButton m_okButton;
 
-    /** 
+    /**
      * The callback which will be called when the user has confirmed or cancelled the element removal.<p>
      */
     protected AsyncCallback<Boolean> m_removeCallback;
@@ -172,12 +172,15 @@ public class CmsConfirmRemoveWidget extends Composite {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param elementInfo the element info bean 
-     * @param canDelete true if the user should be given the option to delete the resource 
-     * @param removeCallback the callback to execute after the dialog closes 
+     *
+     * @param elementInfo the element info bean
+     * @param canDelete true if the user should be given the option to delete the resource
+     * @param removeCallback the callback to execute after the dialog closes
      */
-    public CmsConfirmRemoveWidget(CmsListInfoBean elementInfo, boolean canDelete, AsyncCallback<Boolean> removeCallback) {
+    public CmsConfirmRemoveWidget(
+        CmsListInfoBean elementInfo,
+        boolean canDelete,
+        AsyncCallback<Boolean> removeCallback) {
 
         m_removeCallback = removeCallback;
         initWidget(uibinder.createAndBindUi(this));
@@ -193,10 +196,10 @@ public class CmsConfirmRemoveWidget extends Composite {
         }
     }
 
-    /** 
+    /**
      * Gets the buttons for the dialog.<p>
-     * 
-     * @return the buttons for the dialog 
+     *
+     * @return the buttons for the dialog
      */
     public List<CmsPushButton> getButtons() {
 
@@ -205,8 +208,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
     /**
      * The click handler for the cancel button.<p>
-     * 
-     * @param event the click event 
+     *
+     * @param event the click event
      */
     @UiHandler("m_cancelButton")
     public void onClickCancel(ClickEvent event) {
@@ -217,8 +220,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
     /**
      * The click handler for the OK button.<p>
-     * 
-     * @param event the click event 
+     *
+     * @param event the click event
      */
     @UiHandler("m_okButton")
     public void onClickOk(ClickEvent event) {
@@ -229,8 +232,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
     /**
      * Value change handler for the 'delete' checkbox.<p>
-     * 
-     * @param event the value change event 
+     *
+     * @param event the value change event
      */
     @UiHandler("m_checkBox")
     public void onValueChange(ValueChangeEvent<Boolean> event) {
@@ -240,8 +243,8 @@ public class CmsConfirmRemoveWidget extends Composite {
 
     /**
      * Sets the popup which this widget is used in.<p>
-     * 
-     * @param popup the popup 
+     *
+     * @param popup the popup
      */
     public void setPopup(CmsPopup popup) {
 

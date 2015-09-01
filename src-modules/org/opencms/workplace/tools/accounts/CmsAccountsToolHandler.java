@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import org.apache.commons.logging.Log;
 /**
  * Users management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
@@ -211,7 +211,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             CmsUUID userId = new CmsUUID(paramId);
             try {
                 CmsUser user = wp.getCms().readUser(userId);
-                // check if the user to change is root administrator 
+                // check if the user to change is root administrator
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
@@ -220,7 +220,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
                     return true;
                 }
-                // check if the user to change is an administrator 
+                // check if the user to change is an administrator
                 return !OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ADMINISTRATOR);
             } catch (CmsException e) {
                 // should never happen
@@ -279,9 +279,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return true;
         } else if (getLink().equals(getPath(OU_EDIT_FILE))) {
             if (parentOu != null) {
-                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
-                    cms,
-                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)
+                    && OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
             } else {
                 return false;
             }
@@ -298,9 +297,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         } else if (getLink().equals(getPath(DELETE_FILE))) {
             if (parentOu != null) {
-                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
-                    cms,
-                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)
+                    && OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
             } else {
                 return false;
             }
@@ -324,9 +322,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return !m_webuserOu;
         } else if (getLink().equals(getPath(SWITCHUSER_FILE))) {
             boolean visible = OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN);
-            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
-                wp.getJsp().getRequest(),
-                A_CmsEditUserDialog.PARAM_USERID));
+            CmsUUID userId = new CmsUUID(
+                CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
                 visible &= OpenCms.getRoleManager().hasRole(
                     wp.getCms(),
@@ -348,9 +345,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (PATH_KILL_SESSIONS.equals(getPath())) {
                 return OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ACCOUNT_MANAGER);
             }
-            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
-                wp.getJsp().getRequest(),
-                A_CmsEditUserDialog.PARAM_USERID));
+            CmsUUID userId = new CmsUUID(
+                CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
                 CmsUser user = wp.getCms().readUser(userId);
                 if (PATH_UNLOCK.equals(getPath())) {
@@ -358,7 +354,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                         && OpenCms.getLoginManager().isUserLocked(user);
                 }
 
-                // check if the user to change is root administrator 
+                // check if the user to change is root administrator
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
@@ -366,7 +362,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
                     return true;
                 }
-                // check if the user to change is an administrator 
+                // check if the user to change is an administrator
                 return !OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ADMINISTRATOR);
             } catch (CmsException e) {
                 // should never happen
@@ -398,9 +394,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
     /**
      * Returns the path to the jsp.<p>
-     * 
+     *
      * @param jspName the jsp name
-     * 
+     *
      * @return the full path
      */
     protected String getPath(String jspName) {
@@ -410,7 +406,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
     /**
      * Returns the visibility flag module parameter value.<p>
-     * 
+     *
      * @return the visibility flag module parameter value
      */
     protected String getVisibilityFlag() {

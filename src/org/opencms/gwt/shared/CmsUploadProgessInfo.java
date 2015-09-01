@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A bean that holds the upload progress infos.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsUploadProgessInfo implements IsSerializable {
@@ -40,10 +40,8 @@ public class CmsUploadProgessInfo implements IsSerializable {
     public static enum UPLOAD_STATE {
 
         /** Upload is finished. */
-        finished,
-        /** Upload not started. */
-        notStarted,
-        /** Upload is running. */
+        finished, /** Upload not started. */
+        notStarted, /** Upload is running. */
         running
     }
 
@@ -72,7 +70,7 @@ public class CmsUploadProgessInfo implements IsSerializable {
 
     /**
      * Constructor with parameters.<p>
-     * 
+     *
      * @param currentFile the current file count
      * @param percent the progress in percent
      * @param state the state

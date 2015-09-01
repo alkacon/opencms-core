@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import junit.framework.TestSuite;
 /**
  * Main test suite for the package <code>{@link org.opencms.main}</code>.
  * <p>
- * 
- * 
+ *
+ *
  * @since 6.0
  */
 public final class AllTests {
@@ -53,7 +53,7 @@ public final class AllTests {
     /**
      * Returns the JUnit test suite for this package.
      * <p>
-     * 
+     *
      * @return the JUnit test suite for this package
      */
     public static Test suite() {
@@ -62,6 +62,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         // $JUnit-BEGIN$
         suite.addTest(new TestSuite(TestCmsShell.class));
+        suite.addTest(TestCmsShellInline.suite());
         suite.addTest(TestOpenCmsSingleton.suite());
         suite.addTest(TestCmsEvents.suite());
         suite.addTest(TestCmsSystemInfo.suite());

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,19 +33,19 @@ import com.google.gwt.user.client.Command;
 
 /**
  * The properties tab handler of the preview dialog.<p>
- * 
- * This class receives event information from the properties tab and 
+ *
+ * This class receives event information from the properties tab and
  * delegates it to the preview controller.
- * 
+ *
  * @since 8.0.0
  */
 public interface I_CmsPropertiesHandler {
 
     /**
      * Saves the properties.<p>
-     * 
-     * @param properties the properties to save 
-     * @param afterSaveCommand the command to execute after saving the properties 
+     *
+     * @param properties the properties to save
+     * @param afterSaveCommand the command to execute after saving the properties
      */
     void saveProperties(Map<String, String> properties, Command afterSaveCommand);
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,8 +58,8 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /**
      * Gets the set of structure ids of deleted aliases.<p>
-     * 
-     * @return the set of structure ids of deleted aliases 
+     *
+     * @return the set of structure ids of deleted aliases
      */
     public Set<CmsUUID> getDeletedIds() {
 
@@ -68,8 +68,8 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /**
      * Gets the list of rewrite aliases to save.<p>
-     * 
-     * @return the rewrite aliases to save 
+     *
+     * @return the rewrite aliases to save
      */
     public List<CmsRewriteAliasTableRow> getRewriteData() {
 
@@ -78,8 +78,8 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /**
      * Gets the site root.<p>
-     * 
-     * @return the site root 
+     *
+     * @return the site root
      */
     public String getSiteRoot() {
 
@@ -88,8 +88,8 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /**
      * Sets the list of rewrite aliases to save.<p>
-     * 
-     * @param rewriteData the list of rewrite aliases to save 
+     *
+     * @param rewriteData the list of rewrite aliases to save
      */
     public void setRewriteData(List<CmsRewriteAliasTableRow> rewriteData) {
 
@@ -98,8 +98,8 @@ public class CmsAliasSaveValidationRequest extends CmsAliasEditValidationRequest
 
     /**
      * Sets the site root.<p>
-     * 
-     * @param siteRoot the site root 
+     *
+     * @param siteRoot the site root
      */
     public void setSiteRoot(String siteRoot) {
 

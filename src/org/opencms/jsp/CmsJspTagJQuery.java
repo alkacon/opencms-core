@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,12 +40,12 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implementation of the <code>&lt;cms:jquery/&gt;</code> tag.<p>
- * 
+ *
  * Since OpenCms version 7.0.5, there is a new core module providing JQuery plus some additional plugins.
  * This tag will include the JQuery javascript library depending on the current project. If the current
  * Project is offline the unpacked version is used, if online the packed version will be used.
- * 
- * @since 7.0.5 
+ *
+ * @since 7.0.5
  */
 public class CmsJspTagJQuery extends BodyTagSupport {
 
@@ -86,11 +86,11 @@ public class CmsJspTagJQuery extends BodyTagSupport {
     protected String m_js;
 
     /**
-     * Opens the direct edit tag, if manual mode is set then the next 
+     * Opens the direct edit tag, if manual mode is set then the next
      * start HTML for the direct edit buttons is printed to the page.<p>
-     * 
+     *
      * @return {@link #EVAL_BODY_INCLUDE}
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -98,19 +98,18 @@ public class CmsJspTagJQuery extends BodyTagSupport {
 
         ServletRequest req = pageContext.getRequest();
 
-        // This will always be true if the page is called through OpenCms 
+        // This will always be true if the page is called through OpenCms
         if (!CmsFlexController.isCmsRequest(req)) {
             return SKIP_BODY;
         }
         if (getJs() == null) {
             if (isDynamic()) {
-                // in case we want to include the needed js functions 
+                // in case we want to include the needed js functions
                 try {
-                    pageContext.getOut().print(
-                        "<script type='text/javascript' src='"
-                            + CmsWorkplace.getSkinUri()
-                            + VFS_PATH_LOAD_JS
-                            + "' ></script>");
+                    pageContext.getOut().print("<script type='text/javascript' src='"
+                        + CmsWorkplace.getSkinUri()
+                        + VFS_PATH_LOAD_JS
+                        + "' ></script>");
                 } catch (Exception ex) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "jquery"), ex);
@@ -137,11 +136,10 @@ public class CmsJspTagJQuery extends BodyTagSupport {
         try {
             cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + file);
             if (isDynamic()) {
-                pageContext.getOut().print(
-                    "<script type='text/javascript'>load_script('"
-                        + CmsWorkplace.getSkinUri()
-                        + file
-                        + "', 'js');</script>");
+                pageContext.getOut().print("<script type='text/javascript'>load_script('"
+                    + CmsWorkplace.getSkinUri()
+                    + file
+                    + "', 'js');</script>");
             } else {
                 pageContext.getOut().print(
                     "<script type='text/javascript' src='" + CmsWorkplace.getSkinUri() + file + "' ></script>");
@@ -163,11 +161,10 @@ public class CmsJspTagJQuery extends BodyTagSupport {
             cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + file);
             pageContext.getOut().println();
             if (isDynamic()) {
-                pageContext.getOut().print(
-                    "<script type='text/javascript'>load_script('"
-                        + CmsWorkplace.getSkinUri()
-                        + file
-                        + "', 'css');</script>");
+                pageContext.getOut().print("<script type='text/javascript'>load_script('"
+                    + CmsWorkplace.getSkinUri()
+                    + file
+                    + "', 'css');</script>");
             } else {
                 pageContext.getOut().print(
                     "<link href='" + CmsWorkplace.getSkinUri() + file + "' rel='stylesheet' type='text/css' >");
@@ -203,7 +200,7 @@ public class CmsJspTagJQuery extends BodyTagSupport {
 
     /**
      * Returns the javascript file to include.<p>
-     * 
+     *
      * @return the javascript file
      */
     public String getJs() {
@@ -244,8 +241,8 @@ public class CmsJspTagJQuery extends BodyTagSupport {
 
     /**
      * Sets the javascript file to include.<p>
-     * 
-     * @param js the javascript file to set 
+     *
+     * @param js the javascript file to set
      */
     public void setJs(String js) {
 
@@ -256,7 +253,7 @@ public class CmsJspTagJQuery extends BodyTagSupport {
 
     /**
      * Checks if the inclusion is dynamic or not.<p>
-     * 
+     *
      * @return <code>true</code> if the inclusion is dynamic
      */
     private boolean isDynamic() {

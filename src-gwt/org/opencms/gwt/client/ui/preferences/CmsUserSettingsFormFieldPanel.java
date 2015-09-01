@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,12 +30,12 @@ package org.opencms.gwt.client.ui.preferences;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsChangePasswordWidget;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
-import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormRow;
@@ -70,14 +70,14 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     }
 
     /**
-     * Style imported from the ui.xml file. 
+     * Style imported from the ui.xml file.
      */
     interface ExternalStyle extends CssResource {
 
-        /** 
-         * CSS class accessor. 
-         * 
-         * @return the CSS class 
+        /**
+         * CSS class accessor.
+         *
+         * @return the CSS class
          **/
         String titleColumn();
 
@@ -92,7 +92,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_accountInfoTab;
+    protected CmsScrollPanel m_accountInfoTab;
 
     /** Form field container. */
     @UiField
@@ -100,7 +100,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_basicTab;
+    protected CmsScrollPanel m_basicTab;
 
     /** Form field container. */
     @UiField
@@ -108,24 +108,25 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /** Tab. */
     @UiField
-    protected FlowPanel m_extendedTab;
+    protected CmsScrollPanel m_extendedTab;
 
     /** Button for changing the password. */
     @UiField
     protected CmsPushButton m_passwordButton;
 
-    /** 
-     * The style from the ui.xml  file.
+    /**
+     * The style from the ui.xml  file. (Note: the field needs to
      */
-    protected @UiField
-    ExternalStyle style;
+    @UiField
+    protected ExternalStyle style;
 
     /** The tab panel. */
-    private CmsTabbedPanel<FlowPanel> m_tabPanel = new CmsTabbedPanel<FlowPanel>(CmsTabbedPanelStyle.buttonTabs);
+    private CmsTabbedPanel<CmsScrollPanel> m_tabPanel = new CmsTabbedPanel<CmsScrollPanel>(
+        CmsTabbedPanelStyle.buttonTabs);
 
     /**
      * Creates a new instance.<p>
-     * 
+     *
      * @param userSettings the bean containing the current user settings
      */
     public CmsUserSettingsFormFieldPanel(CmsUserSettingsBean userSettings) {
@@ -146,9 +147,6 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
         m_tabPanel.add(m_basicTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_BASIC_0));
         m_tabPanel.add(m_extendedTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_EXTENDED_0));
         m_tabPanel.add(m_accountInfoTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_ACCOUNT_0));
-        for (Widget tab : new Widget[] {m_basicTab, m_extendedTab, m_accountInfoTab}) {
-            tab.addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().formGradientBackground());
-        }
 
         FlexTable table = new FlexTable();
         table.setCellSpacing(5);
@@ -197,6 +195,16 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     }
 
     /**
+     * Gets the tab panel.<p>
+     *
+     * @return the tab panel
+     */
+    public CmsTabbedPanel<CmsScrollPanel> getTabPanel() {
+
+        return m_tabPanel;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel#renderFields(java.util.Collection)
      */
     @Override
@@ -217,6 +225,7 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
      */
     public void truncate(String textMetricsKey, int clientWidth) {
 
+        storeTruncation(textMetricsKey, clientWidth);
         for (Panel container : new Panel[] {m_basicSettingsPanel, m_extendedSettingsPanel}) {
             for (Widget widget : container) {
                 if (widget instanceof I_CmsTruncable) {
@@ -228,9 +237,9 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
 
     /**
      * Gets the container in which the field should be placed.<p>
-     * 
-     * @param field the form field 
-     * @return the intended parent widget for the field 
+     *
+     * @param field the form field
+     * @return the intended parent widget for the field
      */
     private Panel getContainerForField(I_CmsFormField field) {
 

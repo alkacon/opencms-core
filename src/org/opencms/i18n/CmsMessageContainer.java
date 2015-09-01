@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,15 +32,15 @@ import java.util.Locale;
 
 /**
  * Contains a localized message key, it's arguments and a <code>{@link I_CmsMessageBundle}</code>.<p>
- * 
- * Used for delaying the actual message lookup from the bundle to the time the message is displayed, 
+ *
+ * Used for delaying the actual message lookup from the bundle to the time the message is displayed,
  * not generated. This is used for localizing internal OpenCms messages. If a message is generated internally by OpenCms,
- * at the time no information about the context of the current user may be available. The message is therefore 
+ * at the time no information about the context of the current user may be available. The message is therefore
  * passed to the class generating the output, where a user context usually exists. Finally, the message is rendered
- * with the locale of the available user, or the OpenCms default locale if no user is available.<p> 
- * 
- * @since 6.0.0 
- *   
+ * with the locale of the available user, or the OpenCms default locale if no user is available.<p>
+ *
+ * @since 6.0.0
+ *
  * @see org.opencms.i18n.I_CmsMessageBundle
  */
 public class CmsMessageContainer implements Serializable, I_CmsMessageContainer {
@@ -59,7 +59,7 @@ public class CmsMessageContainer implements Serializable, I_CmsMessageContainer 
 
     /**
      * Creates a new message container for a key without arguments.<p>
-     * 
+     *
      * @param bundle the OpenCms message bundle to read the message from
      * @param key the message key to use
      */
@@ -71,7 +71,7 @@ public class CmsMessageContainer implements Serializable, I_CmsMessageContainer 
 
     /**
      * Creates a new message container.<p>
-     * 
+     *
      * @param bundle the OpenCms message bundle to read the message from
      * @param key the message key to use
      * @param args the message arguments to use
@@ -115,7 +115,7 @@ public class CmsMessageContainer implements Serializable, I_CmsMessageContainer 
 
     /**
      * Returns the localized message described by this container for the OpenCms default locale.<p>
-     * 
+     *
      * @return the localized message described by this container for the OpenCms default locale
      */
     public String key() {
@@ -128,7 +128,7 @@ public class CmsMessageContainer implements Serializable, I_CmsMessageContainer 
 
     /**
      * Returns the localized message described by this container for the given locale.<p>
-     * 
+     *
      * @param locale the locale to use
      * @return the localized message described by this container for the given locale
      */

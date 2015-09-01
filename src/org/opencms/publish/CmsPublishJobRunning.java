@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,14 +33,14 @@ import org.opencms.util.CmsUUID;
 
 /**
  * Defines a read-only publish job that is being published.<p>
- * 
+ *
  * @since 6.5.5
  */
 public class CmsPublishJobRunning extends CmsPublishJobBase {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param publishJob the delegate publish job
      */
     protected CmsPublishJobRunning(CmsPublishJobInfoBean publishJob) {
@@ -70,19 +70,19 @@ public class CmsPublishJobRunning extends CmsPublishJobBase {
 
     /**
      * Returns the report for this publish job.<p>
-     * 
-     * This is not the original report, it is wrapper that 
+     *
+     * This is not the original report, it is wrapper that
      * also writes to a temporary file.<p>
-     * 
+     *
      * @return the report for this publish job
-     * 
+     *
      * @see CmsPublishJobEnqueued#getReport()
      */
     public I_CmsReport getReport() {
 
         return m_publishJob.getPublishReport();
     }
-    
+
     /**
      * Returns the time the publish job did actually start.<p>
      *
@@ -95,7 +95,7 @@ public class CmsPublishJobRunning extends CmsPublishJobBase {
 
     /**
      * Returns the UUID of the running publish thread.<p>
-     * 
+     *
      * @return the UUID of the running publish thread
      */
     public CmsUUID getThreadUUID() {

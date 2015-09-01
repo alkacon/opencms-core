@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -55,12 +55,12 @@ public class CmsWorkflowResponse implements IsSerializable {
 
     /**
      * Creates a new workflow response object.<p>
-     * 
-     * @param isSuccess a flag indicating whether the workflow action was successful 
-     * @param message the message which should be displayed to the user in case of failure 
-     * @param resources the resources which should be presented to the user in case of  failure 
-     * @param availableActions the actions which should be possible for the user in case of failure 
-     * @param workflowId the internal workflow id 
+     *
+     * @param isSuccess a flag indicating whether the workflow action was successful
+     * @param message the message which should be displayed to the user in case of failure
+     * @param resources the resources which should be presented to the user in case of  failure
+     * @param availableActions the actions which should be possible for the user in case of failure
+     * @param workflowId the internal workflow id
      */
     public CmsWorkflowResponse(
         boolean isSuccess,
@@ -86,8 +86,8 @@ public class CmsWorkflowResponse implements IsSerializable {
 
     /**
      * Returns the list of actions which are available next.<p>
-     * 
-     * @return a list of beans representing the next possible workflow actions 
+     *
+     * @return a list of beans representing the next possible workflow actions
      */
     public List<CmsWorkflowAction> getAvailableActions() {
 
@@ -96,8 +96,8 @@ public class CmsWorkflowResponse implements IsSerializable {
 
     /**
      * Gets the message which should be displayed to the user in case of failure.<p>
-     *  
-     * @return the message which should be displayed to the user in case of failure 
+     *
+     * @return the message which should be displayed to the user in case of failure
      */
     public String getMessage() {
 
@@ -106,18 +106,18 @@ public class CmsWorkflowResponse implements IsSerializable {
 
     /**
      * Gets the list of resources which should be presented to the user in case of failure.<p>
-     *     
-     * @return a list of resources 
+     *
+     * @return a list of resources
      */
     public List<CmsPublishResource> getResources() {
 
         return m_resources;
     }
 
-    /** 
+    /**
      * Gets the internal workflow id.<p>
-     * 
-     * @return the internal workflow id 
+     *
+     * @return the internal workflow id
      */
     public CmsUUID getWorkflowId() {
 
@@ -126,8 +126,8 @@ public class CmsWorkflowResponse implements IsSerializable {
 
     /**
      * Returns true if the action for which this object is the workflow response was successful or not.<p>
-     * 
-     * @return true if the workflow action was successful 
+     *
+     * @return true if the workflow action was successful
      */
     public boolean isSuccess() {
 

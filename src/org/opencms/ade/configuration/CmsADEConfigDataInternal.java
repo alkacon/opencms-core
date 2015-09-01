@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,12 +38,12 @@ import java.util.List;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 
-/** 
+/**
  * Represents a parsed sitemap or module configuration.<p>
- * 
+ *
  * This is the internal representation stored in the cache. The configuration class
  * which is actually returned by CmsADEManager, and which contains most of the logic
- * related to sitemap configurations, is CmsADEConfigData.  
+ * related to sitemap configurations, is CmsADEConfigData.
  */
 public class CmsADEConfigDataInternal {
 
@@ -79,22 +79,26 @@ public class CmsADEConfigDataInternal {
     /** The resource from which the configuration data was read. */
     private CmsResource m_resource;
 
+    /** True if detail pages from this sitemap should be preferred when linking to contents inside this sitemap. */
+    private boolean m_preferDetailPagesForLocalContents;
+
     /**
      * Creates a new configuration data instance.<p>
 
      * @param resource the resource from which this configuration data was read
-     * @param isModuleConfig true if this is a module configuration 
-     * @param basePath the base path 
+     * @param isModuleConfig true if this is a module configuration
+     * @param basePath the base path
      * @param resourceTypeConfig the resource type configuration
-     * @param discardInheritedTypes the "discard inherited types" flag  
+     * @param discardInheritedTypes the "discard inherited types" flag
      * @param propertyConfig the property configuration
-     * @param discardInheritedProperties the "discard inherited properties" flag  
+     * @param discardInheritedProperties the "discard inherited properties" flag
      * @param detailPageInfos the detail page configuration
      * @param modelPages the model page configuration
-     * @param functionReferences the function reference configuration 
-     * @param discardInheritedModelPages the "discard  inherited model pages" flag 
-     * @param createContentsLocally the "create contents locally" flag 
-     * @param formatterChangeSet the formatter changes 
+     * @param functionReferences the function reference configuration
+     * @param discardInheritedModelPages the "discard  inherited model pages" flag
+     * @param createContentsLocally the "create contents locally" flag
+     * @param preferDetailPagesForLocalContents the "preferDetailPagesForLocalContents" flag
+     * @param formatterChangeSet the formatter changes
      */
     public CmsADEConfigDataInternal(
         CmsResource resource,
@@ -109,6 +113,7 @@ public class CmsADEConfigDataInternal {
         List<CmsFunctionReference> functionReferences,
         boolean discardInheritedModelPages,
         boolean createContentsLocally,
+        boolean preferDetailPagesForLocalContents,
         CmsFormatterChangeSet formatterChangeSet) {
 
         m_resource = resource;
@@ -124,13 +129,14 @@ public class CmsADEConfigDataInternal {
         m_discardInheritedProperties = discardInheritedProperties;
         m_discardInheritedModelPages = discardInheritedModelPages;
         m_createContentsLocally = createContentsLocally;
+        m_preferDetailPagesForLocalContents = preferDetailPagesForLocalContents;
         m_formatterChangeSet = formatterChangeSet;
     }
 
     /**
      * Creates an empty configuration data object with a given base path.<p>
-     * 
-     * @param basePath the base path 
+     *
+     * @param basePath the base path
      */
     public CmsADEConfigDataInternal(String basePath) {
 
@@ -139,10 +145,10 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Creates an empty configuration for a given base path.<p>
-     * 
-     * @param basePath the base path 
-     * 
-     * @return the empty configuration object 
+     *
+     * @param basePath the base path
+     *
+     * @return the empty configuration object
      */
     public static CmsADEConfigDataInternal emptyConfiguration(String basePath) {
 
@@ -151,17 +157,17 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Gets the base path.<p>
-     * 
-     * @return the base path 
+     *
+     * @return the base path
      */
     public String getBasePath() {
 
         return m_basePath;
     }
 
-    /** 
+    /**
      * Gets the formatter change set.<p>
-     * 
+     *
      * @return the formatter change set.<p>
      */
     public CmsFormatterChangeSet getFormatterChangeSet() {
@@ -172,8 +178,8 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Gets the dynamic function references.<p>
-     *  
-     * @return the dynamic function references 
+     *
+     * @return the dynamic function references
      */
     public List<CmsFunctionReference> getFunctionReferences() {
 
@@ -181,7 +187,7 @@ public class CmsADEConfigDataInternal {
     }
 
     /**
-     * Returns the ownDetailPages.<p> 
+     * Returns the ownDetailPages.<p>
      *
      * @return the ownDetailPages
      */
@@ -212,8 +218,8 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Gets the resource types defined in this configuration.<p>
-     * 
-     * @return the resource type configurations 
+     *
+     * @return the resource type configurations
      */
     public List<CmsResourceTypeConfig> getOwnResourceTypes() {
 
@@ -232,17 +238,17 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Returns true if contents should be created in the sub-sitemap.<p>
-     * 
-     * @return true if contents should be created in the sub-sitemap 
+     *
+     * @return true if contents should be created in the sub-sitemap
      */
     public boolean isCreateContentsLocally() {
 
         return m_createContentsLocally;
     }
 
-    /** 
+    /**
      * Returns true if inherited model pages should be discarded.<p>
-     * 
+     *
      * @return true if inherited model pages should be discarded.
      */
     public boolean isDiscardInheritedModelPages() {
@@ -252,7 +258,7 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Returns true if inherited properties should be discarded.<p>
-     * 
+     *
      * @return true if inherited property configurations should be discardded.<p>
      */
     public boolean isDiscardInheritedProperties() {
@@ -262,8 +268,8 @@ public class CmsADEConfigDataInternal {
 
     /**
      * Returns true if inherited types should be discarded.<p>
-     * 
-     * @return true if inherited types should be discarded 
+     *
+     * @return true if inherited types should be discarded
      */
     public boolean isDiscardInheritedTypes() {
 
@@ -280,10 +286,20 @@ public class CmsADEConfigDataInternal {
         return m_isModuleConfig;
     }
 
-    /** 
+    /**
+     * Returns true if detail pages from this sitemap should be preferred for creating links to detail contents located inside this sitemap.<p>
+     *
+     * @return true if detail pages from this sitemap should be preferred
+     */
+    public boolean isPreferDetailPagesForLocalContents() {
+
+        return m_preferDetailPagesForLocalContents;
+    }
+
+    /**
      * Merges the parent's data into this object.<p>
-     * 
-     * @param parent the parent configuration data 
+     *
+     * @param parent the parent configuration data
      */
     protected void mergeParent(CmsADEConfigDataInternal parent) {
 
@@ -315,12 +331,19 @@ public class CmsADEConfigDataInternal {
             parentFunctionRefs = Collections.emptyList();
         }
 
-        m_ownResourceTypes = CmsADEConfigData.combineConfigurationElements(parentTypes, m_ownResourceTypes);
+        m_ownResourceTypes = CmsADEConfigData.combineConfigurationElements(parentTypes, m_ownResourceTypes, false);
         m_ownPropertyConfigurations = CmsADEConfigData.combineConfigurationElements(
             parentProperties,
-            m_ownPropertyConfigurations);
-        m_ownModelPageConfig = CmsADEConfigData.combineConfigurationElements(parentModelPages, m_ownModelPageConfig);
-        m_functionReferences = CmsADEConfigData.combineConfigurationElements(parentFunctionRefs, m_functionReferences);
+            m_ownPropertyConfigurations,
+            false);
+        m_ownModelPageConfig = CmsADEConfigData.combineConfigurationElements(
+            parentModelPages,
+            m_ownModelPageConfig,
+            false);
+        m_functionReferences = CmsADEConfigData.combineConfigurationElements(
+            parentFunctionRefs,
+            m_functionReferences,
+            false);
     }
 
     /**
@@ -342,7 +365,9 @@ public class CmsADEConfigDataInternal {
 
             public int compare(CmsPropertyConfig a, CmsPropertyConfig b) {
 
-                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
+                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(
+                    a.getName(),
+                    b.getName()).result();
             }
         });
 
@@ -350,7 +375,9 @@ public class CmsADEConfigDataInternal {
 
             public int compare(CmsFunctionReference a, CmsFunctionReference b) {
 
-                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(a.getName(), b.getName()).result();
+                return ComparisonChain.start().compare(a.getOrder(), b.getOrder()).compare(
+                    a.getName(),
+                    b.getName()).result();
             }
         });
     }

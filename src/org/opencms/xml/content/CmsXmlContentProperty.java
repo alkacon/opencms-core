@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,13 +32,13 @@ import org.opencms.util.CmsStringUtil;
 import java.io.Serializable;
 
 /**
- * Describes both VFS properties and Container Page Element settings, used by the GWT client.<p>  
- * 
+ * Describes both VFS properties and Container Page Element settings, used by the GWT client.<p>
+ *
  * Warning: This class is used by GWT client-side code (See GwtBase.gwt.xml for a list of
- * classes used by GWT client-side code). If you change this class, either make sure that 
- * your changes are compatible with GWT, or write a separate client version of the class 
- * and put it into super_src.  
- * 
+ * classes used by GWT client-side code). If you change this class, either make sure that
+ * your changes are compatible with GWT, or write a separate client version of the class
+ * and put it into super_src.
+ *
  * @since 8.0.0
  */
 public class CmsXmlContentProperty implements Serializable {
@@ -46,15 +46,14 @@ public class CmsXmlContentProperty implements Serializable {
     /** Type constants. */
     public enum PropType {
         /** Type constant string. */
-        string,
-        /** Type constant VFS list. */
+        string, /** Type constant VFS list. */
         vfslist;
 
         /**
          * Checks if the given type is {@link #vfslist}.<p>
-         * 
+         *
          * @param type the type to check
-         * 
+         *
          * @return <code>true</code> if the given type is {@link #vfslist}
          */
         public static boolean isVfsList(String type) {
@@ -70,16 +69,11 @@ public class CmsXmlContentProperty implements Serializable {
     public enum XmlNode {
 
         /** Value file list node name. */
-        FileList,
-        /** Container or property name node name. */
-        Name,
-        /** Element properties node name. */
-        Properties,
-        /** Value string node name. */
-        String,
-        /** File list URI node name. */
-        Uri,
-        /** Value node name. */
+        FileList, /** Container or property name node name. */
+        Name, /** Element properties node name. */
+        Properties, /** Value string node name. */
+        String, /** File list URI node name. */
+        Uri, /** Value node name. */
         Value;
     }
 
@@ -127,7 +121,7 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param name the property name
      * @param type the property type (string|uri)
      * @param widget the widget
@@ -179,8 +173,8 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Copies this property definition.<p>
-     * 
-     * @return a new copy of the current property definition 
+     *
+     * @return a new copy of the current property definition
      */
     public CmsXmlContentProperty copy() {
 
@@ -270,8 +264,8 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Returns a value which indicates whether the user can control the inheritance of this property.<p>
-     * 
-     * @return the "select-inherit" property 
+     *
+     * @return the "select-inherit" property
      */
     public String getSelectInherit() {
 
@@ -310,11 +304,11 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Returns the value of the "prefer folder" option.<p>
-     * 
+     *
      * This flag determines whether a property entered in the sitemap entry editor should be stored by default at the folder
      * or at the default file of a sitemap entry. It only has an effect if the sitemap entry being edited doesn't already
-     * have a value for that property at either location.<p> 
-     * 
+     * have a value for that property at either location.<p>
+     *
      * @return the "prefer folder" flag
      */
     public boolean isPreferFolder() {
@@ -325,9 +319,9 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Copies a property definition, but replaces an empty widget with a given widget.<p>
-     * 
-     * @param defaultWidget the widget to use if the set widget is empty 
-     * 
+     *
+     * @param defaultWidget the widget to use if the set widget is empty
+     *
      * @return the copied property definition
      */
     public CmsXmlContentProperty withDefaultWidget(String defaultWidget) {
@@ -348,9 +342,9 @@ public class CmsXmlContentProperty implements Serializable {
 
     /**
      * Copies a property definition, but replaces the nice name attribute.<p>
-     * 
-     * @param niceName the new nice name attribute 
-     * 
+     *
+     * @param niceName the new nice name attribute
+     *
      * @return the copied property definition
      */
     public CmsXmlContentProperty withNiceName(String niceName) {

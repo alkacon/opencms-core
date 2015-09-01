@@ -256,23 +256,35 @@
     </tag>   
 
     <tag>
-    	<description>
-    		This tag is used to generate a link to a PDF generated from an XML content given the path of the XML content.
-    	</description>
+    	<description><![CDATA[
+    		This tag can be used for PDF generation. The primary use case is the PDF output of a specific content.
+    		It expands to a link for a PDF which is generated on the fly when the link is requested.
+    		The PDF is generated from an XHTML document via the Java library "Flying Saucer".
+    	]]></description>
     	<name>pdf</name>
     	<tag-class>org.opencms.jsp.CmsJspTagPdf</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
+    		<description><![CDATA[
+    			Link (VFS URI) to the JSP that renders the XHTML used to render the PDF.
+    		]]></description>
     		<name>format</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Link (VFS URI) to the content that should be rendered in the PDF. 
+    			The content given here can be accessed via the <code>&lt;cms:formatter&gt;</code> tag in the JSP provided by the format attribute.
+    		]]></description>
     		<name>content</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			The locale in which the content should be accessed. If not given, the current request locale is used as default.
+    		]]></description>
     		<name>locale</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
@@ -280,28 +292,41 @@
     </tag>
     
    <tag>
-    	<description>
-    		This tag is used to generate a link to a thumbnail for a PDF.
-    	</description>
+    	<description><![CDATA[
+    		This tag is used to generate a png or jpg thumbnail from a PDF and expands to a link to the thumbnail.
+    		The thumbnail is created when the link is requested for the first time.
+    	]]></description>
     	<name>pdfthumbnail</name>
     	<tag-class>org.opencms.jsp.CmsJspTagPdfThumbnail</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
+    		<description><![CDATA[
+    			VFS URI of the PDF file for which the thumbnail should be created.
+    		]]></description>
     		<name>file</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Width (given in Pixel) of the generated thumbnail.
+    		]]></description>
     		<name>width</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Height (given in Pixel) of the generated thumbnail.
+    		]]></description>
     		<name>height</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
     	</attribute>
     	<attribute>
+    		<description><![CDATA[
+    			Format of the generated thumbnail. Either jpg or png.
+    		]]></description>
     		<name>format</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>
@@ -1350,7 +1375,11 @@
                 </DD>
                 <DT><b>3</b></DT>
                 <DD>
-                  Works like mode 4.
+                  <em>Scale and keep image proportions, target size variable</em><BR>
+                  The image is scaled (enlarged or shrinked) to fit the target size. Aspect ratio is kept intact.
+                  The scaled image will not be padded or cropped, so target size is likely not the exact requested size.
+                  Hence, if you use this option you may also want to set <code>noDim</code> or <code>partialTag</code> to <code>true</code>.
+                  Otherwise, the browser will scale the image again.
                 </DD>
                 <DT><b>4</b></DT>
                 <DD>
@@ -1634,7 +1663,7 @@
         </description>
         <name>container</name>
         <tag-class>org.opencms.jsp.CmsJspTagContainer</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
         	<description><![CDATA[
         	  A unique name for the container that is used to identify it in a container page.
@@ -1651,7 +1680,17 @@
             <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+                An optional container parameter.
+                This is useful for a dynamically generated nested container,
+                to pass information to the formatter used inside that container.
+            ]]></description>
+            <name>param</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>                  
         <attribute>
         	<description><![CDATA[
         		The maximal number of elements that can be placed in the container.</P>
@@ -1722,6 +1761,14 @@
         	  </DL>
         	]]></description>
         	<name>detailonly</name>
+        	<required>false</required>
+        	<rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        	<description><![CDATA[
+        	  A comma separated list of OpenCms principals that are allowed to edit the container content. If empty it defaults to ROLE.ELEMENT_AUTHOR.
+        	]]></description>
+        	<name>editableby</name>
         	<required>false</required>
         	<rtexprvalue>true</rtexprvalue>
         </attribute>

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -73,8 +74,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Dialog to edit new or existing user in the administration view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
@@ -126,9 +127,15 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     /** The start view. */
     private String m_startView;
 
+    /** The user role. */
+    private String m_role;
+
+    /** The no role value. */
+    private static final String NO_ROLE = "NO_ROLE";
+
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsEditUserDialog(CmsJspActionElement jsp) {
@@ -147,6 +154,39 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         try {
             // if new create it first
             if (isNewUser()) {
+                // test the group name
+                CmsGroup group = null;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
+                    group = getCms().readGroup(getGroup());
+                }
+
+                if (group != null) {
+                    if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+                        // in case the administrators group is selected, the administrator role must be selected also
+                        if (getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(
+                                Messages.get().container(Messages.ERR_ADD_TO_ADMINISTRATORS_GROUP_0));
+                        }
+                        CmsRole role = CmsRole.valueOfRoleName(getRole());
+                        if (!CmsRole.ROOT_ADMIN.getRoleName().equals(role.getRoleName())
+                            && !CmsRole.ADMINISTRATOR.getRoleName().equals(role.getRoleName())) {
+                            throw new CmsIllegalArgumentException(
+                                Messages.get().container(Messages.ERR_ADD_TO_ADMINISTRATORS_GROUP_0));
+                        }
+                    } else if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupUsers())) {
+                        // in case the users group is selected, the user should have at least one role
+                        if (getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(
+                                Messages.get().container(Messages.ERR_ADD_TO_USERS_GROUP_0));
+                        }
+                    } else if (group.getSimpleName().equals(OpenCms.getDefaultUsers().getGroupGuests())) {
+                        // in case the users group is selected, the user should have at least one role
+                        if (!getRole().equals(NO_ROLE)) {
+                            throw new CmsIllegalArgumentException(
+                                Messages.get().container(Messages.ERR_ADD_TO_GUESTS_GROUP_0));
+                        }
+                    }
+                }
                 m_pwdInfo.validate();
                 CmsUser newUser = createUser(
                     m_paramOufqn + m_user.getSimpleName(),
@@ -165,16 +205,19 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_pwdInfo.validate();
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
-            // test the group name
-            if (isNewUser() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
-                getCms().readGroup(getGroup());
-            }
+
             // write the edited user
             writeUser(m_user);
             // set starting membership
             if (isNewUser()) {
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getGroup())) {
                     getCms().addUserToGroup(m_user.getName(), getGroup());
+                }
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getRole()) && !getRole().equals(NO_ROLE)) {
+                    OpenCms.getRoleManager().addUserToRole(
+                        getCms(),
+                        CmsRole.valueOfRoleName(getRole()).forOrgUnit(m_paramOufqn),
+                        m_user.getName());
                 }
             }
             // set starting settings
@@ -190,7 +233,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
             boolean webuserOu = false;
             try {
-                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                    getCms(),
+                    getParamOufqn()).hasFlagWebuser();
             } catch (CmsException e) {
                 // ignore
             }
@@ -208,8 +253,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                         folder = res.getRootPath().substring(siteRoot.length());
                     }
                 } catch (CmsException e) {
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
+                    throw new CmsIllegalArgumentException(
+                        Messages.get().container(Messages.ERR_SELECTED_FOLDER_NOT_IN_SITE_0));
                 }
                 settings.setStartFolder(folder);
             }
@@ -240,7 +285,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns the description of the parent ou.<p>
-     * 
+     *
      * @return the description of the parent ou
      */
     public String getAssignedOu() {
@@ -255,7 +300,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns the localized description of the user if the description is a key.<p>
-     * 
+     *
      * @return the localized description of the user if the description is a key
      */
     public String getDescription() {
@@ -285,7 +330,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns the simple name of the user object.<p>
-     * 
+     *
      * @return the simple name of the user object
      */
     public String getName() {
@@ -298,7 +343,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -308,7 +353,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -324,6 +369,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public CmsPasswordInfo getPwdInfo() {
 
         return m_pwdInfo;
+    }
+
+    /**
+     * Returns the user role.<p>
+     *
+     * @return the user role
+     */
+    public String getRole() {
+
+        return m_role;
     }
 
     /**
@@ -368,7 +423,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Return if user is enabled.<p>
-     * 
+     *
      * @return enabled status
      */
     public boolean isEnabled() {
@@ -388,7 +443,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * This method is only needed for displaying reasons.<p>
-     * 
+     *
      * @param assignedOu nothing to do with this parameter
      */
     public void setAssignedOu(String assignedOu) {
@@ -399,7 +454,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets the description for the user.<p>
-     * 
+     *
      * @param description the description for the user
      */
     public void setDescription(String description) {
@@ -409,7 +464,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets if user is enabled.<p>
-     * 
+     *
      * @param enabled is the user enabled
      */
     public void setEnabled(boolean enabled) {
@@ -439,7 +494,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets the name of the user object.<p>
-     * 
+     *
      * @param name the name of the user object
      */
     public void setName(String name) {
@@ -449,7 +504,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -462,12 +517,22 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
+    }
+
+    /**
+     * Sets the user role.<p>
+     *
+     * @param role the user role
+     */
+    public void setRole(String role) {
+
+        m_role = role;
     }
 
     /**
@@ -502,7 +567,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Sets the start project.<p>
-     * 
+     *
      * @param startProject the start project to set
      */
     public void setStartProject(String startProject) {
@@ -522,9 +587,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -540,7 +605,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         if (dialog.equals(PAGES[0])) {
             boolean webuserOu = false;
             try {
-                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                    getCms(),
+                    getParamOufqn()).hasFlagWebuser();
             } catch (CmsException e) {
                 // ignore
             }
@@ -555,7 +622,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(6, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            int row = isNewUser() ? 16 : 15;
+            int row = isNewUser() ? 17 : 15;
             if (!webuserOu) {
                 if (getSites().isEmpty()) {
                     row -= 1;
@@ -586,14 +653,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Creates a new user.<p>
-     * 
+     *
      * @param name the name
      * @param pwd the password
      * @param desc the description
      * @param info the additional information map
-     * 
+     *
      * @return the new user
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract CmsUser createUser(String name, String pwd, String desc, Map<String, Object> info)
@@ -633,22 +700,26 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
             if (!webuserOu) {
-                addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsSelectWidget(getLanguages())));
+                addWidget(
+                    new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsSelectWidget(getLanguages())));
                 if (!getSites().isEmpty()) {
                     addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsSelectWidget(getSites())));
                 }
-                addWidget(new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsSelectWidget(
-                    getProjects())));
-                addWidget(new CmsWidgetDialogParameter(this, "startFolder", PAGES[0], new CmsVfsFileWidget(
-                    true,
-                    null,
-                    false)));
+                addWidget(
+                    new CmsWidgetDialogParameter(this, "startProject", PAGES[0], new CmsSelectWidget(getProjects())));
+                addWidget(new CmsWidgetDialogParameter(
+                    this,
+                    "startFolder",
+                    PAGES[0],
+                    new CmsVfsFileWidget(true, null, false)));
                 addWidget(new CmsWidgetDialogParameter(this, "startView", PAGES[0], new CmsSelectWidget(getViews())));
                 if (isNewUser()) {
-                    addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
-                        null,
-                        null,
-                        getParamOufqn())));
+                    addWidget(new CmsWidgetDialogParameter(
+                        this,
+                        "group",
+                        PAGES[0],
+                        new CmsGroupWidget(null, null, getParamOufqn())));
+                    addWidget(new CmsWidgetDialogParameter(this, "role", PAGES[0], new CmsSelectWidget(getRoles())));
                 }
             }
         } else {
@@ -681,15 +752,15 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the dialog class name of the list to refresh.<p> 
-     * 
+     * Returns the dialog class name of the list to refresh.<p>
+     *
      * @return the list dialog class name
      */
     protected abstract String getListClass();
 
     /**
      * Returns the root path for the list tool.<p>
-     * 
+     *
      * @return the root path
      */
     protected abstract String getListRootPath();
@@ -717,7 +788,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Initializes the user object to work with depending on the dialog state and request parameters.<p>
-     * 
+     *
      * Two initializations of the user object on first dialog call are possible:
      * <ul>
      * <li>edit an existing user</li>
@@ -740,7 +811,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 m_startView = settings.getStartView();
                 return;
             } else {
-                // this is not the initial call, get the user object from session            
+                // this is not the initial call, get the user object from session
                 o = getDialogObject();
                 Map<?, ?> dialogObject = (Map<?, ?>)o;
                 m_user = (CmsUser)dialogObject.get(USER_OBJECT);
@@ -790,18 +861,18 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Tests if the given user is editable or not.<p>
-     * 
+     *
      * Not editable means that the user can only be activated and deactivated.<p>
-     * 
-     * @param user the user to test 
-     * 
+     *
+     * @param user the user to test
+     *
      * @return the editable flag
      */
     protected abstract boolean isEditable(CmsUser user);
 
     /**
      * Checks if the new user dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new user dialog has to be displayed
      */
     protected boolean isNewUser() {
@@ -811,14 +882,14 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Indicates if the pwd can be edited or not.<p>
-     * 
+     *
      * @param user the edited cms user
-     * 
+     *
      * @return <code>true</code> if the pwd can be edited
      */
     protected boolean isPwdChangeAllowed(CmsUser user) {
 
-        return user.isUser(); // always true, just to avoid warning 
+        return user.isUser(); // always true, just to avoid warning
     }
 
     /**
@@ -836,16 +907,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Writes a user to the db.<p>
-     * 
+     *
      * @param user the user to write
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract void writeUser(CmsUser user) throws CmsException;
 
     /**
      * Returns a list of options for the locale selector.<p>
-     * 
+     *
      * @return a list of options for the locale selector
      */
     private List<CmsSelectWidgetOption> getLanguages() {
@@ -864,14 +935,15 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         while (itLocales.hasNext()) {
             Locale locale = itLocales.next();
             boolean selected = locale.equals(defLocale);
-            locales.add(new CmsSelectWidgetOption(locale.toString(), selected, locale.getDisplayName(getLocale()), null));
+            locales.add(
+                new CmsSelectWidgetOption(locale.toString(), selected, locale.getDisplayName(getLocale()), null));
         }
         return locales;
     }
 
     /**
      * Returns a list of options for the project selector.<p>
-     * 
+     *
      * @return a list of options for the project selector
      */
     private List<CmsSelectWidgetOption> getProjects() {
@@ -904,11 +976,8 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                     selected = true;
                 }
                 if (isNewUser()) {
-                    projects.add(new CmsSelectWidgetOption(
-                        project.getSimpleName(),
-                        selected,
-                        project.getSimpleName(),
-                        null));
+                    projects.add(
+                        new CmsSelectWidgetOption(project.getSimpleName(), selected, project.getSimpleName(), null));
                 } else {
                     projects.add(new CmsSelectWidgetOption(project.getName(), selected, project.getSimpleName(), null));
                 }
@@ -924,8 +993,39 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the role select options.<p>
+     *
+     * @return the role select options
+     */
+    private List<CmsSelectWidgetOption> getRoles() {
+
+        List<CmsSelectWidgetOption> roleOptions = new ArrayList<CmsSelectWidgetOption>();
+        roleOptions.add(
+            new CmsSelectWidgetOption(
+                NO_ROLE,
+                false,
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_USER_EDITOR_NO_ROLE_0)));
+        try {
+            List<CmsRole> roles = new ArrayList<CmsRole>(
+                OpenCms.getRoleManager().getRoles(getCms(), m_paramOufqn, false));
+            // ensure the role sorting matches the system roles order
+            CmsRole.applySystemRoleOrder(roles);
+            for (CmsRole role : roles) {
+                roleOptions.add(
+                    new CmsSelectWidgetOption(
+                        role.getRoleName(),
+                        role.getRoleName().equals(CmsRole.ELEMENT_AUTHOR.getRoleName()),
+                        role.getDisplayName(getCms(), getLocale())));
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+        return roleOptions;
+    }
+
+    /**
      * Returns a list of options for the site selector.<p>
-     * 
+     *
      * @return a list of options for the site selector
      */
     private List<CmsSelectWidgetOption> getSites() {
@@ -969,7 +1069,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list of options for the view selector.<p>
-     * 
+     *
      * @return a list of options for the view selector
      */
     private List<CmsSelectWidgetOption> getViews() {

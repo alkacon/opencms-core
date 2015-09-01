@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.util.Set;
 
 /**
  * Group container bean.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsGroupContainer extends CmsContainerElement {
@@ -42,9 +42,6 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /** List of the contained elements id's. */
     private List<CmsContainerElement> m_elements;
-
-    /** The group-container title. */
-    private String m_title;
 
     /** The container types supported by this group container. */
     private Set<String> m_types;
@@ -61,7 +58,7 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /**
      * Returns the list of the contained elements id's.<p>
-     * 
+     *
      * @return the list of the contained elements id's
      */
     public List<CmsContainerElement> getElements() {
@@ -70,18 +67,8 @@ public class CmsGroupContainer extends CmsContainerElement {
     }
 
     /**
-     * Returns the group-container title.<p>
-     *
-     * @return the group-container title
-     */
-    public String getTitle() {
-
-        return m_title;
-    }
-
-    /**
      * Returns the container types.<p>
-     * 
+     *
      * @return the container types
      */
     public Set<String> getTypes() {
@@ -101,23 +88,13 @@ public class CmsGroupContainer extends CmsContainerElement {
 
     /**
      * Sets the elements contained in this container.<p>
-     * 
+     *
      * @param elements the elements
      */
     public void setElements(List<CmsContainerElement> elements) {
 
         m_elements = elements;
 
-    }
-
-    /**
-     * Sets the group-container title.<p>
-     *
-     * @param title the group-container title to set
-     */
-    public void setTitle(String title) {
-
-        m_title = title;
     }
 
     /**

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -39,11 +39,11 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implements the indexing method for a single resource as thread.<p>
- * 
+ *
  * The indexing of a single resource is wrapped into a thread
  * in order to prevent the overall indexer from hanging.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsIndexingThread extends Thread {
 
@@ -70,7 +70,7 @@ public class CmsIndexingThread extends Thread {
 
     /**
      * Create a new indexing thread.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param res the resource to index
      * @param index the index to update the resource in
@@ -91,9 +91,9 @@ public class CmsIndexingThread extends Thread {
 
     /**
      * Returns the document created by this indexer thread.<p>
-     * 
+     *
      * In case the resource could not be indexed, <code>null</code> is returned.<p>
-     * 
+     *
      * @return the document created by this indexer thread
      */
     public I_CmsSearchDocument getResult() {
@@ -103,7 +103,7 @@ public class CmsIndexingThread extends Thread {
 
     /**
      * Starts the thread to index a single resource.<p>
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -119,7 +119,8 @@ public class CmsIndexingThread extends Thread {
 
             // check if the thread was interrupted
             if (isInterrupted() && LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
+                LOG.debug(
+                    Messages.get().getBundle().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
             }
 
         } catch (CmsIndexNoContentException e) {
@@ -163,10 +164,11 @@ public class CmsIndexingThread extends Thread {
                         I_CmsReport.FORMAT_ERROR);
                 }
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_INDEX_RESOURCE_FAILED_2,
-                        m_res.getRootPath(),
-                        m_index.getName()));
+                    LOG.error(
+                        Messages.get().getBundle().key(
+                            Messages.ERR_INDEX_RESOURCE_FAILED_2,
+                            m_res.getRootPath(),
+                            m_index.getName()));
                 }
             }
         }
@@ -174,15 +176,15 @@ public class CmsIndexingThread extends Thread {
 
     /**
      * Creates the search index document.<p>
-     * 
+     *
      * @param cms the current OpenCms user context
      * @param res the resource to index
      * @param index the index to update the resource in
      * @param count the report count
      * @param report the report to write the output to
-     * 
+     *
      * @return the created search index document
-     * 
+     *
      * @throws CmsException in case of issues while creating the search index document
      */
     protected I_CmsSearchDocument createIndexDocument(
@@ -201,9 +203,10 @@ public class CmsIndexingThread extends Thread {
                     String.valueOf(count)),
                 I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.FORMAT_NOTE);
-            report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_ARGUMENT_1,
-                report.removeSiteRoot(res.getRootPath())));
+            report.print(
+                org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    report.removeSiteRoot(res.getRootPath())));
             report.print(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
                 I_CmsReport.FORMAT_DEFAULT);
@@ -218,10 +221,11 @@ public class CmsIndexingThread extends Thread {
             if (documentFactory != null) {
                 // some resources e.g. JSP do not have a default document factory
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_INDEXING_WITH_FACTORY_2,
-                        res.getRootPath(),
-                        documentFactory.getName()));
+                    LOG.debug(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_INDEXING_WITH_FACTORY_2,
+                            res.getRootPath(),
+                            documentFactory.getName()));
                 }
                 // create the document
                 result = documentFactory.createDocument(cms, res, index);

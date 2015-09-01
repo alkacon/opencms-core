@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import com.google.common.collect.Maps;
 
 /**
  * Loads message bundles from .properties files in the VFS.<p>
- * 
+ *
  * The paths of the properties files are formed from the base path in the bundle parameters, the locale, and the .properties suffix.
  */
 public class CmsVfsBundleLoaderProperties implements CmsVfsResourceBundle.I_Loader {
@@ -76,11 +76,11 @@ public class CmsVfsBundleLoaderProperties implements CmsVfsResourceBundle.I_Load
 
     /**
      * Gets the encoding which should be used to read the properties file.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param res the resource for which we want the encoding
-     *  
-     * @return the encoding value 
+     *
+     * @return the encoding value
      */
     private String getEncoding(CmsObject cms, CmsResource res) {
 

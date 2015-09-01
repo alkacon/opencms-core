@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,14 +43,14 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for static export manager.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsStaticExportManager(String arg0) {
@@ -60,7 +60,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -94,7 +94,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Tests the link generation for statically exported files by default suffix.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDefaultSuffixLinkGeneration() throws Exception {
@@ -111,7 +111,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
         // make sure static export on default is disabled
         OpenCms.getStaticExportManager().setDefault(CmsStringUtil.FALSE);
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + folder);
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
+            cms.getRequestContext().getSiteRoot() + folder);
         String expected1, expected2;
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
@@ -161,7 +162,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Tests the link generation for statically exported JSP files.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testExportJspLinkGeneration() throws Exception {
@@ -183,7 +184,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         OpenCms.getPublishManager().publishProject(cms);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + folder);
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(
+            cms.getRequestContext().getSiteRoot() + folder);
         String expected;
 
         echo("Testing basic export name generating functions for a JSP");
@@ -206,7 +208,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         checkLinkWithoutParameters(cms, vfsName, expected);
         checkLinkWithParameters(cms, vfsName, expected);
 
-        echo("Testing export name generating functions for a JSP with 'exportname' property AND 'exportsuffix' property set");
+        echo(
+            "Testing export name generating functions for a JSP with 'exportname' property AND 'exportsuffix' property set");
 
         // set "exportsuffix" property to JSP
         cms.lockResource(vfsName);
@@ -224,10 +227,12 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
         // remove "exportname" property from JSP
         cms.lockResource(folder);
-        cms.writePropertyObject(folder, new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-            CmsProperty.DELETE_VALUE,
-            CmsProperty.DELETE_VALUE));
+        cms.writePropertyObject(
+            folder,
+            new CmsProperty(
+                CmsPropertyDefinition.PROPERTY_EXPORTNAME,
+                CmsProperty.DELETE_VALUE,
+                CmsProperty.DELETE_VALUE));
         cms.unlockResource(folder);
         cms.lockResource(vfsName);
         cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".pdf", null));
@@ -243,7 +248,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Checks a link that has no parameters.<p>
-     * 
+     *
      * @param cms the cms context
      * @param vfsName the vfsName of the resource to test the link for
      * @param expected the previous generated link
@@ -259,7 +264,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
     /**
      * Checks a link that has parameters.<p>
-     * 
+     *
      * @param cms the cms context
      * @param vfsName the vfsName of the resource to test the link for
      * @param expected the previous generated link
@@ -270,11 +275,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d");
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
-        Pattern pattern = Pattern.compile("^"
-            + CmsStringUtil.escapePattern(expected + "_")
-            + "\\d*"
-            + CmsStringUtil.escapePattern(extension)
-            + "$");
+        Pattern pattern = Pattern.compile(
+            "^" + CmsStringUtil.escapePattern(expected + "_") + "\\d*" + CmsStringUtil.escapePattern(extension) + "$");
         assertTrue(pattern.matcher(rfsName).matches());
         assertEquals(vfsName, OpenCms.getStaticExportManager().getVfsName(cms, rfsName));
     }

@@ -11,6 +11,9 @@ Properties vprops = new Properties()
 vprops.load(new FileInputStream("$projectDir/src/org/opencms/main/version.properties"))
 version = vprops['version.number']
 
+// alternative variable name for the case where the version variable is used for something else, e.g. javadoc
+ext.ocmsVersion = version
+
 buildDir = build_directory
 repositories {
     mavenLocal()
@@ -158,6 +161,11 @@ sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { buil
 project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
 componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
 
+task copyDeps(type: Copy) {
+    from configurations.distribution
+    into "${buildDir}/deps"
+}
+
 task componentsJar(type: Jar) {
     from sourceSets.components.output
     baseName 'opencms-components'
@@ -248,10 +256,11 @@ javadoc {
         noDeprecatedList="false"
         noDeprecated="false"
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
-        docTitle="OpenCms Core API, version $version"
-        windowTitle="OpenCms Core API, version $version"
+        docTitle="OpenCms Core API, version $ocmsVersion"
+        windowTitle="OpenCms Core API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
+        use="true"
     }
 }
 
@@ -304,14 +313,26 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Workplace Modules API, version $version"
-        windowTitle="OpenCms Workplace Modules API, version $version"
+        docTitle="OpenCms Workplace Modules API, version $ocmsVersion"
+        windowTitle="OpenCms Workplace Modules API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
     source = sourceSets.modules.allJava
     classpath = project.sourceSets.modules.compileClasspath
     destinationDir = file("${buildDir}/docs/javadocModules")
+}
+
+task javadocJarModules(type: Jar, dependsOn: javadocModules) {
+    classifier = 'javadoc'
+    from "${buildDir}/docs/javadocModules"
+    baseName 'opencms-modules'
+}
+
+task sourcesJarModules(type: Jar) {
+    from sourceSets.modules.allSource
+    classifier = 'sources'
+    baseName 'opencms-modules'
 }
 
 task javadocGwt(type: Javadoc, dependsOn: jar) {
@@ -331,8 +352,8 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms GWT Components API, version $version"
-        windowTitle="OpenCms GWT Components API, version $version"
+        docTitle="OpenCms GWT Components API, version $ocmsVersion"
+        windowTitle="OpenCms GWT Components API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -392,8 +413,8 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         linkSource="false"
         noDeprecatedList="false"
         noDeprecated="false"
-        docTitle="OpenCms Setup API, version $version"
-        windowTitle="OpenCms Setup API, version $version"
+        docTitle="OpenCms Setup API, version $ocmsVersion"
+        windowTitle="OpenCms Setup API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
         header = "<script type=\"text/javascript\"> if (window.location.href.indexOf(\"overview-frame\") == -1) { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.alkacon.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/Alkacon.png\\\" /></a>\"); } else { document.write(\"<a id=\\\"brandingLink\\\" target=\\\"_blank\\\" href=\\\"http://www.opencms.com\\\"><img border=\\\"0\\\" id=\\\"brandingPic\\\" src=\\\"{@docRoot}/logos/OpenCms.png\\\" /></a>\"); }</script>"
     }
@@ -662,6 +683,8 @@ allModuleNames.split(',').each{ moduleName ->
                         '-strict'
                         // '-draftCompile' // Speeds up compile with 25%
                     ]
+            jvmArgs = [ '-Dgwt.jjs.permutationWorkerFactory=com.google.gwt.dev.ThreadedPermutationWorkerFactory']
+            
 
             maxHeapSize = max_heap_size
         }
@@ -733,13 +756,24 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         exclude '**/*.html'
         exclude '**/*.properties'
         exclude '**/*.txt'
         exclude '**/*.xml'
     }
+    
+    // copy SOLR config files separately to avoid the replace filter corrupting them
+    from ("${projectDir}/webapp"){
+        include '**/solr/**'
+        include '**/spellcheck/**'
+    }
+    
     from ("${projectDir}/webapp"){
         exclude '**/update/**'
+        exclude '**/solr/**'
+        exclude '**/spellcheck/**'
         include '**/*.html'
         include '**/*.properties'
         include '**/*.txt'
@@ -781,21 +815,45 @@ task war (dependsOn: [setupJar, allModules], type: Zip){
 
 task updater (dependsOn: setupJar, type: Zip){
     baseName 'opencms-upgrade-to'
+    
+    // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause 
     from ("${projectDir}/webapp"){
-        include 'update/**'
-        exclude 'update/empty.jar'
+        include 'update/**/*.ori'
+        include 'update/**/*.html'
+        include 'update/**/*.xml'
+        include 'update/**/*.txt'
+        include 'update/**/*.jsp'
         exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
             OPENCMS_VERSION: product_name+' '+version
         ])
     }
+    
+    from ("${projectDir}/webapp"){
+        include 'update/**'
+        exclude 'update/**/*.ori'
+        exclude 'update/**/*.html'
+        exclude 'update/**/*.xml'
+        exclude 'update/**/*.txt'
+        exclude 'update/**/*.jsp'
+        exclude 'update/readme.txt'
+        exclude 'update/empty.jar'
+    }
+
     from ("${projectDir}/webapp/WEB-INF/solr"){
         into '/WEB-INF/solr-update/'
         include 'conf/schema.xml'
         include 'conf/solrconfig.xml'
         include 'solr.xml'
     }
+    from ("${projectDir}/webapp/WEB-INF/solr") {
+        into '/WEB-INF/solr-complete/'
+        include '*'
+        include '**/*'
+    }
+    
     from ("${projectDir}/webapp/update/readme.txt"){
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
@@ -1353,6 +1411,9 @@ tasks.withType(JavaCompile) {
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
+    if (JavaVersion.current().isJava8Compatible()) {
+    	options.addStringOption("Xdoclint:none", "-quiet")
+    }
 }
 
 

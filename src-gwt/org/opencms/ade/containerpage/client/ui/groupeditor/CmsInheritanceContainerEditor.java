@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -69,7 +69,7 @@ import com.google.web.bindery.event.shared.HandlerRegistration;
 
 /**
  * The inheritance container editor.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
@@ -112,7 +112,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param groupContainer the group container widget
      * @param controller the container page controller
      * @param handler the container page handler
@@ -149,7 +149,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Returns the inheritance container editor instance.<p>
-     * 
+     *
      * @return the editor instance
      */
     public static CmsInheritanceContainerEditor getInstance() {
@@ -159,12 +159,12 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Opens the inheritance container editor.<p>
-     * 
+     *
      * @param groupContainer the group-container
      * @param controller the container-page controller
      * @param handler the container-page handler
-     * 
-     * @return the editor instance 
+     *
+     * @return the editor instance
      */
     public static CmsInheritanceContainerEditor openInheritanceContainerEditor(
         CmsGroupContainerElementPanel groupContainer,
@@ -204,8 +204,17 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
     }
 
     /**
+     * @see org.opencms.ade.containerpage.client.ui.groupeditor.A_CmsGroupEditor#reinitializeButtons()
+     */
+    @Override
+    public void reinitializeButtons() {
+
+        // nothing to do, will be handled else where
+    }
+
+    /**
      * Either removes the locally configured element or hides the inherited element.<p>
-     * 
+     *
      * @param elementWidget the element widget
      */
     public void removeElement(CmsContainerPageElementPanel elementWidget) {
@@ -228,18 +237,22 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Sets the option bar on the element widget.<p>
-     * 
+     *
      * @param elementWidget the element widget
      */
     public void setOptionBar(CmsContainerPageElementPanel elementWidget) {
 
-        elementWidget.setElementOptionBar(createOptionBar(elementWidget));
-        updateButtonVisibility(elementWidget);
+        if (elementWidget.hasViewPermission()) {
+            elementWidget.setElementOptionBar(createOptionBar(elementWidget));
+            updateButtonVisibility(elementWidget);
+        } else {
+            elementWidget.setElementOptionBar(null);
+        }
     }
 
     /**
      * Shows a formerly hidden element and sets the visibility info to true.<p>
-     * 
+     *
      * @param elementWidget the element widget
      */
     public void showElement(CmsContainerPageElementPanel elementWidget) {
@@ -262,7 +275,10 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         for (Element element : elements) {
             element.removeFromParent();
         }
-        if (CmsDomUtil.getElementsByClass(HIDDEN_ELEMENT_OVERLAY_CLASS, Tag.div, getGroupContainerWidget().getElement()).isEmpty()) {
+        if (CmsDomUtil.getElementsByClass(
+            HIDDEN_ELEMENT_OVERLAY_CLASS,
+            Tag.div,
+            getGroupContainerWidget().getElement()).isEmpty()) {
             // if no other hidden elements present disable toggle button
             m_showElementsButton.disable(Messages.get().key(Messages.GUI_INHERITANCECONTAINER_NO_HIDDEN_ELEMENTS_0));
         }
@@ -348,7 +364,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
             }
         }
         getController().addToRecentList(getGroupContainerWidget().getId(), null);
-        getController().unlockResource(new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
+        getController().unlockResource(
+            new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
         closeDialog(true);
         getController().setPageChanged();
     }
@@ -366,7 +383,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
         if (getBackUpElements().size() == 0) {
             getGroupContainerWidget().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
         }
-        getController().unlockResource(new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
+        getController().unlockResource(
+            new CmsUUID(CmsContainerpageController.getServerId(m_elementData.getClientId())));
         closeDialog(false);
     }
 
@@ -408,7 +426,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                     inheritanceInfo = new CmsInheritanceInfo(null, true, true);
                     m_changedInheritanceInfo = true;
                 }
-                CmsContainerElement element = getController().getCachedElement(elementWidget.getId());
+                CmsContainerElement element = getController().getCachedElement(elementWidget.getId()).copy();
                 element.setInheritanceInfo(inheritanceInfo);
                 elements.add(element);
             }
@@ -428,7 +446,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Sets the loaded element data.<p>
-     * 
+     *
      * @param elementsData the elements data
      */
     protected void setInheritContainerData(Map<String, CmsContainerElementData> elementsData) {
@@ -499,9 +517,9 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Creates an option bar for the given element.<p>
-     *  
+     *
      * @param elementWidget the element widget
-     * 
+     *
      * @return the option bar
      */
     private CmsElementOptionBar createOptionBar(CmsContainerPageElementPanel elementWidget) {
@@ -544,7 +562,7 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
 
     /**
      * Updates the visibility of the option bar buttons of the given element.<p>
-     * 
+     *
      * @param elementWidget the element widget
      */
     private void updateButtonVisibility(CmsContainerPageElementPanel elementWidget) {
@@ -560,6 +578,5 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 }
             }
         }
-        elementWidget.getElementOptionBar().initWidth();
     }
 }

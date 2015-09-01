@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * A proprietary {@link javax.swing.JTree} utilization for visuals checkbox selection.
  * <p>
- * 
+ *
  * It displays a tree with:
  * <ul>
  * <li> Multiple node selection (windos Look and Feel: press STRG) </li>
@@ -59,17 +59,17 @@ import javax.swing.tree.TreeSelectionModel;
  * <li>{@link javax.swing.tree.TreeSelectionModel#DISCONTIGUOUS_TREE_SELECTION} </li>
  * <li> Custom node UI with checkboxes. </li>
  * </ul>
- * 
+ *
  */
 public class SelectionTree extends JTree {
 
     /**
-     * 
+     *
      * Custom cell renderer that displays a checkbox.
      * <p>
-     * 
+     *
      * @since 6.1.6
-     * 
+     *
      */
     class CheckBoxCellRenderer extends DefaultTreeCellRenderer {
 
@@ -77,10 +77,11 @@ public class SelectionTree extends JTree {
         private static final long serialVersionUID = -4329469376335457482L;
 
         /**
-         * 
+         *
          * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree,
          *      java.lang.Object, boolean, boolean, boolean, int, boolean)
          */
+        @Override
         public Component getTreeCellRendererComponent(
             JTree tree,
             Object value,
@@ -96,16 +97,16 @@ public class SelectionTree extends JTree {
     }
 
     /**
-     * 
+     *
      * {@link TreeSelectionListener} that clears the selections on toggeled paths.
      * <p>
-     * 
+     *
      * This is only needed because of the proprietary UI - display of selected subnodes that are not
      * selected within the tree model itself.
      * <p>
-     * 
+     *
      * @since 6.1.6
-     * 
+     *
      */
     class SubsequentSelection implements TreeSelectionListener {
 
@@ -117,18 +118,18 @@ public class SelectionTree extends JTree {
             // DefaultMutableTreeNode node =
             // (DefaultMutableTreeNode)SelectionTree.this.getLastSelectedPathComponent();
             // clear the old subselections:
-            SelectionTree.this.clearToggledPaths();
+            clearToggledPaths();
 
         }
     }
 
     /**
-     * 
+     *
      * Custom component containing the default tree cell component along with a checkbox.
      * <p>
-     * 
+     *
      * @since 6.1.6
-     * 
+     *
      */
     class TreeCellUI extends JComponent {
 
@@ -141,19 +142,19 @@ public class SelectionTree extends JTree {
         /**
          * Constructor with the corresponding tree node and the selection flag.
          * <p>
-         * 
+         *
          * @param node the corresponding tree node.
-         * 
+         *
          * @param selected flag that specifies the state of the internal checkbox to show.
          */
         public TreeCellUI(DefaultMutableTreeNode node, boolean selected) {
 
             JLabel label = new JLabel();
             label.setText(node.getUserObject().toString());
-            this.m_checkBox = new JCheckBox();
-            this.m_checkBox.setSelected(selected || this.searchSelected(node));
-            this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-            this.add(this.m_checkBox);
+            m_checkBox = new JCheckBox();
+            m_checkBox.setSelected(selected || searchSelected(node));
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+            this.add(m_checkBox);
             this.add(label);
             m_checkBox.setBackground(UIManager.getLookAndFeel().getDefaults().getColor("window"));
             // invalidate all subnodes:
@@ -161,7 +162,7 @@ public class SelectionTree extends JTree {
 
         private boolean searchSelected(DefaultMutableTreeNode node) {
 
-            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)SelectionTree.this.getLastSelectedPathComponent();
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)getLastSelectedPathComponent();
             if (selectedNode == null) {
                 return false;
             }
@@ -179,15 +180,15 @@ public class SelectionTree extends JTree {
 
         super();
         super.setCellRenderer(new CheckBoxCellRenderer());
-        this.selectionModel.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        this.selectionModel.addTreeSelectionListener(new SubsequentSelection());
+        selectionModel.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+        selectionModel.addTreeSelectionListener(new SubsequentSelection());
         // this.setShowsRootHandles(false);
     }
 
     /**
      * For testing purposes.
      * <p>
-     * 
+     *
      * @param args unused command line args.
      */
     public static void main(String[] args) {
@@ -226,6 +227,7 @@ public class SelectionTree extends JTree {
         frame.setSize(new Dimension(200, 800));
         frame.addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosing(WindowEvent we) {
 
                 System.exit(0);
@@ -238,6 +240,7 @@ public class SelectionTree extends JTree {
     /**
      * @see javax.swing.JTree#clearToggledPaths()
      */
+    @Override
     public void clearToggledPaths() {
 
         // TODO: Auto-generated method stub
@@ -245,9 +248,10 @@ public class SelectionTree extends JTree {
     }
 
     /**
-     * 
+     *
      * @see javax.swing.JTree#removeSelectionPath(javax.swing.tree.TreePath)
      */
+    @Override
     public void removeSelectionPath(TreePath path) {
 
         // unselect the current TreeCell:
@@ -257,9 +261,10 @@ public class SelectionTree extends JTree {
     }
 
     /**
-     * 
+     *
      * @see javax.swing.JTree#setCellRenderer(javax.swing.tree.TreeCellRenderer)
      */
+    @Override
     public void setCellRenderer(TreeCellRenderer x) {
 
         // nop
@@ -268,10 +273,11 @@ public class SelectionTree extends JTree {
     /**
      * @see javax.swing.JTree#setSelectionPath(javax.swing.tree.TreePath)
      */
+    @Override
     public void setSelectionPath(TreePath path) {
 
         super.setSelectionPath(path);
-        this.clearToggledPaths();
+        clearToggledPaths();
     }
 
 }

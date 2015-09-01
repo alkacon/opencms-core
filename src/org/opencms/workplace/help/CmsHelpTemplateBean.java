@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,6 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
@@ -64,18 +65,18 @@ import org.apache.commons.logging.Log;
 
 /**
  * The bean that provides methods to build the HTML for the single online help frames.<p>
- * 
- * <h4>Things to know</h4> 
+ *
+ * <h4>Things to know</h4>
  * <ul>
  *  <li>
  *  Online help will only work with resources of type xmlpage.
  *  <li>
- *  Content pages with a property <em>"template-elements"</em> set to a path of a ressource (jsp, page,...) 
- *  will get the content produced by <code>{@link org.opencms.jsp.CmsJspActionElement#getContent(String)}</code> 
+ *  Content pages with a property <em>"template-elements"</em> set to a path of a ressource (jsp, page,...)
+ *  will get the content produced by <code>{@link org.opencms.jsp.CmsJspActionElement#getContent(String)}</code>
  * appended after their own output. This allows to use jsp's in the online help template.
  * </ul>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHelpTemplateBean extends CmsDialog {
 
@@ -144,7 +145,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsHelpTemplateBean(CmsJspActionElement jsp) {
@@ -162,7 +163,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -174,7 +175,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the java script method to open the online help popup window.<p>
-     * 
+     *
      * @param locale the current users workplace Locale
      * @return the java script method to open the online help popup window
      */
@@ -185,7 +186,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
         // the online help invoker: pops up the window with url.
         result.append("function openOnlineHelp(wpUri) {\n");
         result.append("\tif (wpUri == null || wpUri == \"\") {\n");
-        result.append("\t\tif (top.body.top.body.admin_content != null && top.body.top.body.admin_content.onlineHelpUriCustom != null) {\n");
+        result.append(
+            "\t\tif (top.body.top.body.admin_content != null && top.body.top.body.admin_content.onlineHelpUriCustom != null) {\n");
         result.append("\t\t\twpUri = top.body.top.body.admin_content.onlineHelpUriCustom;\n");
         result.append("\t\t}\n");
         result.append("\t\telse{\n");
@@ -198,7 +200,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("\t\t\t\t// determine currently shown administration item\n");
         result.append("\t\t\t\tvar parameters = \"\";\n");
         result.append("\t\t\t\ttry {\n");
-        result.append("\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.tool_title.location.search);\n");
+        result.append(
+            "\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.tool_title.location.search);\n");
         result.append("\t\t\t\t} catch (e) {\n");
         result.append("\t\t\t\t\ttry {\n");
         result.append("\t\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.location.search);\n");
@@ -226,7 +229,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append(locale);
         result.append("/help/index.html?").append(PARAM_BUILDFRAME).append("=true");
         result.append("&").append(PARAM_WORKPLACERESOURCE).append("=\" + wpUri, \"cmsonlinehelp\", ");
-        result.append("\"toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=700,height=450\");\n");
+        result.append(
+            "\"toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=700,height=450\");\n");
         result.append("}\n");
 
         String s = result.toString();
@@ -235,7 +239,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML for the end of the page.<p>
-     * 
+     *
      * @return the HTML for the end of the page
      */
     public String buildHtmlHelpEnd() {
@@ -248,7 +252,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML for the start of the page.<p>
-     * 
+     *
      * @param cssFile the CSS file name to use
      * @param transitional if true, transitional doctype is used
      * @return the HTML for the start of the page
@@ -283,14 +287,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML for the body frame of the online help.<p>
-     * 
-     * @return the HTML for the body frame of the online help 
+     *
+     * @return the HTML for the body frame of the online help
      */
     public String displayBody() {
 
         StringBuffer result = new StringBuffer(256);
 
-        // change to online project to allow static export 
+        // change to online project to allow static export
         try {
             getJsp().getRequestContext().setCurrentProject(m_onlineProject);
             result.append(buildHtmlHelpStart("onlinehelp.css", true));
@@ -299,22 +303,24 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append("<table class=\"helpcontent\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
             result.append("<tr>\n");
             result.append("\t<td class=\"helpnav\">\n");
-            result.append("\t\t<a class=\"navhelphead\" href=\"javascript:top.body.location.href=top.head.homeLink;\">");
+            result.append(
+                "\t\t<a class=\"navhelphead\" href=\"javascript:top.body.location.href=top.head.homeLink;\">");
             result.append(key(Messages.GUI_HELP_NAVIGATION_HEAD_0));
             result.append("</a>\n");
             result.append(buildHtmlHelpNavigation());
             result.append("</td>\n");
             result.append("\t<td class=\"helpcontent\">\n");
             result.append("\t\t<h1>");
-            result.append(getJsp().property(
-                CmsPropertyDefinition.PROPERTY_TITLE,
-                getParamHelpresource(),
-                key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
+            result.append(
+                getJsp().property(
+                    CmsPropertyDefinition.PROPERTY_TITLE,
+                    getParamHelpresource(),
+                    key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
             result.append("</h1>\n");
             // print navigation if property template-elements is set to sitemap
             result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
             try {
-                // additionally allow appending content of dynamic pages whose path may be specified 
+                // additionally allow appending content of dynamic pages whose path may be specified
                 // as value of property PROPERTY_TEMPLATE_ELEMENTS (currently sitemap.jsp and search.jsp are used)
                 CmsProperty elements = getCms().readPropertyObject(
                     getParamHelpresource(),
@@ -324,7 +330,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                     try {
                         // trigger an exception here as getContent won't throw anything!
                         getJsp().getCmsObject().readFile(elements.getValue());
-                        // Ok, ressource exists: switsch from the online project to turn of static export links. 
+                        // Ok, ressource exists: switsch from the online project to turn of static export links.
                         String elementName = elements.getValue();
                         // check, wether the "dynamic resource" wants to be exported or not:
                         boolean export = false;
@@ -346,7 +352,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                         CmsVfsResourceNotFoundException e2 = new CmsVfsResourceNotFoundException(
                             Messages.get().container(
                                 Messages.GUI_HELP_ERR_CONTENT_APPEND_2,
-                                this.getParamHelpresource(),
+                                getParamHelpresource(),
                                 elements.getValue(),
                                 CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS),
                             t);
@@ -375,7 +381,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML for the head frame of the online help.<p>
-     * 
+     *
      * @return the HTML for the head frame of the online help
      */
     public String displayHead() {
@@ -398,13 +404,13 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // store home link in JS variable to use it in body frame
             result.append("<script type=\"text/javascript\">\n<!--\n");
             result.append("\tvar homeLink = \"");
-            result.append(getParamHomelink());
+            result.append(CmsEncoder.escapeXml(getParamHomelink()));
             result.append("\";\n\n");
             result.append("//-->\n</script>\n");
 
-            // search form with invisible elements 
+            // search form with invisible elements
 
-            // search index may be attached to resource /system/modules/org.opencms.workplace.help/elements/search.jsp,   
+            // search index may be attached to resource /system/modules/org.opencms.workplace.help/elements/search.jsp,
             // property search.index.
             String index = getJsp().property(
                 "search.index",
@@ -414,8 +420,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
             StringBuffer submitAction = new StringBuffer();
             submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
             submitAction.append(
-                Messages.get().getBundle(getLocale()).key(Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1, new Integer(3))).append(
-                "\');");
+                Messages.get().getBundle(getLocale()).key(
+                    Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1,
+                    new Integer(3))).append("\');");
 
             result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
             String searchLink = getJsp().link(
@@ -454,7 +461,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 resourcePath));
 
             result.append(button(
-                "javascript:top.body.location.href='" + getParamHomelink() + "';",
+                "javascript:top.body.location.href='" + CmsEncoder.escapeXml(getParamHomelink()) + "';",
                 null,
                 "contents.png",
                 org.opencms.search.Messages.GUI_HELP_BUTTON_CONTENTS_0,
@@ -467,13 +474,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append(" \">");
             result.append("</td>\n");
 
-            result.append(button(
-                new StringBuffer("javascript:").append(submitAction.toString()).toString(),
-                null,
-                null,
-                org.opencms.search.Messages.GUI_HELP_BUTTON_SEARCH_0,
-                2,
-                null));
+            result.append(
+                button(
+                    new StringBuffer("javascript:").append(submitAction.toString()).toString(),
+                    null,
+                    null,
+                    org.opencms.search.Messages.GUI_HELP_BUTTON_SEARCH_0,
+                    2,
+                    null));
 
             result.append(buttonBar(HTML_END));
 
@@ -516,14 +524,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Generates the HTML for the online help frameset or redirects to the help body, depending on the build frameset flag.<p>
-     * 
+     *
      * @return the HTML for the online help frameset or an empty String (redirect)
      * @throws IOException if redirection fails
      */
     public String displayHelp() throws IOException {
 
         String result = "";
-        // change to online project to allow static export / export links 
+        // change to online project to allow static export / export links
         try {
             getJsp().getRequestContext().setCurrentProject(m_onlineProject);
 
@@ -640,7 +648,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML to build the navigation of the online help folder.<p>
-     * 
+     *
      * @return the HTML to build the navigation of the online help folder
      */
     protected String buildHtmlHelpNavigation() {
@@ -648,7 +656,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         StringBuffer result = new StringBuffer(512);
         // determine current URI
         String currentUri = getParamHelpresource();
-        // ignore ressources outside content folder: e.g. the search.html which 
+        // ignore ressources outside content folder: e.g. the search.html which
         // is in the general help module and not the german or english online help folder.
         if ((currentUri == null) || (currentUri.indexOf("/workplace/locales/") == -1)) {
             // BUG!: getLocale().getLanguage() -> getCms().getRequestContext().getLocale() returns "en"!
@@ -683,13 +691,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 result.append("px 1px;\" href=\"");
                 if (nav.isFolderLink()) {
                     // append file name to folder links to avoid static export issues
-                    result.append(getJsp().link(
-                        "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
-                            + nav.getResourceName()
-                            + "index.html&"
-                            + CmsLocaleManager.PARAMETER_LOCALE
-                            + "="
-                            + getLocale()));
+                    result.append(
+                        getJsp().link(
+                            "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
+                                + nav.getResourceName()
+                                + "index.html&"
+                                + CmsLocaleManager.PARAMETER_LOCALE
+                                + "="
+                                + getLocale()));
                 } else {
                     result.append(getJsp().link(
                         "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
@@ -723,7 +732,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns the HTML to build the frameset for the online help popup window.<p>
-     * 
+     *
      * @return the HTML to build the frameset for the online help popup window
      */
     protected String displayFrameset() {
@@ -758,7 +767,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         headLink.append(PARAM_HOMELINK);
         headLink.append("=");
         headLink.append(getParamHomelink());
-        result.append(getJsp().link(attachRequestString(headLink.toString())));
+        result.append(CmsEncoder.escapeXml(getJsp().link(attachRequestString(headLink.toString()))));
         result.append("\" scrolling=\"no\" noresize>\n");
         result.append("\t<frame name=\"body\" src=\"");
         StringBuffer bodyLink = new StringBuffer(8);
@@ -782,9 +791,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Determines the mapped help page for a given workplace resource URI.<p>
-     * 
+     *
      * If a mapping information is found, the requested URI is set to the found value.<p>
-     * 
+     *
      * If no workplace resource URI is given, nothing is changed.<p>
      */
     protected void getMappedHelpUri() {
@@ -797,7 +806,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 String wpResource = getParamWorkplaceresource();
                 int xmlPageId;
                 try {
-                    xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+                    xmlPageId = OpenCms.getResourceManager().getResourceType(
+                        CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
                 } catch (CmsLoaderException e1) {
                     xmlPageId = CmsResourceTypeXmlPage.getStaticTypeId();
                 }
@@ -826,7 +836,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                             wpResource = CmsResource.getParentFolder(wpResource);
                         }
                     } catch (IOException e) {
-                        // no mappings found in module, ignore              
+                        // no mappings found in module, ignore
                     }
 
                     if (CmsStringUtil.isEmpty(helpResource)) {
@@ -867,7 +877,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Returns true if the online help frameset has to be generated.<p>
-     * 
+     *
      * @return true if the online help frameset has to be generated, otherwise false
      */
     protected boolean isBuildFrameset() {
@@ -877,11 +887,11 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /**
      * Attaches the resource name to the request as parameter.<p>
-     * 
+     *
      * @param resourceName a name of a resource
-     * 
-     * @return The given resource name with additional request parameter concatenations of the 
-     *         current request on this <code>CmsDialog</code> 
+     *
+     * @return The given resource name with additional request parameter concatenations of the
+     *         current request on this <code>CmsDialog</code>
      */
     private String attachRequestString(String resourceName) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestPriorityResourceCollectors(String arg0) {
@@ -61,7 +61,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Initializes the resources needed for the tests.<p>
-     * 
+     *
      * @param cms the cms object
      * @throws CmsException if something goes wrong
      */
@@ -76,9 +76,9 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         long time = System.currentTimeMillis();
 
         // absolute priority order of the created files:
-        // /folder1/sub1/file5, /file1, /folder1/file3, /folder1/file2, /folder1/file1, /folder1/file4 
+        // /folder1/sub1/file5, /file1, /folder1/file3, /folder1/file2, /folder1/file1, /folder1/file4
 
-        // create a file in the root directory              
+        // create a file in the root directory
         propPrio.setStructureValue("15");
         properties.add(propPrio);
         propDate.setStructureValue("" + time);
@@ -127,7 +127,11 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         properties.add(propPrio);
         propDate.setStructureValue("" + (time + 40));
         properties.add(propDate);
-        CmsResource res = cms.createResource("/folder1/file5", CmsResourceTypePlain.getStaticTypeId(), null, properties);
+        CmsResource res = cms.createResource(
+            "/folder1/file5",
+            CmsResourceTypePlain.getStaticTypeId(),
+            null,
+            properties);
         res.setDateExpired(time);
         cms.writeResource(res);
 
@@ -153,7 +157,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -193,7 +197,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderPriority() throws Throwable {
@@ -203,9 +207,10 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         echo("Testing allInFolderPriorityDateDesc resource collector");
 
         I_CmsResourceCollector collector = new CmsPriorityResourceCollector();
-        List<CmsResource> resources = collector.getResults(cms, "allInFolderPriorityDateDesc", "/folder1/|"
-            + resTypeIdPlain
-            + "|3");
+        List<CmsResource> resources = collector.getResults(
+            cms,
+            "allInFolderPriorityDateDesc",
+            "/folder1/|" + resTypeIdPlain + "|3");
 
         // assert that 3 files are returned
         assertEquals(3, resources.size());
@@ -225,7 +230,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInFolderPriorityExcludeTimerange() throws Throwable {
@@ -235,17 +240,18 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         echo("Testing allInFolderPriorityDateDesc resource collector including time range");
 
         I_CmsResourceCollector collector = new CmsPriorityResourceCollector();
-        List<CmsResource> resources = collector.getResults(cms, "allInFolderPriorityDateDesc", "/folder1/|"
-            + resTypeIdPlain
-            + "|0");
+        List<CmsResource> resources = collector.getResults(
+            cms,
+            "allInFolderPriorityDateDesc",
+            "/folder1/|" + resTypeIdPlain + "|0");
 
         // assert that 4 files are returned
         assertEquals(4, resources.size());
 
-        resources = collector.getResults(cms, "allInFolderPriorityDateDesc", "/folder1/|"
-            + resTypeIdPlain
-            + "|"
-            + CmsCollectorData.PARAM_EXCLUDETIMERANGE);
+        resources = collector.getResults(
+            cms,
+            "allInFolderPriorityDateDesc",
+            "/folder1/|" + resTypeIdPlain + "|" + CmsCollectorData.PARAM_EXCLUDETIMERANGE);
 
         // assert that 5 files are returned
         assertEquals(5, resources.size());
@@ -271,7 +277,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
     /**
      * Tests the "allInSubTreePriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCollectAllInSubTreePriority() throws Throwable {
@@ -281,9 +287,10 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
         echo("Testing allInSubTreePriorityDesc resource collector");
 
         I_CmsResourceCollector collector = new CmsPriorityResourceCollector();
-        List<CmsResource> resources = collector.getResults(cms, "allInSubTreePriorityDateDesc", "/|"
-            + resTypeIdPlain
-            + "|4");
+        List<CmsResource> resources = collector.getResults(
+            cms,
+            "allInSubTreePriorityDateDesc",
+            "/|" + resTypeIdPlain + "|4");
 
         // assert that 4 files are returned
         assertEquals(4, resources.size());

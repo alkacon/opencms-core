@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,20 +41,20 @@ import java.util.Map;
 import org.apache.commons.collections.Transformer;
 
 /**
- * Allows access to the attributes and properties of a resource, usually used inside a loop of a 
+ * Allows access to the attributes and properties of a resource, usually used inside a loop of a
  * <code>&lt;cms:resourceload&gt;</code> tag.<p>
- * 
- * The implementation is optimized for performance and uses lazy initializing of the 
+ *
+ * The implementation is optimized for performance and uses lazy initializing of the
  * requested values as much as possible.<p>
- * 
+ *
  * @since 8.0
- * 
+ *
  * @see org.opencms.jsp.CmsJspTagResourceAccess
  */
 public class CmsJspResourceAccessBean {
 
     /**
-     * Transformer that reads a history resource property, 
+     * Transformer that reads a history resource property,
      * the input is used as String for the history property name to read.<p>
      */
     private class CmsHistoryPropertyLoaderTransformer implements Transformer {
@@ -64,7 +64,7 @@ public class CmsJspResourceAccessBean {
 
         /**
          * Creates a new property loading Transformer.<p>
-         * 
+         *
          * @param resource the resource where the properties are read from
          */
         public CmsHistoryPropertyLoaderTransformer(CmsResource resource) {
@@ -81,7 +81,9 @@ public class CmsJspResourceAccessBean {
             String result;
             try {
                 // read the requested history property
-                result = CmsProperty.get(String.valueOf(input), getCmsObject().readHistoryPropertyObjects(m_res)).getValue();
+                result = CmsProperty.get(
+                    String.valueOf(input),
+                    getCmsObject().readHistoryPropertyObjects(m_res)).getValue();
             } catch (CmsException e) {
                 // unable to read history property, return null
                 result = null;
@@ -91,7 +93,7 @@ public class CmsJspResourceAccessBean {
     }
 
     /**
-     * Transformer that reads a resource property, 
+     * Transformer that reads a resource property,
      * the input is used as String for the property name to read.<p>
      */
     private class CmsPropertyLoaderTransformer implements Transformer {
@@ -101,7 +103,7 @@ public class CmsJspResourceAccessBean {
 
         /**
          * Creates a new property loading Transformer.<p>
-         * 
+         *
          * @param resource the resource where the properties are read from
          */
         public CmsPropertyLoaderTransformer(CmsResource resource) {
@@ -144,10 +146,10 @@ public class CmsJspResourceAccessBean {
 
     /**
      * No argument constructor, required for a JavaBean.<p>
-     * 
-     * You must call {@link #init(CmsObject, CmsResource)} and provide the 
-     * required values when you use this constructor.<p> 
-     * 
+     *
+     * You must call {@link #init(CmsObject, CmsResource)} and provide the
+     * required values when you use this constructor.<p>
+     *
      * @see #init(CmsObject, CmsResource)
      */
     public CmsJspResourceAccessBean() {
@@ -157,7 +159,7 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Creates a content access bean based on a Resource.<p>
-     * 
+     *
      * @param cms the OpenCms context of the current user
      * @param resource the resource to create the content from
      */
@@ -168,7 +170,7 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Returns the OpenCms user context this bean was initialized with.<p>
-     * 
+     *
      * @return the OpenCms user context this bean was initialized with
      */
     public CmsObject getCmsObject() {
@@ -178,15 +180,15 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Returns the raw VFS file object of the current resource.<p>
-     * 
+     *
      * This can be used to access information from the raw file on a JSP.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     Root path of the resource: ${res.file.rootPath}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return the raw VFS file object the content accessed by this bean was created from
      */
     public CmsFile getFile() {
@@ -195,11 +197,11 @@ public class CmsJspResourceAccessBean {
             try {
                 m_file = m_cms.readFile(m_resource);
             } catch (CmsException e) {
-                // this usually should not happen, as the resource already has been read by the current user 
+                // this usually should not happen, as the resource already has been read by the current user
                 // and we just upgrade it to a file
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_FILE_READ_1,
-                    m_resource.getRootPath()), e);
+                throw new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_FILE_READ_1, m_resource.getRootPath()),
+                    e);
             }
         }
         return m_file;
@@ -207,13 +209,13 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Returns the file contents of the raw VFS file object as String.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     String content of the resource: ${res.fileContentAsString}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return the file contents of the raw VFS file object as String
      */
     public String getFileContentAsString() {
@@ -222,18 +224,18 @@ public class CmsJspResourceAccessBean {
     }
 
     /**
-     * Returns the site path of the current resource, that is the result of 
-     * {@link CmsObject#getSitePath(CmsResource)} with the resource 
+     * Returns the site path of the current resource, that is the result of
+     * {@link CmsObject#getSitePath(CmsResource)} with the resource
      * obtained by {@link #getFile()}.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &&lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     Site path of the resource: "${res.filename}";
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return the site path of the current resource
-     * 
+     *
      * @see CmsObject#getSitePath(CmsResource)
      */
     public String getFilename() {
@@ -243,17 +245,17 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Short form for {@link #getReadHistoryProperties()}.<p>
-     * 
+     *
      * This works only if the current resource is implementing {@link I_CmsHistoryResource}.<p>
-     *  
+     *
      * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     History "Title" property value of the resource: ${res.historyProperty['Title']}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return a map that lazily reads history properties of the resource
-     * 
+     *
      * @see #getReadHistoryProperties()
      */
     public Map<String, String> getHistoryProperty() {
@@ -263,15 +265,15 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Short form for {@link #getReadProperties()}.<p>
-     * 
+     *
      * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     "Title" property value of the resource: ${res.property['Title']}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return a map that lazily reads properties of the resource
-     * 
+     *
      * @see #getReadProperties()
      */
     public Map<String, String> getProperty() {
@@ -281,40 +283,40 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Returns a map that lazily reads history properties of the resource.<p>
-     * 
+     *
      * This works only if the current resource is implementing {@link I_CmsHistoryResource}.<p>
-     * 
+     *
      * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     History "Title" property value of the resource: ${res.readHistoryProperties['Title']}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return a map that lazily reads properties of the resource
-     * 
+     *
      * @see #getProperty() for a short form of this method
      */
     public Map<String, String> getReadHistoryProperties() {
 
         if (m_historyProperties == null) {
             // create lazy map only on demand
-            m_historyProperties = CmsCollectionsGenericWrapper.createLazyMap(new CmsHistoryPropertyLoaderTransformer(
-                m_resource));
+            m_historyProperties = CmsCollectionsGenericWrapper.createLazyMap(
+                new CmsHistoryPropertyLoaderTransformer(m_resource));
         }
         return m_historyProperties;
     }
 
     /**
      * Returns a map that lazily reads properties of the resource.<p>
-     * 
+     *
      * Usage example on a JSP with the <code>&lt;cms:resourceaccess&gt;</code> tag:<pre>
      * &lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     "Title" property value of the resource: ${res.readProperties['Title']}
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return a map that lazily reads properties of the resource
-     * 
+     *
      * @see #getProperty() for a short form of this method
      */
     public Map<String, String> getReadProperties() {
@@ -328,13 +330,13 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Returns the current resource.<p>
-     * 
+     *
      * Usage example on a JSP with the JSTL:<pre>
      * &&lt;cms:resourceload ... &gt;
      *     &lt;cms:resourceaccess var="res" /&gt;
      *     Root path of the resource: "${res.resource.rootPath}";
      * &lt;/cms:resourceload&gt;</pre>
-     * 
+     *
      * @return the current resource
      */
     public CmsResource getResource() {
@@ -345,8 +347,8 @@ public class CmsJspResourceAccessBean {
     /**
      * Returns an instance of a VFS access bean,
      * initialized with the OpenCms user context this bean was created with.<p>
-     * 
-     * @return an instance of a VFS access bean, 
+     *
+     * @return an instance of a VFS access bean,
      *      initialized with the OpenCms user context this bean was created with
      */
     public CmsJspVfsAccessBean getVfs() {
@@ -356,7 +358,7 @@ public class CmsJspResourceAccessBean {
 
     /**
      * Initialize this instance.<p>
-     * 
+     *
      * @param cms the OpenCms context of the current user
      * @param resource the resource to create the content from
      */

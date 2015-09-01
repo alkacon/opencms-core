@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,57 +34,57 @@ public interface I_CmsAttributeHandler {
 
     /**
      * Returns the simple path.<p>
-     * 
+     *
      * @param childHandler the child attribute handler
-     * 
+     *
      * @return the simple path
      */
     String collectSimplePath(I_CmsAttributeHandler childHandler);
 
     /**
      * Returns the attribute name.<p>
-     * 
+     *
      * @return the attribute name
      */
     String getAttributeName();
 
     /**
      * Returns the handler for the given attribute at the given index.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param index the value index
-     * 
+     *
      * @return the handler
      */
     CmsAttributeHandler getChildHandler(String attributeName, int index);
 
     /**
      * Returns the child handler by simple name.<p>
-     * 
+     *
      * @param name the name
      * @param index the value index
-     * 
+     *
      * @return the child handler if present
      */
     CmsAttributeHandler getChildHandlerBySimpleName(String name, int index);
 
     /**
      * Inserts a handler map at the given index.<p>
-     * 
+     *
      * @param index the value index
      */
     void insertHandlers(int index);
 
     /**
      * Removes the handlers at the given index.<p>
-     * 
+     *
      * @param index the value index
      */
     void removeHandlers(int index);
 
     /**
      * Sets a child attribute handler.<p>
-     * 
+     *
      * @param index the value index
      * @param attributeName the attribute name
      * @param handler the handler
@@ -93,7 +93,7 @@ public interface I_CmsAttributeHandler {
 
     /**
      * Sets the handler by id.<p>
-     * 
+     *
      * @param attributeName the attribute name
      * @param handler the handler
      */

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,22 +27,22 @@
 
 package org.opencms.i18n;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 /**
  * Tests for the OpenCms locale manager.<p>
- * 
+ *
  * @since 6.0.0
  */
-public class TestCmsLocaleManager extends TestCase {
+public class TestCmsLocaleManager extends OpenCmsTestCase {
 
     /**
      * Tests selection of the default locale.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testDefaultLocaleSelection() throws Exception {
@@ -61,7 +61,10 @@ public class TestCmsLocaleManager extends TestCase {
         available.add(Locale.US);
 
         // direct match
-        Locale result = localeManager.getBestMatchingLocale(Locale.GERMAN, localeManager.getDefaultLocales(), available);
+        Locale result = localeManager.getBestMatchingLocale(
+            Locale.GERMAN,
+            localeManager.getDefaultLocales(),
+            available);
         assertEquals(Locale.GERMAN, result);
 
         // simplified direct match

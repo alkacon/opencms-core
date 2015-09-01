@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import java.util.List;
 
 /**
  * Generalized user groups view.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
@@ -105,7 +105,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the list
      * @param listName the name of the list
@@ -117,14 +117,18 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         CmsMessageContainer listName,
         boolean searchable) {
 
-        super(jsp, listId, listName, LIST_COLUMN_DISPLAY, CmsListOrderEnum.ORDER_ASCENDING, searchable
-        ? LIST_COLUMN_DISPLAY
-        : null);
+        super(
+            jsp,
+            listId,
+            listName,
+            LIST_COLUMN_DISPLAY,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            searchable ? LIST_COLUMN_DISPLAY : null);
     }
 
     /**
      * Returns the organizational unit parameter value.<p>
-     * 
+     *
      * @return the organizational unit parameter value
      */
     public String getParamOufqn() {
@@ -134,7 +138,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -154,7 +158,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Returns if the list of groups has groups of other organizational units.<p>
-     * 
+     *
      * @return if the list of groups has groups of other organizational units
      */
     public boolean hasGroupsInOtherOus() {
@@ -181,7 +185,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the user organizational unit value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -194,7 +198,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value
      */
     public void setParamUserid(String userId) {
@@ -204,7 +208,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the User name parameter value.<p>
-     * 
+     *
      * @param username the username to set
      */
     public void setParamUsername(String username) {
@@ -223,11 +227,11 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Returns a list of groups to display.<p>
-     * 
+     *
      * @param withOtherOus if not set only groups of the current ou should be returned
-     * 
+     *
      * @return a list of <code><{@link CmsGroup}</code>s
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected abstract List<CmsGroup> getGroups(boolean withOtherOus) throws CmsException;
@@ -241,7 +245,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         CmsListItemDetails details = getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU);
         boolean withOtherOus = hasGroupsInOtherOus() && (details != null) && details.isVisible();
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
-        // get content        
+        // get content
         List<CmsGroup> groups = getGroups(withOtherOus);
         Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
@@ -300,7 +304,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         setIconAction(iconCol);
         // add it to the list definition
         metadata.addColumn(iconCol);
-        // add state column and actions 
+        // add state column and actions
         setStateActionCol(metadata);
 
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
@@ -334,14 +338,14 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
     /**
      * Sets the optional login default action.<p>
-     * 
+     *
      * @param nameCol the group name column
      */
     protected abstract void setDefaultAction(CmsListColumnDefinition nameCol);
 
     /**
      * Sets the needed icon action(s).<p>
-     * 
+     *
      * @param iconCol the list column for edition.
      */
     protected abstract void setIconAction(CmsListColumnDefinition iconCol);
@@ -399,15 +403,15 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         otherOuDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_NAME_0));
         otherOuDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_OTHEROU_HELP_0));
         otherOuDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_OTHEROU_NAME_0));
-        otherOuDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_OTHEROU_NAME_0)));
+        otherOuDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_OTHEROU_NAME_0)));
         otherOuDetails.setVisible(true);
         metadata.addItemDetails(otherOuDetails);
     }
 
     /**
      * Sets the optional state change action column.<p>
-     * 
+     *
      * @param metadata the list metadata object
      */
     protected abstract void setStateActionCol(CmsListMetadata metadata);

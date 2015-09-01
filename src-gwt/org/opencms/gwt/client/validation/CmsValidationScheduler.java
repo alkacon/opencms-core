@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,15 +31,15 @@ import java.util.LinkedList;
 
 /**
  * This is a helper class for scheduling form validations.<p>
- * 
+ *
  * Since validations can be asynchronous, it would be possible for a validation to start while another one
  * is still waiting for a response from the server if it were ran directly. This might result in an inconsistent state
- * of the form fields being validated. To prevent this, validation controllers use this class to schedule validations, 
+ * of the form fields being validated. To prevent this, validation controllers use this class to schedule validations,
  * and call this class again after they're finished to execute the next validation.<p>
- * 
+ *
  * The result of this is that a validation will only start after all unfinished validations which have been scheduled
  * before it have finished running.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsValidationScheduler {
@@ -63,8 +63,8 @@ public class CmsValidationScheduler {
 
     /**
      * Returns the singleton instance of the validation scheduler.<p>
-     * 
-     * @return the validation scheduler 
+     *
+     * @return the validation scheduler
      */
     public static CmsValidationScheduler get() {
 
@@ -73,7 +73,7 @@ public class CmsValidationScheduler {
 
     /**
      * This method should be called by the validation controller when it has finished running.<p>
-     * 
+     *
      * It will execute the next validation if there is one.<p>
      */
     public void executeNext() {
@@ -86,16 +86,16 @@ public class CmsValidationScheduler {
                 action.internalStartValidation();
             }
         } else {
-            assert false; // this shouldn't happen 
+            assert false; // this shouldn't happen
         }
     }
 
     /**
      * This schedules a new validation to be run after all currently scheduled or running validations have finished.<p>
-     * 
-     * If there are no validations running, the validation will be started immediately.<p> 
-     * 
-     * @param action the validation to be scheduled 
+     *
+     * If there are no validations running, the validation will be started immediately.<p>
+     *
+     * @param action the validation to be scheduled
      */
     public void schedule(CmsValidationController action) {
 

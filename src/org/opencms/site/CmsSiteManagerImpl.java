@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * Manages all configured sites in OpenCms.<p>
  *
  * To obtain the configured site manager instance, use {@link OpenCms#getSiteManager()}.<p>
- * 
+ *
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
@@ -81,8 +81,8 @@ public final class CmsSiteManagerImpl {
     /** A list of additional site roots, that is site roots that are not below the "/sites/" folder. */
     private List<String> m_additionalSiteRoots;
 
-    /** 
-     * The list of aliases for the site that is configured at the moment, 
+    /**
+     * The list of aliases for the site that is configured at the moment,
      * needed for the sites added during configuration. */
     private List<CmsSiteMatcher> m_aliases;
 
@@ -131,7 +131,7 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Adds an alias to the currently configured site.
-     * 
+     *
      * @param alias the URL of the alias server
      * @param offset the optional time offset for this alias
      */
@@ -149,10 +149,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Adds a site.<p>
-     * 
+     *
      * @param cms the CMS object
      * @param site the site to add
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void addSite(CmsObject cms, CmsSite site) throws CmsException {
@@ -185,7 +185,8 @@ public final class CmsSiteManagerImpl {
             Boolean.toString(site.isWebserver()),
             secureUrl,
             Boolean.toString(site.isExclusiveUrl()),
-            Boolean.toString(site.isExclusiveError()));
+            Boolean.toString(site.isExclusiveError()),
+            Boolean.toString(site.usesPermanentRedirects()));
 
         // re-initialize, will freeze the state when finished
         initialize(cms);
@@ -193,12 +194,12 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Adds a new CmsSite to the list of configured sites, 
+     * Adds a new CmsSite to the list of configured sites,
      * this is only allowed during configuration.<p>
-     * 
-     * If this method is called after the configuration is finished, 
+     *
+     * If this method is called after the configuration is finished,
      * a <code>RuntimeException</code> is thrown.<p>
-     * 
+     *
      * @param server the Server
      * @param uri the VFS path
      * @param title the display title for this site
@@ -207,9 +208,10 @@ public final class CmsSiteManagerImpl {
      * @param webserver indicates whether to write the web server configuration for this site or not
      * @param secureServer a secure server, can be <code>null</code>
      * @param exclusive if set to <code>true</code>, secure resources will only be available using the configured secure url
-     * @param error if exclusive, and set to <code>true</code> will generate a 404 error, 
+     * @param error if exclusive, and set to <code>true</code> will generate a 404 error,
      *                             if set to <code>false</code> will redirect to secure URL
-     * 
+     * @param usePermanentRedirects if set to "true", permanent redirects should be used when redirecting to the secure URL
+     *
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
     public void addSite(
@@ -221,7 +223,8 @@ public final class CmsSiteManagerImpl {
         String webserver,
         String secureServer,
         String exclusive,
-        String error) throws CmsConfigurationException {
+        String error,
+        String usePermanentRedirects) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_CONFIG_FROZEN_0));
@@ -261,6 +264,7 @@ public final class CmsSiteManagerImpl {
             site.setSecureServer(matcher);
             site.setExclusiveUrl(Boolean.valueOf(exclusive).booleanValue());
             site.setExclusiveError(Boolean.valueOf(error).booleanValue());
+            site.setUsePermanentRedirects(Boolean.valueOf(usePermanentRedirects).booleanValue());
             addServer(matcher, site);
         }
 
@@ -282,11 +286,11 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns a list of all sites available (visible) for the current user.<p>
-     * 
-     * @param cms the current OpenCms user context 
+     *
+     * @param cms the current OpenCms user context
      * @param workplaceMode if true, the root and current site is included for the admin user
      *                      and the view permission is required to see the site root
-     * 
+     *
      * @return a list of all sites available for the current user
      */
     public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode) {
@@ -296,13 +300,13 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns a list of all {@link CmsSite} instances that are compatible to the given organizational unit.<p>
-     * 
-     * @param cms the current OpenCms user context 
+     *
+     * @param cms the current OpenCms user context
      * @param workplaceMode if true, the root and current site is included for the admin user
      *                      and the view permission is required to see the site root
-     * @param showShared if the shared folder should be shown 
+     * @param showShared if the shared folder should be shown
      * @param ouFqn the organizational unit
-     * 
+     *
      * @return a list of all site available for the current user
      */
     public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, boolean showShared, String ouFqn) {
@@ -336,7 +340,7 @@ public final class CmsSiteManagerImpl {
             cms.getRequestContext().setSiteRoot("/");
             if (workplaceMode && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
                 if (!siteroots.contains("/")) {
-                    // add the root site if the user is in the workplace and has the required role 
+                    // add the root site if the user is in the workplace and has the required role
                     siteroots.add("/");
                 }
                 if (!siteroots.contains(CmsFileUtil.addTrailingSeparator(storedSiteRoot))) {
@@ -369,7 +373,7 @@ public final class CmsSiteManagerImpl {
                         break;
                     }
                 }
-                // select only sites compatibles to the given organizational unit 
+                // select only sites compatibles to the given organizational unit
                 if (compatible) {
                     try {
                         CmsResource res = cms.readResource(folder);
@@ -391,7 +395,10 @@ public final class CmsSiteManagerImpl {
                             }
                             if (title == null) {
                                 // not found, use the 'Title' property
-                                title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                                title = cms.readPropertyObject(
+                                    res,
+                                    CmsPropertyDefinition.PROPERTY_TITLE,
+                                    false).getValue();
                                 if (title == null) {
                                     title = folder;
                                 }
@@ -407,7 +414,10 @@ public final class CmsSiteManagerImpl {
                             }
                             if (position == null) {
                                 // not found, use the 'NavPos' property
-                                position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
+                                position = cms.readPropertyObject(
+                                    res,
+                                    CmsPropertyDefinition.PROPERTY_NAVPOS,
+                                    false).getValue();
                             }
                             if (configuredSite != null) {
                                 float pos = Float.MAX_VALUE;
@@ -422,16 +432,17 @@ public final class CmsSiteManagerImpl {
                                 result.add(clone);
                             } else {
                                 // add the site to the result
-                                result.add(new CmsSite(
-                                    folder,
-                                    res.getStructureId(),
-                                    title,
-                                    siteServers.get(folder),
-                                    position));
+                                result.add(
+                                    new CmsSite(
+                                        folder,
+                                        res.getStructureId(),
+                                        title,
+                                        siteServers.get(folder),
+                                        position));
                             }
                         }
                     } catch (CmsException e) {
-                        // user probably has no read access to the folder, ignore and continue iterating            
+                        // user probably has no read access to the folder, ignore and continue iterating
                     }
                 }
             }
@@ -453,7 +464,7 @@ public final class CmsSiteManagerImpl {
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {
-            // restore the user's current context 
+            // restore the user's current context
             cms.getRequestContext().setSiteRoot(storedSiteRoot);
         }
         return result;
@@ -461,12 +472,12 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns a list of all {@link CmsSite} instances that are compatible to the given organizational unit.<p>
-     * 
-     * @param cms the current OpenCms user context 
+     *
+     * @param cms the current OpenCms user context
      * @param workplaceMode if true, the root and current site is included for the admin user
      *                      and the view permission is required to see the site root
      * @param ouFqn the organizational unit
-     * 
+     *
      * @return a list of all site available for the current user
      */
     public List<CmsSite> getAvailableSites(CmsObject cms, boolean workplaceMode, String ouFqn) {
@@ -476,12 +487,12 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns the current site for the provided OpenCms user context object.<p>
-     * 
+     *
      * In the unlikely case that no site matches with the provided OpenCms user context,
      * the default site is returned.<p>
-     * 
+     *
      * @param cms the OpenCms user context object to check for the site
-     * 
+     *
      * @return the current site for the provided OpenCms user context object
      */
     public CmsSite getCurrentSite(CmsObject cms) {
@@ -492,7 +503,7 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns the default site.<p>
-     * 
+     *
      * @return the default site
      */
     public CmsSite getDefaultSite() {
@@ -512,8 +523,8 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns the shared folder path.<p>
-     * 
-     * @return the shared folder path 
+     *
+     * @return the shared folder path
      */
     public String getSharedFolder() {
 
@@ -523,24 +534,24 @@ public final class CmsSiteManagerImpl {
     /**
      * Returns the site for the given resource path, using the fall back site root
      * in case the resource path is no root path.<p>
-     * 
-     * In case neither the given resource path, nor the given fall back site root 
+     *
+     * In case neither the given resource path, nor the given fall back site root
      * matches any configured site, the default site is returned.<p>
-     * 
+     *
      * Usually the fall back site root should be taken from {@link org.opencms.file.CmsRequestContext#getSiteRoot()},
      * in which case a site for the site root should always exist.<p>
-     * 
-     * This is the same as first calling {@link #getSiteForRootPath(String)} with the 
-     * <code>resourcePath</code> parameter, and if this fails calling 
+     *
+     * This is the same as first calling {@link #getSiteForRootPath(String)} with the
+     * <code>resourcePath</code> parameter, and if this fails calling
      * {@link #getSiteForSiteRoot(String)} with the <code>fallbackSiteRoot</code> parameter,
      * and if this fails calling {@link #getDefaultSite()}.<p>
-     * 
+     *
      * @param rootPath the resource root path to get the site for
      * @param fallbackSiteRoot site root to use in case the resource path is no root path
-     * 
+     *
      * @return the site for the given resource path, using the fall back site root
      *      in case the resource path is no root path
-     *      
+     *
      * @see #getSiteForRootPath(String)
      */
     public CmsSite getSite(String rootPath, String fallbackSiteRoot) {
@@ -556,14 +567,14 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns the site for the given resources root path, 
+     * Returns the site for the given resources root path,
      * or <code>null</code> if the resources root path does not match any site.<p>
-     * 
+     *
      * @param rootPath the root path of a resource
-     * 
-     * @return the site for the given resources root path, 
+     *
+     * @return the site for the given resources root path,
      *      or <code>null</code> if the resources root path does not match any site
-     *      
+     *
      * @see #getSiteForSiteRoot(String)
      * @see #getSiteRoot(String)
      */
@@ -572,7 +583,7 @@ public final class CmsSiteManagerImpl {
         if ((rootPath.length() > 0) && !rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
         }
-        // most sites will be below the "/sites/" folder, 
+        // most sites will be below the "/sites/" folder,
         CmsSite result = lookupSitesFolder(rootPath);
         if (result != null) {
             return result;
@@ -583,18 +594,18 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns the site with has the provided site root, 
+     * Returns the site with has the provided site root,
      * or <code>null</code> if no configured site has that site root.<p>
-     * 
+     *
      * The site root must have the form:
      * <code>/sites/default</code>.<br>
      * That means there must be a leading, but no trailing slash.<p>
-     * 
+     *
      * @param siteRoot the site root to look up the site for
-     * 
-     * @return the site with has the provided site root, 
+     *
+     * @return the site with has the provided site root,
      *      or <code>null</code> if no configured site has that site root
-     *      
+     *
      * @see #getSiteForRootPath(String)
      */
     public CmsSite getSiteForSiteRoot(String siteRoot) {
@@ -603,23 +614,23 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns the site root part for the given resources root path, 
+     * Returns the site root part for the given resources root path,
      * or <code>null</code> if the given resources root path does not match any site root.<p>
-     * 
+     *
      * The site root returned will have the form:
      * <code>/sites/default</code>.<br>
      * That means there will a leading, but no trailing slash.<p>
-     * 
+     *
      * @param rootPath the root path of a resource
-     * 
-     * @return the site root part of the resources root path, 
+     *
+     * @return the site root part of the resources root path,
      *      or <code>null</code> if the path does not match any site root
-     *      
+     *
      * @see #getSiteForRootPath(String)
      */
     public String getSiteRoot(String rootPath) {
 
-        // add a trailing slash, because the path may be the path of a site root itself 
+        // add a trailing slash, because the path may be the path of a site root itself
         if (!rootPath.endsWith("/")) {
             rootPath = rootPath + "/";
         }
@@ -634,7 +645,7 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns an unmodifiable set of all configured site roots (Strings).<p>
-     *  
+     *
      * @return an unmodifiable set of all configured site roots (Strings)
      */
     public Set<String> getSiteRoots() {
@@ -643,10 +654,10 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns the map of configured sites, using 
+     * Returns the map of configured sites, using
      * {@link CmsSiteMatcher} objects as keys and {@link CmsSite} objects as values.<p>
-     * 
-     * @return the map of configured sites, using {@link CmsSiteMatcher} 
+     *
+     * @return the map of configured sites, using {@link CmsSiteMatcher}
      *      objects as keys and {@link CmsSite} objects as values
      */
     public Map<CmsSiteMatcher, CmsSite> getSites() {
@@ -666,7 +677,7 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns the site matcher that matches the workplace site.<p>
-     * 
+     *
      * @return the site matcher that matches the workplace site
      */
     public CmsSiteMatcher getWorkplaceSiteMatcher() {
@@ -676,15 +687,16 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Initializes the site manager with the OpenCms system configuration.<p>
-     * 
+     *
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      */
     public void initialize(CmsObject cms) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
-                new Integer((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
+                    new Integer((m_siteMatcherSites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
 
         CmsObject clone;
@@ -698,7 +710,10 @@ public final class CmsSiteManagerImpl {
                     CmsResource siteRes = clone.readResource(site.getSiteRoot());
                     // during server startup the digester can not access properties, so set the title afterwards
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(site.getTitle())) {
-                        String title = clone.readPropertyObject(siteRes, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+                        String title = clone.readPropertyObject(
+                            siteRes,
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            false).getValue();
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
                             site.setTitle(title);
                         }
@@ -719,9 +734,8 @@ public final class CmsSiteManagerImpl {
                     clone.readResource(m_defaultSite.getSiteRoot());
                 } catch (Throwable t) {
                     if (CmsLog.INIT.isWarnEnabled()) {
-                        CmsLog.INIT.warn(Messages.get().getBundle().key(
-                            Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1,
-                            m_defaultSite));
+                        CmsLog.INIT.warn(
+                            Messages.get().getBundle().key(Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1, m_defaultSite));
                     }
                 }
             }
@@ -738,15 +752,14 @@ public final class CmsSiteManagerImpl {
             m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
             if (CmsLog.INIT.isInfoEnabled()) {
                 if (m_workplaceSiteMatcher != null) {
-                    CmsLog.INIT.info(Messages.get().getBundle().key(
-                        Messages.INIT_WORKPLACE_SITE_1,
-                        m_workplaceSiteMatcher));
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
                 } else {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
                 }
             }
 
-            // set site lists to unmodifiable 
+            // set site lists to unmodifiable
             setSiteMatcherSites(m_siteMatcherSites);
 
             // store additional site roots to optimize lookups later
@@ -756,7 +769,7 @@ public final class CmsSiteManagerImpl {
                 }
             }
 
-            // initialization is done, set the frozen flag to true 
+            // initialization is done, set the frozen flag to true
             m_frozen = true;
         } catch (CmsException e) {
             LOG.warn(e);
@@ -766,9 +779,9 @@ public final class CmsSiteManagerImpl {
     /**
      * Returns <code>true</code> if the given site matcher matches any configured site,
      * which includes the workplace site.<p>
-     * 
+     *
      * @param matcher the site matcher to match the site with
-     * 
+     *
      * @return <code>true</code> if the matcher matches a site
      */
     public boolean isMatching(CmsSiteMatcher matcher) {
@@ -783,10 +796,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns <code>true</code> if the given site matcher matches the current site.<p>
-     * 
-     * @param cms the current OpenCms user context 
+     *
+     * @param cms the current OpenCms user context
      * @param matcher the site matcher to match the site with
-     * 
+     *
      * @return <code>true</code> if the matcher matches the current site
      */
     public boolean isMatchingCurrentSite(CmsObject cms, CmsSiteMatcher matcher) {
@@ -796,10 +809,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Checks if the given path is that of a shared folder.<p>
-     * 
+     *
      * @param name a path prefix
-     * 
-     * @return true if the given prefix represents a shared folder 
+     *
+     * @return true if the given prefix represents a shared folder
      */
     public boolean isSharedFolder(String name) {
 
@@ -808,10 +821,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Checks whether a given root path is a site root.<p>
-     * 
-     * @param rootPath a root path 
-     * 
-     * @return true if the given path is the path of a site root 
+     *
+     * @param rootPath a root path
+     *
+     * @return true if the given path is the path of a site root
      */
     public boolean isSiteRoot(String rootPath) {
 
@@ -822,10 +835,10 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns <code>true</code> if the given site matcher matches the configured OpenCms workplace.<p> 
-     * 
+     * Returns <code>true</code> if the given site matcher matches the configured OpenCms workplace.<p>
+     *
      * @param matcher the site matcher to match the site with
-     * 
+     *
      * @return <code>true</code> if the given site matcher matches the configured OpenCms workplace
      */
     public boolean isWorkplaceRequest(CmsSiteMatcher matcher) {
@@ -834,10 +847,10 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns <code>true</code> if the given request is against the configured OpenCms workplace.<p> 
-     * 
-     * @param req the request to match 
-     * 
+     * Returns <code>true</code> if the given request is against the configured OpenCms workplace.<p>
+     *
+     * @param req the request to match
+     *
      * @return <code>true</code> if the given request is against the configured OpenCms workplace
      */
     public boolean isWorkplaceRequest(HttpServletRequest req) {
@@ -850,11 +863,11 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Matches the given request against all configures sites and returns 
+     * Matches the given request against all configures sites and returns
      * the matching site, or the default site if no sites matches.<p>
-     * 
-     * @param req the request to match 
-     * 
+     *
+     * @param req the request to match
+     *
      * @return the matching site, or the default site if no sites matches
      */
     public CmsSite matchRequest(HttpServletRequest req) {
@@ -863,18 +876,20 @@ public final class CmsSiteManagerImpl {
         if (matcher.getTimeOffset() != 0) {
             HttpSession session = req.getSession();
             if (session != null) {
-                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(System.currentTimeMillis()
-                    + matcher.getTimeOffset()));
+                session.setAttribute(
+                    CmsContextInfo.ATTRIBUTE_REQUEST_TIME,
+                    new Long(System.currentTimeMillis() + matcher.getTimeOffset()));
             }
         }
         CmsSite site = matchSite(matcher);
 
         if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_MATCHING_REQUEST_TO_SITE_2,
-                requestServer,
-                site.toString()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_MATCHING_REQUEST_TO_SITE_2,
+                    requestServer,
+                    site.toString()));
         }
         return site;
     }
@@ -882,7 +897,7 @@ public final class CmsSiteManagerImpl {
     /**
      * Return the configured site that matches the given site matcher,
      * or the default site if no sites matches.<p>
-     * 
+     *
      * @param matcher the site matcher to match the site with
      * @return the matching site, or the default site if no sites matches
      */
@@ -898,10 +913,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Removes a site from the list of configured sites.<p>
-     * 
+     *
      * @param cms the cms object
      * @param site the site to remove
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void removeSite(CmsObject cms, CmsSite site) throws CmsException {
@@ -941,10 +956,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Sets the default URI, this is only allowed during configuration.<p>
-     * 
-     * If this method is called after the configuration is finished, 
+     *
+     * If this method is called after the configuration is finished,
      * a <code>RuntimeException</code> is thrown.<p>
-     * 
+     *
      * @param defaultUri the defaultUri to set
      */
     public void setDefaultUri(String defaultUri) {
@@ -957,8 +972,8 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Sets the shared folder path.<p>
-     * 
-     * @param sharedFolder the shared folder path 
+     *
+     * @param sharedFolder the shared folder path
      */
     public void setSharedFolder(String sharedFolder) {
 
@@ -970,10 +985,10 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Sets the workplace server, this is only allowed during configuration.<p>
-     * 
-     * If this method is called after the configuration is finished, 
+     *
+     * If this method is called after the configuration is finished,
      * a <code>RuntimeException</code> is thrown.<p>
-     * 
+     *
      * @param workplaceServer the workplace server to set
      */
     public void setWorkplaceServer(String workplaceServer) {
@@ -986,24 +1001,24 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns true if the path starts with the shared folder path.<p>
-     * 
-     * @param path the path to check 
-     * 
-     * @return true if the path starts with the shared folder path 
+     *
+     * @param path the path to check
+     *
+     * @return true if the path starts with the shared folder path
      */
     public boolean startsWithShared(String path) {
 
-        return (m_sharedFolder != null) && CmsStringUtil.joinPaths(path, "/").startsWith(m_sharedFolder);
+        return (m_sharedFolder != null) && CmsFileUtil.addTrailingSeparator(path).startsWith(m_sharedFolder);
     }
 
     /**
      * Updates the general settings.<p>
-     * 
+     *
      * @param cms the cms to use
      * @param defaulrUri the default URI
      * @param workplaceServer the workplace server URL
      * @param sharedFolder the shared folder URI
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void updateGeneralSettings(CmsObject cms, String defaulrUri, String workplaceServer, String sharedFolder)
@@ -1038,11 +1053,11 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Updates an existing site.<p>
-     * 
+     *
      * @param cms the CMS object
      * @param oldSite the site to remove if not <code>null</code>
      * @param newSite the site to add if not <code>null</code>
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void updateSite(CmsObject cms, CmsSite oldSite, CmsSite newSite) throws CmsException {
@@ -1059,19 +1074,39 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Returns true if this request goes to a secure site.<p>
+     *
+     * @param req the request to check
+     *
+     * @return true if the request goes to a secure site
+     */
+    public boolean usesSecureSite(HttpServletRequest req) {
+
+        CmsSite site = matchRequest(req);
+        if (site == null) {
+            return false;
+        }
+        CmsSiteMatcher secureMatcher = site.getSecureServerMatcher();
+        boolean result = false;
+        if (secureMatcher != null) {
+            result = secureMatcher.equals(getRequestMatcher(req));
+        }
+        return result;
+    }
+
+    /**
      * Adds a new Site matcher object to the map of server names.
-     * 
+     *
      * @param matcher the SiteMatcher of the server
      * @param site the site to add
-     * 
+     *
      * @throws CmsConfigurationException if the site contains a server name, that is already assigned
      */
     private void addServer(CmsSiteMatcher matcher, CmsSite site) throws CmsConfigurationException {
 
         if (m_siteMatcherSites.containsKey(matcher)) {
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_DUPLICATE_SERVER_NAME_1,
-                matcher.getUrl()));
+            throw new CmsConfigurationException(
+                Messages.get().container(Messages.ERR_DUPLICATE_SERVER_NAME_1, matcher.getUrl()));
         }
         Map<CmsSiteMatcher, CmsSite> siteMatcherSites = new HashMap<CmsSiteMatcher, CmsSite>(m_siteMatcherSites);
         siteMatcherSites.put(matcher, site);
@@ -1080,9 +1115,9 @@ public final class CmsSiteManagerImpl {
 
     /**
      * Returns the site matcher for the given request.<p>
-     * 
+     *
      * @param req the request to get the site matcher for
-     * 
+     *
      * @return the site matcher for the given request
      */
     private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
@@ -1097,10 +1132,10 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns <code>true</code> if the given root path matches any of the stored additional sites.<p> 
-     * 
+     * Returns <code>true</code> if the given root path matches any of the stored additional sites.<p>
+     *
      * @param rootPath the root path to check
-     * 
+     *
      * @return <code>true</code> if the given root path matches any of the stored additional sites
      */
     private String lookupAdditionalSite(String rootPath) {
@@ -1115,19 +1150,19 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Returns the configured site if the given root path matches site in the "/sites/" folder, 
-     * or <code>null</code> otherwise.<p> 
-     * 
+     * Returns the configured site if the given root path matches site in the "/sites/" folder,
+     * or <code>null</code> otherwise.<p>
+     *
      * @param rootPath the root path to check
-     * 
-     * @return the configured site if the given root path matches site in the "/sites/" folder, 
+     *
+     * @return the configured site if the given root path matches site in the "/sites/" folder,
      *      or <code>null</code> otherwise
      */
     private CmsSite lookupSitesFolder(String rootPath) {
 
         int pos = rootPath.indexOf('/', SITES_FOLDER_POS);
         if (pos > 0) {
-            // this assumes that the root path may likely start with something like "/sites/default/" 
+            // this assumes that the root path may likely start with something like "/sites/default/"
             // just cut the first 2 directories from the root path and do a direct lookup in the internal map
             return m_siteRootSites.get(rootPath.substring(0, pos));
         }
@@ -1135,9 +1170,9 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
-     * Sets the class member variables {@link #m_siteMatcherSites} and  {@link #m_siteMatchers} 
+     * Sets the class member variables {@link #m_siteMatcherSites} and  {@link #m_siteMatchers}
      * from the provided map of configured site matchers.<p>
-     *  
+     *
      * @param siteMatcherSites the site matches to set
      */
     private void setSiteMatcherSites(Map<CmsSiteMatcher, CmsSite> siteMatcherSites) {

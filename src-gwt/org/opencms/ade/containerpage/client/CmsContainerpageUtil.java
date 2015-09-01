@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style;
@@ -113,8 +114,10 @@ public class CmsContainerpageUtil {
      */
     public void consumeContainerElements(I_CmsDropContainer container) {
 
+        boolean containsElements = false;
         // the drag element widgets are created from the existing DOM elements,
         Element child = container.getElement().getFirstChildElement();
+        List<CmsContainerPageElementPanel> children = Lists.newArrayList();
         while (child != null) {
             boolean isContainerElement = CmsDomUtil.hasClass(
                 CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
@@ -123,14 +126,16 @@ public class CmsContainerpageUtil {
                 CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER,
                 child);
             if (isContainerElement || isGroupcontainerElement) {
+                containsElements = true;
                 String serializedData = child.getAttribute("rel");
                 CmsContainerElement elementData = null;
                 try {
                     elementData = m_controller.getSerializedElement(serializedData);
                 } catch (Exception e) {
-                    CmsErrorDialog.handleException(new Exception(
-                        "Deserialization of element data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                        e));
+                    CmsErrorDialog.handleException(
+                        new Exception(
+                            "Deserialization of element data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                            e));
                 }
                 if (isContainerElement) {
 
@@ -169,11 +174,14 @@ public class CmsContainerpageUtil {
                         Element endMarker = (Element)elementRoot.getNextSibling();
                         // only if the end marker node is not null and has neither the end-marker class or start-marker class
                         // remove the current node and check the next sibling
-                        while (!((endMarker == null) || ((endMarker.getNodeType() == Node.ELEMENT_NODE) && (CmsDomUtil.hasClass(
-                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
-                            endMarker) || CmsDomUtil.hasClass(
-                            CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
-                            endMarker))))) {
+                        while (!((endMarker == null)
+                            || ((endMarker.getNodeType() == Node.ELEMENT_NODE)
+                                && (CmsDomUtil.hasClass(
+                                    CmsContainerElement.CLASS_CONTAINER_ELEMENT_END_MARKER,
+                                    endMarker)
+                                    || CmsDomUtil.hasClass(
+                                        CmsContainerElement.CLASS_CONTAINER_ELEMENT_START_MARKER,
+                                        endMarker))))) {
                             Element temp = endMarker;
                             endMarker = (Element)endMarker.getNextSibling();
                             temp.removeFromParent();
@@ -210,6 +218,7 @@ public class CmsContainerpageUtil {
                             elementRoot,
                             container,
                             elementData);
+                        children.add(containerElement);
                         if (elementData.isNew()) {
                             containerElement.setNewType(elementData.getResourceType());
                         }
@@ -231,22 +240,36 @@ public class CmsContainerpageUtil {
                     container.adoptElement(groupContainer);
                     consumeContainerElements(groupContainer);
                     if (groupContainer.getWidgetCount() == 0) {
-                        groupContainer.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
+                        groupContainer.addStyleName(
+                            I_CmsLayoutBundle.INSTANCE.containerpageCss().emptyGroupContainer());
                     }
+                    children.add(groupContainer);
                     // important: adding the option-bar only after the group-containers have been consumed
-                    if (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly()) {
+                    if (container.isEditable()
+                        && (!m_controller.isDetailPage() || container.isDetailView() || container.isDetailOnly())) {
                         //only allow editing if either element of detail only container or not in detail view
-                        addOptionBar(groupContainer);
+                        if (m_controller.requiresOptionBar(groupContainer, container)) {
+                            addOptionBar(groupContainer);
+                        }
                     }
                     child = child.getNextSiblingElement();
                 }
             } else {
                 Element sibling = child.getNextSiblingElement();
-                container.getElement().removeChild(child);
+                if (!containsElements && (sibling == null) && (container instanceof CmsContainerPageContainer)) {
+                    // this element is no container element and is the container only child, assume it is an empty container marker
+                    ((CmsContainerPageContainer)container).setEmptyContainerElement(child);
+                } else {
+                    // e.g. option bar
+                    if (!CmsContainerPageElementPanel.isOverlay(child)) {
+                        container.getElement().removeChild(child);
+                    }
+                }
                 child = sibling;
                 continue;
             }
         }
+        container.onConsumeChildren(children);
     }
 
     /**
@@ -270,18 +293,24 @@ public class CmsContainerpageUtil {
                 CmsContainer container = m_controller.getSerializedContainer(data);
                 containers.put(container.getName(), container);
                 try {
-                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(container, containerElement);
+                    CmsContainerPageContainer dragContainer = new CmsContainerPageContainer(
+                        container,
+                        containerElement);
                     consumeContainerElements(dragContainer);
                     result.put(container.getName(), dragContainer);
                 } catch (Exception e) {
-                    CmsErrorDialog.handleException(new Exception("Error parsing container "
-                        + container.getName()
-                        + ". Please check if your HTML is well formed.", e));
+                    CmsErrorDialog.handleException(
+                        new Exception(
+                            "Error parsing container "
+                                + container.getName()
+                                + ". Please check if your HTML is well formed.",
+                            e));
                 }
             } catch (Exception e) {
-                CmsErrorDialog.handleException(new Exception(
-                    "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
-                    e));
+                CmsErrorDialog.handleException(
+                    new Exception(
+                        "Deserialization of container data failed. This may be caused by expired java-script resources, please clear your browser cache and try again.",
+                        e));
             }
         }
         return result;
@@ -380,8 +409,8 @@ public class CmsContainerpageUtil {
 
                     CmsEditableData editableData = new CmsEditableData();
                     editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                    editableData.setStructureId(new CmsUUID(
-                        CmsContainerpageController.getServerId(containerElement.getClientId())));
+                    editableData.setStructureId(
+                        new CmsUUID(CmsContainerpageController.getServerId(containerElement.getClientId())));
                     editableData.setSitePath(containerElement.getSitePath());
                     getController().getContentEditorHandler().openDialog(editableData, false, null, null);
                     ((CmsPushButton)event.getSource()).clearHoverState();
@@ -394,7 +423,6 @@ public class CmsContainerpageUtil {
                 listItem.disableEdit(Messages.get().key(Messages.GUI_CLIPBOARD_ITEM_CAN_NOT_BE_EDITED_0), false);
             }
         }
-        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         String clientId = containerElement.getClientId();
         String serverId = CmsContainerpageController.getServerId(clientId);
         if (CmsUUID.isValidUUID(serverId)) {
@@ -406,9 +434,9 @@ public class CmsContainerpageUtil {
                     Window.Location.reload();
                 }
             });
-            listItem.getListItemWidget().addButton(button);
+            listItem.getListItemWidget().addButtonToFront(button);
         }
-
+        listItem.initMoveHandle(m_controller.getDndHandler(), true);
         return listItem;
     }
 
@@ -429,9 +457,11 @@ public class CmsContainerpageUtil {
      */
     private void alertParsingError(String sitePath) {
 
-        new CmsErrorDialog("Error parsing element "
-            + sitePath
-            + ". Please check if the HTML generated by the element formatter is well formed.", null).center();
+        new CmsErrorDialog(
+            "Error parsing element "
+                + sitePath
+                + ". Please check if the HTML generated by the element formatter is well formed.",
+            null).center();
     }
 
     /**
@@ -461,21 +491,13 @@ public class CmsContainerpageUtil {
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
             elementData.isReleasedAndNotExpired(),
-            elementData.isNewEditorDisabled());
-        boolean isSubElement = dragParent instanceof CmsGroupContainerElementPanel;
-        boolean isContainerEditable = isSubElement
-            || !m_controller.isDetailPage()
-            || dragParent.isDetailView()
-            || dragParent.isDetailOnly();
-        if (isContainerEditable) {
+            elementData.isNewEditorDisabled(),
+            elementData.getElementView());
+        dragElement.setCreateNew(elementData.isCreateNew());
+        if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }
-        // only enable inline editing for the new content editor
-        // also ignore group container sub-elements unless group editing
-        if (!m_controller.getData().isUseClassicEditor()
-            && m_controller.hasActiveSelection()
-            && isContainerEditable
-            && (!isSubElement || m_controller.isGroupcontainerEditing())) {
+        if (m_controller.isInlineEditable(dragElement, dragParent)) {
             dragElement.initInlineEditor(m_controller);
         }
         return dragElement;
@@ -507,7 +529,8 @@ public class CmsContainerpageUtil {
             elementData.hasSettings(dragParent.getContainerId()),
             elementData.hasViewPermission(),
             elementData.hasWritePermission(),
-            elementData.isReleasedAndNotExpired());
+            elementData.isReleasedAndNotExpired(),
+            elementData.getElementView());
         return groupContainer;
     }
 

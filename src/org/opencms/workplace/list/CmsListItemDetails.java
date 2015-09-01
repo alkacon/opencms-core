@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,13 +30,13 @@ package org.opencms.workplace.list;
 import org.opencms.i18n.CmsMessageContainer;
 
 /**
- * For adding detail information to the list items add an instance 
+ * For adding detail information to the list items add an instance
  * of this class to the list metadata and fill the data like an
  * additional column.<p>
- * 
+ *
  * For detail contents you may use HTML code.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListItemDetails extends CmsListColumnDefinition {
 
@@ -51,7 +51,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param id the unique id
      */
     public CmsListItemDetails(String id) {
@@ -118,7 +118,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Sets the help text of the hide action.<p>
-     * 
+     *
      * @param hideActionHelp the help text of the hide action
      */
     public void setHideActionHelpText(CmsMessageContainer hideActionHelp) {
@@ -128,7 +128,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Sets the name of the hide action.<p>
-     * 
+     *
      * @param hideActionName the name of the hide action
      */
     public void setHideActionName(CmsMessageContainer hideActionName) {
@@ -138,7 +138,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Sets the id of the list.<p>
-     * 
+     *
      * @param listId the id of the list
      */
     @Override
@@ -160,7 +160,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Sets the help text of the show action.<p>
-     * 
+     *
      * @param showActionHelp the help text of the show action
      */
     public void setShowActionHelpText(CmsMessageContainer showActionHelp) {
@@ -170,7 +170,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
 
     /**
      * Sets the name of the show action.<p>
-     * 
+     *
      * @param showActionName the name of the show action
      */
     public void setShowActionName(CmsMessageContainer showActionName) {

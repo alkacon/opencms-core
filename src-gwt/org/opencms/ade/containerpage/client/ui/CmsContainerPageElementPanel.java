@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,12 +45,14 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -76,7 +78,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * Content element within a container-page.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerPageElementPanel extends AbsolutePanel
@@ -94,6 +96,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     /** The elements client id. */
     private String m_clientId;
 
+    /** The 'create new' flag. */
+    private boolean m_createNew;
+
     /**
      * Flag which indicates whether the new editor is disabled for this element.<p>
      */
@@ -107,6 +112,9 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /** The option bar, holding optional function buttons. */
     private CmsElementOptionBar m_elementOptionBar;
+
+    /** The element element view. */
+    private CmsUUID m_elementView;
 
     /** The overlay for expired elements. */
     private Element m_expiredOverlay;
@@ -148,20 +156,20 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     private String m_title;
 
     /**
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
+     * Indicates if the current user has view permissions on the element resource.
+     * Without view permissions, the element can neither be edited, nor moved.
      **/
     private boolean m_viewPermission;
 
-    /** 
-     * Indicates if the current user has write permissions on the element resource. 
-     * Without write permissions, the element can not be edited. 
+    /**
+     * Indicates if the current user has write permissions on the element resource.
+     * Without write permissions, the element can not be edited.
      **/
     private boolean m_writePermission;
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param element the DOM element
      * @param parent the drag parent
      * @param clientId the client id
@@ -170,11 +178,12 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
      * @param title the resource title
      * @param subTitle the sub title
      * @param resourceType the resource type
-     * @param hasSettings should be true if the element has settings which can be edited 
+     * @param hasSettings should be true if the element has settings which can be edited
      * @param hasViewPermission indicates if the current user has view permissions on the element resource
      * @param hasWritePermission indicates if the current user has write permissions on the element resource
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
-     * @param disableNewEditor flag to disable the new editor for this element 
+     * @param disableNewEditor flag to disable the new editor for this element
+     * @param elementView theelement view of the element
      */
     public CmsContainerPageElementPanel(
         Element element,
@@ -189,7 +198,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         boolean hasViewPermission,
         boolean hasWritePermission,
         boolean releasedAndNotExpired,
-        boolean disableNewEditor) {
+        boolean disableNewEditor,
+        CmsUUID elementView) {
 
         super(element);
         m_clientId = clientId;
@@ -205,6 +215,26 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         setWritePermission(hasWritePermission);
         setReleasedAndNotExpired(releasedAndNotExpired);
         getElement().addClassName(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+        m_elementView = elementView;
+    }
+
+    /**
+     * Checks if the element is an overlay for a container page element.<p>
+     *
+     * @param element the element to check
+     * @return true if the element is an overlay
+     */
+    public static boolean isOverlay(Element element) {
+
+        for (String overlayClass : Arrays.asList(
+            I_CmsLayoutBundle.INSTANCE.containerpageCss().expiredOverlay(),
+            CmsElementOptionBar.CSS_CLASS)) {
+            if (element.hasClassName(overlayClass)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**
@@ -245,7 +275,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         int parentTop = parentElement.getAbsoluteTop();
         m_provisionalParent = DOM.createElement(parentElement.getTagName());
         RootPanel.getBodyElement().appendChild(m_provisionalParent);
-        m_provisionalParent.addClassName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
+        m_provisionalParent.addClassName(
+            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().clearStyles());
         m_provisionalParent.getStyle().setWidth(parentElement.getOffsetWidth(), Unit.PX);
         m_provisionalParent.appendChild(helper);
         Style style = helper.getStyle();
@@ -263,12 +294,22 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the option bar of this element.<p>
-     * 
+     *
      * @return the option bar widget
      */
     public CmsElementOptionBar getElementOptionBar() {
 
         return m_elementOptionBar;
+    }
+
+    /**
+     * Returns the elements element view.<p>
+     *
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -291,7 +332,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the new element type.
-     * 
+     *
      * @return the new element type
      */
     public String getNewType() {
@@ -329,7 +370,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the element resource is currently released and not expired.<p>
-     * 
+     *
      * @return <code>true</code> if the element resource is currently released and not expired
      */
     public boolean getReleasedAndNotExpired() {
@@ -349,8 +390,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns the structure id of the element.<p>
-     * 
-     * @return the structure id of the element 
+     *
+     * @return the structure id of the element
      */
     public CmsUUID getStructureId() {
 
@@ -362,8 +403,8 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns true if the element has settings to edit.<p>
-     * 
-     * @return true if the element has settings to edit 
+     *
+     * @return true if the element has settings to edit
      */
     public boolean hasSettings() {
 
@@ -408,18 +449,20 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     public void highlightElement() {
 
         if (m_highlighting == null) {
-            m_highlighting = new CmsHighlightingBorder(CmsPositionBean.getInnerDimensions(getElement()), isNew()
-            ? CmsHighlightingBorder.BorderColor.blue
-            : CmsHighlightingBorder.BorderColor.red);
+            m_highlighting = new CmsHighlightingBorder(
+                CmsPositionBean.getBoundingClientRect(getElement()),
+                isNew() || isCreateNew()
+                ? CmsHighlightingBorder.BorderColor.blue
+                : CmsHighlightingBorder.BorderColor.red);
             RootPanel.get().add(m_highlighting);
         } else {
-            m_highlighting.setPosition(CmsPositionBean.getInnerDimensions(getElement()));
+            m_highlighting.setPosition(CmsPositionBean.getBoundingClientRect(getElement()));
         }
     }
 
     /**
      * Initializes the editor click handler.<p>
-     * 
+     *
      * @param controller the container page controller instance
      */
     public void initInlineEditor(final CmsContainerpageController controller) {
@@ -440,26 +483,28 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                             return;
                         }
                         Element eventTarget = event.getNativeEvent().getEventTarget().cast();
-                        // check if the event target is a child 
+                        // check if the event target is a child
                         if (getElement().isOrHasChild(eventTarget)) {
                             Element target = event.getNativeEvent().getEventTarget().cast();
-                            while ((target != null)
-                                && !target.getTagName().equalsIgnoreCase("a")
-                                && (target != getElement())
-                                // stop in case of a nested container element
-                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement(), target)
-                                // stop in case of a nested container 
-                                && !CmsDomUtil.hasClass(I_CmsLayoutBundle.INSTANCE.dragdropCss().dragTarget(), target)) {
-                                if (CmsContentEditor.isEditable(target)) {
-                                    CmsEditorBase.markForInlineFocus(target);
-                                    controller.getHandler().openEditorForElement(
-                                        CmsContainerPageElementPanel.this,
-                                        true);
-                                    removeEditorHandler();
-                                    event.cancel();
-                                    break;
-                                } else {
-                                    target = target.getParentElement();
+                            // check if the target closest ancestor drag element is this element
+                            Element parentContainerElement = CmsDomUtil.getAncestor(
+                                target,
+                                I_CmsLayoutBundle.INSTANCE.dragdropCss().dragElement());
+                            if (parentContainerElement == getElement()) {
+                                while ((target != null)
+                                    && !target.getTagName().equalsIgnoreCase("a")
+                                    && (target != getElement())) {
+                                    if (CmsContentEditor.isEditable(target)) {
+                                        CmsEditorBase.markForInlineFocus(target);
+                                        controller.getHandler().openEditorForElement(
+                                            CmsContainerPageElementPanel.this,
+                                            true);
+                                        removeEditorHandler();
+                                        event.cancel();
+                                        break;
+                                    } else {
+                                        target = target.getParentElement();
+                                    }
                                 }
                             }
                         }
@@ -470,8 +515,21 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Checks if this element has 'createNew' status, i.e. will be copied when using this page as a model for a new container page.<p>
+     *
+     * @return true if this element has createNew status
+     */
+    public boolean isCreateNew() {
+
+        return m_createNew;
+
+        //        return isNewOrCopyAsNew()
+        //            && m_clientId.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*$");
+    }
+
+    /**
      * Returns if this is e newly created element.<p>
-     * 
+     *
      * @return <code>true</code> if the element is new
      */
     public boolean isNew() {
@@ -481,7 +539,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns true if the new content editor is disabled for this element.<p>
-     * 
+     *
      * @return true if the new editor is disabled for this element
      */
     public boolean isNewEditorDisabled() {
@@ -561,9 +619,19 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
-     * Sets the elementOptionBar.<p>
+     * Sets the 'create new' status of the element.<p>
      *
-     * @param elementOptionBar the elementOptionBar to set
+     * @param createNew the new value for the 'create new' status
+     */
+    public void setCreateNew(boolean createNew) {
+
+        m_createNew = createNew;
+    }
+
+    /**
+     * Sets the element option bar.<p>
+     *
+     * @param elementOptionBar the element option bar to set
      */
     public void setElementOptionBar(CmsElementOptionBar elementOptionBar) {
 
@@ -571,13 +639,15 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             m_elementOptionBar.removeFromParent();
         }
         m_elementOptionBar = elementOptionBar;
-        insert(m_elementOptionBar, 0);
-        updateOptionBarPosition();
+        if (m_elementOptionBar != null) {
+            insert(m_elementOptionBar, 0);
+            updateOptionBarPosition();
+        }
     }
 
     /**
      * Sets the element id.<p>
-     * 
+     *
      * @param id the id
      */
     public void setId(String id) {
@@ -597,7 +667,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the new-type of the element.<p>
-     * 
+     *
      * @param newType the new-type
      */
     public void setNewType(String newType) {
@@ -617,7 +687,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets if the element resource is currently released and not expired.<p>
-     * 
+     *
      * @param releasedAndNotExpired <code>true</code> if the element resource is currently released and not expired
      */
     public void setReleasedAndNotExpired(boolean releasedAndNotExpired) {
@@ -677,15 +747,16 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         m_checkingEditables = true;
         if (m_editables == null) {
             m_editables = new HashMap<Element, CmsListCollectorEditor>();
-            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            List<Element> editables = getEditableElements();
             if ((editables != null) && (editables.size() > 0)) {
                 for (Element editable : editables) {
                     CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                     add(editor, editable.getParentElement());
                     if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                        editor.setParentHasDimensions(true);
                         editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                     } else {
-                        editor.getElement().getStyle().setDisplay(Display.NONE);
+                        editor.setParentHasDimensions(false);
                     }
                     m_editables.put(editable, editor);
                 }
@@ -696,34 +767,39 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
             Iterator<Entry<Element, CmsListCollectorEditor>> it = m_editables.entrySet().iterator();
             while (it.hasNext()) {
                 Entry<Element, CmsListCollectorEditor> entry = it.next();
-                if (!entry.getValue().isValid()) {
-                    entry.getValue().removeFromParent();
+                CmsListCollectorEditor editor = entry.getValue();
+                if (!editor.isValid()) {
+                    editor.removeFromParent();
                     it.remove();
-                } else if (CmsDomUtil.hasDimension(entry.getValue().getElement().getParentElement())) {
-                    entry.getValue().getElement().getStyle().clearDisplay();
-                    entry.getValue().setPosition(
-                        CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()),
-                        getElement());
+                } else if (CmsDomUtil.hasDimension(editor.getElement().getParentElement())) {
+                    editor.setParentHasDimensions(true);
+                    editor.setPosition(CmsDomUtil.getEditablePosition(entry.getValue().getMarkerTag()), getElement());
+                } else {
+                    editor.setParentHasDimensions(false);
                 }
             }
-            List<Element> editables = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+            List<Element> editables = getEditableElements();
             if (editables.size() > m_editables.size()) {
                 for (Element editable : editables) {
                     if (!m_editables.containsKey(editable)) {
                         CmsListCollectorEditor editor = new CmsListCollectorEditor(editable, m_clientId);
                         add(editor, editable.getParentElement());
                         if (CmsDomUtil.hasDimension(editable.getParentElement())) {
+                            editor.setParentHasDimensions(true);
                             editor.setPosition(CmsDomUtil.getEditablePosition(editable), getElement());
                         } else {
-                            editor.getElement().getStyle().setDisplay(Display.NONE);
+                            editor.setParentHasDimensions(false);
                         }
                         m_editables.put(editable, editor);
 
                     }
                 }
             }
-
         }
+        for (CmsListCollectorEditor editor : m_editables.values()) {
+            editor.updateVisibility();
+        }
+
         m_checkingEditables = false;
         resetNodeInsertedHandler();
     }
@@ -740,7 +816,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
         if (RootPanel.getBodyElement().isOrHasChild(getElement())) {
             int absoluteTop = getElement().getAbsoluteTop();
             int absoluteRight = getElement().getAbsoluteRight();
-            CmsPositionBean dimensions = CmsPositionBean.getInnerDimensions(getElement());
+            CmsPositionBean dimensions = CmsPositionBean.getBoundingClientRect(getElement());
             if (Math.abs(absoluteTop - dimensions.getTop()) > 20) {
                 absoluteTop = (dimensions.getTop() - absoluteTop) + 2;
                 m_elementOptionBar.getElement().getStyle().setTop(absoluteTop, Unit.PX);
@@ -786,8 +862,26 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Gets the editable list elements.<p>
+     *
+     * @return the editable list elements
+     */
+    protected List<Element> getEditableElements() {
+
+        List<Element> elems = CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement());
+        List<Element> result = Lists.newArrayList();
+        for (Element currentElem : elems) {
+            // don't return elements which are contained in nested containers
+            if (m_parent.getContainerId().equals(getParentContainerId(currentElem))) {
+                result.add(currentElem);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns if the list collector direct edit content has changed.<p>
-     * 
+     *
      * @return <code>true</code> if the list collector direct edit content has changed
      */
     protected boolean hasChangedEditables() {
@@ -800,7 +894,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
                 return true;
             }
         }
-        return CmsDomUtil.getElementsByClass("cms-editable", Tag.div, getElement()).size() > m_editables.size();
+        return getEditableElements().size() > m_editables.size();
     }
 
     /**
@@ -848,7 +942,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Returns if the minimum element height has been checked.<p>
-     * 
+     *
      * @return <code>true</code> if the minimum element height has been checked
      */
     boolean hasCheckedHeight() {
@@ -858,7 +952,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * Sets the checked height flag.<p>
-     * 
+     *
      * @param checked the checked height flag
      */
     void setCheckedHeight(boolean checked) {
@@ -884,11 +978,32 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
     }
 
     /**
+     * Gets the container id of the most deeply nested container containing the given element, or null if no such container can be found.<p>
+     *
+     * @param elem the element
+     * @return the container id of the deepest container containing the element
+     */
+    private String getParentContainerId(Element elem) {
+
+        String attr = CmsContainerPageContainer.PROP_CONTAINER_MARKER;
+        Element lastElem;
+        do {
+            String propValue = elem.getPropertyString(attr);
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                return propValue;
+            }
+            lastElem = elem;
+            elem = elem.getParentElement();
+        } while ((elem != null) && (elem != lastElem));
+        return null;
+    }
+
+    /**
      * Returns if the option bar position collides with any iframe child elements.<p>
-     * 
-     * @param optionTop the option bar absolute top 
-     * @param optionWidth the option bar width 
-     * 
+     *
+     * @param optionTop the option bar absolute top
+     * @param optionWidth the option bar width
+     *
      * @return <code>true</code> if there are iframe child elements located no less than 25px below the upper edge of the element
      */
     private boolean isOptionbarIFrameCollision(int optionTop, int optionWidth) {
@@ -940,7 +1055,7 @@ implements I_CmsDraggable, HasClickHandlers, I_CmsInlineFormParent {
 
     /**
      * This method removes the option-bar widget from DOM and re-attaches it at it's original position.<p>
-     * Use to avoid mouse-over and mouse-down malfunction.<p> 
+     * Use to avoid mouse-over and mouse-down malfunction.<p>
      */
     private void resetOptionbar() {
 

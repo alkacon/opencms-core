@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,23 +45,23 @@ public class CmsChoiceMenuEntryBean {
     /** The path component (attribute id) of this menu entry. */
     protected String m_pathComponent;
 
-    /** 
+    /**
      * Creates a new choice menu entry bean.
-     * 
+     *
      * @param pathComponent the path component of the choice (attribute id)
      */
     public CmsChoiceMenuEntryBean(String pathComponent) {
 
-        // path component may be null for dummy root entries 
+        // path component may be null for dummy root entries
         m_pathComponent = pathComponent;
     }
 
     /**
      * Adds a new child entry to this bean and returns it.<p>
-     * 
-     * @param pathComponent the path component of the child 
-     * 
-     * @return the new child 
+     *
+     * @param pathComponent the path component of the child
+     *
+     * @return the new child
      */
     public CmsChoiceMenuEntryBean addChild(String pathComponent) {
 
@@ -74,8 +74,8 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the list of children of this entry.<p>
-     * 
-     * @return the list of children 
+     *
+     * @return the list of children
      */
     public List<CmsChoiceMenuEntryBean> getChildren() {
 
@@ -84,10 +84,10 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the help text for the menu entry.<p>
-     * 
-     * @param widgetService the widget service to ask for labels 
-     * 
-     * @return the help text 
+     *
+     * @param widgetService the widget service to ask for labels
+     *
+     * @return the help text
      */
     public String getHelp(I_CmsWidgetService widgetService) {
 
@@ -96,10 +96,10 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the label for the menu entry.<p>
-     *  
+     *
      * @param widgetService the widget service to ask for label texts
-     * 
-     * @return the entry label 
+     *
+     * @return the entry label
      */
     public String getLabel(I_CmsWidgetService widgetService) {
 
@@ -108,8 +108,8 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the parent entry of this entry.<p>
-     * 
-     * @return the parent entry 
+     *
+     * @return the parent entry
      */
     public CmsChoiceMenuEntryBean getParent() {
 
@@ -118,8 +118,8 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the complete path of this entry, which is a list of attribute ids.<p>
-     * 
-     * @return the path of this entry 
+     *
+     * @return the path of this entry
      */
     public List<String> getPath() {
 
@@ -128,7 +128,7 @@ public class CmsChoiceMenuEntryBean {
         while (entry != null) {
             String pathComponent = entry.getPathComponent();
             if (pathComponent != null) {
-                // pathComponent may be null for a dummy root entry 
+                // pathComponent may be null for a dummy root entry
                 result.add(entry.getPathComponent());
             }
             entry = entry.m_parent;
@@ -139,18 +139,18 @@ public class CmsChoiceMenuEntryBean {
 
     /**
      * Gets the path component of this entry.<p>
-     * 
-     * @return the path component 
+     *
+     * @return the path component
      */
     public String getPathComponent() {
 
         return m_pathComponent;
     }
 
-    /** 
+    /**
      * Returns true if this entry has no children.<p>
-     * 
-     * @return true if this entry has no children 
+     *
+     * @return true if this entry has no children
      */
     public boolean isLeaf() {
 

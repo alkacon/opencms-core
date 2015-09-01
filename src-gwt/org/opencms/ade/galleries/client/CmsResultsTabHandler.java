@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,17 +32,17 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The results tab handler.<p>
- * 
- * This class receives event information from the results tab and 
+ *
+ * This class receives event information from the results tab and
  * delegates it to the gallery controller.
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResultsTabHandler extends A_CmsTabHandler {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param controller the gallery controller
      */
     public CmsResultsTabHandler(CmsGalleryController controller) {
@@ -61,7 +61,7 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
     /**
      * Deletes the given resource.<p>
-     * 
+     *
      * @param resourcePath the resource path of the resource to delete
      */
     public void deleteResource(String resourcePath) {
@@ -71,9 +71,9 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
     /**
      * Returns if a preview is available for the given resource type.<p>
-     * 
+     *
      * @param resourceType the requested resource type
-     * 
+     *
      * @return <code>true</code> if a preview is available for the given resource type
      */
     public boolean hasPreview(String resourceType) {
@@ -83,17 +83,17 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
     /**
      * Returns if resource entries in the search result are selectable.<p>
-     * 
+     *
      * @return if resource entries in the search result are selectable
      */
     public boolean hasSelectResource() {
 
-        return m_controller.hasSelectResource();
+        return m_controller.hasSelectResource() && m_controller.hasResultsSelectable();
     }
 
     /**
      * Returns if a load results request is currently running.<p>
-     * 
+     *
      * @return <code>true</code> if a load results request is currently running
      */
     public boolean isLoading() {
@@ -142,9 +142,9 @@ public class CmsResultsTabHandler extends A_CmsTabHandler {
 
     /**
      * Will be triggered when the result item is clicked.<p>
-     * 
+     *
      * @param resourcePath the resource path of the result
-     * @param resourceType 
+     * @param resourceType the resource type
      */
     public void openPreview(String resourcePath, String resourceType) {
 

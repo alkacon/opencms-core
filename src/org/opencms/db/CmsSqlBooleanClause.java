@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import java.util.List;
 
 /**
  * Class for generating an SQL boolean expression.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsSqlBooleanClause implements I_CmsQueryFragment {
@@ -43,10 +43,10 @@ public class CmsSqlBooleanClause implements I_CmsQueryFragment {
     /** The boolean operator. */
     private String m_operator;
 
-    /** 
+    /**
      * Creates a new boolean clause.<p>
-     * 
-     * @param operator the boolean operator 
+     *
+     * @param operator the boolean operator
      */
     public CmsSqlBooleanClause(String operator) {
 
@@ -55,10 +55,10 @@ public class CmsSqlBooleanClause implements I_CmsQueryFragment {
 
     /**
      * Creates a boolean "AND" expression.<p>
-     * 
+     *
      * @param fragments the operands of the "AND"
-     *  
-     * @return the combined expression 
+     *
+     * @return the combined expression
      */
     public static CmsSqlBooleanClause makeAnd(I_CmsQueryFragment... fragments) {
 
@@ -72,10 +72,10 @@ public class CmsSqlBooleanClause implements I_CmsQueryFragment {
 
     /**
      * Creates a boolean "OR" expression.<p>
-     * 
+     *
      * @param fragments the operands of the "OR"
-     * 
-     * @return the combined expressiong 
+     *
+     * @return the combined expressiong
      */
     public static CmsSqlBooleanClause makeOr(I_CmsQueryFragment... fragments) {
 
@@ -88,10 +88,10 @@ public class CmsSqlBooleanClause implements I_CmsQueryFragment {
 
     /**
      * Adds an operand to the boolean expression.<p>
-     * 
-     * @param fragment the operand 
-     * 
-     * @return this object instance 
+     *
+     * @param fragment the operand
+     *
+     * @return this object instance
      */
     public CmsSqlBooleanClause addCondition(I_CmsQueryFragment fragment) {
 

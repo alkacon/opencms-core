@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,8 +66,8 @@ implements I_CmsFormWidget, I_CmsHasGhostValue, HasValueChangeHandlers<String>, 
 
     /**
      * Creates a new widget instance.<p>
-     * 
-     * @param options a map with the check box values as keys and the check box labels as values 
+     *
+     * @param options a map with the check box values as keys and the check box labels as values
      */
     public CmsExtendedMultiCheckBox(Map<String, String> options) {
 
@@ -85,7 +85,7 @@ implements I_CmsFormWidget, I_CmsHasGhostValue, HasValueChangeHandlers<String>, 
                 boolean newValueEmpty = CmsStringUtil.isEmptyOrWhitespaceOnly(event.getValue());
                 if (newValueEmpty && !CmsStringUtil.isEmptyOrWhitespaceOnly(m_ghostValue)) {
                     //HACK: Postpone resetting to ghost mode, because we don't want to interfere with other event handlers
-                    // for the current event 
+                    // for the current event
                     Timer timer = new Timer() {
 
                         @Override

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenCmsChoiceTests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/ChoiceTest.xsd">
+  <OpenCmsChoiceTest language="de_DE_WL">
+    <Title><![CDATA[Tests if changes in the XML schema structure maintains the order of an xsd:choice list]]></Title>
+    <ChoiceElements>
+      <ChoiceC>
+        <link internal="false" type="WEAK">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+      </ChoiceC>
+      <ChoiceA><![CDATA[Choice A Test]]></ChoiceA>
+      <ChoiceA><![CDATA[Choice A Test 2]]></ChoiceA>
+      <ChoiceC>
+        <link internal="false" type="WEAK">
+          <target><![CDATA[http://www.opencms.org]]></target>
+        </link>
+      </ChoiceC>
+    </ChoiceElements>
+    <Link>
+      <link internal="false" type="WEAK">
+        <target><![CDATA[http://opencms.mediaworx.com]]></target>
+      </link>
+    </Link>
+    <NewEndText name="NewEndText0">
+      <links/>
+      <content/>
+    </NewEndText>
+  </OpenCmsChoiceTest>
+</OpenCmsChoiceTests>

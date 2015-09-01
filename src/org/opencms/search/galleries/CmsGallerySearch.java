@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import org.apache.lucene.document.Document;
 
 /**
  * Contains the functions for the gallery search.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGallerySearch {
 
@@ -58,14 +58,14 @@ public class CmsGallerySearch {
 
     /**
      * Searches by structure id.<p>
-     * 
+     *
      * @param cms the OpenCms context to use for the search
-     * @param structureId the structure id of the document to search for 
+     * @param structureId the structure id of the document to search for
      * @param locale the locale for which the search result should be returned
-     *  
-     * @return the search result 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search result
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsGallerySearchResult searchById(CmsObject cms, CmsUUID structureId, Locale locale)
     throws CmsException {
@@ -78,14 +78,14 @@ public class CmsGallerySearch {
 
     /**
      * Searches by structure id.<p>
-     * 
+     *
      * @param cms the OpenCms context to use for the search
      * @param rootPath the resource root path
      * @param locale the locale for which the search result should be returned
-     *  
-     * @return the search result 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search result
+     *
+     * @throws CmsException if something goes wrong
      */
     public static CmsGallerySearchResult searchByPath(CmsObject cms, String rootPath, Locale locale)
     throws CmsException {
@@ -98,7 +98,7 @@ public class CmsGallerySearch {
 
     /**
      * Returns the name of the current search index.<p>
-     * 
+     *
      * @return the name of the current search index
      */
     public String getIndex() {
@@ -112,7 +112,7 @@ public class CmsGallerySearch {
      * @param params the gallery search parameters
      *
      * @return the gallery search result list
-     * 
+     *
      * @throws CmsException if the search failed
      */
     public CmsGallerySearchResultList getResult(CmsGallerySearchParameters params) throws CmsException {
@@ -136,7 +136,7 @@ public class CmsGallerySearch {
 
     /**
      * Returns the current gallery search index.<p>
-     * 
+     *
      * @return the current gallery search index
      */
     public CmsGallerySearchIndex getSearchIndex() {
@@ -146,7 +146,7 @@ public class CmsGallerySearch {
 
     /**
      * Initializes the bean with the provided OpenCms context object.<p>
-     * 
+     *
      * @param cms the OpenCms context to use for the search
      */
     public void init(CmsObject cms) {
@@ -156,13 +156,13 @@ public class CmsGallerySearch {
 
     /**
      * Searches by structure id.<p>
-     * 
-     * @param id the structure id of the document to search for 
+     *
+     * @param id the structure id of the document to search for
      * @param locale the locale for which the search result should be returned
-     *  
-     * @return the search result 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search result
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsGallerySearchResult searchById(CmsUUID id, Locale locale) throws CmsException {
 
@@ -182,13 +182,13 @@ public class CmsGallerySearch {
 
     /**
      * Searches by structure id.<p>
-     * 
+     *
      * @param path the resource path
      * @param locale the locale for which the search result should be returned
-     *  
-     * @return the search result 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the search result
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsGallerySearchResult searchByPath(String path, Locale locale) throws CmsException {
 
@@ -206,11 +206,11 @@ public class CmsGallerySearch {
 
     /**
      * Set the name of the index to search.<p>
-     * 
+     *
      * A former search result will be deleted.<p>
-     * 
+     *
      * @param indexName the name of the index
-     * 
+     *
      * @throws CmsException if the index was not found or was not an instance of @link {@link org.opencms.search.galleries.CmsGallerySearchIndex}
      */
     public void setIndex(String indexName) throws CmsException {
@@ -223,10 +223,11 @@ public class CmsGallerySearch {
             throw new CmsException(Messages.get().container(Messages.ERR_INDEX_NOT_FOUND_1, indexName));
         }
         if (!(index instanceof CmsGallerySearchIndex)) {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_INDEX_WRONG_CLASS_2,
-                indexName,
-                CmsGallerySearchIndex.class.getName()));
+            throw new CmsException(
+                Messages.get().container(
+                    Messages.ERR_INDEX_WRONG_CLASS_2,
+                    indexName,
+                    CmsGallerySearchIndex.class.getName()));
         }
         m_index = (CmsGallerySearchIndex)index;
 

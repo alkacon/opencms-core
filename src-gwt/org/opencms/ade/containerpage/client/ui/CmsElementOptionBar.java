@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,6 @@ import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 
 import java.util.Iterator;
 
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasMouseOutHandlers;
 import com.google.gwt.event.dom.client.HasMouseOverHandlers;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -50,8 +48,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A panel to be displayed inside a container element to provide optional functions like edit, move, remove... <p> 
- * 
+ * A panel to be displayed inside a container element to provide optional functions like edit, move, remove... <p>
+ *
  * @since 8.0.0
  */
 public class CmsElementOptionBar extends Composite
@@ -97,7 +95,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     /*default */static Timer timer;
 
     /** The CSS class to be assigned to each option-bar. */
-    private static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
+    public static String CSS_CLASS = org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle.INSTANCE.containerpageCss().optionBar();
 
     /** The calculated panel width. */
     private int m_calculatedWidth;
@@ -110,7 +108,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param containerElement the parent container element
      */
     public CmsElementOptionBar(CmsContainerPageElementPanel containerElement) {
@@ -126,11 +124,11 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Creates an option-bar for the given drag element.<p>
-     * 
+     *
      * @param element the element to create the option-bar for
      * @param dndHandler the drag and drop handler
      * @param buttons the list of buttons to display
-     * 
+     *
      * @return the created option-bar
      */
     public static CmsElementOptionBar createOptionBarForElement(
@@ -152,13 +150,12 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
                 }
             }
         }
-        optionBar.initWidth();
         return optionBar;
     }
 
     /**
      * Adds another option button.<p>
-     * 
+     *
      * @param w the button to add
      */
     public void add(Widget w) {
@@ -194,7 +191,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns the calculated width of the widget.<p>
-     * 
+     *
      * @return the calculated width
      */
     public int getCalculatedWidth() {
@@ -203,22 +200,8 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     }
 
     /**
-     * Calculates and sets the width of the option bar.<p>
-     */
-    public void initWidth() {
-
-        m_calculatedWidth = 0;
-        for (Widget w : m_panel) {
-            if (!Display.NONE.getCssName().equalsIgnoreCase(w.getElement().getStyle().getDisplay())) {
-                m_calculatedWidth += 20;
-            }
-        }
-        getElement().getStyle().setWidth(m_calculatedWidth, Unit.PX);
-    }
-
-    /**
      * Returns an iterator for the child widgets.<p>
-     * 
+     *
      * @return the iterator
      */
     public Iterator<Widget> iterator() {
@@ -234,7 +217,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
         try {
             internalRemoveHighlighting();
         } catch (Exception e) {
-            // ignore 
+            // ignore
 
         }
     }
@@ -249,7 +232,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
         internalRemoveHighlighting();
     }
 
-    /** 
+    /**
      * Adds the highlighting and option bar.<p>
      */
     protected void addHighlighting() {
@@ -261,7 +244,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
     /**
      * Returns the parent container element.<p>
-     * 
+     *
      * @return the parent container element
      */
     protected CmsContainerPageElementPanel getContainerElement() {
@@ -270,7 +253,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
     }
 
     /**
-     * Removes the highlighting.<p> 
+     * Removes the highlighting.<p>
      */
     protected void internalRemoveHighlighting() {
 

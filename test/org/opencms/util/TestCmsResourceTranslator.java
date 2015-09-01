@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,14 +29,12 @@ package org.opencms.util;
 
 import org.opencms.test.OpenCmsTestCase;
 
-import junit.framework.TestCase;
-
-/** 
- * Test cases for the resource translator.<p> 
- * 
+/**
+ * Test cases for the resource translator.<p>
+ *
  * @since 6.0.0
  */
-public class TestCmsResourceTranslator extends TestCase {
+public class TestCmsResourceTranslator extends OpenCmsTestCase {
 
     // default rules (same as in "opencms.properties")
     private static String[] rules = {
@@ -64,7 +62,7 @@ public class TestCmsResourceTranslator extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsResourceTranslator(String arg0) {
@@ -87,13 +85,14 @@ public class TestCmsResourceTranslator extends TestCase {
         assertEquals(test, "/default/vfs/system/workplace/scripts/test.js");
 
         translator = new CmsResourceTranslator(rules, true);
-        test = translator.translateResource("Sch"
-            + OpenCmsTestCase.C_OUML_LOWER
-            + "ne "
-            + OpenCmsTestCase.C_UUML_UPPER
-            + "bung mit Fu"
-            + OpenCmsTestCase.C_SHARP_S
-            + ".js");
+        test = translator.translateResource(
+            "Sch"
+                + OpenCmsTestCase.C_OUML_LOWER
+                + "ne "
+                + OpenCmsTestCase.C_UUML_UPPER
+                + "bung mit Fu"
+                + OpenCmsTestCase.C_SHARP_S
+                + ".js");
         assertEquals(test, "Schoene_Uebung_mit_Fuss.js");
     }
 

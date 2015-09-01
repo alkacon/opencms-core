@@ -19,12 +19,12 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.configuration;
 
 import org.opencms.file.CmsObject;
@@ -43,13 +43,16 @@ public class CmsTestDummyResourceInit implements I_CmsResourceInit {
     /**
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException {
-            
-       // just a dummy implementation
-        
+    public CmsResource initResource(
+        CmsResource resource,
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsResourceInitException {
+
+        // just a dummy implementation
+
         if (System.currentTimeMillis() == 0) {
-            throw new CmsResourceInitException (Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, ""));
+            throw new CmsResourceInitException(Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, ""));
         }
         return null;
     }

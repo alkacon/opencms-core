@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,7 +44,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * Provides the specific list item for the results list.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsResultListItem extends CmsListItem {
@@ -66,7 +66,7 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Creates a new result list item with a main widget.<p>
-     * 
+     *
      * @param resultItem the result item
      * @param hasPreview if the item has a preview option
      * @param dndHandler the drag and drop handler
@@ -113,7 +113,7 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Creates the delete button for this item.<p>
-     * 
+     *
      * @return the delete button
      */
     public static CmsPushButton createDeleteButton() {
@@ -125,10 +125,10 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Creates a button for the list item.<p>
-     * 
+     *
      * @param imageClass the icon image class
      * @param title the button title
-     * 
+     *
      * @return the button
      */
     private static CmsPushButton createButton(String imageClass, String title) {
@@ -142,10 +142,10 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Adds a double click event handler.<p>
-     * 
+     *
      * @param handler the event handler to add
-     *  
-     * @return the handler registration for removing the event handler 
+     *
+     * @return the handler registration for removing the event handler
      */
     public HandlerRegistration addDoubleClickHandler(DoubleClickHandler handler) {
 
@@ -154,7 +154,7 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Adds the preview button click handler.<p>
-     * 
+     *
      * @param handler the click handler
      */
     public void addPreviewClickHandler(ClickHandler handler) {
@@ -166,7 +166,7 @@ public class CmsResultListItem extends CmsListItem {
 
     /**
      * Adds the select button click handler.<p>
-     * 
+     *
      * @param handler the click handler
      */
     public void addSelectClickHandler(ClickHandler handler) {
@@ -195,10 +195,10 @@ public class CmsResultListItem extends CmsListItem {
         return m_resourceType;
     }
 
-    /** 
+    /**
      * Gets the search result bean.<p>
-     * 
-     * @return the search result bean 
+     *
+     * @return the search result bean
      */
     public CmsResultItemBean getResult() {
 

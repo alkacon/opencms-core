@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit the users additional info in the administration view.<p>
- * 
+ *
  * @since 6.5.6
  */
 public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
@@ -93,7 +93,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsEditUserAddInfoDialog(CmsJspActionElement jsp) {
@@ -103,7 +103,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -190,11 +190,13 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
                 Map<String, String[]> argMap = new HashMap<String, String[]>();
                 argMap.put(A_CmsEditUserDialog.PARAM_USERID, new String[] {m_user.getId().toString()});
                 argMap.put("oufqn", new String[] {m_user.getOuFqn()});
-                setParamCloseLink(CmsToolManager.linkForToolPath(
-                    getJsp(),
-                    getCurrentToolPath().substring(0, getCurrentToolPath().indexOf("/orgunit/users/edit/addinfo/all"))
-                        + "/orgunit/users/edit/",
-                    argMap));
+                setParamCloseLink(
+                    CmsToolManager.linkForToolPath(
+                        getJsp(),
+                        getCurrentToolPath().substring(
+                            0,
+                            getCurrentToolPath().indexOf("/orgunit/users/edit/addinfo/all")) + "/orgunit/users/edit/",
+                        argMap));
             }
         }
 
@@ -214,7 +216,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Returns the edit all flag parameter value.<p>
-     * 
+     *
      * @return the edit all flag parameter value
      */
     public String getParamEditall() {
@@ -229,7 +231,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Returns the user id parameter value.<p>
-     * 
+     *
      * @return the user id parameter value
      */
     public String getParamUserid() {
@@ -259,7 +261,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Sets the edit all flag parameter value.<p>
-     * 
+     *
      * @param editAll the edit all flag parameter value
      */
     public void setParamEditall(String editAll) {
@@ -269,7 +271,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Sets the user id parameter value.<p>
-     * 
+     *
      * @param userId the user id parameter value to set
      */
     public void setParamUserid(String userId) {
@@ -289,11 +291,11 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
-     * 
+     *
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
     @Override
@@ -356,15 +358,16 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
                     int min = entry.isOptional() ? 0 : 1;
                     I_CmsWidget widget = entry.getWidgetObject();
-                    addWidget(new CmsWidgetDialogParameter(
-                        m_addInfoList.get(count),
-                        "value",
-                        entry.getKey(),
-                        "",
-                        PAGES[0],
-                        widget,
-                        min,
-                        1));
+                    addWidget(
+                        new CmsWidgetDialogParameter(
+                            m_addInfoList.get(count),
+                            "value",
+                            entry.getKey(),
+                            "",
+                            PAGES[0],
+                            widget,
+                            min,
+                            1));
                     count++;
                 }
             }
@@ -472,9 +475,9 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
 
     /**
      * Creates a new additional information bean object.<p>
-     * 
+     *
      * @param user the user to create the bean for
-     * 
+     *
      * @return a new additional information bean object
      */
     private List<CmsUserAddInfoBean> createAddInfoList(CmsUser user) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,10 +44,10 @@ import org.w3c.tidy.Tidy;
 
 /**
  * HTML cleaner and pretty printer using JTidy.<p>
- * 
+ *
  * Used to clean up HTML code (e.g. remove word tags) and optionally create XHTML from HTML.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
@@ -121,7 +121,8 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
     private boolean m_modeXhtml;
 
     /** List of default modes if none were specified explicitly. */
-    private static final List<String> MODES_DEFAULT = Collections.unmodifiableList(Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
+    private static final List<String> MODES_DEFAULT = Collections.unmodifiableList(
+        Arrays.asList(new String[] {CmsHtmlConverter.PARAM_ENABLED}));
 
     /**
      * Constructor, creates a new CmsHtmlConverterJTidy.<p>
@@ -133,16 +134,16 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /**
      * Constructor, creates a new CmsHtmlConverterJTidy.<p>
-     * 
+     *
      * Possible values for the conversion mode are:<ul>
      * <li>{@link CmsHtmlConverter#PARAM_DISABLED}: The conversion is disabled.
-     * <li>{@link CmsHtmlConverter#PARAM_ENABLED}: Conversion is enabled without transformation, so HTML is pretty printed only. 
+     * <li>{@link CmsHtmlConverter#PARAM_ENABLED}: Conversion is enabled without transformation, so HTML is pretty printed only.
      * <li>{@link CmsHtmlConverter#PARAM_XHTML}: Conversion from HTML to XHTML is enabled.
      * <li>{@link CmsHtmlConverter#PARAM_WORD}: Cleanup of word like HTML tags is enabled.
      * <li>{@link CmsHtmlConverter#PARAM_REPLACE_PARAGRAPHS}: Cleanup of paragraphs and leading/trailing line breaks is enabled.
-     * 
+     *
      * </ul>
-     * 
+     *
      * @param encoding the encoding used for the HTML code conversion
      * @param modes the conversion modes to use
      */
@@ -153,10 +154,10 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /**
      * Converts the given HTML code according to the settings of this converter.<p>
-     * 
+     *
      * @param htmlInput HTML input stored in a string
      * @return string containing the converted HTML
-     * 
+     *
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     @Override
@@ -177,7 +178,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
             while (count < max) {
                 count++;
 
-                // first add the optional header if in word mode   
+                // first add the optional header if in word mode
                 if (m_modeWord) {
                     workHtml = adjustHtml(workHtml);
                 }
@@ -197,10 +198,11 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
                 workHtml = regExp(workHtml);
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_PARSING_RUNS_2,
-                    this.getClass().getName(),
-                    new Integer(count)));
+                LOG.debug(
+                    Messages.get().getBundle().key(
+                        Messages.LOG_PARSING_RUNS_2,
+                        this.getClass().getName(),
+                        new Integer(count)));
             }
             htmlInput = workHtml;
         }
@@ -210,10 +212,10 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /**
      * Adjusts the HTML input code in WORD mode if necessary.<p>
-     * 
+     *
      * When in WORD mode, the HTML tag must contain the xmlns:o="urn:schemas-microsoft-com:office:office"
      * attribute, otherwise tide will not remove the WORD tags from the document.
-     * 
+     *
      * @param htmlInput the HTML input
      * @return adjusted HTML input
      */
@@ -298,7 +300,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
             m_tidy.setPrintBodyOnly(true);
             // force output creation even if there are tidy errors
             m_tidy.setForceOutput(true);
-            // set tidy to quiet mode to prevent output        
+            // set tidy to quiet mode to prevent output
             m_tidy.setQuiet(true);
             // disable warning output
             m_tidy.setShowWarnings(false);
@@ -354,11 +356,11 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /**
      * Parses a byte array containing HTML code with different parsing modes.<p>
-     * 
+     *
      * @param htmlInput a byte array containing raw HTML code
-     * 
+     *
      * @return parsed and cleared HTML code
-     * 
+     *
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     private String parse(String htmlInput) throws UnsupportedEncodingException {
@@ -375,9 +377,9 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
 
     /**
      * Parses the htmlInput with regular expressions for cleanup purposes.<p>
-     * 
+     *
      * @param htmlInput the HTML input
-     * 
+     *
      * @return the processed HTML
      */
     private String regExp(String htmlInput) {

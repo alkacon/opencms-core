@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,24 +33,24 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListOrderEnum;
 
 /**
- * A list dialog that may be embedded in 
+ * A list dialog that may be embedded in
  * the output of other <code>{@link org.opencms.workplace.CmsDialog}</code> instances.<p>
- * 
- * With std. <code>{@link org.opencms.workplace.list.A_CmsListDialog}</code> this attempt will 
+ *
+ * With std. <code>{@link org.opencms.workplace.list.A_CmsListDialog}</code> this attempt will
  * result in double gray headers in the workplace. <p>
- * 
+ *
  * <h4>Howto</h4>
- * 
- * <h5>1. Include content in JSP</h5> 
+ *
+ * <h5>1. Include content in JSP</h5>
  * <pre>
- <% 
+ <%
  CmsJspActionElement actionElement = new CmsJspActionElement(pageContext, request, response);
  CmsWidgetDialog wpWidget = new &lt;TYPE&gt;(actionElement);
 
  // perform the widget actions (write later)
  wpWidget.displayDialog(true);
  A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(actionElement);
- 
+
  // perform the list actions (write later)
  wpList.displayDialog(true);
  // write the content of widget dialog
@@ -59,7 +59,7 @@ import org.opencms.workplace.list.CmsListOrderEnum;
  wpList.writeDialog();
  %>
  * </pre>
- * 
+ *
  * <h5>2. Include in code of other CmsDialog</h5>
  <pre>
  protected String createDialogHtml(String dialog) {
@@ -70,19 +70,19 @@ import org.opencms.workplace.list.CmsListOrderEnum;
  // do your dialog output here....
  ...
  result.append(createWidgetTableEnd());
- // create the list : 
+ // create the list :
  A_CmsEmbeddedListDialog wpList = new &lt;TYPE&gt;(getJsp());
  wpList.writeDialog();
  </pre>
- * 
- * 
+ *
+ *
  * @since 6.0.0
  */
 public abstract class A_CmsEmbeddedListDialog extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param listId the id of the displayed list
      * @param listName the name of the list
@@ -104,7 +104,7 @@ public abstract class A_CmsEmbeddedListDialog extends A_CmsListDialog {
 
     /**
      * Overrides the implementation to skip generation of gray header. <p>
-     * 
+     *
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
     @Override

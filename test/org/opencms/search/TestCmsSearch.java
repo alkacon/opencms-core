@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -67,7 +67,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSearch(String arg0) {
@@ -77,7 +77,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
-     * 
+     *
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      */
@@ -88,7 +88,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Prints the given list of search results to STDOUT.<p>
-     * 
+     *
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      * @param showExcerpt if <code>true</code>, the generated excerpt is also displayed
@@ -130,9 +130,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
             if (res.getDateLastModified() != null) {
-                System.out.print(CmsStringUtil.padRight(
-                    "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
-                    17));
+                System.out.print(
+                    CmsStringUtil.padRight(
+                        "" + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN),
+                        17));
             }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {
@@ -143,7 +144,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -161,6 +162,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearch("testQueryEncoding"));
         suite.addTest(new TestCmsSearch("testSearchIssueWithSpecialFoldernames"));
         suite.addTest(new TestCmsSearch("testShutdownWhileIndexing"));
+        suite.addTest(new TestCmsSearch("testHasAnalyzerForAll"));
 
         // This test is intended only for performance/resource monitoring
         // suite.addTest(new TestCmsSearch("testCmsSearchLargeResult"));
@@ -185,7 +187,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Tests searching in various document types.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSearchDocumentTypes() throws Throwable {
@@ -207,7 +209,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Test the cms search indexer.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSearchIndexer() throws Throwable {
@@ -219,7 +221,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Tests the cms search with a larger result set.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSearchLargeResult() throws Throwable {
@@ -276,7 +278,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         long duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         for (Iterator<CmsSearchResult> i = results.iterator(); i.hasNext();) {
             CmsSearchResult res = i.next();
@@ -287,7 +290,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         for (Iterator<CmsSearchResult> i = results.iterator(); i.hasNext();) {
             CmsSearchResult res = i.next();
@@ -306,13 +310,15 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         echo("Without Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
@@ -326,13 +332,15 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         echo("Without Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
@@ -346,18 +354,20 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
         cmsSearchBean.setSearchPage(2);
         duration = -System.currentTimeMillis();
         results = cmsSearchBean.getSearchResult();
         duration += System.currentTimeMillis();
-        echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
+        echo(
+            "Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
     }
 
     /**
      * Tests the CmsSearch with folder names with upper case letters.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testCmsSearchUppercaseFolderName() throws Exception {
@@ -380,7 +390,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Test the cms search indexer.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testCmsSearchXmlContent() throws Throwable {
@@ -408,7 +418,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         assertEquals(1, results.size());
         assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getPath());
 
-        // check (on console) that the file does contain a link to the /xmlcontent/ folder 
+        // check (on console) that the file does contain a link to the /xmlcontent/ folder
         CmsFile article4 = cms.readFile("/xmlcontent/article_0004.html");
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, article4, true);
         echo(content.toString());
@@ -422,11 +432,21 @@ public class TestCmsSearch extends OpenCmsTestCase {
     }
 
     /**
+     * Check if we have an analyzer entry for the pseudo-locale 'all'.
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testHasAnalyzerForAll() throws Exception {
+
+        OpenCms.getSearchManager().getAnalyzer(new Locale("all"));
+    }
+
+    /**
      * Tests index generation with different analyzers.<p>
-     * 
+     *
      * This test was added in order to verify proper generation of resource "root path" information
      * in the index.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testIndexGeneration() throws Throwable {
@@ -457,7 +477,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         searchBean.setIndex(INDEX_TEST);
         searchBean.setQuery(">>SearchEgg1<<");
 
-        // assert one file is found in the default site     
+        // assert one file is found in the default site
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
         assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
@@ -469,7 +489,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
     }
 
     /**
-     * Tests if <code>{@link CmsSearch#setQuery(String)}</code> modifies 
+     * Tests if <code>{@link CmsSearch#setQuery(String)}</code> modifies
      * the query in an undesireable way (changes url encoded Strings). <p>
      */
     public void testQueryEncoding() {
@@ -489,7 +509,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
     /**
      * Tests an issue where no results are found in folders that have names
      * like <code>/basisdienstleistungen_-_zka/</code>.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testSearchIssueWithSpecialFoldernames() throws Exception {
@@ -525,7 +545,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Test the cms search indexer.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testShutdownWhileIndexing() throws Throwable {
@@ -538,11 +558,11 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
     /**
      * Internal helper for test with same name.<p>
-     * 
+     *
      * @param cms the current users OpenCms context
      * @param folderName the folder name to perform the test in
      * @param expected the expected result size of the search
-     * 
+     *
      * @throws Exception in case the test fails
      */
     private void testCmsSearchUppercaseFolderNameUtil(CmsObject cms, String folderName, int expected) throws Exception {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -80,7 +80,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentLinks(String arg0) {
@@ -90,7 +90,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Compares two link objects.<p>
-     * 
+     *
      * @param expected the expected link object
      * @param result the resulting link object
      * @param assertStructureId if the structure id should be asserted or not
@@ -113,12 +113,12 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Returns the unique link for the given html node in the given xml content.<p>
-     * 
+     *
      * @param cms the cms context
      * @param xmlcontent the xml content
      * @param nodeName the html node name
      * @param linkName the name of the link
-     * 
+     *
      * @return the link object
      */
     public static CmsLink getHtmlLink(CmsObject cms, CmsXmlContent xmlcontent, String nodeName, String linkName) {
@@ -133,11 +133,11 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Returns the link for the given vfs file reference node in the given xml content.<p>
-     * 
+     *
      * @param cms the cms context
      * @param xmlcontent the xml content
      * @param nodeName the vfs file reference node name
-     * 
+     *
      * @return the link object
      */
     public static CmsLink getVfsFileRefLink(CmsObject cms, CmsXmlContent xmlcontent, String nodeName) {
@@ -149,7 +149,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -192,7 +192,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Initializes all schema definitions.<p>
-     * 
+     *
      * @throws IOException if something goes wrong
      */
     protected static void initSchemas() throws IOException {
@@ -231,10 +231,10 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Returns a link object prototype for the given type.<p>
-     * 
+     *
      * @param cms the cms context
      * @param forHtml <code>true</code> for html or <code>false</code> for vfs file refs
-     * 
+     *
      * @return a link object prototype
      */
     private static CmsLink getExpected(CmsObject cms, boolean forHtml) {
@@ -249,7 +249,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Updates a link, and checks the result against the given resource.<p>
-     * 
+     *
      * @param cms the cms context
      * @param link the lin k to update
      * @param resource the resource to check against
@@ -263,7 +263,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test the option to do not invalidate a broken link node.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testInvalidateFalse() throws Exception {
@@ -321,7 +321,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test the relation type configuration in xml content.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testRelationType() throws Exception {
@@ -355,7 +355,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test removing the node of a broken link.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testRemoveNode() throws Exception {
@@ -418,8 +418,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         Map<String, String> enWarnings = errHandler.getWarnings().get(Locale.ENGLISH);
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("VfsLink[1]"));
-        assertTrue(enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-            org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
+        assertTrue(
+            enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
+                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
 
         // reset the time to have the 'normal' behaviour again
         cms.getRequestContext().setRequestTime(System.currentTimeMillis());
@@ -505,8 +506,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         Map<String, String> enErrors = errHandler.getErrors().get(Locale.ENGLISH);
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("VfsLink[1]"));
-        assertTrue(enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-            org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
+        assertTrue(
+            enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
+                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
         assertTrue(errHandler.getWarnings().isEmpty());
 
         // reset the time to have the 'normal' behaviour again
@@ -568,7 +570,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test removing the parent node of a broken link.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testRemoveParent() throws Exception {
@@ -637,8 +639,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         Map<String, String> enWarnings = errHandler.getWarnings().get(Locale.ENGLISH);
         assertEquals(enWarnings.size(), 1);
         assertTrue(enWarnings.containsKey("ALink[1]/VfsLink[1]"));
-        assertTrue(enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-            org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
+        assertTrue(
+            enWarnings.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
+                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_WARNING_NOT_RELEASED_0)));
 
         // reset the time to have the 'normal' behaviour again
         cms.getRequestContext().setRequestTime(System.currentTimeMillis());
@@ -725,8 +728,9 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         Map<String, String> enErrors = errHandler.getErrors().get(Locale.ENGLISH);
         assertEquals(enErrors.size(), 1);
         assertTrue(enErrors.containsKey("ALink[1]/VfsLink[1]"));
-        assertTrue(enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
-            org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
+        assertTrue(
+            enErrors.containsValue(org.opencms.xml.content.Messages.get().getBundle().key(
+                org.opencms.xml.content.Messages.GUI_XMLCONTENT_CHECK_ERROR_0)));
         assertTrue(errHandler.getWarnings().isEmpty());
 
         // reset the time to have the 'normal' behaviour again
@@ -786,8 +790,8 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Tests saving XML contents with links from/to various sites.<p>
-     * 
-     * @throws Exception 
+     *
+     * @throws Exception in case the test fails
      */
     public void testSiteLinks() throws Exception {
 
@@ -813,9 +817,13 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         // (R)oot
         CmsResource r = createTestFile("/system/testfile-system.html");
 
-        for (String targetMacro : new String[] {"${TARGET}", "${TARGET2}"}) {
+        // Macros to replace, have to be real URLs of existing files in order to avoid console Exception log output because of malforme URLs
+        String target1 = createTestFile("/shared/target-1.html").getRootPath();
+        String target2 = createTestFile("/shared/target-2.html").getRootPath();
 
-            // from default site 
+        for (String targetMacro : new String[] {target1, target2}) {
+
+            // from default site
             checkSetLink("/sites/default", w, targetMacro, "/testfile-w.html", w);
             checkSetLink("/sites/default", w, targetMacro, "http://localhost:8080/data/opencms/testfile-w.html", w);
             checkSetLink("/sites/default", w, targetMacro, "/data/opencms/testfile-w.html", w);
@@ -844,13 +852,23 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
             checkSetLink("/shared", s, targetMacro, "/testfile-shared.html", s);
             checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/testfile-shared.html", s);
-            checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/shared/testfile-shared.html", s);
+            checkSetLink(
+                "/shared",
+                s,
+                targetMacro,
+                "http://localhost:8080/data/opencms/shared/testfile-shared.html",
+                s);
             checkSetLink("/shared", s, targetMacro, "/data/opencms/shared/testfile-shared.html", s);
 
             checkSetLink("/shared", s, targetMacro, "http://localhost:8082/data/opencms/testfile-a.html", a);
             checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/testfile-w.html", w);
 
-            checkSetLink("/shared", s, targetMacro, "http://localhost:8080/data/opencms/system/testfile-system.html", r);
+            checkSetLink(
+                "/shared",
+                s,
+                targetMacro,
+                "http://localhost:8080/data/opencms/system/testfile-system.html",
+                r);
             checkSetLink("/shared", s, targetMacro, "/data/opencms/system/testfile-system.html", r);
 
             // from root site
@@ -900,7 +918,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test updating the id of a moved resource in a broken link.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testUpdateId() throws Exception {
@@ -954,7 +972,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Test updating the path of a moved resource in a broken link.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testUpdatePath() throws Exception {
@@ -1027,14 +1045,14 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     /**
      * Replaces the content of an xmlcontent resource with a new content which contains a given link, and then checks if the
      * link has been correctly created.<p>
-     * 
-     * @param siteRoot the site root to set 
-     * @param source the resource whose content should be written 
-     * @param macro the macro to replace with the link 
-     * @param targetUri the URI which should be saved 
-     * @param expected the resource to which the resource should link after saving 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param siteRoot the site root to set
+     * @param source the resource whose content should be written
+     * @param macro the macro to replace with the link
+     * @param targetUri the URI which should be saved
+     * @param expected the resource to which the resource should link after saving
+     *
+     * @throws Exception if something goes wrong
      */
     private void checkSetLink(String siteRoot, CmsResource source, String macro, String targetUri, CmsResource expected)
     throws Exception {
@@ -1058,10 +1076,10 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
     /**
      * Creates a test file for the testSiteLinks test.<p>
-     * 
-     * @param rootPath the test file path 
-     * @return the new test file 
-     * @throws Exception if something goes wrong 
+     *
+     * @param rootPath the test file path
+     * @return the new test file
+     * @throws Exception if something goes wrong
      */
     private CmsResource createTestFile(String rootPath) throws Exception {
 

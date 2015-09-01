@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,9 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Parses the given JSON string.<p>
-     * 
+     *
      * @param value the value string to parse
-     * 
+     *
      * @return the location object
      */
     public static native CmsLocationValue parse(String value)/*-{
@@ -62,7 +62,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Clones the value object.<p>
-     * 
+     *
      * @return the clone
      */
     public native CmsLocationValue cloneValue()/*-{
@@ -80,7 +80,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the location address.<p>
-     * 
+     *
      * @return the address
      */
     public native String getAddress()/*-{
@@ -89,7 +89,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the height.<p>
-     * 
+     *
      * @return the height
      */
     public native int getHeight()/*-{
@@ -98,7 +98,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the latitude.<p>
-     * 
+     *
      * @return the latitude
      */
     public native float getLatitude()/*-{
@@ -107,7 +107,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the latitude string representation.<p>
-     * 
+     *
      * @return the latitude string representation
      */
     public native String getLatitudeString()/*-{
@@ -117,7 +117,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the longitude.<p>
-     * 
+     *
      * @return the longitude
      */
     public native float getLongitude()/*-{
@@ -126,7 +126,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the longitude string representation.<p>
-     * 
+     *
      * @return the longitude string representation
      */
     public native String getLongitudeString()/*-{
@@ -135,7 +135,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the mode.<p>
-     * 
+     *
      * @return the mode
      */
     public native String getMode()/*-{
@@ -144,7 +144,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the type.<p>
-     * 
+     *
      * @return the type
      */
     public native String getType()/*-{
@@ -153,7 +153,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the width.<p>
-     * 
+     *
      * @return the width
      */
     public native int getWidth()/*-{
@@ -162,7 +162,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the zoom.<p>
-     * 
+     *
      * @return the zoom
      */
     public native int getZoom()/*-{
@@ -171,7 +171,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the address.<p>
-     * 
+     *
      * @param address the address
      */
     public native void setAddress(String address)/*-{
@@ -180,7 +180,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the height.<p>
-     * 
+     *
      * @param height the height
      */
     public native void setHeight(int height)/*-{
@@ -189,7 +189,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the height.<p>
-     * 
+     *
      * @param height the height
      */
     public native void setHeight(String height)/*-{
@@ -199,7 +199,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the latitude.<p>
-     * 
+     *
      * @param latitude the latitude
      */
     public native void setLatitude(float latitude)/*-{
@@ -208,7 +208,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the latitude.<p>
-     * 
+     *
      * @param latitude the latitude
      */
     public native void setLatitude(String latitude)/*-{
@@ -218,7 +218,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the longitude.<p>
-     * 
+     *
      * @param longitude the longitude
      */
     public native void setLongitude(float longitude)/*-{
@@ -227,7 +227,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the longitude.<p>
-     * 
+     *
      * @param longitude the longitude
      */
     public native void setLongitude(String longitude)/*-{
@@ -237,7 +237,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the map mode.<p>
-     * 
+     *
      * @param mode the map mode
      */
     public native void setMode(String mode)/*-{
@@ -246,7 +246,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the map type.<p>
-     * 
+     *
      * @param type the map type
      */
     public native void setType(String type)/*-{
@@ -255,7 +255,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the width.<p>
-     * 
+     *
      * @param width the width
      */
     public native void setWidth(int width)/*-{
@@ -264,7 +264,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the width.<p>
-     * 
+     *
      * @param width the width
      */
     public native void setWidth(String width)/*-{
@@ -274,7 +274,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the map zoom level.<p>
-     * 
+     *
      * @param zoom the zoom level
      */
     public native void setZoom(int zoom)/*-{
@@ -283,7 +283,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Sets the map zoom level.<p>
-     * 
+     *
      * @param zoom the zoom level
      */
     public native void setZoom(String zoom)/*-{
@@ -293,7 +293,7 @@ public final class CmsLocationValue extends JavaScriptObject {
 
     /**
      * Returns the JSON string representation of this value.<p>
-     * 
+     *
      * @return the JSON string representation
      */
     public native String toJSONString()/*-{

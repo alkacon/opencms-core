@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,9 +70,9 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Method to create an entity object from a wrapped instance.<p>
-     * 
+     *
      * @param entityWrapper the wrappe entity
-     * 
+     *
      * @return the entity
      */
     public static CmsEntity createFromNativeWrapper(JavaScriptObject entityWrapper) {
@@ -97,7 +97,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the instance.<p>
-     * 
+     *
      * @return the instance
      */
     public static CmsEntityBackend getInstance() {
@@ -110,9 +110,9 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the complex attribute names of the given entity.<p>
-     * 
+     *
      * @param entityWrapper the wrapped entity
-     * 
+     *
      * @return the complex attribute names
      */
     private static native String[] getComplexAttributeNames(JavaScriptObject entityWrapper)/*-{
@@ -128,10 +128,10 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the complex attribute values of the given entity.<p>
-     * 
+     *
      * @param entityWrapper the wrapped entity
      * @param attributeName the attribute name
-     * 
+     *
      * @return the complex attribute values
      */
     private static native JavaScriptObject[] getComplexAttributeValues(
@@ -142,9 +142,9 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the entity type.<p>
-     * 
+     *
      * @param entityWrapper the wrapped entity
-     * 
+     *
      * @return the entity type name
      */
     private static native String getEntityType(JavaScriptObject entityWrapper)/*-{
@@ -153,9 +153,9 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the simple attribute names of the given entity.<p>
-     * 
+     *
      * @param entityWrapper the wrapped entity
-     * 
+     *
      * @return the simple attribute names
      */
     private static native String[] getSimpleAttributeNames(JavaScriptObject entityWrapper)/*-{
@@ -171,10 +171,10 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns the simple attribute values of the given entity.<p>
-     * 
+     *
      * @param entityWrapper the wrapped entity
      * @param attributeName the attribute name
-     * 
+     *
      * @return the simple attribute values
      */
     private static native String[] getSimpleAttributeValues(JavaScriptObject entityWrapper, String attributeName)/*-{
@@ -255,11 +255,11 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
         String selector = "[about='"
             + entityId
-            + "'][property='"
+            + "'][property*='"
             + attributeName
             + "'], [about='"
             + entityId
-            + "'] [property='"
+            + "'] [property*='"
             + attributeName
             + "']";
         if (context == null) {
@@ -375,10 +375,10 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Returns a list of DOM elements matching the given selector.<p>
-     * 
+     *
      * @param selector the CSS selector
      * @param context the context element
-     * 
+     *
      * @return the matching elements
      */
     protected List<Element> select(String selector, Element context) {
@@ -393,7 +393,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Removes all attributes from the given entity.<p>
-     * 
+     *
      * @param entity the entity
      */
     private void clearEntityAttributes(CmsEntity entity) {
@@ -411,7 +411,7 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
 
     /**
      * Generates a new entity id.<p>
-     * 
+     *
      * @return the generated id
      */
     private String generateId() {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -90,7 +90,7 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Creates a new CmsContentNotification.<p>
-     * 
+     *
      * @param responsible the user that will be notified
      * @param cms the cms object to use
      */
@@ -102,16 +102,17 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Returns true, if there exists an editor for a specific resource.<p>
-     * 
+     *
      * @param resource the resource to check if there exists an editor
-     * 
+     *
      * @return true if there exists an editor for the resource
      */
     public static boolean existsEditor(CmsResource resource) {
 
         int plainId;
         try {
-            plainId = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeName()).getTypeId();
+            plainId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypePlain.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e) {
             // this should really never happen
             plainId = CmsResourceTypePlain.getStaticTypeId();
@@ -136,7 +137,7 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Creates the mail to be sent to the responsible user.<p>
-     * 
+     *
      * @return the mail to be sent to the responsible user
      */
     @Override
@@ -187,7 +188,7 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Returns a list of CmsNotificationResourceInfos of the resources that will occur in the notification.<p>
-     * 
+     *
      * @return a list of CmsNotificationResourceInfos of the resources that will occur in the notification
      */
     protected List<CmsExtendedNotificationCause> getNotificationCauses() {
@@ -206,7 +207,7 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Sets the resources.<p>
-     * 
+     *
      * @param resources a list of CmsNotificationResourceInfo's
      */
     protected void setNotificationCauses(List<CmsExtendedNotificationCause> resources) {
@@ -214,9 +215,9 @@ public class CmsContentNotification extends A_CmsNotification {
         m_notificationCauses = resources;
     }
 
-    /** 
+    /**
      * Appends a link to confirm a resource, so that the responsible will not be notified any more.<p>
-     * 
+     *
      * @param buf the StringBuffer to append the html code to
      * @param notificationCause the information for specific resource
      */
@@ -255,9 +256,9 @@ public class CmsContentNotification extends A_CmsNotification {
         buf.append("</td>");
     }
 
-    /** 
+    /**
      * Appends a link to edit the resource to a StringBuffer.<p>
-     * 
+     *
      * @param buf the StringBuffer to append the html code to.
      * @param notificationCause the information for specific resource.
      */
@@ -270,7 +271,8 @@ public class CmsContentNotification extends A_CmsNotification {
                 String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
                 resourcePath = resourcePath.substring(siteRoot.length());
                 Map<String, String[]> params = new HashMap<String, String[]>();
-                CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
+                CmsUUID projectId = getCmsObject().readProject(
+                    OpenCms.getSystemInfo().getNotificationProject()).getUuid();
                 params.put(CmsWorkplace.PARAM_WP_PROJECT, new String[] {String.valueOf(projectId)});
                 params.put(
                     CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
@@ -291,9 +293,9 @@ public class CmsContentNotification extends A_CmsNotification {
         buf.append("</td>");
     }
 
-    /** 
+    /**
      * Appends a link to edit the notification settings of a resource to a StringBuffer.<p>
-     * 
+     *
      * @param buf the StringBuffer to append the html code to.
      * @param notificationCause the information for specific resource.
      */
@@ -330,10 +332,10 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Appends a table showing a set of resources, and the cause of the notification.<p>
-     * 
+     *
      * @param htmlMsg html the StringBuffer to append the html code to
      * @param notificationCauseList the list of notification causes
-     * @param header the title of the resource list 
+     * @param header the title of the resource list
      */
     private void appendResourceList(
         StringBuffer htmlMsg,
@@ -343,7 +345,8 @@ public class CmsContentNotification extends A_CmsNotification {
         if (!notificationCauseList.isEmpty()) {
             htmlMsg.append("<tr><td colspan=\"5\"><br/><p style=\"margin-top:20px;margin-bottom:10px;\"><b>");
             htmlMsg.append(header);
-            htmlMsg.append("</b></p></td></tr><tr class=\"trow1\"><td><div style=\"padding-top:2px;padding-bottom:2px;\">");
+            htmlMsg.append(
+                "</b></p></td></tr><tr class=\"trow1\"><td><div style=\"padding-top:2px;padding-bottom:2px;\">");
             htmlMsg.append(m_messages.key(Messages.GUI_RESOURCE_0));
             htmlMsg.append("</div></td><td><div style=\"padding-top:2px;padding-bottom:2px;padding-left:10px;\">");
             htmlMsg.append(m_messages.key(Messages.GUI_SITE_0));
@@ -360,10 +363,10 @@ public class CmsContentNotification extends A_CmsNotification {
 
     /**
      * Returns a string representation of this resource info.<p>
-     * 
-     * @param notificationCause the notification cause 
+     *
+     * @param notificationCause the notification cause
      * @param row the row number
-     * 
+     *
      * @return a string representation of this resource info
      */
     private String buildNotificationListItem(CmsExtendedNotificationCause notificationCause, int row) {
@@ -382,7 +385,8 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
             params.put(CmsDialog.PARAM_RESOURCE, new String[] {resourcePath});
             result.append("<a href=\"");
-            result.append(CmsRequestUtil.appendParameters(m_uriWorkplace + "commons/displayresource.jsp", params, false));
+            result.append(
+                CmsRequestUtil.appendParameters(m_uriWorkplace + "commons/displayresource.jsp", params, false));
             result.append("\">");
             result.append(resourcePath);
             result.append("</a>");

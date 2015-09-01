@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsSolrCollector(String arg0) {
@@ -61,7 +61,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -105,7 +105,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testByQuery() throws Throwable {
@@ -136,7 +136,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testByContext() throws Throwable {
@@ -153,7 +153,7 @@ public class TestCmsSolrCollector extends OpenCmsTestCase {
 
     /**
      * Tests the "allInFolderPriorityDesc" resource collector.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testByContextWithQuery() throws Throwable {

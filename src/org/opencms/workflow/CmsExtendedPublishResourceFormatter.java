@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ import com.google.common.collect.Sets;
 
 /**
  * Publish resource formatter for the extended workflow manager.<p>
- * 
+ *
  * This class handles warnings differently from the default implementation, since we don't need publish permissions for the release
  * workflow, but need to check whether resources are already in a workflow.<p>
  */
@@ -111,9 +111,9 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
     private boolean m_isRelease;
 
     /**
-     * Constructor.<p> 
-     * 
-     * @param cms the CMS context to use 
+     * Constructor.<p>
+     *
+     * @param cms the CMS context to use
      */
     public CmsExtendedPublishResourceFormatter(CmsObject cms) {
 
@@ -123,7 +123,7 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
 
     /**
      * Gets the logger for this class.<p>
-     * 
+     *
      * @return the logger for this class
      */
     public static Log getLog() {
@@ -133,7 +133,7 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
 
     /**
      * Sets the 'release' mode.<p>
-     * 
+     *
      * @param release true if the resources should be formatted for the 'release' workflow
      */
     public void setRelease(boolean release) {
@@ -143,11 +143,11 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
 
     /**
      * Gets a message from the message bundle.<p>
-     * 
-     * @param key the message key 
+     *
+     * @param key the message key
      * @param args the message parameters
-     *  
-     * @return the message from the message bundle 
+     *
+     * @return the message from the message bundle
      */
     protected String getMessage(String key, String... args) {
 
@@ -176,10 +176,10 @@ public class CmsExtendedPublishResourceFormatter extends CmsDefaultPublishResour
 
     /**
      * Checks whether the project with the given id is a workflow project.<p>
-     * 
-     * @param projectId the project id 
-     * 
-     * @return true if the project with the given id is a workflow project 
+     *
+     * @param projectId the project id
+     *
+     * @return true if the project with the given id is a workflow project
      */
     protected boolean isWorkflowProject(CmsUUID projectId) {
 

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,27 +27,17 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.test.OpenCmsTestCase;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 /**
  * Tests the text extraction form a Pdf file.<p>
  */
-public class TestMsPowerPointExtraction extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestMsPowerPointExtraction(String arg0) {
-
-        super(arg0);
-    }
+public class TestMsPowerPointExtraction extends OpenCmsTestCase {
 
     /**
      * Tests the PowerPoint text extraction for old OLE2 documents.<p>
@@ -63,7 +53,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         String path = res.getPath();
         System.out.println("Core POI came from " + path);
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.ppt");
 
@@ -113,7 +103,7 @@ public class TestMsPowerPointExtraction extends TestCase {
      */
     public void testPPtExtractionOOXML() throws Exception {
 
-        // open an input stream for the test file        
+        // open an input stream for the test file
         @SuppressWarnings("resource")
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pptx");
 
@@ -153,7 +143,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         assertEquals("Key1, Key2", items.get(I_CmsExtractionResult.ITEM_KEYWORDS));
         assertEquals("M. Manager", items.get(I_CmsExtractionResult.ITEM_MANAGER));
 
-        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information        
+        // either I am doing something wrong or Tika 0.9 does not support the "company" and "comment" meta information
         // assertEquals("Alkacon Software", items.get(I_CmsExtractionResult.ITEM_COMPANY));
         // assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
 

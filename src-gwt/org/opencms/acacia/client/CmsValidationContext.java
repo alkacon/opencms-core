@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,7 +52,7 @@ public class CmsValidationContext {
 
     /**
      * Adds an invalid entity id.<p>
-     * 
+     *
      * @param entityId the entity id
      */
     public void addInvalidEntity(String entityId) {
@@ -63,7 +63,7 @@ public class CmsValidationContext {
 
     /**
      * Adds a valid entity id.<p>
-     * 
+     *
      * @param entityId the entity id
      */
     public void addValidEntity(String entityId) {
@@ -74,7 +74,7 @@ public class CmsValidationContext {
 
     /**
      * Returns the invalid entity id's.<p>
-     * 
+     *
      * @return the invalid entity id's
      */
     public Set<String> getInvalidEntityIds() {
@@ -84,7 +84,7 @@ public class CmsValidationContext {
 
     /**
      * Returns the valid entity id's.<p>
-     * 
+     *
      * @return the valid entity id's
      */
     public Set<String> getValidEntityIds() {
@@ -94,7 +94,7 @@ public class CmsValidationContext {
 
     /**
      * Returns if there are any invalid entities.<p>
-     * 
+     *
      * @return <code>true</code>  if there are any invalid entities
      */
     public boolean hasValidationErrors() {
@@ -104,7 +104,7 @@ public class CmsValidationContext {
 
     /**
      * Removes the given entity id, use when validating the entity is no longer required.<p>
-     * 
+     *
      * @param entityId the entity id
      */
     public void removeEntityId(String entityId) {

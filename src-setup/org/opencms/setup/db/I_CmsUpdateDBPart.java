@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,14 +31,14 @@ import java.util.Map;
 
 /**
  * Represent a part of the database update process.<p>
- * 
- * @since 6.9.2 
+ *
+ * @since 6.9.2
  */
 public interface I_CmsUpdateDBPart {
 
     /**
      * Executes the update part.<p>
-     * 
+     *
      * @param dbPoolData the database pool data
      */
     void execute(Map<String, String> dbPoolData);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -44,8 +44,8 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * Defines default authorization methods.<p>
- * 
- * @since 6.5.4 
+ *
+ * @since 6.5.4
  */
 public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
 
@@ -91,7 +91,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         // basic authorization successful?
         if (cms != null) {
             try {
-                // register the session into OpenCms and       
+                // register the session into OpenCms and
                 // return successful logged in user
                 return registerSession(request, cms);
             } catch (CmsException e) {
@@ -126,7 +126,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
         // this will throw an exception if login fails
         cms.loginUser(userName, pwd);
-        // register the session into OpenCms and       
+        // register the session into OpenCms and
         // return successful logged in user
         return registerSession(request, cms);
     }
@@ -138,7 +138,7 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      * @param req the client request
      * @param res the response
      * @param loginFormURL the full URL used for form based authentication
-     * 
+     *
      * @throws IOException if something goes wrong
      */
     public void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL)
@@ -149,40 +149,42 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
         if (loginFormURL == null) {
             if (httpAuthenticationSettings.useBrowserBasedHttpAuthentication()) {
                 // HTTP basic authentication is used
-                res.setHeader(CmsRequestUtil.HEADER_WWW_AUTHENTICATE, "BASIC realm=\""
-                    + OpenCms.getSystemInfo().getOpenCmsContext()
-                    + "\"");
+                res.setHeader(
+                    CmsRequestUtil.HEADER_WWW_AUTHENTICATE,
+                    "BASIC realm=\"" + OpenCms.getSystemInfo().getOpenCmsContext() + "\"");
                 res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
 
             } else if (httpAuthenticationSettings.getFormBasedHttpAuthenticationUri() != null) {
                 loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
             } else {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1,
-                    httpAuthenticationSettings.getBrowserBasedAuthenticationMechanism()));
+                LOG.error(
+                    Messages.get().getBundle().key(
+                        Messages.ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1,
+                        httpAuthenticationSettings.getBrowserBasedAuthenticationMechanism()));
                 res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 return;
             }
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(
-                Messages.LOG_AUTHENTICATE_PROPERTY_2,
-                loginFormURL,
-                req.getRequestURI()));
+            LOG.debug(
+                Messages.get().getBundle().key(
+                    Messages.LOG_AUTHENTICATE_PROPERTY_2,
+                    loginFormURL,
+                    req.getRequestURI()));
         }
         // finally redirect to the login form
         res.sendRedirect(loginFormURL);
     }
 
     /**
-     * Checks if the current request contains HTTP basic authentication information in 
-     * the headers, if so the user is tried to log in with this data, and on success a 
+     * Checks if the current request contains HTTP basic authentication information in
+     * the headers, if so the user is tried to log in with this data, and on success a
      * session is generated.<p>
-     * 
+     *
      * @param req the current HTTP request
-     * 
+     *
      * @return the authenticated cms object, or <code>null</code> if failed
      */
     protected CmsObject checkBasicAuthorization(HttpServletRequest req) {

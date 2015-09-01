@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestModuleIssues(String arg0) {
@@ -64,7 +64,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -107,7 +107,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
 
     /**
      * Issue: Additional "system" folder created in current site after module import.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testAdditionalSystemFolder() throws Throwable {
@@ -144,7 +144,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
 
     /**
      * Issue: Module can not be deleted if there are locked resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testModuleDeletion() throws Throwable {
@@ -171,6 +171,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             moduleName,
             "test",
             "test",
+            null,
             null,
             "test",
             new CmsModuleVersion("0.0.1"),
@@ -200,7 +201,9 @@ public class TestModuleIssues extends OpenCmsTestCase {
             // ok, ignore
         }
         // the report error, and the module files, and the module itself
-        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+        if (!report.hasError()
+            || !cms.existsResource(fileOneName)
+            || !OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("it should not be possible to delete a module containing a file locked by other user");
         }
 
@@ -219,7 +222,9 @@ public class TestModuleIssues extends OpenCmsTestCase {
             // ok, ignore
         }
         // the report error, and the module files, and the module itself
-        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+        if (!report.hasError()
+            || !cms.existsResource(fileOneName)
+            || !OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("it should not be possible to delete a module when a super folder is locked by other user");
         }
 
@@ -237,7 +242,9 @@ public class TestModuleIssues extends OpenCmsTestCase {
             // ok, ignore
         }
         // the report error, and the module files, and the module itself
-        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+        if (!report.hasError()
+            || !cms.existsResource(fileOneName)
+            || !OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("it should not be possible to delete a module when a super folder is locked by the same user");
         }
 
@@ -258,7 +265,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
 
     /**
      * Issue: Shutdown method never called on module.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testShutdownMethod() throws Exception {

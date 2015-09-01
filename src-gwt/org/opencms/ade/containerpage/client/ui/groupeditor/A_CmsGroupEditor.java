@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -76,7 +76,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Abstract group editor.<p>
- * 
+ *
  * @since 8.5.0
  */
 public abstract class A_CmsGroupEditor extends Composite {
@@ -148,7 +148,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param groupContainer the group-container
      * @param controller the container-page controller
      * @param handler the container-page handler
@@ -174,7 +174,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         m_parentContainer = (CmsContainerPageContainer)m_groupContainer.getParentTarget();
-        m_groupContainerPosition = CmsPositionBean.getInnerDimensions(m_groupContainer.getElement());
+        m_groupContainerPosition = CmsPositionBean.getBoundingClientRect(m_groupContainer.getElement());
         m_editingPlaceholder = createPlaceholder(m_groupContainer.getElement());
         m_groupContainer.setEditingPlaceholder(m_editingPlaceholder);
         m_groupContainer.setEditingMarker(m_containerMarker);
@@ -221,7 +221,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the group container widget.<p>
-     * 
+     *
      * @return the group container widget
      */
     public CmsGroupContainerElementPanel getGroupContainerWidget() {
@@ -248,6 +248,11 @@ public abstract class A_CmsGroupEditor extends Composite {
     }
 
     /**
+     * Reinitializes the option bar buttons on the contained elements.<p>
+     */
+    public abstract void reinitializeButtons();
+
+    /**
      * Shows the editor pop-up.<p>
      */
     public void showPopup() {
@@ -257,7 +262,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Updates the backup elements.<p>
-     * 
+     *
      * @param updateElements the updated element data
      */
     public void updateBackupElements(Map<String, CmsContainerElementData> updateElements) {
@@ -266,8 +271,8 @@ public abstract class A_CmsGroupEditor extends Composite {
         String containerId = m_groupContainer.getContainerId();
         for (CmsContainerPageElementPanel element : m_backUpElements) {
             if (updateElements.containsKey(element.getId())
-                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(updateElements.get(element.getId()).getContents().get(
-                    containerId))) {
+                && CmsStringUtil.isNotEmptyOrWhitespaceOnly(
+                    updateElements.get(element.getId()).getContents().get(containerId))) {
                 CmsContainerElementData elementData = updateElements.get(element.getId());
                 try {
                     CmsContainerPageElementPanel replacer = m_controller.getContainerpageUtil().createElement(
@@ -292,7 +297,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Adds a button to the dialog.<p>
-     * 
+     *
      * @param button the button to add
      */
     protected void addButton(Widget button) {
@@ -330,7 +335,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Adds an input field with the given label to the dialog.<p>
-     * 
+     *
      * @param label the label
      * @param inputWidget the input widget
      */
@@ -384,7 +389,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Closes the dialog.<p>
-     * 
+     *
      * @param breakingUp <code>true</code> if the group container is to be removed
      */
     protected void closeDialog(boolean breakingUp) {
@@ -409,7 +414,7 @@ public abstract class A_CmsGroupEditor extends Composite {
             }
         }
         clearInstance();
-        this.removeFromParent();
+        removeFromParent();
         if (!m_controller.getData().isUseClassicEditor()) {
             for (Widget element : m_groupContainer) {
                 if (element instanceof CmsContainerPageElementPanel) {
@@ -417,14 +422,16 @@ public abstract class A_CmsGroupEditor extends Composite {
                 }
             }
         }
+        m_controller.reinitializeButtons();
+        m_controller.reInitInlineEditing();
         m_controller.fireEvent(new CmsContainerpageEvent(EventType.elementEdited));
     }
 
     /**
      * Creates a place-holder for the group-container.<p>
-     * 
+     *
      * @param element the element
-     * 
+     *
      * @return the place-holder widget
      */
     protected Element createPlaceholder(Element element) {
@@ -437,7 +444,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the list of back up elements.<p>
-     * 
+     *
      * @return the back up elements
      */
     protected List<CmsContainerPageElementPanel> getBackUpElements() {
@@ -447,7 +454,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the container page controller.<p>
-     * 
+     *
      * @return the container page controller
      */
     protected CmsContainerpageController getController() {
@@ -457,7 +464,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the ids of the contained elements and group-container itself.<p>
-     * 
+     *
      * @return the element ids
      */
     protected Set<String> getElementIds() {
@@ -476,7 +483,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the element data of the contained elements.<p>
-     * 
+     *
      * @return the contained elements data
      */
     protected List<CmsContainerElement> getElements() {
@@ -490,7 +497,7 @@ public abstract class A_CmsGroupEditor extends Composite {
                 CmsContainerElement element = new CmsContainerElement();
                 element.setClientId(elementWidget.getId());
                 element.setResourceType(elementWidget.getNewType());
-                element.setNew(elementWidget.isNew());
+                element.setCreateNew(elementWidget.isCreateNew());
                 element.setSitePath(elementWidget.getSitePath());
                 element.setNewEditorDisabled(elementWidget.isNewEditorDisabled());
                 subItems.add(element);
@@ -501,7 +508,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the group container widget index position.<p>
-     * 
+     *
      * @return the index position
      */
     protected int getIndexPosition() {
@@ -511,7 +518,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Returns the parent container widget.<p>
-     * 
+     *
      * @return the parent container widget
      */
     protected CmsContainerPageContainer getParentContainer() {
@@ -521,8 +528,8 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Opens the group container edit dialog.<p>
-     * 
-     * @param dialogTitle the dialog title 
+     *
+     * @param dialogTitle the dialog title
      */
     protected void openDialog(String dialogTitle) {
 
@@ -548,11 +555,13 @@ public abstract class A_CmsGroupEditor extends Composite {
                     m_groupContainerPosition.getLeft() - requiredWidth,
                     m_groupContainerPosition.getTop() - 1);
             } else if ((m_groupContainerPosition.getTop() - Window.getScrollTop()) > (contentHeight
-                + DIALOG_BASE_HEIGHT + 50)) {
+                + DIALOG_BASE_HEIGHT
+                + 50)) {
                 // else place above if there is enough space
 
-                m_editorDialog.setPopupPosition(left, m_groupContainerPosition.getTop()
-                    - (contentHeight + DIALOG_BASE_HEIGHT));
+                m_editorDialog.setPopupPosition(
+                    left,
+                    m_groupContainerPosition.getTop() - (contentHeight + DIALOG_BASE_HEIGHT));
             } else if (righthandSpace > requiredWidth) {
                 // else on the right if there is enough space
                 m_editorDialog.setPopupPosition(
@@ -598,7 +607,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
     /**
      * Enables or disables the save button.<p>
-     * 
+     *
      * @param enabled <code>true</code> to enable the save button
      * @param disabledMessage the message to display when the button is disabled
      */

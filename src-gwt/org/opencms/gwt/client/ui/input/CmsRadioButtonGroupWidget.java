@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,13 +51,13 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Widget class consisting of a group of radio buttons, of which at most one may be active.<p>
- * 
+ *
  * This is mostly a 'convenience widget' for creating and handling multiple radio buttons as a single widget.
- * The radio buttons will be layed out vertically. If you need more control about the layout of the radio 
+ * The radio buttons will be layed out vertically. If you need more control about the layout of the radio
  * buttons, use multiple {@link CmsRadioButton} instances and link them with a {@link CmsRadioButtonGroup}.<p>
- * 
+ *
  * @since 8.0.0
- * 
+ *
  */
 public class CmsRadioButtonGroupWidget extends Composite
 implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
@@ -82,10 +82,10 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
     /**
      * Creates a new instance from a list of key/value pairs.<p>
-     * 
+     *
      * The first component of each pair is the value of the radio buttons, the second component is used as the label.
-     * 
-     * @param items a list of pairs of strings 
+     *
+     * @param items a list of pairs of strings
      */
     public CmsRadioButtonGroupWidget(List<CmsPair<String, String>> items) {
 
@@ -94,11 +94,11 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
     /**
      * Creates a new instance from a map of strings.<p>
-     * 
-     * The keys of the map are used as the values of the radio buttons, and the values of the map are used as labels 
+     *
+     * The keys of the map are used as the values of the radio buttons, and the values of the map are used as labels
      * for the radio buttons.
-     *  
-     * @param items the string map containing the select options 
+     *
+     * @param items the string map containing the select options
      */
     public CmsRadioButtonGroupWidget(Map<String, String> items) {
 
@@ -205,7 +205,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
-        // nothing to do 
+        // nothing to do
 
     }
 
@@ -229,8 +229,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
     /**
      * Sets the value of the widget.<p>
-     * 
-     * @param value the new value 
+     *
+     * @param value the new value
      */
     public void setFormValue(Object value) {
 
@@ -260,8 +260,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
     /**
      * Internal method for initializing the widget with a list of select options.<p>
-     * 
-     * @param items the list of select options 
+     *
+     * @param items the list of select options
      */
     protected void init(Map<String, String> items) {
 
@@ -285,7 +285,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, I_CmsHasInit {
 
     /**
      * Fires a ValueChangedEvent on this widget.<p>
-     *  
+     *
      * @param newValue the new value of this widget
      */
     void fireValueChangedEvent(String newValue) {

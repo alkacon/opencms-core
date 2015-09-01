@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,10 +50,10 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * User dependencies list view including delete and transfer functionality. <p>
- * 
+ *
  * Displays the dependencies of a user or a list of user.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
 
@@ -80,7 +80,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsUserDependenciesList(CmsJspActionElement jsp) {
@@ -91,7 +91,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -104,7 +104,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -117,6 +117,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         switch (getAction()) {
@@ -153,6 +154,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
      */
+    @Override
     public String defaultActionHtmlContent() {
 
         if (getList().getTotalSize() > 0) {
@@ -174,6 +176,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(512);
@@ -208,6 +211,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
@@ -239,6 +243,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-op
@@ -247,6 +252,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -260,6 +266,7 @@ public class CmsUserDependenciesList extends CmsUserPrincipalDependenciesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

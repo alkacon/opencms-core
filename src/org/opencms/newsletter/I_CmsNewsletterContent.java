@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -29,9 +29,9 @@ package org.opencms.newsletter;
 
 /**
  * Every {@link I_CmsNewsletter} contains a list of I_CmsNewsletterContent objects. <p>
- * 
+ *
  * These objects have an order, by which the newsletter content is sorted, the type either
- * {@link org.opencms.newsletter.CmsNewsletterContentType#TYPE_HTML} or 
+ * {@link org.opencms.newsletter.CmsNewsletterContentType#TYPE_HTML} or
  * {@link org.opencms.newsletter.CmsNewsletterContentType#TYPE_TEXT}.
  */
 public interface I_CmsNewsletterContent extends Comparable<I_CmsNewsletterContent> {

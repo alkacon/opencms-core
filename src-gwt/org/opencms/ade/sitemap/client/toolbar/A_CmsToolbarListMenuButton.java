@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A menu button with list tabs.<p>
- * 
+ *
  * @since 8.0.0
  */
 public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implements I_CmsToolbarActivatable {
@@ -65,14 +65,14 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
     private CmsSitemapController m_controller;
 
     /** The tab panel. */
-    private CmsTabbedPanel<CmsListTab> m_tabs;
+    protected CmsTabbedPanel<CmsListTab> m_tabs;
 
     /** The toolbar instance. */
     private CmsSitemapToolbar m_toolbar;
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param title the button title
      * @param iconClass the icon CSS class
      * @param toolbar the toolbar instance
@@ -129,8 +129,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
                     getToolbar().onButtonActivation(A_CmsToolbarListMenuButton.this);
                     if (!m_initialized) {
                         // lazy initialization
-                        initContent();
-                        m_initialized = true;
+                        m_initialized = initContent();
                     }
 
                     openMenu();
@@ -144,7 +143,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
     /**
      * Adds a new tab to the tab-panel.<p>
-     * 
+     *
      * @param tab the tab
      * @param title the tab title
      */
@@ -155,9 +154,9 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
     /**
      * Creates a new tab.<p>
-     * 
+     *
      * @param list list of items
-     * 
+     *
      * @return the created tab widget
      */
     public CmsListTab createTab(CmsList<? extends I_CmsListItem> list) {
@@ -211,6 +210,8 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
 
     /**
      * Initializes the menu tabs.<p>
+     *
+     * @return true if the content does not need to be initialized the next time the menu is opened
      */
-    protected abstract void initContent();
+    protected abstract boolean initContent();
 }

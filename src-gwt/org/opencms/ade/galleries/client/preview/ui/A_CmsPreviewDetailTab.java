@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Basic preview detail tab layout.<p>
- * 
+ *
  * @since 8.0.
  */
 public abstract class A_CmsPreviewDetailTab extends Composite {
@@ -69,7 +69,7 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param dialogMode the gallery mode
      * @param height the tab height
      * @param width the tab width
@@ -86,7 +86,7 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
 
     /**
      * Returns if the given tab has changes that need saving.<p>
-     * 
+     *
      * @return <code>true</code> if the given tab has changes that need saving
      */
     public boolean isChanged() {
@@ -96,7 +96,7 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
 
     /**
      * Returns the gallery mode.<p>
-     * 
+     *
      * @return the gallery mode
      */
     protected GalleryMode getDialogMode() {
@@ -106,14 +106,14 @@ public abstract class A_CmsPreviewDetailTab extends Composite {
 
     /**
      * Returns the preview handler.<p>
-     * 
+     *
      * @return the preview handler
      */
     protected abstract I_CmsPreviewHandler<?> getHandler();
 
     /**
      * Sets the changed state of the tab.<p>
-     * 
+     *
      * @param changed the changed state
      */
     protected void setChanged(boolean changed) {

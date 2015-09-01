@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -70,7 +70,7 @@ public class CmsVfsBundleLoaderXml implements CmsVfsResourceBundle.I_Loader {
                 String path = messageValue.getPath();
                 I_CmsXmlContentValue keyValue = content.getValue(CmsXmlUtils.concatXpath(path, N_KEY), locale);
                 String keyStr = keyValue.getStringValue(cms);
-                // Ignore leading/trailing spaces in the key to protect from user error  
+                // Ignore leading/trailing spaces in the key to protect from user error
                 keyStr = keyStr.trim();
                 I_CmsXmlContentValue valueValue = content.getValue(CmsXmlUtils.concatXpath(path, N_VALUE), locale);
                 String valueStr = valueValue.getStringValue(cms);

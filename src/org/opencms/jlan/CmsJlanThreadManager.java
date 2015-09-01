@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,15 +36,15 @@ import org.apache.commons.logging.Log;
 
 import org.alfresco.jlan.app.JLANServer;
 
-/** 
+/**
  * A simple class used to start and stop JLAN.<p>
- * 
+ *
  * Since the JLAN server requires its own thread and cannot be run in the same thread as the startup,
  * this creates a new thread solely for starting JLAN.<p>
  */
 public class CmsJlanThreadManager {
 
-    /** 
+    /**
      * The thread for starting the JLAN server.<p>
      */
     protected class JlanThread extends Thread {
@@ -54,8 +54,8 @@ public class CmsJlanThreadManager {
 
         /**
          * Constructor.<p>
-         * 
-         * @param configPath the path of the JLAN config file  
+         *
+         * @param configPath the path of the JLAN config file
          */
         public JlanThread(String configPath) {
 

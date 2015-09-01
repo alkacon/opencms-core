@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,8 +34,8 @@ import org.opencms.util.CmsStringUtil;
 
 /**
  * Opens the selected resource in a new window.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
 
@@ -44,7 +44,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
 
     /**
      * Default Constructor.<p>
-     * 
+     *
      * @param id the unique id
      * @param resColumnPathId the id of the column with the resource root path
      */
@@ -95,7 +95,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
 
     /**
      * Returns the most possible right resource name.<p>
-     * 
+     *
      * @return the most possible right resource name
      */
     protected String getResourceName() {

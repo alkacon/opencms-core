@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,9 +50,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog for selecting the content checks.<p> 
- * 
- * @since 6.1.2 
+ * Dialog for selecting the content checks.<p>
+ *
+ * @since 6.1.2
  */
 public class CmsContentCheckDialog extends CmsWidgetDialog {
 
@@ -73,7 +73,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsContentCheckDialog(CmsJspActionElement jsp) {
@@ -84,7 +84,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -97,6 +97,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -150,11 +151,12 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -187,6 +189,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initContentCheck();
@@ -195,12 +198,13 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
         List plugins = m_contentCheck.getPlugins();
         for (int i = 0; i < plugins.size(); i++) {
             I_CmsContentCheck plugin = (I_CmsContentCheck)plugins.get(i);
-            addWidget(new CmsWidgetDialogParameter(
-                plugin,
-                I_CmsContentCheck.PARAMETER,
-                plugin.getDialogParameterName(),
-                PAGES[0],
-                new CmsCheckboxWidget()));
+            addWidget(
+                new CmsWidgetDialogParameter(
+                    plugin,
+                    I_CmsContentCheck.PARAMETER,
+                    plugin.getDialogParameterName(),
+                    PAGES[0],
+                    new CmsCheckboxWidget()));
         }
 
     }
@@ -208,6 +212,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return new String[] {"page1"};
@@ -240,6 +245,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -268,6 +274,7 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

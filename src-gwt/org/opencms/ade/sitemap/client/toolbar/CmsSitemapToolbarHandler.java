@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,6 +32,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.I_CmsDisableable;
 import org.opencms.gwt.client.ui.A_CmsToolbarHandler;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
@@ -60,14 +61,24 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     /** The context menu entries. */
     private List<I_CmsContextMenuEntry> m_contextMenuEntries;
 
+    /** The content editor handler. */
+    private I_CmsContentEditorHandler m_editorHandler;
+
     /**
      * Constructor.<p>
-     * 
+     *
      * @param menuBeans the context menu entry beans
      */
     public CmsSitemapToolbarHandler(List<CmsContextMenuEntryBean> menuBeans) {
 
         m_contextMenuEntries = transformEntries(menuBeans, null);
+        m_editorHandler = new I_CmsContentEditorHandler() {
+
+            public void onClose(String sitePath, CmsUUID structureId, boolean isNew) {
+
+                CmsSitemapView.getInstance().getController().updateEntry(sitePath);
+            }
+        };
     }
 
     /**
@@ -75,7 +86,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
      */
     public void activateSelection() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -130,6 +141,14 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
+     */
+    public I_CmsContentEditorHandler getEditorHandler() {
+
+        return m_editorHandler;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
      */
     public void leavePage(String targetUri) {
@@ -155,7 +174,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
 
     /**
      * Sets the currently active tool-bar button.<p>
-     * 
+     *
      * @param button the button
      */
     public void setActiveButton(I_CmsToolbarButton button) {

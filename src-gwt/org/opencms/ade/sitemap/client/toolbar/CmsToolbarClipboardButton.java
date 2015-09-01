@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * Sitemap toolbar clipboard button.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
@@ -55,9 +55,9 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param toolbar the toolbar instance
-     * @param controller the sitemap controller 
+     * @param controller the sitemap controller
      */
     public CmsToolbarClipboardButton(final CmsSitemapToolbar toolbar, final CmsSitemapController controller) {
 
@@ -70,7 +70,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Enables/disables the clear deleted list button.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable
      */
     public void enableClearDeleted(boolean enable) {
@@ -83,7 +83,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
 
     /**
      * Enables/disables the clear modified list button.<p>
-     * 
+     *
      * @param enable <code>true</code> to enable
      */
     public void enableClearModified(boolean enable) {
@@ -98,7 +98,7 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
      * @see org.opencms.ade.sitemap.client.toolbar.A_CmsToolbarListMenuButton#initContent()
      */
     @Override
-    protected void initContent() {
+    protected boolean initContent() {
 
         CmsToolbarClipboardView view = new CmsToolbarClipboardView(this, getController());
         m_modifiedTab = createTab(view.getModified());
@@ -128,5 +128,6 @@ public class CmsToolbarClipboardButton extends A_CmsToolbarListMenuButton {
         });
         m_deletedTab.setClearButtonEnabled(m_clearDeleted);
         addTab(m_deletedTab, Messages.get().key(Messages.GUI_CLIPBOARD_DELETED_TITLE_0));
+        return true;
     }
 }

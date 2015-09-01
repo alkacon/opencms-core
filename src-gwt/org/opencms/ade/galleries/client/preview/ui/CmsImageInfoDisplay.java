@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The widget to display the information of the selected image.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsImageInfoDisplay extends Composite {
@@ -129,7 +129,7 @@ public class CmsImageInfoDisplay extends Composite {
 
     /**
      * Fills the contend data.<p>
-     * 
+     *
      * @param infoBean the image info bean
      */
     public void fillContent(CmsImageInfoBean infoBean) {

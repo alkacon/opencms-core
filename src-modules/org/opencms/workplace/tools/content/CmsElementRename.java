@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,8 +73,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for the change page element name dialog.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsElementRename extends CmsReport {
 
@@ -131,7 +131,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsElementRename(CmsJspActionElement jsp) {
@@ -141,13 +141,13 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Public constructor for testcase using.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      * @param cms the cms object
      * @param resource the resource path
-     * @param recursive if true then do read recursive from the folder 
+     * @param recursive if true then do read recursive from the folder
      * @param template the template
-     * @param locale the locale 
+     * @param locale the locale
      * @param oldElement the old element name
      * @param newElement the new element name
      * @param removeEmptyElements if true then remove all invalid elements with no content
@@ -179,7 +179,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -191,7 +191,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Renames the element name on the specified resources.<p>
-     * 
+     *
      * @param report the cms report
      */
     public void actionRename(I_CmsReport report) {
@@ -212,7 +212,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Performs the move report, will be called by the JSP page.<p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
@@ -241,9 +241,9 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Builds the html for the available locales select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
-     *      
+     *
      * @return the html for the available locales select box
      */
     public String buildSelectLocales(String attributes) {
@@ -256,7 +256,7 @@ public class CmsElementRename extends CmsReport {
             // no locales found, return empty String
             return "";
         } else {
-            // locales found, create option and value lists   
+            // locales found, create option and value lists
             CmsMessages messages = Messages.get().getBundle(getLocale());
             options.add(messages.key(Messages.GUI_PLEASE_SELECT_0));
             values.add("");
@@ -285,7 +285,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Builds the html for the template select box.<p>
-     * 
+     *
      * @param attributes optional attributes for the &lt;select&gt; tag
      * @return the html for the template select box
      */
@@ -337,6 +337,7 @@ public class CmsElementRename extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#getCms()
      */
+    @Override
     public CmsObject getCms() {
 
         if (m_cms == null) {
@@ -512,12 +513,12 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Does validate the request parameters and returns a buffer with error messages.<p>
-     * 
+     *
      * If there were no error messages, the buffer is empty.<p>
      */
     public void validateParameters() {
 
-        // localisation  
+        // localisation
         CmsMessages messages = Messages.get().getBundle(getLocale());
 
         StringBuffer validationErrors = new StringBuffer();
@@ -550,14 +551,15 @@ public class CmsElementRename extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
+        // set the action for the JSP switch
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
         } else if (DIALOG_OK.equals(getParamAction())) {
@@ -572,15 +574,15 @@ public class CmsElementRename extends CmsReport {
             setAction(ACTION_REPORT_END);
         } else {
             setAction(ACTION_DEFAULT);
-            // add the title for the dialog 
+            // add the title for the dialog
             setParamTitle(key("title.renameelement"));
         }
     }
 
     /**
      * Returns a retained list of xml pages that belongs to the specified template.<p>
-     * 
-     * @param xmlPages a list of all xml pages 
+     *
+     * @param xmlPages a list of all xml pages
      * @return a retained list of xml pages that belongs to the specified template
      */
     private List getRetainedPagesWithTemplate(List xmlPages) {
@@ -595,7 +597,7 @@ public class CmsElementRename extends CmsReport {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
-        // check if the users selected template is valid. 
+        // check if the users selected template is valid.
         if ((templates != null) && templates.containsValue(getParamTemplate())) {
             // iterate the xmlPages list and add all resources with the specified template to the resourcesWithTemplate list
             Iterator i = xmlPages.iterator();
@@ -619,7 +621,7 @@ public class CmsElementRename extends CmsReport {
                     resourcesWithTemplate.add(currentPage);
                 }
             }
-            // retain the list of pages against the list with template 
+            // retain the list of pages against the list with template
             xmlPages.retainAll(resourcesWithTemplate);
         }
 
@@ -628,9 +630,9 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Returns a set of elements stored in the given template property.<p>
-     * 
+     *
      * The elements are stored in the property I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS.<p>
-     * 
+     *
      * @param currentTemplate the path of the template to look in
      * @return a set of elements stored in the given template path
      */
@@ -682,16 +684,17 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Returns a list of xml pages from the specified folder.<p>
-     * 
+     *
      * @return a list of xml pages from the specified folder
      */
     private List getXmlPages() {
 
         boolean isRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
-        // filter definition to read only the required resources 
+        // filter definition to read only the required resources
         int xmlPageId;
         try {
-            xmlPageId = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
+            xmlPageId = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeXmlPage.getStaticTypeName()).getTypeId();
         } catch (CmsLoaderException e1) {
             xmlPageId = CmsResourceTypeXmlPage.getStaticTypeId();
         }
@@ -712,7 +715,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Checks if the specified element/locale of the given page has a content.<p>
-     * 
+     *
      * @param page the xml page
      * @param element the element name
      * @param locale the locale
@@ -728,12 +731,12 @@ public class CmsElementRename extends CmsReport {
         return true;
     }
 
-    /** 
+    /**
      * Checks if the selected new element is valid for the selected template.<p>
-     * 
+     *
      * @param page the xml page
      * @param element the element name
-     * 
+     *
      * @return true if ALL_TEMPLATES selected or the element is valid for the selected template; otherwise false
      */
     private boolean isValidElement(CmsXmlPage page, String element) {
@@ -752,11 +755,11 @@ public class CmsElementRename extends CmsReport {
         return isValidTemplateElement(template, element);
     }
 
-    /** 
+    /**
      * Checks if the selected new element is valid for the selected template.<p>
-     * 
+     *
      * @param element the element name
-     * 
+     *
      * @return true if ALL_TEMPLATES selected or the element is valid for the selected template; otherwise false
      */
     private boolean isValidElement(String element) {
@@ -771,7 +774,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Check if the given template includes the specified element.<p>
-     *  
+     *
      * @param template the template
      * @param element the element name
      * @return true if the template includes the given element
@@ -792,7 +795,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Performs the main element rename operation on the filtered resources.<p>
-     * 
+     *
      * @param xmlPages the list of xml pages
      * @param locale the locale specifying the xmlpage node to perform the operation on
      */
@@ -822,15 +825,19 @@ public class CmsElementRename extends CmsReport {
                     CmsResource res = (CmsResource)i.next();
                     CmsFile file;
 
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SUCCESSION_2,
-                        String.valueOf(m),
-                        String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_SUCCESSION_2,
+                            String.valueOf(m),
+                            String.valueOf(n)),
+                        I_CmsReport.FORMAT_NOTE);
                     m_report.print(Messages.get().container(Messages.RPT_PROCESSING_PAGE_0), I_CmsReport.FORMAT_NOTE);
-                    m_report.print(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        getCms().getSitePath(res)));
-                    m_report.println(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    m_report.print(
+                        org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            getCms().getSitePath(res)));
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                     try {
                         file = getCms().readFile(getCms().getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -859,7 +866,7 @@ public class CmsElementRename extends CmsReport {
 
                     // check if the target element already exists in the page
                     if (page.hasValue(getParamNewElement(), locale)) {
-                        // the page contains already the new element with speicific content. 
+                        // the page contains already the new element with speicific content.
                         // renaming the old will invalid the xml page
                         m_report.println(
                             Messages.get().container(Messages.RPT_NEW_ELEM_EXISTS_0),
@@ -870,9 +877,9 @@ public class CmsElementRename extends CmsReport {
                     if (validateNewElement) {
                         // check if the target element is valid for the template
                         if (!isValidElement(page, getParamNewElement())) {
-                            m_report.println(Messages.get().container(
-                                Messages.RPT_INVALID_ARGUMENT_1,
-                                getParamNewElement()), I_CmsReport.FORMAT_NOTE);
+                            m_report.println(
+                                Messages.get().container(Messages.RPT_INVALID_ARGUMENT_1, getParamNewElement()),
+                                I_CmsReport.FORMAT_NOTE);
                             continue;
                         }
                     }
@@ -904,7 +911,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Analyzes xml page and removes any element if this is not valid for the specified template and has no content.<p>
-     * 
+     *
      * @param page a xml page
      * @param locale the locale
      */
@@ -924,7 +931,7 @@ public class CmsElementRename extends CmsReport {
             Iterator i = pageElements.iterator();
             while (i.hasNext()) {
                 String currElement = (String)i.next();
-                // remove current element only is invalid and has no content 
+                // remove current element only is invalid and has no content
                 if (!isValidElement(currElement) && isEmptyElement(page, currElement, locale)) {
                     page.removeValue(currElement, locale);
                     try {
@@ -942,7 +949,7 @@ public class CmsElementRename extends CmsReport {
 
     /**
      * Writes the given xml page by reporting the result.<p>
-     * 
+     *
      * @param page the xml page
      * @param report if true then some output will be written to the report
      * @throws CmsException if operation failed
@@ -952,7 +959,7 @@ public class CmsElementRename extends CmsReport {
         CmsFile file = page.getFile();
         byte[] content = page.marshal();
         file.setContents(content);
-        // check lock            
+        // check lock
         CmsLock lock = getCms().getLock(file);
         if (lock.isNullLock() || lock.isOwnedBy(getCms().getRequestContext().getCurrentUser())) {
             // lock the page
@@ -962,10 +969,9 @@ public class CmsElementRename extends CmsReport {
             // unlock the page
             getCms().unlockResource(getCms().getSitePath(file));
             if (report) {
-                m_report.println(Messages.get().container(
-                    Messages.RPT_ELEM_RENAME_2,
-                    getParamOldElement(),
-                    getParamNewElement()), I_CmsReport.FORMAT_OK);
+                m_report.println(
+                    Messages.get().container(Messages.RPT_ELEM_RENAME_2, getParamOldElement(), getParamNewElement()),
+                    I_CmsReport.FORMAT_OK);
             }
         }
     }

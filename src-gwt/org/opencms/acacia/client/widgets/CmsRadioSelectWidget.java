@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * Provides a widget for a standard HTML form for a group of radio buttons.<p>
- * 
+ *
  * Regarding widget configuration, see <code>{@link org.opencms.acacia.client.widgets.CmsSelectConfigurationParser}</code>.<p>
  * */
 public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
@@ -136,7 +136,7 @@ public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Represents a value change event.<p>
-     * 
+     *
      */
     public void fireChangeEvent() {
 
@@ -261,7 +261,7 @@ public class CmsRadioSelectWidget extends Composite implements I_CmsEditWidget {
 
     /**
      * Helper class for parsing the configuration in to a list of Radiobuttons. <p>
-     * 
+     *
      * @param config the configuration string.
      * @return List of CmsRadioButtons
      * */

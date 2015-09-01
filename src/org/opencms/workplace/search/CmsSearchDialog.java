@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -64,9 +64,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a GUI for the workplace search feature.<p> 
- * 
- * @since 6.2.0 
+ * Provides a GUI for the workplace search feature.<p>
+ *
+ * @since 6.2.0
  */
 public class CmsSearchDialog extends CmsWidgetDialog {
 
@@ -87,7 +87,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSearchDialog(CmsJspActionElement jsp) {
@@ -97,7 +97,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -123,7 +123,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
                 getSettings().setExplorerPage(1);
                 params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, new String[] {Boolean.TRUE.toString()});
             } else {
-                CmsListMetadata metadata = A_CmsListDialog.getMetadata(CmsSearchResultsList.class.getName());
+                CmsSearchResultsList resultsList = new CmsSearchResultsList(getJsp());
+                CmsListMetadata metadata = resultsList.getMetadata(CmsSearchResultsList.class.getName());
                 boolean withExcerpts = (getSettings().getUserSettings().getWorkplaceSearchViewStyle() == CmsSearchResultStyle.STYLE_LIST_WITH_EXCERPTS);
                 if (metadata == null) {
                     if (!withExcerpts) {
@@ -147,8 +148,8 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the list of searchable fields used in the workplace search index.<p> 
-     * 
+     * Returns the list of searchable fields used in the workplace search index.<p>
+     *
      * @return the list of searchable fields used in the workplace search index
      */
     public List<CmsLuceneField> getFields() {
@@ -168,9 +169,9 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -219,18 +220,21 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initParams();
-        addWidget(new CmsWidgetDialogParameter(m_search, "indexName", PAGES[0], new CmsSelectOnChangeReloadWidget(
-            getSortNamesIndex())));
+        addWidget(new CmsWidgetDialogParameter(
+            m_search,
+            "indexName",
+            PAGES[0],
+            new CmsSelectOnChangeReloadWidget(getSortNamesIndex())));
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
+        addWidget(
+            new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
         addWidget(new CmsWidgetDialogParameter(m_search, "restrictSearch", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "minDateCreated", PAGES[0], new CmsCalendarWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "maxDateCreated", PAGES[0], new CmsCalendarWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "minDateLastModified", PAGES[0], new CmsCalendarWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "maxDateLastModified", PAGES[0], new CmsCalendarWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_search, "fields", PAGES[0], new CmsMultiSelectWidget(
-            getFieldList(),
-            true)));
+        addWidget(
+            new CmsWidgetDialogParameter(m_search, "fields", PAGES[0], new CmsMultiSelectWidget(getFieldList(), true)));
     }
 
     /**
@@ -269,7 +273,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Returns a list of <code>{@link CmsSelectWidgetOption}</code> objects for field list selection.<p>
-     * 
+     *
      * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects
      */
     private List<CmsSelectWidgetOption> getFieldList() {
@@ -281,12 +285,17 @@ public class CmsSearchDialog extends CmsWidgetDialog {
                 CmsLuceneField field = i.next();
                 if (isInitialCall()) {
                     // search form is in the initial state
-                    retVal.add(new CmsSelectWidgetOption(field.getName(), true, getMacroResolver().resolveMacros(
-                        field.getDisplayName())));
+                    retVal.add(new CmsSelectWidgetOption(
+                        field.getName(),
+                        true,
+                        getMacroResolver().resolveMacros(field.getDisplayName())));
                 } else {
                     // search form is not in the initial state
-                    retVal.add(new CmsSelectWidgetOption(field.getName(), false, getMacroResolver().resolveMacros(
-                        field.getDisplayName())));
+                    retVal.add(
+                        new CmsSelectWidgetOption(
+                            field.getName(),
+                            false,
+                            getMacroResolver().resolveMacros(field.getDisplayName())));
                 }
             }
         } catch (Exception e) {
@@ -296,7 +305,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     }
 
     /** Gets the index to use in the search.
-     * 
+     *
      * @return  the index to use in the search
      */
     private CmsSearchIndex getIndex() {
@@ -308,7 +317,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             // get the configured index
             index = OpenCms.getSearchManager().getIndex(getSettings().getUserSettings().getWorkplaceSearchIndexName());
         } else {
-            // the search form is not in the inital state, the submit button was used already or the 
+            // the search form is not in the inital state, the submit button was used already or the
             // search index was changed already
             // get the selected index in the search dialog
             index = OpenCms.getSearchManager().getIndex(getJsp().getRequest().getParameter("indexName.0"));
@@ -318,7 +327,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Creates the select widget configuration for the sort names.<p>
-     * 
+     *
      * @return the select widget configuration for the sort names
      */
     private List<CmsSelectWidgetOption> getSortNamesConf() {
@@ -327,8 +336,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         try {
             String[] names = CmsSearchParameters.SORT_NAMES;
             for (int i = 0; i < names.length; i++) {
-                retVal.add(new CmsSelectWidgetOption(names[i], (i == 0), key(A_CmsWidget.LABEL_PREFIX
-                    + names[i].toLowerCase())));
+                retVal.add(
+                    new CmsSelectWidgetOption(
+                        names[i],
+                        (i == 0),
+                        key(A_CmsWidget.LABEL_PREFIX + names[i].toLowerCase())));
             }
         } catch (Exception e) {
             // noop
@@ -338,7 +350,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Creates the select widget configuration for the index names.<p>
-     * 
+     *
      * @return the select widget configuration for the index names
      */
     private List<CmsSelectWidgetOption> getSortNamesIndex() {
@@ -373,8 +385,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             o = getDialogObject();
         }
         if (!(o instanceof CmsSearchWorkplaceBean)) {
-            // read params from config
-            m_search = new CmsSearchWorkplaceBean(getSettings().getExplorerResource());
+            String oldExplorerMode = getSettings().getExplorerMode();
+            getSettings().setExplorerMode(null);
+            String explorerResource = getSettings().getExplorerResource();
+            getSettings().setExplorerMode(oldExplorerMode);
+            m_search = new CmsSearchWorkplaceBean(explorerResource);
         } else {
             // reuse params stored in session
             m_search = (CmsSearchWorkplaceBean)o;
@@ -383,13 +398,15 @@ public class CmsSearchDialog extends CmsWidgetDialog {
 
     /**
      * Gets the information if the search form is in the inital state.<p>
-     * 
+     *
      * @return true, the search form is in the inital state. otherwise false
      */
     private boolean isInitialCall() {
 
         // return false in case the form was submitted already or the submit button was pressed or the index was changed
-        return !(((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null) && (getJsp().getRequest().getParameter(
-            CmsDialog.PARAM_ACTION).equals(CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX))) || ((getJsp().getRequest().getParameter("indexName.0")) != null));
+        return !(((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null)
+            && (getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION).equals(
+                CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX)))
+            || ((getJsp().getRequest().getParameter("indexName.0")) != null));
     }
 }

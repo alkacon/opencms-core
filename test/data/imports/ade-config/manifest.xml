@@ -903,5 +903,352 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+				<file>
+			<destination>sites/nested</destination>
+			<type>folder</type>
+			<uuidstructure>248d4bdd-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:11 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:11 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/bar</destination>
+			<type>folder</type>
+			<uuidstructure>7fe9d0ef-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/bar/.content</destination>
+			<type>folder</type>
+			<uuidstructure>7feda181-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/bar/.content/.config</source>
+			<destination>sites/bar/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>7ffa24a8-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>7ffa24a9-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Wed, 20 Aug 2014 09:37:18 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/bar/.content/blogentries</destination>
+			<type>folder</type>
+			<uuidstructure>7ff0d5d3-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/bar/.content/blogentries/be_00001.xml</source>
+			<destination>sites/bar/.content/blogentries/be_00001.xml</destination>
+			<type>article1</type>
+			<uuidstructure>7ff3e315-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>7ff3e316-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Wed, 20 Aug 2014 09:37:48 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[BlogEntryBar]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		<file>
+			<source>sites/bar/.content/blogentries/be_00002.xml</source>
+			<destination>sites/bar/.content/blogentries/be_00002.xml</destination>
+			<type>article1</type>
+			<uuidstructure>7ff3e315-ff42-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>7ff3e316-ff42-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Wed, 20 Aug 2014 09:37:48 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[BlogEntryBar]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/bar/main</destination>
+			<type>folder</type>
+			<uuidstructure>80008d4d-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[NavText]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[NavText]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/com.alkacon.bootstrap.formatters/templates/bootstrap-page.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/bar/main/index.html</source>
+			<destination>sites/bar/main/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>800d85a6-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>800d85a7-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 10:19:49 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/bar/main/blog</destination>
+			<type>folder</type>
+			<uuidstructure>800484f2-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/bar/main/blog/index.html</source>
+			<destination>sites/bar/main/blog/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>8007b944-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>8007b945-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 09:10:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:36:45 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/foo</destination>
+			<type>folder</type>
+			<uuidstructure>36465841-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/foo/.content</destination>
+			<type>folder</type>
+			<uuidstructure>364b3a43-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/foo/.content/.config</source>
+			<destination>sites/foo/.content/.config</destination>
+			<type>sitemap_config</type>
+			<uuidstructure>36648eaf-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>36648eb0-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Wed, 20 Aug 2014 09:36:12 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>search.exclude</name>
+					<value><![CDATA[all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/foo/.content/blogentries</destination>
+			<type>folder</type>
+			<uuidstructure>364e6e95-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/foo/.content/blogentries/be_00001.xml</source>
+			<destination>sites/foo/.content/blogentries/be_00001.xml</destination>
+			<type>article1</type>
+			<uuidstructure>3651f107-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>3651f108-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Wed, 20 Aug 2014 09:38:04 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[BlogEntryFoo]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/foo/main</destination>
+			<type>folder</type>
+			<uuidstructure>366bbaa4-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[NavText]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[NavText]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/com.alkacon.bootstrap.formatters/templates/bootstrap-page.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/foo/main/index.html</source>
+			<destination>sites/foo/main/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>367a128d-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>367a128e-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 10:19:49 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>sites/foo/main/blog</destination>
+			<type>folder</type>
+			<uuidstructure>36707599-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<datelastmodified>Wed, 20 Aug 2014 09:34:41 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>sites/foo/main/blog/index.html</source>
+			<destination>sites/foo/main/blog/index.html</destination>
+			<type>containerpage</type>
+			<uuidstructure>3673d0fb-284d-11e4-bbc2-efa43436f726</uuidstructure>
+			<uuidresource>3673d0fc-284d-11e4-bbc2-efa43436f726</uuidresource>
+			<datelastmodified>Tue, 19 Aug 2014 09:10:45 GMT</datelastmodified>
+			<userlastmodified>Admin2</userlastmodified>
+			<datecreated>Wed, 20 Aug 2014 09:34:41 GMT</datecreated>
+			<usercreated>Admin2</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
 	</files>
 </export>

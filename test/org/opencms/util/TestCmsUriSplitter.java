@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,26 +27,16 @@
 
 package org.opencms.util;
 
-import junit.framework.TestCase;
+import org.opencms.test.OpenCmsTestCase;
 
-/** 
+/**
  * Test case for the URI splitter.<p>
  */
-public class TestCmsUriSplitter extends TestCase {
-
-    /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
-     */
-    public TestCmsUriSplitter(String arg0) {
-
-        super(arg0);
-    }
+public class TestCmsUriSplitter extends OpenCmsTestCase {
 
     /**
      * Tests basic splitting operations.<p>
-     * 
+     *
      * @throws Exception if the test fails
      */
     public void testBasicSplitting() throws Exception {
@@ -109,7 +99,7 @@ public class TestCmsUriSplitter extends TestCase {
         uri = "http://www.alkacon.com/reverse/order/?a=b&c=d#anotheranchor?whatabout=thisone#craziness";
         splitterA = new CmsUriSplitter(uri);
         splitterB = new CmsUriSplitter(uri, true);
-        
+
         assertTrue("Prefix part wrong", "http://www.alkacon.com/reverse/order/".equals(splitterA.getPrefix()));
         assertTrue("Fragment part wrong", "craziness".equals(splitterA.getAnchor()));
         assertTrue("Query part wrong", "whatabout=thisone".equals(splitterA.getQuery()));

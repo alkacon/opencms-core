@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -50,8 +50,8 @@ import com.google.common.collect.Multimap;
 
 /**
  * Abstract class which is used to generate the data for showing an already opened tree in the gallery dialog.<p>
- * 
- * @param <T> the type of tree entry bean produced by this class 
+ *
+ * @param <T> the type of tree entry bean produced by this class
  */
 public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<T>> {
 
@@ -75,48 +75,48 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Creates the preload data for a collection of resources which correspond to "opened" tree items.<p>
-     * 
-     * @param cms the CMS context to use 
-     * @param openResources the resources which correspond to opened tree items 
-     * 
-     * @return the root tree entry bean which was created 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the CMS context to use
+     * @param openResources the resources which correspond to opened tree items
+     *
+     * @return the root tree entry bean which was created
+     *
+     * @throws CmsException if something goes wrong
      */
     public T preloadData(CmsObject cms, Collection<CmsResource> openResources) throws CmsException {
 
         assert m_cms == null : "Instance can't be used more than once!";
         m_cms = OpenCms.initCmsObject(cms);
         m_cms.getRequestContext().setSiteRoot("");
-        // first determine the common root of all open resources 
+        // first determine the common root of all open resources
         findRoot(openResources);
         // now load ancestors of all open resources
         for (CmsResource resource : openResources) {
             loadAncestors(resource);
         }
-        // ensure that all children of ancestors of open resources are loaded 
+        // ensure that all children of ancestors of open resources are loaded
         loadChildren();
-        // finally create the beans for the loaded resources 
+        // finally create the beans for the loaded resources
         return createBeans();
     }
 
     /**
      * Creates a tree entry bean from a resource.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource for which to create the tree entry bean 
-     * 
-     * @return the created tree entry bean 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource for which to create the tree entry bean
+     *
+     * @return the created tree entry bean
+     * @throws CmsException if something goes wrong
      */
     protected abstract T createEntry(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
      * Finds the common root folder for a collection of resources.<p>
-     * 
-     * @param openResources the collection of open resources 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param openResources the collection of open resources
+     *
+     * @throws CmsException if something goes wrong
      */
     protected void findRoot(Collection<CmsResource> openResources) throws CmsException {
 
@@ -149,11 +149,11 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Gets the children of a resource.<p>
-     * 
-     * @param resource the resource for which the children should be read 
-     * @return the children of the resource 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource for which the children should be read
+     * @return the children of the resource
+     *
+     * @throws CmsException if something goes wrong
      */
     protected List<CmsResource> getChildren(CmsResource resource) throws CmsException {
 
@@ -162,13 +162,13 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Creates the beans for the loaded resources, and returns the root bean.<p>
-     * 
-     * @return the root bean 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the root bean
+     * @throws CmsException if something goes wrong
      */
     private T createBeans() throws CmsException {
 
-        // create the beans for the resources 
+        // create the beans for the resources
         Map<CmsResource, T> beans = new HashMap<CmsResource, T>();
         for (CmsResource resource : m_knownResources) {
             T bean = createEntry(m_cms, resource);
@@ -177,7 +177,7 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
             }
         }
 
-        // attach beans for child resources to the beans for their parents 
+        // attach beans for child resources to the beans for their parents
         for (Map.Entry<CmsResource, T> entry : beans.entrySet()) {
             CmsResource key = entry.getKey();
             T bean = entry.getValue();
@@ -193,10 +193,10 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Gets the common ancestor path of a collection of resources.<p>
-     * 
-     * @param resources the resources for which to get the ancestor path 
-     * 
-     * @return the common ancestor path for the resources 
+     *
+     * @param resources the resources for which to get the ancestor path
+     *
+     * @return the common ancestor path for the resources
      */
     private String getCommonAncestorPath(Collection<CmsResource> resources) {
 
@@ -212,11 +212,11 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Gets the common ancestor of two paths.<p>
-     * 
-     * @param rootPath1 the first path 
-     * @param rootPath2 the second path 
-     * 
-     * @return the common ancestor path 
+     *
+     * @param rootPath1 the first path
+     * @param rootPath2 the second path
+     *
+     * @return the common ancestor path
      */
     private String getCommonAncestorPath(String rootPath1, String rootPath2) {
 
@@ -248,10 +248,10 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
 
     /**
      * Loads the ancestors of a resource.<p>
-     * 
-     * @param resource the resource for which to load the ancestors 
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @param resource the resource for which to load the ancestors
+     *
+     * @throws CmsException if something goes wrong
      */
     private void loadAncestors(CmsResource resource) throws CmsException {
 
@@ -269,10 +269,10 @@ public abstract class A_CmsTreeTabDataPreloader<T extends I_CmsGalleryTreeEntry<
         }
     }
 
-    /** 
+    /**
      * Loads the children of the already loaded resources.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void loadChildren() throws CmsException {
 

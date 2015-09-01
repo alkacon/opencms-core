@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,20 +36,20 @@ import java.util.List;
 
 /**
  * 'Formats' a ResourceMap containing resources for publishing by creating a list of CmsPublishResource
- * beans with the appropriate status informations to display. 
+ * beans with the appropriate status informations to display.
  */
 public interface I_CmsPublishResourceFormatter {
 
     /**
      * Gets the publish resource beans created by this formatter.<p>
-     * 
-     * @return the publish resource beans 
-     * @throws CmsException if something goes wrong 
+     *
+     * @return the publish resource beans
+     * @throws CmsException if something goes wrong
      */
     List<CmsPublishResource> getPublishResources() throws CmsException;
 
     /**
-     * 
+     *
      * @param options
      * @param resources
      * @throws CmsException

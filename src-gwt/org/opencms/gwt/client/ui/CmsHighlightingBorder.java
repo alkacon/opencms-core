@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * A Widget to display a highlighting border around a specified position.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsHighlightingBorder extends Composite {
@@ -61,7 +61,7 @@ public class CmsHighlightingBorder extends Composite {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param cssClass the CSS class to display the border colour
          */
         private BorderColor(String cssClass) {
@@ -71,7 +71,7 @@ public class CmsHighlightingBorder extends Composite {
 
         /**
          * Returns the associated CSS class.<p>
-         * 
+         *
          * @return the CSS class
          */
         public String getCssClass() {
@@ -85,7 +85,7 @@ public class CmsHighlightingBorder extends Composite {
         // GWT interface, nothing to do here
     }
 
-    /** The border offset to the given position. */
+    /** The default border offset to the given position. */
     private static final int BORDER_OFFSET = 4;
 
     /** The border width. */
@@ -113,25 +113,41 @@ public class CmsHighlightingBorder extends Composite {
     /** The positioning parent element. */
     private Element m_positioningParent;
 
+    /** The border offset. */
+    private int m_borderOffset;
+
     /**
      * Constructor.<p>
-     * 
+     *
      * @param position the position data
      * @param color the border color
      */
     public CmsHighlightingBorder(CmsPositionBean position, BorderColor color) {
 
-        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color);
+        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color, BORDER_OFFSET);
     }
 
     /**
      * Constructor.<p>
-     * 
+     *
+     * @param position the position data
+     * @param color the border color
+     * @param borderOffset the border offset
+     */
+    public CmsHighlightingBorder(CmsPositionBean position, BorderColor color, int borderOffset) {
+
+        this(position.getHeight(), position.getWidth(), position.getLeft(), position.getTop(), color, borderOffset);
+    }
+
+    /**
+     * Constructor.<p>
+     *
      * @param positioningParent the element the border is positioned around, position is set relative to it
      * @param color the border color
      */
     public CmsHighlightingBorder(Element positioningParent, BorderColor color) {
 
+        m_borderOffset = BORDER_OFFSET;
         initWidget(uiBinder.createAndBindUi(this));
         getWidget().addStyleName(color.getCssClass());
         m_positioningParent = positioningParent;
@@ -140,17 +156,24 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param height the height
      * @param width the width
      * @param positionLeft the absolute left position
      * @param positionTop the absolute top position
      * @param color the border color
+     * @param borderOffset the border offset
      */
-    public CmsHighlightingBorder(int height, int width, int positionLeft, int positionTop, BorderColor color) {
+    public CmsHighlightingBorder(
+        int height,
+        int width,
+        int positionLeft,
+        int positionTop,
+        BorderColor color,
+        int borderOffset) {
 
+        m_borderOffset = borderOffset;
         initWidget(uiBinder.createAndBindUi(this));
-
         getWidget().addStyleName(color.getCssClass());
         setPosition(height, width, positionLeft, positionTop);
     }
@@ -177,7 +200,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the border position.<p>
-     * 
+     *
      * @param position the position data
      */
     public void setPosition(CmsPositionBean position) {
@@ -187,7 +210,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the border position.<p>
-     * 
+     *
      * @param height the height
      * @param width the width
      * @param positionLeft the absolute left position
@@ -195,7 +218,7 @@ public class CmsHighlightingBorder extends Composite {
      */
     public void setPosition(int height, int width, int positionLeft, int positionTop) {
 
-        positionLeft -= BORDER_OFFSET;
+        positionLeft -= m_borderOffset;
 
         // make sure highlighting does not introduce additional horizontal scroll-bars
         if ((m_positioningParent == null) && (positionLeft < 0)) {
@@ -203,17 +226,17 @@ public class CmsHighlightingBorder extends Composite {
             width += positionLeft;
             positionLeft = 0;
         }
-        width += (2 * BORDER_OFFSET) - BORDER_WIDTH;
+        width += (2 * m_borderOffset) - BORDER_WIDTH;
         if ((m_positioningParent == null)
             && (Window.getClientWidth() < (width + positionLeft))
             && (Window.getScrollLeft() == 0)) {
-            // highlighting should not extend over the right hand 
+            // highlighting should not extend over the right hand
             width = Window.getClientWidth() - (positionLeft + BORDER_WIDTH);
         }
         Style style = getElement().getStyle();
         style.setLeft(positionLeft, Unit.PX);
-        style.setTop(positionTop - BORDER_OFFSET, Unit.PX);
-        setHeight((height + (2 * BORDER_OFFSET)) - BORDER_WIDTH);
+        style.setTop(positionTop - m_borderOffset, Unit.PX);
+        setHeight((height + (2 * m_borderOffset)) - BORDER_WIDTH);
         setWidth(width);
     }
 
@@ -227,7 +250,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the highlighting height.<p>
-     * 
+     *
      * @param height the height
      */
     private void setHeight(int height) {
@@ -239,7 +262,7 @@ public class CmsHighlightingBorder extends Composite {
 
     /**
      * Sets the highlighting width.<p>
-     * 
+     *
      * @param width the width
      */
     private void setWidth(int width) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The widget to display a simple form with a label and an text box.<p>
- * 
+ *
  * @since 8.0.
  */
 public class CmsPropertyForm extends Composite implements HasValueChangeHandlers<String> {
@@ -77,12 +77,12 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
     /**
      * The constructor.<p>
-     * 
+     *
      * @param id the id of the property from
      * @param width the property from width
      * @param value the property value
      * @param noEditReason the reason why the properties are not editable
-     * @param textMetricsKey the key identifying the text metrics to use 
+     * @param textMetricsKey the key identifying the text metrics to use
      */
     public CmsPropertyForm(String id, int width, String value, String noEditReason, String textMetricsKey) {
 
@@ -167,7 +167,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
     /**
      * Returns the field value.<p>
-     * 
+     *
      * @return the field value
      */
     public String getValue() {
@@ -187,7 +187,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
     /**
      * Sets the style of the parent panel.<p>
-     * 
+     *
      * @param style the css class
      */
     public void setFormStyle(String style) {
@@ -196,8 +196,8 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
     }
 
     /**
-     * The width of the text box.<p> 
-     * 
+     * The width of the text box.<p>
+     *
      * @return the width
      */
     private int getInputWidth() {
@@ -207,7 +207,7 @@ public class CmsPropertyForm extends Composite implements HasValueChangeHandlers
 
     /**
      * The width of the label.<p>
-     * 
+     *
      * @return the label width
      */
     private int getLabelWidth() {

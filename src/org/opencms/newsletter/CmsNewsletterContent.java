@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,9 +46,9 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
 
     /**
      * Creates a new CmsNewsletterContent instance.<p>
-     * 
+     *
      * @param order the order of the newsletter content
-     * @param content the content 
+     * @param content the content
      * @param type the newsletter contents' type
      */
     public CmsNewsletterContent(int order, String content, CmsNewsletterContentType type) {
@@ -60,7 +60,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(I_CmsNewsletterContent o) {
@@ -69,7 +69,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -95,7 +95,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
     }
 
     /**
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override

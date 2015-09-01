@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,24 +34,24 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A hook on the list of categories of the <code>CmsSearchParameters</code> 
- * (see <code>{@link org.opencms.search.CmsSearchParameters#setCategories(List)}</code>) 
- * that will set the page to display of the search parameters to start (1) whenever 
+ * A hook on the list of categories of the <code>CmsSearchParameters</code>
+ * (see <code>{@link org.opencms.search.CmsSearchParameters#setCategories(List)}</code>)
+ * that will set the page to display of the search parameters to start (1) whenever
  * a change in the amount of categories takes place. <p>
- * 
- * This hook monitors the actions of the <code>{@link org.opencms.workplace.CmsWidgetDialog}</code>: 
+ *
+ * This hook monitors the actions of the <code>{@link org.opencms.workplace.CmsWidgetDialog}</code>:
  * During a request - response cycle it clears the list (prepareCommit)
  * of categories and adds all request parameters (actionCommitValue) to the list. <p>
- * 
- * The strategy here is to save all categories in a backup at "onClear" - time 
- * and then wait until all add operations are finished. This is when the iterator() 
- * method is triggered by the running search (<code>{@link org.opencms.search.CmsSearch#getSearchResult()}</code>). 
- * At that time it is detected wether we have "lost" categories. If this is the 
+ *
+ * The strategy here is to save all categories in a backup at "onClear" - time
+ * and then wait until all add operations are finished. This is when the iterator()
+ * method is triggered by the running search (<code>{@link org.opencms.search.CmsSearch#getSearchResult()}</code>).
+ * At that time it is detected wether we have "lost" categories. If this is the
  * case, the search page will be reset to start. <p>
- * 
+ *
  * <h3>Warning</h3>
- * This procedure is highly unstable as coupled to the behaviour of CmsWidgetDialog. It 
- * will only be successful if the request parameter "action" has a value in 
+ * This procedure is highly unstable as coupled to the behaviour of CmsWidgetDialog. It
+ * will only be successful if the request parameter "action" has a value in
  * <ol>
  *  <li>
  *   <code>{@link org.opencms.workplace.CmsWidgetDialog#DIALOG_SAVE}</code>
@@ -63,12 +63,12 @@ import java.util.List;
  *   <code>{@link org.opencms.workplace.CmsWidgetDialog#DIALOG_CONTINUE}</code>
  *  </li>
  * </ol>
- * 
- * Search page links (<code>{@link org.opencms.search.CmsSearch#getPageLinks()}</code>) 
- * contain a parameter "action" with value "search" which has to be rewritten to one 
- * of those values or the order of operations on widget - managed collections does not 
+ *
+ * Search page links (<code>{@link org.opencms.search.CmsSearch#getPageLinks()}</code>)
+ * contain a parameter "action" with value "search" which has to be rewritten to one
+ * of those values or the order of operations on widget - managed collections does not
  * work together with the detection strategy for category changes used here. <p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsHookListSearchCategory extends CmsHookList {
@@ -88,8 +88,8 @@ public class CmsHookListSearchCategory extends CmsHookList {
     }
 
     /**
-     * @param peer the search parameters to modify upon category modifications 
-     * 
+     * @param peer the search parameters to modify upon category modifications
+     *
      * @param c a collection with all values for this list
      */
     public CmsHookListSearchCategory(CmsSearchParameters peer, Collection<String> c) {
@@ -100,7 +100,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
 
     /**
      * A category has been added: do nothing. <p>
-     * 
+     *
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onAdded(java.lang.Object, int, java.lang.Object)
      */
     @Override
@@ -119,10 +119,10 @@ public class CmsHookListSearchCategory extends CmsHookList {
     }
 
     /**
-     * Takes a copy of the current categories contained to a backup list as this 
-     * operation is triggered by 
-     * <code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_SAVE}</code>.<p> 
-     * 
+     * Takes a copy of the current categories contained to a backup list as this
+     * operation is triggered by
+     * <code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_SAVE}</code>.<p>
+     *
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onClear(java.lang.Object)
      */
     @Override
@@ -132,7 +132,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     }
 
     /**
-     * 
+     *
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onCleared(java.lang.Object)
      */
     @Override
@@ -142,14 +142,14 @@ public class CmsHookListSearchCategory extends CmsHookList {
     }
 
     /**
-     * Set the search page of the peer Object 
-     * (<code>{@link org.opencms.search.CmsSearch#setSearchPage(int)}</code>) 
-     * to zero if the internal backup list of categories (taken at clear time which 
-     * is triggered by <code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_SAVE}</code>) 
-     * was empty (no restriction) and now categories are contained  or if the new 
-     * backup list of categories is no subset of the current categories any 
+     * Set the search page of the peer Object
+     * (<code>{@link org.opencms.search.CmsSearch#setSearchPage(int)}</code>)
+     * to zero if the internal backup list of categories (taken at clear time which
+     * is triggered by <code>{@link org.opencms.workplace.CmsWidgetDialog#ACTION_SAVE}</code>)
+     * was empty (no restriction) and now categories are contained  or if the new
+     * backup list of categories is no subset of the current categories any
      * more (more restrictive search than before). <p>
-     * 
+     *
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onGetCall(java.lang.Object, int)
      */
     @Override
@@ -167,14 +167,14 @@ public class CmsHookListSearchCategory extends CmsHookList {
     @Override
     protected void onIteratorCall(Object peer) {
 
-        // nop 
+        // nop
     }
 
     /**
-     * A category has been removed: set search page to start page as 
+     * A category has been removed: set search page to start page as
      * new results may / will be smaller. <p>
-     * 
-     * 
+     *
+     *
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onRemoved(java.lang.Object, int)
      */
     @Override

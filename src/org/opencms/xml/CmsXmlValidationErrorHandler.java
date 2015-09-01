@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,10 +36,10 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Error hander for writing errors found during XML validation to the OpenCms log.<p>
- * 
+ *
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
 
@@ -47,7 +47,7 @@ public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
     private Element m_warnings;
 
     /**
-     * Constructor from superclass.<p> 
+     * Constructor from superclass.<p>
      */
     public CmsXmlValidationErrorHandler() {
 
@@ -66,7 +66,7 @@ public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
 
             if (message.startsWith("sch-props-correct.2")) {
                 // HACK: multiple schema includes cause errors in validation with Xerces 2
-                // the schema nevertheless is usable 
+                // the schema nevertheless is usable
                 // redirect this error to be a warning
                 warning(e);
                 return;

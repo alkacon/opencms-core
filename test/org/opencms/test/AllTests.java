@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,8 +35,8 @@ import junit.framework.TestSuite;
 
 /**
  * OpenCms main test suite, executes the individual test suites of all core packages.<p>
- * 
- * 
+ *
+ *
  * @since 6.0
  */
 public final class AllTests {
@@ -64,20 +64,19 @@ public final class AllTests {
         System.out.println("Starting OpenCms test run...");
     }
 
-    /** 
+    /**
      * One-time cleanup code.<p>
      */
     public static void oneTimeTearDown() {
 
         long runTime = System.currentTimeMillis() - m_startTime;
-        System.out.println("... OpenCms test run finished! (Total runtime: "
-            + CmsStringUtil.formatRuntime(runTime)
-            + ")");
+        System.out.println(
+            "... OpenCms test run finished! (Total runtime: " + CmsStringUtil.formatRuntime(runTime) + ")");
     }
 
     /**
      * Creates the OpenCms JUnit test suite.<p>
-     * 
+     *
      * @return the OpenCms JUnit test suite
      */
     public static Test suite() {
@@ -86,6 +85,7 @@ public final class AllTests {
 
         suite.addTest(org.opencms.setup.AllTests.suite());
         suite.addTest(org.opencms.ade.configuration.AllTests.suite());
+        suite.addTest(org.opencms.ade.containerpage.inherited.AllTests.suite());
         suite.addTest(org.opencms.ade.sitemap.AllTests.suite());
         suite.addTest(org.opencms.cache.AllTests.suite());
         suite.addTest(org.opencms.configuration.AllTests.suite());

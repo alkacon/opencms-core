@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -66,10 +66,10 @@ public class CmsClientUserSettingConverter {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param cms the CMS context to use 
-         * @param req the current request 
-         * @param res the current response 
+         *
+         * @param cms the CMS context to use
+         * @param req the current request
+         * @param res the current response
          */
         public NoJspActionElement(CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
 
@@ -93,7 +93,7 @@ public class CmsClientUserSettingConverter {
         @Override
         protected void handleMissingFlexController() {
 
-            // ignore 
+            // ignore
         }
 
     }
@@ -118,10 +118,10 @@ public class CmsClientUserSettingConverter {
 
     /**
      * Creates a new instance.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param request the current request 
-     * @param response the current response 
+     *
+     * @param cms the current CMS context
+     * @param request the current request
+     * @param response the current response
      */
     public CmsClientUserSettingConverter(CmsObject cms, HttpServletRequest request, HttpServletResponse response) {
 
@@ -139,10 +139,10 @@ public class CmsClientUserSettingConverter {
 
     }
 
-    /** 
+    /**
      * Loads the current user's preferences into a CmsUserSettingsBean.<p>
-     * 
-     * @return the bean representing the current user's preferences 
+     *
+     * @return the bean representing the current user's preferences
      */
     public CmsUserSettingsBean loadSettings() {
 
@@ -167,10 +167,10 @@ public class CmsClientUserSettingConverter {
 
     /**
      * Saves the given user preference values.<p>
-     * 
+     *
      * @param settings the user preference values to save
-     *  
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void saveSettings(Map<String, String> settings) throws Exception {
 
@@ -185,8 +185,8 @@ public class CmsClientUserSettingConverter {
 
     /**
      * Adds the account information to a user settings bean.<p>
-     * 
-     * @param prefs the user settings bean to which the information should be added 
+     *
+     * @param prefs the user settings bean to which the information should be added
      */
     private void addAccountInfo(CmsUserSettingsBean prefs) {
 
@@ -212,11 +212,11 @@ public class CmsClientUserSettingConverter {
 
     /**
      * Saves an individual user preference value.<p>
-     * 
-     * @param key the key of the user preference 
-     * @param value the value of the user preference 
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @param key the key of the user preference
+     * @param value the value of the user preference
+     *
+     * @throws Exception if something goes wrong
      */
     private void saveSetting(String key, String value) throws Exception {
 

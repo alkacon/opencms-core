@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * The vfs-link widget.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_CmsHasInit, I_CmsHasGhostValue {
@@ -117,7 +117,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Adds a style-name to the browse button.<p>
-     * 
+     *
      * @param styleName the style name
      */
     public void addButtonStyle(String styleName) {
@@ -127,7 +127,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Adds a style-name to the input text-box.<p>
-     * 
+     *
      * @param styleName the style name
      */
     public void addInputStyleName(String styleName) {
@@ -185,7 +185,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Removes a style-name from the browse button.<p>
-     * 
+     *
      * @param styleName the style name
      */
     public void removeButtonStyle(String styleName) {
@@ -195,7 +195,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Removes a style-name from the input text-box.<p>
-     * 
+     *
      * @param styleName the style name
      */
     public void removeInputStyle(String styleName) {
@@ -216,12 +216,12 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
      * Set the browse button size.<p>
-     * 
+     *
      * @param size the button size
      */
     public void setButtonSize(Size size) {
@@ -242,7 +242,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
      */
     public void setErrorMessage(String errorMessage) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -273,7 +273,7 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Returns the URL to the link selector popup.<p>
-     * 
+     *
      * @return the URL to the link selector popup
      */
     protected String getSelectorUrl() {
@@ -287,28 +287,28 @@ public class CmsVfsLinkWidget extends Composite implements I_CmsFormWidget, I_Cm
 
     /**
      * Opens the vfs-selector.<p>
-     * 
+     *
      * @param selectorUrl the URL to the link selector popup
      */
     protected native void openSelector(String selectorUrl)/*-{
-      var newwin = $wnd
-            .open(
-                  selectorUrl,
-                  "file_selector",
-                  "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=300,height=450");
-      if (newwin != null) {
-         if (newwin.opener == null) {
-            newwin.opener = $wnd.self;
-         }
-      } else {
-         @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-         return;
-      }
-      newwin.focus();
-      var self = this;
-      $wnd.setFormValue = function(fileName) {
-         self.@org.opencms.gwt.client.ui.input.CmsVfsLinkWidget::setFormValueAsString(Ljava/lang/String;)(fileName);
-      }
-    }-*/;
+                                                          var newwin = $wnd
+                                                          .open(
+                                                          selectorUrl,
+                                                          "file_selector",
+                                                          "toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width=300,height=450");
+                                                          if (newwin != null) {
+                                                          if (newwin.opener == null) {
+                                                          newwin.opener = $wnd.self;
+                                                          }
+                                                          } else {
+                                                          @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+                                                          return;
+                                                          }
+                                                          newwin.focus();
+                                                          var self = this;
+                                                          $wnd.setFormValue = function(fileName) {
+                                                          self.@org.opencms.gwt.client.ui.input.CmsVfsLinkWidget::setFormValueAsString(Ljava/lang/String;)(fileName);
+                                                          }
+                                                          }-*/;
 
 }

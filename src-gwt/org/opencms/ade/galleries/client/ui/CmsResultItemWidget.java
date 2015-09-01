@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,6 +31,7 @@ import org.opencms.ade.galleries.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.galleries.shared.CmsResultItemBean;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
+import org.opencms.gwt.client.ui.input.CmsLabel.I_TitleGenerator;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
@@ -41,9 +42,9 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * The result list item widget.<p>
- * 
+ *
  * Enabling the image tile view.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResultItemWidget extends CmsListItemWidget {
@@ -62,12 +63,13 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param infoBean the resource info bean
      */
     public CmsResultItemWidget(CmsResultItemBean infoBean) {
 
         super(infoBean);
+        setSubtitleTitle(infoBean.getPath());
         setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getType(), infoBean.getPath(), false));
 
         // if resourceType=="image" prepare for tile view
@@ -80,8 +82,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
             }
             String timeParam = "&time=" + System.currentTimeMillis();
             // insert tile view image div
-            HTML imageTile = new HTML("<img src=\"" + src + getBigImageScaleParam()
-            // add time stamp to override browser image caching
+            HTML imageTile = new HTML("<img src=\""
+                + src
+                + getBigImageScaleParam()
+                // add time stamp to override browser image caching
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().bigImage()
@@ -94,7 +98,10 @@ public class CmsResultItemWidget extends CmsListItemWidget {
                 + timeParam
                 + "\" class=\""
                 + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().smallImage()
-                + "\" />");
+                + "\" />"
+                + "<div class='"
+                + I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expiredImageOverlay()
+                + "' />");
             imageTile.setStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().imageTile());
             m_tooltipHandler = new CmsToolTipHandler(imageTile, generateTooltipHtml(infoBean));
             m_contentPanel.insert(imageTile, 0);
@@ -104,12 +111,29 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Indicates wther there is a tile view available for this widget.<p>
-     * 
+     *
      * @return <code>true</code> if a tiled view is available
      */
     public boolean hasTileView() {
 
         return m_hasTileView;
+    }
+
+    /**
+     * Initializes the title attribute of the subtitle line.<p>
+     *
+     * @param subtitleTitle the value to set
+     */
+    public void setSubtitleTitle(final String subtitleTitle) {
+
+        m_subtitle.setTitle(subtitleTitle);
+        m_subtitle.setTitleGenerator(new I_TitleGenerator() {
+
+            public String getTitle(String originalText) {
+
+                return subtitleTitle;
+            }
+        });
     }
 
     /**
@@ -126,9 +150,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Generates the HTML for the item tool-tip.<p>
-     * 
+     *
      * @param infoBean the item info
-     * 
+     *
      * @return the generated HTML
      */
     private String generateTooltipHtml(CmsListInfoBean infoBean) {
@@ -147,7 +171,7 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Returns the scale parameter for big thumbnail images.<p>
-     * 
+     *
      * @return the scale parameter
      */
     private String getBigImageScaleParam() {
@@ -161,9 +185,9 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
     /**
      * Returns the scale parameter for small thumbnail images.<p>
-     * 
+     *
      * @param infoBean the resource info
-     * 
+     *
      * @return the scale parameter
      */
     private String getSmallImageScaleParam(CmsResultItemBean infoBean) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,13 +43,13 @@ public class CmsUserDefinedPreference extends A_CmsPreference {
     /** The configured preference data. */
     private CmsPreferenceData m_preferenceData;
 
-    /** 
+    /**
      * Creates a new instance.<p>
-     * 
-     * @param name the preference name 
-     * @param value the preference value 
-     * @param prop the bean containing the widget configuration for the preference 
-     * @param tab the tab on which to display the widget 
+     *
+     * @param name the preference name
+     * @param value the preference value
+     * @param prop the bean containing the widget configuration for the preference
+     * @param tab the tab on which to display the widget
      */
     public CmsUserDefinedPreference(String name, String value, CmsXmlContentProperty prop, String tab) {
 
@@ -58,9 +58,9 @@ public class CmsUserDefinedPreference extends A_CmsPreference {
 
     /**
      * Helper method used to create the configuration attributes for a CmsPreferenceData bean.<p>
-     * 
-     * @param pref the preference data 
-     * @param elem the element in which the attributes should be created 
+     *
+     * @param pref the preference data
+     * @param elem the element in which the attributes should be created
      */
     public static void fillAttributes(CmsPreferenceData pref, Element elem) {
 

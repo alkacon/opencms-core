@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,11 +27,14 @@
 
 package org.opencms.ade.containerpage.shared;
 
+import org.opencms.gwt.shared.CmsPermissionInfo;
+import org.opencms.util.CmsUUID;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean holding basic container element information.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsContainerElement implements IsSerializable {
@@ -60,6 +63,12 @@ public class CmsContainerElement implements IsSerializable {
     /** The element client id. */
     private String m_clientId;
 
+    /** The 'create new' status of the element. */
+    private boolean m_createNew;
+
+    /** The element view this element belongs to by it's type. */
+    private CmsUUID m_elementView;
+
     /** Flag to indicate that this element may have settings. */
     private boolean m_hasSettings;
 
@@ -72,8 +81,8 @@ public class CmsContainerElement implements IsSerializable {
     /** Flag which controls whether the new editor is disabled for this element. */
     private boolean m_newEditorDisabled;
 
-    /** The no edit reason. If empty editing is allowed. */
-    private String m_noEditReason;
+    /** The permission info for the element resource. */
+    private CmsPermissionInfo m_permissionInfo;
 
     /** Flag indicating if the given resource is released and not expired. */
     private boolean m_releasedAndNotExpired = true;
@@ -90,24 +99,39 @@ public class CmsContainerElement implements IsSerializable {
     /** The title. */
     private String m_title;
 
-    /** 
-     * Indicates if the current user has view permissions on the element resource. 
-     * Without view permissions, the element can neither be edited, nor moved. 
-     **/
-    private boolean m_viewPermission;
-
-    /** 
-     * Indicates if the current user has write permissions on the element resource. 
-     * Without write permissions, the element can not be edited. 
-     **/
-    private boolean m_writePermission;
-
     /**
      * Default constructor.<p>
      */
     public CmsContainerElement() {
 
         // empty
+    }
+
+    /**
+     * Copies the container element.<p>
+     *
+     * @return the new copy of the container element
+     */
+    public CmsContainerElement copy() {
+
+        CmsContainerElement result = new CmsContainerElement();
+        result.m_clientId = m_clientId;
+        result.m_hasSettings = m_hasSettings;
+        result.m_inheritanceInfo = m_inheritanceInfo;
+        result.m_new = m_new;
+        result.m_newEditorDisabled = m_newEditorDisabled;
+        result.m_permissionInfo = new CmsPermissionInfo(
+            m_permissionInfo.hasViewPermission(),
+            m_permissionInfo.hasWritePermission(),
+            m_permissionInfo.getNoEditReason());
+        result.m_releasedAndNotExpired = m_releasedAndNotExpired;
+        result.m_resourceType = m_resourceType;
+        result.m_sitePath = m_sitePath;
+        result.m_subTitle = m_subTitle;
+        result.m_title = m_title;
+        result.m_elementView = m_elementView;
+        return result;
+
     }
 
     /**
@@ -118,6 +142,16 @@ public class CmsContainerElement implements IsSerializable {
     public String getClientId() {
 
         return m_clientId;
+    }
+
+    /**
+     * Returns the element view this element belongs to by it's type.<p>
+     *
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        return m_elementView;
     }
 
     /**
@@ -137,12 +171,12 @@ public class CmsContainerElement implements IsSerializable {
      */
     public String getNoEditReason() {
 
-        return m_noEditReason;
+        return m_permissionInfo.getNoEditReason();
     }
 
     /**
      * Returns the resource type name for elements.<p>
-     * 
+     *
      * @return the resource type name
      */
     public String getResourceType() {
@@ -162,7 +196,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the sub title.<p>
-     * 
+     *
      * @return the sub title
      */
     public String getSubTitle() {
@@ -172,7 +206,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns the title.<p>
-     * 
+     *
      * @return the title
      */
     public String getTitle() {
@@ -184,7 +218,7 @@ public class CmsContainerElement implements IsSerializable {
      * Returns if the element may have settings.<p>
      *
      * @param containerId the container id
-     * 
+     *
      * @return <code>true</code> if the element may have settings
      */
     public boolean hasSettings(String containerId) {
@@ -199,7 +233,7 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasViewPermission() {
 
-        return m_viewPermission;
+        return m_permissionInfo.hasViewPermission();
     }
 
     /**
@@ -209,12 +243,25 @@ public class CmsContainerElement implements IsSerializable {
      */
     public boolean hasWritePermission() {
 
-        return m_writePermission;
+        return m_permissionInfo.hasWritePermission();
+    }
+
+    /**
+     * Reads the 'create new' status of the element.<p>
+     *
+     * When the page containing the element is used a model page, this flag determines whether a copy of the element
+     * is created when creating a new page from that model page.<p>
+     *
+     * @return the 'create new' status of the element
+     */
+    public boolean isCreateNew() {
+
+        return m_createNew;
     }
 
     /**
      * Returns if the given element is of the type group container.<p>
-     * 
+     *
      * @return <code>true</code> if the given element is of the type group container
      */
     public boolean isGroupContainer() {
@@ -224,7 +271,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the given element is of the type inherit container.<p>
-     * 
+     *
      * @return <code>true</code> if the given element is of the type inherit container
      */
     public boolean isInheritContainer() {
@@ -234,7 +281,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns if the element is new and has not been created in the VFS yet.<p>
-     * 
+     *
      * @return <code>true</code> if the element is not created in the VFS yet
      */
     public boolean isNew() {
@@ -244,8 +291,8 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Returns true if the new editor is disabled for this element.<p>
-     * 
-     * @return true if the new editor is disabled for this element 
+     *
+     * @return true if the new editor is disabled for this element
      */
     public boolean isNewEditorDisabled() {
 
@@ -273,6 +320,26 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
+     * Sets the 'create new' status of the element.<p>
+     *
+     * @param createNew the new 'create new' status
+     */
+    public void setCreateNew(boolean createNew) {
+
+        m_createNew = createNew;
+    }
+
+    /**
+     * Sets the element view.<p>
+     *
+     * @param elementView the element view to set
+     */
+    public void setElementView(CmsUUID elementView) {
+
+        m_elementView = elementView;
+    }
+
+    /**
      * Sets if the element may have settings.<p>
      *
      * @param hasSettings <code>true</code> if the element may have settings
@@ -294,7 +361,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the 'new' flag.<p>
-     * 
+     *
      * @param isNew <code>true</code> on a new element
      */
     public void setNew(boolean isNew) {
@@ -304,7 +371,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Disables the new editor for this element.<p>
-     * 
+     *
      * @param disabled if true, the new editor will be disabled for this element
      */
     public void setNewEditorDisabled(boolean disabled) {
@@ -313,13 +380,13 @@ public class CmsContainerElement implements IsSerializable {
     }
 
     /**
-     * Sets the no edit reason.<p>
+     * Sets the permission info.<p>
      *
-     * @param noEditReason the no edit reason to set
+     * @param permissionInfo the permission info to set
      */
-    public void setNoEditReason(String noEditReason) {
+    public void setPermissionInfo(CmsPermissionInfo permissionInfo) {
 
-        m_noEditReason = noEditReason;
+        m_permissionInfo = permissionInfo;
     }
 
     /**
@@ -334,7 +401,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the element resource type.<p>
-     * 
+     *
      * @param resourceType the element resource type
      */
     public void setResourceType(String resourceType) {
@@ -354,7 +421,7 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the sub title.<p>
-     * 
+     *
      * @param subTitle the sub title
      */
     public void setSubTitle(String subTitle) {
@@ -364,32 +431,11 @@ public class CmsContainerElement implements IsSerializable {
 
     /**
      * Sets the title.<p>
-     * 
+     *
      * @param title the title
      */
     public void setTitle(String title) {
 
         m_title = title;
     }
-
-    /**
-     * Sets if the current user has view permissions for the element resource.<p>
-     *
-     * @param viewPermission the view permission to set
-     */
-    public void setViewPermission(boolean viewPermission) {
-
-        m_viewPermission = viewPermission;
-    }
-
-    /**
-     * Sets the user write permission.<p>
-     *
-     * @param writePermission the user write permission to set
-     */
-    public void setWritePermission(boolean writePermission) {
-
-        m_writePermission = writePermission;
-    }
-
 }

@@ -23,7 +23,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -46,15 +46,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a report for removing sites.<p> 
- * 
- * @since 9.0.0 
+ * Provides a report for removing sites.<p>
+ *
+ * @since 9.0.0
  */
 public class CmsSitesRemoveReport extends A_CmsListReport {
 
     /**
      * Removes a site from the configuration.<p>
-     * 
+     *
      * @since 9.0.0
      */
     private class CmsSitesRemoveThread extends A_CmsReportThread {
@@ -64,7 +64,7 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
 
         /**
          * Public constructor.<p>
-         * 
+         *
          * @param cms the cms object
          * @param sites the name of the thread
          */
@@ -112,7 +112,7 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsSitesRemoveReport(CmsJspActionElement jsp) {
@@ -122,7 +122,7 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -134,7 +134,7 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
 
     /**
      * Returns the paths of the sites to remove.<p>
-     * 
+     *
      * @return the paths of the sites to remove
      */
     public String getParamSites() {
@@ -142,8 +142,8 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
         return m_paramSites;
     }
 
-    /** 
-     * 
+    /**
+     *
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     @Override
@@ -152,9 +152,9 @@ public class CmsSitesRemoveReport extends A_CmsListReport {
         return new CmsSitesRemoveThread(getCms(), m_paramSites);
     }
 
-    /** 
+    /**
      * Sets the sites parameter.<p>
-     * 
+     *
      * @param paramSites the paths of the sites to remove
      */
     public void setParamSites(String paramSites) {

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 
 /**
  * Help class for storing of export-rules.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class CmsStaticExportExportRule {
@@ -62,7 +62,7 @@ public class CmsStaticExportExportRule {
 
     /**
      * Default constructor.<p>
-     * 
+     *
      * @param name the name of the rule
      * @param description the description for the rule
      */
@@ -76,7 +76,7 @@ public class CmsStaticExportExportRule {
 
     /**
      * Full Constructor.<p>
-     * 
+     *
      * @param name the name of the rule
      * @param description the description of the rule
      * @param modifiedResources a list of patterns to identify modified resources
@@ -135,12 +135,12 @@ public class CmsStaticExportExportRule {
 
     /**
      * Returns a set of <code>{@link CmsPublishedResource}</code> objects containing all resources specified by the
-     * <code>&lt;export-resources&gt;</code> node of this rule.<p>  
-     * 
+     * <code>&lt;export-resources&gt;</code> node of this rule.<p>
+     *
      * @param cms the current OpenCms context
-     * 
+     *
      * @return a set of matching resources
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public Set<CmsPublishedResource> getExportResources(CmsObject cms) throws CmsException {
@@ -149,13 +149,13 @@ public class CmsStaticExportExportRule {
         Iterator<String> itExpRes = m_exportResources.iterator();
         while (itExpRes.hasNext()) {
             String exportRes = itExpRes.next();
-            // read all from the configured node path, exclude resources flagged as internal  
+            // read all from the configured node path, exclude resources flagged as internal
             if (cms.existsResource(exportRes)) {
                 // first add the resource itself
                 CmsResource res = cms.readResource(exportRes);
                 resources.add(new CmsPublishedResource(res));
                 if (res.isFolder()) {
-                    // if the resource is a folder add also all sub-resources 
+                    // if the resource is a folder add also all sub-resources
                     List<CmsResource> vfsResources = cms.readResources(
                         exportRes,
                         CmsResourceFilter.ALL.addExcludeFlags(CmsResource.FLAG_INTERNAL));
@@ -174,7 +174,7 @@ public class CmsStaticExportExportRule {
 
     /**
      * Returns the modified Resources list as list of <code>{@link Pattern}</code>.<p>
-     * 
+     *
      * @return the modified Resources list as list of <code>{@link Pattern}</code>
      */
     public List<Pattern> getModifiedResources() {
@@ -194,14 +194,14 @@ public class CmsStaticExportExportRule {
 
     /**
      * Returns a set of <code>{@link CmsPublishedResource}</code> objects specified by the
-     * <code>&lt;export-resources&gt;</code> node of this rule, if the publishedResource 
-     * matches a modified Resource regular expression.<p> 
-     * 
+     * <code>&lt;export-resources&gt;</code> node of this rule, if the publishedResource
+     * matches a modified Resource regular expression.<p>
+     *
      * @param cms the cms context
      * @param publishedResource a published resource to test
-     * 
+     *
      * @return a set of matching resources, or <code>null</code> if resource does not match
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public Set<CmsPublishedResource> getRelatedResources(CmsObject cms, CmsPublishedResource publishedResource)
@@ -215,7 +215,7 @@ public class CmsStaticExportExportRule {
 
     /**
      * Checks if a vfsName matches the given modified resource patterns.<p>
-     * 
+     *
      * @param vfsName the vfs name of a resource to check
      * @return true if the name matches one of the given modified resource patterns
      */

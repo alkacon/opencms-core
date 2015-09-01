@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -60,9 +60,9 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.Test;
-
 import com.google.common.base.Optional;
+
+import junit.framework.Test;
 
 /**
  * Tests the form session methods.<p>
@@ -83,7 +83,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestFormSession(String arg0) {
@@ -93,7 +93,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -102,10 +102,10 @@ public class TestFormSession extends OpenCmsTestCase {
         return wrapper;
     }
 
-    /** 
+    /**
      * Publishes the offline project.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void publishAll() throws CmsException {
 
@@ -115,7 +115,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests the add values method.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testAddValues() throws Exception {
@@ -141,8 +141,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests that created resources are created in the correct project.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testAssignProjectToCreatedResources() throws Exception {
 
@@ -169,12 +169,10 @@ public class TestFormSession extends OpenCmsTestCase {
             Optional.<List<String>> absent());
         CmsUgcSession session = new CmsUgcSession(cms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
-            1,
-            2,
-            3,
-            4,
-            5});
+        CmsResource uploadRes = session.createUploadResource(
+            randomFieldName(),
+            "example.bin",
+            new byte[] {1, 2, 3, 4, 5});
         CmsProject expectedProject = session.getProject();
         assertEquals(
             "Project id doesn't match session project",
@@ -188,8 +186,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests automatic publishing.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testAutoPublish() throws Exception {
 
@@ -225,12 +223,10 @@ public class TestFormSession extends OpenCmsTestCase {
 
         CmsUgcSession session = new CmsUgcSession(cms, userCms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
-            1,
-            2,
-            3,
-            4,
-            5});
+        CmsResource uploadRes = session.createUploadResource(
+            randomFieldName(),
+            "example.bin",
+            new byte[] {1, 2, 3, 4, 5});
         session.finish();
         OpenCms.getPublishManager().waitWhileRunning();
         contentRes = cms.readResource(contentRes.getStructureId());
@@ -241,8 +237,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests creation of new contents.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testCreateContent() throws Exception {
 
@@ -271,7 +267,9 @@ public class TestFormSession extends OpenCmsTestCase {
         assertTrue(
             "The content should be created in the content folder",
             createdContent.getRootPath().startsWith(contentFolder.getRootPath()));
-        assertEquals(createdContent.getTypeId(), OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId());
+        assertEquals(
+            createdContent.getTypeId(),
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId());
 
         /* Try with a different resource type. */
         config = new CmsUgcConfiguration(
@@ -296,7 +294,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests the add values method.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testDeleteValues() throws Exception {
@@ -327,8 +325,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests that editing multiple files in a single form session causes an error.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testFailEditMultipleContents() throws Exception {
 
@@ -358,7 +356,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
         CmsUgcSession session;
 
-        // case create -> load 
+        // case create -> load
         session = new CmsUgcSession(cms, config);
         session.createXmlContent();
         try {
@@ -366,27 +364,27 @@ public class TestFormSession extends OpenCmsTestCase {
             session.loadXmlContent("file1.txt");
             fail("Should not be able to edit more than one file in a session.");
         } catch (CmsUgcException e) {
-            // ok 
+            // ok
         }
 
-        // case create -> create 
+        // case create -> create
         session = new CmsUgcSession(cms, config);
         session.createXmlContent();
         try {
             session.createXmlContent();
             fail("Should not be able to edit more than one file in a session.");
         } catch (CmsUgcException e) {
-            // ok 
+            // ok
         }
 
-        // case load -> create 
+        // case load -> create
         session = new CmsUgcSession(cms, config);
         session.loadXmlContent("file1.txt");
         try {
             session.createXmlContent();
             fail("Should not be able to edit more than one file in a session.");
         } catch (CmsUgcException e) {
-            // ok 
+            // ok
         }
 
         // case load -> load
@@ -396,14 +394,14 @@ public class TestFormSession extends OpenCmsTestCase {
             session.loadXmlContent("file2.txt");
             fail("Should not be able to edit more than one file in a session.");
         } catch (CmsUgcException e) {
-            // ok 
+            // ok
         }
 
     }
 
     /**
      * Tests the get values method.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testGetValues() throws Exception {
@@ -423,8 +421,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests the comparator used for xpath ordering.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testPathComparator() throws Exception {
 
@@ -446,8 +444,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests that the session queue does not allow more than maxLength waiting entries.<p>
-     * 
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void testQueueMaxLength() throws Exception {
 
@@ -473,15 +471,15 @@ public class TestFormSession extends OpenCmsTestCase {
             };
             thread.start();
         }
-        countdown.await(); // wait until all threads have finished 
+        countdown.await(); // wait until all threads have finished
         assertEquals(1 + maxLength, okCount.get());
 
     }
 
     /**
      * Tests the wait time for queue is observed.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testQueueWaitTime() throws Exception {
 
@@ -507,7 +505,7 @@ public class TestFormSession extends OpenCmsTestCase {
 
             thread.start();
         }
-        countdown.await(); // wait until all threads have finished 
+        countdown.await(); // wait until all threads have finished
         long t2 = System.currentTimeMillis();
         System.out.println("delta-t=" + (t2 - t1) + ", expected=" + (waitTime * (numThreads - 1)));
         assertTrue("The elapsed time is below expected wait time", (t2 - t1) >= ((numThreads - 1) * waitTime));
@@ -515,8 +513,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Tests that the session is cleaned up after its parent session is destroyed.<p>
-     * 
-     * @throws Exception - 
+     *
+     * @throws Exception -
      */
     public void testSessionCleanup() throws Exception {
 
@@ -547,12 +545,10 @@ public class TestFormSession extends OpenCmsTestCase {
             Optional.<List<String>> absent());
         CmsUgcSession session = new CmsUgcSession(cms, config);
         CmsResource contentRes = session.createXmlContent();
-        CmsResource uploadRes = session.createUploadResource(randomFieldName(), "example.bin", new byte[] {
-            1,
-            2,
-            3,
-            4,
-            5});
+        CmsResource uploadRes = session.createUploadResource(
+            randomFieldName(),
+            "example.bin",
+            new byte[] {1, 2, 3, 4, 5});
         CmsProject project = session.getProject();
 
         session.onSessionDestroyed();
@@ -561,14 +557,14 @@ public class TestFormSession extends OpenCmsTestCase {
             cms.readResource(contentRes.getStructureId(), CmsResourceFilter.ALL);
             fail("Resource shouldn't exist after session cleanup");
         } catch (CmsVfsResourceNotFoundException e) {
-            // ignore 
+            // ignore
         }
 
         try {
             cms.readResource(uploadRes.getStructureId(), CmsResourceFilter.ALL);
             fail("Resource shouldn't exist after session cleanup");
         } catch (CmsVfsResourceNotFoundException e) {
-            // ignore 
+            // ignore
         }
 
         try {
@@ -616,8 +612,8 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Generate random string to be used as field name.<p>
-     * 
-     * @return a random field name 
+     *
+     * @return a random field name
      */
     private String randomFieldName() {
 
@@ -626,11 +622,11 @@ public class TestFormSession extends OpenCmsTestCase {
 
     /**
      * Unmarshals the content definition used within the tests.<p>
-     * 
+     *
      * @param resolver the entity resolver
-     * 
+     *
      * @return the content definition
-     * 
+     *
      * @throws IOException if reading the files fails
      * @throws CmsXmlException if parsing the schema fails
      */

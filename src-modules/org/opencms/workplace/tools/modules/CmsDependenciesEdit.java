@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -56,8 +56,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Class to edit a module dependencies.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsDependenciesEdit extends CmsWidgetDialog {
 
@@ -81,7 +81,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDependenciesEdit(CmsJspActionElement jsp) {
@@ -91,7 +91,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -101,9 +101,10 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    /** 
+    /**
      * Commits the edited module.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -146,9 +147,10 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Builds the HTML for the dialog form.<p>
-     * 
+     *
      * @return the HTML for the dialog form
      */
+    @Override
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -167,17 +169,18 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
-        setParamPage((String)getPages().get(0));
+        setParamPage(getPages().get(0));
 
         return DIALOG_SET;
     }
 
     /**
      * Gets the module dependency parameter.<p>
-     * 
+     *
      * @return the module dependency parameter
      */
     public String getParamDependency() {
@@ -187,7 +190,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Gets the module parameter.<p>
-     * 
+     *
      * @return the module parameter
      */
     public String getParamModule() {
@@ -195,7 +198,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
         return m_paramModule;
     }
 
-    /** 
+    /**
      * Sets the module dependency parameter.<p>
      * @param paramDependency the module dependency parameter
      */
@@ -204,7 +207,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
         m_paramDependency = paramDependency;
     }
 
-    /** 
+    /**
      * Sets the module parameter.<p>
      * @param paramModule the module parameter
      */
@@ -214,11 +217,12 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -246,6 +250,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initModule();
@@ -259,6 +264,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -267,6 +273,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -328,6 +335,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -342,6 +350,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         String moduleName = getParamModule();
@@ -366,7 +375,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Get the list of all modules available.<p>
-     * 
+     *
      * @return list of module names
      */
     private List getModules() {
@@ -405,7 +414,7 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
 
     /**
      * Checks if the new dependency dialog has to be displayed.<p>
-     * 
+     *
      * @return <code>true</code> if the new dependency dialog has to be displayed
      */
     private boolean isNewDependency() {

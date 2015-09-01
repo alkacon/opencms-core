@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,6 +28,7 @@
 package org.opencms.xml.content;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -38,21 +39,22 @@ import org.opencms.xml.types.CmsXmlStringValue;
 import java.io.StringWriter;
 import java.util.Locale;
 
-import junit.framework.TestCase;
-
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 /**
  * Tests for generating an XML content definition.<p>
- * 
+ *
  */
-public class TestCmsXmlContentDefinition extends TestCase {
+public class TestCmsXmlContentDefinition extends OpenCmsTestCase {
+
+    /** The schema id. */
+    private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlContentDefinition(String arg0) {
@@ -61,8 +63,8 @@ public class TestCmsXmlContentDefinition extends TestCase {
     }
 
     /**
-     * Basic test for xml content definitions.<p> 
-     * 
+     * Basic test for xml content definitions.<p>
+     *
      * @throws Exception in case an error occurred
      */
     public void testCmsXmlContentDefiniton() throws Exception {
@@ -82,7 +84,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
 
         XMLWriter writer;
 
-        // output the schema XML        
+        // output the schema XML
         writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
         writer.write(schema);
         writer.flush();
@@ -107,9 +109,9 @@ public class TestCmsXmlContentDefinition extends TestCase {
         assertFalse(cd1.equals(cd2));
     }
 
-    /** 
+    /**
      * Tests creation of an XML content from a XML content definition.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCreateXmlContent() throws Exception {
@@ -164,12 +166,9 @@ public class TestCmsXmlContentDefinition extends TestCase {
         System.out.println(content.toString());
     }
 
-    /** The schema id. */
-    private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
-
-    /** 
+    /**
      * Tests XML content definition with a different inner / outer sequence name.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testDifferentInnerOuterName() throws Exception {
@@ -191,7 +190,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
 
         XMLWriter writer;
 
-        // output the schema XML        
+        // output the schema XML
         writer = new XMLWriter(out, OutputFormat.createPrettyPrint());
         writer.write(schema);
         writer.flush();

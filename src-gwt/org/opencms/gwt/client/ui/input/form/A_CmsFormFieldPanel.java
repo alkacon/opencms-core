@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The abstract class for form field container widgets.<p>
- *  
+ *
  *  @since 8.0.0
  */
 public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTruncable {
@@ -54,28 +54,28 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Returns the default group name.<p>
-     * 
-     * @return the default group name 
+     *
+     * @return the default group name
      */
     public abstract String getDefaultGroup();
 
     /**
      * Renders a collection of fields.<p>
-     * 
+     *
      * This should only be called once, when the form is being built.<p>
-     * 
-     * @param fields the fields to render 
+     *
+     * @param fields the fields to render
      */
     public abstract void renderFields(Collection<I_CmsFormField> fields);
 
     /**
      * Re-renders the fields of a group.<p>
-     * 
+     *
      * Not supported by all subclasses.<p>
-     * 
-     * @param group the group whose fields to re-render 
-     * 
-     * @param fieldsInGroup the  fields to re-render 
+     *
+     * @param group the group whose fields to re-render
+     *
+     * @param fieldsInGroup the  fields to re-render
      */
     public void rerenderFields(String group, Collection<I_CmsFormField> fieldsInGroup) {
 
@@ -84,10 +84,10 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Helper method for creating a form row widget.<p>
-     * 
+     *
      * @param field the field for which to create a form row
-     *  
-     * @return the newly created form row 
+     *
+     * @return the newly created form row
      */
     protected CmsFormRow createRow(I_CmsFormField field) {
 
@@ -100,12 +100,12 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Creates a form row.<p>
-     * 
-     * @param labelText the label text 
-     * @param description the description 
-     * @param widget the widget to use 
-     * 
-     * @return the new form row 
+     *
+     * @param labelText the label text
+     * @param description the description
+     * @param widget the widget to use
+     *
+     * @return the new form row
      */
     protected CmsFormRow createRow(String labelText, String description, Widget widget) {
 
@@ -114,13 +114,13 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Adds a new row with a given label and input widget to the form.<p>
-     * 
+     *
      * @param labelText the label text for the form field
-     * @param description the description of the form field 
-     * @param widget the widget for the form field 
+     * @param description the description of the form field
+     * @param widget the widget for the form field
      * @param infoText the text to display on the info icon (may be null)
-     *  
-     * @return the newly added form row 
+     *
+     * @return the newly added form row
      */
     protected CmsFormRow createRow(String labelText, String description, Widget widget, String infoText) {
 
@@ -140,8 +140,8 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Helper method for adding a border to a widget.<p>
-     * 
-     * @param widget the widget which a border should be added to 
+     *
+     * @param widget the widget which a border should be added to
      */
     protected void setBorder(Widget widget) {
 
@@ -154,7 +154,7 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Stores the truncation data to be used when new rows are created.<p>
-     * 
+     *
      * @param textMetricsKey the text metrics key
      * @param clientWidth the client width
      */
@@ -166,7 +166,7 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
 
     /**
      * Truncates all children of the given panel implementing the I_CmsTruncable.<p>
-     * 
+     *
      * @param panel the panel
      * @param textMetricsKey the metrics key
      * @param clientWidth the client width

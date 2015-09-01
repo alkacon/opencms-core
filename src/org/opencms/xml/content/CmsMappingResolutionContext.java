@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,13 +51,13 @@ import com.google.common.collect.Sets;
 
 /**
  * A class which represents the context for resolving all content value mappings of an XML content.<p>
- * 
+ *
  * Since the content handler instance is shared between all contents of the same XML content type, we can't use
- * it to store data which is only relevant for resolving the mappings of a single XML content, so this class was created. 
+ * it to store data which is only relevant for resolving the mappings of a single XML content, so this class was created.
  */
 public class CmsMappingResolutionContext {
 
-    /** 
+    /**
      * Internal bean used to keep track of URL name mappings.<p>
      */
     class InternalUrlNameMappingEntry {
@@ -73,10 +73,10 @@ public class CmsMappingResolutionContext {
 
         /**
          * Creates a new instance.<p>
-         * 
-         * @param structureId the structure id 
-         * @param name the URL name 
-         * @param locale the locale 
+         *
+         * @param structureId the structure id
+         * @param name the URL name
+         * @param locale the locale
          */
         public InternalUrlNameMappingEntry(CmsUUID structureId, String name, Locale locale) {
 
@@ -131,13 +131,13 @@ public class CmsMappingResolutionContext {
      */
     public CmsMappingResolutionContext() {
 
-        // empty 
+        // empty
     }
 
     /**
      * Writes all the stored URL name mappings to the database.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void commitUrlNameMappings() throws CmsException {
 
@@ -172,21 +172,31 @@ public class CmsMappingResolutionContext {
     }
 
     /**
+     * Finalizes the mappings.<p>
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void finalizeMappings() throws CmsException {
+
+        commitUrlNameMappings();
+    }
+
+    /**
      * Sets the CMS context to use.<p>
-     * 
-     * @param cms the CMS context 
+     *
+     * @param cms the CMS context
      */
     public void setCmsObject(CmsObject cms) {
 
         m_cms = cms;
     }
 
-    /** 
+    /**
      * Adds an URL name mapping which should be written to the database later.<p>
-     * 
-     * @param name the mapping name 
-     * @param locale the locale 
-     * @param structureId the structure ID 
+     *
+     * @param name the mapping name
+     * @param locale the locale
+     * @param structureId the structure ID
      */
     void addUrlNameMapping(String name, Locale locale, CmsUUID structureId) {
 

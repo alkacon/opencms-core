@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for the XML page that require a running OpenCms system.<p>
- * 
+ *
  * @since 6.0.0
  */
 public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
@@ -64,7 +64,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestCmsXmlPageInSystem(String arg0) {
@@ -74,7 +74,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -115,7 +115,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests comments in the page HTML source code.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testCommentInSource() throws Exception {
@@ -170,14 +170,14 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests link issue with certain parameters.<p>
-     * 
+     *
      * Description of the issue:
-     * links with parameters <code>&lt;a href="form.jsp?a=b&language=xy"&gt;</code> are replaced by 
+     * links with parameters <code>&lt;a href="form.jsp?a=b&language=xy"&gt;</code> are replaced by
      * <code>&lt;a href="form.jsp?a=b?uage=xy"&gt;</code>.<p>
-     * 
-     * This issue turned out to be a bug in the HtmlParser component, 
+     *
+     * This issue turned out to be a bug in the HtmlParser component,
      * updating the component from version 1.4 to version 1.5 solved the issue.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testLinkParameterIssue() throws Exception {
@@ -230,7 +230,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests XML link replacement.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testLinkReplacement() throws Exception {
@@ -303,7 +303,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Testing pages with international chars in link parameters.<p>
-     * 
+     *
      * @throws Exception if something goes wrong
      */
     public void testLinksWithSpecialChars() throws Exception {
@@ -355,7 +355,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Test malformed page structures.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testMalformedPage() throws Exception {
@@ -378,10 +378,10 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Test the schema cache publish issue.<p>
-     * 
+     *
      * Description of the issue:
      * After the initial publish, the XML page schema does not work anymore.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testSchemaCachePublishIssue() throws Exception {
@@ -417,7 +417,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests creating a XMl page with the API.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testXmlPageCreate() throws Exception {
@@ -443,7 +443,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests the usage of an anchor link.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testAnchorLink() throws Exception {
@@ -481,7 +481,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
     /**
      * Tests accessing element names in the XML page.<p>
-     * 
+     *
      * @throws Exception in case something goes wrong
      */
     public void testXmlPageRenameElement() throws Exception {

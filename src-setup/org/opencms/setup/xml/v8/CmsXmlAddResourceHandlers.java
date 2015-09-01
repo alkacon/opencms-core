@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,6 +32,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.main.CmsAliasResourceHandler;
+import org.opencms.pdftools.CmsPdfResourceHandler;
 import org.opencms.setup.xml.A_CmsSetupXmlUpdate;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 
@@ -43,7 +44,7 @@ import org.dom4j.Node;
 
 /**
  * Adds the new init resource handler classes, from 7.5.x to 8.0.0.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
@@ -108,7 +109,8 @@ public class CmsXmlAddResourceHandlers extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             String[] handlers = new String[] {
                 CmsDetailPageResourceHandler.class.getName(),
-                CmsAliasResourceHandler.class.getName()};
+                CmsAliasResourceHandler.class.getName(),
+                CmsPdfResourceHandler.class.getName()};
             m_xpaths = new ArrayList<String>();
             for (String handler : handlers) {
                 // "/opencms/system/resourceinit/resourceinithandler[@class='...']";

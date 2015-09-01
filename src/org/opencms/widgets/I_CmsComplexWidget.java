@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -30,35 +30,35 @@ package org.opencms.widgets;
 import org.opencms.ade.contenteditor.shared.CmsComplexWidgetData;
 import org.opencms.file.CmsObject;
 
-/** 
+/**
  * Interface for complex widgets which are used in the Acacia editor to render whole nested contents.<p>
  */
 public interface I_CmsComplexWidget {
 
     /**
      * Returns a copy of this widget which has been configured with the given configuration string.<p>
-     * 
-     * @param configuration the configuration string 
-     * 
-     * @return the configured copy of the widget 
+     *
+     * @param configuration the configuration string
+     *
+     * @return the configured copy of the widget
      */
     I_CmsComplexWidget configure(String configuration);
 
-    /** 
+    /**
      * Gets the name of the complex widget.<p>
-     * 
+     *
      * The string returned by this function should be a valid Javascript identifier.
-     * 
+     *
      * @return the name of the complex widget
      */
     String getName();
 
     /**
      * Gets the data needed for the editor to render the complex widget.<p>
-     * 
-     * @param cms The CMS object to use for VFS operations 
-     * 
-     * @return the data for the complex widget 
+     *
+     * @param cms The CMS object to use for VFS operations
+     *
+     * @return the data for the complex widget
      */
     CmsComplexWidgetData getWidgetData(CmsObject cms);
 }

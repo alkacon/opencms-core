@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,15 +33,15 @@ import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 
 /**
  * Sitemap context menu goto parent sitemap entry.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
      */
     public CmsParentSitemapMenuEntry(CmsSitemapHoverbar hoverbar) {
 
@@ -65,7 +65,7 @@ public class CmsParentSitemapMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsSitemapController controller = getHoverbar().getController();
-        boolean show = !CmsSitemapView.getInstance().isGalleryMode()
+        boolean show = !CmsSitemapView.getInstance().isSpecialMode()
             && controller.isRoot(getHoverbar().getEntry().getSitePath())
             && (controller.getData().getParentSitemap() != null);
         setVisible(show);

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,7 +59,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
  * The tab widget for selecting sitemap entries.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSitemapTab extends A_CmsListTab {
@@ -78,7 +78,7 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param handler the tab handler
      */
     public CmsSitemapTab(CmsSitemapTabHandler handler) {
@@ -90,8 +90,8 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Sets the initial folders in the VFS tab.<p>
-     * 
-     * @param entries the root folders to display 
+     *
+     * @param entries the root folders to display
      */
     public void fill(List<CmsSitemapEntryBean> entries) {
 
@@ -104,10 +104,10 @@ public class CmsSitemapTab extends A_CmsListTab {
         onContentChange();
     }
 
-    /** 
+    /**
      * Default way to fill the sitemap tab.<p>
-     * 
-     * @param entries the entries to fill the tab with 
+     *
+     * @param entries the entries to fill the tab with
      */
     public void fillDefault(List<CmsSitemapEntryBean> entries) {
 
@@ -116,10 +116,10 @@ public class CmsSitemapTab extends A_CmsListTab {
         }
     }
 
-    /** 
+    /**
      * Fills the sitemap tab with preloaded data.<p>
-     * 
-     * @param entries the preloaded sitemap entries 
+     *
+     * @param entries the preloaded sitemap entries
      */
     public void fillWithPreloadInfo(List<CmsSitemapEntryBean> entries) {
 
@@ -138,7 +138,7 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Returns if the tab content has been initialized.<p>
-     * 
+     *
      * @return <code>true</code> if the tab content has been initialized
      */
     public boolean isInitialized() {
@@ -158,8 +158,8 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Method which is called when the sitemap preload data is received.<p>
-     * 
-     * @param sitemapPreloadData the sitemap tree's preloaded root entry 
+     *
+     * @param sitemapPreloadData the sitemap tree's preloaded root entry
      */
     public void onReceiveSitemapPreloadData(CmsSitemapEntryBean sitemapPreloadData) {
 
@@ -181,16 +181,18 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Helper method for creating a VFS tree item widget from a VFS entry bean.<p>
-     * 
-     * @param sitemapEntry the VFS entry bean 
-     * 
+     *
+     * @param sitemapEntry the VFS entry bean
+     *
      * @return the tree item widget
      */
     protected CmsLazyTreeItem createItem(final CmsSitemapEntryBean sitemapEntry) {
 
-        CmsDataValue dataValue = new CmsDataValue(600, 3, CmsIconUtil.getResourceIconClasses(
-            sitemapEntry.getImageType(),
-            true), sitemapEntry.getDisplayName());
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            CmsIconUtil.getResourceIconClasses(sitemapEntry.getImageType(), true),
+            sitemapEntry.getDisplayName());
         dataValue.setUnselectable();
         if (sitemapEntry.isHiddenEntry()) {
             dataValue.setColor("#aaaaaa");
@@ -199,11 +201,12 @@ public class CmsSitemapTab extends A_CmsListTab {
         CmsLazyTreeItem result = new CmsLazyTreeItem(dataValue, true);
         result.setData(sitemapEntry);
         if (getTabHandler().hasSelectResource()) {
-            dataValue.addButton(createSelectResourceButton(
-                m_handler.getSelectPath(sitemapEntry),
-                sitemapEntry.getStructureId(),
-                sitemapEntry.getDisplayName(),
-                sitemapEntry.getType()));
+            dataValue.addButton(
+                createSelectResourceButton(
+                    m_handler.getSelectPath(sitemapEntry),
+                    sitemapEntry.getStructureId(),
+                    sitemapEntry.getDisplayName(),
+                    sitemapEntry.getType()));
         }
         result.setLeafStyle(!sitemapEntry.isFolder());
         result.setSmallView(true);
@@ -314,8 +317,8 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Collects the structure ids belonging to open tree entries.<p>
-     * 
-     * @return the collected set of structure ids 
+     *
+     * @return the collected set of structure ids
      */
     Set<CmsUUID> getOpenItemIds() {
 
@@ -331,8 +334,8 @@ public class CmsSitemapTab extends A_CmsListTab {
 
     /**
      * Selects a specific site root.<p>
-     * 
-     * @param siteRoot the site root to select 
+     *
+     * @param siteRoot the site root to select
      */
     private void selectSite(String siteRoot) {
 

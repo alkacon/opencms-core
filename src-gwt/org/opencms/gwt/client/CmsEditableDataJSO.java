@@ -88,6 +88,20 @@ public final class CmsEditableDataJSO extends JavaScriptObject implements I_CmsE
                                           }-*/;
 
     /**
+     * Gets the element view.<p>
+     *
+     * @return the element view
+     */
+    public CmsUUID getElementView() {
+
+        String elementViewString = getString(CmsEditorConstants.ATTR_ELEMENT_VIEW);
+        if (elementViewString == null) {
+            return null;
+        }
+        return new CmsUUID(elementViewString);
+    }
+
+    /**
      * @see org.opencms.gwt.client.I_CmsEditableData#getNewLink()
      */
     public native String getNewLink() /*-{

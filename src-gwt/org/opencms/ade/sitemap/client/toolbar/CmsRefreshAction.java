@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,15 +36,17 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
  * Context menu entry for the 'Refresh' action.<p>
  */
 public class CmsRefreshAction implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
     /**
-     * Returns the context menu command according to 
+     * Returns the context menu command according to
      * {@link org.opencms.gwt.client.ui.contextmenu.I_CmsHasContextMenuCommand}.<p>
-     * 
+     *
      * @return the context menu command
      */
     public static I_CmsContextMenuCommand getContextMenuCommand() {
@@ -58,7 +60,20 @@ public class CmsRefreshAction implements I_CmsHasContextMenuCommand, I_CmsContex
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
         CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-        controller.updateEntry(controller.getData().getRoot().getId());
+        controller.refreshRoot(new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void onSuccess(Void result) {
+
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     /**

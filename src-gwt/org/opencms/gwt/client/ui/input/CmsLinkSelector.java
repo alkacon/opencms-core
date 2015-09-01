@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Panel;
 
 /**
  * Widget for selecting an internal or external link.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_CmsHasGhostValue {
@@ -98,7 +98,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
     /** True if the widget is in "internal" mode. */
     private boolean m_internal;
 
-    /** 
+    /**
      * Constructs a new gallery widget.<p>
      */
     public CmsLinkSelector() {
@@ -128,7 +128,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         setInternal(false);
     }
 
-    /**  
+    /**
      * Initializes this class.<p>
      */
     public static void initClass() {
@@ -181,7 +181,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Returns the selected link target string.<p>
-     * 
+     *
      * @return the link target string
      */
     public String getLink() {
@@ -191,8 +191,8 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Returns the selected link as a bean.<p>
-     * 
-     * @return the selected link as a bean 
+     *
+     * @return the selected link as a bean
      */
     public CmsLinkBean getLinkBean() {
 
@@ -205,7 +205,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Returns the text box of this widget.<p>
-     * 
+     *
      * @return the CmsTextBox.
      */
     public CmsTextBox getTextBox() {
@@ -221,10 +221,10 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
         return !m_textbox.isReadOnly();
     }
 
-    /** 
+    /**
      * Returns true if the widget is in internal mode.
-     *  
-     * @return true if the widget is in internal mode 
+     *
+     * @return true if the widget is in internal mode
      */
     public boolean isInternal() {
 
@@ -244,7 +244,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void setAutoHideParent(I_CmsAutoHider autoHideParent) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -260,7 +260,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
      */
     public void setErrorMessage(String errorMessage) {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -299,8 +299,8 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Sets the widget's mode to internal or external.<p>
-     * 
-     * @param internal if true, sets the mode to internal, else to external 
+     *
+     * @param internal if true, sets the mode to internal, else to external
      */
     public void setInternal(boolean internal) {
 
@@ -314,7 +314,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Sets the link target.<p>
-     * 
+     *
      * @param link the link target
      */
     public void setLink(String link) {
@@ -327,8 +327,8 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Sets the link from a bean.<p>
-     * 
-     * @param link the link bean 
+     *
+     * @param link the link bean
      */
     public void setLinkBean(CmsLinkBean link) {
 
@@ -341,7 +341,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Sets the name of the input field.<p>
-     * 
+     *
      * @param name of the input field
      * */
     public void setName(String name) {
@@ -352,8 +352,8 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Creates the URL for the gallery dialog IFrame.<p>
-     * 
-     * @return the URL for the gallery dialog IFrame 
+     *
+     * @return the URL for the gallery dialog IFrame
      */
     protected String buildGalleryUrl() {
 
@@ -405,7 +405,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
 
     /**
      * Called if the user changed the state to internal or external.<p>
-     * 
+     *
      * @param external if the new state is "external"
      */
     protected void userChangedExternal(boolean external) {

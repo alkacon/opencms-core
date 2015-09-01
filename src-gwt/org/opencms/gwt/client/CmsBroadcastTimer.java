@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
  * A timer which sends an RPC call regularly to keep the session alive and receive workplace broadcasts.<p>
- * 
+ *
  * @since 9.5.0
  */
 public class CmsBroadcastTimer {
@@ -86,7 +86,7 @@ public class CmsBroadcastTimer {
 
     /**
      * Returns if the timer should keep running.<p>
-     * 
+     *
      * @return <code>true</code>  if the ping timer should keep running
      */
     protected static boolean shouldKeepRunning() {
@@ -96,9 +96,9 @@ public class CmsBroadcastTimer {
 
     /**
      * Generates the HTML for a single broadcast message.<p>
-     * 
+     *
      * @param message the message
-     * 
+     *
      * @return the HTML string
      */
     protected String createMessageHtml(CmsBroadcastMessage message) {
@@ -149,7 +149,6 @@ public class CmsBroadcastTimer {
                 }
                 return false;
             }
-        },
-            PING_INTERVAL);
+        }, PING_INTERVAL);
     }
 }

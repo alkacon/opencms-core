@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,9 +43,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -59,9 +62,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.containerpage.CmsADECache;
 import org.opencms.xml.containerpage.CmsADECacheSettings;
@@ -73,6 +79,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,10 +105,8 @@ public class CmsADEManager {
     /** JSON property name constant. */
     protected enum FavListProp {
         /** element property. */
-        ELEMENT,
-        /** formatter property. */
-        FORMATTER,
-        /** properties property. */
+        ELEMENT, /** formatter property. */
+        FORMATTER, /** properties property. */
         PROPERTIES;
     }
 
@@ -110,21 +115,10 @@ public class CmsADEManager {
      */
     protected enum Status {
         /** already initialized. */
-        initialized,
-        /** currently initializing. */
-        initializing,
-        /** not initialized. */
+        initialized, /** currently initializing. */
+        initializing, /** not initialized. */
         notInitialized
     }
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_FAVORITE_LIST_SIZE = "ADE_FAVORITE_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_RECENT_LIST_SIZE = "ADE_RECENT_LIST_SIZE";
-
-    /** User additional info key constant. */
-    public static final String ADDINFO_ADE_SEARCH_PAGE_SIZE = "ADE_SEARCH_PAGE_SIZE";
 
     /** The client id separator. */
     public static final String CLIENT_ID_SEPERATOR = "#";
@@ -134,6 +128,7 @@ public class CmsADEManager {
 
     /** The name of the sitemap configuration file type. */
     public static final String CONFIG_FOLDER_TYPE = "content_folder";
+
     /** The path for sitemap configuration files relative from the base path. */
     public static final String CONFIG_SUFFIX = "/"
         + CmsADEManager.CONTENT_FOLDER_NAME
@@ -146,11 +141,11 @@ public class CmsADEManager {
     /** The content folder name. */
     public static final String CONTENT_FOLDER_NAME = ".content";
 
-    /** Default favorite list size constant. */
-    public static final int DEFAULT_FAVORITE_LIST_SIZE = 10;
+    /** Default favorite/recent list size constant. */
+    public static final int DEFAULT_ELEMENT_LIST_SIZE = 25;
 
-    /** Default recent list size constant. */
-    public static final int DEFAULT_RECENT_LIST_SIZE = 10;
+    /** The name of the element view configuration file type. */
+    public static final String ELEMENT_VIEW_TYPE = "elementview";
 
     /** The name of the module configuration file type. */
     public static final String MODULE_CONFIG_TYPE = "module_config";
@@ -184,6 +179,9 @@ public class CmsADEManager {
 
     /** The detail page finder. */
     private I_CmsDetailPageFinder m_detailPageFinder = new CmsSitemapDetailPageFinder();
+
+    /** The element view configuration file type. */
+    private I_CmsResourceType m_elementViewType;
 
     /** The initialization status. */
     private Status m_initStatus = Status.notInitialized;
@@ -227,11 +225,14 @@ public class CmsADEManager {
     /**
      * Creates a new ADE manager.<p>
      *
-     * @param adminCms a CMS context with admin privileges 
+     * @param adminCms a CMS context with admin privileges
      * @param memoryMonitor the memory monitor instance
      * @param systemConfiguration the system configuration
      */
-    public CmsADEManager(CmsObject adminCms, CmsMemoryMonitor memoryMonitor, CmsSystemConfiguration systemConfiguration) {
+    public CmsADEManager(
+        CmsObject adminCms,
+        CmsMemoryMonitor memoryMonitor,
+        CmsSystemConfiguration systemConfiguration) {
 
         // initialize the ade cache
         CmsADECacheSettings cacheSettings = systemConfiguration.getAdeCacheSettings();
@@ -247,10 +248,10 @@ public class CmsADEManager {
 
     /**
      * Finds the entry point to a sitemap.<p>
-     * 
+     *
      * @param cms the CMS context
      * @param openPath the resource path to find the sitemap to
-     * 
+     *
      * @return the sitemap entry point
      */
     public String findEntryPoint(CmsObject cms, String openPath) {
@@ -265,10 +266,10 @@ public class CmsADEManager {
 
     /**
      * Gets the complete list of beans for the currently configured detail pages.<p>
-     * 
+     *
      * @param cms the CMS context to use
-     *   
-     * @return the list of detail page infos 
+     *
+     * @return the list of detail page infos
      */
     public List<CmsDetailPageInfo> getAllDetailPages(CmsObject cms) {
 
@@ -276,9 +277,9 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the containerpage cache instance.<p> 
-     * 
-     * @return the containerpage cache instance 
+     * Gets the containerpage cache instance.<p>
+     *
+     * @return the containerpage cache instance
      */
     public CmsADECache getCache() {
 
@@ -287,10 +288,10 @@ public class CmsADEManager {
 
     /**
      * Gets the cached formatter beans.<p>
-     * 
+     *
      * @param online true if the Online project formatters should be returned, false for the Offline formatters
-     * 
-     * @return the formatter configuration cache state 
+     *
+     * @return the formatter configuration cache state
      */
     public CmsFormatterConfigurationCacheState getCachedFormatters(boolean online) {
 
@@ -300,8 +301,8 @@ public class CmsADEManager {
 
     /**
      * Gets the configuration file type.<p>
-     * 
-     * @return the configuration file type 
+     *
+     * @return the configuration file type
      */
     public I_CmsResourceType getConfigurationType() {
 
@@ -310,11 +311,11 @@ public class CmsADEManager {
 
     /**
      * Reads the current element bean from the request.<p>
-     * 
+     *
      * @param req the servlet request
-     * 
+     *
      * @return the element bean
-     * 
+     *
      * @throws CmsException if no current element is set
      */
     public CmsContainerElementBean getCurrentElement(ServletRequest req) throws CmsException {
@@ -328,10 +329,10 @@ public class CmsADEManager {
 
     /**
      * Gets the detail id cache for the Online or Offline projects.<p>
-     * 
-     * @param online if true, gets the Online project detail id 
-     *  
-     * @return the detail name cache 
+     *
+     * @param online if true, gets the Online project detail id
+     *
+     * @return the detail name cache
      */
     public CmsDetailNameCache getDetailIdCache(boolean online) {
 
@@ -340,12 +341,12 @@ public class CmsADEManager {
 
     /**
      * Gets the detail page for a content element.<p>
-     * 
-     * @param cms the CMS context 
-     * @param pageRootPath the element's root path 
-     * @param originPath the path in which the the detail page is being requested 
-     * 
-     * @return the detail page for the content element 
+     *
+     * @param cms the CMS context
+     * @param pageRootPath the element's root path
+     * @param originPath the path in which the the detail page is being requested
+     *
+     * @return the detail page for the content element
      */
     public String getDetailPage(CmsObject cms, String pageRootPath, String originPath) {
 
@@ -356,22 +357,24 @@ public class CmsADEManager {
         }
         String originRootPath = cms.getRequestContext().addSiteRoot(originPath);
         CmsADEConfigData configData = lookupConfiguration(cms, originRootPath);
-        List<CmsDetailPageInfo> pageInfo = configData.getDetailPagesForType(resType);
-        if ((pageInfo == null) || pageInfo.isEmpty()) {
-            // in case no detail page is found for the base URI try to fetch it for the page root path
-            configData = lookupConfiguration(cms, pageRootPath);
-            pageInfo = configData.getDetailPagesForType(resType);
-            if ((pageInfo == null) || pageInfo.isEmpty()) {
-                return null;
+        CmsADEConfigData targetConfigData = lookupConfiguration(cms, pageRootPath);
+        boolean targetFirst = targetConfigData.isPreferDetailPagesForLocalContents();
+        List<CmsADEConfigData> configs = targetFirst
+        ? Arrays.asList(targetConfigData, configData)
+        : Arrays.asList(configData, targetConfigData);
+        for (CmsADEConfigData config : configs) {
+            List<CmsDetailPageInfo> pageInfo = config.getDetailPagesForType(resType);
+            if ((pageInfo != null) && !pageInfo.isEmpty()) {
+                return pageInfo.get(0).getUri();
             }
         }
-        return pageInfo.get(0).getUri();
+        return null;
     }
 
     /**
      * Gets the detail page finder.<p>
-     * 
-     * @return the detail page finder 
+     *
+     * @return the detail page finder
      */
     public I_CmsDetailPageFinder getDetailPageFinder() {
 
@@ -380,10 +383,10 @@ public class CmsADEManager {
 
     /**
      * Returns the main detail pages for a type in all of the VFS tree.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param type the resource type name 
-     * @return a list of detail page root paths 
+     *
+     * @param cms the current CMS context
+     * @param type the resource type name
+     * @return a list of detail page root paths
      */
     public List<String> getDetailPages(CmsObject cms, String type) {
 
@@ -393,10 +396,10 @@ public class CmsADEManager {
 
     /**
      * Gets the set of types for which detail pages are defined.<p>
-     * 
-     * @param cms the current CMS context 
-     *  
-     * @return the set of types for which detail pages are defined 
+     *
+     * @param cms the current CMS context
+     *
+     * @return the set of types for which detail pages are defined
      */
     public Set<String> getDetailPageTypes(CmsObject cms) {
 
@@ -405,12 +408,12 @@ public class CmsADEManager {
 
     /**
      * Returns the element settings for a given resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource
-     * 
+     *
      * @return the element settings for a given resource
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public Map<String, CmsXmlContentProperty> getElementSettings(CmsObject cms, CmsResource resource)
@@ -428,13 +431,36 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the available element views.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the element views
+     */
+    public Map<CmsUUID, CmsElementView> getElementViews(CmsObject cms) {
+
+        CmsConfigurationCache cache = getCache(isOnline(cms));
+        return cache.getState().getElementViews();
+    }
+
+    /**
+     * Gets the element view configuration resource type.<p>
+     *
+     * @return the element view configuration resource type
+     */
+    public I_CmsResourceType getElementViewType() {
+
+        return m_elementViewType;
+    }
+
+    /**
      * Returns the favorite list, or creates it if not available.<p>
      *
      * @param cms the cms context
-     * 
+     *
      * @return the favorite list
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsContainerElementBean> getFavoriteList(CmsObject cms) throws CmsException {
 
@@ -467,11 +493,11 @@ public class CmsADEManager {
 
     /**
      * Returns the inheritance state for the given inheritance name and resource.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param resource the resource
      * @param name the inheritance name
-     * 
+     *
      * @return the inheritance state
      */
     public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, CmsResource resource, String name) {
@@ -492,14 +518,14 @@ public class CmsADEManager {
 
     /**
      * Returns the inheritance state for the given inheritance name and root path.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param rootPath the root path
      * @param name the inheritance name
-     * 
+     *
      * @return the inheritance state
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public CmsInheritedContainerState getInheritedContainerState(CmsObject cms, String rootPath, String name)
     throws CmsException {
@@ -514,10 +540,10 @@ public class CmsADEManager {
         }
     }
 
-    /** 
+    /**
      * Gets the maximum sitemap depth.<p>
-     * 
-     * @return the maximum sitemap depth 
+     *
+     * @return the maximum sitemap depth
      */
     public int getMaxSitemapDepth() {
 
@@ -526,8 +552,8 @@ public class CmsADEManager {
 
     /**
      * Gets the module configuration resource type.<p>
-     * 
-     * @return the module configuration resource type 
+     *
+     * @return the module configuration resource type
      */
     public I_CmsResourceType getModuleConfigurationType() {
 
@@ -536,15 +562,16 @@ public class CmsADEManager {
 
     /**
      * Gets ADE parameters.<p>
-     * 
-     * @param cms the current CMS context 
-     * @return the ADE parameters for the current user 
+     *
+     * @param cms the current CMS context
+     * @return the ADE parameters for the current user
      */
     public Map<String, String> getParameters(CmsObject cms) {
 
         Map<String, String> result = new LinkedHashMap<String, String>(m_parameters);
         if (cms != null) {
-            String userParamsStr = (String)(cms.getRequestContext().getCurrentUser().getAdditionalInfo().get("ADE_PARAMS"));
+            String userParamsStr = (String)(cms.getRequestContext().getCurrentUser().getAdditionalInfo().get(
+                "ADE_PARAMS"));
             if (userParamsStr != null) {
                 Map<String, String> userParams = CmsStringUtil.splitAsMap(userParamsStr, "|", ":");
                 result.putAll(userParams);
@@ -554,13 +581,67 @@ public class CmsADEManager {
     }
 
     /**
+     * Returns the permission info for the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param contextPath the context path
+     *
+     * @return the permission info
+     *
+     * @throws CmsException if checking the permissions fails
+     */
+    public CmsPermissionInfo getPermissionInfo(CmsObject cms, CmsResource resource, String contextPath)
+    throws CmsException {
+
+        boolean hasView = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.ALL.addRequireVisible());
+        boolean hasWrite = false;
+        if (hasView) {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource.getTypeId());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            hasView = (settings == null) || settings.getAccess().getPermissions(cms, resource).requiresViewPermission();
+            if (hasView
+                && CmsResourceTypeXmlContent.isXmlContent(resource)
+                && !CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
+                if (contextPath == null) {
+                    contextPath = resource.getRootPath();
+                }
+                CmsResourceTypeConfig localConfigData = lookupConfiguration(cms, contextPath).getResourceType(
+                    type.getTypeName());
+                if (localConfigData != null) {
+                    Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
+                    hasView = elmenetViews.containsKey(localConfigData.getElementView())
+                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms);
+                }
+            }
+            // the user may only have write permissions if he is allowed to view the resource
+            hasWrite = hasView
+                && cms.hasPermissions(
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.IGNORE_EXPIRATION)
+                && ((settings == null) || settings.getAccess().getPermissions(cms, resource).requiresWritePermission());
+        }
+
+        String noEdit = new CmsResourceUtil(cms, resource).getNoEditReason(
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms),
+            true);
+        return new CmsPermissionInfo(hasView, hasWrite, noEdit);
+    }
+
+    /**
      * Returns the favorite list, or creates it if not available.<p>
      *
      * @param cms the cms context
-     * 
+     *
      * @return the favorite list
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public List<CmsContainerElementBean> getRecentList(CmsObject cms) throws CmsException {
 
@@ -592,27 +673,21 @@ public class CmsADEManager {
     }
 
     /**
-     * Gets the maximum length of the recent list.<p>
-     * 
-     * @param user the user for which to get the maximum length 
-     * 
-     * @return the maximum recent list size for the user 
+     * Gets the sitemap configuration resource type.<p>
+     *
+     * @return the resource type for sitemap configurations
      */
-    public int getRecentListMaxSize(CmsUser user) {
+    public I_CmsResourceType getSitemapConfigurationType() {
 
-        Integer maxElems = (Integer)user.getAdditionalInfo(ADDINFO_ADE_RECENT_LIST_SIZE);
-        if (maxElems == null) {
-            maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
-        }
-        return maxElems.intValue();
+        return m_configType;
     }
 
     /**
      * Returns all sub sites below the given path.<p>
-     * 
+     *
      * @param cms the cms context
      * @param subSiteRoot the sub site root path
-     * 
+     *
      * @return the sub site root paths
      */
     public List<String> getSubSitePaths(CmsObject cms, String subSiteRoot) {
@@ -631,17 +706,20 @@ public class CmsADEManager {
 
     /**
      * Tries to get the subsite root for a given resource root path.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param rootPath the root path for which the subsite root should be found 
-     * 
-     * @return the subsite root 
+     *
+     * @param cms the current CMS context
+     * @param rootPath the root path for which the subsite root should be found
+     *
+     * @return the subsite root
      */
     public String getSubSiteRoot(CmsObject cms, String rootPath) {
 
         CmsADEConfigData configData = lookupConfiguration(cms, rootPath);
         String basePath = configData.getBasePath();
         String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+        if (siteRoot == null) {
+            siteRoot = "";
+        }
         if ((basePath == null) || !basePath.startsWith(siteRoot)) {
             // the subsite root should always be below the site root
             return siteRoot;
@@ -652,17 +730,17 @@ public class CmsADEManager {
 
     /**
      * Processes a HTML redirect content.<p>
-     * 
+     *
      * This needs to be in the ADE manager because the user for whom the HTML redirect is being loaded
      * does not necessarily have read permissions for the redirect target, so we read the redirect target
-     * with admin privileges.<p> 
-     * 
-     * @param userCms the CMS context of the current user 
-     * @param request the servlet request 
-     * @param response the servlet response 
+     * with admin privileges.<p>
+     *
+     * @param userCms the CMS context of the current user
+     * @param request the servlet request
+     * @param response the servlet response
      * @param htmlRedirect the path of the HTML redirect resource
-     *  
-     * @throws Exception if something goes wrong 
+     *
+     * @throws Exception if something goes wrong
      */
     public void handleHtmlRedirect(
         CmsObject userCms,
@@ -729,11 +807,20 @@ public class CmsADEManager {
                 m_initStatus = Status.initializing;
                 m_configType = OpenCms.getResourceManager().getResourceType(CONFIG_TYPE);
                 m_moduleConfigType = OpenCms.getResourceManager().getResourceType(MODULE_CONFIG_TYPE);
+                m_elementViewType = OpenCms.getResourceManager().getResourceType(ELEMENT_VIEW_TYPE);
                 CmsProject temp = getTempfileProject(m_onlineCms);
                 m_offlineCms = OpenCms.initCmsObject(m_onlineCms);
                 m_offlineCms.getRequestContext().setCurrentProject(temp);
-                m_onlineCache = new CmsConfigurationCache(m_onlineCms, m_configType, m_moduleConfigType);
-                m_offlineCache = new CmsConfigurationCache(m_offlineCms, m_configType, m_moduleConfigType);
+                m_onlineCache = new CmsConfigurationCache(
+                    m_onlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_elementViewType);
+                m_offlineCache = new CmsConfigurationCache(
+                    m_offlineCms,
+                    m_configType,
+                    m_moduleConfigType,
+                    m_elementViewType);
                 m_onlineCache.initialize();
                 m_offlineCache.initialize();
                 m_onlineContainerConfigurationCache = new CmsContainerConfigurationCache(m_onlineCms, "online");
@@ -768,11 +855,11 @@ public class CmsADEManager {
 
     /**
      * Checks whether the given resource is configured as a detail page.<p>
-     * 
-     * @param cms the current CMS context 
-     * @param resource the resource which should be tested 
-     * 
-     * @return true if the resource is configured as a detail page 
+     *
+     * @param cms the current CMS context
+     * @param resource the resource which should be tested
+     *
+     * @return true if the resource is configured as a detail page
      */
     public boolean isDetailPage(CmsObject cms, CmsResource resource) {
 
@@ -781,8 +868,8 @@ public class CmsADEManager {
 
     /**
      * Checks whether the ADE manager is initialized (this should usually be the case except during the setup).<p>
-     * 
-     * @return true if the ADE manager is initialized 
+     *
+     * @return true if the ADE manager is initialized
      */
     public boolean isInitialized() {
 
@@ -793,7 +880,7 @@ public class CmsADEManager {
      * Returns the show editor help flag.<p>
      *
      * @param cms the cms context
-     * 
+     *
      * @return the show editor help flag
      */
     public boolean isShowEditorHelp(CmsObject cms) {
@@ -806,10 +893,10 @@ public class CmsADEManager {
     /**
      * Looks up the configuration data for a given sitemap path.<p>
      *
-     * @param cms the current CMS context  
+     * @param cms the current CMS context
      * @param rootPath the root path for which the configuration data should be looked up
-     *   
-     * @return the configuration data 
+     *
+     * @return the configuration data
      */
     public CmsADEConfigData lookupConfiguration(CmsObject cms, String rootPath) {
 
@@ -819,7 +906,7 @@ public class CmsADEManager {
 
     /**
      * Reloads the configuration.<p>
-     * 
+     *
      * Normally you shouldn't call this directly since the event handlers take care of updating the configuration.
      */
     public void refresh() {
@@ -830,13 +917,13 @@ public class CmsADEManager {
 
     /**
      * Saves a list of detail pages.<p>
-     * @param cms the cms context 
-     * @param rootPath the root path 
-     * @param detailPages the detail pages 
-     * @param newId the id to use for new detail pages without an id 
-     * @return true if the detail pages could be successfully saved 
-     * 
-     * @throws CmsException if something goes wrong 
+     * @param cms the cms context
+     * @param rootPath the root path
+     * @param detailPages the detail pages
+     * @param newId the id to use for new detail pages without an id
+     * @return true if the detail pages could be successfully saved
+     *
+     * @throws CmsException if something goes wrong
      */
     public boolean saveDetailPages(CmsObject cms, String rootPath, List<CmsDetailPageInfo> detailPages, CmsUUID newId)
     throws CmsException {
@@ -860,11 +947,11 @@ public class CmsADEManager {
 
     /**
      * Saves the favorite list, user based.<p>
-     * 
+     *
      * @param cms the cms context
      * @param favoriteList the element list
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void saveFavoriteList(CmsObject cms, List<CmsContainerElementBean> favoriteList) throws CmsException {
 
@@ -873,13 +960,13 @@ public class CmsADEManager {
 
     /**
      * Saves the inheritance container information.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param pageResource the resource or parent folder
      * @param name the inheritance name
      * @param newOrder if the element have been reordered
      * @param elements the elements
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void saveInheritedContainer(
@@ -895,13 +982,13 @@ public class CmsADEManager {
 
     /**
      * Saves the inheritance container information.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param sitePath the site path of the resource or parent folder
      * @param name the inheritance name
      * @param newOrder if the element have been reordered
      * @param elements the elements
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     public void saveInheritedContainer(
@@ -916,11 +1003,11 @@ public class CmsADEManager {
 
     /**
      * Saves the favorite list, user based.<p>
-     * 
+     *
      * @param cms the cms context
      * @param recentList the element list
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void saveRecentList(CmsObject cms, List<CmsContainerElementBean> recentList) throws CmsException {
 
@@ -929,7 +1016,7 @@ public class CmsADEManager {
 
     /**
      * Sets the show editor help flag.<p>
-     * 
+     *
      * @param cms the cms context
      * @param showHelp the show help flag
      * @throws CmsException if writing the user info fails
@@ -946,15 +1033,25 @@ public class CmsADEManager {
      */
     public void shutdown() {
 
-        // do nothing 
+        // do nothing
+    }
+
+    /**
+     * Waits until the next time the cache is updated.<p>
+     *
+     * @param online true if we want to wait for the online cache, false for the offline cache
+     */
+    public void waitForCacheUpdate(boolean online) {
+
+        getCache(online).getWaitHandleForUpdateTask().enter(2 * CmsConfigurationCache.TASK_DELAY_MILLIS);
     }
 
     /**
      * Waits until the formatter cache has finished updating itself.<p>
-     * 
+     *
      * This method is only intended for use in test cases.
-     * 
-     * @param online true if we should wait for the online formatter cache,false for the offline cache 
+     *
+     * @param online true if we should wait for the online formatter cache,false for the offline cache
      */
     public void waitForFormatterCache(boolean online) {
 
@@ -963,12 +1060,12 @@ public class CmsADEManager {
     }
 
     /**
-     * Creates an element from its serialized data.<p> 
-     * 
+     * Creates an element from its serialized data.<p>
+     *
      * @param data the serialized data
-     * 
+     *
      * @return the restored element bean
-     * 
+     *
      * @throws JSONException if the serialized data got corrupted
      */
     protected CmsContainerElementBean elementFromJson(JSONObject data) throws JSONException {
@@ -992,10 +1089,10 @@ public class CmsADEManager {
 
     /**
      * Converts the given element to JSON.<p>
-     * 
+     *
      * @param element the element to convert
-     * @param excludeSettings the keys of settings which should not be written to the JSON 
-     * 
+     * @param excludeSettings the keys of settings which should not be written to the JSON
+     *
      * @return the JSON representation
      */
     protected JSONObject elementToJson(CmsContainerElementBean element, Set<String> excludeSettings) {
@@ -1026,12 +1123,12 @@ public class CmsADEManager {
         return data;
     }
 
-    /** 
+    /**
      * Gets the configuration cache instance.<p>
-     * 
-     * @param online true if you want the online cache, false for the offline cache 
-     * 
-     * @return the ADE configuration cache instance 
+     *
+     * @param online true if you want the online cache, false for the offline cache
+     *
+     * @return the ADE configuration cache instance
      */
     protected CmsConfigurationCache getCache(boolean online) {
 
@@ -1040,20 +1137,20 @@ public class CmsADEManager {
 
     /**
      * Gets the current ADE configuration cache state.<p>
-     * 
-     * @param online true if you want the online state, false for the offline state 
-     * 
-     * @return the configuration cache state 
+     *
+     * @param online true if you want the online state, false for the offline state
+     *
+     * @return the configuration cache state
      */
     protected CmsADEConfigCacheState getCacheState(boolean online) {
 
         return (online ? m_onlineCache : m_offlineCache).getState();
     }
 
-    /** 
+    /**
      * Gets the offline cache.<p>
-     * 
-     * @return the offline configuration cache 
+     *
+     * @return the offline configuration cache
      */
     protected CmsConfigurationCache getOfflineCache() {
 
@@ -1062,23 +1159,23 @@ public class CmsADEManager {
 
     /**
      * Gets the online cache.<p>
-     * 
-     * @return the online configuration cache 
+     *
+     * @return the online configuration cache
      */
     protected CmsConfigurationCache getOnlineCache() {
 
         return m_onlineCache;
     }
 
-    /** 
+    /**
      * Gets the root path for a given resource structure id.<p>
-     * 
-     * @param structureId the structure id 
+     *
+     * @param structureId the structure id
      * @param online if true, the resource will be looked up in the online project ,else in the offline project
-     *  
+     *
      * @return the root path for the given structure id
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected String getRootPath(CmsUUID structureId, boolean online) throws CmsException {
 
@@ -1088,11 +1185,11 @@ public class CmsADEManager {
 
     /**
      * Gets a tempfile project, creating one if it doesn't exist already.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @return the tempfile project
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     protected CmsProject getTempfileProject(CmsObject cms) throws CmsException {
 
@@ -1105,10 +1202,10 @@ public class CmsADEManager {
 
     /**
      * Internal configuration lookup method.<p>
-     * 
-     * @param cms the cms context 
-     * @param rootPath the root path for which to look up the configuration 
-     * 
+     *
+     * @param cms the cms context
+     * @param rootPath the root path for which to look up the configuration
+     *
      * @return the configuration for the given path
      */
     protected CmsADEConfigData internalLookupConfiguration(CmsObject cms, String rootPath) {
@@ -1118,12 +1215,12 @@ public class CmsADEManager {
         return state.lookupConfiguration(rootPath);
     }
 
-    /** 
+    /**
      * Returns true if the project set in the CmsObject is the Online project.<p>
-     * 
-     * @param cms the CMS context to check 
-     * 
-     * @return true if the project set in the CMS context is the Online project 
+     *
+     * @param cms the CMS context to check
+     *
+     * @return true if the project set in the CMS context is the Online project
      */
     private boolean isOnline(CmsObject cms) {
 
@@ -1132,25 +1229,26 @@ public class CmsADEManager {
 
     /**
      * Saves an element list to the user additional infos.<p>
-     * 
+     *
      * @param cms the cms context
      * @param elementList the element list
      * @param listKey the list key
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void saveElementList(CmsObject cms, List<CmsContainerElementBean> elementList, String listKey)
     throws CmsException {
 
-        // limit the favorite list size to 100 entries to avoid the additional info size limit
-        while (elementList.size() > 100) {
-            elementList.remove(elementList.size() - 1);
+        // limit the favorite list size to avoid the additional info size limit
+        if (elementList.size() > DEFAULT_ELEMENT_LIST_SIZE) {
+            elementList = elementList.subList(0, DEFAULT_ELEMENT_LIST_SIZE);
         }
+
         JSONArray data = new JSONArray();
 
         Set<String> excludedSettings = new HashSet<String>();
-        // do not store the template contexts, since dragging an element into the page which might be invisible 
-        // doesn't make sense 
+        // do not store the template contexts, since dragging an element into the page which might be invisible
+        // doesn't make sense
         excludedSettings.add(CmsTemplateContextInfo.SETTING);
 
         for (CmsContainerElementBean element : elementList) {

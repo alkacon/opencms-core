@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,21 +42,21 @@ import org.apache.commons.logging.Log;
 
 /**
  * Implements a disk cache that stores text extraction results in the RFS.<p>
- * 
- * This cache operates on resource file names, plus a hash code calculated from 
+ *
+ * This cache operates on resource file names, plus a hash code calculated from
  * {@link org.opencms.file.CmsResource#getDateLastModified()}
- * and {@link org.opencms.file.CmsResource#getLength()}. Optional a locale can be appended to this name.<p> 
- * 
+ * and {@link org.opencms.file.CmsResource#getLength()}. Optional a locale can be appended to this name.<p>
+ *
  * Since text extraction is done only on the content of a resource, all siblings must have the same content.
  * The difference can be only by the locale setting in case of an XML content or XML page. However,
  * the most problematic contents to extract for the search are in fact the MS Office and PDF formats.
  * For these documents, all siblings must produce the exact same text extraction result.<p>
- * 
- * This cache is usable for resources from the online AND the offline project at the same time, 
+ *
+ * This cache is usable for resources from the online AND the offline project at the same time,
  * because any change to a resource will result in a changed hash code. This means a resource changed in the offline
- * project will have a new hash code compared to the online project. If the resource is identical in the online and 
+ * project will have a new hash code compared to the online project. If the resource is identical in the online and
  * the offline project, the generated hash codes will be the same.<p>
- * 
+ *
  * @since 6.2.0
  */
 public class CmsExtractionResultCache {
@@ -69,21 +69,21 @@ public class CmsExtractionResultCache {
 
     /**
      * Creates a new disk cache.<p>
-     * 
+     *
      * @param basepath the base path for the cache in the RFS
      * @param foldername the folder name for this cache, to be used a subfolder for the base folder
      */
     public CmsExtractionResultCache(String basepath, String foldername) {
 
-        // normalize the given folder name 
+        // normalize the given folder name
         m_rfsRepository = CmsFileUtil.normalizePath(basepath + foldername + File.separatorChar);
     }
 
     /**
      * Removes all expired extraction result cache entries from the RFS cache.<p>
-     * 
+     *
      * @param maxAge the maximum age of the extraction result cache files in hours (or fractions of hours)
-     * 
+     *
      * @return the total number of deleted resources
      */
     public synchronized int cleanCache(float maxAge) {
@@ -122,13 +122,13 @@ public class CmsExtractionResultCache {
 
     /**
      * Returns the RFS name used for caching an the text extraction result
-     * based on the given VFS resource and locale.<p>  
-     * 
+     * based on the given VFS resource and locale.<p>
+     *
      * @param resource the VFS resource to generate the cache name for
      * @param locale the locale to generate the cache name for (may be <code>null</code>)
      * @param docTypeName the name of the search document type
-     * 
-     * @return the RFS name to use for caching the given VFS resource with parameters 
+     *
+     * @return the RFS name to use for caching the given VFS resource with parameters
      */
     public String getCacheName(CmsResource resource, Locale locale, String docTypeName) {
 
@@ -149,12 +149,12 @@ public class CmsExtractionResultCache {
             buf.append(locale.toString());
         }
 
-        // append the date of last content modification to the result buffer 
+        // append the date of last content modification to the result buffer
         // please note that we need only worry about last change in content, since properties are ignored here
         buf.append('_');
         buf.append(resource.getDateContent());
 
-        // finally append the extension 
+        // finally append the extension
         buf.append(".ext");
         return buf.toString();
     }
@@ -162,10 +162,10 @@ public class CmsExtractionResultCache {
     /**
      * Returns the extraction result in the requested file in the disk cache, or <code>null</code> if the
      * file is not found in the cache, or is found but out-dated.<p>
-     * 
-     * @param rfsName the file RFS name to look up in the cache 
-     * 
-     * @return the extraction result stored in the requested file in the RFS disk cache, or <code>null</code> 
+     *
+     * @param rfsName the file RFS name to look up in the cache
+     *
+     * @return the extraction result stored in the requested file in the RFS disk cache, or <code>null</code>
      */
     public CmsExtractionResult getCacheObject(String rfsName) {
 
@@ -189,7 +189,7 @@ public class CmsExtractionResultCache {
 
     /**
      * Returns the absolute path of the cache repository in the RFS.<p>
-     * 
+     *
      * @return the absolute path of the cache repository in the RFS
      */
     public String getRepositoryPath() {
@@ -198,11 +198,11 @@ public class CmsExtractionResultCache {
     }
 
     /**
-     * Serializes the given extraction result and saves it in the disk cache.<p> 
-     * 
+     * Serializes the given extraction result and saves it in the disk cache.<p>
+     *
      * @param rfsName the RFS name of the file to save the extraction result in
      * @param content the extraction result to serialize and save
-     * 
+     *
      * @throws IOException in case of disk access errors
      */
     public void saveCacheObject(String rfsName, I_CmsExtractionResult content) throws IOException {

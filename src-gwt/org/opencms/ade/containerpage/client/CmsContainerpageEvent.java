@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -37,8 +37,7 @@ public class CmsContainerpageEvent extends Event<I_CmsContainerpageEventHandler>
     /** Enum for the event type. */
     public enum EventType {
         /** Fired when an element has been edited. */
-        elementEdited,
-        /** Fired when the page has been saved. */
+        elementEdited, /** Fired when the page has been saved. */
         pageSaved;
     }
 
@@ -52,15 +51,15 @@ public class CmsContainerpageEvent extends Event<I_CmsContainerpageEventHandler>
 
     /**
      * Creates a new event with a given type.<p>
-     * 
-     * @param type the event type 
+     *
+     * @param type the event type
      */
     public CmsContainerpageEvent(EventType type) {
 
         m_type = type;
     }
 
-    /** 
+    /**
      * @see com.google.web.bindery.event.shared.Event#getAssociatedType()
      */
     @Override
@@ -72,8 +71,8 @@ public class CmsContainerpageEvent extends Event<I_CmsContainerpageEventHandler>
 
     /**
      * Gets the type of the event.<p>
-     * 
-     * @return the type of the event 
+     *
+     * @return the type of the event
      */
     public EventType getEventType() {
 

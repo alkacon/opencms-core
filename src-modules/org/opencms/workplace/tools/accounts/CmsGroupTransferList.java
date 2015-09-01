@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -63,8 +63,8 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Allows to select a group to transfer the permissions and attributes from another one.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsGroupTransferList extends A_CmsListDialog {
 
@@ -109,7 +109,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsGroupTransferList(CmsJspActionElement jsp) {
@@ -119,7 +119,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -131,7 +131,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Protected constructor.<p>
-     * 
+     *
      * @param listId the id of the specialized list
      * @param jsp an initialized JSP action element
      */
@@ -148,11 +148,11 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * This method should handle every defined list multi action,
-     * by comparing <code>{@link #getParamListAction()}</code> with the id 
-     * of the action to execute.<p> 
-     * 
+     * by comparing <code>{@link #getParamListAction()}</code> with the id
+     * of the action to execute.<p>
+     *
      * @throws CmsRuntimeException to signal that an action is not supported
-     * 
+     *
      */
     @Override
     public void executeListMultiActions() throws CmsRuntimeException {
@@ -172,9 +172,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
                 CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
                 setForwarded(true);
             } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_TRANSFER_GROUP_1,
-                    getSelectedItem().get(LIST_COLUMN_NAME)), e);
+                throw new CmsRuntimeException(
+                    Messages.get().container(Messages.ERR_TRANSFER_GROUP_1, getSelectedItem().get(LIST_COLUMN_NAME)),
+                    e);
             }
         } else {
             throwListUnsupportedActionException();
@@ -194,7 +194,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Returns the group id parameter value.<p>
-     * 
+     *
      * @return the group id parameter value
      */
     public String getParamGroupid() {
@@ -204,7 +204,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Sets the group id parameter value.<p>
-     * 
+     *
      * @param groupId the group id parameter value
      */
     public void setParamGroupid(String groupId) {
@@ -219,7 +219,8 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_NOTICE_0).key(getLocale())));
+        result.append(
+            dialogBlockStart(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_NOTICE_0).key(getLocale())));
         result.append("\n");
         if (getCurrentToolPath().indexOf("/edit/") < 0) {
             result.append(key(Messages.GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0));
@@ -286,9 +287,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Returns the list of groups to display.<p>
-     * 
+     *
      * @return the list of groups to display
-     * 
+     *
      * @throws CmsException if something goes wrong
      */
     protected List<CmsGroup> getGroups() throws CmsException {
@@ -305,10 +306,8 @@ public class CmsGroupTransferList extends A_CmsListDialog {
         List<CmsListItem> ret = new ArrayList<CmsListItem>();
         // get content
         List<CmsGroup> groups = getGroups();
-        Set<String> selGroups = new HashSet<String>(CmsStringUtil.splitAsList(
-            getParamGroupid(),
-            CmsHtmlList.ITEM_SEPARATOR,
-            true));
+        Set<String> selGroups = new HashSet<String>(
+            CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true));
         Iterator<CmsGroup> itGroups = groups.iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = itGroups.next();
@@ -373,9 +372,10 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
         // create default transfer action
         CmsListDefaultAction defTransferAction = new CmsListDefaultAction(LIST_DEFACTION_TRANSFER);
-        defTransferAction.setName(Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0));
-        defTransferAction.setHelpText(Messages.get().container(
-            Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0));
+        defTransferAction.setName(
+            Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0));
+        defTransferAction.setHelpText(
+            Messages.get().container(Messages.GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0));
         displayCol.addDefaultAction(defTransferAction);
 
         // add it to the list definition
@@ -409,8 +409,8 @@ public class CmsGroupTransferList extends A_CmsListDialog {
         usersDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_USERS_NAME_0));
         usersDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_USERS_HELP_0));
         usersDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_USERS_NAME_0));
-        usersDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
+        usersDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_USERS_NAME_0)));
         metadata.addItemDetails(usersDetails);
 
         // add user children details
@@ -422,8 +422,8 @@ public class CmsGroupTransferList extends A_CmsListDialog {
         childDetails.setHideActionName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_NAME_0));
         childDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_GROUPS_DETAIL_HIDE_CHILDREN_HELP_0));
         childDetails.setName(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0));
-        childDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-            Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
+        childDetails.setFormatter(
+            new CmsListItemDetailsFormatter(Messages.get().container(Messages.GUI_GROUPS_DETAIL_CHILDREN_NAME_0)));
         metadata.addItemDetails(childDetails);
     }
 
@@ -438,7 +438,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
     /**
      * Sets the icon actions for the transfer list.<p>
-     * 
+     *
      * @param transferCol the column to set the action
      */
     protected void setTransferAction(CmsListColumnDefinition transferCol) {
@@ -458,7 +458,10 @@ public class CmsGroupTransferList extends A_CmsListDialog {
 
         // test the needed parameters
         m_groupName = "";
-        Iterator<String> itGroups = CmsStringUtil.splitAsList(getParamGroupid(), CmsHtmlList.ITEM_SEPARATOR, true).iterator();
+        Iterator<String> itGroups = CmsStringUtil.splitAsList(
+            getParamGroupid(),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
         while (itGroups.hasNext()) {
             CmsUUID id = new CmsUUID(itGroups.next());
             m_groupName += getCms().readGroup(id).getName();

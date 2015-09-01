@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,9 +38,10 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -51,10 +52,10 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * Sitemap context menu button.<p>
- * 
+ *
  * @since 8.0.0
  */
-public class CmsHoverbarContextMenuButton extends CmsMenuButton {
+public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_CmsContextMenuItemProvider {
 
     /** The context menu entries. */
     private List<A_CmsSitemapMenuEntry> m_entries;
@@ -64,13 +65,15 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
     /**
      * Constructor.<p>
-     * 
-     * @param hoverbar the hoverbar 
+     *
+     * @param hoverbar the hoverbar
+     * @param menuItemProvider the context menu item provider
      */
-    public CmsHoverbarContextMenuButton(final CmsSitemapHoverbar hoverbar) {
+    public CmsHoverbarContextMenuButton(
+        final CmsSitemapHoverbar hoverbar,
+        I_CmsContextMenuItemProvider menuItemProvider) {
 
         super(null, I_CmsImageBundle.INSTANCE.buttonCss().hoverbarContext());
-        getElement().getStyle().setMarginTop(-3, Unit.PX);
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table
@@ -82,28 +85,12 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
         getPopup().addAutoHidePartner(getElement());
         getPopup().setWidth(0);
         //getPopupContent().setModal(true);
+
         m_entries = new ArrayList<A_CmsSitemapMenuEntry>();
-        m_entries.add(new CmsGotoMenuEntry(hoverbar));
-        m_entries.add(new CmsOpenGalleryMenuEntry(hoverbar));
-        m_entries.add(new CmsEditRedirectMenuEntry(hoverbar));
-        m_entries.add(new CmsEditMenuEntry(hoverbar));
-        m_entries.add(new CmsCreateGalleryMenuEntry(hoverbar));
-        m_entries.add(new CmsResourceInfoMenuEntry(hoverbar));
-        m_entries.add(new CmsAvailabilityMenuEntry(hoverbar));
-        m_entries.add(new CmsLockReportMenuEntry(hoverbar));
-        m_entries.add(new CmsSeoMenuEntry(hoverbar));
-        m_entries.add(new CmsParentSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsMergeMenuEntry(hoverbar));
-        m_entries.add(new CmsNewChoiceMenuEntry(hoverbar));
-        m_entries.add(new CmsSubSitemapMenuEntry(hoverbar));
-        m_entries.add(new CmsHideMenuEntry(hoverbar));
-        m_entries.add(new CmsShowMenuEntry(hoverbar));
-        m_entries.add(new CmsAddToNavMenuEntry(hoverbar));
-        m_entries.add(new CmsRemoveMenuEntry(hoverbar));
-        m_entries.add(new CmsBumpDetailPageMenuEntry(hoverbar));
-        m_entries.add(new CmsRefreshMenuEntry(hoverbar));
-        m_entries.add(new CmsDeleteMenuEntry(hoverbar));
+        if (menuItemProvider == null) {
+            menuItemProvider = this;
+        }
+        m_entries.addAll(menuItemProvider.createContextMenu(hoverbar));
 
         setTitle(Messages.get().key(Messages.GUI_HOVERBAR_TITLE_0));
         setVisible(true);
@@ -124,8 +111,49 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
     }
 
     /**
+     * @see org.opencms.ade.sitemap.client.hoverbar.I_CmsContextMenuItemProvider#createContextMenu(org.opencms.ade.sitemap.client.hoverbar.CmsSitemapHoverbar)
+     */
+    public List<A_CmsSitemapMenuEntry> createContextMenu(CmsSitemapHoverbar hoverbar) {
+
+        List<A_CmsSitemapMenuEntry> result = Lists.newArrayList();
+
+        result.add(new CmsGotoMenuEntry(hoverbar));
+        result.add(new CmsOpenGalleryMenuEntry(hoverbar));
+        result.add(new CmsEditRedirectMenuEntry(hoverbar));
+        result.add(new CmsEditModelPageMenuEntry(hoverbar));
+        result.add(new CmsDeleteModelPageMenuEntry(hoverbar));
+        result.add(new CmsCopyModelPageMenuEntry(hoverbar));
+        result.add(new CmsEditMenuEntry(hoverbar));
+        result.add(new CmsCreateGalleryMenuEntry(hoverbar));
+        result.add(new CmsResourceInfoMenuEntry(hoverbar));
+        result.add(new CmsSeoMenuEntry(hoverbar));
+        result.add(new CmsParentSitemapMenuEntry(hoverbar));
+        result.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
+        result.add(new CmsNewChoiceMenuEntry(hoverbar));
+        result.add(new CmsHideMenuEntry(hoverbar));
+        result.add(new CmsShowMenuEntry(hoverbar));
+        result.add(new CmsAddToNavMenuEntry(hoverbar));
+        result.add(new CmsBumpDetailPageMenuEntry(hoverbar));
+        result.add(new CmsRefreshMenuEntry(hoverbar));
+        result.add(
+            new CmsAdvancedSubmenu(
+                hoverbar,
+                Arrays.asList(
+                    new CmsAvailabilityMenuEntry(hoverbar),
+                    new CmsLockReportMenuEntry(hoverbar),
+                    new CmsSeoMenuEntry(hoverbar),
+                    new CmsSubSitemapMenuEntry(hoverbar),
+                    new CmsMergeMenuEntry(hoverbar),
+                    new CmsRemoveMenuEntry(hoverbar))));
+        result.add(new CmsModelPageLockReportMenuEntry(hoverbar));
+        result.add(new CmsDeleteMenuEntry(hoverbar));
+
+        return result;
+    }
+
+    /**
      * Rests the button state and hides the hoverbar.<p>
-     * 
+     *
      * @param hoverbar the hoverbar
      */
     protected void onMenuClose(CmsSitemapHoverbar hoverbar) {
@@ -140,7 +168,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
     /**
      * Sets the context menu visible.<p>
-     * 
+     *
      * @param hoverbar the hoverbar instance
      */
     protected void setMenuVisible(final CmsSitemapHoverbar hoverbar) {
@@ -163,7 +191,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
 
     /**
      * Shows the context menu.<p>
-     * 
+     *
      * @param hoverbar the hoverbar instance
      */
     protected void showMenu(final CmsSitemapHoverbar hoverbar) {
@@ -191,7 +219,22 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton {
     private void updateVisibility() {
 
         for (A_CmsSitemapMenuEntry entry : m_entries) {
-            entry.onShow();
+            updateVisibility(entry);
         }
+    }
+
+    /**
+     * Updates the visibility for an entry and its sub-entries.<p>
+     *
+     * @param entry the entry to update
+     */
+    private void updateVisibility(A_CmsSitemapMenuEntry entry) {
+
+        if (entry.getSubMenu() != null) {
+            for (I_CmsContextMenuEntry subItem : entry.getSubMenu()) {
+                updateVisibility((A_CmsSitemapMenuEntry)subItem);
+            }
+        }
+        entry.onShow();
     }
 }

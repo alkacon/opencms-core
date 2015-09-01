@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -45,8 +45,8 @@ import java.util.Locale;
 
 /**
  * Base class for all gallery widget implementations.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
@@ -61,7 +61,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
     /**
      * Creates a new gallery widget with the given configuration.<p>
-     * 
+     *
      * @param configuration the configuration to use
      */
     protected A_CmsGalleryWidget(String configuration) {
@@ -122,10 +122,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
         StringBuffer result = new StringBuffer(256);
         // import the JavaScript for the gallery widget
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri()
-            + "components/widgets/"
-            + getNameLower()
-            + "gallery.js"));
+        result.append(
+            getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/" + getNameLower() + "gallery.js"));
         return result.toString();
     }
 
@@ -191,22 +189,24 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
         result.append(id);
         result.append("');\"></td>");
         result.append(widgetDialog.dialogHorizontalSpacer(10));
-        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        result.append(
+            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
-        result.append(widgetDialog.button(
-            "javascript:open"
-                + getNameUpper()
-                + "Gallery('"
-                + A_CmsAjaxGallery.MODE_WIDGET
-                + "',  '"
-                + id
-                + "',  '"
-                + idHash
-                + "');return false;",
-            null,
-            getNameLower() + "gallery",
-            Messages.getButtonName(getNameLower()),
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                "javascript:open"
+                    + getNameUpper()
+                    + "Gallery('"
+                    + A_CmsAjaxGallery.MODE_WIDGET
+                    + "',  '"
+                    + id
+                    + "',  '"
+                    + idHash
+                    + "');return false;",
+                null,
+                getNameLower() + "gallery",
+                Messages.getButtonName(getNameLower()),
+                widgetDialog.getButtonStyle()));
         // create preview button
         String previewClass = "hide";
         if (showPreview(value)) {
@@ -219,12 +219,13 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
         result.append(id);
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-        result.append(widgetDialog.button(
-            "javascript:preview" + getNameUpper() + "('" + id + "');return false;",
-            null,
-            "preview.png",
-            Messages.GUI_BUTTON_PREVIEW_0,
-            widgetDialog.getButtonStyle()));
+        result.append(
+            widgetDialog.button(
+                "javascript:preview" + getNameUpper() + "('" + id + "');return false;",
+                null,
+                "preview.png",
+                Messages.GUI_BUTTON_PREVIEW_0,
+                widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
 
         result.append("</td></tr></table>");
@@ -244,10 +245,10 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
                 result.append("\n<script type=\"text/javascript\">");
-                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-                    "\";");
-                result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                    "\";");
+                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(
+                    configuration.getStartup()).append("\";");
+                result.append("\nvar startupType").append(idHash).append(" = \"").append(
+                    configuration.getType()).append("\";");
                 result.append("\n</script>");
             } else {
                 result.append("\n<script type=\"text/javascript\">");
@@ -283,10 +284,10 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
                 result.append("\n<script type=\"text/javascript\">");
-                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-                    "\";");
-                result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                    "\";");
+                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(
+                    configuration.getStartup()).append("\";");
+                result.append("\nvar startupType").append(idHash).append(" = \"").append(
+                    configuration.getType()).append("\";");
                 result.append("\n</script>");
             } else {
                 result.append("\n<script type=\"text/javascript\">");
@@ -317,14 +318,14 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
     /**
      * Returns the lower case name of the gallery, for example <code>"html"</code>.<p>
-     * 
+     *
      * @return the lower case name of the gallery
      */
     public abstract String getNameLower();
 
     /**
      * Returns the upper case name of the gallery, for example <code>"Html"</code>.<p>
-     * 
+     *
      * @return the upper case name of the gallery
      */
     public abstract String getNameUpper();
@@ -356,7 +357,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget implements I_CmsADE
 
     /**
      * Returns <code>true</code> if the preview button should be shown.<p>
-     * 
+     *
      * @param value the current widget value
      * @return <code>true</code> if the preview button should be shown
      */

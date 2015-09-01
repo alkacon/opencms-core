@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,7 +32,7 @@ import org.opencms.main.OpenCms;
 /**
  * Bean to store the entries made by the user in the History Settings form in the
  * administration view.<p>
- * 
+ *
  * @since 6.9.1
  */
 public class CmsHistorySettings {
@@ -52,14 +52,13 @@ public class CmsHistorySettings {
     /** Number of versions to keep. */
     private int m_versions;
 
-    
     /**
      * Default constructor initializing values.<p>
      */
     public CmsHistorySettings() {
 
         m_versions = OpenCms.getSystemInfo().getHistoryVersions();
-        
+
         int versionsDeleted = OpenCms.getSystemInfo().getHistoryVersionsAfterDeletion();
         if (versionsDeleted == 0) {
             m_mode = MODE_DELETED_HISTORY_DISABLED;
@@ -71,7 +70,7 @@ public class CmsHistorySettings {
             m_mode = MODE_DELETED_HISTORY_DISABLED;
         }
     }
-    
+
     /**
      * Returns the mode how the deleted resource history is kept.<p>
      *

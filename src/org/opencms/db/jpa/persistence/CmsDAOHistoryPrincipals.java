@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -35,7 +35,7 @@ import javax.persistence.Table;
 
 /**
  * This data access object represents a history principal entry inside the table "cms_history_principals".<p>
- * 
+ *
  * @since 8.0.0
  */
 @Entity
@@ -92,7 +92,7 @@ public class CmsDAOHistoryPrincipals {
 
     /**
      * A constructor that creates a historical principal entry.<p>
-     * 
+     *
      * @param principalId the id of the principal
      */
     public CmsDAOHistoryPrincipals(String principalId) {

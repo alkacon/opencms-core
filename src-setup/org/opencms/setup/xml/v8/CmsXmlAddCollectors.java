@@ -13,13 +13,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -42,7 +42,7 @@ import org.dom4j.Document;
 
 /**
  * Add new explorer types.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsXmlAddCollectors extends A_CmsXmlVfs {
@@ -50,7 +50,7 @@ public class CmsXmlAddCollectors extends A_CmsXmlVfs {
     /** List of xpaths to update. */
     private List<String> m_xpaths;
 
-    /** 
+    /**
      * The new widget definition data.<p>
      */
     private String[][] m_collectors = {
@@ -118,10 +118,10 @@ public class CmsXmlAddCollectors extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for the order of a collector node with a given class name.<p>
-     * 
-     * @param className the class name 
-     * 
-     * @return the xpath of the collector node's alias attribute 
+     *
+     * @param className the class name
+     *
+     * @return the xpath of the collector node's alias attribute
      */
     protected String xpathForOrder(String className) {
 
@@ -130,10 +130,10 @@ public class CmsXmlAddCollectors extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for a collector node with a given class attribute.<p>
-     * 
-     * @param className the class name 
-     * 
-     * @return the xpath for the collector with the given class name attribute 
+     *
+     * @param className the class name
+     *
+     * @return the xpath for the collector with the given class name attribute
      */
     protected String xpathForCollectorByClass(String className) {
 
@@ -149,8 +149,8 @@ public class CmsXmlAddCollectors extends A_CmsXmlVfs {
 
     /**
      * Returns the xpath for the collectors node.<p>
-     * 
-     * @return the xpath for the collectors node 
+     *
+     * @return the xpath for the collectors node
      */
     protected String xpathForCollectors() {
 

@@ -28,12 +28,15 @@
 package org.opencms.pdftools;
 
 import org.opencms.loader.CmsImageScaler;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -82,6 +85,8 @@ public class CmsPdfThumbnailGenerator {
         String imageFormat,
         int pageIndex) throws Exception {
 
+        org.jpedal.io.ObjectStore.temp_dir = CmsFileUtil.normalizePath(
+            OpenCms.getSystemInfo().getWebInfRfsPath() + CmsPdfThumbnailCache.PDF_CACHE_FOLDER + File.separatorChar);
         PdfDecoder decoder = new PdfDecoder(true);
 
         try {
@@ -128,9 +133,9 @@ public class CmsPdfThumbnailGenerator {
             int uh = unpaddedThumbnailDimensions[1];
 
             // Scale to fit in  the box
-            AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(
-                (uw * 1.0) / pageImage.getWidth(),
-                (uh * 1.0) / pageImage.getHeight()), AffineTransformOp.TYPE_BILINEAR);
+            AffineTransformOp op = new AffineTransformOp(
+                AffineTransform.getScaleInstance((uw * 1.0) / pageImage.getWidth(), (uh * 1.0) / pageImage.getHeight()),
+                AffineTransformOp.TYPE_BILINEAR);
 
             g.setColor(Color.WHITE);
             // Fill box image with white, then draw the image data for the PDF in the middle

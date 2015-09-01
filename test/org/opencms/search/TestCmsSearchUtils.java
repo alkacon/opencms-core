@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -28,32 +28,36 @@
 package org.opencms.search;
 
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
+import org.opencms.test.OpenCmsTestCase;
 
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.apache.lucene.document.DateTools;
 
 /**
  * Tests some search utilities that don't require an OpenCms context.<p>
  */
-public class TestCmsSearchUtils extends TestCase {
+public class TestCmsSearchUtils extends OpenCmsTestCase {
 
     /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
+     * Prints a list of String to System.out.<p>
+     *
+     * @param strings the String to print
      */
-    public TestCmsSearchUtils(String arg0) {
+    protected static void printStringList(List<String> strings) {
 
-        super(arg0);
+        Iterator<String> i = strings.iterator();
+        System.out.println("\nSize: " + strings.size() + "\n");
+        while (i.hasNext()) {
+            System.out.println(i.next());
+        }
+        System.out.println("\n--------------------------------");
     }
 
     /**
      * Test for date range generation.<p>
-     * 
+     *
      * @throws Exception in case the test fails
      */
     public void testDateRangeGeneration() throws Exception {
@@ -102,21 +106,6 @@ public class TestCmsSearchUtils extends TestCase {
     }
 
     /**
-     * Prints a list of String to System.out.<p>
-     * 
-     * @param strings the String to print
-     */
-    protected static void printStringList(List<String> strings) {
-
-        Iterator<String> i = strings.iterator();
-        System.out.println("\nSize: " + strings.size() + "\n");
-        while (i.hasNext()) {
-            System.out.println(i.next());
-        }
-        System.out.println("\n--------------------------------");
-    }
-
-    /**
      * Test parent folder path term splitting.<p>
      *
      * @throws Exception if the test fails
@@ -128,9 +117,7 @@ public class TestCmsSearchUtils extends TestCase {
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/"));
         assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/"));
         assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
-        assertEquals(
-            "/ /sites/ /sites/default/",
-            CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
+        assertEquals("/ /sites/ /sites/default/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
         assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
     }
 }

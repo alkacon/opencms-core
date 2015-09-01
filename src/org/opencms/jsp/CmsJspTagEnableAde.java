@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -43,8 +43,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
- * 
- * @since 7.6 
+ *
+ * @since 7.6
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
 
@@ -56,9 +56,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /**
      * Enable-ade action method.<p>
-     * 
+     *
      * @param context the current JSP page context
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     public static void enableAdeTagAction(PageContext context) throws JspException {
@@ -91,14 +91,22 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         eb.init(cms, CmsDirectEditMode.TRUE, "");
         CmsJspTagEditable.setDirectEditProvider(context, eb);
 
-        CmsJspTagInclude.includeTagAction(context, INCLUDE_JSP_URI, null, false, null, null, req, context.getResponse());
+        CmsJspTagInclude.includeTagAction(
+            context,
+            INCLUDE_JSP_URI,
+            null,
+            false,
+            null,
+            null,
+            req,
+            context.getResponse());
     }
 
     /**
      * Close the direct edit tag, also prints the direct edit HTML to the current page.<p>
-     * 
+     *
      * @return {@link #EVAL_PAGE}
-     * 
+     *
      * @throws JspException in case something goes wrong
      */
     @Override
@@ -116,9 +124,9 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     }
 
     /**
-     * Opens the direct edit tag, if manual mode is set then the next 
+     * Opens the direct edit tag, if manual mode is set then the next
      * start HTML for the direct edit buttons is printed to the page.<p>
-     * 
+     *
      * @return {@link #EVAL_BODY_INCLUDE}
      */
     @Override

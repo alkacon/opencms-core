@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,7 +40,7 @@ import org.apache.commons.collections.Transformer;
 
 /**
  * One container of a container page.<p>
- * 
+ *
  * @since 8.0
  */
 public class CmsContainerBean {
@@ -63,6 +63,9 @@ public class CmsContainerBean {
     /** The container name. */
     private final String m_name;
 
+    /** The optional container parameter. */
+    private String m_param;
+
     /** The parent element instance id. */
     private String m_parentInstanceId;
 
@@ -72,9 +75,9 @@ public class CmsContainerBean {
     /** The container width set by the rendering container tag. */
     private String m_width;
 
-    /** 
-     * Creates a new container bean.<p> 
-     * 
+    /**
+     * Creates a new container bean.<p>
+     *
      * @param name the container name
      * @param type the container type
      * @param parentInstanceId the parent instance id
@@ -97,9 +100,9 @@ public class CmsContainerBean {
         : Collections.unmodifiableList(elements));
     }
 
-    /** 
-     * Creates a new container bean with an unlimited number of elements.<p> 
-     * 
+    /**
+     * Creates a new container bean with an unlimited number of elements.<p>
+     *
      * @param name the container name
      * @param type the container type
      * @param parentInstanceId the parent instance id
@@ -112,9 +115,9 @@ public class CmsContainerBean {
 
     /**
      * Returns <code>true</code> if the element with the provided id is contained in this container.<p>
-     *  
+     *
      * @param elementId the element id to check
-     * 
+     *
      * @return <code>true</code> if the element with the provided id is contained in this container
      */
     public boolean containsElement(CmsUUID elementId) {
@@ -124,7 +127,7 @@ public class CmsContainerBean {
 
     /**
      * Returns a lazy initialized map that describes if a certain element if part of this container.<p>
-     * 
+     *
      * @return a lazy initialized map that describes if a certain element if part of this container
      */
     public Map<CmsUUID, Boolean> getContainsElement() {
@@ -188,8 +191,23 @@ public class CmsContainerBean {
     }
 
     /**
+     * Returns the (optional) container parameter.<p>
+     *
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container.
+     *
+     * If no parameters have been set, this will return <code>null</code>
+     *
+     * @return the (optional) container parameter
+     */
+    public String getParam() {
+
+        return m_param;
+    }
+
+    /**
      * Returns the the parent instance id.<p>
-     * 
+     *
      * @return the parent instance id
      */
     public String getParentInstanceId() {
@@ -219,7 +237,7 @@ public class CmsContainerBean {
 
     /**
      * Returns if this container is used on detail pages only.<p>
-     * 
+     *
      * @return <code>true</code> if this container is used on detail pages only
      */
     public boolean isDetailOnly() {
@@ -229,7 +247,7 @@ public class CmsContainerBean {
 
     /**
      * Returns if the given container is a nested container.<p>
-     * 
+     *
      * @return <code>true</code> if the given container is a nested container
      */
     public boolean isNestedContainer() {
@@ -239,7 +257,7 @@ public class CmsContainerBean {
 
     /**
      * Sets if this container is used on detail pages only.<p>
-     * 
+     *
      * @param detailOnly <code>true</code> if this container is used on detail pages only
      */
     public void setDetailOnly(boolean detailOnly) {
@@ -258,8 +276,21 @@ public class CmsContainerBean {
     }
 
     /**
+     * Sets the container parameter.<p>
+     *
+     * This is useful for a dynamically generated nested container,
+     * to pass information to the formatter used inside that container.
+     *
+     * @param param the parameter String to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
+    }
+
+    /**
      * Sets the container type.<p>
-     * 
+     *
      * @param type the container type
      */
     public void setType(String type) {

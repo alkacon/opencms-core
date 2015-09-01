@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,13 +32,13 @@ import org.opencms.main.OpenCms;
 
 /**
  * Resource type descriptor for unknown folder types.<p>
- * 
+ *
  * This will be used for folder corpses when the resource type is not configured.<p>
- * 
+ *
  * The most common use case is when deleting a module with the resource type definition,
  * but not the content that uses that resource type definition.<p>
- * 
- * @since 7.0.0 
+ *
+ * @since 7.0.0
  */
 public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
 
@@ -66,7 +66,7 @@ public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
 
     /**
      * Returns the static type id of this (default) resource type.<p>
-     * 
+     *
      * @return the static type id of this (default) resource type
      */
     public static int getStaticTypeId() {
@@ -76,7 +76,7 @@ public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
 
     /**
      * Returns the static type name of this (default) resource type.<p>
-     * 
+     *
      * @return the static type name of this (default) resource type
      */
     public static String getStaticTypeName() {
@@ -92,27 +92,29 @@ public class CmsResourceTypeUnknownFolder extends A_CmsResourceTypeFolderBase {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
-                getStaticTypeName(),
-                new Integer(getStaticTypeId())));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_CONFIG_FROZEN_3,
+                    this.getClass().getName(),
+                    getStaticTypeName(),
+                    new Integer(getStaticTypeId())));
         }
 
         if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
-            throw new CmsConfigurationException(Messages.get().container(
-                Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
-                this.getClass().getName(),
-                RESOURCE_TYPE_NAME,
-                name));
+            throw new CmsConfigurationException(
+                Messages.get().container(
+                    Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
+                    this.getClass().getName(),
+                    RESOURCE_TYPE_NAME,
+                    name));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
         super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
-        // set static members with values from the configuration        
+        // set static members with values from the configuration
         m_staticTypeId = m_typeId;
     }
 }

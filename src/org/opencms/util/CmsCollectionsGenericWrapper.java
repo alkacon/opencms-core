@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,13 +38,13 @@ import org.apache.commons.collections.map.LazyMap;
 
 /**
  * Provides Map wrapping utility functions for Java generics.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public final class CmsCollectionsGenericWrapper {
 
     /**
-     * Hides the public constructor.<p> 
+     * Hides the public constructor.<p>
      */
     private CmsCollectionsGenericWrapper() {
 
@@ -52,12 +52,12 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to access the {@link LazyMap} functionality that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to access the {@link LazyMap} functionality that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of keys maintained by the returned map
      * @param <V> the type of mapped values
      * @param T the transformer to use for the Lazy Map
-     * 
+     *
      * @return a {@link LazyMap} of the required generic type
      */
     public static <K, V> Map<K, V> createLazyMap(Transformer T) {
@@ -66,11 +66,11 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to create a {@link LRUMap} that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to create a {@link LRUMap} that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of keys maintained by the returned map
      * @param <V> the type of mapped values
-     * 
+     *
      * @return a {@link LRUMap} of the required generic type
      */
     @SuppressWarnings("unchecked")
@@ -80,12 +80,12 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to create a {@link LRUMap} with the given size that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to create a {@link LRUMap} with the given size that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of keys maintained by the returned map
      * @param <V> the type of mapped values
      * @param size the initial size of the created Map
-     * 
+     *
      * @return a {@link LRUMap} with the given size of the required generic type
      */
     @SuppressWarnings("unchecked")
@@ -95,11 +95,11 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to convert an enumeration that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to convert an enumeration that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of the returned enumeration elements
      * @param enumeration the enumeration to be converted
-     * 
+     *
      * @return a {@link Enumeration} with the required generic type
      */
     @SuppressWarnings("unchecked")
@@ -109,11 +109,11 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to convert an object into a list that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to convert an object into a list that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of the returned list elements
      * @param o the object to be converted
-     * 
+     *
      * @return a {@link List} with the required generic type
      */
     @SuppressWarnings("unchecked")
@@ -123,12 +123,12 @@ public final class CmsCollectionsGenericWrapper {
     }
 
     /**
-     * Provides a wrapper to convert an object into a map that avoids warnings with Java 1.5 generic code.<p> 
-     * 
+     * Provides a wrapper to convert an object into a map that avoids warnings with Java 1.5 generic code.<p>
+     *
      * @param <K> the type of keys maintained by the returned map
      * @param <V> the type of mapped values
      * @param o the object to be converted
-     * 
+     *
      * @return a {@link Map} of the required generic type
      */
     @SuppressWarnings("unchecked")

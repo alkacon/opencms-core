@@ -26,7 +26,7 @@
 			</defaults>		
 			<resourcebundles>
 				<xmlbundle name="org.opencms.xml.content.testmessages.UPDATE">
-					<bundle locale="EN">
+					<bundle locale="en">
 						<resource key="label.author" value="The author is NOW" />
 						<resource key="label.default.one" value="This is some text ONE" />
 						<resource key="label.default.two" value="This is some text TWO" />
@@ -35,12 +35,12 @@
 						<resource key="editor.xmlcontent.validation.error">Invalid value "{0}" according to rule {1}</resource>
 						<resource key="editor.xmlcontent.validation.warning">VERY Bad value "{0}" according to rule {1}</resource>
 					</bundle> 
-					<bundle locale="DE">
+					<bundle locale="de">
 						<resource key="label.author" value="Der Autor ist JETZT" />
 						<resource key="label.default.one" value="Dies ist etwas Text EINS äöüÄÖÜß€" />
 						<resource key="label.default.two" value="Dies ist etwas Text ZWEI äöüÄÖÜß€" />
 					</bundle>				
-					<bundle locale="DE_de">
+					<bundle locale="de_DE">
 						<resource key="label.default.two" value="Dies ist etwas Text DREI" />
 						<resource key="editor.xmlcontent.validation.warning">ECHT schlechter Wert "{0}" wegen Regel {1}</resource>
 					</bundle>

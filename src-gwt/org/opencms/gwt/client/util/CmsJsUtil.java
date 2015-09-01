@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,12 +34,12 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public final class CmsJsUtil {
 
-    /** 
+    /**
      * Prevent instantiation.<p>
      */
     private CmsJsUtil() {
 
-        // do nothing 
+        // do nothing
     }
 
     /**
@@ -51,23 +51,23 @@ public final class CmsJsUtil {
 
     /**
      * Reads an attribute from a Javascript object.<p>
-     * 
+     *
      * @param jso the Javascript object
-     * @param attr the name of the attribute 
+     * @param attr the name of the attribute
      * @return the value of the attribute
      */
     public static native JavaScriptObject getAttribute(JavaScriptObject jso, String attr) /*-{
-                                                                                          return jso[attr]; 
+                                                                                          return jso[attr];
                                                                                           }-*/;
 
     /**
      * Gets the current window as a Javascript object.<p>
-     * 
-     * @return the current window 
+     *
+     * @return the current window
      */
     public static native JavaScriptObject getWindow() /*-{
-                                                      var result = $wnd; 
-                                                      return result; 
+                                                      var result = $wnd;
+                                                      return result;
                                                       }-*/;
 
 }

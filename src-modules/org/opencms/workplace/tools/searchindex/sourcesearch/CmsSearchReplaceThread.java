@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -52,9 +52,11 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
 /**
  * Searches in sources.
  * <p>
- * 
+ *
  * @since 7.5.3
  */
 public class CmsSearchReplaceThread extends A_CmsReportThread {
@@ -83,7 +85,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     private int m_lockedFiles;
 
     /** The found resources. */
-    private List<CmsResource> m_matchedResources = new ArrayList<CmsResource>();
+    private Set<CmsResource> m_matchedResources = new HashSet<CmsResource>();
 
     /** The current session. */
     private HttpSession m_session;
@@ -93,7 +95,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /**
      * Creates a replace html tag Thread.<p>
-     * 
+     *
      * @param session the current session
      * @param cms the current cms object
      * @param settings the settings needed to perform the operation.
@@ -176,12 +178,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         // in other projects there is replaced, if the replace pattern is not empty
         boolean replace = false;
         if (CmsStringUtil.isEmpty(m_settings.getReplacepattern()) && !m_settings.isForceReplace()) {
-            // empty search pattern, search only   
+            // empty replace pattern, search only
             report.println(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_EMPTY_REPLACEPATTERN_0),
                 I_CmsReport.FORMAT_NOTE);
         } else {
-            // not empty search pattern, search and replace   
+            // not empty replace pattern, search and replace
             replace = true;
             report.println(
                 Messages.get().container(Messages.RPT_SOURCESEARCH_PARAMETERS_NOTEMPTY_REPLACEPATTERN_0),
@@ -236,7 +238,9 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
             // show the resources
             // save the matched file list in the session
-            m_session.setAttribute(CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST, m_matchedResources);
+            m_session.setAttribute(
+                CmsSearchReplaceSettings.ATTRIBUTE_NAME_SOURCESEARCH_RESULT_LIST,
+                m_matchedResources);
         } else {
             // do not show the resources, because there were errors while searching
         }
@@ -248,7 +252,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /**
      * Search the resources.<p>
-     * 
+     *
      * @param cmsObject the CmsObject using to write files
      * @param resources the relevant resources
      * @param replace true, if search and replace. False is search only.
@@ -280,8 +284,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 // search and replace
                 byte[] result = null;
                 boolean xpath = false;
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
-                    && CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getXpath())
+                    || m_settings.isOnlyContentValues()) && CmsResourceTypeXmlContent.isXmlContent(resource)) {
                     xpath = true;
                 }
                 if (!xpath) {
@@ -299,10 +303,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 report.print(
                     org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
                     I_CmsReport.FORMAT_ERROR);
+                report.addError(e);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
                 m_errorSearch += 1;
+                LOG.error(
+                    org.opencms.report.Messages.get().container(Messages.RPT_SOURCESEARCH_COULD_NOT_READ_FILE_0),
+                    e);
                 continue;
             }
         }
@@ -312,39 +320,14 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
-     * Reads the content as byte array of the given resource and prints a message to the report.<p>
-     * 
-     * @param report the report
-     * @param counter the counter
-     * @param resCount the total resource count
-     * @param resource the file to get the content for
-     */
-    private void report(I_CmsReport report, int counter, int resCount, CmsResource resource) {
-
-        // report entries
-        report.print(
-            org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(counter),
-                String.valueOf(resCount)),
-            I_CmsReport.FORMAT_NOTE);
-        report.print(org.opencms.report.Messages.get().container(
-            org.opencms.report.Messages.RPT_ARGUMENT_1,
-            report.removeSiteRoot(resource.getRootPath())));
-        report.print(
-            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
-            I_CmsReport.FORMAT_DEFAULT);
-    }
-
-    /**
      * Locks the current resource.<p>
-     * 
-     * @param cms the current CmsObject 
+     *
+     * @param cms the current CmsObject
      * @param cmsResource the resource to lock
      * @param report the report
-     * 
+     *
      * @return <code>true</code> if the given resource was locked was successfully
-     * 
+     *
      * @throws CmsException if some goes wrong
      */
     private boolean lockResource(CmsObject cms, CmsResource cmsResource, I_CmsReport report) throws CmsException {
@@ -370,7 +353,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 cms.getRequestContext().getCurrentProject())) {
             // prove is current lock from current user but not in current project
             // file is locked by current user but not in current project
-            // change the lock 
+            // change the lock
             cms.changeLock(cms.getSitePath(cmsResource));
         } else if ((lock != null) && lock.isUnlocked()) {
             // lock resource from current user in current project
@@ -393,15 +376,15 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /**
      * Performs the replacement in content.<p>
-     * @param cmsObject 
-     * 
+     *
+     * @param cmsObject the cms context
      * @param report the report to print messages to
      * @param file the file object
      * @param contents the byte content
      * @param replace signals whether to execute a replacement or not
-     * 
+     *
      * @return the new content if a replacement has been performed
-     *  
+     *
      * @throws Exception if something goes wrong
      */
     private byte[] replaceInContent(
@@ -410,6 +393,17 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         CmsFile file,
         byte[] contents,
         boolean replace) throws Exception {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_settings.getLocale())) {
+            Locale contentLocale = CmsLocaleManager.getMainLocale(cmsObject, file);
+            if (!contentLocale.toString().equalsIgnoreCase(m_settings.getLocale())) {
+                // content does not match the requested locale, skip it
+                report.println(
+                    Messages.get().container(Messages.RPT_SOURCESEARCH_NOT_MATCHED_0),
+                    I_CmsReport.FORMAT_NOTE);
+                return null;
+            }
+        }
 
         String encoding = CmsLocaleManager.getResourceEncoding(cmsObject, file);
         String content = new String(contents, encoding);
@@ -432,12 +426,12 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
     /**
      * Performs a replacement for XML contents.<p>
-     * 
+     *
      * @param cmsObject the cms object to perform the actio with
      * @param cmsFile the file to operate on
      * @param replace <code>true</code> if a replacement should be performed
      * @param report the report to print messages to
-     * 
+     *
      * @return the marshaled content
      * @throws Exception if something goes wrong
      */
@@ -450,7 +444,13 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         // loop over the locales of the content
         boolean modified = false;
         boolean matched = false;
+        String requestedLocale = m_settings.getLocale();
         for (Locale locale : xmlContent.getLocales()) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(requestedLocale)
+                && !locale.toString().equalsIgnoreCase(requestedLocale)) {
+                // does not match the requested locale, skip it
+                continue;
+            }
             // loop over the available element paths of the current content locale
             List<String> paths = xmlContent.getNames(locale);
             for (String xpath : paths) {
@@ -459,7 +459,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 if (value.isSimpleType()) {
                     try {
                         String currPath = value.getPath();
-                        if (currPath.equals(m_settings.getXpath())
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_settings.getXpath())
+                            || currPath.equals(m_settings.getXpath())
                             || (CmsXmlUtils.removeXpath(currPath).equals(m_settings.getXpath()))) {
                             // xpath match
                             String oldVal = value.getStringValue(cmsObject);
@@ -500,11 +501,37 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
+     * Reads the content as byte array of the given resource and prints a message to the report.<p>
+     *
+     * @param report the report
+     * @param counter the counter
+     * @param resCount the total resource count
+     * @param resource the file to get the content for
+     */
+    private void report(I_CmsReport report, int counter, int resCount, CmsResource resource) {
+
+        // report entries
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(counter),
+                String.valueOf(resCount)),
+            I_CmsReport.FORMAT_NOTE);
+        report.print(
+            org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_1,
+                report.removeSiteRoot(resource.getRootPath())));
+        report.print(
+            org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
+            I_CmsReport.FORMAT_DEFAULT);
+    }
+
+    /**
      * Prints the result messages into the report.<p>
-     * 
+     *
      * @param replace if replacement has to be executed
      * @param report the report to use
-     * @param nrOfFiles the total number of files 
+     * @param nrOfFiles the total number of files
      */
     private void reportResults(boolean replace, I_CmsReport report, int nrOfFiles) {
 
@@ -584,7 +611,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                     Messages.get().container(Messages.RPT_SOURCESEARCH_SEARCH_FAILED_0),
                     I_CmsReport.FORMAT_ERROR);
             } else {
-                // only searching was successful   
+                // only searching was successful
                 report.println(
                     Messages.get().container(Messages.RPT_SOURCESEARCH_SEARCH_SUCCESS_0),
                     I_CmsReport.FORMAT_OK);
@@ -593,11 +620,11 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
-     * Searches/reads all resources that are relevant.<p> 
-     * 
+     * Searches/reads all resources that are relevant.<p>
+     *
      * @param report the report
      * @param cmsObject the cms Object to use
-     * 
+     *
      * @return the relevant resources
      */
     private List<CmsResource> searchResources(I_CmsReport report, CmsObject cmsObject) {
@@ -610,14 +637,15 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         if (m_settings.isSolrSearch()) {
             CmsSolrIndex index = OpenCms.getSearchManager().getIndexSolr(m_settings.getSource());
             if (index != null) {
-                CmsSolrQuery query = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(m_settings.getQuery()
-                    + "&fl=path,type"));
+                CmsSolrQuery query = new CmsSolrQuery(
+                    null,
+                    CmsRequestUtil.createParameterMap(m_settings.getQuery() + "&fl=path,type"));
                 query.setSearchRoots(m_settings.getPaths());
                 if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                     query.setResourceTypes(m_settings.getTypesArray());
                 }
-                query.ensureParameters();
                 query.setRows(new Integer(999999999));
+                query.ensureParameters();
                 try {
                     resources.addAll(index.search(cmsObject, query, true));
                 } catch (CmsSearchException e) {
@@ -625,7 +653,8 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
                 }
             }
         } else {
-            CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
+            CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireFile().addExcludeState(
+                CmsResource.STATE_DELETED).addRequireTimerange().addRequireVisible();
             if ((m_settings.getTypesArray() != null) && (m_settings.getTypesArray().length > 0)) {
                 for (String resTypeName : m_settings.getTypesArray()) {
                     try {
@@ -644,7 +673,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
             while (iterPaths.hasNext()) {
                 String path = iterPaths.next();
                 try {
-                    // only read resources which are files and not deleted, which are in the current time range window and where the current 
+                    // only read resources which are files and not deleted, which are in the current time range window and where the current
                     // user has the sufficient permissions to read them
                     List<CmsResource> tmpResources = getCms().readResources(path, filter);
                     if ((tmpResources != null) && !tmpResources.isEmpty()) {
@@ -663,15 +692,16 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
     }
 
     /**
-     * 
-     * @param cmsObject
-     * @param report
-     * @param file
-     * @param result
-     * 
+     * Writes the file contents.<p>
+     *
+     * @param cmsObject the cms context
+     * @param report the report
+     * @param file the file to write
+     * @param content the file content
+     *
      * @return success flag
      */
-    private boolean writeContent(CmsObject cmsObject, I_CmsReport report, CmsFile file, byte[] result) {
+    private boolean writeContent(CmsObject cmsObject, I_CmsReport report, CmsFile file, byte[] content) {
 
         boolean success = true;
 
@@ -696,7 +726,7 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
 
         // write the file content
         try {
-            file.setContents(result);
+            file.setContents(content);
             cmsObject.writeFile(file);
         } catch (Exception e) {
             m_errorUpdate += 1;
@@ -731,6 +761,5 @@ public class CmsSearchReplaceThread extends A_CmsReportThread {
         }
 
         return success;
-
     }
 }

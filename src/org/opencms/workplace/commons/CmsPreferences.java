@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -86,13 +86,13 @@ import org.apache.commons.logging.Log;
 
 /**
  * Provides methods for the user preferences dialog. <p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/preferences.jsp
  * </ul>
- * <p> 
- * 
+ * <p>
+ *
  * @since 6.0.0
  */
 public class CmsPreferences extends CmsTabDialog {
@@ -113,10 +113,10 @@ public class CmsPreferences extends CmsTabDialog {
 
         /**
          * Creates a new instance.<p>
-         * 
+         *
          * @param options the option labels
          * @param values the option values
-         * @param selectedIndex the currently selected index 
+         * @param selectedIndex the currently selected index
          */
         public SelectOptions(List<String> options, List<String> values, int selectedIndex) {
 
@@ -127,8 +127,8 @@ public class CmsPreferences extends CmsTabDialog {
 
         /**
          * Gets the select option labels.<p>
-         * 
-         * @return the select option labels 
+         *
+         * @return the select option labels
          */
         public List<String> getOptions() {
 
@@ -137,8 +137,8 @@ public class CmsPreferences extends CmsTabDialog {
 
         /**
          * Gets the selected index.<p>
-         * 
-         * @return the selected index 
+         *
+         * @return the selected index
          */
         public int getSelectedIndex() {
 
@@ -147,18 +147,18 @@ public class CmsPreferences extends CmsTabDialog {
 
         /**
          * Gets the select widget values.<p>
-         * 
-         * @return the select widget values 
+         *
+         * @return the select widget values
          */
         public List<String> getValues() {
 
             return m_values;
         }
 
-        /** 
+        /**
          * Creates a configuration string for client-side select widgets from the options.<p>
-         * 
-         * @return the widget configuration string 
+         *
+         * @return the widget configuration string
          */
         public String toClientSelectWidgetConfiguration() {
 
@@ -344,7 +344,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsPreferences(CmsJspActionElement jsp) {
@@ -354,7 +354,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -366,11 +366,11 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the options for the language selector.<p>
-     * 
+     *
      * @param setLocale the locale for the select options
-     * @param prevLocale the locale currently set 
-     * 
-     * @return the options for the language selector 
+     * @param prevLocale the locale currently set
+     *
+     * @return the options for the language selector
      */
     public static SelectOptions getOptionsForLanguageStatic(Locale setLocale, Locale prevLocale) {
 
@@ -405,12 +405,12 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the options for the project selector.<p>
-     * 
-     * @param cms  the CMS context 
-     * @param startProject the start project 
-     * @param  locale the locale 
-     * 
-     * @return the options for the project selector 
+     *
+     * @param cms  the CMS context
+     * @param startProject the start project
+     * @param  locale the locale
+     *
+     * @return the options for the project selector
      */
     public static SelectOptions getProjectSelectOptionsStatic(CmsObject cms, String startProject, Locale locale) {
 
@@ -482,12 +482,12 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the options for the site selector.<p>
-     * 
-     * @param cms the CMS context 
-     * @param wpSite the selected site 
-     * @param locale the locale for the select options 
-     * 
-     * @return the options for the site selector 
+     *
+     * @param cms the CMS context
+     * @param wpSite the selected site
+     * @param locale the locale for the select options
+     *
+     * @return the options for the site selector
      */
     public static SelectOptions getSiteSelectOptionsStatic(CmsObject cms, String wpSite, Locale locale) {
 
@@ -541,7 +541,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Performs the change password action.<p>
-     * 
+     *
      * @throws JspException if inclusion of error element fails
      */
     public void actionChangePassword() throws JspException {
@@ -665,7 +665,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the default copy file mode select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the default copy file mode select box
      */
@@ -683,7 +683,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the default copy folder mode select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the default copy folder mode select box
      */
@@ -703,7 +703,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the default delete file mode select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the default delete file mode select box
      */
@@ -721,7 +721,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the direct edit button style select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the direct edit button style select box
      */
@@ -733,7 +733,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the editor button style select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the editor button style select box
      */
@@ -745,7 +745,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the explorer button style select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the explorer button style select box
      */
@@ -757,7 +757,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the explorer number of entries per page select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the explorer number of entries per page select box
      */
@@ -767,7 +767,7 @@ public class CmsPreferences extends CmsTabDialog {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(emptyOption)) {
             emptyOption = "50,100,200,300,400,500";
         }
-        // remove all non digits without ',' 
+        // remove all non digits without ','
         emptyOption = emptyOption.replaceAll("[^0-9|^,]", "");
         // remove all empty entries
         emptyOption = emptyOption.replaceAll(",,", ",");
@@ -789,7 +789,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the language select box of the start settings.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the language select box
      */
@@ -801,7 +801,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the preferred editors select boxes of the editor settings.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the preferred editors select boxes
      */
@@ -830,7 +830,8 @@ public class CmsPreferences extends CmsTabDialog {
                 Float keyVal = rankResources.firstKey();
                 String currentResourceType = rankResources.get(keyVal);
 
-                SortedMap<Float, CmsWorkplaceEditorConfiguration> availableEditors = resourceEditors.get(currentResourceType);
+                SortedMap<Float, CmsWorkplaceEditorConfiguration> availableEditors = resourceEditors.get(
+                    currentResourceType);
                 if ((availableEditors != null) && (availableEditors.size() > 0)) {
                     String preSelection = computeEditorPreselection(request, currentResourceType);
                     List<String> options = new ArrayList<String>(availableEditors.size() + 1);
@@ -860,11 +861,8 @@ public class CmsPreferences extends CmsTabDialog {
                     }
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
-                    result.append(buildSelect(
-                        htmlAttributes + currentResourceType + "\"",
-                        options,
-                        values,
-                        selectedIndex));
+                    result.append(
+                        buildSelect(htmlAttributes + currentResourceType + "\"", options, values, selectedIndex));
                     result.append("</td>\n</tr>\n");
                 }
                 rankResources.remove(keyVal);
@@ -875,7 +873,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the project select box of the start settings.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the project select box
      */
@@ -888,7 +886,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the default publish siblings mode select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the default publish siblings mode select box
      */
@@ -906,7 +904,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the workplace report type select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the workplace report type select box
      */
@@ -926,7 +924,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the workplace start site select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the workplace start site select box
      */
@@ -939,7 +937,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the HTML for the start galleries settings as select boxes.<p>
-     *  
+     *
      * @param htmlAttributes optional HTML attributes for the &lgt;select&gt; tag
      * @return the HTML for start galleries select boxes
      */
@@ -980,7 +978,7 @@ public class CmsPreferences extends CmsTabDialog {
                 // third: get the available galleries for this gallery type id
                 List<CmsResource> availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
 
-                // forth: fill the select box 
+                // forth: fill the select box
                 List<String> options = new ArrayList<String>(availableGalleries.size() + 2);
                 List<String> values = new ArrayList<String>(availableGalleries.size() + 2);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_PRESELECT_0));
@@ -1005,8 +1003,10 @@ public class CmsPreferences extends CmsTabDialog {
                     String title = "";
                     try {
                         // read the gallery title
-                        title = getCms().readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                            "");
+                        title = getCms().readPropertyObject(
+                            sitePath,
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            false).getValue("");
                     } catch (CmsException e) {
                         // error reading title property
                         if (LOG.isErrorEnabled()) {
@@ -1038,7 +1038,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the workplace start site select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the workplace start site select box
      */
@@ -1065,7 +1065,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns a html select box filled with the views accessible by the current user.<p>
-     * 
+     *
      * @param htmlAttributes attributes that will be inserted into the generated html
      * @return a html select box filled with the views accessible by the current user
      */
@@ -1077,8 +1077,10 @@ public class CmsPreferences extends CmsTabDialog {
 
         // loop through the vectors and fill the result vectors
         List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
-        CmsWorkplaceView directEditView = new CmsWorkplaceView(Messages.get().getBundle().key(
-            Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0), CmsWorkplace.VIEW_DIRECT_EDIT, Float.valueOf(100));
+        CmsWorkplaceView directEditView = new CmsWorkplaceView(
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
+            CmsWorkplace.VIEW_DIRECT_EDIT,
+            Float.valueOf(100));
         list.add(directEditView);
 
         Iterator<CmsWorkplaceView> i = list.iterator();
@@ -1111,7 +1113,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the workplace button style select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the workplace button style select box
      */
@@ -1123,7 +1125,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for the workplace search result list type select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @return the html for the workplace search result list type select box
      */
@@ -1158,7 +1160,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html code for the static user information table (tab 4).<p>
-     * 
+     *
      * @return the html code for the static user information table
      */
     public String buildUserInformation() {
@@ -1224,9 +1226,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Creates the HTML JavaScript and stylesheet includes required by the calendar for the head of the page.<p>
-     * 
+     *
      * @return the necessary HTML code for the js and stylesheet includes
-     * 
+     *
      * @deprecated use {@link CmsCalendarWidget#calendarIncludes(java.util.Locale)}, this is just here so that old JSP still work
      */
     @Deprecated
@@ -1237,7 +1239,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Generates the HTML to initialize the JavaScript calendar element on the end of a page.<p>
-     * 
+     *
      * @param inputFieldId the ID of the input field where the date is pasted to
      * @param triggerButtonId the ID of the button which triggers the calendar
      * @param align initial position of the calendar popup element
@@ -1247,7 +1249,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @param dateStatusFunc name of the function which determines if/how a date should be disabled
      * @param showTime true if the time selector should be shown, otherwise false
      * @return the HTML code to initialize a calendar poup element
-     * 
+     *
      * @deprecated use {@link CmsCalendarWidget#calendarInit(org.opencms.i18n.CmsMessages, String, String, String, boolean, boolean, boolean, String, boolean)}, this is just here so that old JSP still work
      */
     @Deprecated
@@ -1275,8 +1277,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the select options for the language selector.<p>
-     * 
-     * @return the select options 
+     *
+     * @return the select options
      */
     public SelectOptions getOptionsForLanguage() {
 
@@ -1285,7 +1287,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the new password value.<p>
-     * 
+     *
      * @return the new password value
      */
     public String getParamNewPassword() {
@@ -1295,7 +1297,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the old password value. <p>
-     * 
+     *
      * @return the old password value
      */
     public String getParamOldPassword() {
@@ -1305,7 +1307,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "copy file default" setting.<p>
-     * 
+     *
      * @return the "copy file default" setting
      */
     public String getParamTabDiCopyFileMode() {
@@ -1315,7 +1317,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "copy folder default" setting.<p>
-     * 
+     *
      * @return the "copy folder default" setting
      */
     public String getParamTabDiCopyFolderMode() {
@@ -1325,7 +1327,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "delete file default" setting.<p>
-     * 
+     *
      * @return the "delete file default" setting
      */
     public String getParamTabDiDeleteFileMode() {
@@ -1335,7 +1337,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "expand inherited permissions" default setting.<p>
-     * 
+     *
      * @return the "expand inherited permissions" default setting
      */
     public String getParamTabDiPermissionsExpandInherited() {
@@ -1345,7 +1347,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "expand current users permissions" default setting.<p>
-     * 
+     *
      * @return the "expand current users permissions" default setting
      */
     public String getParamTabDiPermissionsExpandUser() {
@@ -1355,7 +1357,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "inherit permissions on folders" default setting.<p>
-     * 
+     *
      * @return the "inherit permissions on folders" default setting
      */
     public String getParamTabDiPermissionsInheritOnFolder() {
@@ -1365,7 +1367,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "publish file siblings default" setting.<p>
-     * 
+     *
      * @return the "publish file siblings default" setting
      */
     public String getParamTabDiPublishFileMode() {
@@ -1375,7 +1377,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display lock dialog" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the "display lock dialog" input field is checked, otherwise ""
      */
     public String getParamTabDiShowLock() {
@@ -1385,7 +1387,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "editor button style" setting.<p>
-     * 
+     *
      * @return the "editor button style" setting
      */
     public String getParamTabEdButtonStyle() {
@@ -1395,7 +1397,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "direct edit button style" setting.<p>
-     * 
+     *
      * @return the "direct edit button style" setting
      */
     public String getParamTabEdDirectEditButtonStyle() {
@@ -1405,7 +1407,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "explorer button style" setting.<p>
-     * 
+     *
      * @return the "explorer button style" setting
      */
     public String getParamTabExButtonStyle() {
@@ -1415,7 +1417,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file creation date" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file creation date input field is checked, otherwise ""
      */
     public String getParamTabExFileDateCreated() {
@@ -1425,7 +1427,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file date expired" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file date expired input field is checked, otherwise ""
      */
     public String getParamTabExFileDateExpired() {
@@ -1435,7 +1437,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file last modification date" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file last modification date input field is checked, otherwise ""
      */
     public String getParamTabExFileDateLastModified() {
@@ -1445,7 +1447,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file date released" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file date released input field is checked, otherwise ""
      */
     public String getParamTabExFileDateReleased() {
@@ -1455,7 +1457,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "explorer number of entries per page" setting.<p>
-     * 
+     *
      * @return the "explorer number of entries per page" setting
      */
     public String getParamTabExFileEntries() {
@@ -1465,7 +1467,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file locked by" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file locked by input field is checked, otherwise ""
      */
     public String getParamTabExFileLockedBy() {
@@ -1475,7 +1477,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display navtext" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file navtext input field is checked, otherwise ""
      */
     public String getParamTabExFileNavText() {
@@ -1485,7 +1487,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file permissions" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file permissions input field is checked, otherwise ""
      */
     public String getParamTabExFilePermissions() {
@@ -1495,7 +1497,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file size" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file size input field is checked, otherwise ""
      */
     public String getParamTabExFileSize() {
@@ -1505,7 +1507,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file state" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file state input field is checked, otherwise ""
      */
     public String getParamTabExFileState() {
@@ -1515,7 +1517,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file title" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file title input field is checked, otherwise ""
      */
     public String getParamTabExFileTitle() {
@@ -1525,7 +1527,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file type" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file type input field is checked, otherwise ""
      */
     public String getParamTabExFileType() {
@@ -1535,7 +1537,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file created by" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file created by input field is checked, otherwise ""
      */
     public String getParamTabExFileUserCreated() {
@@ -1545,7 +1547,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "display file last modified by" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the file last modified by input field is checked, otherwise ""
      */
     public String getParamTabExFileUserLastModified() {
@@ -1555,7 +1557,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "workplace search result style" setting.<p>
-     * 
+     *
      * @return the "workplace search result style" setting
      */
     public String getParamTabExWorkplaceSearchResult() {
@@ -1565,7 +1567,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "workplace button style" setting.<p>
-     * 
+     *
      * @return the "workplace button style" setting
      */
     public String getParamTabWpButtonStyle() {
@@ -1575,7 +1577,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "start folder" setting.<p>
-     * 
+     *
      * @return the "start folder" setting
      */
     public String getParamTabWpFolder() {
@@ -1585,7 +1587,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the start language setting.<p>
-     * 
+     *
      * @return the start language setting
      */
     public String getParamTabWpLanguage() {
@@ -1595,7 +1597,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "list all projects" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the "list all projects" input is checked, otherwise ""
      */
     public String getParamTabWpListAllProjects() {
@@ -1605,7 +1607,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the start project setting.<p>
-     * 
+     *
      * @return the start project setting
      */
     public String getParamTabWpProject() {
@@ -1615,7 +1617,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "workplace report type" setting.<p>
-     * 
+     *
      * @return the "workplace report type" setting
      */
     public String getParamTabWpReportType() {
@@ -1625,7 +1627,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "workplace restrict explorer view" setting.<p>
-     * 
+     *
      * @return the "workplace restrict explorer view" setting
      */
     public String getParamTabWpRestrictExplorerView() {
@@ -1635,7 +1637,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "show publish notification" setting.<p>
-     * 
+     *
      * @return <code>"true"</code> if the "show publish notification" input is checked, otherwise ""
      */
     public String getParamTabWpShowPublishNotification() {
@@ -1645,7 +1647,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the "start site" setting.<p>
-     * 
+     *
      * @return the "start site" setting
      */
     public String getParamTabWpSite() {
@@ -1655,9 +1657,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Get the "user timewparp" setting in form of a formatted date string.<p>
-     * 
+     *
      * If no timewarp has been chosen, a value "-" will be returned.<p>
-     * 
+     *
      * @return the "user timewarp" setting in form of a formatted date string
      */
     public String getParamTabWpTimeWarp() {
@@ -1676,7 +1678,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the upload variant setting.<p>
-     * 
+     *
      * @return <code>"applet"</code>, <code>"gwt"</code> or <code>"basic"</code>
      */
     public UploadVariant getParamTabWpUploadVariant() {
@@ -1686,7 +1688,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the start view setting.<p>
-     * 
+     *
      * @return the start view setting
      */
     public String getParamTabWpView() {
@@ -1696,8 +1698,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the project select options.<p>
-     * 
-     * @return the project select options 
+     *
+     * @return the project select options
      */
     public SelectOptions getProjectSelectOptions() {
 
@@ -1706,8 +1708,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the site select options.<p>
-     *  
-     * @return the site select options  
+     *
+     * @return the site select options
      */
     public SelectOptions getSiteSelectOptions() {
 
@@ -1751,8 +1753,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the timewarp parameter as a simple numeric string.<p>
-     * 
-     * @return the timewarp parameter as a simple numeric string 
+     *
+     * @return the timewarp parameter as a simple numeric string
      */
     public String getTimeWarpInt() {
 
@@ -1761,8 +1763,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Gets the internal user settings object.<p>
-     * 
-     * @return the user settings object 
+     *
+     * @return the user settings object
      */
     public CmsUserSettings getUserSettings() {
 
@@ -1771,8 +1773,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Helper method to add the "checked" attribute to an input field.<p>
-     * 
-     * @param paramValue the parameter value, if <code>"true"</code>, the "checked" attribute will be returned 
+     *
+     * @param paramValue the parameter value, if <code>"true"</code>, the "checked" attribute will be returned
      * @return the "checked" attribute or an empty String
      */
     public String isChecked(String paramValue) {
@@ -1785,7 +1787,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the new password value.<p>
-     * 
+     *
      * @param newPwd the new password value
      */
     public void setParamNewPassword(String newPwd) {
@@ -1795,7 +1797,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the old password value.<p>
-     * 
+     *
      * @param oldPwd the old password value
      */
     public void setParamOldPassword(String oldPwd) {
@@ -1805,7 +1807,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "copy file default" setting.<p>
-     * 
+     *
      * @param value the "copy file default" setting
      */
     public void setParamTabDiCopyFileMode(String value) {
@@ -1819,7 +1821,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "copy folder default" setting.<p>
-     * 
+     *
      * @param value the "copy folder default" setting
      */
     public void setParamTabDiCopyFolderMode(String value) {
@@ -1833,7 +1835,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "delete file siblings default" setting.<p>
-     * 
+     *
      * @param value the "delete file siblings default" setting
      */
     public void setParamTabDiDeleteFileMode(String value) {
@@ -1847,7 +1849,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "expand inherited permissions" default setting.<p>
-     * 
+     *
      * @param value the "expand inherited permissions" default setting
      */
     public void setParamTabDiPermissionsExpandInherited(String value) {
@@ -1857,7 +1859,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "expand current users permissions" default setting.<p>
-     * 
+     *
      * @param value the "expand current users permissions" default setting
      */
     public void setParamTabDiPermissionsExpandUser(String value) {
@@ -1867,7 +1869,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "inherit permissions on folders" default setting.<p>
-     * 
+     *
      * @param value the "inherit permissions on folders" default setting
      */
     public void setParamTabDiPermissionsInheritOnFolder(String value) {
@@ -1877,7 +1879,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "publish file siblings default" setting.<p>
-     * 
+     *
      * @param value the "publish file siblings default" setting
      */
     public void setParamTabDiPublishFileMode(String value) {
@@ -1887,7 +1889,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display lock dialog" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display lock dialog" setting, all others to disable
      */
     public void setParamTabDiShowLock(String value) {
@@ -1897,7 +1899,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "editor button style" setting.<p>
-     * 
+     *
      * @param value a String representation of an int value to set the "editor button style" setting
      */
     public void setParamTabEdButtonStyle(String value) {
@@ -1911,7 +1913,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "direct edit button style" setting.<p>
-     * 
+     *
      * @param value a String representation of an int value to set the "direct edit button style" setting
      */
     public void setParamTabEdDirectEditButtonStyle(String value) {
@@ -1925,7 +1927,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "explorer button style" setting.<p>
-     * 
+     *
      * @param value a String representation of an int value to set the "explorer button style" setting
      */
     public void setParamTabExButtonStyle(String value) {
@@ -1939,7 +1941,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file creation date" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file creation date" setting, all others to disable
      */
     public void setParamTabExFileDateCreated(String value) {
@@ -1949,7 +1951,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file expired date" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file expired date" setting, all others to disable
      */
     public void setParamTabExFileDateExpired(String value) {
@@ -1959,7 +1961,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file last modification date" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file last modification date" setting, all others to disable
      */
     public void setParamTabExFileDateLastModified(String value) {
@@ -1969,7 +1971,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file released date" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file released date" setting, all others to disable
      */
     public void setParamTabExFileDateReleased(String value) {
@@ -1979,7 +1981,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "explorer number of entries per page" setting.<p>
-     * 
+     *
      * @param value a String representation of an int value to set the "number of entries per page" setting
      */
     public void setParamTabExFileEntries(String value) {
@@ -1993,7 +1995,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file locked by" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file locked by" setting, all others to disable
      */
     public void setParamTabExFileLockedBy(String value) {
@@ -2003,7 +2005,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file navtext" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file navtext" setting, all others to disable
      */
     public void setParamTabExFileNavText(String value) {
@@ -2013,7 +2015,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file permissions" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file permissions" setting, all others to disable
      */
     public void setParamTabExFilePermissions(String value) {
@@ -2023,7 +2025,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file size" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file size" setting, all others to disable
      */
     public void setParamTabExFileSize(String value) {
@@ -2033,7 +2035,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file state" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file state" setting, all others to disable
      */
     public void setParamTabExFileState(String value) {
@@ -2043,7 +2045,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file title" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file title" setting, all others to disable
      */
     public void setParamTabExFileTitle(String value) {
@@ -2053,7 +2055,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file type" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file type" setting, all others to disable
      */
     public void setParamTabExFileType(String value) {
@@ -2063,7 +2065,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file created by" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file created by" setting, all others to disable
      */
     public void setParamTabExFileUserCreated(String value) {
@@ -2073,7 +2075,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "display file last modified by" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "display file last modified by" setting, all others to disable
      */
     public void setParamTabExFileUserLastModified(String value) {
@@ -2083,7 +2085,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "workplace search result style".<p>
-     * 
+     *
      * @param style the "workplace search result style" to set
      */
     public void setParamTabExWorkplaceSearchResult(String style) {
@@ -2096,7 +2098,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "workplace button style" setting.<p>
-     * 
+     *
      * @param value a String representation of an int value to set the "workplace button style" setting
      */
     public void setParamTabWpButtonStyle(String value) {
@@ -2110,12 +2112,12 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "start folder" setting.<p>
-     * 
+     *
      * @param value the start folder to show in the explorer view
      */
     public void setParamTabWpFolder(String value) {
 
-        // perform self - healing 
+        // perform self - healing
         if (!getCms().existsResource(value, CmsResourceFilter.IGNORE_EXPIRATION)) {
             value = "/";
         }
@@ -2124,7 +2126,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the start language setting.<p>
-     * 
+     *
      * @param value the start language setting
      */
     public void setParamTabWpLanguage(String value) {
@@ -2134,7 +2136,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "list all projects" flag.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "list all project" feature, all others to
      *        disable
      */
@@ -2145,7 +2147,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the start project setting.<p>
-     * 
+     *
      * @param value the start project setting
      */
     public void setParamTabWpProject(String value) {
@@ -2155,7 +2157,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "workplace report type" setting.<p>
-     * 
+     *
      * @param value the "workplace report type" setting
      */
     public void setParamTabWpReportType(String value) {
@@ -2168,7 +2170,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "workplace restrict explorer view" setting.<p>
-     * 
+     *
      * @param value the "workplace restrict explorer view" setting
      */
     public void setParamTabWpRestrictExplorerView(String value) {
@@ -2178,7 +2180,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "show publish notification" setting.<p>
-     * 
+     *
      * @param value <code>"true"</code> to enable the "show publish notification" setting, all others to
      *        disable
      */
@@ -2189,7 +2191,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "start site" setting.<p>
-     * 
+     *
      * @param value the start site to show in the explorer view
      */
     public void setParamTabWpSite(String value) {
@@ -2199,9 +2201,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the "user timewparp" setting.<p>
-     * 
+     *
      * To delete a timewarp setting for the current user, provide <code>"-"</code> as value.<p>
-     * 
+     *
      * @param value a String representation of an date in the formate as required by
      *      {@link CmsCalendarWidget#getCalendarDate(org.opencms.i18n.CmsMessages, String, boolean)}
      */
@@ -2221,8 +2223,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the upload variant setting.<p>
-     * 
-     * @param value <code>"applet"</code>, <code>"basic"</code>, 
+     *
+     * @param value <code>"applet"</code>, <code>"basic"</code>,
      * <code>"gwt"</code>, <code>"true"</code> or <code>"false"</code>
      */
     public void setParamTabWpUploadVariant(String value) {
@@ -2232,7 +2234,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the start view setting.<p>
-     * 
+     *
      * @param value the start view setting
      */
     public void setParamTabWpView(String value) {
@@ -2241,9 +2243,9 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Sets the timewarp setting from a numeric string 
-     * 
-     * @param timewarp a numeric string containing the number of milliseconds since the epoch 
+     * Sets the timewarp setting from a numeric string
+     *
+     * @param timewarp a numeric string containing the number of milliseconds since the epoch
      */
     public void setTimewarpInt(String timewarp) {
 
@@ -2256,8 +2258,8 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Sets the  user settings.<p>
-     * 
-     * @param userSettings the user settings 
+     *
+     * @param userSettings the user settings
      */
     public void setUserSettings(CmsDefaultUserSettings userSettings) {
 
@@ -2266,7 +2268,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Updates the user preferences after changes have been made.<p>
-     * 
+     *
      * @param cms the current cms context
      * @param req the current http request
      */
@@ -2276,7 +2278,8 @@ public class CmsPreferences extends CmsTabDialog {
         if (session == null) {
             return;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return;
         }
@@ -2284,6 +2287,15 @@ public class CmsPreferences extends CmsTabDialog {
         CmsSynchronizeSettings synchronizeSettings = settings.getUserSettings().getSynchronizeSettings();
         settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
         settings.getUserSettings().setSynchronizeSettings(synchronizeSettings);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
+     */
+    @Override
+    protected void checkRole() {
+
+        // this class is used internally for the new preferences dialog, which can also be used by non-workplace users.
     }
 
     /**
@@ -2328,11 +2340,11 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the values of all parameter methods of this workplace class instance.<p>
-     * 
-     * This overwrites the super method because of the possible dynamic editor selection entries.<p> 
-     * 
+     *
+     * This overwrites the super method because of the possible dynamic editor selection entries.<p>
+     *
      * @return the values of all parameter methods of this workplace class instance
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#paramValues()
      */
     @Override
@@ -2354,12 +2366,12 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
-     * Builds the HTML code for a select widget given a bean containing the select options 
+     * Builds the HTML code for a select widget given a bean containing the select options
      *
-     * @param htmlAttributes html attributes for the select widget 
+     * @param htmlAttributes html attributes for the select widget
      * @param options the bean containing the select options
-     *  
-     * @return the HTML for the select box 
+     *
+     * @return the HTML for the select box
      */
     String buildSelect(String htmlAttributes, SelectOptions options) {
 
@@ -2368,7 +2380,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Builds the html for a common button style select box.<p>
-     * 
+     *
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
      * @param selectedIndex the index of the selected option
      * @return the html for the common button style select box
@@ -2386,7 +2398,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
-     * 
+     *
      * @param request the current http servlet request
      * @param resourceType the preferred editors resource type
      * @return the preferred editor preselection value or null, if none found
@@ -2407,7 +2419,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
-     * 
+     *
      * @param request the current http servlet request
      * @param galleryType the preferred gallery type
      * @return the preferred editor preselection value or null, if none found
@@ -2428,7 +2440,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Fills the parameter values according to the settings of the current user.<p>
-     * 
+     *
      * This method is called once when first displaying the preferences dialog.<p>
      */
     private void fillUserSettings() {
@@ -2438,9 +2450,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Returns the message for a given upload variant.<p>
-     * 
+     *
      * @param variant the variant to get the message for
-     * 
+     *
      * @return the message
      */
     private String getUploadVariantMessage(UploadVariant variant) {
@@ -2462,7 +2474,7 @@ public class CmsPreferences extends CmsTabDialog {
 
     /**
      * Helper method for the request parameter methods to return a String depending on the boolean parameter.<p>
-     * 
+     *
      * @param isEnabled the boolean variable to check
      * @return <code>"true"</code> if isEnabled is true, otherwise ""
      */

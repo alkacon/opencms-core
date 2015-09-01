@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -61,8 +61,8 @@ import org.apache.commons.logging.Log;
 
 /**
  * Base class for dialogs that use the OpenCms widgets without XML content.<p>
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDialog {
 
@@ -117,17 +117,17 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /** The set of help message ids that have already been used. */
     private Set<String> m_helpMessageIds;
 
-    /** 
+    /**
      * Parameter stores the index of the element to add or remove.<p>
-     * 
-     * This must not be <code>null</code>, because it must be available 
+     *
+     * This must not be <code>null</code>, because it must be available
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
     private String m_paramElementIndex = "0";
 
-    /** 
+    /**
      * Parameter stores the name of the element to add or remove.<p>
-     * 
+     *
      * This must not be <code>null</code>, because it must be available
      * when calling <code>{@link org.opencms.workplace.CmsWorkplace#paramsAsHidden()}</code>.<p>
      */
@@ -138,7 +138,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsWidgetDialog(CmsJspActionElement jsp) {
@@ -148,7 +148,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -168,7 +168,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Commits the edited object after pressing the "OK" button.<p>
-     * 
+     *
      * @throws IOException in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
      */
@@ -176,7 +176,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Adds or removes an optional element.<p>
-     * 
+     *
      * Depends on the value stored in the <code>{@link CmsDialog#getAction()}</code> method.<p>
      */
     public void actionToggleElement() {
@@ -216,7 +216,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the html for a button to add an optional element.<p>
-     * 
+     *
      * @param elementName name of the element
      * @param insertAfter the index of the element after which the new element should be created
      * @param enabled if true, the button to add an element is shown, otherwise a spacer is returned
@@ -239,7 +239,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Builds the HTML for the dialog form.<p>
-     * 
+     *
      * @return the HTML for the dialog form
      */
     public String buildDialogForm() {
@@ -250,7 +250,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the html for a button to remove an optional element.<p>
-     * 
+     *
      * @param elementName name of the element
      * @param index the element index of the element to remove
      * @param enabled if true, the button to remove an element is shown, otherwise a spacer is returned
@@ -281,7 +281,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Builds the end HTML for a block with 3D border in the dialog content area.<p>
-     * 
+     *
      * @return 3D block start / end segment
      */
     @Override
@@ -296,7 +296,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Builds the start HTML for a block with 3D border and optional subheadline in the dialog content area.<p>
-     * 
+     *
      * @param headline the headline String for the block
      * @return 3D block start / end segment
      */
@@ -311,7 +311,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the HTML for the buttons on the dialog.<p>
-     * 
+     *
      * @return the HTML for the buttons on the dialog.<p>
      */
     public String dialogButtonsCustom() {
@@ -349,7 +349,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -361,10 +361,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form if needed.<p>
-     * 
-     * @param writeLater if <code>true</code> no output is written, 
+     *
+     * @param writeLater if <code>true</code> no output is written,
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      * @throws ServletException in case of errors forwarding to the required result page
@@ -417,7 +417,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the errors that are thrown by save actions or form generation.<p>
-     * 
+     *
      * @return the errors that are thrown by save actions or form generation
      */
     public List<Throwable> getCommitErrors() {
@@ -428,7 +428,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Returns the dialog object for this widget dialog, or <code>null</code>
      * if no dialog object has been set.<p>
-     * 
+     *
      * @return the dialog object for this widget dialog, or <code>null</code>
      */
     public Object getDialogObject() {
@@ -483,9 +483,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Returns the value of the widget parameter with the given name, or <code>null</code>
      * if no such widget parameter is available.<p>
-     * 
+     *
      * @param name the widget parameter name to get the value for
-     * 
+     *
      * @return the value of the widget parameter with the given name
      */
     public String getParamValue(String name) {
@@ -496,10 +496,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Returns the value of the widget parameter with the given name and index, or <code>null</code>
      * if no such widget parameter is available.<p>
-     * 
+     *
      * @param name the widget parameter name to get the value for
      * @param index the widget parameter index
-     * 
+     *
      * @return the value of the widget parameter with the given name and index
      */
     public String getParamValue(String name, int index) {
@@ -527,10 +527,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the HTML for the end of the widget dialog.<p>
-     * 
+     *
      * This HTML includes additional components, for example the &lt;div&gt;
      * tags containing the help texts.<p>
-     * 
+     *
      * @return the HTML for the end of the widget dialog
      */
     public String getWidgetHtmlEnd() {
@@ -547,9 +547,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the HTML include tags for external JavaScripts files of the used widgets.<p>
-     * 
+     *
      * @return the HTML include tags for external JavaScripts files of the used widgets
-     * 
+     *
      * @throws JspException if an error occurs during JavaScript generation
      */
     public String getWidgetIncludes() throws JspException {
@@ -576,9 +576,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the JavaScript init calls for the used widgets.<p>
-     * 
+     *
      * @return the JavaScript init calls for the used widgets
-     * 
+     *
      * @throws JspException the JavaScript init calls for the used widgets
      */
     public String getWidgetInitCalls() throws JspException {
@@ -603,9 +603,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the JavaScript initialization methods for the used widgets.<p>
-     * 
+     *
      * @return the JavaScript initialization methods for the used widgets
-     * 
+     *
      * @throws JspException if an error occurs during JavaScript generation
      */
     public String getWidgetInitMethods() throws JspException {
@@ -646,8 +646,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Stores the given object as "dialog object" for this widget dialog in the current users session.<p> 
-     * 
+     * Stores the given object as "dialog object" for this widget dialog in the current users session.<p>
+     *
      * @param dialogObject the object to store
      */
     public void setDialogObject(Object dialogObject) {
@@ -693,9 +693,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the values of all widget parameters of this dialog as HTML hidden fields.<p>
-     * 
+     *
      * @return the values of all widget parameters of this dialog as HTML hidden fields
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
     public String widgetParamsAsHidden() {
@@ -706,18 +706,18 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Returns the values of all widget parameters of this dialog as HTML hidden fields,
      * excluding the widget values that are on the given dialog page.<p>
-     * 
+     *
      * This can be used to create multi-page dialogs where the values are passed from
      * one page to another before everything is submitted. If a widget A is used on page X,
-     * there should be no "hidden" HTML field for A since otherwise A would have 2 values when 
-     * submitting the dialog page: The one from the widget itself and the one from the hidden 
+     * there should be no "hidden" HTML field for A since otherwise A would have 2 values when
+     * submitting the dialog page: The one from the widget itself and the one from the hidden
      * field. This may lead to undefined results when processing the submitted values.<p>
-     * 
+     *
      * @param excludeDialogPage the dialog page to exclude the values for
-     * 
+     *
      * @return the values of all widget parameters of this dialog as HTML hidden fields,
      *      excluding the widget values that are on the given dialog page
-     * 
+     *
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
     public String widgetParamsAsHidden(String excludeDialogPage) {
@@ -747,7 +747,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Writes the dialog html code, only if the <code>{@link #ACTION_DEFAULT}</code> is set.<p>
-     * 
+     *
      * @throws JspException if dialog actions fail
      * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
      */
@@ -773,9 +773,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Adds the given error to the list of errors that are thrown by save actions or form generation.<p>
-     * 
+     *
      * If the error list has not been initialized yet, this is done automatically.<p>
-     * 
+     *
      * @param error the errors to add
      */
     protected void addCommitError(Exception error) {
@@ -788,7 +788,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Adds a new widget parameter definition to the list of all widgets of this dialog.<p>
-     * 
+     *
      * @param param the widget parameter definition to add
      */
     protected void addWidget(CmsWidgetDialogParameter param) {
@@ -802,10 +802,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns <code>true</code> if the dialog should be closed after the values have been committed.<p>
-     * 
-     * The default implementation returns <code>true</code> in case there are no 
+     *
+     * The default implementation returns <code>true</code> in case there are no
      * commit errors.<p>
-     * 
+     *
      * @return <code>true</code> if the dialog should be closed after the values have been committed
      */
     protected boolean closeDialogOnCommit() {
@@ -814,8 +814,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Commits all values on the dialog.<p> 
-     * 
+     * Commits all values on the dialog.<p>
+     *
      * @return a List of all Exceptions that occurred when comitting the dialog.<p>
      */
     protected List<Throwable> commitWidgetValues() {
@@ -824,10 +824,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Commits all values on the given dialog page.<p> 
-     * 
+     * Commits all values on the given dialog page.<p>
+     *
      * @param dialogPage the dialog (page) to commit
-     * 
+     *
      * @return a List of all Exceptions that occurred when committing the dialog page.<p>
      */
     protected List<Throwable> commitWidgetValues(String dialogPage) {
@@ -835,7 +835,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         List<Throwable> result = new ArrayList<Throwable>();
         Iterator<CmsWidgetDialogParameter> i = getWidgets().iterator();
         while (i.hasNext()) {
-            // check for all widget parameters            
+            // check for all widget parameters
             CmsWidgetDialogParameter base = i.next();
             if ((dialogPage == null) || (base.getDialogPage() == null) || dialogPage.equals(base.getDialogPage())) {
                 // the parameter is located on the requested dialog
@@ -857,8 +857,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Creates the dialog HTML for all defined widgets of this dialog.<p>  
-     * 
+     * Creates the dialog HTML for all defined widgets of this dialog.<p>
+     *
      * @return the dialog HTML for all defined widgets of this dialog
      */
     protected String createDialogHtml() {
@@ -868,9 +868,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
+     *
      * To get a more complex layout variation, you have to overwrite this method in your dialog class.<p>
-     * 
+     *
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
@@ -885,7 +885,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         result.append(createWidgetErrorHeader());
 
         Iterator<CmsWidgetDialogParameter> i = getWidgets().iterator();
-        // iterate the type sequence                    
+        // iterate the type sequence
         while (i.hasNext()) {
             // get the current widget base definition
             CmsWidgetDialogParameter base = i.next();
@@ -902,8 +902,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Creates the dialog HTML for all occurrences of one widget parameter.<p>  
-     * 
+     * Creates the dialog HTML for all occurrences of one widget parameter.<p>
+     *
      * @param base the widget parameter base
      * @return the dialog HTML for one widget parameter
      */
@@ -980,10 +980,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             }
             result.append(": </td>");
             if (p.getIndex() == 0) {
-                // show help bubble only on first element of each content definition 
+                // show help bubble only on first element of each content definition
                 result.append(p.getWidget().getHelpBubble(getCms(), this, p));
             } else {
-                // create empty cell for all following elements 
+                // create empty cell for all following elements
                 result.append(dialogHorizontalSpacer(16));
             }
 
@@ -1007,13 +1007,15 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 if (!addValue) {
                     result.append(dialogHorizontalSpacer(25));
                 } else {
-                    result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                    result.append(
+                        "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     result.append(buildAddElement(base.getName(), p.getIndex(), addValue));
                 }
 
                 if (removeValue) {
                     if (!addValue) {
-                        result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+                        result.append(
+                            "<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                     }
                     result.append(buildRemoveElement(base.getName(), p.getIndex(), removeValue));
                 }
@@ -1031,10 +1033,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the dialog widget rows HTML for the specified widget indices.<p>
-     * 
+     *
      * @param startIndex the widget index to start with
      * @param endIndex the widget index to stop at
-     * 
+     *
      * @return the dialog widget rows HTML for the specified widget indices
      */
     protected String createDialogRowsHtml(int startIndex, int endIndex) {
@@ -1049,7 +1051,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the complete widget dialog end block HTML that finishes a widget block.<p>
-     * 
+     *
      * @return the complete widget dialog end block HTML that finishes a widget block
      */
     protected String createWidgetBlockEnd() {
@@ -1062,9 +1064,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Create the complete widget dialog start block HTML that begins a widget block with optional headline.<p>
-     * 
+     *
      * @param headline the headline String for the block
-     * 
+     *
      * @return the complete widget dialog start block HTML that begins a widget block with optional headline
      */
     protected String createWidgetBlockStart(String headline) {
@@ -1077,7 +1079,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the HTML for the error message if validation errors were found.<p>
-     * 
+     *
      * @return the HTML for the error message if validation errors were found
      */
     protected String createWidgetErrorHeader() {
@@ -1156,7 +1158,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the HTML for the table around the dialog widgets.<p>
-     * 
+     *
      * @return the HTML for the table around the dialog widgets
      */
     protected String createWidgetTableEnd() {
@@ -1166,7 +1168,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Creates the HTML to close the table around the dialog widgets.<p>
-     * 
+     *
      * @return the HTML to close the table around the dialog widgets
      */
     protected String createWidgetTableStart() {
@@ -1176,9 +1178,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     protected String defaultActionHtml() throws JspException {
@@ -1192,7 +1194,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the html code for the default action content.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlContent() {
@@ -1216,7 +1218,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the dialog ending html code.<p>
-     * 
+     *
      * @return html code
      */
     protected String defaultActionHtmlEnd() {
@@ -1230,9 +1232,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Generates the dialog starting html code.<p>
-     * 
+     *
      * @return html code
-     * 
+     *
      * @throws JspException if something goes wrong
      */
     protected String defaultActionHtmlStart() throws JspException {
@@ -1281,7 +1283,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Fills all widgets of this widget dialog with the values from the request parameters.<p>
-     * 
+     *
      * @param request the current HTTP servlet request
      */
     protected void fillWidgetValues(HttpServletRequest request) {
@@ -1311,7 +1313,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         Iterator<CmsWidgetDialogParameter> i = getWidgets().iterator();
 
         while (i.hasNext()) {
-            // check for all widget base parameters            
+            // check for all widget base parameters
             CmsWidgetDialogParameter base = i.next();
 
             List<CmsWidgetDialogParameter> params = new ArrayList<CmsWidgetDialogParameter>();
@@ -1354,10 +1356,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the title for this Dialog.<p>
-     * 
+     *
      * In the default implementation this method returns <code>null</code>.
      * Override this if needed.<p>
-     * 
+     *
      * @return the title for this Dialog, or <code>null</code> if this dialog has no title
      */
     protected String getDialogTitle() {
@@ -1367,14 +1369,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the allowed pages for this dialog.<p>
-     * 
+     *
      * @return the allowed pages for this dialog
      */
     protected abstract String[] getPageArray();
 
     /**
      * Returns the allowed pages for this dialog.<p>
-     * 
+     *
      * @return the allowed pages for this dialog
      */
     protected List<String> getPages() {
@@ -1387,16 +1389,16 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the parameter widget definition for the given parameter name.<p>
-     * 
-     * @param name the parameter name to get the definition for 
-     * 
+     *
+     * @param name the parameter name to get the definition for
+     *
      * @return the parameter widget definition for the given parameter name
      */
     protected CmsWidgetDialogParameter getParameterDefinition(String name) {
 
         Iterator<CmsWidgetDialogParameter> i = getWidgets().iterator();
         while (i.hasNext()) {
-            // check for all widget parameters            
+            // check for all widget parameters
             CmsWidgetDialogParameter base = i.next();
             if (base.getName().equals(name)) {
                 return base;
@@ -1406,8 +1408,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Returns the map with the widget parameter values.<p> 
-     * 
+     * Returns the map with the widget parameter values.<p>
+     *
      * @return the map with the widget parameter values
      */
     protected Map<String, List<CmsWidgetDialogParameter>> getParameters() {
@@ -1417,9 +1419,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the validation errors for the dialog.<p>
-     * 
+     *
      * The method (@link CmsWidgetDialog#commitWidgetValues(String)) has to set this list.<p>
-     * 
+     *
      * @return the validation errors for the dialog
      */
     protected List<Throwable> getValidationErrorList() {
@@ -1428,10 +1430,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Returns the widget HTML code for the given parameter.<p> 
-     * 
+     * Returns the widget HTML code for the given parameter.<p>
+     *
      * @param param the name (id) of the parameter to get the widget HTML for
-     * 
+     *
      * @return the widget HTML code for the given parameter
      */
     protected String getWidget(CmsWidgetDialogParameter param) {
@@ -1443,9 +1445,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Returns the list of all widgets used on this widget dialog, the 
+     * Returns the list of all widgets used on this widget dialog, the
      * List must contain Objects of type <code>{@link CmsWidgetDialogParameter}</code>.<p>
-     * 
+     *
      * @return the list of all widgets used on this widget dialog
      */
     protected List<CmsWidgetDialogParameter> getWidgets() {
@@ -1458,7 +1460,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns <code>true</code> if the current dialog (page) has commit errors.<p>
-     * 
+     *
      * @return <code>true</code> if the current dialog (page) has commit errors
      */
     protected boolean hasCommitErrors() {
@@ -1468,7 +1470,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns <code>true</code> if the current dialog (page) has validation errors.<p>
-     * 
+     *
      * @return <code>true</code> if the current dialog (page) has validation errors
      */
     protected boolean hasValidationErrors() {
@@ -1514,9 +1516,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         defineWidgets();
         fillWidgetValues(request);
 
-        // set the action for the JSP switch 
+        // set the action for the JSP switch
         if (DIALOG_SAVE.equals(getParamAction())) {
-            // ok button pressed, save    
+            // ok button pressed, save
             List<Throwable> errors = commitWidgetValues(null);
             if (errors.size() > 0) {
                 setAction(ACTION_DEFAULT);
@@ -1541,7 +1543,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             actionToggleElement();
             setAction(ACTION_DEFAULT);
         } else if (DIALOG_BACK.equals(getParamAction())) {
-            // go back one page           
+            // go back one page
             setAction(ACTION_DEFAULT);
             List<Throwable> errors = commitWidgetValues(getParamPage());
             if (errors.size() > 0) {
@@ -1563,14 +1565,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             setParamPage(getPages().get(pageIndex));
 
         } else {
-            // first dialog call, set the default action               
+            // first dialog call, set the default action
             setAction(ACTION_DEFAULT);
         }
     }
 
     /**
      * Sets the errors that are thrown by save actions or form generation.<p>
-     * 
+     *
      * @param errors the errors that are thrown by save actions or form generation
      */
     protected void setCommitErrors(List<Throwable> errors) {
@@ -1579,10 +1581,10 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     }
 
     /**
-     * Sets an optional localized key prefix identificator for all widgets.<p>  
-     * 
+     * Sets an optional localized key prefix identificator for all widgets.<p>
+     *
      * @param prefix the optional localized key prefix identificator for all widgets
-     * 
+     *
      * @see org.opencms.widgets.I_CmsWidgetParameter#setKeyPrefix(java.lang.String)
      */
     protected void setKeyPrefix(String prefix) {
@@ -1592,7 +1594,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Sets the allowed pages for this dialog.<p>
-     * 
+     *
      * @param pages the allowed pages for this dialog
      */
     protected void setPages(List<String> pages) {
@@ -1602,9 +1604,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Sets the validation errors for the dialog.<p>
-     * 
+     *
      * Use this in the method (@link CmsWidgetDialog#commitWidgetValues(String)) to set the list.<p>
-     * 
+     *
      * @param errors the validation errors
      */
     protected void setValidationErrorList(List<Throwable> errors) {
@@ -1614,9 +1616,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Should be overridden for parameter validation.<p>
-     * 
+     *
      * The exception is never seen by the user, so it can be just a <code>new {@link Exception}()</code>.<p>
-     * 
+     *
      * @throws Exception if the parameters are not valid
      */
     protected void validateParamaters() throws Exception {
@@ -1626,8 +1628,8 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /**
      * Returns the (internal use only) map of dialog objects.<p>
-     * 
-     * @return the (internal use only) map of dialog objects 
+     *
+     * @return the (internal use only) map of dialog objects
      */
     private Map<String, Object> getDialogObjectMap() {
 

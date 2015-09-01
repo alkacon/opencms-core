@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -32,14 +32,14 @@ import org.opencms.search.documents.CmsDocumentXmlPage;
 /**
  * Special document text extraction factory for the gallery index that creates multiple fields for the content
  * in all the languages available in an XML page.<p>
- * 
- * @since 8.0.0 
+ *
+ * @since 8.0.0
  */
 public class CmsGalleryDocumentXmlPage extends CmsDocumentXmlPage {
 
     /**
      * Creates a new instance of this Lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsGalleryDocumentXmlPage(String name) {

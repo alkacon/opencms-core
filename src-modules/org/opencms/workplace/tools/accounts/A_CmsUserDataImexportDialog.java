@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Abstract dialog class to import and export user data.<p>
- * 
+ *
  * @since 6.7.1
  */
 public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
@@ -70,7 +70,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP action element.<p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public A_CmsUserDataImexportDialog(CmsJspActionElement jsp) {
@@ -80,7 +80,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Public constructor with JSP variables.<p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -98,7 +98,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the list of groups.<p>
-     * 
+     *
      * @return the list of groups
      */
     public List<CmsGroup> getGroups() {
@@ -108,7 +108,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @return the organizational unit fqn parameter value
      */
     public String getParamOufqn() {
@@ -118,7 +118,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the list of roles to export.<p>
-     *  
+     *
      * @return the list of roles to export
      */
     public List<CmsRole> getRoles() {
@@ -128,7 +128,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Sets the groups list.<p>
-     * 
+     *
      * @param groups the groups list
      */
     public void setGroups(List<CmsGroup> groups) {
@@ -138,7 +138,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Sets the organizational unit fqn parameter value.<p>
-     * 
+     *
      * @param ouFqn the organizational unit fqn parameter value
      */
     public void setParamOufqn(String ouFqn) {
@@ -151,7 +151,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Sets the roles list.<p>
-     * 
+     *
      * @param roles the roles list
      */
     public void setRoles(List<CmsRole> roles) {
@@ -176,7 +176,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
 
     /**
      * Returns the role names to show in the select box.<p>
-     * 
+     *
      * @return the role names to show in the select box
      */
     protected List<CmsSelectWidgetOption> getSelectRoles() {

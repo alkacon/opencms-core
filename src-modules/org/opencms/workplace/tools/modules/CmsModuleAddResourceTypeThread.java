@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Element;
 
 /**
- * The report thread to add a new resource type to a module and publish all related resources.<p> 
+ * The report thread to add a new resource type to a module and publish all related resources.<p>
  */
 public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
@@ -110,6 +110,9 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
     /** Sample file. */
     private static final String SAMPLE_SCHEMA = "/system/modules/org.opencms.workplace.tools.modules/samples/sample-schema.xsd";
 
+    /** The sample schema type name. */
+    private static final String SAMPLE_SCHEMA_TYPE_NAME = "SampleType";
+
     /** Message bundle file name suffix. */
     private static final String SUFFIX_BUNDLE_FILE = ".workplace";
 
@@ -118,7 +121,7 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param cms the cms context
      * @param resInfo the resource type information
      */
@@ -205,9 +208,8 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
             OpenCms.getModuleManager().updateModule(cms, module);
             OpenCms.getResourceManager().initialize(cms);
             OpenCms.getWorkplaceManager().addExplorerTypeSettings(module);
-            OpenCms.fireCmsEvent(new CmsEvent(
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                Collections.<String, Object> emptyMap()));
+            OpenCms.fireCmsEvent(
+                new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.<String, Object> emptyMap()));
             // re-initialize the workplace
             OpenCms.getWorkplaceManager().initialize(getCms());
         } catch (Exception e) {
@@ -220,10 +222,10 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Adds the given messages to the workplace properties file.<p>
-     * 
+     *
      * @param messages the messages
      * @param propertiesFile the properties file
-     * 
+     *
      * @throws CmsException if writing the properties fails
      * @throws UnsupportedEncodingException in case of encoding issues
      */
@@ -246,10 +248,10 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Adds the given messages to the vfs message bundle.<p>
-     * 
+     *
      * @param messages the messages
      * @param vfsBundleFile the bundle file
-     * 
+     *
      * @throws CmsException if something goes wrong writing the file
      */
     private void addMessagesToVfsBundle(Map<String, String> messages, CmsFile vfsBundleFile) throws CmsException {
@@ -276,10 +278,10 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Adds the explorer type messages to the modules workplace bundle.<p>
-     * 
+     *
      * @param setting the explorer type settings
      * @param moduleFolder the module folder name
-     * 
+     *
      * @throws CmsException if writing the bundle fails
      * @throws UnsupportedEncodingException in case of encoding issues
      */
@@ -313,8 +315,10 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
             if (cms.existsResource(workplacePropertiesFile)) {
                 addMessagesToPropertiesFile(messages, cms.readFile(workplacePropertiesFile));
             } else {
-                String vfsBundleFileName = CmsStringUtil.joinPaths(moduleFolder, PATH_I18N, m_resInfo.getModuleName()
-                    + SUFFIX_BUNDLE_FILE);
+                String vfsBundleFileName = CmsStringUtil.joinPaths(
+                    moduleFolder,
+                    PATH_I18N,
+                    m_resInfo.getModuleName() + SUFFIX_BUNDLE_FILE);
                 CmsFile vfsBundle;
                 if (cms.existsResource(vfsBundleFileName)) {
                     vfsBundle = cms.readFile(vfsBundleFileName);
@@ -338,10 +342,10 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Copies sample schema and resource type icons and adds the resources to the module.<p>
-     * 
+     *
      * @param module the module
      * @param moduleFolder the module folder name
-     * 
+     *
      * @throws CmsIllegalArgumentException in case something goes wrong copying the resources
      * @throws CmsException in case something goes wrong copying the resources
      */
@@ -361,6 +365,23 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
         String schemaFile = CmsStringUtil.joinPaths(schemaFolder, m_resInfo.getName() + ".xsd");
         if (!cms.existsResource(schemaFile)) {
             cms.copyResource(SAMPLE_SCHEMA, schemaFile, CmsResource.COPY_AS_NEW);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_resInfo.getSchemaTypeName())) {
+                // replace the sample schema type name with the provided name
+                try {
+                    CmsFile schema = cms.readFile(schemaFile);
+                    OpenCms.getLocaleManager();
+                    String schemaContent = new String(
+                        schema.getContents(),
+                        CmsLocaleManager.getResourceEncoding(cms, schema));
+                    schemaContent = schemaContent.replaceAll(SAMPLE_SCHEMA_TYPE_NAME, m_resInfo.getSchemaTypeName());
+                    schema.setContents(schemaContent.getBytes());
+                    cms.writeFile(schema);
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    getReport().addError(e);
+                }
+            }
+
         }
         m_resInfo.setSchema(schemaFile);
         String filetypesFolder = "/system/workplace/resources/filetypes/";
@@ -381,9 +402,9 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Copies the sample formatter JSP, creates the associated formatter and module configuration.<p>
-     * 
+     *
      * @param moduleFolder the module folder name
-     * 
+     *
      * @throws CmsIllegalArgumentException in case something goes wrong copying the resources
      * @throws CmsException in case something goes wrong copying the resources
      */
@@ -398,12 +419,15 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
         if (!cms.existsResource(formatterJSP)) {
             cms.copyResource(SAMPLE_FORMATTER, formatterJSP, CmsResource.COPY_AS_NEW);
         }
-        String formatterConfig = CmsStringUtil.joinPaths(formatterFolder, m_resInfo.getName() + "-formatter-config.xml");
+        String formatterConfig = CmsStringUtil.joinPaths(
+            formatterFolder,
+            m_resInfo.getName() + "-formatter-config.xml");
         if (!cms.existsResource(formatterConfig)) {
 
             cms.createResource(
                 formatterConfig,
-                OpenCms.getResourceManager().getResourceType(CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId());
+                OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_FORMATTER_CONFIG).getTypeId());
             CmsFile configFile = cms.readFile(formatterConfig);
             CmsXmlContent configContent = CmsXmlContentFactory.unmarshal(cms, configFile);
             if (!configContent.hasLocale(CmsConfigurationReader.DEFAULT_LOCALE)) {
@@ -433,11 +457,13 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                 CmsFormatterBeanParser.N_MATCH + "/" + CmsFormatterBeanParser.N_WIDTH,
                 CmsConfigurationReader.DEFAULT_LOCALE,
                 0);
-            I_CmsXmlContentValue widthValue = configContent.getValue(CmsFormatterBeanParser.N_MATCH
-                + "/"
-                + CmsFormatterBeanParser.N_WIDTH
-                + "/"
-                + CmsFormatterBeanParser.N_WIDTH, CmsConfigurationReader.DEFAULT_LOCALE);
+            I_CmsXmlContentValue widthValue = configContent.getValue(
+                CmsFormatterBeanParser.N_MATCH
+                    + "/"
+                    + CmsFormatterBeanParser.N_WIDTH
+                    + "/"
+                    + CmsFormatterBeanParser.N_WIDTH,
+                CmsConfigurationReader.DEFAULT_LOCALE);
             widthValue.setStringValue(cms, "-1");
 
             // enable the formatter
@@ -462,9 +488,9 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
             CmsConfigurationReader.N_RESOURCE_TYPE,
             CmsConfigurationReader.DEFAULT_LOCALE,
             0);
-        I_CmsXmlContentValue typeValue = moduleConfigContent.getValue(resourceTypeValue.getPath()
-            + "/"
-            + CmsConfigurationReader.N_TYPE_NAME, CmsConfigurationReader.DEFAULT_LOCALE);
+        I_CmsXmlContentValue typeValue = moduleConfigContent.getValue(
+            resourceTypeValue.getPath() + "/" + CmsConfigurationReader.N_TYPE_NAME,
+            CmsConfigurationReader.DEFAULT_LOCALE);
         typeValue.setStringValue(cms, m_resInfo.getName());
         moduleConfigFile.setContents(moduleConfigContent.marshal());
         cms.writeFile(moduleConfigFile);
@@ -472,9 +498,9 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
 
     /**
      * Locks the given resource temporarily.<p>
-     * 
+     *
      * @param resource the resource to lock
-     * 
+     *
      * @throws CmsException if locking fails
      */
     private void lockTemporary(CmsResource resource) throws CmsException {

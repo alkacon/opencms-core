@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -83,7 +83,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
         /**
          * Constructor.<p>
-         * 
+         *
          * @param isDeleteOrder <code>true</code> if ordering for deletes is required
          */
         public PathComparator(boolean isDeleteOrder) {
@@ -97,8 +97,10 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
                         return ComparisonChain.start().compare(
                             CmsXmlUtils.removeXpathIndex(first),
                             CmsXmlUtils.removeXpathIndex(second))
-                        // use reverse order on indexed elements to avoid delete issues
-                        .compare(CmsXmlUtils.getXpathIndexInt(second), CmsXmlUtils.getXpathIndexInt(first)).result();
+                            // use reverse order on indexed elements to avoid delete issues
+                            .compare(
+                                CmsXmlUtils.getXpathIndexInt(second),
+                                CmsXmlUtils.getXpathIndexInt(first)).result();
                     }
                 };
             } else {
@@ -110,8 +112,10 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
                         return ComparisonChain.start().compare(
                             CmsXmlUtils.removeXpathIndex(first),
                             CmsXmlUtils.removeXpathIndex(second))
-                        // use regular order on indexed elements
-                        .compare(CmsXmlUtils.getXpathIndexInt(first), CmsXmlUtils.getXpathIndexInt(second)).result();
+                            // use regular order on indexed elements
+                            .compare(
+                                CmsXmlUtils.getXpathIndexInt(first),
+                                CmsXmlUtils.getXpathIndexInt(second)).result();
                     }
                 };
             }
@@ -165,13 +169,13 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
     /** Flag which indicates whether the project and its resources should be deleted when the session is destroyed. */
     private boolean m_requiresCleanup = true;
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
-     * @param adminCms the cms context with admin privileges 
+     *
+     * @param adminCms the cms context with admin privileges
      * @param cms the cms context
      * @param configuration the form configuration
-     * 
+     *
      * @throws CmsException if creating the session project fails
      */
     public CmsUgcSession(CmsObject adminCms, CmsObject cms, CmsUgcConfiguration configuration)
@@ -180,8 +184,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         m_adminCms = OpenCms.initCmsObject(adminCms);
         m_configuration = configuration;
         if (cms.getRequestContext().getCurrentUser().isGuestUser() && m_configuration.getUserForGuests().isPresent()) {
-            m_cms = OpenCms.initCmsObject(CmsUgcModuleAction.getAdminCms(), new CmsContextInfo(
-                m_configuration.getUserForGuests().get().getName()));
+            m_cms = OpenCms.initCmsObject(
+                CmsUgcModuleAction.getAdminCms(),
+                new CmsContextInfo(m_configuration.getUserForGuests().get().getName()));
             m_cms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
         } else {
             m_cms = OpenCms.initCmsObject(cms);
@@ -200,12 +205,12 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         m_cms.getRequestContext().setCurrentProject(project);
     }
 
-    /** 
+    /**
      * Constructor.<p>
-     * 
+     *
      * @param cms the cms context
      * @param configuration the form configuration
-     * 
+     *
      * @throws CmsException if creating the session project fails
      */
     public CmsUgcSession(CmsObject cms, CmsUgcConfiguration configuration)
@@ -216,7 +221,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Constructor. For test purposes only.<p>
-     * 
+     *
      * @param cms the cms context
      */
     protected CmsUgcSession(CmsObject cms) {
@@ -226,13 +231,13 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Creates a new resource from upload data.<p>
-     * 
+     *
      * @param fieldName the name of the form field for the upload
      * @param rawFileName the file name
      * @param content the file content
-     * 
+     *
      * @return the newly created resource
-     * 
+     *
      * @throws CmsUgcException if creating the resource fails
      */
     public CmsResource createUploadResource(String fieldName, String rawFileName, byte[] content)
@@ -249,7 +254,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             baseName = baseName.substring(1 + lastSlashPos);
         }
 
-        // translate it so it doesn't contain illegal characters 
+        // translate it so it doesn't contain illegal characters
 
         baseName = OpenCms.getResourceManager().getFileTranslator().translateResource(baseName);
 
@@ -262,12 +267,12 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
             baseName = baseName.substring(0, dotPos) + "_%(random)" + baseName.substring(dotPos);
         }
 
-        // now prepend the upload folder's path 
+        // now prepend the upload folder's path
 
         String uploadRootPath = m_configuration.getUploadParentFolder().get().getRootPath();
         String sitePath = CmsStringUtil.joinPaths(m_cms.getRequestContext().removeSiteRoot(uploadRootPath), baseName);
 
-        // ... and replace the macro with random strings until we find a path that isn't already used 
+        // ... and replace the macro with random strings until we find a path that isn't already used
 
         String realSitePath;
         do {
@@ -288,9 +293,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Creates a new edit resource.<p>
-     * 
+     *
      * @return the newly created resource
-     * 
+     *
      * @throws CmsUgcException if creating the resource fails
      */
     public CmsResource createXmlContent() throws CmsUgcException {
@@ -319,8 +324,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Finishes the session and publishes the changed resources if necessary.<p>
-     * 
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     public void finish() throws CmsException {
 
@@ -330,7 +335,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         CmsObject projectCms = OpenCms.initCmsObject(m_adminCms);
         projectCms.getRequestContext().setCurrentProject(project);
         if (m_configuration.isAutoPublish()) {
-            // we don't necessarily publish with the user who has the locks on the resources, so we need to steal the locks  
+            // we don't necessarily publish with the user who has the locks on the resources, so we need to steal the locks
             List<CmsResource> projectResources = projectCms.readProjectView(project.getUuid(), CmsResource.STATE_KEEP);
             for (CmsResource projectResource : projectResources) {
                 CmsLock lock = projectCms.getLock(projectResource);
@@ -350,8 +355,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Gets the CMS context used by this session.<p>
-     * 
-     * @return the CMS context used by this session 
+     *
+     * @return the CMS context used by this session
      */
     public CmsObject getCmsObject() {
 
@@ -360,7 +365,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Gets the form upload helper belonging to this session.<p>
-     * 
+     *
      * @return the form upload helper belonging to this session
      */
     public CmsUgcUploadHelper getFormUploadHelper() {
@@ -368,10 +373,10 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         return m_uploadHelper;
     }
 
-    /** 
+    /**
      * Returns the session id.<p>
-     * 
-     * @return the session id 
+     *
+     * @return the session id
      */
     public CmsUUID getId() {
 
@@ -380,8 +385,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the locale to use for messages generated by the form session which are intended to be displayed on the client.<p>
-     * 
-     * @return the locale to use for messages 
+     *
+     * @return the locale to use for messages
      */
     public Locale getMessageLocale() {
 
@@ -390,7 +395,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the edit project.<p>
-     *  
+     *
      * @return the edit project
      */
     public CmsProject getProject() {
@@ -400,7 +405,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the edit resource.<p>
-     * 
+     *
      * @return the edit resource
      */
     public CmsResource getResource() {
@@ -411,9 +416,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the content values.<p>
-     * 
+     *
      * @return the content values
-     * 
+     *
      * @throws CmsException if reading the content fails
      */
     public Map<String, String> getValues() throws CmsException {
@@ -429,8 +434,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns true if the session is finished.<p>
-     * 
-     * @return true if the session is finished 
+     *
+     * @return true if the session is finished
      */
     public boolean isFinished() {
 
@@ -439,11 +444,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Loads the existing edit resource.<p>
-     * 
+     *
      * @param fileName the resource file name
-     * 
+     *
      * @return the edit resource
-     * 
+     *
      * @throws CmsUgcException if reading the resource fails
      */
     public CmsResource loadXmlContent(String fileName) throws CmsUgcException {
@@ -484,11 +489,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Saves the content values to the sessions edit resource.<p>
-     * 
+     *
      * @param contentValues the content values by XPath
-     * 
+     *
      * @return the validation handler
-     * 
+     *
      * @throws CmsUgcException if writing the content fails
      */
     public CmsXmlContentErrorHandler saveContent(Map<String, String> contentValues) throws CmsUgcException {
@@ -514,11 +519,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Validates the content values.<p>
-     * 
+     *
      * @param contentValues the content values to validate
-     * 
+     *
      * @return the validation handler
-     * 
+     *
      * @throws CmsUgcException if reading the content file fails
      */
     public CmsXmlContentErrorHandler validateContent(Map<String, String> contentValues) throws CmsUgcException {
@@ -536,7 +541,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Adds the given value to the content document.<p>
-     * 
+     *
      * @param content the content document
      * @param locale the content locale
      * @param path the value XPath
@@ -563,13 +568,13 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Adds the given values to the content document.<p>
-     * 
+     *
      * @param file the content file
      * @param contentValues the values to add
-     * 
+     *
      * @return the content document
-     *  
-     * @throws CmsException if writing the XML fails 
+     *
+     * @throws CmsException if writing the XML fails
      */
     protected CmsXmlContent addContentValues(CmsFile file, Map<String, String> contentValues) throws CmsException {
 
@@ -582,11 +587,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Adds the given values to the content document.<p>
-     * 
+     *
      * @param content the content document
      * @param locale the content locale
      * @param contentValues the values
-     * 
+     *
      * @throws CmsXmlException if writing the XML fails
      */
     protected void addContentValues(CmsXmlContent content, Locale locale, Map<String, String> contentValues)
@@ -597,7 +602,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
         }
         List<String> paths = new ArrayList<String>(contentValues.keySet());
         // first delete all null values
-        // use reverse index ordering for similar elements 
+        // use reverse index ordering for similar elements
         Collections.sort(paths, new PathComparator(true));
         String lastDelete = "///";
         for (String path : paths) {
@@ -621,7 +626,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Deletes the given value path from the content document.<p>
-     * 
+     *
      * @param content the content document
      * @param locale the content locale
      * @param path the value XPath
@@ -642,10 +647,10 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the content values of the requested locale.<p>
-     * 
+     *
      * @param content the content document
      * @param locale the content locale
-     * 
+     *
      * @return the values
      */
     protected Map<String, String> getContentValues(CmsXmlContent content, Locale locale) {
@@ -662,8 +667,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Throws an error if the edit resource is already set.<p>
-     * 
-     * @throws CmsUgcException if the edit resource is already set 
+     *
+     * @throws CmsUgcException if the edit resource is already set
      */
     private void checkEditResourceNotSet() throws CmsUgcException {
 
@@ -677,8 +682,8 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Checks that the session is not finished, and throws an exception otherwise.<p>
-     * 
-     * @throws CmsUgcException if the session is finished 
+     *
+     * @throws CmsUgcException if the session is finished
      */
     private void checkNotFinished() throws CmsUgcException {
 
@@ -751,11 +756,11 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Deletes the given resource which is part of  a form session project.<p>
-     * 
-     * @param cms the CMS context to use 
+     *
+     * @param cms the CMS context to use
      * @param res the resource to delete
-     *  
-     * @throws CmsException if something goes wrong 
+     *
+     * @throws CmsException if something goes wrong
      */
     private void deleteResourceFromProject(CmsObject cms, CmsResource res) throws CmsException {
 
@@ -770,7 +775,7 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the edit project name.<p>
-     * 
+     *
      * @return the project name
      */
     private String generateProjectName() {
@@ -780,9 +785,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Returns the new resource site path.<p>
-     * 
+     *
      * @return the new resource site path
-     * @throws CmsException if something goes wrong 
+     * @throws CmsException if something goes wrong
      */
     private String getNewContentName() throws CmsException {
 
@@ -797,9 +802,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Checks if all the resource states from a list of resources are 'new'.<p>
-     * 
-     * @param projectResources the resources to check 
-     * @return true if all the resources from the input list have the state 'new' 
+     *
+     * @param projectResources the resources to check
+     * @return true if all the resources from the input list have the state 'new'
      */
     private boolean hasOnlyNewResources(List<CmsResource> projectResources) {
 
@@ -815,9 +820,9 @@ public class CmsUgcSession implements I_CmsSessionDestroyHandler {
 
     /**
      * Stores the upload resource and deletes previously uploaded resources for the same form field.<p>
-     * 
-     * @param fieldName the field name 
-     * @param upload the uploaded resource 
+     *
+     * @param fieldName the field name
+     * @param upload the uploaded resource
      */
     private void updateUploadResource(String fieldName, CmsResource upload) {
 

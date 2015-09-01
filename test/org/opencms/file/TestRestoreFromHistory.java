@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -47,7 +47,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
-     * 
+     *
      * @param arg0 JUnit parameters
      */
     public TestRestoreFromHistory(String arg0) {
@@ -57,7 +57,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Test suite for this test class.<p>
-     * 
+     *
      * @return the test suite
      */
     public static Test suite() {
@@ -92,7 +92,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Tests the history overflow function.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testHistoryOverflow() throws Throwable {
@@ -127,7 +127,12 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
                 }
             } else {
                 if (allFiles.size() != C_MAX_VERSIONS) {
-                    fail("Number of historical files found = " + allFiles.size() + " != " + C_MAX_VERSIONS + " expected");
+                    fail(
+                        "Number of historical files found = "
+                            + allFiles.size()
+                            + " != "
+                            + C_MAX_VERSIONS
+                            + " expected");
                 }
             }
 
@@ -154,9 +159,9 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Tests the re-creation of already deleted resources.<p>
-     * A deleted resource can be restored by creating a new one with the same path 
+     * A deleted resource can be restored by creating a new one with the same path
      * and then restoring its contents from history.
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRestoreDeletedResource() throws Throwable {
@@ -202,14 +207,20 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         // create a new empty resource, this is no longer supported
         cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), null);
         allFiles = cms.readAllAvailableVersions(resourcename);
-        assertEquals("Unexpected number of historical files for published resource found (zero expected)", 0, allFiles.size());
+        assertEquals(
+            "Unexpected number of historical files for published resource found (zero expected)",
+            0,
+            allFiles.size());
 
         cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
         // check that there is one historical file available, again
         cms.importResource(resourcename, resource, "test".getBytes(), null);
         allFiles = cms.readAllAvailableVersions(resourcename);
-        assertEquals("Unexpected number of historical files for published resource found (two expected)", 2, allFiles.size());
+        assertEquals(
+            "Unexpected number of historical files for published resource found (two expected)",
+            2,
+            allFiles.size());
 
         // read the tag id
         I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(0);
@@ -223,7 +234,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Tests the re-creation of moved resources.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRestoreMovedResource() throws Throwable {
@@ -285,7 +296,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
 
     /**
      * Test the restore resource method.<p>
-     * 
+     *
      * @throws Throwable if something goes wrong
      */
     public void testRestoreResource() throws Throwable {

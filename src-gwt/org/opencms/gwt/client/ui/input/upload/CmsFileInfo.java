@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -34,7 +34,7 @@ import com.google.gwt.dom.client.InputElement;
 
 /**
  * A file object.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsFileInfo extends JavaScriptObject {
@@ -61,67 +61,67 @@ public class CmsFileInfo extends JavaScriptObject {
 
     /**
      * Returns the file name.<p>
-     * 
+     *
      * @return the file name
      */
     public final native String getFileName() /*-{
 
-        return this.name ? this.name : this.fileName;
+                                             return this.name ? this.name : this.fileName;
 
-    }-*/;
+                                             }-*/;
 
     /**
      * Returns the file size.<p>
-     * 
+     *
      * @return the file size
      */
     public final native int getFileSize() /*-{
 
-        return this.size ? this.size : this.fileSize;
+                                          return this.size ? this.size : this.fileSize;
 
-    }-*/;
+                                          }-*/;
 
     /**
      * Returns the suffix of the file name with the dot at the beginning e.g. <code>".zip"</code>.<p>
-     * 
+     *
      * @return the suffix of the file name
      */
     public final native String getFileSuffix() /*-{
 
-        var filename = this.name ? this.name : this.fileName;
-        var dot = filename.lastIndexOf(".");
-        if (dot >= 0) {
-            return filename.substr(dot, filename.length);
-        }
-        return "";
+                                               var filename = this.name ? this.name : this.fileName;
+                                               var dot = filename.lastIndexOf(".");
+                                               if (dot >= 0) {
+                                               return filename.substr(dot, filename.length);
+                                               }
+                                               return "";
 
-    }-*/;
+                                               }-*/;
 
     /**
      * Returns the associated input element if available.<p>
-     * 
+     *
      * @return the input element
      */
     public final native InputElement getInputElement() /*-{
-        return this.input ? this.input : null;
-    }-*/;
+                                                       return this.input ? this.input : null;
+                                                       }-*/;
 
     /**
      * Returns the file name to override the original one if set, or the original file name.<p>
-     * 
+     *
      * @return the override file name
      */
     public final native String getOverrideFileName() /*-{
-        return this.overrideFileName ? this.overrideFileName
-                : this.name ? this.name : this.fileName;
-    }-*/;
+                                                     return this.overrideFileName ? this.overrideFileName
+                                                     : this.name ? this.name : this.fileName;
+                                                     }-*/;
 
     /**
      * Sets the file name to override the original one.<p>
-     * 
+     *
      * @param overrideFileName the override file name
      */
     public final native void setOverrideFileName(String overrideFileName) /*-{
-        this.overrideFileName = overrideFileName;
-    }-*/;
+                                                                          this.overrideFileName = overrideFileName;
+                                                                          }-*/;
 }

@@ -93,8 +93,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Enum for the user session mode. */
     public enum UserSessionMode {
         /** Only a single session per user is allowed. */
-        single,
-        /** Any number of sessions for a user are allowed. */
+        single, /** Any number of sessions for a user are allowed. */
         standard
     }
 
@@ -139,6 +138,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The "webserver" attribute. */
     public static final String A_WEBSERVER = "webserver";
+
+    /** The "usePermanentRedirects" attribute. */
+    public static final String A_USE_PERMANENT_REDIRECTS = "usePermanentRedirects";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
@@ -687,9 +689,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         try {
             m_eventManager = (CmsEventManager)Class.forName(clazz).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1,
-                    m_eventManager));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_SUCCESS_1, m_eventManager));
             }
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.INIT_EVENTMANAGER_CLASS_INVALID_1, clazz), t);
@@ -707,11 +708,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         m_configuredJobs.add(jobInfo);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_SCHEDULER_CONFIG_JOB_3,
-                jobInfo.getJobName(),
-                jobInfo.getClassName(),
-                jobInfo.getContextInfo().getUserName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_SCHEDULER_CONFIG_JOB_3,
+                    jobInfo.getJobName(),
+                    jobInfo.getClassName(),
+                    jobInfo.getContextInfo().getUserName()));
         }
     }
 
@@ -846,76 +848,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate(
             "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT,
             CmsContextInfo.class);
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_USERNAME, "userName");
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_PROJECT, "projectName");
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_SITEROOT, "siteRoot");
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_REQUESTEDURI, "requestedUri");
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_LOCALE, "localeName");
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_ENCODING);
-        digester.addBeanPropertySetter("*/"
-            + N_SYSTEM
-            + "/"
-            + N_SCHEDULER
-            + "/"
-            + N_JOB
-            + "/"
-            + N_CONTEXT
-            + "/"
-            + N_REMOTEADDR, "remoteAddr");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_USERNAME,
+            "userName");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_PROJECT,
+            "projectName");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_SITEROOT,
+            "siteRoot");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REQUESTEDURI,
+            "requestedUri");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_LOCALE,
+            "localeName");
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_ENCODING);
+        digester.addBeanPropertySetter(
+            "*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT + "/" + N_REMOTEADDR,
+            "remoteAddr");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, "setContextInfo");
 
         // add generic parameter rules (used for jobs, password handler)
@@ -981,7 +933,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
 
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 9);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 10);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 2, A_TITLE);
@@ -991,7 +943,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 6, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 7, A_EXCLUSIVE);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 8, A_ERROR);
-
+        digester.addCallParam(
+            "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE,
+            9,
+            A_USE_PERMANENT_REDIRECTS);
         // add an alias to the currently configured site
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS,
@@ -1021,15 +976,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);
 
         // add default users rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 8);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 7);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_ADMIN, 0);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_GUEST, 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_EXPORT, 2);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_DELETEDRESOURCE, 3);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 5);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 6);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 7);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 6);
 
         // add defaultContentEncoding rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, "setDefaultContentEncoding", 1);
@@ -1185,7 +1139,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_REQUESTERRORPAGEATTRIBUTE,
             "setRequestErrorPageAttribute",
             0);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, "setServletContainerSettingsMode", 1);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS,
+            "setServletContainerSettingsMode",
+            1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, 0, A_MODE);
 
         // add rule for ADE cache settings
@@ -1290,11 +1247,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Iterator<CmsMailHost> hosts = m_mailSettings.getMailHosts().iterator();
         while (hosts.hasNext()) {
             CmsMailHost host = hosts.next();
-            Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(A_NAME, host.getHostname()).addAttribute(
-                A_PORT,
-                Integer.toString(host.getPort())).addAttribute(A_ORDER, host.getOrder().toString()).addAttribute(
-                A_PROTOCOL,
-                host.getProtocol());
+            Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(
+                A_NAME,
+                host.getHostname()).addAttribute(A_PORT, Integer.toString(host.getPort())).addAttribute(
+                    A_ORDER,
+                    host.getOrder().toString()).addAttribute(A_PROTOCOL, host.getProtocol());
             if (host.isAuthenticating()) {
                 hostElement.addAttribute(A_USER, host.getUsername()).addAttribute(A_PASSWORD, host.getPassword());
             }
@@ -1418,8 +1375,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             if (site.hasSecureServer()) {
                 Element secureElem = siteElement.addElement(N_SECURE);
                 secureElem.addAttribute(A_SERVER, site.getSecureUrl());
+
                 secureElem.addAttribute(A_EXCLUSIVE, String.valueOf(site.isExclusiveUrl()));
                 secureElem.addAttribute(A_ERROR, String.valueOf(site.isExclusiveError()));
+                if (site.usesPermanentRedirects()) {
+                    secureElem.addAttribute(A_USE_PERMANENT_REDIRECTS, Boolean.TRUE.toString());
+                }
             }
             // create <alias server=""/> subnode(s)
             Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();
@@ -1466,8 +1427,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         // create <group-administrators> subnode
         defaultusersElement.addElement(N_GROUP_ADMINISTRATORS).addText(m_cmsDefaultUsers.getGroupAdministrators());
-        // create <group-projectmanagers> subnode
-        defaultusersElement.addElement(N_GROUP_PROJECTMANAGERS).addText(m_cmsDefaultUsers.getGroupProjectmanagers());
         // create <group-users> subnode
         defaultusersElement.addElement(N_GROUP_USERS).addText(m_cmsDefaultUsers.getGroupUsers());
         // create <group-guests> subnode
@@ -1652,9 +1611,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 cntPageCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getContainerPageOnlineSize());
                 // group-container cache
                 Element groupContainerCacheElem = cacheElem.addElement(N_GROUPCONTAINERS);
-                groupContainerCacheElem.addAttribute(A_OFFLINE, ""
-                    + getAdeCacheSettings().getGroupContainerOfflineSize());
-                groupContainerCacheElem.addAttribute(A_ONLINE, "" + getAdeCacheSettings().getGroupContainerOnlineSize());
+                groupContainerCacheElem.addAttribute(
+                    A_OFFLINE,
+                    "" + getAdeCacheSettings().getGroupContainerOfflineSize());
+                groupContainerCacheElem.addAttribute(
+                    A_ONLINE,
+                    "" + getAdeCacheSettings().getGroupContainerOnlineSize());
             }
         }
 
@@ -1745,9 +1707,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             I_CmsAuthorizationHandler authorizationHandler = (I_CmsAuthorizationHandler)Class.forName(
                 m_authorizationHandler).newInstance();
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
-                    m_authorizationHandler));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
+                        m_authorizationHandler));
             }
             authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
@@ -2085,9 +2048,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             I_CmsSessionStorageProvider sessionCacheProvider = (I_CmsSessionStorageProvider)Class.forName(
                 m_sessionStorageProvider).newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_SESSION_STORAGEPROVIDER_SUCCESS_1,
-                    m_sessionStorageProvider));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_SESSION_STORAGEPROVIDER_SUCCESS_1,
+                        m_sessionStorageProvider));
             }
             return sessionCacheProvider;
         } catch (Throwable t) {
@@ -2163,11 +2127,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             return new CmsDefaultValidationHandler();
         }
         try {
-            I_CmsValidationHandler validationHandler = (I_CmsValidationHandler)Class.forName(m_validationHandler).newInstance();
+            I_CmsValidationHandler validationHandler = (I_CmsValidationHandler)Class.forName(
+                m_validationHandler).newInstance();
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
-                    m_validationHandler));
+                LOG.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_VALIDATION_HANDLER_CLASS_SUCCESS_1,
+                        m_validationHandler));
             }
             return validationHandler;
         } catch (Throwable t) {
@@ -2208,10 +2174,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         return m_historyEnabled;
     }
 
-    /** 
+    /**
      * Returns true if detail contents are restricted to detail pages from the same site.<p>
-     * 
-     * @return true if detail contents are restricted to detail pages from the same site 
+     *
+     * @return true if detail contents are restricted to detail pages from the same site
      */
     public boolean isRestrictDetailContents() {
 
@@ -2267,7 +2233,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param userExport the name of the export user
      * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
      * @param groupAdministrators the name of the administrators group
-     * @param groupProjectmanagers the name of the project managers group
      * @param groupUsers the name of the users group
      * @param groupGuests the name of the guests group
      */
@@ -2278,7 +2243,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String userExport,
         String userDeletedResource,
         String groupAdministrators,
-        String groupProjectmanagers,
         String groupUsers,
         String groupGuests) {
 
@@ -2291,35 +2255,28 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             userExport,
             userDeletedResource,
             groupAdministrators,
-            groupProjectmanagers,
             groupUsers,
             groupGuests);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_ADMIN_USER_1,
-                m_cmsDefaultUsers.getUserAdmin()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_GUEST_USER_1,
-                m_cmsDefaultUsers.getUserGuest()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_EXPORT_USER_1,
-                m_cmsDefaultUsers.getUserExport()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_DELETED_RESOURCE_USER_1,
-                m_cmsDefaultUsers.getUserDeletedResource()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_ADMIN_GROUP_1,
-                m_cmsDefaultUsers.getGroupAdministrators()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PROJECT_MANAGERS_GROUP_1,
-                m_cmsDefaultUsers.getGroupProjectmanagers()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_USERS_GROUP_1,
-                m_cmsDefaultUsers.getGroupUsers()));
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_GUESTS_GROUP_1,
-                m_cmsDefaultUsers.getGroupGuests()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_ADMIN_USER_1, m_cmsDefaultUsers.getUserAdmin()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_GUEST_USER_1, m_cmsDefaultUsers.getUserGuest()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_EXPORT_USER_1, m_cmsDefaultUsers.getUserExport()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_DELETED_RESOURCE_USER_1,
+                    m_cmsDefaultUsers.getUserDeletedResource()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_ADMIN_GROUP_1,
+                    m_cmsDefaultUsers.getGroupAdministrators()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_USERS_GROUP_1, m_cmsDefaultUsers.getGroupUsers()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_GUESTS_GROUP_1, m_cmsDefaultUsers.getGroupGuests()));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USER_NAMES_INITIALIZED_0));
         }
     }
@@ -2383,11 +2340,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         m_historyVersions = Integer.valueOf(historyVersions).intValue();
         m_historyVersionsAfterDeletion = Integer.valueOf(historyVersionsAfterDeletion).intValue();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_HISTORY_SETTINGS_3,
-                Boolean.valueOf(m_historyEnabled),
-                new Integer(m_historyVersions),
-                new Integer(m_historyVersionsAfterDeletion)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_HISTORY_SETTINGS_3,
+                    Boolean.valueOf(m_historyEnabled),
+                    new Integer(m_historyVersions),
+                    new Integer(m_historyVersionsAfterDeletion)));
         }
     }
 
@@ -2438,11 +2396,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         boolean enableSecurity = Boolean.valueOf(enableSecurityStr).booleanValue();
         m_loginManager = new CmsLoginManager(disableMinutes, maxBadAttempts, enableSecurity);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOGINMANAGER_3,
-                new Integer(disableMinutes),
-                new Integer(maxBadAttempts),
-                new Boolean(enableSecurity)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_LOGINMANAGER_3,
+                    new Integer(disableMinutes),
+                    new Integer(maxBadAttempts),
+                    new Boolean(enableSecurity)));
         }
     }
 
@@ -2455,11 +2414,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         m_loginMessage = message;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_LOGINMESSAGE_3,
-                Boolean.valueOf(message.isEnabled()),
-                Boolean.valueOf(message.isLoginForbidden()),
-                message.getMessage()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_LOGINMESSAGE_3,
+                    Boolean.valueOf(message.isEnabled()),
+                    Boolean.valueOf(message.isLoginForbidden()),
+                    message.getMessage()));
         }
     }
 
@@ -2485,7 +2445,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         m_notificationProject = notificationProject;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_NOTIFICATION_PROJECT_1, m_notificationProject));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_NOTIFICATION_PROJECT_1, m_notificationProject));
         }
     }
 
@@ -2515,9 +2476,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         m_passwordHandler = passwordHandler;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_PWD_HANDLER_SUCCESS_1,
-                passwordHandler.getClass().getName()));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(
+                    Messages.INIT_PWD_HANDLER_SUCCESS_1,
+                    passwordHandler.getClass().getName()));
         }
     }
 
@@ -2585,8 +2547,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /**
      * Sets the 'restrict detail contents' option.<p>
-     * 
-     * @param restrictDetailContents the value of the option 
+     *
+     * @param restrictDetailContents the value of the option
      */
     public void setRestrictDetailContents(String restrictDetailContents) {
 
@@ -2612,13 +2574,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         if (objectInstance instanceof I_CmsDbContextFactory) {
             m_runtimeInfoFactory = (I_CmsDbContextFactory)objectInstance;
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1, className));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(Messages.INIT_RUNTIME_INFO_FACTORY_SUCCESS_1, className));
             }
         } else {
             if (CmsLog.INIT.isFatalEnabled()) {
-                CmsLog.INIT.fatal(Messages.get().getBundle().key(
-                    Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1,
-                    className));
+                CmsLog.INIT.fatal(
+                    Messages.get().getBundle().key(Messages.INIT_RUNTIME_INFO_FACTORY_FAILURE_1, className));
             }
         }
 
@@ -2680,9 +2642,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             m_tempFileProjectId = -1;
         }
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(
-                Messages.INIT_TEMPFILE_PROJECT_ID_1,
-                new Integer(m_tempFileProjectId)));
+            CmsLog.INIT.info(
+                Messages.get().getBundle().key(Messages.INIT_TEMPFILE_PROJECT_ID_1, new Integer(m_tempFileProjectId)));
         }
     }
 

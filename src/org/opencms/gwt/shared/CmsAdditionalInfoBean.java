@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -31,7 +31,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Additional info bean.<p>
- * 
+ *
  * @since 8.0.1
  */
 public class CmsAdditionalInfoBean implements IsSerializable {
@@ -47,7 +47,7 @@ public class CmsAdditionalInfoBean implements IsSerializable {
 
     /**
      * Constructor.<p>
-     * 
+     *
      * @param name the info name
      * @param value the info value
      * @param styleName the info style name

@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -58,13 +58,13 @@ import org.apache.commons.logging.Log;
 /**
  * Provides methods for the multi file property edit action.
  * <p>
- * 
+ *
  * The following files use this class:
  * <ul>
  * <li>/commons/property_multifile.jsp
  * </ul>
  * <p>
- * 
+ *
  * @since 7.5.1
  */
 public class CmsDialogMultiPropertyEdit extends CmsDialog {
@@ -84,7 +84,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Public constructor with JSP action element.
      * <p>
-     * 
+     *
      * @param jsp an initialized JSP action element
      */
     public CmsDialogMultiPropertyEdit(final CmsJspActionElement jsp) {
@@ -95,7 +95,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Public constructor with JSP variables.
      * <p>
-     * 
+     *
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
@@ -111,7 +111,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Performs the comment files action, will be called by the JSP page.
      * <p>
-     * 
+     *
      * @throws JspException if problems including sub-elements occur
      */
     public void actionCommentImages() throws JspException {
@@ -131,7 +131,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Returns the HTML for the dialog input form to comment the images.
      * <p>
-     * 
+     *
      * @return the HTML for the dialog input form to comment the images
      */
     public String buildDialogForm() {
@@ -155,7 +155,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
         while (i.hasNext()) {
             res = i.next();
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res);
-            // read the default properties for the given file type: 
+            // read the default properties for the given file type:
             CmsExplorerTypeSettings settings = getSettingsForType(type.getTypeName());
             List<String> editProperties = settings.getProperties();
             if (editProperties.size() > 0) {
@@ -214,7 +214,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Returns the image resources of the gallery folder which are edited in the dialog form.
      * <p>
-     * 
+     *
      * @return the images of the gallery folder which are edited in the dialog form
      */
     protected List<CmsResource> getResources() {
@@ -271,7 +271,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Performs the comment images operation.
      * <p>
-     * 
+     *
      * @return true, if the resources were successfully processed, otherwise false
      * @throws CmsException if commenting is not successful
      */
@@ -309,7 +309,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
     /**
      * Writes a property value for a resource, if the value was changed.
      * <p>
-     * 
+     *
      * @param res the resource to write the property to
      * @param propName the name of the property definition
      * @param propValue the new value of the property
@@ -375,7 +375,7 @@ public class CmsDialogMultiPropertyEdit extends CmsDialog {
 
     /**
      * Returns the explorer type settings of the resource type, considering eventual references to another type.<p>
-     * 
+     *
      * @param resTypeName the resource type name
      * @return the explorer type settings of the resource type
      */

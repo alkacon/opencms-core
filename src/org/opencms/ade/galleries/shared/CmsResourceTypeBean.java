@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Bean representing resource type information.<p>
- * 
+ *
  * @since 8.0.0
  */
 public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSerializable {
@@ -44,18 +44,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** Enum representing the visibility of a resource type in the bean. */
     public enum TypeVisibility {
         /** Never displayed. */
-        hidden,
-        /** The user may choose to display the type, but it's not shown by default. */
-        showOptional,
-        /** Always show the type. */
-        showAlways
+        hidden, /** Always show the type. */
+        showAlways, /** The user may choose to display the type, but it's not shown by default. */
+        showOptional
     }
-
-    /** Visibility of this type. */
-    private TypeVisibility m_visibility = TypeVisibility.showAlways;
 
     /** Flag to indicate if the current user may create a new resource of this type. */
     private boolean m_creatableType;
+
+    /** The deactivated flag. */
+    private boolean m_deactivated;
 
     /** The description. */
     private String m_description;
@@ -74,6 +72,9 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** The resource type id. */
     private int m_typeId;
+
+    /** Visibility of this type. */
+    private TypeVisibility m_visibility = TypeVisibility.showAlways;
 
     /**
      * Returns the description.<p>
@@ -137,8 +138,8 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /**
      * Gets the visibility.<p>
-     * 
-     * @return the visibility 
+     *
+     * @return the visibility
      */
     public TypeVisibility getVisibility() {
 
@@ -156,6 +157,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     }
 
     /**
+     * Returns if the type is deactivated.<p>
+     *
+     * @return if the type is deactivated
+     */
+    public boolean isDeactivated() {
+
+        return m_deactivated;
+    }
+
+    /**
      * Sets flag to indicate if the current user may create a new resource of this type.<p>
      *
      * @param creatableType <code>true</code> if the current user may create a new resource of this type
@@ -163,6 +174,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setCreatableType(boolean creatableType) {
 
         m_creatableType = creatableType;
+    }
+
+    /**
+     * Sets the type deactivated.<p>
+     *
+     * @param deactivated if the type is deactivated
+     */
+    public void setDeactivated(boolean deactivated) {
+
+        m_deactivated = deactivated;
     }
 
     /**
@@ -227,8 +248,8 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /**
      * Sets the visibility.<p>
-     * 
-     * @param visibility the new visibility 
+     *
+     * @param visibility the new visibility
      */
     public void setVisibility(TypeVisibility visibility) {
 

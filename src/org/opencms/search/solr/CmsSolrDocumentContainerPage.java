@@ -19,7 +19,7 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -59,9 +59,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * Lucene document factory class to extract index data from a resource 
+ * Lucene document factory class to extract index data from a resource
  * of type <code>CmsResourceTypeContainerPage</code>.<p>
- * 
+ *
  * @since 8.5.0
  */
 public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
@@ -74,7 +74,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /**
      * Creates a new instance of this lucene document factory.<p>
-     * 
+     *
      * @param name name of the document type
      */
     public CmsSolrDocumentContainerPage(String name) {
@@ -84,13 +84,13 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /**
      * Merges the given list of extraction results into a single one.<p>
-     * 
+     *
      * @param cms the CMS object to use
      * @param resource the indexed resource
-     * 
+     *
      * @param all the extraction result objects to merge
      * @param conf the Solr field configuration
-     * 
+     *
      * @return the merged result
      */
     protected static I_CmsExtractionResult merge(
@@ -130,8 +130,8 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /**
      * Generates a new lucene document instance from contents of the given resource for the provided index.<p>
-     * 
-     * For container pages, we must not cache based on the container page content age, 
+     *
+     * For container pages, we must not cache based on the container page content age,
      * since the content of the included elements may change any time.
      */
     @Override
@@ -158,7 +158,7 @@ public class CmsSolrDocumentContainerPage extends CmsSolrDocumentXmlContent {
 
     /**
      * Returns the raw text content of a VFS resource of type <code>CmsResourceTypeContainerPage</code>.<p>
-     * 
+     *
      * @see org.opencms.search.documents.I_CmsSearchExtractor#extractContent(CmsObject, CmsResource, CmsSearchIndex)
      */
     @Override
