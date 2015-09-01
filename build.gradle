@@ -38,6 +38,9 @@ repositories {
     maven { 
     	url "http://maven.vaadin.com/vaadin-addons"
     }
+    maven {
+    	url 'http://maven.restlet.org'
+    }
 }
 
 if (!project.hasProperty('max_heap_size')){
@@ -1220,6 +1223,16 @@ if (project.hasProperty('publish_repository')){
                         connection 'scm:git@github.com:alkacon/opencms-core.git'
                         developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
                     }
+                    repositories { 
+                    	repository{
+                    		id 'vaadin-addons'
+    						url 'http://maven.vaadin.com/vaadin-addons'
+    					}
+    					repository {
+    						id 'restlet'
+    						url 'http://maven.restlet.org'
+    					}
+    				}
                     licenses {
                         license {
                             name 'GNU Lesser General Public License'
@@ -1401,6 +1414,16 @@ install {
                     connection 'scm:git@github.com:alkacon/opencms-core.git'
                     developerConnection 'scm:git@github.com:alkacon/opencms-core.git'
                 }
+                repositories { 
+                   	repository{
+                   		id 'vaadin-addons'
+    					url 'http://maven.vaadin.com/vaadin-addons'
+    				}
+    				repository {
+    					id 'restlet'
+    					url 'http://maven.restlet.org'
+    				}
+    			}
                 licenses {
                     license {
                         name 'GNU Lesser General Public License'
