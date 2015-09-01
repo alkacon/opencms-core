@@ -79,6 +79,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         /** The locale to use for display, this will not be the workplace locale, but the browser locale. */
         private Locale m_locale;
 
+        /** The logout flag. */
+        private boolean m_logout;
+
         /** The value of the organizational unit parameter. */
         private String m_oufqn;
 
@@ -104,6 +107,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
          * @param requestedWorkplaceApp the requested workplace app
          * @param locale the locale
          * @param authToken the authorization token
+         * @param logout the logout flag
          */
         public LoginParameters(
             String username,
@@ -112,7 +116,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             String requestedResource,
             String requestedWorkplaceApp,
             Locale locale,
-            String authToken) {
+            String authToken,
+            boolean logout) {
 
             m_username = username;
             m_pcType = pcType;
@@ -121,6 +126,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             m_requestedWorkplaceApp = requestedWorkplaceApp;
             m_locale = locale;
             m_authToken = authToken;
+            m_logout = logout;
         }
 
         /**
@@ -191,6 +197,16 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         public String getUsername() {
 
             return m_username;
+        }
+
+        /**
+         * Returns if a logout is requested.<p>
+         *
+         * @return the logout flag
+         */
+        public boolean isLogout() {
+
+            return m_logout;
         }
 
         /**
@@ -339,10 +355,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         String authToken = request.getParameter(PARAM_AUTHTOKEN);
 
         String actionLogout = CmsRequestUtil.getNotEmptyParameter(request, PARAM_ACTION_LOGOUT);
-
+        boolean logout = Boolean.valueOf(actionLogout).booleanValue();
         String oufqn = request.getParameter(PARAM_OUFQN);
         if (oufqn == null) {
-            oufqn = getPreDefOuFqn(cms, request, Boolean.valueOf(actionLogout).booleanValue());
+            oufqn = getPreDefOuFqn(cms, request, logout);
         }
         String pcType = getPcType(request);
 
@@ -394,7 +410,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             requestedResource,
             requestedWorkplaceApp,
             locale,
-            authToken);
+            authToken,
+            logout);
     }
 
     /**

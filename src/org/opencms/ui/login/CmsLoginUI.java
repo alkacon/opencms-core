@@ -54,6 +54,7 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Notification;
@@ -340,6 +341,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
      */
     public void openLoginTarget(CmsLoginTargetInfo targetInfo) {
 
+        // login was successful, remove login init data from session
+        VaadinService.getCurrentRequest().getWrappedSession().removeAttribute(INIT_DATA_SESSION_ATTR);
         m_targetOpener.openTarget(targetInfo.getTarget(), targetInfo.getUser(), targetInfo.getPassword());
     }
 

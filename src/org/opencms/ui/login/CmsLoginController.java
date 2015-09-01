@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
@@ -202,6 +203,25 @@ public class CmsLoginController {
     }
 
     /**
+     * Logs the current user out by invalidating the session an reloading the current URI.<p>
+     * Important:  This works only within vaadin apps.<p>
+     */
+    public static void logout() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        UI.getCurrent().getSession().close();
+        VaadinService.getCurrentRequest().getWrappedSession().invalidate();
+        /* we need this because a new session might be created after this method,
+         but before the session info is updated in OpenCmsCore.showResource. */
+        cms.getRequestContext().setUpdateSessionEnabled(false);
+        String uri = Page.getCurrent().getLocation().toString();
+        if (uri.contains("#")) {
+            uri = uri.substring(0, uri.indexOf("#"));
+        }
+        Page.getCurrent().setLocation(uri);
+    }
+
+    /**
      * Gets the PC type.<p>
      *
      * @return the PC type
@@ -328,7 +348,11 @@ public class CmsLoginController {
             boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
             m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
             if (loggedIn) {
-                m_ui.showAlreadyLoggedIn();
+                if (m_params.isLogout()) {
+                    logout();
+                } else {
+                    m_ui.showAlreadyLoggedIn();
+                }
             } else {
                 m_ui.showLoginView(m_params.getOufqn());
             }
