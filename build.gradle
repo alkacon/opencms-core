@@ -108,38 +108,33 @@ apply from: 'dependencies.gradle'
 
 sourceSets{
     main {
-        java.srcDir 'src'
-        resources.srcDir 'src'
+        java.srcDirs=['src']
+        resources.srcDirs=['src']
     }
     components {
-        java.srcDir 'src-components'
-        resources.srcDir 'src-components'
+        java.srcDirs=['src-components']
+        resources.srcDirs=['src-components']
     }
     modules {
-        java.srcDir 'src-modules'
-        resources.srcDir 'src-modules'
+        java.srcDirs=['src-modules']
+        resources.srcDirs=['src-modules']
     }
     gwt {
-        java.srcDir 'src-gwt'
-        resources.srcDir 'src-gwt'
+        java.srcDirs=['src-gwt']
+        resources.srcDirs=['src-gwt']
     }
     setup {
-        java.srcDir 'src-setup'
-        resources.srcDir 'src-setup'
+        java.srcDirs=['src-setup']
+        resources.srcDirs=['src-setup']
     }
     test {
-        java.srcDir 'test'
-        resources.srcDir 'test'
-        resources.srcDir 'src'
-        resources.srcDir 'src-modules'
-        resources.srcDir 'src-setup'
+        java.srcDirs=['test']
+        resources.srcDirs=['test','src','src-modules','src-setup']
     }
     
     testGwt {
-        java.srcDir 'src-gwt'
-        resources.srcDir 'src-gwt'
-        java.srcDir 'test-gwt'
-        resources.srcDir 'test-gwt'
+        java.srcDirs=['src-gwt','test-gwt']
+        resources.srcDirs=['src-gwt','test-gwt']
     }
 }
 
@@ -1416,10 +1411,8 @@ tasks.withType(Javadoc) {
     }
 }
 
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            failOnError = false
-       }
-    }
-}
+
+        
+
+
+
