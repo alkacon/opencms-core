@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 
@@ -239,7 +240,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         m_schemaLocation = schemaLocation;
         m_contentHandler = new CmsDefaultXmlContentHandler();
         m_sequenceType = SequenceType.SEQUENCE;
-        m_elementTypes = new HashMap<String, I_CmsXmlSchemaType>();
+        m_elementTypes = new ConcurrentHashMap<String, I_CmsXmlSchemaType>();
     }
 
     /**

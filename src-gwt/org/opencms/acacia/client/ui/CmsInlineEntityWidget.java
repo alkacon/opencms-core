@@ -525,34 +525,36 @@ public final class CmsInlineEntityWidget extends Composite {
      */
     void positionPopup() {
 
-        if (m_referenceElement != null) {
-            CmsPositionBean referencePosition = CmsPositionBean.getBoundingClientRect(m_referenceElement);
-            int currentTop = m_popup.getAbsoluteTop();
-            int windowHeight = Window.getClientHeight();
-            int scrollTop = Window.getScrollTop();
-            int contentHeight = m_popup.getOffsetHeight();
-            int top = referencePosition.getTop();
-            if (((windowHeight + scrollTop) < (top + referencePosition.getHeight() + contentHeight + 20))
-                && ((contentHeight + 40) < top)) {
-                top = top - contentHeight - 5;
-                if ((currentTop < top) && ((top - currentTop) < 200)) {
-                    // keep the current position
-                    top = currentTop;
+        if (m_popup != null) {
+            if (m_referenceElement != null) {
+                CmsPositionBean referencePosition = CmsPositionBean.getBoundingClientRect(m_referenceElement);
+                int currentTop = m_popup.getAbsoluteTop();
+                int windowHeight = Window.getClientHeight();
+                int scrollTop = Window.getScrollTop();
+                int contentHeight = m_popup.getOffsetHeight();
+                int top = referencePosition.getTop();
+                if (((windowHeight + scrollTop) < (top + referencePosition.getHeight() + contentHeight + 20))
+                    && ((contentHeight + 40) < top)) {
+                    top = top - contentHeight - 5;
+                    if ((currentTop < top) && ((top - currentTop) < 200)) {
+                        // keep the current position
+                        top = currentTop;
+                    }
+                } else {
+                    top = top + referencePosition.getHeight() + 5;
+                    if ((currentTop > top) && ((currentTop - top) < 200)) {
+                        // keep the current position
+                        top = currentTop;
+                    }
+                }
+                m_popup.center();
+                m_popup.setPopupPosition(m_popup.getPopupLeft(), top);
+                if (((contentHeight + top) - scrollTop) > windowHeight) {
+                    Window.scrollTo(Window.getScrollLeft(), ((contentHeight + top) - windowHeight) + 20);
                 }
             } else {
-                top = top + referencePosition.getHeight() + 5;
-                if ((currentTop > top) && ((currentTop - top) < 200)) {
-                    // keep the current position
-                    top = currentTop;
-                }
+                m_popup.center();
             }
-            m_popup.center();
-            m_popup.setPopupPosition(m_popup.getPopupLeft(), top);
-            if (((contentHeight + top) - scrollTop) > windowHeight) {
-                Window.scrollTo(Window.getScrollLeft(), ((contentHeight + top) - windowHeight) + 20);
-            }
-        } else {
-            m_popup.center();
         }
     }
 
