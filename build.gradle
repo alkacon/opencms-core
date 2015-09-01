@@ -103,8 +103,8 @@ configurations {
     }
 }
 
-configurations.each {
-    it.transitive = false;
+configurations.all {
+    transitive = false;
 }
 
 // import dependencies
