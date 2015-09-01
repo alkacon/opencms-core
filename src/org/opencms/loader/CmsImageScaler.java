@@ -232,7 +232,7 @@ public class CmsImageScaler {
                     sizeValue = sizeProp.getValue();
                 }
             } catch (Exception e) {
-                // ignore
+                LOG.debug(e.getMessage(), e);
             }
         }
         if (CmsStringUtil.isNotEmpty(sizeValue)) {
@@ -1066,7 +1066,7 @@ public class CmsImageScaler {
 
             if (isCropping()) {
                 // check if the crop width / height are not larger then the source image
-                if ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth())) {
+                if ((getType() == 0) && ((m_cropHeight > image.getHeight()) || (m_cropWidth > image.getWidth()))) {
                     // crop height / width is outside of image - return image unchanged
                     return result;
                 }
@@ -1097,19 +1097,26 @@ public class CmsImageScaler {
             }
 
             if (isCropping()) {
-                // image crop operation
-                image = scaler.cropToSize(
-                    image,
-                    m_cropX,
-                    m_cropY,
-                    m_cropWidth,
-                    m_cropHeight,
-                    getWidth(),
-                    getHeight(),
-                    color);
+
+                if (getType() == 0) {
+                    // image crop operation
+                    image = scaler.cropToSize(
+                        image,
+                        m_cropX,
+                        m_cropY,
+                        m_cropWidth,
+                        m_cropHeight,
+                        getWidth(),
+                        getHeight(),
+                        color);
+                } else {
+                    // image crop operation around point
+                    image = scaler.cropPointToSize(image, m_cropX, m_cropY, getType() == 1, m_cropWidth, m_cropHeight);
+                }
+
                 imageProcessed = true;
             } else {
-                // only rescale the image, if the width and hight are different to the target size
+                // only rescale the image, if the width and height are different to the target size
                 int imageWidth = image.getWidth();
                 int imageHeight = image.getHeight();
 
@@ -1553,8 +1560,13 @@ public class CmsImageScaler {
             if (m_height < 0) {
                 m_height = m_cropHeight;
             }
-            // set type to 0 - scale type is ignored when using crop
-            setType(0);
+
+            if ((getType() < 1) || (getType() > 2)) {
+                // type 0: standard cropping
+                // type 1: point cropping - no downscale
+                // type 2: point cropping - with downscale
+                setType(0);
+            }
         }
     }
 
