@@ -29,13 +29,14 @@ package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsUIServlet;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * Abstract UI class providing access to the OpenCms context.<p>
@@ -75,19 +76,17 @@ public abstract class A_CmsUI extends UI {
      */
     public VerticalLayout setCenterPanel(int width, int height, String caption) {
 
-        Panel panel = new Panel();
-        panel.setCaption(caption);
-        VerticalLayout layout = new VerticalLayout();
-        panel.setWidth("" + width + "px");
-        panel.setHeight("" + height + "px");
-        layout.setSizeFull();
-        VerticalLayout panelContent = new VerticalLayout();
-        panel.setContent(panelContent);
-        panelContent.setMargin(true);
-        layout.addComponent(panel);
-        layout.setComponentAlignment(panel, Alignment.MIDDLE_CENTER);
-        setContent(layout);
-        return panelContent;
+        setContent(new Label());
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+        CmsBasicDialog dialog = new CmsBasicDialog();
+        VerticalLayout result = new VerticalLayout();
+        dialog.setContent(result);
+        window.setContent(dialog);
+        window.setCaption(caption);
+        window.setClosable(false);
+        addWindow(window);
+        window.center();
+        return result;
     }
 
     /**
