@@ -292,7 +292,15 @@ public class CmsLoginController {
                 }
             }
             if (OpenCms.getLoginManager().requiresPasswordChange(currentCms, userObj)) {
-                A_CmsUI.get().setContent(new CmsChangePasswordDialog(currentCms, userObj, A_CmsUI.get().getLocale()));
+                CmsChangePasswordDialog passwordDialog = new CmsChangePasswordDialog(
+                    currentCms,
+                    userObj,
+                    A_CmsUI.get().getLocale());
+                A_CmsUI.get().setCenterPanel(
+                    0,
+                    0,
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
+                        + userObj.getSimpleName()).addComponent(passwordDialog);
                 return;
             }
             currentCms.loginUser(realUser, password);

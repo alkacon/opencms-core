@@ -376,9 +376,12 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             if (validationResult == null) {
                 CmsUser user = validator.getUser();
                 CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
-                A_CmsUI.get().setContent(dlg);
+                A_CmsUI.get().setCenterPanel(
+                    0,
+                    0,
+                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
+                        + user.getName()).addComponent(dlg);
             } else {
-
                 A_CmsUI.get().setError(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_TOKEN_0));
                 LOG.info("Invalid authorization token: " + authToken + " / " + validationResult);

@@ -44,7 +44,6 @@ import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -64,9 +63,6 @@ public class CmsChangePasswordDialog extends VerticalLayout {
 
     /** The locale. */
     protected Locale m_locale;
-
-    /** The main panel. */
-    protected Panel m_mainPanel;
 
     /** Field for the old password. */
     protected PasswordField m_oldPasswordField;
@@ -95,8 +91,6 @@ public class CmsChangePasswordDialog extends VerticalLayout {
         m_locale = locale;
         m_cms = cms;
         m_user = user;
-        m_mainPanel.setCaption(
-            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0) + user.getName());
 
         m_passwordChangeButton.addClickListener(new ClickListener() {
 
