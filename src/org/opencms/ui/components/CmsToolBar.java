@@ -30,6 +30,7 @@ package org.opencms.ui.components;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
@@ -43,7 +44,9 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.ComparisonChain;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -78,10 +81,13 @@ public class CmsToolBar extends CssLayout {
     public CmsToolBar() {
 
         Design.read("CmsToolBar.html", this);
-
+        CmsObject cms = A_CmsUI.getCmsObject();
         m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
-        m_itemsRight.addComponent(createDropDown());
-        m_itemsRight.addComponent(createButton(FontAwesome.USER));
+        m_itemsRight.addComponent(createQuickLaunchDropDown());
+        m_itemsRight.addComponent(createDropDown(
+            new ExternalResource(
+                CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser())),
+            new CmsUserInfo()));
         // the app indicator will be reattached in case the app title is set
         m_itemsLeft.removeComponent(m_appIndicator);
     }
@@ -99,6 +105,54 @@ public class CmsToolBar extends CssLayout {
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         return button;
+    }
+
+    /**
+     * Creates a drop down menu.<p>
+     *
+     * @param icon the button icon
+     * @param content the drop down content
+     *
+     * @return the component
+     */
+    public static Component createDropDown(ExternalResource icon, Component content) {
+
+        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + " v-button-"
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + "\"><span class=\"v-button-wrap\"><img class=\"v-icon\" src=\""
+            + icon.getURL()
+            + "\" /></span></div>";
+        PopupView pv = new PopupView(html, content);
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        pv.setHideOnMouseOut(false);
+        return pv;
+
+    }
+
+    /**
+     * Creates a drop down menu.<p>
+     *
+     * @param icon the button icon
+     * @param content the drop down content
+     *
+     * @return the component
+     */
+    public static Component createDropDown(FontIcon icon, Component content) {
+
+        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + " v-button-"
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + "\"><span class=\"v-button-wrap\">"
+            + icon.getHtml()
+            + "</span></div>";
+        PopupView pv = new PopupView(html, content);
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        pv.setHideOnMouseOut(false);
+        return pv;
+
     }
 
     /**
@@ -163,7 +217,7 @@ public class CmsToolBar extends CssLayout {
      *
      * @return the drop down component
      */
-    private Component createDropDown() {
+    private Component createQuickLaunchDropDown() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Locale locale = UI.getCurrent().getLocale();
@@ -192,16 +246,6 @@ public class CmsToolBar extends CssLayout {
                 }
             }
         }
-        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
-            + OpenCmsTheme.TOOLBAR_BUTTON
-            + " v-button-"
-            + OpenCmsTheme.TOOLBAR_BUTTON
-            + "\"><span class=\"v-button-wrap\">"
-            + FontAwesome.TH_LARGE.getHtml()
-            + "</span></div>";
-        PopupView pv = new PopupView(html, layout);
-        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
-        pv.setHideOnMouseOut(false);
-        return pv;
+        return createDropDown(FontAwesome.TH_LARGE, layout);
     }
 }

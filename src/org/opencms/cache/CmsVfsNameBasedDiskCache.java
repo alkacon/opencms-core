@@ -28,10 +28,13 @@
 package org.opencms.cache;
 
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files.<p>
@@ -49,6 +52,9 @@ import java.io.IOException;
  * @since 6.2.0
  */
 public class CmsVfsNameBasedDiskCache {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVfsNameBasedDiskCache.class);
 
     /** The name of the cache base repository folder in the RFS. */
     private String m_rfsRepository;
@@ -87,6 +93,7 @@ public class CmsVfsNameBasedDiskCache {
             }
         } catch (IOException e) {
             // unable to read content
+            LOG.debug("Unable to read file " + rfsName, e);
         }
         return null;
     }
@@ -141,6 +148,22 @@ public class CmsVfsNameBasedDiskCache {
     public String getRepositoryPath() {
 
         return m_rfsRepository;
+    }
+
+    /**
+     * Returns the the requested file is available within the cache.<p>
+     *
+     * @param rfsName the file name
+     *
+     * @return <code>true</code> if the file is available
+     */
+    public boolean hasCacheContent(String rfsName) {
+
+        File f = new File(rfsName);
+        if (f.exists()) {
+            return true;
+        }
+        return false;
     }
 
     /**
