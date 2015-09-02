@@ -68,6 +68,9 @@ public class CmsToolDialog extends CmsWorkplace {
     /** Request parameter value for the 'new' dialog style. */
     public static final String STYLE_NEW = "new";
 
+    /** The adminProject parameter name. */
+    public static final String PARAM_ADMIN_PROJECT = "adminProject";
+
     /** Base parameter value. */
     private String m_paramBase;
 
@@ -82,9 +85,6 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Style parameter value. */
     private String m_paramStyle;
-
-    /** The adminProject parameter name. */
-    public static final String PARAM_ADMIN_PROJECT = "adminProject";
 
     /**
      * Default Constructor.<p>
@@ -448,6 +448,15 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("editors/xmlcontent/help.js'></script>\n\n");
         html.append("<script type='text/javascript'>\n");
         html.append("\tfunction bodyLoad() {\n");
+
+        // add a special CSS class in case we are in the new vaadin based workplace
+
+        html.append("\tif (this.name != \"admin_content\") {\n");
+        html.append("\t\tvar cssClass=document.body.getAttribute(\"class\");\n");
+        html.append("\t\tcssClass+=\" legacy-app\";\n");
+        html.append("\t\tdocument.body.setAttribute(\"class\",cssClass);\n");
+        html.append("\t}\n");
+
         html.append("\t\tsetContext(\"");
         html.append(CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHandler().getHelpText())));
         html.append("\");\n");

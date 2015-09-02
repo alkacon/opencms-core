@@ -247,12 +247,12 @@ public class CmsToolManager {
                 null,
                 null,
                 onClic);
-            html = buttonHtml + NAVBAR_SEPARATOR + html;
+            html = "<span>" + buttonHtml + NAVBAR_SEPARATOR + "</span>" + html;
         }
         html = CmsToolMacroResolver.resolveMacros(html, wp);
         html = CmsEncoder.decode(html);
         html = CmsToolMacroResolver.resolveMacros(html, wp);
-        html = "<div class='pathbar'>\n" + html + "&nbsp;</div>\n";
+        html = "<div class='pathbar'>\n" + html + "</div>\n";
         return html;
     }
 

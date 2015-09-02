@@ -386,6 +386,11 @@ body, form {
    background-color: /*begin-color ThreeDFace*/#f0f0f0/*end-color*/;
 }
 
+/* hiding first nav level in new workplace ui */
+.legacy-app .pathbar > :first-child{
+	display: none;
+}
+
 .screenBody {
   margin: 0 10px;
 }
@@ -408,6 +413,23 @@ body, form {
   font-family: Verdana, Arial, Helvetica, sans-serif;
   color: /*begin-color WindowText*/#000000/*end-color*/;
 }
+
+/* hiding up button in new workplace ui */
+.legacy-app .screenTitle td.uplevel {
+	display: none;
+}
+
+/* adjusting margins in new workplace ui */
+.legacy-app .screenTitle td:first-child, .legacy-app .pathbar {
+	padding-left:20px;
+}
+
+.legacy-app .dialogcontent {
+	width: auto;
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
 
 p, hr {
   margin: 5px 0;
