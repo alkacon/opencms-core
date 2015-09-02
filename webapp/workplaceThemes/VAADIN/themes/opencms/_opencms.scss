@@ -17,6 +17,7 @@
   div.v-table-footer-wrap,
   div.v-table-header-drag {
   	@include valo-gradient($o-dark-background-color);
+  	font-size: $v-font-size;
   }
   
   div.v-panel-caption {
@@ -421,6 +422,10 @@
   	padding: 2px 4px;
   	width: 100%;
   	height: auto;
+  }
+  
+  .v-table .v-table-row-odd{
+    background-color: $o-medium-background-color;
   }
   
   /* fixes tooltip issues */

@@ -45,8 +45,8 @@ $o-layout-reduced-spacing: $o-layout-reduced-margin;
 $o-button-blue: #356EE1;
 
 $o-light-background-color: $gray-lighter;
-$o-medium-background-color: #F5F5F5;
-$o-dark-background-color: #D9D9D9;
+$o-medium-background-color: #F0F0F0;
+$o-dark-background-color: #DBDBDB;
 
 $toolbar-padding: 20px;
 $toolbar-height: 52px;
@@ -62,6 +62,7 @@ $v-selection-color: $o-button-blue;
 $v-selection-item-height: 25px;
 $v-font-size: 14px;
 $v-font-weight: 400;
+$v-caption-font-size: $v-font-size;
 $v-table-row-height: 32px;
 $v-tree-row-height: $v-table-row-height;
 $v-app-loading-text: "Loading OpenCms ...";
