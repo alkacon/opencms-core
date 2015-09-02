@@ -129,7 +129,7 @@ public class OpenCmsTheme {
     public static final String TOOLBAR = "o-toolbar";
 
     /** CSS style name. */
-    public static final String TOOLBAR_BUTTON = "o-toobar-button";
+    public static final String TOOLBAR_BUTTON = "o-toolbar-button";
 
     /** CSS style name. */
     public static final String TOOLBAR_CENTER = "o-toolbar-center";

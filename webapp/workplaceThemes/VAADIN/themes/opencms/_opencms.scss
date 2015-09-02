@@ -16,7 +16,19 @@
   div.v-table-header-wrap,
   div.v-table-footer-wrap,
   div.v-table-header-drag {
-  	@include valo-gradient(darken($v-background-color,4%));
+  	@include valo-gradient($o-dark-background-color);
+  }
+  
+  div.v-panel-caption {
+    @include valo-panel-caption-style($o-dark-background-color);
+  }
+  
+  div.v-table-caption-container {
+    border-color: darken($o-dark-background-color, 10%);
+  }
+  
+  .v-formlayout .v-caption{
+    font-size: $v-font-size;
   }
   
   div.v-window {
@@ -44,6 +56,11 @@
  	 }
   }
   
+  .o-dialog-button-bar .v-button {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $o-button-blue);
+  }
+  
   .o-reduced-spacing > .v-spacing{
   	height: $o-layout-reduced-spacing;
   	width: $o-layout-reduced-spacing;
@@ -67,7 +84,7 @@
   
   .o-responsive{
   	display: block;
-  	background: #ffffff;
+  	background: $v-app-background-color;
   }
   
   .o-state-deleted, .v-table-row-o-state-deleted, .v-tree-node-caption-o-state-deleted{
@@ -173,7 +190,7 @@
   	display: block;
   	width: 100%;
   	height: 45px;
-  	border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  	border-bottom: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
   }
 
   .o-app-content{
@@ -196,11 +213,11 @@
   	z-index: 2;
   	width: 100%;
   	display: block;
-  	background: #ffffff;
+  	background: $v-app-background-color;
   	overflow: hidden;
   	height: $toolbar-height;
   	text-align: center;
-  	border-bottom: valo-border($border: $v-border, $color: #ffffff, $strength: 1);
+  	border-bottom: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
   	
   	.o-toolbar-inner{
   		margin: 0 $toolbar-padding;
@@ -250,12 +267,17 @@
   	}
   }
   
-  .v-button.v-button-o-toobar-button{
+  .v-button.v-button-o-toolbar-button{
   	font-size: $app-icon-size;
-    height: 40px;
+    height: 32px;
     min-width: 40px;
-    line-height: 40px;
+    line-height: 32px;
     padding: 0 5px;
+    margin-top: 4px;
+    
+    img.v-icon {
+      vertical-align: top;
+    }
     
     &:focus:after {
     	border-color: transparent;
@@ -289,7 +311,7 @@
   
   /* Resource info box */ 
   .v-panel.o-resource-info{
-  	@include valo-gradient(darken($v-background-color,4%));
+  	@include linear-gradient(to bottom, $v-app-background-color 0%, $v-app-background-color 48%, $o-medium-background-color 52%, $o-medium-background-color 100%);
   	
   	.v-panel-content-o-resource-info > .v-horizontallayout {
   		padding-left: 4px;
@@ -383,7 +405,7 @@
   /* login form styles */
   
   .cmslogin-parent .cmslogin-box { 
-    position: absolute;
+	position: absolute;
 	left: 0;
 	right: 0;
 	top:0;
@@ -405,144 +427,15 @@
   .v-tooltip {
   	z-index: 20001 !important;
   }
+
+
   
-  /* valo demo styles - will be removed later */
-
-
-  $color1: hsl(220, 5%, 38%);
-  $color2: #5d73c0;
-  $color3: #3dbc1a;
-  $color4: #d2f4f3;
-  $color5: #fe902a;
-  $colors: $color1, $color2, $color3, $color4, $color5;
-
-  .v-textfield-color1 {
-    @include valo-textfield-style($background-color: $color1);
-  }
-
-  .v-textfield-color2 {
-    @include valo-textfield-style($background-color: $color3);
-  }
-
-  .v-textfield-color3 {
-    @include valo-textfield-style($background-color: $color4);
-  }
-
-
-  .v-textarea-color1 {
-    @include valo-textarea-style($background-color: $color1);
-  }
-
-  .v-textarea-color2 {
-    @include valo-textarea-style($background-color: $color3);
-  }
-
-  .v-textarea-color3 {
-    @include valo-textarea-style($background-color: $color4);
-  }
-
-
-  .v-datefield-color1 {
-    @include valo-datefield-style($background-color: $color1);
-  }
-
-  .v-datefield-color2 {
-    @include valo-datefield-style($background-color: $color3);
-  }
-
-  .v-datefield-color3 {
-    @include valo-datefield-style($background-color: $color4);
-  }
-
-
-  .v-filterselect-color1 {
-    @include valo-combobox-style($background-color: $color1);
-  }
-
-  .v-filterselect-color2 {
-    @include valo-combobox-style($background-color: $color3);
-  }
-
-  .v-filterselect-color3 {
-    @include valo-combobox-style($background-color: $color4);
-  }
-
-
-  $copy: $v-selection-color;
-  $v-selection-color: white;
-  .v-checkbox-color1 {
-    @include valo-checkbox-style($background-color: $color1);
-  }
-
-  .v-checkbox-color2 {
-    @include valo-checkbox-style($background-color: $color2);
-  }
-  $v-selection-color: $copy;
-
-
-  .v-slider-color1 {
-    @include valo-slider-handle-style($background-color: $color1);
-  }
-
-  .v-slider-color2 {
-    @include valo-slider-track-style($background-color: $color3);
-  }
-
-  .v-slider-color3 {
-    @include valo-slider-indicator-style($background-color: #dcdc1e);
-  }
-
-
-  .v-panel-caption-color1 {
-    @include valo-panel-caption-style($background-color: $color1);
-  }
-
-  .v-panel-caption-color2 {
-    @include valo-panel-caption-style($background-color: $color3);
-  }
-
-  .v-panel-caption-color3 {
-    @include valo-panel-caption-style($background-color: $color5);
-  }
-
-  // Show splitpanel borders
-  .v-splitpanel-vertical,
-  .v-splitpanel-horizontal {
-    outline: 1px dotted rgba(gray, .2);
-  }
-
-  .v-slider-ticks {
-    @include valo-slider-ticks($tick-count: 5);
-  }
-
-  .v-accordion-item-color1 .v-accordion-item-caption {
-    @include valo-accordion-item-caption-style($background-color: $color2);
-  }
-
-  .v-menubar-color1 {
-    @include valo-menubar-style($background-color: $v-selection-color, $unit-size: null);
-  }
-  
-  .content-common,
-  .content-labels {
-  	max-width: 800px;
-  }
-  
-  .ocms-button-panel .v-button {
-  		min-width: 7em;  
-  }
-  
-  .o-dialog-button-bar .v-button {
-  		min-width: 115px;
-  }
   
   
   @for $i from 1 through 40 {
   	.o-max-height-#{$i*20} {
-		max-height: 0px + ($i*20);
+		  max-height: 0px + ($i*20);
 	    overflow-y: auto;
-	 }
+	  }
   }
-  
-   
 }

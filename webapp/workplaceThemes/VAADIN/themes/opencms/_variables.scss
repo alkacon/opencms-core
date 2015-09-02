@@ -24,8 +24,8 @@ $orange-dark:       darken($orange, 8%);
 $orange-darker:     darken($orange, 16%);
 $cyan:              #1bb39a; // complementary color
 $gray:              $alkacon-gray;
-$gray-lighter:      lighten($gray, 30%);
-$gray-light:        lighten($gray, 21%);
+$gray-lighter:      #FAFAFA;
+$gray-light:        #E2E2E2;
 $gray-dark:         darken($gray, 15%);
 $gray-darker:       darken($gray, 35%); 
 
@@ -42,6 +42,12 @@ $o-layout-reduced-margin: 2px;
 $o-layout-spacing: 10px;
 $o-layout-reduced-spacing: $o-layout-reduced-margin;
 
+$o-button-blue: #356EE1;
+
+$o-light-background-color: $gray-lighter;
+$o-medium-background-color: #F5F5F5;
+$o-dark-background-color: #D9D9D9;
+
 $toolbar-padding: 20px;
 $toolbar-height: 52px;
 $app-icon-size: 32px;
@@ -49,18 +55,19 @@ $app-icon-size-small: 24px;
 
 /* Valo variables - changes to the default valo variables */
 
-$v-background-color: $gray-lighter; // #FAFAFB
+$v-background-color: $o-light-background-color; // #FAFAFA
 $v-app-background-color: $white; // #ffffff
 $v-focus-color: $blue;  // #144382
-$v-selection-color: $blue-light;
+$v-selection-color: $o-button-blue;
 $v-selection-item-height: 25px;
 $v-font-size: 14px;
 $v-font-weight: 400;
 $v-table-row-height: 32px;
 $v-tree-row-height: $v-table-row-height;
-$v-app-loading-text: "Default OpenCms";
+$v-app-loading-text: "Loading OpenCms ...";
 $v-window-background-color: #1F232A; // #1F232A
-$v-window-modality-curtain-background-color: $gray-light; // #E2E3E6
+$v-window-modality-curtain-background-color: $gray-light; // #E2E2E2
+$v-gradient: v-linear;
 
 $v-layout-margin-top: $o-layout-margin;
 $v-layout-margin-right: $o-layout-margin;
