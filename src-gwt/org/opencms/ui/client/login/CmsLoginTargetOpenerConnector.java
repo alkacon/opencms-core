@@ -29,14 +29,19 @@ package org.opencms.ui.client.login;
 
 import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
 
-import com.vaadin.client.ui.AbstractComponentConnector;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.vaadin.client.ServerConnector;
+import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
 
 /**
  * Connector for the login target opener widget.<p>
  */
 @Connect(org.opencms.ui.login.CmsLoginTargetOpener.class)
-public class CmsLoginTargetOpenerConnector extends AbstractComponentConnector {
+public class CmsLoginTargetOpenerConnector extends AbstractExtensionConnector {
 
     /** Default version id. */
     private static final long serialVersionUID = 1L;
@@ -46,24 +51,39 @@ public class CmsLoginTargetOpenerConnector extends AbstractComponentConnector {
      */
     public CmsLoginTargetOpenerConnector() {
 
+    }
+
+    /**
+     * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
+     */
+    @Override
+    protected void extend(ServerConnector extendedComponent) {
+
         registerRpc(I_CmsLoginTargetRpc.class, new I_CmsLoginTargetRpc() {
 
             private static final long serialVersionUID = 1L;
 
             public void openTarget(String target, String user, String password) {
 
-                getWidget().openTarget(target, user, password);
+                // Post a hidden form with user name and password fields,
+                // to hopefully trigger the browser's password manager
+                final FormPanel form = new FormPanel("_self");
+                Document doc = Document.get();
+                InputElement userField = doc.createTextInputElement();
+                userField.setName("ocUname");
+                InputElement passwordField = doc.createPasswordInputElement();
+                passwordField.setName("ocPword");
+                userField.setValue(user);
+                passwordField.setValue(password);
+                form.getElement().appendChild(userField);
+                form.getElement().appendChild(passwordField);
+                form.setMethod("post");
+                form.setAction(target);
+                form.setVisible(false);
+                RootPanel.get().add(form);
+                form.submit();
             }
         });
-    }
-
-    /**
-     * @see com.vaadin.client.ui.AbstractComponentConnector#getWidget()
-     */
-    @Override
-    public CmsLoginTargetOpener getWidget() {
-
-        return (CmsLoginTargetOpener)(super.getWidget());
     }
 
 }

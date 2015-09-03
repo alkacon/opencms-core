@@ -29,15 +29,25 @@ package org.opencms.ui.login;
 
 import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
 
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.UI;
 
 /**
  * Server side component used to open the login target for a logged in user.<p>
  */
-public class CmsLoginTargetOpener extends AbstractComponent {
+public class CmsLoginTargetOpener extends AbstractExtension {
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param ui the UI to extend
+     */
+    public CmsLoginTargetOpener(UI ui) {
+        extend(ui);
+    }
 
     /**
      * Opens the login target.<p>

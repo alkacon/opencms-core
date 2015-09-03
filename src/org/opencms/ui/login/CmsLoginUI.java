@@ -188,7 +188,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     private CmsLoginForm m_loginForm;
 
     /** The widget used to open the login target. */
-    private CmsLoginTargetOpener m_targetOpener = new CmsLoginTargetOpener();
+    private CmsLoginTargetOpener m_targetOpener = null;
 
     /**
      * Returns the initial HTML for the Vaadin based login dialog.<p>
@@ -397,9 +397,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         VerticalLayout content = new VerticalLayout();
         content.setSizeFull();
-        content.addComponent(m_targetOpener);
-        content.setExpandRatio(m_targetOpener, 0f);
 
+        m_targetOpener = new CmsLoginTargetOpener(A_CmsUI.get());
+        //content.setExpandRatio(m_targetOpener, 0f);
         content.addComponent(m_loginForm);
         content.setComponentAlignment(m_loginForm, Alignment.MIDDLE_CENTER);
         content.setExpandRatio(m_loginForm, 1);
