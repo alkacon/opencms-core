@@ -22,6 +22,7 @@
 		checkinBean.setExcludeLibs(parameters.get("excludelibs") != null);
 		checkinBean.setCommit(parameters.get("autocommit") != null);
 		checkinBean.setIgnoreUnclean(parameters.get("ignoreunclean") != null);
+		checkinBean.setCopyAndUnzip(parameters.get("copyandunzip") != null);
 		if(parameters.get("commitmessage") != null && parameters.get("commitmessage").length > 0 && parameters.get("commitmessage")[0] != null) {
 			checkinBean.setCommitMessage(parameters.get("commitmessage")[0]);
 		}
@@ -52,10 +53,32 @@
 							<%
 						}
 					}
+					String[] newmodules = parameters.get("newmodule");
+					if (newmodules != null && newmodules.length > 0 && ! newmodules[0].trim().isEmpty()) {
+				    	checkinBean.addModuleToExport(newmodules[0]);
+				    	%>
+						<p>Adding new module: <%= newmodules[0] %></p>
+						<%
+					}
 				%>
 			</c:when>
 			<c:when test='<%= parameters.get("all") != null %>'>
 				<h1>All modules selected.</h1>
+				<%
+					String[] newmodules = parameters.get("newmodule");
+					if (newmodules != null && newmodules.length > 0 && ! newmodules[0].trim().isEmpty()) {
+						for (String m : checkinBean.getConfiguredModules()) {
+						    checkinBean.addModuleToExport(m);
+						    %>
+							<p>Check-in module: <%= m %></p>
+							<%
+						}
+				    	checkinBean.addModuleToExport(newmodules[0]);
+				    	%>
+						<p>Also adding new module: <%= newmodules[0] %></p>
+						<%
+					}
+				%>
 			</c:when>
 			</c:choose>
 			<% 	
@@ -172,6 +195,18 @@
 			</c:forEach>
 			</fieldset>
 			<fieldset>
+			<legend>Add module</legend>
+				<div>
+					<label>Additional Module: </label>
+					<select name="newmodule">
+						<option value="">--- none ---</option>
+						<c:forEach var="module" items="<%=checkinBean.getInstalledModules() %>">
+							<option value="${module}">${module}</option>							
+						</c:forEach>
+					</select>
+				</div>
+			</fieldset>			
+			<fieldset>
 				<legend>Commit settings</legend>
 				<div>
 					<input type="checkbox" name="ignoreunclean" <%= checkinBean.getDefaultIngoreUnclean()? "checked=checked" : "" %>>
@@ -180,6 +215,10 @@
 				<div>
 					<input type="checkbox" name="pullfirst" <%= checkinBean.getDefaultAutoPullBefore()? "checked=checked" : "" %>>
 					<label>Pull first <span style="color: orange;">This can overwrite changes from the remote repository.</span></label>
+				</div>
+				<div>
+					<input type="checkbox" name="copyandunzip" <%= checkinBean.getDefaultCopyAndUnzip()? "checked=checked" : "" %>>
+					<label>Copy and unzip modules <span style="color: orange;">Typically you want this</span></label>
 				</div>
 				<div>
 					<input type="checkbox" name="autocommit" <%= checkinBean.getDefaultAutoCommit()? "checked=checked" : "" %>>

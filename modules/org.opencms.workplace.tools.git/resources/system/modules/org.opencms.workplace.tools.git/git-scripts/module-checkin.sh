@@ -147,6 +147,12 @@ while [ "$1" != "" ]; do
 								backupFolder=$1
 								echo " * Read only-backup-to option with folder \"$backupFolder\"."
 								;;
+		--copy-and-unzip )      copyAndUnzip=1
+								echo " * Read copy-and-unzip option."
+								;;
+		--no-copy-and-unzip )   copyAndUnzip=0
+								echo " * Read no-copy-and-unzip option."
+								;;								
         * )             		configfile=$1
 								echo " * Read config file: \"$configfile\"."
     esac
@@ -240,6 +246,17 @@ if [[ -z "$ignoreUnclean" ]]; then
 	fi
 fi
 echo " * Set ignore-unclean: $ignoreUnclean."
+
+## set copy-and-unzip flag
+if [[ -z "$copyAndUnzip" ]]; then
+	if [[ -z "$COPY_AND_UNZIP" ]]; then
+		copyAndUnzip=1
+		echo " * Copy & unzip of module zips not specified. Using mode 1, i.e., do copy and unzip."
+	else
+		copyAndUnzip=$COPY_AND_UNZIP
+	fi	
+fi
+echo " * Set copy-and-unzip: $copyAndUnzip."
 
 ## set push flag
 if [[ -z "$push" ]]; then
@@ -372,7 +389,7 @@ echo
 
 
 echo "Copy and unzip modules ..."
-if [[ $commit == 1 || $pullafter == 1 ]]; then
+if [ $copyAndUnzip == 1 ]; then
 
 ## copy and unzip modules
 	for module in $modulesToExport; do
@@ -441,8 +458,9 @@ if [[ $commit == 1 || $pullafter == 1 ]]; then
 			echo "   ! WARN: Skipped module $module because the zip file was not found."
 		fi
 	done
+
 else
-	echo " * Copy and unzip no modules, because commit and pull-after are both disabled."
+	echo " * Copy and unzip is disabled. Not copying and unzipping modules."
 fi
 
 echo

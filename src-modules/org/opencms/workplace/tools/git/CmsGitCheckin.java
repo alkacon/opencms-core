@@ -69,6 +69,8 @@ public class CmsGitCheckin extends CmsJspBean {
     private static final String DEFAULT_MODULES_TO_EXPORT = "DEFAULT_MODULES_TO_EXPORT";
     /** The variable under which the default pull mode is set for pulling before any other action. */
     private static final String DEFAULT_PULL_MODE_BEFORE = "GIT_PULL_BEFORE";
+    /** The variable under which the default copy-and-unzip mode is set. */
+    private static final String DEFAULT_COPY_AND_UNZIP = "COPY_AND_UNZIP";
     /** The variable under which the default pull mode is set for pulling after the commit. */
     private static final String DEFAULT_PULL_MODE_AFTER = "GIT_PULL_AFTER";
     /** The variable under which the default push mode is set. */
@@ -126,6 +128,8 @@ public class CmsGitCheckin extends CmsJspBean {
     private boolean m_defaultIgnoreUnclean;
     /** The default commit mode. */
     private boolean m_defaultCommitMode;
+    /** The default copy and unzip mode. */
+    private boolean m_defaultCopyAndUnzip = true;
     /** Flag, indicating if an automatic pull should be performed first. */
     private Boolean m_autoPullBefore;
     /** Flag, indicating if an automatic pull should be performed after commit. */
@@ -140,6 +144,8 @@ public class CmsGitCheckin extends CmsJspBean {
     private Boolean m_excludeLibs;
     /** Flag, indicating if execution of the script should go on for an unclean repository. */
     private Boolean m_ignoreUnclean;
+    /** Flag, indicating if modules should be exported and unzipped. */
+    private Boolean m_copyAndUnzip;
     /** Flag, indicating if reset on ${origin}/${branch} should be performed. */
     private boolean m_resetRemoteHead;
     /** Flag, indicating if reset on HEAD should be performed. */
@@ -172,9 +178,7 @@ public class CmsGitCheckin extends CmsJspBean {
         if (m_modulesToExport == null) {
             m_modulesToExport = new HashSet<String>();
         }
-        if (m_configuredModules.contains(moduleName)) {
-            m_modulesToExport.add(moduleName);
-        }
+        m_modulesToExport.add(moduleName);
     }
 
     /**
@@ -246,6 +250,14 @@ public class CmsGitCheckin extends CmsJspBean {
         return m_defaultCommitMessage;
     }
 
+    /** Returns the default copy-and-unzip flag.
+     * @return the default copy-and-unzip flag.
+     */
+    public boolean getDefaultCopyAndUnzip() {
+
+        return m_defaultCopyAndUnzip;
+    }
+
     /** Returns the default exclude libs flag.
      * @return the default exclude libs flag.
      */
@@ -268,6 +280,15 @@ public class CmsGitCheckin extends CmsJspBean {
     public int getExportMode() {
 
         return m_defaultModuleExportPath.isEmpty() ? 1 : m_defaultExportMode;
+    }
+
+    /** Returns the collection of all installed modules.
+     *
+     * @return the collection of all installed modules.
+     */
+    public Collection<String> getInstalledModules() {
+
+        return OpenCms.getModuleManager().getModuleNames();
     }
 
     /** Returns the path to the log file.
@@ -325,6 +346,14 @@ public class CmsGitCheckin extends CmsJspBean {
     public void setCommitMessage(final String message) {
 
         m_commitMessage = message;
+    }
+
+    /** Setter for the copy and unzip mode.
+     * @param copyAndUnzip the copy and unzip mode to set.
+     */
+    public void setCopyAndUnzip(final boolean copyAndUnzip) {
+
+        m_copyAndUnzip = Boolean.valueOf(copyAndUnzip);
     }
 
     /** Setter for the exclude libs flag.
@@ -473,6 +502,10 @@ public class CmsGitCheckin extends CmsJspBean {
         if (m_ignoreUnclean != null) {
             ignoreUncleanMode = m_ignoreUnclean.booleanValue() ? " --ignore-unclean" : " --no-ignore-unclean";
         }
+        String copyAndUnzip = "";
+        if (m_copyAndUnzip != null) {
+            copyAndUnzip = m_copyAndUnzip.booleanValue() ? " --copy-and-unzip" : " --no-copy-and-unzip";
+        }
 
         return "\""
             + m_scriptPath
@@ -487,6 +520,7 @@ public class CmsGitCheckin extends CmsJspBean {
             + excludeLibs
             + commitMode
             + ignoreUncleanMode
+            + copyAndUnzip
             + " \""
             + m_configPath
             + "\"";
@@ -497,6 +531,14 @@ public class CmsGitCheckin extends CmsJspBean {
      */
     private void exportModules() {
 
+        // avoid to export modules if unnecessary
+        if (((null != m_copyAndUnzip) && !m_copyAndUnzip.booleanValue())
+            || ((null == m_copyAndUnzip) && !m_defaultCopyAndUnzip)) {
+            m_logStream.println();
+            m_logStream.println("NOT EXPORTING MODULES - you disabled copy and unzip.");
+            m_logStream.println();
+            return;
+        }
         CmsModuleManager moduleManager = OpenCms.getModuleManager();
 
         Collection<String> modulesToExport = ((m_modulesToExport == null) || m_modulesToExport.isEmpty())
@@ -604,6 +646,10 @@ public class CmsGitCheckin extends CmsJspBean {
                         if (line.startsWith(DEFAULT_IGNORE_UNCLEAN)) {
                             String value = getValueFromLine(line);
                             m_defaultIgnoreUnclean = (value.trim().equals("1")) ? true : false;
+                        }
+                        if (line.startsWith(DEFAULT_COPY_AND_UNZIP)) {
+                            String value = getValueFromLine(line);
+                            m_defaultCopyAndUnzip = (value.trim().equals("1")) ? true : false;
                         }
                         line = configReader.readLine();
                     }

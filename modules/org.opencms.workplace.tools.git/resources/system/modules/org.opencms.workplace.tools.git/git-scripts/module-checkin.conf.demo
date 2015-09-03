@@ -25,6 +25,9 @@
 DEFAULT_MODULES_TO_EXPORT="my.module.one my.module.two"
 ### Flag, indicating if the module's lib/ folder should be removed before the commit
 DEFAULT_EXCLUDE_LIBS=1
+### Flag, indicating if modules should be copied and unzipped at all
+### Default is 1, because you usually want that.
+#COPY_AND_UNZIP=1
 
 ### repository specific settings
 ###
