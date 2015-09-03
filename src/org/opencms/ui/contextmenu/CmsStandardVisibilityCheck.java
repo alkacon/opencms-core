@@ -28,6 +28,7 @@
 package org.opencms.ui.contextmenu;
 
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
@@ -71,6 +72,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion);
+
+    /** Like DEFAULT, but only active for files. */
+    public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
+        file,
         roleeditor,
         notonline,
         notdeleted,
@@ -146,6 +155,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         }
 
         if (flag(notonline) && cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            return VISIBILITY_INVISIBLE;
+        }
+
+        if (flag(file) && !resource.isFile()) {
             return VISIBILITY_INVISIBLE;
         }
 

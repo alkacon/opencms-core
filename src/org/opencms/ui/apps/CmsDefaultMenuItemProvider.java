@@ -138,7 +138,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 "%(key.GUI_EXPLORER_CONTEXT_EDIT_0)",
                 0,
                 0,
-                CmsStandardVisibilityCheck.DEFAULT) {
+                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.EDIT)) {
 
                 @Override
                 public void executeAction(org.opencms.ui.I_CmsDialogContext context) {
