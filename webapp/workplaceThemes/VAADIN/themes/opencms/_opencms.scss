@@ -8,6 +8,11 @@
 @mixin opencms {
   @include valo;
   
+  .v-Notification.error {
+		@include valo-notification-error-style(v-Notification);
+		@include valo-notification-closable-style(v-Notification);
+  }
+  
   /* Overrides to the valo theme */
   div.v-tree-node-caption:after{
   	border-radius: 0;
@@ -33,7 +38,7 @@
   }
   
   div.v-window {
- 	 max-height: 95%;
+     max-height: 95%;
  	 
  	 .v-window-header, .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
  	 	background-color: transparent;
