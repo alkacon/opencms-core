@@ -149,12 +149,11 @@
 	padding:0;
 }
 
-@sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
-	gwt-image: "backgrounds.softBackground";
+.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
 	background-position: 50% 50%;
 	height: auto !important;
 	display: block;
-	background-color: value("constants.css.backgroundColorSoft");
+	background: value("constants.css.backgroundColorSoft");
 }
 
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {

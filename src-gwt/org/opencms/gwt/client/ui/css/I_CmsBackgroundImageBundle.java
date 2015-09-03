@@ -48,51 +48,6 @@ public interface I_CmsBackgroundImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/backgrounds/dialogBackground.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource dialogBackground();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/backgrounds/dialogBackgroundShadow.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource dialogBackgroundShadow();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/backgrounds/invalidStateBackground.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource invalidStateBackground();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/backgrounds/sitemapBackground.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource sitemapBackground();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/backgrounds/softBackground.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    ImageResource softBackground();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/backgrounds/stateBackground.png")
     @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
     ImageResource stateBackground();
