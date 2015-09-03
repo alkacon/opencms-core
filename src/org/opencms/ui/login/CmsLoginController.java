@@ -296,9 +296,7 @@ public class CmsLoginController {
                     currentCms,
                     userObj,
                     A_CmsUI.get().getLocale());
-                A_CmsUI.get().setCenterPanel(
-                    0,
-                    0,
+                A_CmsUI.get().setContentToDialog(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName()).addComponent(passwordDialog);
                 return;

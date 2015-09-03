@@ -377,9 +377,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             if (validationResult == null) {
                 CmsUser user = validator.getUser();
                 CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
-                A_CmsUI.get().setCenterPanel(
-                    0,
-                    0,
+                A_CmsUI.get().setContentToDialog(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + user.getName()).addComponent(dlg);
             } else {
@@ -420,7 +418,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public void showPasswordResetDialog() {
 
         String caption = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_FORGOT_PASSWORD_0);
-        A_CmsUI.get().setCenterPanel(0, 0, caption).addComponent(new CmsForgotPasswordDialog());
+        A_CmsUI.get().setContentToDialog(caption).addComponent(new CmsForgotPasswordDialog());
     }
 
     /**

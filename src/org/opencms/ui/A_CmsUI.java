@@ -68,13 +68,11 @@ public abstract class A_CmsUI extends UI {
 
     /**
      * Centers a panel in the middle of the browser window and returns the vertical layout used for the panel contents.<p>
-     *
-     * @param width width of the panel
-     * @param height height of the panel
      * @param caption the caption
+     *
      * @return the layout used for panel contents
      */
-    public VerticalLayout setCenterPanel(int width, int height, String caption) {
+    public VerticalLayout setContentToDialog(String caption) {
 
         setContent(new Label());
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
@@ -96,6 +94,6 @@ public abstract class A_CmsUI extends UI {
      */
     public void setError(String error) {
 
-        setCenterPanel(400, 300, "Error").addComponent(new Label(error));
+        setContentToDialog("Error").addComponent(new Label(error));
     }
 }
