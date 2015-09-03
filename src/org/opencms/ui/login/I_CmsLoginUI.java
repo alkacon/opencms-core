@@ -105,4 +105,9 @@ public interface I_CmsLoginUI {
      */
     void showLoginView(String preselectedOu);
 
+    /**
+     * Shows the password reset dialog.<p>
+     */
+    void showPasswordResetDialog();
+
 }

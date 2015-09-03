@@ -31,9 +31,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +65,12 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
     /** Field for the email address. */
     protected TextField m_emailField;
 
+    /** The user field. */
+    protected TextField m_userField;
+
+    /** The OU selector. */
+    protected CmsLoginOuSelector m_ouSelect;
+
     /** Button to request the mail with the password reset link .*/
     protected Button m_mailButton;
 
@@ -72,6 +80,9 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
     public CmsForgotPasswordDialog() {
         Locale locale = A_CmsUI.get().getLocale();
         CmsVaadinUtils.readAndLocalizeDesign(this, OpenCms.getWorkplaceManager().getMessages(locale), null);
+        List<CmsOrganizationalUnit> ouList = CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null);
+        m_ouSelect.initOrgUnits(ouList);
+        m_userField.setRequired(true);
         m_emailField.setRequired(true);
         m_emailField.addValidator(
             new EmailValidator(
@@ -83,8 +94,12 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
+                m_userField.getValue();
+                String selectedOu = m_ouSelect.getValue();
+                selectedOu = (selectedOu != null) ? selectedOu : "";
+                String fullName = CmsStringUtil.joinPaths(selectedOu, m_userField.getValue());
                 m_emailField.validate();
-                if (sendPasswordResetLink(CmsLoginUI.m_adminCms, m_emailField.getValue())) {
+                if (sendPasswordResetLink(CmsLoginUI.m_adminCms, fullName, m_emailField.getValue())) {
                     CmsVaadinUtils.showAlert(
                         Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
                             Messages.GUI_PWCHANGE_MAILSENT_HEADER_0),
@@ -113,44 +128,29 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
      * Tries to find a user with the given email address, and if one is found, sends a mail with the password reset link to them.<p>
      *
      * @param cms the CMS Context
+     * @param fullUserName the full user name including OU
      * @param email the email address entered by the user
      * @return true if the mail could be sent
      */
-    public static boolean sendPasswordResetLink(CmsObject cms, String email) {
+    public static boolean sendPasswordResetLink(CmsObject cms, String fullUserName, String email) {
 
         LOG.info("Trying to find user for email " + email); //$NON-NLS-1$
-        try {
-            List<CmsUser> allUsers = OpenCms.getOrgUnitManager().getUsersWithoutAdditionalInfo(cms, "", true); //$NON-NLS-1$
-            email = email.trim();
-            CmsUser foundUser = null;
-            for (CmsUser user : allUsers) {
-                if (email.equals(user.getEmail())) {
-                    if (!user.isManaged()) {
-                        LOG.info("Found user " + user.getName()); //$NON-NLS-1$
-                        foundUser = user;
-                        break;
-                    } else {
-                        LOG.info("Skipping managed user " + user.getName()); //$NON-NLS-1$
-                    }
+        email = email.trim();
 
-                }
-            }
-            if (foundUser == null) {
+        try {
+            CmsUser foundUser = cms.readUser(fullUserName);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(email) || !email.equals(foundUser.getEmail())) {
                 Notification.show(
-                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_USER_NOT_FOUND_0),
+                    CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_EMAIL_MISMATCH_0),
                     Type.ERROR_MESSAGE);
-                // error user not found
                 return false;
             }
-            // we need the additional infos now
-            foundUser = cms.readUser(foundUser.getId());
             String token = CmsTokenValidator.createToken(cms, foundUser);
             String link = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false) + "?at=" + token; //$NON-NLS-1$ //$NON-NLS-2$
             LOG.info("Sending password reset link to user " + foundUser.getName() + ": " + link); //$NON-NLS-1$ //$NON-NLS-2$
             CmsPasswordChangeNotification notification = new CmsPasswordChangeNotification(cms, foundUser, link);
             try {
                 notification.send();
-
             } catch (EmailException e) {
                 Notification.show(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_MAIL_SEND_ERROR_0),

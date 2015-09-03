@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
@@ -385,9 +386,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 A_CmsUI.get().setError(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_TOKEN_0));
                 LOG.info("Invalid authorization token: " + authToken + " / " + validationResult);
-                // display 'invalid token'
             }
-
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
@@ -413,6 +412,15 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         }
         m_loginForm.selectOrgUnit(preselectedOu);
 
+    }
+
+    /**
+     * @see org.opencms.ui.login.I_CmsLoginUI#showPasswordResetDialog()
+     */
+    public void showPasswordResetDialog() {
+
+        String caption = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_FORGOT_PASSWORD_0);
+        A_CmsUI.get().setCenterPanel(0, 0, caption).addComponent(new CmsForgotPasswordDialog());
     }
 
     /**

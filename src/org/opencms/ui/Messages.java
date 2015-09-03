@@ -63,6 +63,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0 = "GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_FORGOT_PASSWORD_0 = "GUI_PWCHANGE_FORGOT_PASSWORD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_EMAIL_CAPTION_0 = "GUI_PWCHANGE_EMAIL_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -118,6 +121,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_EMAIL_MISMATCH_0 = "GUI_PWCHANGE_EMAIL_MISMATCH_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

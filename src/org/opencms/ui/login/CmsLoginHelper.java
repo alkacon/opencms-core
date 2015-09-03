@@ -97,6 +97,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         /** The value of the user name parameter. */
         private String m_username;
 
+        /** Reset password flag. */
+        private boolean m_reset;
+
         /**
          * Constructor.<p>
          *
@@ -108,6 +111,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
          * @param locale the locale
          * @param authToken the authorization token
          * @param logout the logout flag
+         * @param reset flag to indicate whether we are in 'reset password' mode
          */
         public LoginParameters(
             String username,
@@ -117,7 +121,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             String requestedWorkplaceApp,
             Locale locale,
             String authToken,
-            boolean logout) {
+            boolean logout,
+            boolean reset) {
 
             m_username = username;
             m_pcType = pcType;
@@ -127,6 +132,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             m_locale = locale;
             m_authToken = authToken;
             m_logout = logout;
+            m_reset = reset;
         }
 
         /**
@@ -218,6 +224,16 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
             return (m_pcType == null) || m_pcType.equals(PCTYPE_PRIVATE);
         }
+
+        /**
+         * Returns true if we are in 'reset password' mode.<p>
+         *
+         * @return true in reset mode, false otherwise
+         */
+        public boolean isReset() {
+
+            return m_reset;
+        }
     }
 
     /** Action constant: Default action, display the dialog. */
@@ -261,6 +277,9 @@ public class CmsLoginHelper extends CmsJspLoginBean {
 
     /** The parameter name for the user name. */
     public static final String PARAM_USERNAME = "ocUname";
+
+    /** Parameter used to open the 'send reset mail' view instead of the login dialog. */
+    public static final String PARAM_RESET_PASSWORD = "reset";
 
     /** The parameter name for the workplace data. */
     public static final String PARAM_WPDATA = "ocWpData";
@@ -402,7 +421,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
         }
         Locale locale = getLocaleForRequest(request);
-
+        String resetStr = request.getParameter(PARAM_RESET_PASSWORD);
+        boolean reset = (resetStr != null);
         return new LoginParameters(
             username,
             pcType,
@@ -411,7 +431,8 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             requestedWorkplaceApp,
             locale,
             authToken,
-            logout);
+            logout,
+            reset);
     }
 
     /**

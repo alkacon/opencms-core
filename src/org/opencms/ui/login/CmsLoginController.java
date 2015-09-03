@@ -250,11 +250,11 @@ public class CmsLoginController {
      */
     public void onClickForgotPassword() {
 
-        A_CmsUI.get().setCenterPanel(
-            600,
-            450,
-            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
-                Messages.GUI_PWCHANGE_REQUEST_DIALOG_HEADER_0)).addComponent(new CmsForgotPasswordDialog());
+        String link = OpenCms.getLinkManager().getWorkplaceLink(
+            CmsLoginUI.m_adminCms,
+            "/system/login", //$NON-NLS-1$
+            false) + "?" + CmsLoginHelper.PARAM_RESET_PASSWORD;
+        A_CmsUI.get().getPage().setLocation(link);
     }
 
     /**
@@ -351,8 +351,9 @@ public class CmsLoginController {
         String authToken = m_params.getAuthToken();
         if (authToken != null) {
             m_ui.showForgotPasswordView(authToken);
+        } else if (m_params.isReset()) {
+            m_ui.showPasswordResetDialog();
         } else {
-
             boolean loggedIn = !A_CmsUI.getCmsObject().getRequestContext().getCurrentUser().isGuestUser();
             m_ui.setSelectableOrgUnits(CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null));
             if (loggedIn) {
