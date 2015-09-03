@@ -18,7 +18,7 @@
 	width: 300px;
 }
 .containerMarker{
-	background: #ffffff;
+	background: value("constants.css.backgroundColorDialog");
 	border: 1px solid value("constants.css.borderColor");
 	position: absolute;
 	z-index: value("constants.css.zIndexHighlighting");

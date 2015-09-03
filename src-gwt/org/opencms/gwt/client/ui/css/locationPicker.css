@@ -46,7 +46,7 @@ div.locationField input[type="text"]{
 	border: none;
     box-shadow: none;
     outline: none;
-    color: #222222;
+    color: value("constants.css.textColor");
     height: 18px;
     padding: 0;
     width:100%;

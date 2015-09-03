@@ -200,20 +200,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String dragOverlay();
 
         /**
-         * Returns the CSS constant value.<p>
-         *
-         * @return the CSS constant value
-         */
-        String FOCUS_GRADIENT();
-
-        /**
-         * Returns the CSS constant value.<p>
-         *
-         * @return the CSS constant value
-         */
-        String FOCUS_GRADIENT_IE9();
-
-        /**
          * Returns the focused CSS class name.<p>
          *
          * @return the focused CSS class
@@ -303,20 +289,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          * @return the overlay button panel CSS class name
          */
         String overlayButtonPanel();
-
-        /**
-         * Returns the CSS constant value.<p>
-         *
-         * @return the CSS constant value
-         */
-        String PARENT_GRADIENT();
-
-        /**
-         * Returns the CSS constant value.<p>
-         *
-         * @return the CSS constant value
-         */
-        String PARENT_GRADIENT_IE9();
 
         /**
          * The second column width constant.<p>

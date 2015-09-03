@@ -1,7 +1,7 @@
 .attributeValue, .dragHelper, .emptyValue, .entity, .label, .widgetHolder, .singleLine, .compactView, .firstColumn, .secondColumn, .defaultView, .inActive{}
 
 .widget.galleryField .fieldBox, .widget.locationField div.displayBox{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	display: block;
@@ -12,8 +12,8 @@
 }
 
 div.locationFields div.locationField > div:first-child{
-	border-color: #7788AA;
-	background: #FFFFFF;
+	border-color: value("constants.css.borderColorEditor");
+	background: value("constants.css.backgroundColorDialog");
 }
 
 .hasError .widget.galleryField .fieldBox, .hasError .widget.locationField .displayBox{
@@ -41,7 +41,7 @@ div.locationFields div.locationField > div:first-child{
 }
 	
 .widget .resourceInfo > div, .widget div.imagePreview, .widget div.locationInfo, .widget div.mapPreview{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 }
 .widget .hasError div.imagePreview{
 	display: none;
@@ -50,7 +50,6 @@ div.locationFields div.locationField > div:first-child{
 /** joined vendor prefix style, for better fall back behavior */
 .resourceInfo > div > div:first-child, div.locationInfo, div.locationMainPanel{
 	background-color: value("constants.css.gradientFormDialogColor");
-	background-image: value("constants.css.gradientFormDialogIE9");
 	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");

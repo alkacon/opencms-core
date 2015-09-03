@@ -1,5 +1,5 @@
-@sprite body.standAloneEditor{
-	gwt-image: "backgrounds.sitemapBackground";
+body.standAloneEditor{
+	background: value("constants.css.backgroundColorMenu");
 	overflow: hidden;
 	height: 100%;
 	width: 100%;
@@ -45,8 +45,8 @@ body.integratedEditor{
 	-moz-box-sizing: content-box;
 }
 
-@sprite .basePanel{
-	gwt-image: "backgrounds.sitemapBackground";
+.basePanel{
+	background: value("constants.css.backgroundColorMenu");
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSize");
 	position: fixed;

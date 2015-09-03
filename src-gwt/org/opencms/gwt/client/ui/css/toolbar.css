@@ -43,7 +43,7 @@
 	color:value("constants.css.textColor");
 	padding:0px;
 	margin:0px;
-	background-color: #ffffff;
+	background-color: value("constants.css.backgroundColorDialog");
 }
 
 .toolbarBackground .toolbarCenter{

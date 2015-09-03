@@ -214,6 +214,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String borderColorEditor();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String borderColorHighlight();
 
         /**
@@ -368,7 +375,14 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
-        String gradientFormDialogIE9();
+        String gradientFormDialogFocus();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String gradientFormDialogFocusColor();
 
         /**
          * Access method.<p>
@@ -495,6 +509,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          * @return the CSS constant value
          */
         String textColorDisabledButton();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String textColorEditorLabel();
 
         /**
          * Access method.<p>

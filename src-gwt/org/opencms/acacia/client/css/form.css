@@ -1,10 +1,5 @@
 @external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
 
-@def PARENT_GRADIENT literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
-@def PARENT_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
-@def FOCUS_GRADIENT literal("left, #E1E4E8 0%, #EAEDEF 80%, #F4F7F9 100%");  
-@def FOCUS_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UxZTRlOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2VhZWRlZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmNGY3ZjkiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
-
 @def SECOND_COLUMN_WIDTH 448;
  
 .attribute, .defaultView{}
@@ -66,7 +61,7 @@ div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div
 .attributeValue .label{
 	margin:0px 25px 0px 3px;
 	padding: 4px 0px;
-	color: #7788aa;
+	color: value("constants.css.textColorEditorLabel");
 	cursor: default;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -238,7 +233,7 @@ div.attributeValue.secondColumn{
 }
 
 .widgetHolder > div > .widget.input{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: value("constants.css.backgroundColorDialog");
 }
 
@@ -262,7 +257,7 @@ div.attributeValue.secondColumn{
 }
 
 .attributeValue .widgetHolder  .mce-tinymce{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	width: auto !important;
@@ -314,9 +309,9 @@ div.tinymceToolbarContainer > div{
     max-width: 100%;
     position: absolute;
     right: 0;
-    border-top: 1px solid #7788AA;
-    border-right: 1px solid #7788AA;
-    border-left: 1px solid #7788AA;
+    border-top: 1px solid value("constants.css.borderColorEditor");
+    border-right: 1px solid value("constants.css.borderColorEditor");
+    border-left: 1px solid value("constants.css.borderColorEditor");
     border-radius: value("constants.css.borderRadius") value("constants.css.borderRadius") 0px 0px;
 }
 
@@ -351,9 +346,9 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 
 .attributeValue > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
-    border-bottom: 1px solid #7788AA !important;
-    border-right: 1px solid #7788AA !important;
-    border-left: 1px solid #7788AA !important;
+    border-bottom: 1px solid value("constants.css.borderColorEditor") !important;
+    border-right: 1px solid value("constants.css.borderColorEditor") !important;
+    border-left: 1px solid value("constants.css.borderColorEditor") !important;
     box-shadow: 2px 2px 2px #666666;
     border-radius: 0 0 value("constants.css.borderRadius") value("constants.css.borderRadius");
     display: none;
@@ -382,7 +377,7 @@ div.mce-widget.mce-tooltip{
 div.helpBubble{
 	position: absolute;
 	background: #FFFFCC;
-	color: #222222;
+	color: value("constants.css.textColor");
 	top: 100%;
 	left: 2px;
 	display: none;
@@ -437,7 +432,7 @@ div.helpBubble{
 }
 
 .helpBubble div{
-	color: #222222;
+	color: value("constants.css.textColor");
 }
 
 .attributeValue.focused > .helpBubble, div.attributeValue.focused.hasError > .helpBubble, div.attributeValue.focused.hasWarning > .helpBubble{
@@ -482,22 +477,20 @@ div.helpBubble{
 
 /** joined vendor prefix style, for better fall back behavior */
 .formParent{
-	background: #EEEEEE !important;
-	background-image: PARENT_GRADIENT_IE9 !important;
-	background-image: literal("-moz-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-ms-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-webkit-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("-o-linear-gradient(")PARENT_GRADIENT literal(")") !important;
-	background-image: literal("linear-gradient(")PARENT_GRADIENT literal(")") !important;
+	background: value("constants.css.gradientFormDialogColor") !important;
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")") !important;
 }
 .entity .attributeValue.focused > .widgetHolder, .dragHelper.attributeValue > .widgetHolder{
-	background: #F4F7F9;
-	background-image: FOCUS_GRADIENT_IE9;
-	background-image: literal("-moz-linear-gradient(")FOCUS_GRADIENT literal(")");
-	background-image: literal("-ms-linear-gradient(")FOCUS_GRADIENT literal(")");
-	background-image: literal("-webkit-linear-gradient(")FOCUS_GRADIENT literal(")");
-	background-image: literal("-o-linear-gradient(")FOCUS_GRADIENT literal(")");
-	background-image: literal("linear-gradient(")FOCUS_GRADIENT literal(")");
+	background: value("constants.css.gradientFormDialogFocusColor");
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialogFocus") literal(")");
 }
 
 /** Drag and drop styles. */

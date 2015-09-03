@@ -21,7 +21,7 @@
 
 .tableField {
 	border-radius: 3px;
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 }
 
 .colorSelectorWidget.colorSelectorWidget.colorSelectorWidget {

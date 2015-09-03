@@ -26,7 +26,7 @@ div.cmsMenuBar { /* the outer menu bar */
 	border: 0;
 }
 @sprite .cmsMenuBar .cmsMenuItem.selected { /* selected menu items */ 
-	background-color: #E0E0E0;
+	background-color: value("constants.css.backgroundColorListItem");
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
 	height: auto;

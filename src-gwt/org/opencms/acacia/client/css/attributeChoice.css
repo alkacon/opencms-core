@@ -159,14 +159,14 @@ div.choices {
 div.choice{
 	padding: 0 6px;
 	margin: 2px;
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	border-radius: value("constants.css.borderRadius");
 	font-size: 12px;
 	line-height: 16px;
-	color: #7788AA;
+	color: value("constants.css.textColorEditorLabel");
 	background-color: value("constants.css.backgroundColorDialog");
 	max-width: 200px;
 	cursor: pointer;
@@ -175,12 +175,12 @@ div.choice{
 
 /** joined vendor prefix style, for better fall back behavior */
 div.choice{
-	background-image: value("form.PARENT_GRADIENT_IE9");
-	background-image: literal("-moz-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
-	background-image: literal("-o-linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
-	background-image: literal("linear-gradient(")value("form.PARENT_GRADIENT") literal(")");
+	background: value("constants.css.gradientFormDialogColor");
+	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("-o-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
+	background-image: literal("linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 }
 
 div.choice:hover{

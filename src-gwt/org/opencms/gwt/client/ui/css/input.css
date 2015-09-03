@@ -128,7 +128,7 @@ div.textArea > div.disableTextArea {
 	left: 0px;
 	right: 0px;
 	bottom: 0px;
-	background: #FFFFFF;
+	background: value("constants.css.backgroundColorDialog");
 	opacity: 0.1;
 }
 .textAreaBoxPanel{
@@ -436,7 +436,7 @@ div.dataValue {
 	height: 20px;
 	margin-top: 2px;
 	margin-right: 2px;
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	border-radius: 3px;
 	margin: 0 2px;
 	cursor: pointer;
@@ -521,7 +521,7 @@ div.selectionInput{
 	position: relative;
 }
 input.comboBoxOpener:disabled{
-	background-color: #FFFFFF;
+	background-color: value("constants.css.backgroundColorDialog");
 	color: value("constants.css.textColorDisabled");
 	border: value("constants.css.textColorDisabled");
 }

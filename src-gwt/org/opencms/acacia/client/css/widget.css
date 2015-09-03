@@ -27,7 +27,7 @@ div.mce-opencmsDialog.mce-window{
 div.radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
     border-radius: value("constants.css.borderRadius");
-    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    border: 1px solid value("constants.css.borderColorEditor");
     display: block;
     vertical-alignment: middle;
     padding-bottom: 1px;
@@ -41,7 +41,7 @@ div.selectBoxPanel{
 }
 
 div.categoryPanel {
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 }
@@ -51,7 +51,7 @@ div.categoryPanel:hover {
 }
 
 div.selectBoxPopup {
-	border: 1px solid #7788AA !important /*value("constants.css.borderColor")*/;
+	border: 1px solid value("constants.css.borderColorEditor") !important;
 }
 
 div.textAreaBoxPanel textarea.textAreaBox {
@@ -76,18 +76,18 @@ div.inActive div.textAreaBoxPanel{
 }
 
 div.textAreaBoxPanel{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 }
 
 div.vfsInputBox{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 }
 
 div.textBox{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	font-family: value("constants.css.fontFamily");
@@ -108,7 +108,7 @@ div.textBox > input[type="text"]{
 }
 
 div.passwordTextBox{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	width: auto;
@@ -137,14 +137,14 @@ div.calendarStyle input[type="text"] {
 	outline: none;
 }
 div.calendarStyle input[type="text"].textboxGhostMode{
-	color: #7788AA;
+	color: value("constants.css.textColorEditorLabel");
 	font-style:normal;
 	outline: none;
 }
 
 
 div.calendarStyle {
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
 	border-radius: value("constants.css.borderRadius");
 	font-family: value("constants.css.fontFamily");
@@ -159,7 +159,7 @@ input[type="text"].displayTextBox{
 	background: none repeat scroll 0 0 transparent;
 	height: 18px;
 	display: block;
-	color: #7788AA;
+	color: value("constants.css.textColorEditorLabel");
 	box-shadow: none;
 	width: 100%;
 	border: medium none;
@@ -175,7 +175,7 @@ input[type="text"].displayTextBox:disabled{
 }
 
 div.displayTextBoxPanel{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
 	background: none repeat scroll 0 0 transparent;
 }
 
@@ -198,7 +198,7 @@ input[type="text"].comboBoxInput {
 
 .radioButtonlabel.cmsState-up,
 .checkboxlabel .cmsState-up {
-  	color: #7788AA;
+  	color: value("constants.css.textColorEditorLabel");
   	display: block;
 }
 div.checkboxlabel .cmsState-up-disabled,
@@ -234,7 +234,7 @@ div.radioButtonlabel.cmsState-down-disabled{
 
 div.colorPickerValue {
 	background: none repeat scroll 0 0 white;
-    border: 1px solid #7788AA;
+    border: 1px solid value("constants.css.borderColorEditor");
     border-radius: 3px 3px 3px 3px;
     display: block;
     height: 17px;
@@ -245,10 +245,10 @@ div.colorPickerValue {
 }
 
 div.colorPickerValue input[type="text"]{
-	background-color: #FFFFFF;
+	background-color: value("constants.css.backgroundColorDialog");
     border: none;
     box-shadow: none;
-    color: #222222;
+    color: value("constants.css.textColor");
     display: block;
     font-size: 12px;
     height: 16px;
@@ -258,7 +258,7 @@ div.colorPickerValue input[type="text"]{
 }
 
 div.colorPicker{
-	border: 1px solid #7788AA;
+	border: 1px solid value("constants.css.borderColorEditor");
     border-radius: 3px 3px 3px 3px;
     cursor: pointer;
     display: block;
@@ -345,7 +345,7 @@ div.colorPicker{
 .dragHelper .radioButtonPanel {
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
     border-radius: value("constants.css.borderRadius");
-    border: 1px solid #7788AA /*value("constants.css.borderColor")*/;
+    border: 1px solid value("constants.css.borderColorEditor");
     display: block;
     vertical-alignment: middle;
     padding-bottom: 3px;

@@ -244,8 +244,8 @@ public class CmsDataValue extends Composite implements I_CmsTruncable, HasClickH
      * */
     public void setInactive() {
 
-        getElement().getStyle().setBorderColor("#999999");
-        getElement().getStyle().setColor("#999999");
+        getElement().getStyle().setBorderColor(I_CmsLayoutBundle.INSTANCE.constants().css().borderColor());
+        getElement().getStyle().setColor(I_CmsLayoutBundle.INSTANCE.constants().css().textColorDisabled());
     }
 
     /**

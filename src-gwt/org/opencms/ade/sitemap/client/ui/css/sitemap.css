@@ -2,8 +2,8 @@ body div.pageCenter {
 	padding: 10px;
 }
 
-@sprite .root {
-	gwt-image: "backgrounds.sitemapBackground";
+.root {
+	background: value("constants.css.backgroundColorMenu");
 	font-family: value("constants.css.fontFamily");
 	position: relative;
 	margin: 0;
@@ -14,6 +14,7 @@ body div.pageCenter {
 
 /** joined vendor prefix style, for better fall back behavior */
 div.page{
+	background-color: value("constants.css.gradientFormDialogColor");
 	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");
 	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientFormDialog") literal(")");

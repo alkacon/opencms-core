@@ -41,6 +41,8 @@
 /** The important text color. Use it only for displaying important text. */
 @def textColorImportant #B31B34;
 
+@def textColorEditorLabel #7788AA;
+
 /** The toolbar width. */
 @def toolbarWidth 930px;
 /** The default content space. */
@@ -67,6 +69,8 @@
 /** The default border radius for buttons. */
 @def borderRadiusButton 4px;
 
+@def borderColorEditor #7788AA;
+
 
 /**
  * The background color definitions.
@@ -78,15 +82,15 @@
  */
 @def backgroundColorDialog #FFFFFF;
 /** The menu background color. Use it for menu backgrounds. NOTE: This color is also used for the CmsTabbedPanel. */
-@def backgroundColorMenu #FAFAFB;
+@def backgroundColorMenu #FAFAFD;
 /** The backgroundColor for a list item. */
-@def backgroundColorListItem #E0E0E0;
+@def backgroundColorListItem #F0F0F2;
 /** The disabled background color. Use it for disabled UI components. */
-@def backgroundColorDisabled #DDDDDD;
+@def backgroundColorDisabled #E0E0E2;
 /** The overlay background color. Use it for overlays. */
-@def backgroundColorOverlay #DDDDDD;
+@def backgroundColorOverlay #E0E0E2;
 /** The info background color. Use it for user informations like error messages. */
-@def backgroundColorInfo #F9F9F9;
+@def backgroundColorInfo #FAFAFD;
 /** The popup shadow background color. Use it for creating popup shadows. */
 @def backgroundColorPopupShadow #AAAAAA;
 /** The highlight background color. Use it for hover effects like select box or menu hovering. */
@@ -110,9 +114,9 @@
  * They should be used to style the color of elements that have a state. 
  */
 /** This constant defines the background color for elements that use the soft standard background image. */
-@def backgroundColorSoft #DDDDDD;
+@def backgroundColorSoft #E0E0E2;
 /** This constant defines the background color for elements have the standard state. */
-@def backgroundColorStateStandard #DDDDDD;
+@def backgroundColorStateStandard #E0E0E2;
 /** This constant defines the background color for elements have the disabled state. */
 @def backgroundColorStateDisabled #E3E3E3;
 /** This constant defines the background color for elements have the hover state. */
@@ -142,9 +146,10 @@
  */
 @def gradientDialogHeader literal("to bottom, #3E4654 2%, #1F232A 98%, #1F232A");
 /** The form dialog background gradient. */
-@def gradientFormDialog literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
-@def gradientFormDialogIE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
-@def gradientFormDialogColor #EEEEEE;
+@def gradientFormDialog literal("left, #FFFFFF 0%, #FAFAFD 80%, #F0F0F2 100%");  
+@def gradientFormDialogFocus literal("left,  #F0F0F2 0%, #F0F0F2 80%, #FAFAFD 100%");  
+@def gradientFormDialogColor #F0F0F2;
+@def gradientFormDialogFocusColor #E0E0E2;
 
 /**
  * The notification color definitions.
@@ -177,7 +182,7 @@
 /** The font size for a day. */
 @def dateboxDayFontSize 11px;
 /** The background color for the weekend days. */
-@def dateboxWeekendBg #DDDDDD;
+@def dateboxWeekendBg #E0E0E2;
 /** The text color for the todays day. */
 @def dateboxTodayColor #B31B34;
 /** A day in another month. */
