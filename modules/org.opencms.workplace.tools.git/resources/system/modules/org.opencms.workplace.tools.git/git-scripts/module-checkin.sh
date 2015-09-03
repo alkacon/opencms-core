@@ -370,77 +370,80 @@ else
 fi
 echo
 
-echo "Copy and unzip modules ..."
 
-## marker for sed - do not remove next line
-## set umask
+echo "Copy and unzip modules ..."
+if [[ $commit == 1 || $pullafter == 1 ]]; then
 
 ## copy and unzip modules
-for module in $modulesToExport; do
-	echo
-	echo " * Handling module ${module} ..."
-	echo
-	cd $moduleExportFolder
-	fileName=$(getExportedModule)
-	if [[ ! -z "$fileName" ]]; then
-		echo "   * Found zip file ${fileName}."
-		#switch to project's module path
-		cd "${MODULE_PATH}"
-		#check if a subdirectory for the module exists - if not add it
-		if [ ! -d "$module" ]; then
-			echo "   * Creating missing module directory \"$module\" under \"$(pwd)\"."
-			mkdir $module
-		fi
-		#go to the modules' subfolder in the project
-		cd $module
-		#if necessary, add the resources' subfolder of the module
-		if [[ (! -z "$MODULE_RESOURCES_SUBFOLDER") && (! -d "$MODULE_RESOURCES_SUBFOLDER") ]]; then
-			echo "   * Creating missing resources subfolder \"$MODULE_RESOURCES_SUBFOLDER\"\
+	for module in $modulesToExport; do
+		echo
+		echo " * Handling module ${module} ..."
+		echo
+		cd $moduleExportFolder
+		fileName=$(getExportedModule)
+		if [[ ! -z "$fileName" ]]; then
+			echo "   * Found zip file ${fileName}."
+			#switch to project's module path
+			cd "${MODULE_PATH}"
+			#check if a subdirectory for the module exists - if not add it
+			if [ ! -d "$module" ]; then
+				echo "   * Creating missing module directory \"$module\" under \"$(pwd)\"."
+				mkdir $module
+			fi
+			#go to the modules' subfolder in the project
+			cd $module
+			#remove leading "/" from MODULE_RESOURCES_SUBFOLDER, if necessary
+			if [[ (! -z "$MODULE_RESOURCES_SUBFOLDER") && (${MODULE_RESOURCES_SUBFOLDER:0:1} == "/") ]]; then
+				MODULE_RESOURCES_SUBFOLDER=${MODULE_RESOURCES_SUBFOLDER:1}
+			fi
+			#if necessary, add the resources' subfolder of the module
+			if [[ (! -z "$MODULE_RESOURCES_SUBFOLDER") && (! -d "$MODULE_RESOURCES_SUBFOLDER") ]]; then
+				echo "   * Creating missing resources subfolder \"$MODULE_RESOURCES_SUBFOLDER\"\
 				       under $(pwd)."
-			mkdir $MODULE_RESOURCES_SUBFOLDER
-		fi
-		#if there's a resources subfolder, switch to it
-		if [[ -d "$MODULE_RESOURCES_SUBFOLDER" ]]; then
-			cd $MODULE_RESOURCES_SUBFOLDER
-		fi
-		#delete all resources currently checked in in the project
-		if [[ "$(pwd)" == "${MODULE_PATH}"* ]]; then
-			echo "   * Removing old version of the module resources under $(pwd)."
-			rm -fr ./*
-		else
-			echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
-				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})." 
-			exit 4
-		fi			
-		echo "   * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
-		#copy the new module .zip
-		cp "${moduleExportFolder}/${fileName}" ./
-		echo "   * Unzipping copied file."
-		#unzip it
-		unzip -o "${fileName}" | awk '$0="     "$0'
-		echo "   * Deleting copy of the .zip file."
-		#remove the .zip file
-		rm "${fileName}"
-		#remove lib/ subfolder if necessary
-		echo "   * Removing lib folder ..."
-		if [[ $excludeLibs == 1 ]]; then
-			libFolder="system/modules/${module}/lib"
-			if [[ -d "$libFolder" ]]; then
-				rm -fr "$libFolder"
-				echo "     * ... lib/ folder \"$(pwd)/$libFolder\" removed."
+				mkdir $MODULE_RESOURCES_SUBFOLDER
+			fi
+			#if there's a resources subfolder, switch to it
+			if [[ -d "$MODULE_RESOURCES_SUBFOLDER" ]]; then
+				cd $MODULE_RESOURCES_SUBFOLDER
+			fi
+			#delete all resources currently checked in in the project
+			if [[ "$(pwd)" == "${MODULE_PATH}"* ]]; then
+				echo "   * Removing old version of the module resources under $(pwd)."
+				rm -fr ./*
 			else
-				echo "     * ... lib/ folder \"$(pwd)/$libFolder\" does not exist. Do nothing."
-						fi
+				echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
+				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})." 
+				exit 4
+			fi			
+			echo "   * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
+			#copy the new module .zip
+			cp "${moduleExportFolder}/${fileName}" ./
+			echo "   * Unzipping copied file."
+			#unzip it
+			unzip -o "${fileName}" | awk '$0="     "$0'
+			echo "   * Deleting copy of the .zip file."
+			#remove the .zip file
+			rm "${fileName}"
+			#remove lib/ subfolder if necessary
+			echo "   * Removing lib folder ..."
+			if [[ $excludeLibs == 1 ]]; then
+				libFolder="system/modules/${module}/lib"
+				if [[ -d "$libFolder" ]]; then
+					rm -fr "$libFolder"
+					echo "     * ... lib/ folder \"$(pwd)/$libFolder\" removed."
+				else
+					echo "     * ... lib/ folder \"$(pwd)/$libFolder\" does not exist. Do nothing."
+							fi
+			else
+				echo "     * ... lib folder shall not be removed. Do nothing."
+			fi
 		else
-			echo "     * ... lib folder shall not be removed. Do nothing."
+			echo "   ! WARN: Skipped module $module because the zip file was not found."
 		fi
-	else
-		echo "   ! WARN: Skipped module $module because the zip file was not found."
-	fi
-done
-
-## marker for sed - do not remove next line
-## reset umask
+	done
+else
+	echo " * Copy and unzip no modules, because commit and pull-after are both disabled."
+fi
 
 echo
 echo "Performing commit ..."
