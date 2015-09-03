@@ -108,13 +108,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
-        String black();
-
-        /**
-         *  Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String blue();
 
         /**
@@ -221,13 +214,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String spacerRight();
-
-        /**
-         *  Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String yellow();
     }
 
     /** The category CSS. */

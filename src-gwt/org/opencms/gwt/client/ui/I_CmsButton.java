@@ -42,12 +42,16 @@ public interface I_CmsButton {
     public enum ButtonColor {
 
         /** Button color. */
-        BLACK(I_CmsLayoutBundle.INSTANCE.buttonCss().black()), /** Button color. */
-        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()), /** Button color. */
-        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()), /** Button color. */
-        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()), /** Button color. */
-        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red()), /** Button color. */
-        YELLOW(I_CmsLayoutBundle.INSTANCE.buttonCss().yellow());
+        BLUE(I_CmsLayoutBundle.INSTANCE.buttonCss().blue()),
+
+        /** Button color. */
+        GRAY(I_CmsLayoutBundle.INSTANCE.buttonCss().gray()),
+
+        /** Button color. */
+        GREEN(I_CmsLayoutBundle.INSTANCE.buttonCss().green()),
+
+        /** Button color. */
+        RED(I_CmsLayoutBundle.INSTANCE.buttonCss().red());
 
         /** The list of additional style class names for this button style. */
         private String m_className;
