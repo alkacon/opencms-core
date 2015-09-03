@@ -29,6 +29,7 @@ package org.opencms.ui.login;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -37,13 +38,16 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
 
+import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Notification;
@@ -82,8 +86,11 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
         CmsVaadinUtils.readAndLocalizeDesign(this, OpenCms.getWorkplaceManager().getMessages(locale), null);
         List<CmsOrganizationalUnit> ouList = CmsLoginHelper.getOrgUnitsForLoginDialog(A_CmsUI.getCmsObject(), null);
         m_ouSelect.initOrgUnits(ouList);
+        String notEmptyMessage = CmsVaadinUtils.getMessageText(Messages.GUI_VALIDATION_FIELD_EMPTY_0);
         m_userField.setRequired(true);
+        m_userField.setRequiredError(notEmptyMessage);
         m_emailField.setRequired(true);
+        m_emailField.setRequiredError(notEmptyMessage);
         m_emailField.addValidator(
             new EmailValidator(
                 Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_EMAIL_0)));
@@ -94,12 +101,24 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                m_userField.getValue();
+                boolean valid = true;
+                for (AbstractField<?> field : Arrays.asList(m_userField, m_emailField)) {
+                    try {
+                        field.validate();
+                    } catch (InvalidValueException e) {
+                        valid = false;
+                    }
+                }
+                if (!valid) {
+                    return;
+                }
                 String selectedOu = m_ouSelect.getValue();
                 selectedOu = (selectedOu != null) ? selectedOu : "";
                 String fullName = CmsStringUtil.joinPaths(selectedOu, m_userField.getValue());
-                m_emailField.validate();
                 if (sendPasswordResetLink(CmsLoginUI.m_adminCms, fullName, m_emailField.getValue())) {
+
+                    // Since we need to actually go to a different page here, we can't use a Vaadin notification,
+                    // because we don't get notified on the server when the user clicks it.
                     CmsVaadinUtils.showAlert(
                         Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
                             Messages.GUI_PWCHANGE_MAILSENT_HEADER_0),
@@ -138,8 +157,15 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
         email = email.trim();
 
         try {
-            CmsUser foundUser = cms.readUser(fullUserName);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(email) || !email.equals(foundUser.getEmail())) {
+            CmsUser foundUser = null;
+            try {
+                foundUser = cms.readUser(fullUserName);
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            if ((foundUser == null)
+                || CmsStringUtil.isEmptyOrWhitespaceOnly(email)
+                || !email.equals(foundUser.getEmail())) {
                 Notification.show(
                     CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_EMAIL_MISMATCH_0),
                     Type.ERROR_MESSAGE);

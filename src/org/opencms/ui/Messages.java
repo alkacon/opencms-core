@@ -108,6 +108,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
 
     /** Message constant for key in the resource bundle. */
