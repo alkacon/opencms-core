@@ -62,11 +62,26 @@
  	 }
   }
   
-  .o-dialog-button-bar .v-button {
+  .o-dialog-button-bar .v-button, .v-button.o-button-blue {
   		min-width: 100px;
   		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $o-button-blue);
   }
   
+  
+  .o-dialog-button-bar .v-button.o-button-red, .v-button.o-button-red {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $red);
+  }
+  
+  .o-dialog-button-bar .v-button.o-button-green, .v-button.o-button-green {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $green);
+  }
+  
+  .v-button.o-button-plain {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold);
+  }
   
   .o-reduced-spacing > .v-spacing{
   	height: $o-layout-reduced-spacing;
