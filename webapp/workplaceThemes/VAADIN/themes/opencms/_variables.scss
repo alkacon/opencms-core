@@ -24,8 +24,8 @@ $orange-dark:       darken($orange, 8%);
 $orange-darker:     darken($orange, 16%);
 $cyan:              #1bb39a; // complementary color
 $gray:              $alkacon-gray;
-$gray-lighter:      #FAFAFA;
-$gray-light:        #E2E2E2;
+$gray-lighter:      #FAFAFD;
+$gray-light:        #E0E0E2;
 $gray-dark:         darken($gray, 15%);
 $gray-darker:       darken($gray, 35%); 
 
@@ -34,7 +34,7 @@ $violet:            mix($blue, $red);
 $brown:             mix($blue, $orange);
 $red-orange:        mix($red, $orange);
 $red-cyan:          mix($red, $cyan);
-$green:             mix($orange, $cyan);
+$green:             #2c9720;
 
 $o-layout-margin: 8px;
 $o-layout-window-margin: 5px;
@@ -55,7 +55,7 @@ $app-icon-size-small: 24px;
 
 /* Valo variables - changes to the default valo variables */
 
-$v-background-color: $o-light-background-color; // #FAFAFA
+$v-background-color: $o-light-background-color; // #FAFAFD
 $v-app-background-color: $white; // #ffffff
 $v-focus-color: $blue;  // #144382
 $v-selection-color: $o-button-blue;
@@ -63,11 +63,12 @@ $v-selection-item-height: 25px;
 $v-font-size: 14px;
 $v-font-weight: 400;
 $v-caption-font-size: $v-font-size;
+$v-unit-size: 30px;
 $v-table-row-height: 32px;
 $v-tree-row-height: $v-table-row-height;
 $v-app-loading-text: "Loading OpenCms ...";
 $v-window-background-color: #1F232A; // #1F232A
-$v-window-modality-curtain-background-color: $gray-light; // #E2E2E2
+$v-window-modality-curtain-background-color: $gray-light; // #E0E0E2
 $v-gradient: v-linear;
 
 $v-layout-margin-top: $o-layout-margin;
