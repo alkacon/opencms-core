@@ -31,6 +31,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
@@ -79,6 +80,9 @@ public class CmsLoginForm extends VerticalLayout {
     /** Login button. */
     private Button m_loginButton;
 
+    /** Container for the logo. */
+    private VerticalLayout m_logoContainer;
+
     /** OpenCms logo. */
     private Image m_logo;
 
@@ -124,7 +128,7 @@ public class CmsLoginForm extends VerticalLayout {
         setWidth("600px");
 
         m_logo.setSource(new ThemeResource(OpenCmsTheme.OPENCMS_LOGO_PATH));
-        setComponentAlignment(m_logo, Alignment.MIDDLE_CENTER);
+        setComponentAlignment(m_logoContainer, Alignment.MIDDLE_CENTER);
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {
 
@@ -227,9 +231,7 @@ public class CmsLoginForm extends VerticalLayout {
         m_ouSelect.setVisible(optionsVisible);
         m_forgotPasswordButton.setVisible(optionsVisible);
         String optionsMessage = CmsVaadinUtils.getMessageText(
-            optionsVisible
-            ? org.opencms.workplace.Messages.GUI_LOGIN_ORGUNIT_SELECT_OFF_0
-            : org.opencms.workplace.Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0);
+            optionsVisible ? Messages.GUI_LOGIN_OPTIONS_HIDE_0 : Messages.GUI_LOGIN_OPTIONS_SHOW_0);
         m_optionsButton.setCaption(optionsMessage);
     }
 

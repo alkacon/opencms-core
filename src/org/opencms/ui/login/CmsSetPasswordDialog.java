@@ -34,8 +34,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsHasButtons;
 import org.opencms.ui.Messages;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -50,7 +53,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Dialog used to change the password.<p>
  */
-public class CmsSetPasswordDialog extends VerticalLayout {
+public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButtons {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSetPasswordDialog.class);
@@ -143,6 +146,14 @@ public class CmsSetPasswordDialog extends VerticalLayout {
             }
         });
 
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsHasButtons#getButtons()
+     */
+    public List<Button> getButtons() {
+
+        return Arrays.asList(m_passwordChangeButton);
     }
 
 }

@@ -67,6 +67,7 @@
   		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $o-button-blue);
   }
   
+  
   .o-reduced-spacing > .v-spacing{
   	height: $o-layout-reduced-spacing;
   	width: $o-layout-reduced-spacing;
@@ -438,9 +439,11 @@
   	z-index: 20001 !important;
   }
 
-
-  
-  
+  .o-fake-window .v-window-outerheader {
+  	float: left; 
+  	position: static;
+  	width: 100%;
+  }
   
   @for $i from 1 through 40 {
   	.o-max-height-#{$i*20} {
@@ -448,4 +451,16 @@
 	    overflow-y: auto;
 	  }
   }
+  
+  .login-dialog { 
+	background: $v-background-color;
+   }
+	
+   .o-login-form .o-dialog-button-bar .v-button { 
+  		min-width: 160px;
+  	} 
+  
 }
+
+
+

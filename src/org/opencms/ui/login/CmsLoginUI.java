@@ -37,6 +37,8 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsFileUtil;
@@ -58,9 +60,14 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * The UI class for the Vaadin-based login dialog.<p>
@@ -379,7 +386,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
                 A_CmsUI.get().setContentToDialog(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
-                        + user.getName()).addComponent(dlg);
+                        + user.getName(),
+                    dlg);
             } else {
                 A_CmsUI.get().setError(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_TOKEN_0));
@@ -418,7 +426,35 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public void showPasswordResetDialog() {
 
         String caption = CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_FORGOT_PASSWORD_0);
-        A_CmsUI.get().setContentToDialog(caption).addComponent(new CmsForgotPasswordDialog());
+        A_CmsUI r = A_CmsUI.get();
+        r.setContent(new Label());
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+        CmsBasicDialog dialog = new CmsBasicDialog();
+        VerticalLayout result = new VerticalLayout();
+        dialog.setContent(result);
+        window.setContent(dialog);
+        window.setCaption(caption);
+        window.setClosable(true);
+        final CmsForgotPasswordDialog forgotPassword = new CmsForgotPasswordDialog();
+        window.addCloseListener(new CloseListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void windowClose(CloseEvent e) {
+
+                forgotPassword.cancel();
+            }
+
+        });
+        for (Button button : forgotPassword.getButtons()) {
+            dialog.addButton(button);
+        }
+
+        r.addWindow(window);
+        window.center();
+        VerticalLayout vl = result;
+        vl.addComponent(forgotPassword);
     }
 
     /**
@@ -427,6 +463,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     @Override
     protected void init(VaadinRequest request) {
 
+        addStyleName("login-dialog");
         LoginParameters params = (LoginParameters)(request.getWrappedSession().getAttribute(INIT_DATA_SESSION_ATTR));
         if (params == null) {
             params = CmsLoginHelper.getLoginParameters(getCmsObject(), (HttpServletRequest)request, true);

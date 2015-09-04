@@ -5,8 +5,11 @@
   	<meta name="package-mapping" content="o:org.opencms.ui.components" />
   </head>
   <body>
-  	<v-vertical-layout spacing>
-  		<v-image _id="m_logo" />
+  	<v-vertical-layout style-name="o-login-form" spacing>
+  		<v-vertical-layout _id="m_logoContainer">
+  			<v-image _id="m_logo" :middle :center />
+  			<v-label height="10px" /> 
+  		</v-vertical-layout>
   		<o-cms-fake-window width="600px" window-title="%(key.GUI_LOGIN_HEADLINE_0)">
 	  		<o-cms-basic-dialog :location="content" >
 		  		<content>
@@ -22,8 +25,8 @@
 		  		  	</v-vertical-layout>
 				</content>
 				<buttons>
-					<v-button _id="m_loginButton">%(key.GUI_LOGIN_BUTTON_0)</v-button>
 					<v-button _id="m_optionsButton"></v-button>
+					<v-button _id="m_loginButton">%(key.GUI_LOGIN_BUTTON_0)</v-button>
 				</buttons>
 			</o-cms-basic-dialog>
 		 </o-cms-fake-window>

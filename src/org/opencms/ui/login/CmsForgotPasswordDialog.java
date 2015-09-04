@@ -35,6 +35,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsHasButtons;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsStringUtil;
 
@@ -58,7 +59,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Dialog to request a password reset link if you forgot your passsword.<p>
  */
-public class CmsForgotPasswordDialog extends VerticalLayout {
+public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasButtons {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsForgotPasswordDialog.class);
@@ -78,6 +79,9 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
     /** Button to request the mail with the password reset link .*/
     protected Button m_mailButton;
 
+    /** Button to cancel. */
+    protected Button m_cancelButton;
+
     /**
      * Creates a new instance.<p>
      */
@@ -94,6 +98,17 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
         m_emailField.addValidator(
             new EmailValidator(
                 Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_EMAIL_0)));
+        m_cancelButton.addClickListener(new Button.ClickListener() {
+
+            /**Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                cancel();
+            }
+        });
+
         m_mailButton.addClickListener(new Button.ClickListener() {
 
             /** Serial version id. */
@@ -191,6 +206,24 @@ public class CmsForgotPasswordDialog extends VerticalLayout {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    public void cancel() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        String link = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false);
+        A_CmsUI.get().getPage().setLocation(link);
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsHasButtons#getButtons()
+     */
+    public List<Button> getButtons() {
+
+        return Arrays.asList(m_mailButton, m_cancelButton);
     }
 
 }

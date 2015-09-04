@@ -33,6 +33,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -67,12 +69,14 @@ public abstract class A_CmsUI extends UI {
     }
 
     /**
-     * Centers a panel in the middle of the browser window and returns the vertical layout used for the panel contents.<p>
-     * @param caption the caption
+     * Replaces the ui content with a single dialog.<p>
      *
-     * @return the layout used for panel contents
+     * TODO: In the future this should only handle window creation, refactor dialog contents to CmsBasicDialog
+     *
+     * @param caption the caption
+     * @param component the dialog content
      */
-    public VerticalLayout setContentToDialog(String caption) {
+    public void setContentToDialog(String caption, Component component) {
 
         setContent(new Label());
         Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
@@ -84,7 +88,15 @@ public abstract class A_CmsUI extends UI {
         window.setClosable(false);
         addWindow(window);
         window.center();
-        return result;
+        if (component instanceof I_CmsHasButtons) {
+            I_CmsHasButtons hasButtons = (I_CmsHasButtons)component;
+            for (Button button : hasButtons.getButtons()) {
+                dialog.addButton(button);
+            }
+
+        }
+        result.addComponent(component);
+
     }
 
     /**
@@ -94,6 +106,6 @@ public abstract class A_CmsUI extends UI {
      */
     public void setError(String error) {
 
-        setContentToDialog("Error").addComponent(new Label(error));
+        setContentToDialog("Error", new Label(error));
     }
 }
