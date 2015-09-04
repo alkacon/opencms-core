@@ -66,6 +66,13 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
     static final Log LOG = CmsLog.getLog(CmsDefaultMenuItemProvider.class);
 
     /**
+     * Creates a new instance.<p>
+     */
+    public CmsDefaultMenuItemProvider() {
+        // default constructor, do nothing
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
      */
     public List<I_CmsContextMenuItem> getMenuItems() {

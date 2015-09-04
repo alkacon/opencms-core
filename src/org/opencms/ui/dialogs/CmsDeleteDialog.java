@@ -57,25 +57,43 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Dialog for deleting resources.<p>
+ */
 public class CmsDeleteDialog extends CmsBasicDialog {
 
+    /** Box for displaying resource widgets. */
     private VerticalLayout m_resourceBox;
+
+    /** Label for the links. */
     private Label m_linksLabel;
+
+    /** The OK button. */
     private Button m_okButton;
+
+    /** The cancel button. */
     private Button m_cancelButton;
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param context the dialog context
+     */
     public CmsDeleteDialog(final I_CmsDialogContext context) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        List<CmsResource> resources = context.getResources();
-        boolean showDeleteSiblings = false;
         displayResourceInfo(context.getResources());
 
         final CmsObject cms = A_CmsUI.getCmsObject();
 
         m_cancelButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
 
             public void buttonClick(Button.ClickEvent event) {
 
@@ -84,6 +102,9 @@ public class CmsDeleteDialog extends CmsBasicDialog {
         });
 
         m_okButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
 
             public void buttonClick(Button.ClickEvent event) {
 
@@ -115,16 +136,22 @@ public class CmsDeleteDialog extends CmsBasicDialog {
         boolean canIgnoreBrokenLinks = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
             || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
         try {
-            List<CmsResource> brokenLinkSources = getBrokenLinkSources(cms, context.getResources());
-            if (brokenLinkSources.isEmpty()) {
+            Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(cms, context.getResources());
+            if (brokenLinks.isEmpty()) {
                 m_linksLabel.setVisible(false);
-                m_resourceBox.addComponent(new Label("*No links will be broken!"));
+                String noLinksBroken = CmsVaadinUtils.getMessageText(
+                    org.opencms.workplace.commons.Messages.GUI_DELETE_RELATIONS_NOT_BROKEN_0);
+                m_resourceBox.addComponent(new Label(noLinksBroken));
             } else {
                 if (!canIgnoreBrokenLinks) {
                     m_okButton.setVisible(false);
                 }
-                for (CmsResource source : brokenLinkSources) {
+                for (CmsResource source : brokenLinks.keySet()) {
                     m_resourceBox.addComponent(new CmsResourceInfo(source));
+                    for (CmsResource target : brokenLinks.get(source)) {
+                        m_resourceBox.addComponent(indent(new CmsResourceInfo(target)));
+                    }
+
                 }
             }
         } catch (CmsException e) {
@@ -134,7 +161,16 @@ public class CmsDeleteDialog extends CmsBasicDialog {
 
     }
 
-    public List<CmsResource> getBrokenLinkSources(CmsObject cms, List<CmsResource> selectedResources)
+    /**
+     * Gets the broken links.<p>
+     *
+     * @param cms the CMS context
+     * @param selectedResources the selected resources
+     * @return multimap of broken links, with sources as keys and targets as values
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public Multimap<CmsResource, CmsResource> getBrokenLinks(CmsObject cms, List<CmsResource> selectedResources)
     throws CmsException {
 
         Set<CmsResource> descendants = Sets.newHashSet();
@@ -166,12 +202,26 @@ public class CmsDeleteDialog extends CmsBasicDialog {
                 linkMap.put(source, resource);
             }
         }
+        return linkMap;
+    }
 
-        List<CmsResource> result = Lists.newArrayList();
-        for (CmsResource key : linkMap.keySet()) {
-            result.add(key);
-        }
-        return result;
+    /**
+     * Indents a resources box.<p>
+     *
+     * @param resourceInfo the resource box
+     *
+     * @return an indented resource box
+     */
+    private Component indent(CmsResourceInfo resourceInfo) {
+
+        HorizontalLayout hl = new HorizontalLayout();
+        Label label = new Label("");
+        label.setWidth("35px");
+        hl.addComponent(label);
+        hl.addComponent(resourceInfo);
+        hl.setExpandRatio(resourceInfo, 1.0f);
+        hl.setWidth("100%");
+        return hl;
     }
 
 }
