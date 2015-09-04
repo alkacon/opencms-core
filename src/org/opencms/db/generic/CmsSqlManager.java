@@ -67,7 +67,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     private static final String QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
     /** A map to cache queries with replaced search patterns. */
-    protected ConcurrentHashMap<String, String> m_cachedQueries;
+    protected Map<String, String> m_cachedQueries;
 
     /** The type ID of the driver (vfs, user, project or history) from where this SQL manager is referenced. */
     protected int m_driverType;
