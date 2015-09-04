@@ -55,8 +55,8 @@
 }
 
 .dragElement div.optionBar, .dragElement div.optionBar *{
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .opencms-icon-edit-point div.expired, .dragging div.expired, .toolbarAdd div.expired, .opencms-icon-clipboard div.expired{
@@ -80,8 +80,8 @@ div.expired{
 
 @sprite div.expiredListElementOverlay{
 	gwt-image: 'otherImages.invalidElement';
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	padding: 0px;
 	margin: 0px;
 	position: absolute;

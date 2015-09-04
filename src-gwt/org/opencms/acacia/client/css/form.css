@@ -42,8 +42,8 @@ div.formParent div.gwt-TabLayoutPanel, div.formParent div.gwt-TabLayoutPanel div
 	max-height: none;
 	min-width: 0;
 	max-width: none;
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 .formParent input[type="text"]:focus, .formParent input[type="text"]:hover, .formParent input[type="text"]{
 	outline: none;
@@ -582,8 +582,8 @@ div.overlayButtonPanel{
 	width: 110px;
 }
 div.overlayButtonPanel, div.overlayButtonPanel * {
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 div.overlayButtonPanel > div{

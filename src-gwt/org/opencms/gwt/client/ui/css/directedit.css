@@ -34,8 +34,8 @@ div.optionBar{
 	max-width: none;
 }
 div.optionBar, div.optionBar *{
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 div.optionBar div, div.optionBar span {
@@ -58,8 +58,8 @@ div.optionBar div, div.optionBar span {
 
 @sprite div.expiredListElementOverlay{
 	gwt-image: 'coreImages.invalidElement';
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	padding: 0px;
 	margin: 0px;
 	position: absolute;

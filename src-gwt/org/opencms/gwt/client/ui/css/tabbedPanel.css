@@ -26,7 +26,7 @@
 }
 
 .buttonTabs .gwt-TabLayoutPanelTabs {
-	height: 28px !important; 
+	height: 30px !important; 
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelContent {
@@ -39,17 +39,64 @@
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {  	
-	border-width: 1px 1px 1px 0px;
-	border-color: value("constants.css.borderColor");
+	display: inline-block;
+	position: relative;
+	text-align: center;
+	white-space: nowrap;
+	outline: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	cursor: pointer;
+	min-width: 80px;
+	height: 30px;
+	padding: 0 13px;
+	font-weight: bold;
 	border-style: solid;
-	position:relative;
-	cursor:pointer;
+	border-width: 1px 1px 1px 0px;
+}
+
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
+	content: "";
+	display: inline-block;
+	width: 0;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab > div {
+	color: inherit !important;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+@if user.agent safari {
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
+		height: 110%;
+	}
+} @else {
+	.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:before {
+		height: 107%;
+	}
+}
+
+.buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:after {
+	content: "";
+	position: absolute;
+	border-radius: inherit;
+	-webkit-transition: box-shadow 180ms, border 180ms;
+	-moz-transition: box-shadow 180ms, border 180ms;
+	transition: box-shadow 180ms, border 180ms;
+	border: inherit;
+	top: -1px;
+	right: -1px;
+	bottom: -1px;
+	left: -1px;
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
+	color: inherit !important;
 	padding: 4px 5px;
 	font-weight: bold;
-	color: value("constants.css.textColorDarkButton");
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
 }
@@ -64,81 +111,112 @@
 
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerRight{
-	border-color: value("constants.css.borderColor");
 	border-width: 1px 1px 1px 0px;
-	border-style: solid;
 	border-top-right-radius: value("constants.css.borderRadiusButton");
 	border-bottom-right-radius: value("constants.css.borderRadiusButton");
 }
 
 .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.borderAll, .buttonTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab.cornerLeft {
-	border: 1px solid value("constants.css.borderColor");
-}
-
-.buttonTabs.gwt-TabLayoutPanel .black{}
-
-@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab {
-	gwt-image: "inputImages.buttonBlackUpBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
-}
-@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "inputImages.buttonBlackHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
-}
-@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover {
-	gwt-image: "inputImages.buttonBlueUpBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
-}
-@sprite .buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected{    
-	gwt-image: "inputImages.buttonBlueDownBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
+	border-width: 1px;
 }
 
 
-@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab {
-	gwt-image: "inputImages.buttonRedUpBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab {
+	color: #e6e6e6;
+	border-color: #525252;
+	background: #000;
+	-webkit-box-shadow: inset 0 1px 0 #525252, inset 0 -1px 0 black, 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 #131313, inset 0 -1px 0 black, 0 2px 3px rgba(0, 0, 0, 0.05);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
-@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:hover {  	
-	gwt-image: "inputImages.buttonRedHoverBackground"; 
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:hover:after {
+	background-color: rgba(150, 150, 150, 0.2);
 }
-@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover {
-	gwt-image: "inputImages.buttonRedHoverBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:focus:after {
+	border: inherit;
+	-webkit-box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
+	box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
 }
-@sprite .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected{    
-	gwt-image: "inputImages.buttonRedDownBackground";
-	background-position: 50% 50%;
-	height: auto;
-	overflow: visible;
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab:active:after {
+	background-color: rgba(0, 0, 0, 0.2);
 }
 
 
-@sprite .buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab {
-	gwt-image: "inputImages.buttonDisabledBackground";
-	background-position: 50% 50%;
-	height: auto;
-	cursor: default;
-	overflow: visible;
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected {
+	color: #eff2f8;
+	border-color: #2956b1;
+	background-color: #356EE1;
+	-webkit-box-shadow: inset 0 1px 0 #658be3, inset 0 -1px 0 #326ada, 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 #658be3, inset 0 -1px 0 #326ada, 0 2px 3px rgba(0, 0, 0, 0.05);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:hover:after {
+	background-color: rgba(120, 158, 235, 0.1);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:focus:after {
+	border: inherit;
+	-webkit-box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
+	box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .black .gwt-TabLayoutPanelTab-selected:active:after {
+	background-color: rgba(5, 48, 134, 0.2);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab, .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected {
+	color: #f6eaec;
+	border-color: #8d1529;
+	background-color: #b31b34;
+	-webkit-box-shadow: inset 0 1px 0 #c7324a, inset 0 -1px 0 #aa1b34, 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 #c7324a, inset 0 -1px 0 #aa1b34, 0 2px 3px rgba(0, 0, 0, 0.05);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:hover:after, .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:hover:after {
+	background-color: rgba(225, 57, 85, 0.1);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:focus:after, .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:focus:after {
+	border: inherit;
+	-webkit-box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
+	box-shadow: 0 0 0 2px rgba(20, 67, 130, 0.5);
+}
+
+.buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab:active:after, .buttonTabs.gwt-TabLayoutPanel .tabLeftMargin.gwt-TabLayoutPanelTab-selected:active:after {
+	background-color: rgba(99, 4, 19, 0.2);
+}
+
+
+
+
+
+.buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab {
+	background: value("constants.css.backgroundColorStateDisabled") !important;
+	border-color: #c5c5c7;
+	-webkit-box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05);
 }
 .buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab div.gwt-TabLayoutPanelTabInner div {
 	color: value("constants.css.textColorDisabledButton") !important;
 }
+
+.buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab:hover:after {
+	background-color: transparent;
+}
+
+.buttonTabs.gwt-TabLayoutPanel .black .tabDisabled.gwt-TabLayoutPanelTab:focus:after {
+	border: inherit;
+	-webkit-box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05);
+}
+
+
 
 .classicTabs.gwt-TabLayoutPanel {
 	display:block;

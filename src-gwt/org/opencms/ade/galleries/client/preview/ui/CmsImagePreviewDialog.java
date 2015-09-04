@@ -92,7 +92,7 @@ public class CmsImagePreviewDialog extends A_CmsPreviewDialog<CmsImageInfoBean> 
 
         super(dialogMode, dialogHeight, dialogWidth, disableSelection);
         // set the line-height to the height of the preview panel to be able to center the image vertically
-        m_previewHolder.getElement().getStyle().setProperty("lineHeight", m_previewHeight, Unit.PX);
+        m_previewHolder.getElement().getStyle().setProperty("lineHeight", m_previewHeight - 2, Unit.PX);
     }
 
     /**

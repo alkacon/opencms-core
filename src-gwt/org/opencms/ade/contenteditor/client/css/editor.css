@@ -41,8 +41,8 @@ body.integratedEditor{
 	max-height: none;
 	min-width: 0;
 	max-width: none;
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .basePanel{
@@ -58,8 +58,8 @@ body.integratedEditor{
 	left:0;
 	right:0;
 	z-index: value("constants.css.zIndexPopup");
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 div.basePanel > div{

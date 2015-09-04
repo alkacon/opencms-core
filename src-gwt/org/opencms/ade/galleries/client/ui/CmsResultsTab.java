@@ -426,7 +426,7 @@ public class CmsResultsTab extends A_CmsListTab {
     @Override
     public int getRequiredHeight() {
 
-        return super.getRequiredHeight() + (m_params.isVisible() ? m_params.getOffsetHeight() : 21);
+        return super.getRequiredHeight() + (m_params.isVisible() ? m_params.getOffsetHeight() + 5 : 21);
     }
 
     /**

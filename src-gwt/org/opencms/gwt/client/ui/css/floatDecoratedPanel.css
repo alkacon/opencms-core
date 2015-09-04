@@ -1,3 +1,5 @@
+@external html-face;
+
 .primary {
 }
 
@@ -14,8 +16,18 @@
 	margin-top: 0px;
 }
 
+.decorationBox.decorationBoxSmall .html-face {
+	line-height: 22px !important;
+	vertical-align: middle !important;
+}
+
 
 .decorationBox {
 	float:left;
-	margin-top: 12px;
+	margin-top: 0px;
+}
+
+.decorationBox .html-face {
+	line-height: 40px !important;
+	vertical-align: middle !important;
 }

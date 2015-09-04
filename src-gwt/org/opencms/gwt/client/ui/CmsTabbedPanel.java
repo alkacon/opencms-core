@@ -72,7 +72,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
     public enum CmsTabbedPanelStyle {
 
         /** Button style. */
-        buttonTabs(28, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
+        buttonTabs(30, I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().buttonTabs(),
         I_CmsLayoutBundle.INSTANCE.tabbedPanelCss().black()),
 
         /** Classic style. */

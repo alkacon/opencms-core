@@ -117,13 +117,25 @@ div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cms
 div.cmsState-up-disabled div.html-face, div.cmsState-down-disabled div.html-face, div.cmsState-up-disabled div.html-face span, div.cmsState-down-disabled div.html-face span {
 	color:value("constants.css.textColorDisabledButton") !important;
 }
-/** Text-Button:If no button style is set use the default state behavior. */
-div.cmsTextButton.cmsState-up-disabled, div.cmsTextButton.cmsState-down-disabled {
-    background-color:value("constants.css.backgroundColorStateDisabled");
+/** Text-button disabled. */
+div.cmsTextButton.cmsState-up-disabled, div.cmsTextButton.cmsState-down-disabled  {
+	background: value("constants.css.backgroundColorStateDisabled") !important;
+	border-color: #c5c5c7 !important;
+	-webkit-box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05) !important;
+	box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05) !important;
 }
 
+div.cmsTextButton.cmsState-up-disabled:hover:after, div.cmsTextButton.cmsState-down-disabled:hover:after{
+	background-color: transparent !important;
+}
 
+div.cmsTextButton.cmsState-up-disabled:focus:after, div.cmsTextButton.cmsState-down-disabled:focus:after {
+	border: inherit;
+	-webkit-box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05) !important;
+	box-shadow: inset 0 1px 0 value("constants.css.backgroundColorStateDisabled"), inset 0 -1px 0 value("constants.css.backgroundColorStateDisabled"), 0 2px 3px rgba(0, 0, 0, 0.05) !important;
+}
 
+/** Text-button default. */
 div.cmsTextButton {
 	display: inline-block;
 	position: relative;
@@ -151,6 +163,19 @@ div.cmsTextButton {
 	-webkit-box-shadow: inset 0 1px 0 white, inset 0 -1px 0 #efeff8, 0 2px 3px rgba(0, 0, 0, 0.05);
 	box-shadow: inset 0 1px 0 white, inset 0 -1px 0 #efeff8, 0 2px 3px rgba(0, 0, 0, 0.05);
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+div.cmsTextButton.cmsButtonMedium {
+	min-width: 90px;
+	height: 28px;
+	padding: 0 10px;
+}
+
+div.cmsTextButton.cmsButtonSmall {
+	min-width: 80px;
+	height: 26px;
+	padding: 0 8px;
+	
 }
 
 div.cmsTextButton:before {

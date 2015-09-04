@@ -70,8 +70,8 @@ div.previewDialog {
 
 .previewButtonBar{
 	position: absolute;
-	bottom:0px;
-	right:0px;
+	bottom:4px;
+	right:3px;
 	margin:2px;
 }
 

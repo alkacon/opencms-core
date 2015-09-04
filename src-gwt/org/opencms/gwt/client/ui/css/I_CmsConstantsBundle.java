@@ -389,6 +389,20 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String inputHeight();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String inputInnerHeight();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String lineHeight();
 
         /**

@@ -20,8 +20,8 @@
 	max-height: none;
 	min-width: 0;
 	max-width: none;
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .toolbar{

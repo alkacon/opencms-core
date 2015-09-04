@@ -20,8 +20,8 @@
 	max-height: none;
 	min-width: 0;
 	max-width: none;
-	box-sizing: content-box;
-	-moz-box-sizing: content-box;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .popup table { 
@@ -75,6 +75,8 @@ div.popup.popupContent, div.popupContent{
     position: relative;
     font-family: value("constants.css.fontFamily");
     overflow: visible;
+    box-sizing: content-box !important;
+    -moz-box-sizing: content-box !important;
 }
 
 div.frameDialog div.popupMainContent {
@@ -98,7 +100,7 @@ div.frameDialog div.popupButtonPanel {
 	border-radius: 4px;
 }
 .popupMainContent, .caption{
-	border-radius: 4px;
+	border-radius: value("constants.css.borderRadius");
 }
 
 
@@ -152,7 +154,7 @@ div.frameDialog div.popupButtonPanel {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 25px;
+    height: 30px;
     line-height: 20px;
 }
 

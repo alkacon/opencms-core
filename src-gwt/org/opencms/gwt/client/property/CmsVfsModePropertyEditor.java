@@ -81,6 +81,13 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
 
+    static {
+        tabs = HashBiMap.create();
+        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
+        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
+        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
+    }
+
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
 
@@ -109,13 +116,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
         super(propConfig, handler);
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
-    }
-
-    static {
-        tabs = HashBiMap.create();
-        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
-        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
-        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
     /**
@@ -262,13 +262,13 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
+        int newHeight = Math.min(spaceLeft, contentHeight) + 46;
         boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
         if (changedHeight || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
             int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
             CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
-            widget.setHeight((newHeight - 45) + "px");
+            widget.setHeight((newHeight - 34) + "px");
             widget.onResizeDescendant();
             //dialog.center();
         }

@@ -30,7 +30,7 @@
 			margin:2px;
 		}
 		.buttonPanel{
-			top:0px;
+			top: -2px;
 		}
 	</ui:style>
 	<cms:CmsHoverPanel ui:field="m_inputRow" addStyleNames="{resources.inputCss.dataValue}">

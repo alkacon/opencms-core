@@ -35,7 +35,7 @@ div.parentPanel div.criteriaList {
     padding: 0 2px;
     position: absolute;
     right: 6px;
-    top: 35px;
+    top: 41px;
 }
 
 div.selectboxWidth {
@@ -84,7 +84,7 @@ div.paramsText {
 
 div.searchTabRow {
 	clear: both;
-	height: 24px;
+	height: value("constants.css.inputHeight");
 	margin-bottom: 5px;
 }
 div.searchTabRow div.searchTabInputWide div.html-face{
@@ -121,7 +121,7 @@ div.searchTabInputWide.hasButton > div{
 	margin-right: 24px;
 }
 div.searchTabInputWide.hasButton > div.cmsState{
-	margin: 0px;
+	margin: 4px 0px 0px 0px;
 	float:right;
 }
 
@@ -152,11 +152,6 @@ div.quickFilterBox {
 	width: 200px;
 	margin-right: 4px;
 }
-div.quickFilterBox > div{
-	padding-top: 3px;
-	padding-bottom: 3px;
-}
-
 
 div.noParamsMessage {
 	position: absolute;

@@ -17,6 +17,9 @@
 @def lineHeightSmall 14px;
 @def lineHeightBig 22px;
 
+@def inputHeight 30px;
+@def inputInnerHeight 28px;
+
 
 /**
  * The text color definitions.
@@ -141,6 +144,8 @@
 /**
  * Background gradients.
  */
+ 
+ @def gradientListItem literal("to bottom, #FFFFFF 0%, #FFFFFF 48%, #F0F0F2 52%, #F0F0F2 100%");
 /**
  * The dialog header background. 
  */
