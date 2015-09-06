@@ -20,7 +20,7 @@
 }
 
 .tableField {
-	border-radius: 3px;
+	border-radius: value("constants.css.borderRadius");
 	border: 1px solid value("constants.css.borderColorEditor");
 }
 

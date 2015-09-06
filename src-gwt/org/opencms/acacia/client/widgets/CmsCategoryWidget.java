@@ -98,12 +98,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     /** Configuration parameter to set the category to display. */
     private static final String CONFIGURATION_CATEGORY = "category";
 
-    /** Configuration parameter to set the 'only leaf' flag parameter. */
-    //private static final String CONFIGURATION_ONLYLEAFS = "onlyleafs";
-
-    /** Configuration parameter to set the 'property' parameter. */
-    //private static final String CONFIGURATION_PROPERTY = "property";
-
     /** Configuration parameter to set the 'selection type' parameter. */
     private static final String CONFIGURATION_CATEGORYLIST = "CategoryList";
 
@@ -114,7 +108,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     private static final String CONFIGURATION_SELECTIONTYPE = "selectiontype";
 
     /** Configuration parameter to set the default height. */
-    private static final int DEFAULT_HEIGHT = 18;
+    private static final int DEFAULT_HEIGHT = 30;
 
     /** Configuration parameter to set the maximal height. */
     private static final int MAX_HEIGHT = 242;
@@ -358,7 +352,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
 
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
             m_cmsPopup.setWidth(600);
-            m_cmsPopup.setHeight(386);
             List<String> selected = new ArrayList<String>();
             selected = m_selected;
             m_cmsCategoryTree = new CmsCategoryTree(selected, 300, m_isSingelValue, m_resultList);
@@ -396,7 +389,7 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
     protected void setheight() {
 
         if (m_categoryField.getValuesSet() > 0) {
-            m_height = (m_categoryField.getValuesSet() * 24) + 2;
+            m_height = (m_categoryField.getValuesSet() * 26) + 4;
 
             if (m_height > MAX_HEIGHT) {
                 m_height = MAX_HEIGHT;
@@ -473,8 +466,9 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
             if (selectiontypeIndex != -1) {
                 // selection type is given
-                String selectiontype = configuration.substring(
-                    selectiontypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
+                String selectiontype = configuration.substring(selectiontypeIndex
+                    + CONFIGURATION_SELECTIONTYPE.length()
+                    + 1);
                 if (selectiontype.indexOf("|") != -1) {
                     // cut eventual following configuration values
                     selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));

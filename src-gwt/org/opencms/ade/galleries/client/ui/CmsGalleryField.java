@@ -233,8 +233,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         buttonHandler.setIsTargetRootPath(false);
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
-        m_uploadButton.setTitle(
-            Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
+        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -265,8 +264,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             @Override
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(
-                    widgetParams.get("configuration"));
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
                 CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }
@@ -567,11 +565,11 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         CmsCroppingParamBean restricted;
         int marginTop = 0;
         if (m_croppingParam.getScaleParam().isEmpty()) {
-            imagePath += "?__scale=w:165,h:110,t:1,c:white,r:2";
+            imagePath += "?__scale=w:165,h:114,t:1,c:white,r:2";
         } else {
-            restricted = m_croppingParam.getRestrictedSizeParam(110, 165);
+            restricted = m_croppingParam.getRestrictedSizeParam(114, 165);
             imagePath += "?" + restricted.toString();
-            marginTop = (110 - restricted.getResultingHeight()) / 2;
+            marginTop = (114 - restricted.getResultingHeight()) / 2;
         }
         Element image = DOM.createImg();
         image.setAttribute("src", imagePath);
@@ -604,10 +602,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param structureId the resource structure id
      * @param croppingParameter the selected cropping
      */
-    protected void setValueFromGallery(
-        String resourcePath,
-        CmsUUID structureId,
-        CmsCroppingParamBean croppingParameter) {
+    protected void setValueFromGallery(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
 
         m_croppingParam = croppingParameter;
         String path = resourcePath;
@@ -633,9 +628,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
             // disable the upload button as no target folder is available
-            m_uploadButton.disable(
-                org.opencms.ade.upload.client.Messages.get().key(
-                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
+            m_uploadButton.disable(org.opencms.ade.upload.client.Messages.get().key(
+                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
         } else {
             // make sure the upload button is available
             m_uploadButton.enable();
@@ -813,10 +807,7 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
 
             @Override
-            public void setWidgetValue(
-                String resourcePath,
-                CmsUUID structureId,
-                CmsCroppingParamBean croppingParameter) {
+            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
 
                 setValueFromGallery(resourcePath, structureId, croppingParameter);
             }

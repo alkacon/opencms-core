@@ -72,7 +72,7 @@ div.textAreaBoxPanel textarea.textAreaBox {
 	
 }
 div.inActive div.textAreaBoxPanel{
-	height: 18px !important;
+	height: value("constants.css.inputHeight") !important;
 }
 
 div.textAreaBoxPanel{
@@ -101,7 +101,7 @@ div.textBox > input[type="text"]{
 	color: value("constants.css.textColor");
 	box-shadow: none;
 	vertical-align: baseline;
-	height: 18px;
+	height: value("constants.css.inputInnerHeight");
 	line-height: value("constants.css.lineHeight");
 	border-radius: value("constants.css.borderRadius");
 	font-size: value("constants.css.fontSize");
@@ -121,8 +121,8 @@ div.passwordTextBox input[type="text"]{
 	display: block;
 	color: value("constants.css.textColor");
 	box-shadow: none;
-	height: 18px;
-	font-size: 12px;
+	height: value("constants.css.inputInnerHeight");
+	font-size: value("constants.css.fontSize");
 	width:100%;
 	padding: 0;
 	outline:none;
@@ -131,8 +131,8 @@ div.passwordTextBox input[type="text"]{
 div.calendarStyle input[type="text"] {
 	box-shadow: none;
 	color: value("constants.css.textColor");
-	font-size: 12px;
-	padding-top:2px;
+	font-size: value("constants.css.fontSize");
+	height: value("constants.css.inputInnerHeight");
 	font-style:normal;
 	outline: none;
 }
@@ -151,13 +151,13 @@ div.calendarStyle {
 	display: block;
 	width: auto;
 	padding: 0px 4px;
-	height: 18px;
+	height: value("constants.css.inputHeight");
 }
 
 
 input[type="text"].displayTextBox{
 	background: none repeat scroll 0 0 transparent;
-	height: 18px;
+	height: value("constants.css.inputInnerHeight");
 	display: block;
 	color: value("constants.css.textColorEditorLabel");
 	box-shadow: none;
@@ -166,12 +166,7 @@ input[type="text"].displayTextBox{
 }
 
 input[type="text"].displayTextBox:disabled{
-	background: none repeat scroll 0 0 transparent;
-	height: 18px;
-	display: block;
 	color: value("constants.css.textColorDisabled");
-	box-shadow: none;
-	width: 100%;
 }
 
 div.displayTextBoxPanel{
@@ -184,10 +179,9 @@ input[type="text"].comboBoxInput {
     box-shadow: none;
     color: value("constants.css.textColor");
     display: block;
-    height: 16px;
+    height: value("constants.css.inputInnerHeight");
     width: 100%;
-    font-size: 12px;
-    padding-top: 1px;
+    font-size: value("constants.css.fontSize");
     outline:none;
 }
 
@@ -227,7 +221,7 @@ div.radioButtonlabel.cmsState-down-disabled{
     width: 100%;
     overflow: hidden;
     font-weight: normal;
-  	font-size: 12px ;
+  	font-size: value("constants.css.fontSize");
 }
 
 /** Colorpicker styles*/
@@ -235,11 +229,11 @@ div.radioButtonlabel.cmsState-down-disabled{
 div.colorPickerValue {
 	background: none repeat scroll 0 0 white;
     border: 1px solid value("constants.css.borderColorEditor");
-    border-radius: 3px 3px 3px 3px;
+    border-radius: value("constants.css.borderRadius");
     display: block;
-    height: 17px;
+    height: value("constants.css.inputHeight");
     margin-left: 105px;
-    padding: 1px 4px 0;
+    padding: 0px 4px;
     position: relative;
     width: auto;	
 }
@@ -250,8 +244,8 @@ div.colorPickerValue input[type="text"]{
     box-shadow: none;
     color: value("constants.css.textColor");
     display: block;
-    font-size: 12px;
-    height: 16px;
+    font-size: value("constants.css.fontSize");
+    height: value("constants.css.inputInnerHeight");
     padding: 0;
     width: 100%;
     outline:none;
@@ -259,10 +253,10 @@ div.colorPickerValue input[type="text"]{
 
 div.colorPicker{
 	border: 1px solid value("constants.css.borderColorEditor");
-    border-radius: 3px 3px 3px 3px;
+    border-radius: value("constants.css.borderRadius");
     cursor: pointer;
     display: block;
-    height: 18px;
+    height: value("constants.css.inputHeight");
     float:left;
     width: 100px;
 }
@@ -284,16 +278,19 @@ div.colorPicker{
 
 .defaultView > div > .checkBoxStyle div.label, .compactView > div > .checkBoxStyle div.label, .firstColumn > div > .checkBoxStyle div.label, .secondColumn > div > .checkBoxStyle div.label{
 		margin: 0px 3px 0px 20px;
+		line-height: value("constants.css.inputHeight");
+		padding: 0;
 }
 .defaultView > div > .checkBoxStyle .widget, .compactView > div > .checkBoxStyle .widget, .firstColumn > div > .checkBoxStyle .widget, .secondColumn > div > .checkBoxStyle .widget{
 	position: absolute;
 	margin: 0 !important;
 	left: 0 !important;
+	top: 0 !important;
 }
 
 .defaultView > div > div.checkBoxStyle, .compactView > div > div.checkBoxStyle, .firstColumn > div > div.checkBoxStyle, .secondColumn > div > div.checkBoxStyle{
 	position: relative;
-	height: 22px;
+	height: value("constants.css.inputHeight");
 }
 
 

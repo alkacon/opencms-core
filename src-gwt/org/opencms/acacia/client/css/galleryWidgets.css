@@ -7,8 +7,8 @@
 	display: block;
 	width: auto;
 	padding: 0px;
-	height: 18px;
-	font-size: 12px;
+	height: value("constants.css.inputHeight");
+	font-size: value("constants.css.fontSize");
 }
 
 div.locationFields div.locationField > div:first-child{
@@ -35,8 +35,8 @@ div.locationFields div.locationField > div:first-child{
 	font-family: value("constants.css.fontFamily");
 	border-radius: value("constants.css.borderRadius");
 	color: value("constants.css.textColor");
-	height: 18px;
-	font-size: 12px;
+	height: value("constants.css.inputInnerHeight");
+	font-size: value("constants.css.fontSize");
 	outline:none;
 }
 	

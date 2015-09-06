@@ -351,16 +351,17 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Constructor to collect all categories and build a view tree.<p>
+     *
      * @param selectedCategories A list of all selected categories
      * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
-     * @param resultList
+     * @param categories the categories
      * */
     public CmsCategoryTree(
         List<String> selectedCategories,
         int height,
         boolean isSingleValue,
-        List<CmsCategoryTreeEntry> resultList) {
+        List<CmsCategoryTreeEntry> categories) {
 
         this();
         m_isSingleSelection = isSingleValue;
@@ -373,9 +374,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         }
         m_scrollList = createScrollList();
         m_list.setHeight(height + "px");
-        m_resultList = resultList;
+        m_resultList = categories;
         m_list.add(m_scrollList);
-        updateContentTree(resultList, m_selectedCategories);
+        updateContentTree(categories, m_selectedCategories);
         init();
     }
 
@@ -634,9 +635,6 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         m_quickSearch = new CmsTextBox();
         // m_quickFilter.setVisible(hasQuickFilter());
         m_quickSearch.getElement().getStyle().setFloat(Float.RIGHT);
-        m_quickSearch.getTextBoxContainer().getElement().getStyle().setHeight(18, Unit.PX);
-        m_quickSearch.getTextBox().getElement().getStyle().setMarginTop(2, Unit.PX);
-
         m_quickSearch.setTriggerChangeOnKeyPress(true);
         m_quickSearch.setGhostValue(Messages.get().key(Messages.GUI_QUICK_FINDER_SEARCH_0), true);
         m_quickSearch.setGhostModeClear(true);
@@ -645,6 +643,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
         m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
+        m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
+        m_searchButton.getElement().getStyle().setMarginLeft(4, Unit.PX);
         m_options.insert(m_searchButton, 0);
         m_quickSearch.addValueChangeHandler(new CategoryValueChangeHandler());
 
@@ -869,8 +869,9 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
-     * Select a singel value and all parents.<p>
-     * @param item
+     * Select a single value and all parents.<p>
+     *
+     * @param item the tree item
      * @param path The path of the Item that should be selected
      * @return true if this CmsTreeItem is selected or one of its children
      */
@@ -920,10 +921,11 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     }
 
     /**
-     * Select a singel value and all parents.<p>
-     * @param item
+     * Select a single value and all parents.<p>
+     *
+     * @param item the tree item
      * @param path The path of the Item that should be selected
-     * @param result
+     * @param result the resulting categories
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
@@ -1018,13 +1020,8 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(
-            600,
-            3,
-            null,
-            category.getTitle(),
-            category.getPath(),
-            "hide:" + category.getSitePath());
+        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath(), "hide:"
+            + category.getSitePath());
 
         // create the check box for this item
         CmsCheckBox checkBox = new CmsCheckBox();

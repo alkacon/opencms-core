@@ -89,7 +89,8 @@ div.attributeValue.secondColumn{
 }
 
 .entity .attributeValue .label, .dragHelper.attributeValue .label{
-	font-size: 14px;
+	font-size: value("constants.css.fontSizeBig");
+	line-height: value("constants.css.lineHeightBig");
 	font-weight: bold;
 }
 
@@ -99,7 +100,9 @@ div.attributeValue.secondColumn{
 	right: 765px;
 	margin:0px;
 	left: 7px;
-	top: 4px;
+	top: 6px;
+	line-height: value("constants.css.inputHeight");
+	padding: 0;
 }
 
 .attributeValue.singleLine > .widgetHolder > div > .widget {
@@ -134,7 +137,7 @@ div.attributeValue.secondColumn{
 }
 
 .entity .attributeValue.uncollapsed .entity .attributeValue.uncollapsed .entity .attributeValue.uncollapsed .label{
-	font-size: 12px;
+	font-size: value("constants.css.fontSize");
 }
 .entity .attributeValue.uncollapsed > div.widgetHolder{
 	position: relative;

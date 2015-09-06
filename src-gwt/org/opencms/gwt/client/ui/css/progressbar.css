@@ -9,7 +9,7 @@
 
 .meterWrap, .meterValue {
 	background: value("constants.css.backgroundColorSoft");
-    border-radius: 5px;
+    border-radius: value("constants.css.borderRadius");
     height: 20px;
 }
 

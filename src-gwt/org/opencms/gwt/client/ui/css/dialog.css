@@ -97,7 +97,7 @@ div.frameDialog div.popupButtonPanel {
 
 .popupContent{
 	box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
-	border-radius: 4px;
+	border-radius: value("constants.css.borderRadius");
 }
 .popupMainContent, .caption{
 	border-radius: value("constants.css.borderRadius");

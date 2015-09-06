@@ -17,13 +17,13 @@ div.galleryField input[type="text"]{
     box-shadow: none;
     outline: none;
     color: value("constants.css.textColor");
-    height: 18px;
+    height: value("constants.css.inputInnerHeight");
     padding: 0;
     width:100%;
     margin:0px;
 }
 .galleryField.hasImage{
-	height: 112px;
+	height: 116px;
 	position: relative;
 }
 div.inputContainer{
@@ -41,7 +41,7 @@ div.galleryField input[type="text"]:focus{
 div.opener{
 	position: absolute;
 	right: 3px;
-	top: 1px;
+	top: 7px;
 }
 div.uploadButton{
 	display:none;
@@ -51,7 +51,7 @@ div.hasUpload > div.uploadButton{
 	height: auto;
 	width: auto;
 	position: absolute;
-	top: -3px;
+	top: 3px;
 	right: 24px;
 }
 
@@ -87,7 +87,7 @@ div.imagePreview {
 	position: relative;
 }
 div.imagePreview > div{
-	height: 110px;
+	height: 114px;
 	width: 165px;
 	background: white;
 	text-align: center;
