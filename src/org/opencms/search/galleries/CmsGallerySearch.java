@@ -120,7 +120,7 @@ public class CmsGallerySearch {
     public CmsGallerySearchResultList getResult(CmsGallerySearchParameters params) throws CmsException {
 
         CmsGallerySearchResultList result = null;
-        if ((m_cms == null) && (m_index == null)) {
+        if ((m_cms == null) || (m_index == null)) {
             throw new CmsException(Messages.get().container(Messages.ERR_SEARCH_NOT_INITIALIZED_0));
         }
         result = m_index.gallerySearch(m_cms, params);
