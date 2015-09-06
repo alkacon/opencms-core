@@ -114,6 +114,7 @@ span.selectorLabel{
 
 .topBar {
 	margin-bottom: 5px;
+	height: value("constants.css.inputHeight");
 }
 
 .topBar > div {

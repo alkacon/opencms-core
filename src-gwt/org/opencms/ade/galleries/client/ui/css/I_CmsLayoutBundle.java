@@ -496,12 +496,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
          *
          * @return the CSS class name
          */
-        String buttonPadding();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
         String clearFix();
 
         /** Access method.<p>

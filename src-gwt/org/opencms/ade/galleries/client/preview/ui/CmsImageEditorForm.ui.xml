@@ -16,13 +16,13 @@
 			<tr>
 				<td><g:Label styleName="{galleryResources.imageEditorFormCss.label} {resources.generalCss.textMedium}"  ui:field="m_labelAltTitle" /></td>
 				<td><input:CmsTextBox ui:field="m_inputAltTitle" /></td>
-				<td><cms:CmsPushButton ui:field="m_buttonResetTitle" addStyleNames="{galleryResources.previewDialogCss.buttonPadding}" /></td>
+				<td><cms:CmsPushButton ui:field="m_buttonResetTitle" /></td>
 				<td class="{galleryResources.previewDialogCss.hiding}" style="text-align: right;"><g:Label styleName="{galleryResources.imageEditorFormCss.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelInsertSubtitle" /><input:CmsCheckBox ui:field="m_checkboxInsertSubtitle" /></td>
 			</tr>
 			<tr class="{galleryResources.previewDialogCss.hiding}">
 				<td><g:Label styleName="{galleryResources.imageEditorFormCss.label} {resources.generalCss.textMedium}"  ui:field="m_labelCopyright" /></td>
 				<td><input:CmsTextBox ui:field="m_inputCopyright" /></td>
-				<td><cms:CmsPushButton ui:field="m_buttonResetCopyright" addStyleNames="{galleryResources.previewDialogCss.buttonPadding}" /></td>
+				<td><cms:CmsPushButton ui:field="m_buttonResetCopyright" /></td>
 				<td style="text-align: right;"><g:Label styleName="{galleryResources.imageEditorFormCss.inlineLabel} {resources.generalCss.textMedium}" ui:field="m_labelInsertCopyright" /><input:CmsCheckBox ui:field="m_checkboxInsertCopyright" /></td></tr>
 			<tr>
 				<td><g:Label styleName="{galleryResources.imageEditorFormCss.label} {resources.generalCss.textMedium}"  ui:field="m_labelImageSpacing" /></td>

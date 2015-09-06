@@ -313,7 +313,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         int list = m_scrollList.getOffsetHeight();
         list = list > 82 ? list : 82;
-        return list + 40;
+        return list + 47;
     }
 
     /**
@@ -474,16 +474,14 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
      */
     protected CmsPushButton createNewExternalLinkButton(final String parentPath) {
 
-        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(
-            CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
+        CmsResourceTypeBean typeInfo = getTabHandler().getTypeInfo(CmsEditExternalLinkDialog.POINTER_RESOURCE_TYPE_NAME);
         CmsPushButton createNewButton = null;
         if (typeInfo != null) {
             final String niceName = typeInfo.getTitle();
             final String description = typeInfo.getDescription();
             createNewButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().addIcon());
-            createNewButton.setTitle(
-                org.opencms.gwt.client.Messages.get().key(
-                    org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
+            createNewButton.setTitle(org.opencms.gwt.client.Messages.get().key(
+                org.opencms.gwt.client.Messages.GUI_CREATE_NEW_LINK_DIALOG_TITLE_0));
             createNewButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             createNewButton.addClickHandler(new ClickHandler() {
 
@@ -570,20 +568,20 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
 
         CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(
 
-            new Supplier<I_CmsUploadContext>() {
+        new Supplier<I_CmsUploadContext>() {
 
-                public I_CmsUploadContext get() {
+            public I_CmsUploadContext get() {
 
-                    return new I_CmsUploadContext() {
+                return new I_CmsUploadContext() {
 
-                        public void onUploadFinished(List<String> uploadedFiles) {
+                    public void onUploadFinished(List<String> uploadedFiles) {
 
-                            getTabHandler().updateIndex();
-                        }
+                        getTabHandler().updateIndex();
+                    }
 
-                    };
-                }
-            });
+                };
+            }
+        });
 
         buttonHandler.setTargetFolder(target);
         buttonHandler.setIsTargetRootPath(isRootPath);
@@ -711,7 +709,7 @@ public abstract class A_CmsListTab extends A_CmsTab implements ValueChangeHandle
             m_searchButton.setImageClass(I_CmsImageBundle.INSTANCE.style().searchIcon());
             m_searchButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
             m_searchButton.getElement().getStyle().setFloat(Style.Float.RIGHT);
-            m_searchButton.getElement().getStyle().setMarginTop(1, Unit.PX);
+            m_searchButton.getElement().getStyle().setMarginTop(4, Unit.PX);
             m_options.insert(m_searchButton, 0);
             m_quickSearch.addValueChangeHandler(this);
             if (hasQuickFilter()) {

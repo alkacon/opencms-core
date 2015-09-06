@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import java.util.ArrayList;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -52,16 +53,6 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
     private CmsFormDialog m_dialog;
 
     /**
-     * Gets the dialog which this button is used for.<p>
-     *
-     * @return the dialog for this button
-     */
-    public CmsFormDialog getDialog() {
-
-        return m_dialog;
-    }
-
-    /**
      * Creates a new instance of the button.<p>
      */
     public CmsPropertyDefinitionButton() {
@@ -70,6 +61,7 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
         setTitle(CmsPropertyDefinitionMessages.messageDialogCaption());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
         getElement().getStyle().setFloat(Style.Float.LEFT);
+        getElement().getStyle().setMarginTop(4, Unit.PX);
         addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -78,6 +70,16 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
                 editPropertyDefinition();
             }
         });
+    }
+
+    /**
+     * Gets the dialog which this button is used for.<p>
+     *
+     * @return the dialog for this button
+     */
+    public CmsFormDialog getDialog() {
+
+        return m_dialog;
     }
 
     /**

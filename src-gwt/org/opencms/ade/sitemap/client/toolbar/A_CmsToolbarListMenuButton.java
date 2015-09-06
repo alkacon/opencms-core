@@ -185,7 +185,7 @@ public abstract class A_CmsToolbarListMenuButton extends CmsMenuButton implement
         CmsListTab tab = m_tabs.getWidget(m_tabs.getSelectedIndex());
         tab.truncate(TM_LITST_MENU, width);
         int availableHeight = CmsToolbarPopup.getAvailableHeight();
-        int requiredHeight = tab.getRequiredHeight() + 36;
+        int requiredHeight = tab.getRequiredHeight() + 44;
         int height = (availableHeight > requiredHeight) && (requiredHeight > 50) ? requiredHeight : availableHeight;
         m_tabs.getParent().setHeight(height + "px");
         tab.getScrollPanel().onResizeDescendant();

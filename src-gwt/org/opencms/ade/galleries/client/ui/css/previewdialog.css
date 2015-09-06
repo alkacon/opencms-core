@@ -87,7 +87,7 @@ div.previewDialog {
 
 /* Properties tab. */
 .propertiesList {	
-	height:60px; /* Change the height on resize */
+	height:80px; /* Change the height on resize */
 	overflow: auto;
 	position: relative;
 	margin:0px;
@@ -150,29 +150,8 @@ table.infoTable tr, table.infoTable td{
 }
 
 /* Line with format select box. */
-.formatsLine {
-	margin:0 0 8px;
-}
-
-/** Line with size infos. */
-.formatsLineSize {
+.formatsLine, .formatsLineSize {
 	margin:0 0 3px;
-}
-
-.formatsLineSize .formatButton{
-	padding-top:1px;
-	padding-bottom:1px;
-	line-height: 12px;
-}
-
-.formatsLineSize .formatButton div{
-	line-height: 12px;
-	height: 12px;
-	vertical-align: baseline;
-}
-
-.formatsLineSize .formatButton div span{
-	vertical-align: baseline;
 }
 
 .formatButton{
@@ -197,9 +176,4 @@ table.infoTable tr, table.infoTable td{
 
 .formatLabel, .formatText, .formatSelectBox{
 	display: inline-block;
-}	
-
-div.buttonPadding {
-	padding-top: 2px !important;
-	padding-bottom: 2px !important;
 }

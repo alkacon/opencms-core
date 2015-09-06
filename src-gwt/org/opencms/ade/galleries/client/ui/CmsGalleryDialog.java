@@ -45,7 +45,6 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTab
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotificationWidget;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.CmsToolbarPopup;
@@ -60,8 +59,6 @@ import java.util.List;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -141,8 +138,8 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     /** The Full-text search tab. */
     private CmsSearchTab m_searchTab;
 
-    /** The show preview button. */
-    private CmsPushButton m_showPreview;
+    //    /** The show preview button. */
+    //    private CmsPushButton m_showPreview;
 
     /** The sitemap tab. */
     private CmsSitemapTab m_sitemapTab;
@@ -198,18 +195,18 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
         m_tabbedPanel = new CmsTabbedPanel<A_CmsTab>(style);
         // add tabs to parent widget
         m_parentPanel.add(m_tabbedPanel);
-        m_showPreview = new CmsPushButton();
-        m_showPreview.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
-        m_showPreview.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showPreview());
-        m_showPreview.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                setPreviewVisible(true);
-            }
-        });
-        m_showPreview.setVisible(false);
-        m_parentPanel.add(m_showPreview);
+        //        m_showPreview = new CmsPushButton();
+        //        m_showPreview.setText(Messages.get().key(Messages.GUI_PREVIEW_BUTTON_SHOW_0));
+        //        m_showPreview.addStyleName(I_CmsLayoutBundle.INSTANCE.galleryDialogCss().showPreview());
+        //        m_showPreview.addClickHandler(new ClickHandler() {
+        //
+        //            public void onClick(ClickEvent event) {
+        //
+        //                setPreviewVisible(true);
+        //            }
+        //        });
+        //        m_showPreview.setVisible(false);
+        //        m_parentPanel.add(m_showPreview);
         // All composites must call initWidget() in their constructors.
         initWidget(m_parentPanel);
         ensureNotifications();
@@ -500,7 +497,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
      */
     public void hideShowPreviewButton(boolean hide) {
 
-        m_showPreview.setVisible(!hide);
+        //  m_showPreview.setVisible(!hide);
     }
 
     /**

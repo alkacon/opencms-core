@@ -467,7 +467,7 @@ div.textArea div.fader{
 div.fader{
 	cursor: pointer;
     overflow: hidden;
-    height: 17px;
+    height: value("constants.css.inputInnerHeight");
     width: 40px;
     position: absolute;
 }
@@ -479,11 +479,11 @@ div.selectBoxRoot div.fader{
 div.selectionInput{
 	border: 1px solid value("constants.css.borderColor");
 	padding: 0px 21px 0px 4px;
-	height: 18px;
+	height: value("constants.css.inputHeight");
 }
 
 div.selectionInput>input[type=text]{
-	height: 18px;
+	height: value("constants.css.inputInnerHeight");
 	width: 100%;
 	outline:none;
 	border: none;
@@ -546,7 +546,7 @@ input.labelInput {
 div.formRow {
 	margin: 2px 0;
 	position: relative;
-	min-height: 22px;
+	min-height: value("constants.css.inputHeight");
 }
 
 @sprite .formRowOpenerClosed {

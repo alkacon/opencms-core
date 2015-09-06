@@ -55,7 +55,7 @@ div.listIcon {
 	border:1px solid value("constants.css.borderColor");
 	margin-right:3px;
 	margin-bottom:3px;
-	padding:2px;
+	padding: 0 2px 0 4px;
 	background-color: value("constants.css.backgroundColorStateStandard");
 }
 
@@ -69,13 +69,10 @@ div.tabOptions {
 	margin-bottom: 5px;
 }
 
-.showParams div, .showParams div span{
-	vertical-align: top !important;
-}
-
 div.paramsText {
 	margin-right:5px;
 	max-width: 600px;
+	line-height: value("constants.css.inputInnerHeight");
 }
 
 .showParams, .paramsText {

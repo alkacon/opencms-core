@@ -15,7 +15,7 @@
 	  		</colgroup>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelUrl" /></td>
-				<td><input:CmsVfsLinkWidget ui:field="m_inputUrl" addStyleNames="{galleryResources.previewDialogCss.buttonPadding}"/>  <!-- <input:CmsTextBox addStyleNames="{galleryResources.imageAdvancedFormCss.input}" ui:field="m_inputUrl" /><cms:CmsPushButton ui:field="m_buttonBrowse" /> --></td>
+				<td><input:CmsVfsLinkWidget ui:field="m_inputUrl" />  <!-- <input:CmsTextBox addStyleNames="{galleryResources.imageAdvancedFormCss.input}" ui:field="m_inputUrl" /><cms:CmsPushButton ui:field="m_buttonBrowse" /> --></td>
 			</tr>
 			<tr>
 				<td><g:Label styleName="{galleryResources.previewDialogCss.labelField} {resources.generalCss.textMedium}"  ui:field="m_labelTarget" /></td>

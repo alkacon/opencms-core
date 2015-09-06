@@ -167,13 +167,13 @@ div.cmsTextButton {
 
 div.cmsTextButton.cmsButtonMedium {
 	min-width: 90px;
-	height: 28px;
+	height: 30px;
 	padding: 0 10px;
 }
 
 div.cmsTextButton.cmsButtonSmall {
 	min-width: 80px;
-	height: 26px;
+	height: 28px;
 	padding: 0 8px;
 	
 }
