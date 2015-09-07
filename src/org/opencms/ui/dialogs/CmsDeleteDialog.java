@@ -67,8 +67,13 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsDeleteDialog extends CmsBasicDialog {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
     /** Box for displaying resource widgets. */
     private VerticalLayout m_resourceBox;
+
+    // private AbstractComponent m_container;
 
     /** Label for the links. */
     private Label m_linksLabel;
@@ -87,6 +92,7 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     public CmsDeleteDialog(final I_CmsDialogContext context) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         displayResourceInfo(context.getResources());
+        //   new CmsMaxHeightExtension(m_container, 300);
 
         final CmsObject cms = A_CmsUI.getCmsObject();
 
@@ -214,14 +220,21 @@ public class CmsDeleteDialog extends CmsBasicDialog {
      */
     private Component indent(CmsResourceInfo resourceInfo) {
 
-        HorizontalLayout hl = new HorizontalLayout();
-        Label label = new Label("");
-        label.setWidth("35px");
-        hl.addComponent(label);
-        hl.addComponent(resourceInfo);
-        hl.setExpandRatio(resourceInfo, 1.0f);
-        hl.setWidth("100%");
-        return hl;
+        boolean simple = false;
+
+        if (simple) {
+            return resourceInfo;
+
+        } else {
+            HorizontalLayout hl = new HorizontalLayout();
+            Label label = new Label("");
+            label.setWidth("35px");
+            hl.addComponent(label);
+            hl.addComponent(resourceInfo);
+            hl.setExpandRatio(resourceInfo, 1.0f);
+            hl.setWidth("100%");
+            return hl;
+        }
     }
 
 }
