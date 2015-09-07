@@ -27,7 +27,6 @@ li div.itemContainer.cmsHovering{
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 16px;
 }
-
 @url editCursorGifUrl coreImages.editCursorGif;
 @url editCursorIcoUrl coreImages.editCursorIco;
 
@@ -111,51 +110,32 @@ li div.itemContainer.cmsHovering{
 
 
 
-div.itemContent {
-	background-image: literal("-moz-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-ms-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("-o-linear-gradient(")value("constants.css.gradientListItem") literal(")");
-	background-image: literal("linear-gradient(")value("constants.css.gradientListItem") literal(")");
+@sprite div.itemContent {
+    gwt-image: "backgrounds.stateBackground";
+    background-position: 50% 50%;
     height: auto;
 	position: relative;
+	background-color: value("constants.css.backgroundColorListItem");
 	white-space: nowrap;
 }
 
-div.itemContent:before{
-	content: "";
-	position: absolute;
-	top:0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	backgound: transparent;
-	opacity: 0.5;
-	z-index: 0;
-	border-radius: value("constants.css.borderRadius");
-}
-
-.itemContent > div {
-	position: relative;
-}
-
-.itemActive div.itemContent:before {
+.itemActive div.itemContent {
     background-color: value("constants.css.backgroundColorStateHover");
 }
 
-.disabledItem div.itemContent:before {
+.disabledItem div.itemContent {
 	background-color: value("constants.css.backgroundColorStateDisabled");
 }
 
-.itemBlue div.itemContent:before {
+.itemBlue div.itemContent {
     background-color: value("constants.css.backgroundColorStateNew");
 }
 
-.itemRed div.itemContent:before {
+.itemRed div.itemContent {
     background-color: value("constants.css.backgroundColorStateChanged");
 }
 
-.itemYellow div.itemContent:before {
+.itemYellow div.itemContent {
     background-color: value("constants.css.backgroundColorStateSubSitemap");
 }
 

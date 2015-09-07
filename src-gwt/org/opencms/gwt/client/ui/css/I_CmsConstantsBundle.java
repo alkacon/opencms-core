@@ -389,13 +389,6 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
-        String gradientListItem();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS constant value
-         */
         String inputHeight();
 
         /**
