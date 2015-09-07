@@ -42,6 +42,7 @@ import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsLoginUserAgreement;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -210,15 +211,9 @@ public class CmsLoginController {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         UI.getCurrent().getSession().close();
+        String loginLink = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
-        /* we need this because a new session might be created after this method,
-         but before the session info is updated in OpenCmsCore.showResource. */
-        cms.getRequestContext().setUpdateSessionEnabled(false);
-        String uri = Page.getCurrent().getLocation().toString();
-        if (uri.contains("#")) {
-            uri = uri.substring(0, uri.indexOf("#"));
-        }
-        Page.getCurrent().setLocation(uri);
+        Page.getCurrent().setLocation(loginLink);
     }
 
     /**
@@ -399,7 +394,11 @@ public class CmsLoginController {
                 target += "#" + UI.getCurrent().getPage().getUriFragment();
             }
         } else {
-            if (m_params.getRequestedResource() != null) {
+            boolean workplace2 = false;
+            if (CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
+                && settings.getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2)) {
+                workplace2 = true;
+            } else if (m_params.getRequestedResource() != null) {
                 target = m_params.getRequestedResource();
             } else if (directEditPath != null) {
                 target = directEditPath;
@@ -415,7 +414,11 @@ public class CmsLoginController {
                     + "="
                     + target;
             }
-            target = OpenCms.getLinkManager().substituteLink(currentCms, target);
+            if (workplace2) {
+                target = CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
+            } else {
+                target = OpenCms.getLinkManager().substituteLink(currentCms, target);
+            }
         }
         return target;
     }

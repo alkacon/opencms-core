@@ -121,4 +121,5 @@ public class CmsWorkplaceView implements Comparable<CmsWorkplaceView> {
 
         return getUri().hashCode();
     }
+
 }

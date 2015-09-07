@@ -1663,6 +1663,8 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    public static final String GUI_LABEL_WORKPLACE_2_VIEW_0 = "GUI_LABEL_WORKPLACE_2_VIEW_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

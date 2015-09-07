@@ -1585,6 +1585,32 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<destination>system/workplace/views/explorer/workplace2.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3f5ed579-044b-4e9c-b25d-a8cb0cef711a</uuidstructure>
+			<uuidresource>e3bdbb1e-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 23 Apr 2007 12:27:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Frameset Definition]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		
+		
 		<file>
 			<source>system/workplace/views/explorer/tree_files.jsp</source>
 			<destination>system/workplace/views/explorer/tree_files.jsp</destination>

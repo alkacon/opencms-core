@@ -187,6 +187,9 @@ public abstract class CmsWorkplace {
     /** Constant for the direct edit view JSP. */
     public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
 
+    /** Constant for second workplace version. */
+    public static final String VIEW_WORKPLACE_2 = VFS_PATH_VIEWS + "explorer/workplace2.jsp";
+
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
 

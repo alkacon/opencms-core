@@ -1081,6 +1081,12 @@ public class CmsPreferences extends CmsTabDialog {
             Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
             CmsWorkplace.VIEW_DIRECT_EDIT,
             Float.valueOf(100));
+
+        CmsWorkplaceView workplace2View = new CmsWorkplaceView(
+            Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_WORKPLACE_2_VIEW_0),
+            CmsWorkplace.VIEW_WORKPLACE_2,
+            Float.valueOf(50));
+        list.add(workplace2View);
         list.add(directEditView);
 
         Iterator<CmsWorkplaceView> i = list.iterator();
@@ -1090,6 +1096,7 @@ public class CmsPreferences extends CmsTabDialog {
             CmsWorkplaceView view = i.next();
 
             boolean visible = true;
+
             try {
                 getCms().readResource(view.getUri());
             } catch (CmsException e) {
@@ -1099,6 +1106,7 @@ public class CmsPreferences extends CmsTabDialog {
                 }
                 visible = false;
             }
+
             if (visible) {
                 String localizedKey = resolveMacros(view.getKey());
                 options.add(localizedKey);
@@ -1108,7 +1116,9 @@ public class CmsPreferences extends CmsTabDialog {
                 }
             }
         }
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
+        return
+
+        buildSelect(htmlAttributes, options, values, selectedIndex);
     }
 
     /**
