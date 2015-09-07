@@ -31,6 +31,9 @@ package org.opencms.ui.contextmenu;
  * Flag to control which visibility checks should be performed by CmsStandardVisibilityCheck.<p>
  */
 public enum CmsVisibilityCheckFlag {
+    /** Checks if an editor is available. */
+    haseditor,
+
     /** Checks if resource is deleted. */
     deleted,
 

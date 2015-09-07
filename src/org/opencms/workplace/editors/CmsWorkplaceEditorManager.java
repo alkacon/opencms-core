@@ -35,6 +35,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -279,6 +280,25 @@ public class CmsWorkplaceEditorManager {
 
         // no valid editor found
         return null;
+    }
+
+    /**
+     * Checks if there is an editor which can process the given resource.<p>
+     *
+     * @param res the resource
+     *
+     * @return true if the given resource can be edited with one of the configured editors
+     */
+    public boolean isEditorAvailableForResource(CmsResource res) {
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res);
+        String typeName = type.getTypeName();
+        for (CmsWorkplaceEditorConfiguration editorConfig : m_editorConfigurations) {
+            if (editorConfig.matchesResourceType(typeName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

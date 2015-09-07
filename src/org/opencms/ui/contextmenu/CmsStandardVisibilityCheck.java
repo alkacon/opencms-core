@@ -29,6 +29,7 @@ package org.opencms.ui.contextmenu;
 
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
@@ -83,7 +84,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         roleeditor,
         notonline,
         notdeleted,
-        writepermisssion);
+        writepermisssion,
+        haseditor);
 
     /** Visibility check for the undo function. */
     public static final CmsStandardVisibilityCheck UNDO = new CmsStandardVisibilityCheck(
@@ -169,6 +171,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         if (flag(notnew) && resource.getState().isNew()) {
             CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                 Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+        }
+
+        if (flag(haseditor) && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
+            return VISIBILITY_INVISIBLE;
         }
 
         if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
