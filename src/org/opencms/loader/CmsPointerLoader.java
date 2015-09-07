@@ -30,6 +30,7 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -310,10 +311,13 @@ public class CmsPointerLoader extends CmsDumpLoader {
         }
         if (pointer.indexOf(':') < 0) {
             pointer = OpenCms.getLinkManager().substituteLink(cms, pointer);
+        } else {
+            pointer = CmsEncoder.convertHostToPunycode(pointer);
         }
 
         // conditionally append parameters of the current request:
         pointer = appendLinkParams(pointer, req);
+
         res.sendRedirect(pointer);
     }
 
