@@ -48,6 +48,9 @@ public class CmsLoginOuSelector extends CustomComponent {
     /** The combo box containing the OU options. */
     private ComboBox m_ouSelect = new ComboBox();
 
+    /** Flag to always hide the selector. */
+    private boolean m_alwaysHidden;
+
     /**
      * Creates a new instance.<P>
      */
@@ -77,12 +80,23 @@ public class CmsLoginOuSelector extends CustomComponent {
 
         if ((orgUnits.size() == 1) && (orgUnits.get(0).getParentFqn() == null)) {
             setVisible(false);
+            m_alwaysHidden = true;
         }
         for (CmsOrganizationalUnit ou : orgUnits) {
             String key = normalizeOuName(ou.getName());
             m_ouSelect.addItem(key);
             m_ouSelect.setItemCaption(key, ou.getDisplayName(A_CmsUI.get().getLocale()));
         }
+    }
+
+    /**
+     * Returns true if the OU selector should remain hidden.<p>
+     *
+     * @return true if the OU selector should remain hidden
+     */
+    public boolean isAlwaysHidden() {
+
+        return m_alwaysHidden;
     }
 
     /**

@@ -228,7 +228,9 @@ public class CmsLoginForm extends VerticalLayout {
     public void setOptionsVisible(boolean optionsVisible) {
 
         m_optionsVisible = optionsVisible;
-        m_ouSelect.setVisible(optionsVisible);
+
+        boolean ousVisible = optionsVisible && !m_ouSelect.isAlwaysHidden();
+        m_ouSelect.setVisible(ousVisible);
         m_forgotPasswordButton.setVisible(optionsVisible);
         String optionsMessage = CmsVaadinUtils.getMessageText(
             optionsVisible ? Messages.GUI_LOGIN_OPTIONS_HIDE_0 : Messages.GUI_LOGIN_OPTIONS_SHOW_0);
