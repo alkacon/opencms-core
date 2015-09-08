@@ -42,6 +42,8 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.tools.CmsToolManager;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -616,20 +618,30 @@ public class CmsSessionManager {
      */
     protected void sessionCreated(HttpSessionEvent event) {
 
+        HttpServletRequest request = OpenCmsServlet.currentRequest.get();
+        String tid = "[" + Thread.currentThread().getId() + "] ";
         synchronized (m_lockSessionCount) {
             m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
             m_sessionCountTotal++;
             if (LOG.isInfoEnabled()) {
                 LOG.info(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_SESSION_CREATED_2,
-                        new Integer(m_sessionCountTotal),
-                        new Integer(m_sessionCountCurrent)));
+                    tid
+                        + Messages.get().getBundle().key(
+                            Messages.LOG_SESSION_CREATED_2,
+                            new Integer(m_sessionCountTotal),
+                            new Integer(m_sessionCountCurrent)));
             }
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
+            LOG.debug(tid + Messages.get().getBundle().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
+            if (request != null) {
+                LOG.debug(tid + "Session created in request: " + request.getRequestURL());
+            }
+            StringWriter sw = new StringWriter();
+            new Throwable("").printStackTrace(new PrintWriter(sw));
+            String stackTrace = sw.toString();
+            LOG.debug(tid + "Stack = \n" + stackTrace);
         }
     }
 

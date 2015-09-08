@@ -34,6 +34,9 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.net.IDN;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.CharBuffer;
@@ -160,6 +163,34 @@ public final class CmsEncoder {
             // return value will be input value
         }
         return result;
+    }
+
+    /**
+     * Converts the host of an URI to Punycode.<p>
+     *
+     * This is needed when we want to do redirects to hosts with host names containing international characters like umlauts.<p>
+     *
+     * @param uriString the URI
+     * @return the converted URI
+     */
+    public static String convertHostToPunycode(String uriString) {
+
+        if (uriString.indexOf(":") >= 0) {
+            try {
+                URI uri = new URI(uriString);
+                String authority = uri.getAuthority(); // getHost won't work when we have special characters
+                URI uriWithCorrectedHost = new URI(
+                    uri.getScheme(),
+                    IDN.toASCII(authority),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    uri.getFragment());
+                uriString = uriWithCorrectedHost.toASCIIString();
+            } catch (URISyntaxException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return uriString;
     }
 
     /**

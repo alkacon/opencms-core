@@ -189,7 +189,7 @@ public final class OpenCmsCore {
 
     private CmsWorkplaceAppManager m_workplaceAppManager;
 
-    /** List of configured directory default file names. */
+   /** List of configured directory default file names. */
     private List<String> m_defaultFiles;
 
     /** The default user and group names. */
@@ -2300,13 +2300,34 @@ public final class OpenCmsCore {
         try {
             propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
         } catch (Throwable t) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(
-                    Messages.get().getBundle().key(
-                        Messages.LOG_ERROR_READING_AUTH_PROP_2,
-                        CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
-                        path),
-                    t);
+            if (t instanceof CmsVfsResourceNotFoundException) {
+                // if we can't read the property from the path, try to use the resource init handlers to find the
+                // resource to read it from
+                CmsResource alternativeResource = null;
+                try {
+                    // use null as the response to avoid side effects like redirects, etc.
+                    alternativeResource = initResource(adminCms, path, req, null);
+                    if (alternativeResource != null) {
+                        propertyLoginForm = adminCms.readPropertyObject(
+                            adminCms.getSitePath(alternativeResource),
+                            CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                            true);
+                    }
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
+            if (propertyLoginForm == null) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(
+                        Messages.get().getBundle().key(
+                            Messages.LOG_ERROR_READING_AUTH_PROP_2,
+                            CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                            path),
+                        t);
+                }
+
             }
         }
 

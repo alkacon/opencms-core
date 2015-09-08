@@ -2,7 +2,6 @@
 #Thu Jul 02 09:29:46 CEST 2015
 build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;
 org.springsource.ide.eclipse.gradle.classname.enableSorting=false
-org.springsource.ide.eclipse.gradle.classpath.enableSorting=false
 org.springsource.ide.eclipse.gradle.classpath.jar.remap.gradle.to.maven=true
 org.springsource.ide.eclipse.gradle.linkedresources=
 org.springsource.ide.eclipse.gradle.rootprojectloc=

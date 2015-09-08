@@ -51,6 +51,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -806,7 +807,7 @@ public class CmsADEManager {
             errorCode = typeValue;
         }
         request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
-        response.setHeader("Location", lnkUri);
+        response.setHeader("Location", CmsEncoder.convertHostToPunycode(lnkUri));
         response.setHeader("Connection", "close");
     }
 

@@ -78,6 +78,9 @@ import org.apache.commons.logging.Log;
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
+    /** The current request in a threadlocal. */
+    public static final ThreadLocal<HttpServletRequest> currentRequest = new ThreadLocal<HttpServletRequest>();
+
     /** GWT RPC services suffix. */
     public static final String HANDLE_GWT = ".gwt";
 
@@ -119,38 +122,44 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
 
-        // check to OpenCms runlevel
-        int runlevel = OpenCmsCore.getInstance().getRunLevel();
+        currentRequest.set(req);
+        try {
 
-        // write OpenCms server identification in the response header
-        res.setHeader(CmsRequestUtil.HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
+            // check to OpenCms runlevel
+            int runlevel = OpenCmsCore.getInstance().getRunLevel();
 
-        if (runlevel != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
-            // not the "normal" servlet runlevel
-            if (runlevel == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-                // we have shell runlevel only, upgrade to servlet runlevel (required after setup wizard)
-                init(getServletConfig());
-            } else {
-                // illegal runlevel, we can't process requests
-                // sending status code 403, indicating the server understood the request but refused to fulfill it
-                res.sendError(HttpServletResponse.SC_FORBIDDEN);
-                // goodbye
-                return;
+            // write OpenCms server identification in the response header
+            res.setHeader(CmsRequestUtil.HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
+
+            if (runlevel != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+                // not the "normal" servlet runlevel
+                if (runlevel == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+                    // we have shell runlevel only, upgrade to servlet runlevel (required after setup wizard)
+                    init(getServletConfig());
+                } else {
+                    // illegal runlevel, we can't process requests
+                    // sending status code 403, indicating the server understood the request but refused to fulfill it
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    // goodbye
+                    return;
+                }
             }
-        }
 
-        String path = OpenCmsCore.getInstance().getPathInfo(req);
-        if (path.startsWith(HANDLE_PATH)) {
-            // this is a request to an OpenCms handler URI
-            invokeHandler(req, res);
-        } else if (path.endsWith(HANDLE_GWT)) {
-            // handle GWT rpc services
-            String serviceName = CmsResource.getName(path);
-            serviceName = serviceName.substring(0, serviceName.length() - HANDLE_GWT.length());
-            OpenCmsCore.getInstance().invokeGwtService(serviceName, req, res, getServletConfig());
-        } else {
-            // standard request to a URI in the OpenCms VFS
-            OpenCmsCore.getInstance().showResource(req, res);
+            String path = OpenCmsCore.getInstance().getPathInfo(req);
+            if (path.startsWith(HANDLE_PATH)) {
+                // this is a request to an OpenCms handler URI
+                invokeHandler(req, res);
+            } else if (path.endsWith(HANDLE_GWT)) {
+                // handle GWT rpc services
+                String serviceName = CmsResource.getName(path);
+                serviceName = serviceName.substring(0, serviceName.length() - HANDLE_GWT.length());
+                OpenCmsCore.getInstance().invokeGwtService(serviceName, req, res, getServletConfig());
+            } else {
+                // standard request to a URI in the OpenCms VFS
+                OpenCmsCore.getInstance().showResource(req, res);
+            }
+        } finally {
+            currentRequest.remove();
         }
     }
 

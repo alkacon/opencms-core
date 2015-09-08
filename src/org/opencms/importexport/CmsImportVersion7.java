@@ -501,7 +501,6 @@ public class CmsImportVersion7 implements I_CmsImport {
                 }
                 getReport().println(m_throwable);
                 getReport().addError(m_throwable);
-                m_throwable = null;
                 return;
             }
             if (m_aces == null) {
@@ -516,6 +515,7 @@ public class CmsImportVersion7 implements I_CmsImport {
                     m_acePermissionsDenied,
                     m_aceFlags));
         } finally {
+            m_throwable = null;
             m_acePrincipalId = null;
             m_acePermissionsAllowed = 0;
             m_acePermissionsDenied = 0;
