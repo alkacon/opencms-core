@@ -469,8 +469,8 @@ echo "Performing commit ..."
 cd $REPOSITORY_HOME
 if [[ $commit == 1 ]]; then
 	echo " * Check in to GIT repository"
-	echo "   * Step 1: git add $MODULE_PATH/*"
-	git add $MODULE_PATH/* | awk '$0="   "$0'
+	echo "   * Step 1: git add --all $MODULE_PATH/*"
+	git add --all $MODULE_PATH/* | awk '$0="   "$0'
 	echo "   * Step 2: bash -c \"git commit -m \\\"$commitMessage\\\" \""
 	bash -c "git commit -m \"$commitMessage\"" | awk '$0="     "$0'
 else
