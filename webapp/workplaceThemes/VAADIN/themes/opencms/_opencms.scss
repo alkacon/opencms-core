@@ -458,6 +458,10 @@
   	float: left; 
   	position: static;
   	width: 100%;
+  	
+  	&:after {
+  		border: none !important;  
+  	}
   }
   
   @for $i from 1 through 40 {
