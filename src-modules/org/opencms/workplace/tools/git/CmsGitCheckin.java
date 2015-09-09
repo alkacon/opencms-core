@@ -60,6 +60,9 @@ import java.util.HashSet;
  *   */
 public class CmsGitCheckin {
 
+    /** Lock used to prevent simultaneous execution of checkIn method. */
+    private static final Object lock = new Object();
+
     /** The default configuration file used for the git check in. */
     private static final String DEFAULT_CONFIG_FILENAME = "module-checkin.conf";
     /** The default script file used for the git check in. */
@@ -204,13 +207,15 @@ public class CmsGitCheckin {
     public int checkIn() {
 
         try {
-            m_logStream = new PrintStream(new FileOutputStream(m_logFilePath, false));
-            CmsObject cms = getCmsObject();
-            if (cms != null) {
-                return checkInInternal();
-            } else {
-                m_logStream.println("No CmsObject given. Did you call init() first?");
-                return -1;
+            synchronized (lock) {
+                m_logStream = new PrintStream(new FileOutputStream(m_logFilePath, false));
+                CmsObject cms = getCmsObject();
+                if (cms != null) {
+                    return checkInInternal();
+                } else {
+                    m_logStream.println("No CmsObject given. Did you call init() first?");
+                    return -1;
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
