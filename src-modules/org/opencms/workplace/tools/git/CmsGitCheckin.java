@@ -86,6 +86,10 @@ public class CmsGitCheckin {
     private static final String DEFAULT_EXPORT_MODE = "MODULE_EXPORT_MODE";
     /** The variable under which the default commit message is set. */
     private static final String DEFAULT_COMMIT_MESSAGE = "COMMIT_MESSAGE";
+    /** The variable under which the default git user name is set. */
+    private static final String DEFAULT_GIT_USER_NAME = "GIT_USER_NAME";
+    /** The variable under which the default git user email is set. */
+    private static final String DEFAULT_GIT_USER_EMAIL = "GIT_USER_EMAIL";
     /** The variable under which the default exclude libs option is set. */
     private static final String DEFAULT_EXCLUDE_LIBS = "DEFAULT_EXCLUDE_LIBS";
     /** The default path under <code>WEB-INF/</code> to the script and configuration file. */
@@ -121,6 +125,10 @@ public class CmsGitCheckin {
     private String m_systemModuleExportPath;
     /** The commit message as configured. */
     private String m_defaultCommitMessage = "Autocommit of exported modules.";
+    /** The git user name as configured. */
+    private String m_defaultGitUserName;
+    /** The git user email as configured. */
+    private String m_defaultGitUserEmail;
     /** Flag, indicating if the lib/ folders of the modules should be removed before the commit. */
     private boolean m_defaultExcludeLibs;
     /** Flag, indicating if execution of the script should go on for an unclean repository. */
@@ -137,6 +145,10 @@ public class CmsGitCheckin {
     private Boolean m_autoPush;
     /** The commit message. */
     private String m_commitMessage;
+    /** The git user name. */
+    private String m_gitUserName;
+    /** The git user email. */
+    private String m_gitUserEmail;
     /** The commit mode. */
     private Boolean m_commitMode;
     /** Flag, indicating if the lib/ folder of the modules should be deleted before the commit. */
@@ -280,6 +292,22 @@ public class CmsGitCheckin {
         return m_defaultExcludeLibs;
     }
 
+    /** Returns the configured default git user email, or <code>null</code> if the email is by default not adjusted at all.
+     * @return the configured default git user email, or <code>null</code> if the email is by default not adjusted at all.
+     */
+    public String getDefaultGitUserEmail() {
+
+        return m_defaultGitUserEmail;
+    }
+
+    /** Returns the configured default git user name, or <code>null</code> if the name is by default not adjusted at all.
+     * @return the configured default git user name, or <code>null</code> if the name is by default not adjusted at all.
+     */
+    public String getDefaultGitUserName() {
+
+        return m_defaultGitUserName;
+    }
+
     /** Returns the default ignore-unclean flag.
      * @return the default ignore-unclean flag.
      */
@@ -376,6 +404,22 @@ public class CmsGitCheckin {
     public void setExcludeLibs(final boolean excludeLibs) {
 
         m_excludeLibs = Boolean.valueOf(excludeLibs);
+    }
+
+    /** Setter for the git user email.
+     * @param useremail the git user email to set.
+     */
+    public void setGitUserEmail(final String useremail) {
+
+        m_gitUserEmail = useremail;
+    }
+
+    /** Setter for the git user name.
+     * @param username the git user name to set.
+     */
+    public void setGitUserName(final String username) {
+
+        m_gitUserName = username;
     }
 
     /** Setter for the ignore-unclean flag.
@@ -490,6 +534,22 @@ public class CmsGitCheckin {
         if (m_commitMessage != null) {
             commitMessage = " -msg \"" + m_commitMessage + "\"";
         }
+        String gitUserName = "";
+        if (m_gitUserName != null) {
+            if (m_gitUserName.trim().isEmpty()) {
+                gitUserName = " --ignore-default-git-user-name";
+            } else {
+                gitUserName = " --git-user-name \"" + m_gitUserName + "\"";
+            }
+        }
+        String gitUserEmail = "";
+        if (m_gitUserEmail != null) {
+            if (m_gitUserEmail.trim().isEmpty()) {
+                gitUserEmail = " --ignore-default-git-user-email";
+            } else {
+                gitUserEmail = " --git-user-email \"" + m_gitUserEmail + "\"";
+            }
+        }
         String autoPullBefore = "";
         if (m_autoPullBefore != null) {
             autoPullBefore = m_autoPullBefore.booleanValue() ? " --pull-before " : " --no-pull-before";
@@ -526,6 +586,8 @@ public class CmsGitCheckin {
             + "\""
             + exportModules
             + commitMessage
+            + gitUserName
+            + gitUserEmail
             + autoPullBefore
             + autoPullAfter
             + autoPush
@@ -648,6 +710,14 @@ public class CmsGitCheckin {
                         if (line.startsWith(DEFAULT_COMMIT_MESSAGE)) {
                             String value = getValueFromLine(line);
                             m_defaultCommitMessage = value;
+                        }
+                        if (line.startsWith(DEFAULT_GIT_USER_NAME)) {
+                            String value = getValueFromLine(line);
+                            m_defaultGitUserName = value;
+                        }
+                        if (line.startsWith(DEFAULT_GIT_USER_EMAIL)) {
+                            String value = getValueFromLine(line);
+                            m_defaultGitUserEmail = value;
                         }
                         if (line.startsWith(DEFAULT_EXCLUDE_LIBS)) {
                             String value = getValueFromLine(line);

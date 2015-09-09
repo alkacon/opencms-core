@@ -1,3 +1,4 @@
+#!/bin/bash
 # This script is called, when the configured modules are already exported from a JSP in OpenCms
 # It is called as
 # ./modules-chekin.sh <config-file> [modules]
@@ -16,6 +17,7 @@
 # 10 - git repository unclean
 # 11 - the hard reset to HEAD failed
 # 12 - backup folder does not exist
+# 13 - permission problems during file operations
 
 getExportedModule(){
 	case $exportMode in
@@ -50,6 +52,63 @@ testGitRepository(){
 	else
 		echo " * Test ok: found clean git repository at \"$(pwd)\"."
 	fi
+	cd $__pwd
+}
+
+adjustGitConfig(){
+	__pwd=$(pwd)
+	cd $REPOSITORY_HOME
+
+	if [[ ! -z $userName ]]; then
+		oldUserName=$(git config --local user.name)
+		git config --replace-all user.name "$userName"
+		adjustedUserName=1
+		echo "     * Adjusted local git user.name from \"$oldUserName\" to \"$userName\"."
+	else
+		echo "     * Do not adjust current user.name. Using \"$(git config user.name)\"."
+	fi
+	if [[ ! -z $userEmail ]]; then
+		oldUserEmail=$(git config --local user.email)
+		git config --replace-all user.email "$userEmail"
+		adjustedUserEmail=1
+		echo "     * Adjusted local git user.email from \"$oldUserEmail\" to \"$userEmail\"."
+	else
+		echo "     * Do not adjust current user.email. Using \"$(git config user.email)\"."
+	fi
+	echo "Here's your local git configuration after the adjustments:"
+	git config --local -l | awk '$0="   * "$0'
+	echo
+	cd $__pwd
+}
+
+resetGitConfig(){
+	__pwd=$(pwd)
+	cd $REPOSITORY_HOME
+	if [[ $adjustedUserName == 1 ]]; then
+		if [[ -z $oldUserName ]]; then
+			git config --unset user.name
+			echo "     * Reset local git user.name from \"$userName\" to <unset>."
+		else
+			git config --replace-all user.name "$oldUserName"
+			echo "     * Reset local git user.name from \"$userName\" to \"$oldUserName\"."
+		fi
+	else
+		echo "     * The git user.name was not adjusted. So there is nothing to do."
+	fi
+	if [[ $adjustedUserEmail == 1 ]]; then
+		if [[ -z $oldUserEmail ]]; then
+			git config --unset user.email 
+			echo "     * Reset local git user.email from \"$userEmail\" to <unset>."
+		else
+			git config --replace-all user.email "$oldUserEmail"
+			echo "     * Reset local git user.email from \"$userEmail\" to \"$oldUserEmail\"."
+		fi
+	else
+		echo "     * The git user.email was not adjusted. So there is nothing to do."
+	fi
+	echo "Here's your local git configuration after the reset:"
+	git config --local -l | awk '$0="   * "$0'
+	echo
 	cd $__pwd
 }
 
@@ -152,7 +211,21 @@ while [ "$1" != "" ]; do
 								;;
 		--no-copy-and-unzip )   copyAndUnzip=0
 								echo " * Read no-copy-and-unzip option."
-								;;								
+								;;
+        --git-user-name )		shift
+			        			userName=$1
+								echo " * Read git-user-name: \"$userName\"."
+								;;
+        --git-user-email )		shift
+			        			userEmail=$1
+								echo " * Read git-user-email: \"$userEmail\"."
+								;;
+		--ignore-default-git-user-name ) ignoreDefaultName=1
+								echo " * Read ignore-default-git-user-name option."
+								;;
+		--ignore-default-git-user-email ) ignoreDefaultEmail=1
+								echo " * Read ignore-default-git-user-email option."
+								;;
         * )             		configfile=$1
 								echo " * Read config file: \"$configfile\"."
     esac
@@ -218,9 +291,16 @@ if [[ ! -z "$backupFolder" ]]; then
 				echo "     * Found zip file ${fileName}."
 				#switch to the backup folder
 				cd "${backupFolder}"
-				echo "     * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
+				echo "     * Copying \"${moduleExportFolder}/${fileName}\" to $(pwd) ..."
 				#copy the new module .zip
 				cp -f "${moduleExportFolder}/${fileName}" ./
+				if [[ $? != 0 ]]; then
+					echo
+					echo "ERROR: Failed to copy \"${moduleExportFolder}/${fileName}\" to $(pwd)."
+					echo "Exit script with exit code 13."
+					echo
+					exit 13
+				fi
 			else
 				echo "     ! WARN: Skipped module $module because the zip file was not found."
 			fi
@@ -322,9 +402,33 @@ if [[ -z "$excludeLibs" ]]; then
 fi
 echo " * Set exclude libs flag: $excludeLibs."
 
+## set git user name
+if [[ -z "$userName" ]]; then
+	if [[ -z "$GIT_USER_NAME" || $ignoreDefaultName == 1 ]]; then
+		echo " * Do not set git user name."
+	else
+		userName="$GIT_USER_NAME"
+		echo " * Set git user name: \"$userName\"."
+	fi
+else
+	echo " * Set git user name: \"$userName\"."
+fi
+
+## set git user name
+if [[ -z "$userEmail" ]]; then
+	if [[ -z "$GIT_USER_EMAIL" || $ignoreDefaultEmail == 1 ]]; then
+		echo " * Do not set git user name."
+	else
+		userEmail="$GIT_USER_EMAIL"
+		echo " * Set git user name: \"$userEmail\"."
+	fi
+else
+	echo " * Set git user name: \"$userEmail\"."
+fi
+
 # test git repository
 echo
-echo "Testing Git repository"
+echo "Testing Git repository and adjusting user information"
 testGitRepository
 
 # reset to HEAD
@@ -427,6 +531,13 @@ if [ $copyAndUnzip == 1 ]; then
 			if [[ "$(pwd)" == "${MODULE_PATH}"* ]]; then
 				echo "   * Removing old version of the module resources under $(pwd)."
 				rm -fr ./*
+				if [[ $? != 0 ]]; then
+					echo
+					echo "ERROR: Failed to remove all resources under $(pwd)."
+					echo "Exit script with exit code 13."
+					echo
+					exit 13
+				fi
 			else
 				echo "   * ERROR: Something went wrong the current directory \($(pwd)\) is not a\
 				  subdirectory of the repository's configured modules main folder (${MODULE_PATH})." 
@@ -435,9 +546,23 @@ if [ $copyAndUnzip == 1 ]; then
 			echo "   * Copying "${moduleExportFolder}/${fileName}" to $(pwd) ..."
 			#copy the new module .zip
 			cp "${moduleExportFolder}/${fileName}" ./
+			if [[ $? != 0 ]]; then
+				echo
+				echo "ERROR: Failed to copy \"${moduleExportFolder}/${fileName}\" to $(pwd)."
+				echo "Exit script with exit code 13."
+				echo
+				exit 13
+			fi
 			echo "   * Unzipping copied file."
 			#unzip it
 			unzip -o "${fileName}" | awk '$0="     "$0'
+			if [[ $? != 0 ]]; then
+				echo
+				echo "ERROR: Failed to unzip \"${fileName}\" in $(pwd)."
+				echo "Exit script with exit code 13."
+				echo
+				exit 13
+			fi
 			echo "   * Deleting copy of the .zip file."
 			#remove the .zip file
 			rm "${fileName}"
@@ -469,10 +594,13 @@ echo "Performing commit ..."
 cd $REPOSITORY_HOME
 if [[ $commit == 1 ]]; then
 	echo " * Check in to GIT repository"
-	echo "   * Step 1: git add --all $MODULE_PATH/*"
+	echo "   * Step 1: adjust the git configuration ...:"
+	adjustGitConfig
+	echo "   * Step 2: git add --all $MODULE_PATH/*"
 	git add --all $MODULE_PATH/* | awk '$0="   "$0'
-	echo "   * Step 2: bash -c \"git commit -m \\\"$commitMessage\\\" \""
+	echo "   * Step 3: bash -c \"git commit -m \\\"$commitMessage\\\" \""
 	bash -c "git commit -m \"$commitMessage\"" | awk '$0="     "$0'
+	resetGitConfig
 else
 	echo " * Auto-commit disabled. Nothing to do."
 fi

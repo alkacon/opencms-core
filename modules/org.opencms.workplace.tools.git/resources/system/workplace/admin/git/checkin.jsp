@@ -1,6 +1,6 @@
-<%@page import="org.opencms.workplace.tools.git.CmsGitCheckin\
-				, java.util.Map\
-				, java.io.BufferedReader\
+<%@page import="org.opencms.workplace.tools.git.CmsGitCheckin
+				, java.util.Map
+				, java.io.BufferedReader
 				, java.io.FileReader, org.opencms.jsp.*,org.opencms.file.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -14,7 +14,11 @@
 	Map<String,String[]> parameters = request.getParameterMap();
 %>
 <%!
-	public void setCommonParameters(CmsGitCheckin checkinBean, Map<String,String[]>parameters) {
+	/** Set common parameters of the checkin bean from request parameters. 
+	* @param checkinBean the checkin bean.
+	* @param parameters the request parameter map.
+	*/
+	public void setCommonParameters(CmsGitCheckin checkinBean, Map<String,String[]> parameters) {
 
 		checkinBean.setPullBefore(parameters.get("pullfirst") != null);
 		checkinBean.setPullAfter(parameters.get("pullafter") != null);
@@ -25,6 +29,20 @@
 		checkinBean.setCopyAndUnzip(parameters.get("copyandunzip") != null);
 		if(parameters.get("commitmessage") != null && parameters.get("commitmessage").length > 0 && parameters.get("commitmessage")[0] != null) {
 			checkinBean.setCommitMessage(parameters.get("commitmessage")[0]);
+		}
+		if(parameters.get("commitusername") != null) {
+			if(parameters.get("commitusername").length > 0 && parameters.get("commitusername")[0] != null) {
+				checkinBean.setGitUserName(parameters.get("commitusername")[0]);
+			} else {
+				checkinBean.setGitUserName("");
+			}
+		}
+		if(parameters.get("commituseremail") != null) {
+			if(parameters.get("commituseremail").length > 0 && parameters.get("commituseremail")[0] != null) {
+				checkinBean.setGitUserEmail(parameters.get("commituseremail")[0]);
+			} else {
+				checkinBean.setGitUserEmail("");
+			}
 		}
 	}
 %>
@@ -227,6 +245,14 @@
 						<label>Commit message</label>
 						<input type="text" name="commitmessage" value="<%= checkinBean.getDefaultCommitMessage() %>">
 					</div>
+					<div style="margin-left:27px;">
+						<label>User name</label>
+						<input type="text" name="commitusername" placeholder="Not adjusted if empty" <%= checkinBean.getDefaultGitUserName() != null ? " value=\"" + checkinBean.getDefaultGitUserName() + "\"": ""%> >
+					</div>					
+					<div style="margin-left:27px;">
+						<label>User email</label>
+						<input type="text" name="commituseremail" placeholder="Not adjusted if empty" <%= checkinBean.getDefaultGitUserEmail() != null ? " value=\"" + checkinBean.getDefaultGitUserEmail() + "\"": ""%> >
+					</div>					
 				</div>
 				<div>
 					<input type="checkbox" name="pullafter" <%= checkinBean.getDefaultAutoPullAfter()? "checked=checked" : "" %>>
