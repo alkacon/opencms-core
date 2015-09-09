@@ -178,7 +178,7 @@ while [ "$1" != "" ]; do
         --exclude-libs )		excludeLibs=1;
         						echo " * Read exclude-libs option."
         						;;
-        -msg )					shift
+        -msg | --commit-message )	shift
 			        			commitMessage=$1
 								echo " * Read commit message: \"$commitMessage\"."
 								;;
@@ -251,6 +251,19 @@ echo "Setting parameters ..."
 ## set modules to export
 if [[ -z "$modulesToExport" ]]; then
 	modulesToExport=$DEFAULT_MODULES_TO_EXPORT
+else
+	newModules=""
+	for module in $modulesToExport; do
+		if [[ ! ($DEFAULT_MODULES_TO_EXPORT =~ (^| )$module($| ) ) ]]; then
+			newModules="${newModules}${module} "
+		fi
+		if [[ $newModules != "" ]]; then
+			sed -i "/^DEFAULT_MODULES_TO_EXPORT/s/=\"/=\"$newModules/" $configfile
+			echo
+			echo " * Added new modules \"$newModules\" to the config file."
+			echo
+		fi
+	done
 fi
 echo " * Set modules to export: \"$modulesToExport\"."
 
