@@ -1,15 +1,15 @@
 <%@page import="org.opencms.workplace.tools.git.CmsGitCheckin\
 				, java.util.Map\
 				, java.io.BufferedReader\
-				, java.io.FileReader" %>
+				, java.io.FileReader, org.opencms.jsp.*,org.opencms.file.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <%
-	CmsGitCheckin checkinBean = new CmsGitCheckin();
-	checkinBean.init(pageContext, request, response);
+	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response); 
+	CmsGitCheckin checkinBean = new CmsGitCheckin(jsp.getCmsObject());
 	String module;
 	Map<String,String[]> parameters = request.getParameterMap();
 %>

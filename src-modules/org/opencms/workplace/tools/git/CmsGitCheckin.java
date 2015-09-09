@@ -30,7 +30,6 @@ package org.opencms.workplace.tools.git;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.importexport.CmsImportExportException;
-import org.opencms.jsp.CmsJspBean;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -59,7 +58,7 @@ import java.util.HashSet;
  *  Which modules are exported to and checked in to which git repository is configured in the file
  *  <code>/WEB-INF/git-scripts/module-checkin.sh</code>.
  *   */
-public class CmsGitCheckin extends CmsJspBean {
+public class CmsGitCheckin {
 
     /** The default configuration file used for the git check in. */
     private static final String DEFAULT_CONFIG_FILENAME = "module-checkin.conf";
@@ -153,11 +152,16 @@ public class CmsGitCheckin extends CmsJspBean {
     /** Flag, indicating if the config-file is missing. */
     private boolean m_configFileReadable;
 
+    /** The CMS context. */
+    private CmsObject m_cms;
+
     /**
      * Default constructor. Initializing member variables with default values.
+     *
+     * @param cms the CMS context to use
      */
-    public CmsGitCheckin() {
-
+    public CmsGitCheckin(CmsObject cms) {
+        m_cms = cms;
         String webinfPath = OpenCms.getSystemInfo().getWebInfRfsPath();
         String scriptsPath = webinfPath + DEFAULT_RFS_PATH;
         m_configPath = scriptsPath + DEFAULT_CONFIG_FILENAME;
@@ -200,6 +204,16 @@ public class CmsGitCheckin extends CmsJspBean {
             e.printStackTrace();
             return -2;
         }
+    }
+
+    /**
+     * Gets the CMS context.<p>
+     *
+     * @return the CMS context
+     */
+    public CmsObject getCmsObject() {
+
+        return m_cms;
     }
 
     /** Returns the modules specified in the config file.
