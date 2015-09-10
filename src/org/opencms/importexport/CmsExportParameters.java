@@ -83,7 +83,7 @@ public class CmsExportParameters {
     private boolean m_xmlValidation;
 
     /** The export mode that should be used for the export. */
-    private ExportMode m_exportMode;
+    private ExportMode m_exportMode = ExportMode.DEFAULT;
 
     /**
      * Constructor.<p>
