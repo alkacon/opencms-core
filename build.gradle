@@ -724,6 +724,7 @@ allModuleNames.split(',').each{ moduleName ->
                 attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
             }
             from sourceSets[moduleName].output
+            from ("$moduleFolder") { include "META-INF/**" }
             archiveName moduleName+'.jar'
             baseName moduleName
             exclude '**/.gitignore'
