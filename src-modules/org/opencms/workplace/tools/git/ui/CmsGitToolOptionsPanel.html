@@ -8,7 +8,10 @@
 	<v-vertical-layout margin spacing>
 		<v-panel caption="Module selection">
 			<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
-				<v-combo-box _id="m_moduleSelector" />
+				<v-horizontal-layout spacing>
+					<v-combo-box _id="m_moduleSelector" />
+					<v-button _id="m_deselectAll">Deselect all</v-button>
+				</v-horizontal-layout>
 			</v-vertical-layout>
 		</v-panel>
 		<v-panel caption="Settings">

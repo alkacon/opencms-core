@@ -52,6 +52,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -96,6 +97,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     private Set<String> m_selectedModules = Sets.newHashSet();
 
     private Map<String, CheckBox> m_moduleCheckboxes = Maps.newHashMap();
+
+    private Button m_deselectAll;
     protected boolean m_advancedVisible = false;
 
     private Window[] m_currentWindow = new Window[] {null};
@@ -161,6 +164,16 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 A_CmsUI.get().getPage().setLocation(CmsVaadinUtils.getWorkplaceLink());
             }
         });
+        m_deselectAll.addClickListener(new ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+
+                for (Map.Entry<String, CheckBox> entry : m_moduleCheckboxes.entrySet()) {
+                    CheckBox checkBox = entry.getValue();
+                    checkBox.setValue(Boolean.FALSE);
+                }
+            }
+        });
     }
 
     public Window addAsWindow(Component component) {
@@ -198,7 +211,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         moduleCheckBox.setEnabled(enabled);
         moduleCheckBox.setValue(Boolean.valueOf(enabled)); // If enabled, then checked by default
         m_moduleCheckboxes.put(moduleName, moduleCheckBox);
-        m_moduleSelectionContainer.addComponent(line);
+        m_moduleSelectionContainer.addComponent(line, m_moduleSelectionContainer.getComponentCount() - 1);
     }
 
     public Collection<String> getDirectlySelectedModules() {
@@ -328,10 +341,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     public void updateNewModuleSelector() {
 
-        CmsVaadinUtils.remove(m_moduleSelector);
-        m_moduleSelector = createModuleSelector();
-
-        m_moduleSelectionContainer.addComponent(m_moduleSelector);
+        ComboBox newModuleSelector = createModuleSelector();
+        ((AbstractLayout)(m_moduleSelector.getParent())).replaceComponent(m_moduleSelector, newModuleSelector);
+        m_moduleSelector = newModuleSelector;
         m_moduleSelector.addValueChangeListener(new ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
