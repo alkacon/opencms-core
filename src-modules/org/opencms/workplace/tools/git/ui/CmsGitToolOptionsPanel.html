@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+</head>
+<body>
+	<v-vertical-layout margin spacing>
+		<v-panel caption="Module selection">
+			<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
+				<v-combo-box _id="m_moduleSelector" />
+			</v-vertical-layout>
+		</v-panel>
+		<v-panel caption="Settings">
+			<v-form-layout margin spacing>
+				<v-text-field _id="m_userField" width="100%" caption="Git user" />
+				<v-text-field _id="m_emailField" width="100%" caption="Git email" />
+				<v-text-area _id="m_commitMessage" width="100%" caption="Commit message" />
+				<v-button _id="m_toggleOptions" caption="Toggle options" />
+				<v-check-box _id="m_ignoreUnclean" caption="Ignore unclean repository" description="Caution: This can cause serious problems when a merge conflict is present."/>
+				<v-check-box _id="m_pullFirst" caption="Pull first" description="This can overwrite changes from the remote repository." />
+				<v-check-box _id="m_copyAndUnzip" caption="Copy and unzip modules" description="Typically you want this." />
+				<v-check-box _id="m_addAndCommit" caption="Add and commit automatically" />
+				<v-check-box _id="m_pullAfterCommit" caption="Pull after commit" />
+				<v-check-box _id="m_pushAutomatically" caption="Push automatically" />
+				<v-check-box _id="m_excludeLib" caption="Exclude lib/ subfolder" />
+			</v-form-layout>
+		</v-panel>
+		<v-horizontal-layout spacing>
+			<v-button _id="m_checkinSelected">Check in</v-button>
+			<v-button _id="m_cancel">Cancel</v-button>
+		</v-horizontal-layout>
+	</v-vertical-layout>
+</body>
+</html>

@@ -266,11 +266,14 @@ public class CmsWorkplaceAppManager {
      */
     private Collection<I_CmsWorkplaceAppConfiguration> loadDefaultApps() {
 
-        return Arrays.<I_CmsWorkplaceAppConfiguration> asList(
-            new CmsSitemapEditorConfiguration(),
-            new CmsPageEditorConfiguration(),
-            new CmsFileExplorerConfiguration(),
-            new CmsAppHierarchyConfiguration());
+        List<I_CmsWorkplaceAppConfiguration> result = Lists.newArrayList();
+        result.addAll(
+            Arrays.<I_CmsWorkplaceAppConfiguration> asList(
+                new CmsSitemapEditorConfiguration(),
+                new CmsPageEditorConfiguration(),
+                new CmsFileExplorerConfiguration(),
+                new CmsAppHierarchyConfiguration()));
+        return result;
     }
 
     /**

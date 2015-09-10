@@ -477,6 +477,10 @@
 	
    .o-login-form .o-dialog-button-bar .v-button { 
   		min-width: 160px;
+  	}
+  	
+  	.v-label.o-label-error { 
+  		color: $red; 
   	} 
   
 }

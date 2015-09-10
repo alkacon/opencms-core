@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
@@ -415,7 +416,7 @@ public class CmsLoginController {
                     + target;
             }
             if (workplace2) {
-                target = CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
+                target = CmsVaadinUtils.getWorkplaceLink();
             } else {
                 target = OpenCms.getLinkManager().substituteLink(currentCms, target);
             }

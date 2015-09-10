@@ -37,9 +37,11 @@ import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -61,7 +63,7 @@ import java.util.HashSet;
 public class CmsGitCheckin {
 
     /** Lock used to prevent simultaneous execution of checkIn method. */
-    private static final Object lock = new Object();
+    private static final Object staticLock = new Object();
 
     /** The default configuration file used for the git check in. */
     private static final String DEFAULT_CONFIG_FILENAME = "module-checkin.conf";
@@ -207,7 +209,7 @@ public class CmsGitCheckin {
     public int checkIn() {
 
         try {
-            synchronized (lock) {
+            synchronized (staticLock) {
                 m_logStream = new PrintStream(new FileOutputStream(m_logFilePath, false));
                 CmsObject cms = getCmsObject();
                 if (cms != null) {
@@ -220,6 +222,16 @@ public class CmsGitCheckin {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return -2;
+        }
+    }
+
+    /**
+     * Clears the selected modules.<p>
+     */
+    public void clearModules() {
+
+        if (m_modulesToExport != null) {
+            m_modulesToExport.clear();
         }
     }
 
@@ -344,6 +356,17 @@ public class CmsGitCheckin {
     public String getLogFilePath() {
 
         return m_logFilePath;
+    }
+
+    public String getLogText() {
+
+        try {
+            String logFilePath = getLogFilePath();
+            byte[] logData = CmsFileUtil.readFully(new FileInputStream(logFilePath));
+            return new String(logData, "UTF-8");
+        } catch (IOException e) {
+            return "Error reading log file: " + getLogFilePath();
+        }
     }
 
     /** Returns the RFS path where module .zip-files are read before check in.

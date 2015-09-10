@@ -81,6 +81,9 @@ public class OpenCmsTheme {
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
 
     /** CSS style name. */
+    public static final String LABEL_ERROR = "o-label-error";
+
+    /** CSS style name. */
     public static final String LOCK_OTHER = "o-lock-other";
 
     /** CSS style name. */

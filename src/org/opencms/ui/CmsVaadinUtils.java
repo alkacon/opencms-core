@@ -32,6 +32,7 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.io.ByteArrayInputStream;
@@ -52,6 +53,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -148,6 +150,11 @@ public final class CmsVaadinUtils {
         return getWpMessagesForCurrentLocale().key(key, args);
     }
 
+    public static String getWorkplaceLink() {
+
+        return CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
+    }
+
     /**
      * Gets the workplace messages for the current locale.<p>
      *
@@ -235,6 +242,17 @@ public final class CmsVaadinUtils {
         return layoutStream;
     }
 
+    public static void remove(Component component) {
+
+        if (component == null) {
+            return;
+        }
+        HasComponents parent = component.getParent();
+        if (parent instanceof ComponentContainer) {
+            ((ComponentContainer)parent).removeComponent(component);
+        }
+    }
+
     /**
      * Shows an alert box to the user with the given information, which will perform the given action after the user clicks on OK.<p>
      *
@@ -307,7 +325,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designPath the path to the design file
      * @param messages the message bundle to use for localization in the design (may be null)
