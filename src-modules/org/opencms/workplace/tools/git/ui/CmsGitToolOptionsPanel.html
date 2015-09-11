@@ -29,10 +29,14 @@
 				<v-check-box _id="m_excludeLib" caption="Exclude lib/ subfolder" />
 			</v-form-layout>
 		</v-panel>
-		<v-horizontal-layout spacing :center style-name="o-dialog-button-bar"> 
-			<v-button _id="m_checkinSelected">Check in</v-button>
-			<v-button _id="m_cancel">Cancel</v-button>
+		<v-panel>
+		<v-horizontal-layout spacing style-name="o-dialog-button-bar" width="100%" margin> 
+			<v-horizontal-layout :center spacing>
+				<v-button _id="m_checkinSelected">Check in</v-button>
+				<v-button _id="m_cancel">Cancel</v-button>
+			</v-horizontal-layout>
 		</v-horizontal-layout>
+		</v-panel>
 	</v-vertical-layout>
 </body>
 </html>
