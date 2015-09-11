@@ -877,19 +877,33 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             if (event.getButton().equals(MouseButton.RIGHT)) {
                 m_fileTable.handleSelection((CmsUUID)event.getItemId());
                 m_fileTable.openContextMenu(event);
-            } else if ((event.getPropertyId() == null)
-                || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
-                m_fileTable.openContextMenu(event);
             } else {
-                Boolean isFolder = (Boolean)event.getItem().getItemProperty(
-                    CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
-                if ((isFolder != null) && isFolder.booleanValue()) {
-                    expandCurrentFolder();
-                    if (m_fileTree.getItem(event.getItemId()) != null) {
-                        m_fileTree.select(event.getItemId());
-                    }
-                    readFolder((CmsUUID)event.getItemId());
+                if ((event.getPropertyId() == null)
+                    || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
+                    m_fileTable.openContextMenu(event);
+                } else {
+                    Boolean isFolder = (Boolean)event.getItem().getItemProperty(
+                        CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
+                    if ((isFolder != null) && isFolder.booleanValue()) {
+                        expandCurrentFolder();
+                        if (m_fileTree.getItem(event.getItemId()) != null) {
+                            m_fileTree.select(event.getItemId());
+                        }
+                        readFolder((CmsUUID)event.getItemId());
 
+                    } else {
+                        CmsUUID id = (CmsUUID)event.getItemId();
+                        try {
+                            CmsObject cms = A_CmsUI.getCmsObject();
+                            CmsResource res = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                            String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                            A_CmsUI.get().getPage().open(link, "_blank");
+                        } catch (CmsVfsResourceNotFoundException e) {
+                            LOG.info(e.getLocalizedMessage(), e);
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
                 }
             }
         }
