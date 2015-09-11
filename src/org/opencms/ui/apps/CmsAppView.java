@@ -28,20 +28,47 @@
 package org.opencms.ui.apps;
 
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsComponentFactory;
+import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsAppViewLayout;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Displays the selected app.<p>
  */
 public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory {
+
+    private class DummyApp implements I_CmsWorkplaceApp {
+
+        public void initUI(I_CmsAppUIContext context) {
+
+            Label label = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_APP_NOT_AVAILABLE_0));
+            label.addStyleName(ValoTheme.LABEL_H2);
+            label.addStyleName(OpenCmsTheme.LABEL_ERROR);
+            VerticalLayout content = new VerticalLayout();
+            content.setMargin(true);
+            content.addComponent(label);
+            context.setAppContent(content);
+        }
+
+        public void onStateChange(String state) {
+
+            // TODO Auto-generated method stub
+
+        }
+
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = -8128528863875050216L;
@@ -100,7 +127,11 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
     public Component createComponent() {
 
         if (m_app == null) {
-            m_app = m_appConfig.getAppInstance();
+            if (!m_appConfig.getVisibility(A_CmsUI.getCmsObject()).isActive()) {
+                m_app = new DummyApp();
+            } else {
+                m_app = m_appConfig.getAppInstance();
+            }
             CmsAppViewLayout layout = new CmsAppViewLayout();
             layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
             m_app.initUI(layout);
@@ -119,6 +150,7 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
             newState = newState.substring(1);
         }
         m_app.onStateChange(newState);
+
     }
 
     /**
