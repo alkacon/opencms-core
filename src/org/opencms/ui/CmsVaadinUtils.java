@@ -53,7 +53,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
@@ -150,6 +149,11 @@ public final class CmsVaadinUtils {
         return getWpMessagesForCurrentLocale().key(key, args);
     }
 
+    /**
+     * Gets the link to the (new) workplace.<p>
+     *
+     * @return the link to the workplace
+     */
     public static String getWorkplaceLink() {
 
         return CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
@@ -212,8 +216,14 @@ public final class CmsVaadinUtils {
      */
     public static void readAndLocalizeDesign(Component component, CmsMessages messages, Map<String, String> macros) {
 
-        String designPath = getDefaultDesignPath(component);
-        readAndLocalizeDesign(component, designPath, messages, macros);
+        Class<?> componentClass = component.getClass();
+        String filename = componentClass.getSimpleName() + ".html";
+        @SuppressWarnings("resource")
+        InputStream designStream = componentClass.getResourceAsStream(filename);
+        if (designStream == null) {
+            throw new IllegalArgumentException("Design not found: " + filename);
+        }
+        readAndLocalizeDesign(component, designStream, messages, macros);
     }
 
     /**
@@ -240,17 +250,6 @@ public final class CmsVaadinUtils {
             layoutClass.getResourceAsStream(relativeName),
             resolver.toFunction());
         return layoutStream;
-    }
-
-    public static void remove(Component component) {
-
-        if (component == null) {
-            return;
-        }
-        HasComponents parent = component.getParent();
-        if (parent instanceof ComponentContainer) {
-            ((ComponentContainer)parent).removeComponent(component);
-        }
     }
 
     /**
@@ -327,22 +326,18 @@ public final class CmsVaadinUtils {
      * Reads the given design and resolves the given macros and localizations.<p>
 
      * @param component the component whose design to read
-     * @param designPath the path to the design file
+     * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
      * @param macros other macros to substitute in the macro design (may be null)
      */
     protected static void readAndLocalizeDesign(
         Component component,
-        String designPath,
+        InputStream designStream,
         CmsMessages messages,
         Map<String, String> macros) {
 
-        InputStream designStream = CmsVaadinUtils.class.getClassLoader().getResourceAsStream(designPath);
-        if (designStream == null) {
-            throw new IllegalArgumentException("Design not found: " + designPath);
-        }
         try {
-            byte[] designBytes = CmsFileUtil.readFully(designStream);
+            byte[] designBytes = CmsFileUtil.readFully(designStream, true);
             final String encoding = "UTF-8";
             String design = new String(designBytes, encoding);
             CmsMacroResolver resolver = new CmsMacroResolver() {
@@ -368,7 +363,7 @@ public final class CmsVaadinUtils {
             String resolvedDesign = resolver.resolveMacros(design);
             Design.read(new ByteArrayInputStream(resolvedDesign.getBytes(encoding)), component);
         } catch (IOException e) {
-            throw new RuntimeException("Could not read design: " + designPath, e);
+            throw new RuntimeException("Could not read design");
         } finally {
             try {
                 designStream.close();
