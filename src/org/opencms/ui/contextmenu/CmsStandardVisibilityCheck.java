@@ -39,12 +39,16 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermissio
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.xml;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -81,6 +85,16 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
         file,
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        haseditor);
+
+    /** Like DEFAULT, but only active for files. */
+    public static final CmsStandardVisibilityCheck EDIT_CODE = new CmsStandardVisibilityCheck(
+        file,
+        xml,
         roleeditor,
         notonline,
         notdeleted,
@@ -164,6 +178,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             return VISIBILITY_INVISIBLE;
         }
 
+        if (flag(xml)) {
+            I_CmsResourceType type = resUtil.getResourceType();
+            boolean isXml = (type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage);
+            if (!isXml) {
+                return VISIBILITY_INVISIBLE;
+            }
+        }
+
         if (flag(notunchangedfile) && resource.isFile() && resUtil.getResource().getState().isUnchanged()) {
             return VISIBILITY_INVISIBLE;
         }
@@ -173,7 +195,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
         }
 
-        if (flag(haseditor) && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
+        if (flag(haseditor)
+            && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
             return VISIBILITY_INVISIBLE;
         }
 

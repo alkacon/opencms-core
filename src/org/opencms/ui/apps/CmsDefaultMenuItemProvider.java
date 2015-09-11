@@ -167,6 +167,34 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             },
 
             new CmsDefaultContextMenuItem(
+                "editcode",
+                "advanced",
+                null,
+                "%(key.GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0)",
+                0,
+                0,
+                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.EDIT_CODE)) {
+
+                @Override
+                public void executeAction(org.opencms.ui.I_CmsDialogContext context) {
+
+                    CmsObject cms = A_CmsUI.getCmsObject();
+                    String url = OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/editors/editor.jsp");
+                    url += "?resource=";
+                    url += cms.getSitePath(context.getResources().get(0));
+                    url += "&editastext=true";
+                    url += "&backlink=";
+                    try {
+                        url += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                        url += UI.getCurrent().getPage().getLocation().toString();
+                    }
+                    UI.getCurrent().getPage().open(url, "_self");
+                }
+            },
+
+            new CmsDefaultContextMenuItem(
                 "delete",
                 null,
                 new CmsBlockingLockCheck(new CmsDialogAction(CmsDeleteDialog.class)),
