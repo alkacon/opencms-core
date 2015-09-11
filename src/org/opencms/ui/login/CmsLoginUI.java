@@ -41,6 +41,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
+import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -225,6 +226,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 + CmsWorkplace.RFS_PATH_RESOURCES
                 + "commons/login_logo.png";
 
+            resolver.addMacro("loadingHtml", CmsVaadinConstants.LOADING_INDICATOR_HTML);
             resolver.addMacro("vaadinDir", vaadinDir);
             resolver.addMacro("vaadinServlet", vaadinServlet);
             resolver.addMacro("vaadinBootstrap", vaadinBootstrap);

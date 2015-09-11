@@ -32,6 +32,7 @@ import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.login.CmsLoginUI;
+import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
@@ -47,6 +48,7 @@ import org.apache.commons.logging.Log;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
@@ -219,6 +221,11 @@ public class CmsUIServlet extends VaadinServlet {
                         svc.setCms(cms);
 
                         Document doc = response.getDocument();
+                        Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
+                        if (appLoadingElements.size() > 0) {
+                            appLoadingElements.get(0).append(CmsVaadinConstants.LOADING_INDICATOR_HTML);
+                        }
+
                         if (shouldShowLogin()) {
                             try {
                                 String html = CmsLoginUI.generateLoginHtmlFragment(cms, response.getRequest());

@@ -481,9 +481,115 @@
   	
   	.v-label.o-label-error { 
   		color: $red; 
+  	}
+  	
+  	.v-loading-indicator, .v-app-loading { 
+  	    /* Hide original loading animation while still displaying its children */ 
+  		visibility: hidden !important;
+  		width: 100% !important;
+  		height: 100% !important; 
+  		position: fixed !important;
+  		background-color: rgba(0,0,0,0.0) !important;
+  		animation: none !important; 
+  		-webkit-animation: none !important; 
+  		pointer-events: auto !important; 
+  	}
+  	
+  	.v-loading-indicator.v-loading-indicator[style*="none"] { 
+  	    /* Original style uses !important, so we need both !important and the double class selector to override it. */ 
+  		display: none !important;
+  	}
+  	
+  	.o-loading-indicator {
+  	    *, & { 
+  	    	visibility: visible !important;
+  	    }
+  		background-color: $gray-dark;
+  		width: 100%;  
+  		height: 100%;
+  		position: fixed; 
+  		background-color: rgba($gray-dark, 0.5);
+  		pointer-events: auto; 
   	} 
-  
+  	
+  	.o-spin-outer {
+	    background-color: #fff;
+	    border: 10px solid #b31b34;
+	    border-radius: 100%;
+	    box-shadow: 0 0 35px #999;
+	    width: 40px;
+	    height: 40px;
+	    animation: spin-outer 2.5s infinite linear;
+	    -webkit-animation: spin-outer 2.5s infinite linear;
+	    
+	     position: fixed;
+		 top: 50%;
+		 margin-top: -20px;
+		 margin-left: -20px; 
+  		 left: 50%;
+	}
+	.o-spin-inner {
+	    background-color: #003084;
+	    border-radius: 100%;
+	    width: 20px;
+	    height: 20px;
+	    animation: spin-inner 2.5s infinite ease;
+	    -webkit-animation: spin-inner 2.5s infinite ease;
+	    position: fixed; 
+	    top: 50%;
+	    left: 50%;
+	}
+
 }
+
+
+	@keyframes spin-outer {
+	    0% {
+	        transform: rotate(0deg);
+	    }
+	    50% {
+	        transform: rotate(180deg);
+	        border-top: 10px solid #fff;
+	    }
+	    100% {
+	        transform: rotate(360deg);
+	    }
+	}
+	@-webkit-keyframes spin-outer {
+	    0% {
+	        -webkit-transform: rotate(0deg);
+	    }
+	    50% {
+	        -webkit-transform: rotate(180deg);
+	        border-top: 10px solid #fff;
+	    }
+	    100% {
+	        -webkit-transform: rotate(360deg);
+	    }
+	}
+
+	@keyframes spin-inner {
+	    0% {
+	        opacity: 1;
+	    }
+	    50% {
+	        opacity: 0.25;
+	    }
+	    100% {
+	        opacity: 1;
+	    }
+	}
+	@-webkit-keyframes spin-inner {
+	    0% {
+	        -webkit-opacity: 1;
+	    }
+	    50% {
+	        -webkit-opacity: 0.25;
+	    }
+	    100% {
+	        -webkit-opacity: 0;
+	    }
+	}
 
 
 
