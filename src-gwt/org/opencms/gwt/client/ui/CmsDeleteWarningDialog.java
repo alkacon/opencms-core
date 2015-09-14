@@ -150,7 +150,6 @@ public class CmsDeleteWarningDialog extends CmsConfirmDialog {
         if (brokenLinks.getBrokenLinks().size() > 0) {
             m_content.fill(brokenLinks.getBrokenLinks());
             addBottomWidget(m_content);
-            setWidth(600);
         }
         center();
     }

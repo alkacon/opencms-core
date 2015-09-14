@@ -48,9 +48,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
 
-    /** The default dialog width. */
-    public static final int DEFAULT_DIALOG_WIDTH = 440;
-
     /** The panel for the bottom widgets. */
     private FlowPanel m_bottomWidgets;
 
@@ -110,7 +107,7 @@ public class CmsAlertDialog extends CmsPopup implements I_CmsTruncable {
      */
     public CmsAlertDialog(String title, String content, String buttonText, String buttonIconClass) {
 
-        super(title, DEFAULT_DIALOG_WIDTH);
+        super(title);
         setAutoHideEnabled(false);
         setModal(true);
         setGlassEnabled(true);

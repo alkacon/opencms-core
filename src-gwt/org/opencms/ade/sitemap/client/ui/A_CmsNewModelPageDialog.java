@@ -53,9 +53,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class A_CmsNewModelPageDialog extends CmsPopup {
 
-    /** The dialog width. */
-    private static final int DIALOG_WIDTH = 600;
-
     /** The text metrics key. */
     private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
 
@@ -79,7 +76,7 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
      */
     public A_CmsNewModelPageDialog(String title, CmsListInfoBean infoBean) {
 
-        super(title, DIALOG_WIDTH);
+        super(title);
         initialize(infoBean);
     }
 
@@ -151,7 +148,7 @@ public abstract class A_CmsNewModelPageDialog extends CmsPopup {
         });
         addButton(m_okButton);
         setOkEnabled(false);
-        m_dialogContent.truncate(METRICS_KEY, DIALOG_WIDTH - 20);
+        m_dialogContent.truncate(METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

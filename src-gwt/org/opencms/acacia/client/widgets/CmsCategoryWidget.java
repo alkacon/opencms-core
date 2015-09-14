@@ -351,7 +351,6 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
         if (m_cmsPopup == null) {
 
             m_cmsPopup = new CmsPopup(Messages.get().key(Messages.GUI_DIALOG_CATEGORIES_TITLE_0));
-            m_cmsPopup.setWidth(600);
             List<String> selected = new ArrayList<String>();
             selected = m_selected;
             m_cmsCategoryTree = new CmsCategoryTree(selected, 300, m_isSingelValue, m_resultList);
@@ -466,9 +465,8 @@ public class CmsCategoryWidget extends Composite implements I_CmsEditWidget {
             int selectiontypeIndex = configuration.indexOf(CONFIGURATION_SELECTIONTYPE);
             if (selectiontypeIndex != -1) {
                 // selection type is given
-                String selectiontype = configuration.substring(selectiontypeIndex
-                    + CONFIGURATION_SELECTIONTYPE.length()
-                    + 1);
+                String selectiontype = configuration.substring(
+                    selectiontypeIndex + CONFIGURATION_SELECTIONTYPE.length() + 1);
                 if (selectiontype.indexOf("|") != -1) {
                     // cut eventual following configuration values
                     selectiontype = selectiontype.substring(0, selectiontype.indexOf("|"));

@@ -200,7 +200,7 @@ public abstract class A_CmsGroupEditor extends Composite {
 
         RootPanel.get().addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().groupcontainerEditing());
         addInputFields();
-        m_editorDialog = new CmsPopup(500);
+        m_editorDialog = new CmsPopup();
         addButtons();
         if (m_saveButton != null) {
             m_saveButton.disable(Messages.get().key(Messages.GUI_GROUPCONTAINER_LOADING_DATA_0));

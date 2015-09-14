@@ -62,7 +62,7 @@ public class CmsPublishConfirmationDialog extends CmsPopup {
      */
     public CmsPublishConfirmationDialog(CmsPublishDialog dialog, String closeLink) {
 
-        super(400);
+        super();
         setModal(true);
         setGlassEnabled(true);
         CmsPublishDialog.State state = dialog.getState();

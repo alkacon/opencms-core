@@ -31,6 +31,7 @@ import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.client.hoverbar.CmsCreateCategoryMenuEntry.CmsCategoryTitleAndName;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
@@ -145,7 +146,7 @@ public class CmsChangeCategoryMenuEntry extends A_CmsSitemapMenuEntry {
         final AsyncCallback<CmsCategoryTitleAndName> callback) {
 
         CmsFormDialog dlg = new CmsFormDialog(caption, new CmsForm(true));
-        dlg.setWidth(600);
+        dlg.setWidth(CmsPopup.DEFAULT_WIDTH);
         CmsDialogFormHandler fh = new CmsDialogFormHandler();
         fh.setSubmitHandler(new I_CmsFormSubmitHandler() {
 

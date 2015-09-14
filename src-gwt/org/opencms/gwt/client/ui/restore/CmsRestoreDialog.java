@@ -90,7 +90,6 @@ public class CmsRestoreDialog extends CmsPopup {
                 for (CmsPushButton button : buttons) {
                     addButton(button);
                 }
-                setWidth(600);
                 center();
             }
         };

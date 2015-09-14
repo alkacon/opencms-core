@@ -59,8 +59,6 @@ public class CmsConfirmRemoveDialog extends CmsPopup {
         m_widget = new CmsConfirmRemoveWidget(elementInfo, deleteCheckbox, removeCallback);
         m_widget.setPopup(this);
         setMainContent(m_widget);
-        setWidth(400);
-        //setHeight(165);
         setModal(true);
         setGlassEnabled(true);
         setCaption(CmsConfirmRemoveWidget.MessageStrings.caption());

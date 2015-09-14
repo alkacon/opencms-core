@@ -149,7 +149,6 @@ public class CmsRemovedElementDeletionDialog extends CmsPopup {
         for (CmsPushButton button : getDialogButtons()) {
             addButton(button);
         }
-        setWidth(550);
     }
 
     /**

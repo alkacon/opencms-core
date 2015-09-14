@@ -56,9 +56,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsCreateGalleryDialog extends CmsPopup {
 
-    /** The dialog width. */
-    private static final int DIALOG_WIDTH = 600;
-
     /** The text metrics key. */
     private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
 
@@ -91,8 +88,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
 
         super(
             org.opencms.ade.sitemap.client.Messages.get().key(
-                org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_0),
-            DIALOG_WIDTH);
+                org.opencms.ade.sitemap.client.Messages.GUI_GALLERIES_CREATE_0));
         m_resourceTypeId = resourceTypeId;
         m_parentId = parentId;
         m_controller = controller;
@@ -151,7 +147,7 @@ public class CmsCreateGalleryDialog extends CmsPopup {
         });
         addButton(m_okButton);
         setOkEnabled(false);
-        m_dialogContent.truncate(METRICS_KEY, DIALOG_WIDTH - 20);
+        m_dialogContent.truncate(METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

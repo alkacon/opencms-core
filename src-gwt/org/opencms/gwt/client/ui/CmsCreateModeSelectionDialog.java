@@ -57,7 +57,7 @@ public class CmsCreateModeSelectionDialog extends CmsPopup {
      */
     public CmsCreateModeSelectionDialog(CmsListInfoBean info, final AsyncCallback<String> createModeCallback) {
 
-        super("", 400);
+        super("");
         setCaption(messageCaption());
         m_callback = createModeCallback;
         setModal(true);

@@ -451,7 +451,6 @@ public class CmsColorPicker extends Composite implements I_CmsFormWidget, I_CmsH
     protected void openPopup() {
 
         m_popup.setWidth(475);
-        //m_popup.setHeight(280);
         m_popup.setAutoHideEnabled(true);
         m_popup.addCloseHandler(new CloseHandler<PopupPanel>() {
 

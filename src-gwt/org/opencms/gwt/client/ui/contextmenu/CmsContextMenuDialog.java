@@ -88,7 +88,7 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
 
         m_menuHandler = handler;
         int height = 400;
-        int width = 300;
+        int width = CmsPopup.DEFAULT_WIDTH;
         if (menuEntryBean.getParams().containsKey(CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT)) {
             height = CmsClientStringUtil.parseInt(
                 menuEntryBean.getParams().get(CmsMenuCommandParameters.PARAM_DIALOG_HEIGHT));
@@ -154,14 +154,13 @@ public final class CmsContextMenuDialog implements I_CmsHasContextMenuCommand, I
      * @param popup the popup instance
      */
     private native void exportClosingMethod(final CmsPopup popup) /*-{
-                                                                  var self = this;
-                                                                  $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(
-                                                                  reload) {
-                                                                  popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
-                                                                  self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
-                                                                  $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
-                                                                  };
-                                                                  }-*/;
+        var self = this;
+        $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = function(reload) {
+            popup.@org.opencms.gwt.client.ui.CmsPopup::hide()();
+            self.@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::onClose(Z)(reload);
+            $wnd[@org.opencms.gwt.client.ui.contextmenu.CmsContextMenuDialog::CLOSING_METHOD_NAME] = null;
+        };
+    }-*/;
 
     /**
      * Generates the dialog parameters.<p>

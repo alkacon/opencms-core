@@ -84,7 +84,6 @@ public class CmsRenameDialog extends CmsPopup {
                 for (CmsPushButton button : view.getDialogButtons()) {
                     addButton(button);
                 }
-                setWidth(520);
                 setMainContent(view);
                 view.setDialog(CmsRenameDialog.this);
                 center();

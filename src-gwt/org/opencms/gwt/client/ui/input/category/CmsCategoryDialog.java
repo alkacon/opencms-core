@@ -53,8 +53,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class CmsCategoryDialog extends CmsPopup {
 
-    /** Default dialog width. */
-    private static final int DEFAULT_WIDTH = 600;
     /** The category tree widget. */
     CmsCategoryTree m_categoryTree;
 
@@ -92,7 +90,6 @@ public class CmsCategoryDialog extends CmsPopup {
         m_onSave = onSave;
         setGlassEnabled(true);
         catchNotifications();
-        setWidth(DEFAULT_WIDTH);
         addDialogClose(null);
         m_main = new FlowPanel();
         setMainContent(m_main);
@@ -152,6 +149,7 @@ public class CmsCategoryDialog extends CmsPopup {
             }
         });
         m_main.add(m_categoryTree);
+        m_categoryTree.truncate("CATEGORIES", DEFAULT_WIDTH - 20);
         LockIcon lock = categoryInfo.getResourceInfo().getLockIcon();
         if ((lock == null)
             || lock.equals(LockIcon.NONE)
@@ -162,6 +160,7 @@ public class CmsCategoryDialog extends CmsPopup {
             m_categoryTree.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
             m_saveButton.disable(Messages.get().key(Messages.GUI_RESOURCE_LOCKED_0));
         }
+        setWidth(DEFAULT_WIDTH);
         if (isShowing()) {
             center();
         }
@@ -190,9 +189,8 @@ public class CmsCategoryDialog extends CmsPopup {
                 protected void onResponse(CmsResourceCategoryInfo result) {
 
                     stop(false);
-                    initialize(result);
                     setHeight(-1);
-                    setWidth(DEFAULT_WIDTH);
+                    initialize(result);
                 }
             };
             action.execute();

@@ -69,7 +69,6 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setModal(true);
         setGlassEnabled(true);
         addDialogClose(null);
-        setWidth(520);
         removePadding();
 
         final CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();

@@ -64,9 +64,6 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
     /** The pointer resource type name. */
     public static final String POINTER_RESOURCE_TYPE_NAME = "pointer";
 
-    /** The dialog width. */
-    private static final int DIALOG_WIDTH = 600;
-
     /** The text metrics key. */
     private static final String METRICS_KEY = "CREATE_NEW_GALLERY_DIALOG";
 
@@ -124,7 +121,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
      */
     private CmsEditExternalLinkDialog(String title) {
 
-        super(title, DIALOG_WIDTH);
+        super(title);
     }
 
     /**
@@ -305,7 +302,7 @@ public final class CmsEditExternalLinkDialog extends CmsPopup implements ValueCh
             ? Messages.get().key(Messages.GUI_EDIT_LINK_NO_FILE_NAME_0)
             : Messages.get().key(Messages.GUI_EDIT_LINK_NO_CHANGES_0));
 
-        m_dialogContent.truncate(METRICS_KEY, DIALOG_WIDTH - 20);
+        m_dialogContent.truncate(METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

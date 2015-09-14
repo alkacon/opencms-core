@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsSimpleListItem;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsListItem;
+import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -77,7 +78,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Builds the category tree.<p>
  * */
-public class CmsCategoryTree extends Composite implements HasValueChangeHandlers<List<String>> {
+public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasValueChangeHandlers<List<String>> {
 
     /** Sorting parameters. */
     public enum SortParams implements IsSerializable {
@@ -547,6 +548,11 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_CATEGORIES_IS_EMPTY_0));
         item.add(isEmptyLabel);
         m_scrollList.add(item);
+    }
+
+    public void truncate(String textMetricsKey, int clientWidth) {
+
+        m_scrollList.truncate(textMetricsKey, clientWidth);
     }
 
     /**
@@ -1020,8 +1026,13 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     private CmsTreeItem buildTreeItem(CmsCategoryTreeEntry category, List<String> selectedCategories) {
 
         // generate the widget that should be shown in the list
-        CmsDataValue dataValue = new CmsDataValue(600, 3, null, category.getTitle(), category.getPath(), "hide:"
-            + category.getSitePath());
+        CmsDataValue dataValue = new CmsDataValue(
+            600,
+            3,
+            null,
+            category.getTitle(),
+            category.getPath(),
+            "hide:" + category.getSitePath());
 
         // create the check box for this item
         CmsCheckBox checkBox = new CmsCheckBox();

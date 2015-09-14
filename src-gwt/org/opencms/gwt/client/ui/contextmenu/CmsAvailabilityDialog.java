@@ -147,7 +147,7 @@ public class CmsAvailabilityDialog extends CmsPopup implements I_CmsHasContextMe
      */
     private CmsAvailabilityDialog() {
 
-        super(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_TITLE_0), 439);
+        super(Messages.get().key(Messages.GUI_DIALOG_AVAILABILITY_TITLE_0));
         setModal(true);
         setGlassEnabled(true);
         addStyleName(I_CmsInputLayoutBundle.INSTANCE.inputCss().highTextBoxes());

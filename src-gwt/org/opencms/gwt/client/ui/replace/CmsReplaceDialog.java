@@ -75,9 +75,6 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
 
-    /** Maximum width for the file item widget list. */
-    private static final int DIALOG_WIDTH = 600;
-
     /** The main content panel. */
     protected CmsReplaceContentWidget m_mainPanel;
 
@@ -141,7 +138,6 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
-        setWidth(DIALOG_WIDTH);
         // create the main panel
         m_mainPanel = new CmsReplaceContentWidget();
         // set the main panel as content of the popup

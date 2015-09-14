@@ -131,7 +131,6 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         setGlassEnabled(true);
         setAutoHideEnabled(false);
         setModal(true);
-        setWidth(610);
 
         //-----------------------INFO BOX -------------------------------------------
 

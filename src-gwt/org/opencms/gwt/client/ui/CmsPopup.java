@@ -221,7 +221,7 @@ public class CmsPopup extends PopupPanel implements I_CmsAutoHider {
     }
 
     /** The default width of this dialog. */
-    private static final int DEFAULT_WIDTH = 300;
+    public static final int DEFAULT_WIDTH = 600;
 
     /** The close command. */
     protected Command m_closeCommand;

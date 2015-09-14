@@ -84,6 +84,13 @@ public class CmsResourceRelationView extends Composite {
     /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
     protected static Set<String> m_filteredActions = new HashSet<String>();
 
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+        m_filteredActions.add(CmsLogout.class.getName());
+    }
+
     /** The panel containing the resource boxes. */
     protected CmsList<CmsListItem> m_list = new CmsList<CmsListItem>();
 
@@ -140,13 +147,6 @@ public class CmsResourceRelationView extends Composite {
         fill();
     }
 
-    static {
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-        m_filteredActions.add(CmsLogout.class.getName());
-    }
-
     /**
      * This method should be called when this view is shown.<p>
      */
@@ -190,7 +190,7 @@ public class CmsResourceRelationView extends Composite {
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
-                itemWidget.setWidth("490px");
+                //   itemWidget.setWidth("490px");
                 CmsContextMenuButton button = new CmsContextMenuButton(
                     relationBean.getStructureId(),
                     new CmsResourceInfoView.ContextMenuHandler());
@@ -262,6 +262,7 @@ public class CmsResourceRelationView extends Composite {
                 m_list.add(item);
             }
         }
+        m_list.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**

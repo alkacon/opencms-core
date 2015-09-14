@@ -96,7 +96,6 @@ public class CmsResourceInfoConfirmDialog {
         m_dialog.setModal(true);
         m_dialog.setGlassEnabled(true);
         m_dialog.setCaption(getCaption());
-        m_dialog.setWidth(600);
 
         m_dialog.addButton(m_cancelButton);
         m_dialog.addButton(m_okButton);

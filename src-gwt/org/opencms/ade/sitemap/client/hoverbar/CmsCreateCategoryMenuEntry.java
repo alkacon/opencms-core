@@ -31,6 +31,7 @@ import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.Messages;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsSitemapCategoryData;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsForm;
@@ -124,7 +125,7 @@ public class CmsCreateCategoryMenuEntry extends A_CmsSitemapMenuEntry {
             caption = Messages.get().key(Messages.GUI_SITEMAP_CREATE_SUBCATEGORY_TITLE_1, entry.getPath());
         }
         CmsFormDialog dlg = new CmsFormDialog(caption, new CmsForm(true));
-        dlg.setWidth(600);
+        dlg.setWidth(CmsPopup.DEFAULT_WIDTH);
         CmsDialogFormHandler fh = new CmsDialogFormHandler();
         fh.setSubmitHandler(new I_CmsFormSubmitHandler() {
 

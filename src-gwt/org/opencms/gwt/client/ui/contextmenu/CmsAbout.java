@@ -66,7 +66,6 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
         final CmsPopup popup = new CmsPopup(Messages.get().key(Messages.GUI_ABOUT_DIALOG_TITLE_0));
-        popup.setWidth(500);
         FlowPanel container = new FlowPanel();
         int height = 350;
         if (Window.getClientHeight() < height) {

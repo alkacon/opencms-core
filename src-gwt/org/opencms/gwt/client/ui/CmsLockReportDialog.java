@@ -84,9 +84,6 @@ public final class CmsLockReportDialog extends CmsPopup {
         }
     }
 
-    /** The dialog width. */
-    private static int DIALOG_WIDTH = 450;
-
     /** The text metrics key. */
     private static final String TEXT_METRICS_KEY = "CMS_LOCK_REPORT_DIALOG_METRICS";
 
@@ -116,7 +113,7 @@ public final class CmsLockReportDialog extends CmsPopup {
      */
     private CmsLockReportDialog(CmsUUID structureId, Command onUnlock) {
 
-        super(Messages.get().key(Messages.GUI_LOCK_REPORT_TITLE_0), DIALOG_WIDTH);
+        super(Messages.get().key(Messages.GUI_LOCK_REPORT_TITLE_0));
         m_structureId = structureId;
         m_onUnlock = onUnlock;
         m_closeButton = new CmsPushButton();
@@ -261,9 +258,9 @@ public final class CmsLockReportDialog extends CmsPopup {
         content.add(m_scrollPanel);
         setMainContent(content);
         if (isShowing()) {
-            m_resourceItem.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
+            m_resourceItem.truncate(TEXT_METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 10);
             if (list != null) {
-                list.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 10);
+                list.truncate(TEXT_METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 10);
             }
             adjustHeight();
         }

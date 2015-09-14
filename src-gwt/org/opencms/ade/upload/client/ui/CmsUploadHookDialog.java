@@ -48,9 +48,6 @@ public final class CmsUploadHookDialog {
     /** The dialog height. */
     public static final int DIALOG_HEIGHT = 300;
 
-    /** The dialog width. */
-    public static final int DIALOG_WIDTH = 200;
-
     /**
      * Hide public constructor.<p>
      */
@@ -81,7 +78,7 @@ public final class CmsUploadHookDialog {
             parameters,
             closeHandler);
         popup.setHeight(DIALOG_HEIGHT);
-        popup.setWidth(DIALOG_WIDTH);
+        popup.setWidth(CmsPopup.DEFAULT_WIDTH);
         popup.center();
     }
 }

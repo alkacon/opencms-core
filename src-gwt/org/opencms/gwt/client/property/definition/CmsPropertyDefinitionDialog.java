@@ -43,7 +43,7 @@ public class CmsPropertyDefinitionDialog extends CmsPopup {
      */
     public CmsPropertyDefinitionDialog(Collection<String> existingProperties) {
 
-        super(CmsPropertyDefinitionMessages.messageDialogCaption(), 500);
+        super(CmsPropertyDefinitionMessages.messageDialogCaption());
         CmsPropertyDefinitionView defView = new CmsPropertyDefinitionView(existingProperties);
         setMainContent(defView);
         defView.setPopup(this);

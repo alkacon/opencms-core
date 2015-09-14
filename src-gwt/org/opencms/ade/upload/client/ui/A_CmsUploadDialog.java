@@ -101,9 +101,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadDialog {
 
-    /** Maximum width for the file item widget list. */
-    private static final int DIALOG_WIDTH = 600;
-
     /** The minimal height of the content wrapper. */
     private static final int MIN_CONTENT_HEIGHT = 110;
 
@@ -230,7 +227,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         setModal(true);
         setGlassEnabled(true);
         catchNotifications();
-        setWidth(DIALOG_WIDTH);
+        setWidth(CmsPopup.DEFAULT_WIDTH);
 
         // create a map that stores all files (upload, existing, invalid)
         m_allFiles = new HashMap<String, CmsFileInfo>();
@@ -238,7 +235,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_listItems = new HashMap<String, CmsListItem>();
         m_filesToUnzip = new ArrayList<String>();
         m_fileList = new CmsList<I_CmsListItem>();
-        m_fileList.truncate(TM_FILE_UPLOAD_LIST, DIALOG_WIDTH - 50);
+        m_fileList.truncate(TM_FILE_UPLOAD_LIST, CmsPopup.DEFAULT_WIDTH - 50);
 
         // initialize a map that stores all the files that should be uploaded
         m_filesToUpload = new HashMap<String, CmsFileInfo>();

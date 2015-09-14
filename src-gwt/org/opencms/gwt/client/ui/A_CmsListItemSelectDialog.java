@@ -54,11 +54,11 @@ import com.google.gwt.user.client.ui.Label;
  */
 public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> extends CmsPopup {
 
-    /** The dialog width. */
-    private static int DIALOG_WIDTH = 450;
-
     /** The text metrics key. */
     private static final String TEXT_METRICS_KEY = "CMS_LIST_ITEM_SELECT_DIALOG_METRICS";
+
+    /** Static counter used for generating ids. */
+    private static long idCounter;
 
     /** The close button. */
     private CmsPushButton m_cancelButton;
@@ -78,9 +78,6 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
     /** Internal map used to keep track of the list info beans. */
     private Map<String, INFO> m_infosByName = new HashMap<String, INFO>();
 
-    /** Static counter used for generating ids. */
-    private static long idCounter;
-
     /**
      * Constructor.<p>
      *
@@ -90,7 +87,7 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
      */
     public A_CmsListItemSelectDialog(List<INFO> itemInfos, String title, String message) {
 
-        super(title, DIALOG_WIDTH);
+        super(title);
         m_cancelButton = new CmsPushButton();
         m_cancelButton.setText(Messages.get().key(Messages.GUI_CANCEL_0));
         m_cancelButton.setUseMinWidth(true);
@@ -222,7 +219,7 @@ public abstract class A_CmsListItemSelectDialog<INFO extends CmsListInfoBean> ex
 
         int maxHeight = getAvailableHeight(m_messageLabel.getOffsetHeight() + 5);
         m_listPanel.getElement().getStyle().setProperty("maxHeight", maxHeight, Unit.PX);
-        m_listPanel.truncate(TEXT_METRICS_KEY, DIALOG_WIDTH - 20);
+        m_listPanel.truncate(TEXT_METRICS_KEY, CmsPopup.DEFAULT_WIDTH - 20);
     }
 
     /**
