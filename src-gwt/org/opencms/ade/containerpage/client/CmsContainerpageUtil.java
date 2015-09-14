@@ -38,6 +38,7 @@ import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.ade.containerpage.shared.CmsContainer;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
+import org.opencms.ade.contenteditor.client.CmsContentEditor;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
@@ -321,6 +322,7 @@ public class CmsContainerpageUtil {
      *
      * @param containerElement the container element data
      * @param container the container parent
+     * @param isNew in case of a newly created element
      *
      * @return the draggable element
      *
@@ -328,7 +330,8 @@ public class CmsContainerpageUtil {
      */
     public CmsContainerPageElementPanel createElement(
         CmsContainerElementData containerElement,
-        I_CmsDropContainer container) throws Exception {
+        I_CmsDropContainer container,
+        boolean isNew) throws Exception {
 
         if (containerElement.isGroupContainer() || containerElement.isInheritContainer()) {
             List<CmsContainerElementData> subElements = new ArrayList<CmsContainerElementData>();
@@ -345,6 +348,12 @@ public class CmsContainerpageUtil {
         Element element = CmsDomUtil.createElement(containerElement.getContents().get(container.getContainerId()));
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(element);
+        if (isNew) {
+            CmsContentEditor.replaceResourceIds(
+                element,
+                CmsUUID.getNullUUID().toString(),
+                CmsContainerpageController.getServerId(containerElement.getClientId()));
+        }
 
         CmsContainerPageElementPanel result = createElement(element, container, containerElement);
         if (!CmsContainerpageController.get().shouldShowInContext(containerElement)) {
@@ -379,7 +388,7 @@ public class CmsContainerpageUtil {
         while (it.hasNext()) {
             CmsContainerElementData subElement = it.next();
             if (subElement.getContents().containsKey(container.getContainerId())) {
-                CmsContainerPageElementPanel subDragElement = createElement(subElement, groupContainer);
+                CmsContainerPageElementPanel subDragElement = createElement(subElement, groupContainer, false);
                 groupContainer.add(subDragElement);
             }
         }
@@ -535,5 +544,4 @@ public class CmsContainerpageUtil {
             elementData.getElementView());
         return groupContainer;
     }
-
 }

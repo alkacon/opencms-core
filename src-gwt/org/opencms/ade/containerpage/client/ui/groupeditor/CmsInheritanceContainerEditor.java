@@ -356,7 +356,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                 CmsContainerElementData elementData = getController().getCachedElement(clientId);
                 CmsContainerPageElementPanel containerElement = getController().getContainerpageUtil().createElement(
                     elementData,
-                    getParentContainer());
+                    getParentContainer(),
+                    false);
                 getParentContainer().insert(containerElement, index);
                 index++;
             } catch (Exception e) {
@@ -463,7 +464,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                     try {
                         CmsContainerPageElementPanel elementWidget = util.createElement(
                             element,
-                            getGroupContainerWidget());
+                            getGroupContainerWidget(),
+                            false);
                         elementWidget.setInheritanceInfo(info);
                         setOptionBar(elementWidget);
                         getGroupContainerWidget().add(elementWidget);
@@ -479,7 +481,8 @@ public class CmsInheritanceContainerEditor extends A_CmsGroupEditor {
                     try {
                         CmsContainerPageElementPanel elementWidget = util.createElement(
                             element,
-                            getGroupContainerWidget());
+                            getGroupContainerWidget(),
+                            false);
                         elementWidget.setInheritanceInfo(info);
                         elementWidget.addStyleName(HIDDEN_ELEMENT_CLASS);
                         setOptionBar(elementWidget);

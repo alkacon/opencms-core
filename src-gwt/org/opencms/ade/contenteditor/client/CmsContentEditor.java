@@ -428,15 +428,16 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public static void replaceResourceIds(Element element, String oldId, String newId) {
 
-        String about = element.getAttribute("about");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(about)) {
-            about = about.replace(oldId, newId);
-            element.setAttribute("about", about);
-        }
-        Element child = element.getFirstChildElement();
-        while (child != null) {
-            replaceResourceIds(child, oldId, newId);
-            child = child.getNextSiblingElement();
+        NodeList<Element> children = CmsDomUtil.querySelectorAll(
+            "[property^=\"opencms://\"][about*=\"" + oldId + "\"]",
+            element);
+        if (children.getLength() > 0) {
+            for (int i = 0; i < children.getLength(); i++) {
+                Element child = children.getItem(i);
+                String about = child.getAttribute("about");
+                about = about.replace(oldId, newId);
+                child.setAttribute("about", about);
+            }
         }
     }
 

@@ -277,7 +277,8 @@ public abstract class A_CmsGroupEditor extends Composite {
                 try {
                     CmsContainerPageElementPanel replacer = m_controller.getContainerpageUtil().createElement(
                         elementData,
-                        m_groupContainer);
+                        m_groupContainer,
+                        false);
                     if (element.getInheritanceInfo() != null) {
                         // in case of inheritance container editing, keep the inheritance info
                         replacer.setInheritanceInfo(element.getInheritanceInfo());

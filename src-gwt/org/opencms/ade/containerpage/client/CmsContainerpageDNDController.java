@@ -308,7 +308,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         elementData = m_controller.getCachedElement(m_draggableId);
-                        containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
+                        containerElement = m_controller.getContainerpageUtil().createElement(
+                            elementData,
+                            container,
+                            true);
                         containerElement.setNewType(CmsContainerpageController.getServerId(m_draggableId));
                     } else {
                         elementData = m_controller.getCachedElement(m_draggableId);
@@ -317,7 +320,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                             && (null != m_controller.getCachedElement(elementData.getDndId()))) {
                             elementData = m_controller.getCachedElement(elementData.getDndId());
                         }
-                        containerElement = m_controller.getContainerpageUtil().createElement(elementData, container);
+                        containerElement = m_controller.getContainerpageUtil().createElement(
+                            elementData,
+                            container,
+                            false);
                         if (isListItem) {
                             listContainerElement = containerElement;
                         }

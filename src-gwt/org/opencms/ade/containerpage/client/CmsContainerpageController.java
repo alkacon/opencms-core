@@ -1224,7 +1224,7 @@ public final class CmsContainerpageController {
                         String elementContent = elementData.getContents().get(cont.getContainerId());
                         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
                             try {
-                                replacer = getContainerpageUtil().createElement(elementData, cont);
+                                replacer = getContainerpageUtil().createElement(elementData, cont, false);
                                 cont.insert(replacer, cont.getWidgetIndex(child));
                                 child.removeFromParent();
                                 initializeSubContainers(replacer);
@@ -2489,7 +2489,7 @@ public final class CmsContainerpageController {
         CmsContainerPageElementPanel replacer = null;
         String elementContent = elementData.getContents().get(containerId);
         if ((elementContent != null) && (elementContent.trim().length() > 0)) {
-            replacer = getContainerpageUtil().createElement(elementData, parentContainer);
+            replacer = getContainerpageUtil().createElement(elementData, parentContainer, false);
             if (containerElement.isNew()) {
                 // if replacing element data has the same structure id, keep the 'new' state by setting the new type property
                 // this should only be the case when editing settings of a new element that has not been created in the VFS yet
@@ -3242,9 +3242,9 @@ public final class CmsContainerpageController {
         CmsContainerElement newElementData,
         boolean inline) {
 
+        String oldId = element.getNewType();
         element.setNewType(null);
         if (inline) {
-            String oldId = CmsUUID.getNullUUID().toString();
             String newId = getServerId(newElementData.getClientId());
             CmsContentEditor.replaceResourceIds(element.getElement(), oldId, newId);
         }

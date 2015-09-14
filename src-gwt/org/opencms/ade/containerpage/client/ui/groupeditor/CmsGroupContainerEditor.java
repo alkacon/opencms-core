@@ -251,7 +251,8 @@ public final class CmsGroupContainerEditor extends A_CmsGroupEditor {
             try {
                 CmsContainerPageElementPanel containerElement = getController().getContainerpageUtil().createElement(
                     elementsData.get(element.getClientId()),
-                    getParentContainer());
+                    getParentContainer(),
+                    false);
                 getParentContainer().insert(containerElement, index);
                 index++;
             } catch (Exception e) {
