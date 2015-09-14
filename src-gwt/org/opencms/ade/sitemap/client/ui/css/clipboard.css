@@ -14,9 +14,9 @@ div.clipboardList ul{
 	padding: 0 2px;
 	min-height: 82px;
 }
-.listClearButton{
+.gwt-TabLayoutPanel div.listClearButton{
 	position: absolute;
-	top: -29px;
+	top: -36px;
 	right: 0px;
 }
 

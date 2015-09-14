@@ -4,7 +4,7 @@ div.uploadButton input.uploadFileInput {
 	position: absolute;
 	right: -1px;
 	top: -10px;
-	z-index: 2;
+	z-index: value("constants.css.zIndexInline");
 }
 
 .uploadButton {

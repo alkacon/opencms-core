@@ -6,11 +6,10 @@
 	<ui:with field="containerpage" type="org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle"></ui:with>
 	<ui:style>
 		.buttonPanel{
-			height: 25px;
-		    overflow: hidden;
+			overflow: hidden;
 		    position: absolute;
 		    right: 0;
-		    top: -29px;
+		    top: -36px;
 		    text-align: right;
 		}
 		.buttonPanel > div {
