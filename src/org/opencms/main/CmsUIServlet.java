@@ -47,6 +47,7 @@ import org.apache.commons.logging.Log;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
@@ -221,8 +222,14 @@ public class CmsUIServlet extends VaadinServlet {
                         svc.setCms(cms);
 
                         Document doc = response.getDocument();
+
                         Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
                         if (appLoadingElements.size() > 0) {
+                            for (Node node : appLoadingElements.get(0).childNodes()) {
+                                node.remove();
+
+                            }
+
                             appLoadingElements.get(0).append(CmsVaadinConstants.LOADING_INDICATOR_HTML);
                         }
 
