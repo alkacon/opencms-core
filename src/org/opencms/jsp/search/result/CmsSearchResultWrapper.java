@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.result;
 
 import org.opencms.file.CmsObject;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerDidYouMean;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.search.CmsSearchResource;
@@ -43,6 +44,7 @@ import java.util.Map;
 import org.apache.commons.collections.Transformer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
+import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Wrapper for the whole search result. Also allowing to access the search form controller. */
 public class CmsSearchResultWrapper implements I_SearchResultWrapper {
@@ -108,17 +110,35 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMean()
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanCollated()
      */
-    public String getDidYouMean() {
+    public String getDidYouMeanCollated() {
 
         String suggestion = null;
-        if (null != getController().getDidYouMean()) {
+        I_CmsSearchControllerDidYouMean didYouMeanController = getController().getDidYouMean();
+        if ((null != didYouMeanController) && didYouMeanController.getConfig().getCollate()) {
             if (m_solrResultList.getSpellCheckResponse() != null) {
                 suggestion = m_solrResultList.getSpellCheckResponse().getCollatedResult();
             }
         }
         return suggestion;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanSuggestion()
+     */
+    public Suggestion getDidYouMeanSuggestion() {
+
+        I_CmsSearchControllerDidYouMean didYouMeanController = getController().getDidYouMean();
+        if ((null != didYouMeanController) && (m_solrResultList.getSpellCheckResponse() != null)) {
+            List<Suggestion> suggestionList = m_solrResultList.getSpellCheckResponse().getSuggestions();
+            for (Suggestion suggestion : suggestionList) {
+                if (suggestion.getToken().equals(m_controller.getDidYouMean().getState().getQuery())) {
+                    return suggestion;
+                }
+            }
+        }
+        return null;
     }
 
     /**

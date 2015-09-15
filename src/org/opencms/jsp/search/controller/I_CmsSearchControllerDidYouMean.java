@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
+import org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean;
 
 /** Interface the "Did you mean ...?" controller must implement. */
 public interface I_CmsSearchControllerDidYouMean extends I_CmsSearchController {
@@ -36,5 +37,10 @@ public interface I_CmsSearchControllerDidYouMean extends I_CmsSearchController {
      * @return The configuration.
      */
     I_CmsSearchConfigurationDidYouMean getConfig();
+
+    /** Returns the configuration.
+     * @return The configuration.
+     */
+    I_CmsSearchStateDidYouMean getState();
 
 }

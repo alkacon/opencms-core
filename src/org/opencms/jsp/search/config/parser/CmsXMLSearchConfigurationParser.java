@@ -174,7 +174,9 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_DIDYOUMEAN_QUERYPARAM = "QueryParam";
     /** XML element name. */
-    private static final String XML_ELEMENT_DIDYOUMEAN_QUERY_MODIFIER = "QueryModifier";
+    private static final String XML_ELEMENT_DIDYOUMEAN_COLLATE = "Collate";
+    /** XML element name. */
+    private static final String XML_ELEMENT_DIDYOUMEAN_COUNT = "Count";
 
     /** Default value. */
     private static final String DEFAULT_QUERY_PARAM = "q";
@@ -240,8 +242,9 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             if (null == param) {
                 param = getQueryParam();
             }
-            String modifier = parseOptionalStringValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_QUERY_MODIFIER);
-            return new CmsSearchConfigurationDidYouMean(param, modifier);
+            Boolean collate = parseOptionalBooleanValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COLLATE);
+            Integer count = parseOptionalIntValue(pathPrefix + XML_ELEMENT_DIDYOUMEAN_COUNT);
+            return new CmsSearchConfigurationDidYouMean(param, collate, count);
         }
     }
 
@@ -392,7 +395,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             I_CmsSearchConfigurationFacet.SortOrder order;
             try {
                 order = I_CmsSearchConfigurationFacet.SortOrder.valueOf(sorder);
-            } catch (final Exception e) {
+            } catch (@SuppressWarnings("unused") final Exception e) {
                 order = null;
             }
             final String filterQueryModifier = parseOptionalStringValue(

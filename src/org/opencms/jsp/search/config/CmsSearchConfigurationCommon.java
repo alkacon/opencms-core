@@ -39,7 +39,7 @@ public class CmsSearchConfigurationCommon implements I_CmsSearchConfigurationCom
     private final String m_queryParam;
     /** The request parameter for the last query. */
     private final String m_lastQueryParam;
-    /** A flag, indicating if special query characters should be escaped in the query string */
+    /** A flag, indicating if special query characters should be escaped in the query string. */
     private final boolean m_escapeQueryChars;
     /** The request parameter send to indicate that this is not the first load of the search form. */
     private final String m_reloadedParam;

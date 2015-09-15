@@ -74,6 +74,10 @@
       <Key><![CDATA[results.didyoumean_1]]></Key>
       <Value><![CDATA[Did you mean {0}?]]></Value>
     </Message>
+    <Message>
+      <Key><![CDATA[results.didyoumean_0]]></Key>
+      <Value><![CDATA[Did you mean:]]></Value>
+    </Message>
   </Bundle>
   <Bundle language="de">
     <Message>
@@ -147,6 +151,10 @@
     <Message>
       <Key><![CDATA[results.didyoumean_1]]></Key>
       <Value><![CDATA[Meinten Sie {0}?]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[results.didyoumean_0]]></Key>
+      <Value><![CDATA[Meinten Sie:]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>

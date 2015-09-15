@@ -455,12 +455,24 @@
       <Value><![CDATA[Der Request-Parameter sollte genutzt werden, wenn die Suchanfrage für die "Meinten Sie ...?"-Funktion von der eigentlichen Suchanfrage abweicht. Wird er nicht angegeben, wird die (unmodifizierte) eigentliche Suchanfrage auch für die "Meinten Sie ...?"-Funktion genutzt.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier]]></Key>
-      <Value><![CDATA[Suchanfragen-Modifizierer]]></Value>
+      <Key><![CDATA[label.DidYouMeanConfig.Collate]]></Key>
+      <Value><![CDATA[Kombinierten Vorschlag erzeugen]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier.help]]></Key>
-      <Value><![CDATA[Normalerweise wird die eingegebene Suchanfrage als "spellcheck.q=Suchanfrage" an den Solr-Query angehängt. Durch den Modifizierer, kann "Suchanfrage" ersetzt werden. Der Modifizierer kann das Makro %(query) enthalten, welches durch "Suchanfrage" ersetzt wird. Beispiel: Der Modifizierer "content_en:%(query)" liefert die Anfrage "spellcheck.q=content_en:Suchanfrage".]]></Value>
+      <Key><![CDATA[label.DidYouMeanConfig.Collate.help]]></Key>
+      <Value><![CDATA[Ist diese Option ausgewählt (standard), wird ein kombinierter "optimaler" Vorschlag erzeugt.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.Count]]></Key>
+      <Value><![CDATA[Maximale Anzahl der Vorschläge]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.Count.help]]></Key>
+      <Value><![CDATA[Legen Sie die maximale Anzahl der Vorschläge fest. Standard ist 5.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[validation.error.suggestion.count]]></Key>
+      <Value><![CDATA[Die Anzahl der maximalen Vorschläge muss als nicht-negative Zahl eingegeben werden.]]></Value>
     </Message>
   </Bundle>
   <Bundle language="en">
@@ -917,12 +929,24 @@
       <Value><![CDATA[The request parameter used to transmit the query for the "Did you mean ...?"-feature. If the parameter is not specified, the main query string is used instead of a special alternative query.]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier]]></Key>
-      <Value><![CDATA[Query Modifier]]></Value>
+      <Key><![CDATA[label.DidYouMeanConfig.Collate]]></Key>
+      <Value><![CDATA[Create combined suggestion (collate)]]></Value>
     </Message>
     <Message>
-      <Key><![CDATA[label.DidYouMeanConfig.QueryModifier.help]]></Key>
-      <Value><![CDATA[Usually, the entered search query is passed to Solr as "spellcheck.q=my query". Via the modifier, "my query" can be replaced. The modifier can contain the macro %(query), which is replaced by the original query string. For example, the modifier "content_en:%(query)" will yield "q=content_en:my query" for the original query string "my query".]]></Value>
+      <Key><![CDATA[label.DidYouMeanConfig.Collate.help]]></Key>
+      <Value><![CDATA[If this option is selected (default), an "optimal" suggestion is selected from all suggestions.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.Count]]></Key>
+      <Value><![CDATA[Maximal number of suggestions]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.DidYouMeanConfig.Count.help]]></Key>
+      <Value><![CDATA[Select the maximal number of suggestions. Default is 5.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[validation.error.suggestion.count]]></Key>
+      <Value><![CDATA[The number of maximal suggestions must be given as non-negative number.]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>

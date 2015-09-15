@@ -62,6 +62,8 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     Map<String, I_CmsSearchStateParameters> m_resetFacetMap;
     /** Map from facet names to state parameters with parameters for ignoring the facet's limit added. */
     Map<String, I_CmsSearchStateParameters> m_ignoreLimitFacetMap;
+    /** Map new queries to state parameters with the query replaced by the new query. */
+    Map<String, I_CmsSearchStateParameters> m_newQueryMap;
     /** Map from facet names to state parameters with parameters for ignoring the facet's limit removed. */
     Map<String, I_CmsSearchStateParameters> m_respectLimitFacetMap;
     /** Map from facet names to a map from facet items to state parameters with the item unchecked. */
@@ -191,16 +193,28 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getQueryDidYouMean()
+     * @see org.opencms.jsp.search.result.I_CmsSearchStateParameters#getNewQuery()
      */
     @Override
-    public I_CmsSearchStateParameters getQueryDidYouMean() {
+    public Map<String, I_CmsSearchStateParameters> getNewQuery() {
 
-        final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
-        parameters.put(
-            m_result.getController().getDidYouMean().getConfig().getQueryParam(),
-            new String[] {m_result.getDidYouMean()});
-        return new CmsSearchStateParameters(m_result, parameters);
+        if (m_newQueryMap == null) {
+            m_newQueryMap = CmsCollectionsGenericWrapper.createLazyMap(new Transformer() {
+
+                @Override
+                public Object transform(final Object queryString) {
+
+                    final Map<String, String[]> parameters = new HashMap<String, String[]>(m_params);
+                    String queryKey = m_result.getController().getCommon().getConfig().getQueryParam();
+                    if (parameters.containsKey(queryKey)) {
+                        parameters.remove(queryKey);
+                    }
+                    parameters.put(queryKey, new String[] {(String)queryString});
+                    return new CmsSearchStateParameters(m_result, parameters);
+                }
+            });
+        }
+        return m_newQueryMap;
     }
 
     /**

@@ -141,7 +141,7 @@ public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
         CmsJspContentAccessBean accessBean = null;
         try {
             accessBean = new CmsJspContentAccessBean(m_cmsObject, m_searchResource);
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             // do nothing - simply could not read content;
         }
         return accessBean;
@@ -164,7 +164,7 @@ public class CmsSearchResourceBean implements I_CmsSearchResourceBean {
                             m_cmsObject,
                             CmsLocaleManager.getLocale((String)locale),
                             m_searchResource);
-                    } catch (Exception e) {
+                    } catch (@SuppressWarnings("unused") Exception e) {
                         // simply return null
                     }
                     return accessBean;

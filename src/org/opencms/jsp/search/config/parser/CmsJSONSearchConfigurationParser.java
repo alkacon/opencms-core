@@ -173,7 +173,9 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_DIDYOUMEAN_QUERYPARAM = "didYouMeanQueryParam";
     /** A JSON key. */
-    private static final String JSON_KEY_DIDYOUMEAN_QUERY_MODIFIER = "didYouMeanQueryModifier";
+    private static final String JSON_KEY_DIDYOUMEAN_COLLATE = "didYouMeanCollate";
+    /** A JSON key. */
+    private static final String JSON_KEY_DIDYOUMEAN_COUNT = "didYouMeanCount";
 
     /** The default values. */
     /** A JSON key. */
@@ -236,10 +238,11 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             if (null == param) {
                 param = getQueryParam();
             }
-            String modifier = parseOptionalStringValue(didYouMean, JSON_KEY_DIDYOUMEAN_QUERY_MODIFIER);
-            return new CmsSearchConfigurationDidYouMean(param, modifier);
+            Boolean collate = parseOptionalBooleanValue(didYouMean, JSON_KEY_DIDYOUMEAN_COLLATE);
+            Integer count = parseOptionalIntValue(didYouMean, JSON_KEY_DIDYOUMEAN_COUNT);
+            return new CmsSearchConfigurationDidYouMean(param, collate, count);
 
-        } catch (final JSONException e) {
+        } catch (@SuppressWarnings("unused") final JSONException e) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0));
             return null;
         }
@@ -301,7 +304,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                 formatter,
                 fragmenter,
                 useFastVectorHighlighting);
-        } catch (final JSONException e) {
+        } catch (@SuppressWarnings("unused") final JSONException e) {
             LOG.info(Messages.get().getBundle().key(Messages.LOG_NO_HIGHLIGHTING_CONFIG_0));
             return null;
         }
@@ -340,7 +343,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
                     e);
                 return null;
             }
-        } catch (final JSONException e) {
+        } catch (@SuppressWarnings("unused") final JSONException e) {
             // nothing to do, configuration is optional
             return null;
         }
@@ -380,7 +383,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             I_CmsSearchConfigurationFacet.SortOrder order;
             try {
                 order = I_CmsSearchConfigurationFacet.SortOrder.valueOf(sorder);
-            } catch (final Exception e) {
+            } catch (@SuppressWarnings("unused") final Exception e) {
                 order = null;
             }
             final String filterQueryModifier = parseOptionalStringValue(

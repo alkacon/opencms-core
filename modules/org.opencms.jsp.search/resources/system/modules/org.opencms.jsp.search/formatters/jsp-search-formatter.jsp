@@ -143,10 +143,29 @@
 						<c:when test="${empty search.searchResults}">
 							<h3>
 							<c:choose>
-							<c:when test="${not empty controllers.didYouMean.config && not empty search.didYouMean}" >
-								<fmt:message key="results.didyoumean_1">
-									<fmt:param><a href='<cms:link>${cms.requestContext.uri}?${search.stateParameters.queryDidYouMean}</cms:link>'>${search.didYouMean}</a></fmt:param>
-								</fmt:message>
+							<c:when test="${not empty controllers.didYouMean.config}" >
+								<c:set var="suggestion" value="${search.didYouMeanSuggestion}" />
+								<c:choose>
+								<c:when test="${controllers.didYouMean.config.collate}">
+									<fmt:message key="results.didyoumean_1">
+										<fmt:param><a href='<cms:link>${cms.requestContext.uri}?${search.stateParameters.newQuery[search.didYouMeanCollated]}</cms:link>'>${search.didYouMeanCollated}</a></fmt:param>
+									</fmt:message>
+								</c:when>
+								<c:when test="${not empty suggestion.alternatives and cms:getListSize(suggestion.alternatives) > 0}">
+									<fmt:message key="results.didyoumean_0" />
+									<ul>
+									<c:forEach var="alternative" items="${suggestion.alternatives}" varStatus="status">
+									<li>
+										<a href='<cms:link>${cms.requestContext.uri}?${search.stateParameters.newQuery[alternative]}</cms:link>'>${alternative} (${suggestion.alternativeFrequencies[status.index]})</a>
+									</li>
+									</c:forEach>
+									</ul>
+									?
+								</c:when>
+								<c:otherwise>
+									<fmt:message key="results.noResult" />														
+								</c:otherwise>
+								</c:choose>
 							</c:when>
 							<c:otherwise>
 								<fmt:message key="results.noResult" />														

@@ -70,8 +70,14 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
         q.append("spellcheck=true");
         String queryString = m_state.getQuery();
         queryString = ClientUtils.escapeQueryChars(queryString);
-        q.append("&spellcheck.q=").append(m_config.getModifiedQuery(queryString));
-        q.append("&spellcheck.collate=true");
+        q.append("&spellcheck.q=").append(queryString);
+        if (m_config.getCollate()) {
+            q.append("&spellcheck.collate=true");
+        } else {
+            q.append("&spellcheck.collate=false");
+        }
+        q.append("&spellcheck.extendedResults=true");
+        q.append("&spellcheck.count=" + m_config.getCount());
         return q.toString();
     }
 
@@ -81,6 +87,14 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
     public I_CmsSearchConfigurationDidYouMean getConfig() {
 
         return m_config;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerDidYouMean#getState()
+     */
+    public I_CmsSearchStateDidYouMean getState() {
+
+        return m_state;
     }
 
     /**

@@ -13,7 +13,8 @@
 	<xsd:complexType name="OpenCmsDidYouMeanConfig">
 		<xsd:sequence>
 			<xsd:element name="QueryParam" type="OpenCmsString" minOccurs="0"/>
-			<xsd:element name="QueryModifier" type="OpenCmsString" minOccurs="0"/>
+			<xsd:element name="Collate" type="OpenCmsBoolean" minOccurs="0"/>
+			<xsd:element name="Count" type="OpenCmsString" minOccurs="0"/>
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -23,8 +24,11 @@
 			<resourcebundle name="org.opencms.jsp.search.jsp-search-form-schema" />
 			<searchsettings>
 				<searchsetting element="QueryParam" searchcontent="false" />
-				<searchsetting element="QueryModifier" searchcontent="false" />
+				<searchsetting element="Collate" searchcontent="false" />
 			</searchsettings>
+			<validationrules>
+				<rule element="Count" regex="[0-9]+" type="error" message="%(key.validation.error.suggestion.count) %(validation.path)" />
+			</validationrules>
 		</xsd:appinfo>
 	</xsd:annotation>
 

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.solr.client.solrj.response.FacetField;
+import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Interface of the JSP EL friendly wrapper for all Solr search results and the search form controller. */
 public interface I_SearchResultWrapper {
@@ -46,7 +47,12 @@ public interface I_SearchResultWrapper {
     /** Returns the "Did you mean ...?" suggestion - if did you mean is enabled.
      * @return The "Did you mean ...?" suggestion - if did you mean is enabled.
      */
-    String getDidYouMean();
+    String getDidYouMeanCollated();
+
+    /** Returns the suggestion of "Did you mean ...?" for the complete query - if did you mean is enabled.
+     * @return The suggestion of "Did you mean ...?" for the complete query - if did you mean is enabled.
+     */
+    Suggestion getDidYouMeanSuggestion();
 
     /** Returns the last index of the documents displayed.
      * @return The last index of the documents displayed.

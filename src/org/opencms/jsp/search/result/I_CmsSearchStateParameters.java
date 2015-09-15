@@ -42,10 +42,10 @@ public interface I_CmsSearchStateParameters {
      */
     Map<String, Map<String, I_CmsSearchStateParameters>> getCheckFacetItem();
 
-    /** Returns the search state parameters with adjusted Query parameter for the "Did you mean?" link.
-     * @return The search state parameters with adjusted Query parameter for the "Did you mean?" link.
+    /** Returns the search state parameters with the Query parameter's value adjusted to the key of the map.
+     * @return The search state parameters with the Query parameter's value adjusted to the key of the map.
      */
-    I_CmsSearchStateParameters getQueryDidYouMean();
+    Map<String, I_CmsSearchStateParameters> getNewQuery();
 
     /** Returns the search state parameters with the parameter for ignoring a facet's (specified by first key) limit removed.
      * @return The search state parameters with the parameter for ignoring a facet's (specified by first key) limit removed.
