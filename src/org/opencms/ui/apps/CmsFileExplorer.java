@@ -720,7 +720,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                     addTreeItem(resource, parentId, m_treeContainer);
                 }
             } catch (CmsVfsResourceNotFoundException e) {
-                m_treeContainer.removeItem(id);
+                m_treeContainer.removeItemRecursively(id);
                 LOG.debug(e.getLocalizedMessage(), e);
             } catch (CmsException e) {
                 CmsErrorDialog.showErrorDialog(e);
