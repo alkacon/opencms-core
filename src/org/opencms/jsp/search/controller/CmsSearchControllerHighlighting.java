@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationHighlighting;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Map;
 
@@ -57,42 +58,40 @@ public class CmsSearchControllerHighlighting implements I_CmsSearchControllerHig
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        final StringBuffer query = new StringBuffer("hl=true");
-        query.append("&hl.fl=").append(m_config.getHightlightField());
+        query.set("hl", "true");
+        query.set("hl.fl", m_config.getHightlightField());
         if (m_config.getSnippetsCount() != null) {
-            query.append("&hl.snippets=").append(m_config.getSnippetsCount());
+            query.set("hl.snippets", m_config.getSnippetsCount().toString());
         }
         if (m_config.getFragSize() != null) {
-            query.append("&hl.fragsize=").append(m_config.getFragSize());
+            query.set("hl.fragsize", m_config.getFragSize().toString());
         }
         if (m_config.getAlternateHighlightField() != null) {
-            query.append("&hl.alternateField=").append(m_config.getAlternateHighlightField());
+            query.set("hl.alternateField", m_config.getAlternateHighlightField());
         }
         if (m_config.getMaxAlternateHighlightFieldLength() != null) {
-            query.append("&hl.maxAlternateFieldLength=").append(m_config.getMaxAlternateHighlightFieldLength());
+            query.set("hl.maxAlternateFieldLength", m_config.getMaxAlternateHighlightFieldLength().toString());
         }
         if (m_config.getSimplePre() != null) {
-            query.append("&hl.simple.pre=").append(m_config.getSimplePre());
+            query.set("hl.simple.pre", m_config.getSimplePre());
         }
         if (m_config.getSimplePost() != null) {
-            query.append("&hl.simple.post=").append(m_config.getSimplePost());
+            query.set("hl.simple.post", m_config.getSimplePost());
         }
         if (m_config.getFormatter() != null) {
-            query.append("&hl.formatter=").append(m_config.getFormatter());
+            query.set("hl.formatter", m_config.getFormatter());
         }
         if (m_config.getFragmenter() != null) {
-            query.append("&hl.fragmenter=").append(m_config.getFragmenter());
+            query.set("hl.fragmenter", m_config.getFragmenter());
         }
         if (m_config.getUseFastVectorHighlighting() != null) {
-            query.append("&hl.useFastVectorHighlighting=").append(m_config.getUseFastVectorHighlighting());
+            query.set("hl.useFastVectorHighlighting", m_config.getUseFastVectorHighlighting().toString());
         }
-
-        return query.toString();
     }
 
     /**

@@ -31,6 +31,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetQuery.I_CmsFacetQueryItem;
 import org.opencms.jsp.search.state.CmsSearchStateFacet;
 import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -52,6 +53,36 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
         m_state = new CmsSearchStateFacet();
     }
 
+    /** Add query part for the facet, without filters.
+     * @param query The query part that is extended for the facet
+     */
+    protected void addFacetPart(CmsSolrQuery query) {
+
+        query.set("facet", "true");
+        for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
+            query.set("facet.query", "{!ex=" + m_config.getName() + "}" + q.getQuery());
+        }
+    }
+
+    /** Adds filter parts to the query.
+     * @param query The query.
+     */
+    protected void addFilterQueryParts(CmsSolrQuery query) {
+
+        if (!m_state.getCheckedEntries().isEmpty()) {
+            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
+            StringBuffer value = new StringBuffer();
+            value.append("{!tag=").append(m_config.getName()).append("}(").append(fieldIterator.next());
+            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
+            while (fieldIterator.hasNext()) {
+                value.append(concater);
+                value.append(fieldIterator.next());
+            }
+            value.append(')');
+            query.add("fq", value.toString());
+        }
+    }
+
     /**
      * @see org.opencms.jsp.search.controller.I_CmsSearchController#addParametersForCurrentState(java.util.Map)
      */
@@ -70,15 +101,13 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        StringBuffer query;
-        query = generateFacetPart();
+        addFacetPart(query);
         addFilterQueryParts(query);
-        return query.toString();
     }
 
     /**
@@ -132,35 +161,6 @@ public class CmsSearchControllerFacetQuery implements I_CmsSearchControllerFacet
                 m_state.addChecked(checked);
             }
         }
-    }
-
-    /** Adds filter parts to the query.
-     * @param query The query.
-     */
-    protected void addFilterQueryParts(final StringBuffer query) {
-
-        if (!m_state.getCheckedEntries().isEmpty()) {
-            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
-            query.append("&fq={!tag=").append(m_config.getName()).append("}(").append(fieldIterator.next());
-            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
-            while (fieldIterator.hasNext()) {
-                query.append(concater);
-                query.append(fieldIterator.next());
-            }
-            query.append(')');
-        }
-    }
-
-    /** Generate query part for the facet, without filters.
-     * @return The query part for the facet
-     */
-    protected StringBuffer generateFacetPart() {
-
-        final StringBuffer query = new StringBuffer("facet=true");
-        for (I_CmsFacetQueryItem q : m_config.getQueryList()) {
-            query.append("&facet.query={!ex=").append(m_config.getName()).append("}").append(q.getQuery());
-        }
-        return query;
     }
 
 }

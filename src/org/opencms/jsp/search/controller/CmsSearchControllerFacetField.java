@@ -30,6 +30,7 @@ package org.opencms.jsp.search.controller;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
 import org.opencms.jsp.search.state.CmsSearchStateFacet;
 import org.opencms.jsp.search.state.I_CmsSearchStateFacet;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -51,6 +52,67 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         m_state = new CmsSearchStateFacet();
     }
 
+    /** Adds the query parts for the facet options, except the filter parts.
+     * @param query The query part that is extended with the facet options.
+     * @param fieldPrefix The facet's field used to identify the facet.
+     * @param useLimit Flag, if the limit option should be set.
+     */
+    protected void addCommonQueryParts(CmsSolrQuery query, final String fieldPrefix, final boolean useLimit) {
+
+        // mincount
+        if (m_config.getMinCount() != null) {
+            appendQueryPart(query, fieldPrefix, "mincount", m_config.getMinCount().toString());
+        }
+        // limit
+        if (useLimit && (m_config.getLimit() != null)) {
+            appendQueryPart(query, fieldPrefix, "limit", m_config.getLimit().toString());
+        }
+        // sort
+        if (m_config.getSortOrder() != null) {
+            appendQueryPart(query, fieldPrefix, "sort", m_config.getSortOrder().toString());
+        }
+        // prefix
+        if (!m_config.getPrefix().isEmpty()) {
+            appendQueryPart(query, fieldPrefix, "prefix", m_config.getPrefix());
+        }
+    }
+
+    /** Generate query part for the facet, without filters.
+     * @param query The query, where the facet part should be added
+     */
+    protected void addFacetPart(CmsSolrQuery query) {
+
+        StringBuffer value = new StringBuffer();
+        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
+            value.append("{!ex=").append(m_config.getField()).append('}');
+        }
+        value.append(m_config.getField());
+        query.add("facet.field", value.toString());
+        addCommonQueryParts(query, m_config.getField(), m_state.getUseLimit());
+    }
+
+    /** Adds filter parts to the query.
+     * @param query The query.
+     */
+    protected void addFilterQueryParts(CmsSolrQuery query) {
+
+        if (!m_state.getCheckedEntries().isEmpty()) {
+            StringBuffer value = new StringBuffer();
+            value.append("{!tag=").append(m_config.getField()).append('}');
+            value.append(m_config.getField());
+            value.append(":(");
+            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
+            value.append(m_config.modifyFilterQuery(fieldIterator.next()));
+            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
+            while (fieldIterator.hasNext()) {
+                value.append(concater);
+                value.append(m_config.modifyFilterQuery(fieldIterator.next()));
+            }
+            value.append(')');
+            query.add("fq", value.toString());
+        }
+    }
+
     /**
      * @see org.opencms.jsp.search.controller.I_CmsSearchController#addParametersForCurrentState(java.util.Map)
      */
@@ -69,15 +131,29 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        StringBuffer query;
-        query = generateFacetPart();
+        addFacetPart(query);
         addFilterQueryParts(query);
-        return query.toString();
+    }
+
+    /** Appends the query part for the facet to the query string.
+     * @param query The current query string.
+     * @param fieldPrefix The facet's field used to identify the facet.
+     * @param name The name of the facet parameter, e.g. "limit", "order", ....
+     * @param value The value to set for the parameter specified by name.
+     */
+    protected void appendQueryPart(CmsSolrQuery query, final String fieldPrefix, final String name, final String value) {
+
+        StringBuffer key = new StringBuffer();
+        if ((fieldPrefix != null) && !fieldPrefix.trim().isEmpty()) {
+            key.append("f.").append(fieldPrefix).append('.');
+        }
+        key.append("facet.").append(name);
+        query.add(key.toString(), value);
     }
 
     /**
@@ -131,87 +207,6 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
                 m_state.addChecked(checked);
             }
         }
-    }
-
-    /** Adds filter parts to the query.
-     * @param query The query.
-     */
-    protected void addFilterQueryParts(final StringBuffer query) {
-
-        if (!m_state.getCheckedEntries().isEmpty()) {
-            query.append("&fq={!tag=").append(m_config.getField()).append('}');
-            query.append(m_config.getField());
-            query.append(":(");
-            final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
-            query.append(m_config.modifyFilterQuery(fieldIterator.next()));
-            final String concater = m_config.getIsAndFacet() ? " AND " : " OR ";
-            while (fieldIterator.hasNext()) {
-                query.append(concater);
-                query.append(m_config.modifyFilterQuery(fieldIterator.next()));
-            }
-            query.append(')');
-        }
-    }
-
-    /** Appends the query part for the facet to the query string.
-     * @param query The current query string.
-     * @param fieldPrefix The facet's field used to identify the facet.
-     * @param name The name of the facet parameter, e.g. "limit", "order", ....
-     * @param value The value to set for the parameter specified by name.
-     */
-    protected void appendQueryPart(
-        final StringBuffer query,
-        final String fieldPrefix,
-        final String name,
-        final String value) {
-
-        query.append("&");
-        if ((fieldPrefix != null) && !fieldPrefix.trim().isEmpty()) {
-            query.append("f.").append(fieldPrefix).append('.');
-        }
-        query.append("facet.").append(name).append("=").append(value);
-    }
-
-    /** Generates the query parts for the facet options, except the filter parts.
-     * @param fieldPrefix The facet's field used to identify the facet.
-     * @param useLimit Flag, if the limit option should be set.
-     * @return The common query parts.
-     */
-    protected StringBuffer generateCommonQueryParts(final String fieldPrefix, final boolean useLimit) {
-
-        final StringBuffer queryPart = new StringBuffer();
-        // mincount
-        if (m_config.getMinCount() != null) {
-            appendQueryPart(queryPart, fieldPrefix, "mincount", m_config.getMinCount().toString());
-        }
-        // limit
-        if (useLimit && (m_config.getLimit() != null)) {
-            appendQueryPart(queryPart, fieldPrefix, "limit", m_config.getLimit().toString());
-        }
-        // sort
-        if (m_config.getSortOrder() != null) {
-            appendQueryPart(queryPart, fieldPrefix, "sort", m_config.getSortOrder().toString());
-        }
-        // prefix
-        if (!m_config.getPrefix().isEmpty()) {
-            appendQueryPart(queryPart, fieldPrefix, "prefix", m_config.getPrefix());
-        }
-        return queryPart;
-    }
-
-    /** Generate query part for the facet, without filters.
-     * @return The query part for the facet
-     */
-    protected StringBuffer generateFacetPart() {
-
-        final StringBuffer query = new StringBuffer();
-        query.append("&facet.field=");
-        if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
-            query.append("{!ex=").append(m_config.getField()).append('}');
-        }
-        query.append(m_config.getField());
-        query.append(generateCommonQueryParts(m_config.getField(), m_state.getUseLimit()));
-        return query;
     }
 
 }

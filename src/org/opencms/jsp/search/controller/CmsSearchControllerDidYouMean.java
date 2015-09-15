@@ -30,6 +30,7 @@ package org.opencms.jsp.search.controller;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationDidYouMean;
 import org.opencms.jsp.search.state.CmsSearchStateDidYouMean;
 import org.opencms.jsp.search.state.I_CmsSearchStateDidYouMean;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Map;
 
@@ -60,22 +61,20 @@ public class CmsSearchControllerDidYouMean implements I_CmsSearchControllerDidYo
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        StringBuffer q = new StringBuffer();
-        q.append("spellcheck=true");
+        query.set("spellcheck", "true");
         String queryString = m_state.getQuery();
-        q.append("&spellcheck.q=").append(queryString);
+        query.set("spellcheck.q", queryString);
         if (m_config.getCollate()) {
-            q.append("&spellcheck.collate=true");
+            query.set("spellcheck.collate", "true");
         } else {
-            q.append("&spellcheck.collate=false");
+            query.set("spellcheck.collate", "false");
         }
-        q.append("&spellcheck.extendedResults=true");
-        q.append("&spellcheck.count=" + m_config.getCount());
-        return q.toString();
+        query.set("spellcheck.extendedResults", "true");
+        query.set("spellcheck.count", Integer.valueOf(m_config.getCount()).toString());
     }
 
     /**

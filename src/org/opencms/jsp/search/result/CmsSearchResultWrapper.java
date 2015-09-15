@@ -100,6 +100,17 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         }
     }
 
+    /** Converts the search results from CmsSearchResource to CmsSearchResourceBean.
+     * @param searchResults The collection of search results to transform.
+     */
+    protected void convertSearchResults(final Collection<CmsSearchResource> searchResults) {
+
+        m_foundResources = new ArrayList<I_CmsSearchResourceBean>();
+        for (final CmsSearchResource searchResult : searchResults) {
+            m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
+        }
+    }
+
     /**
      * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getController()
      */
@@ -130,15 +141,21 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     public Suggestion getDidYouMeanSuggestion() {
 
         I_CmsSearchControllerDidYouMean didYouMeanController = getController().getDidYouMean();
+        Suggestion usedSuggestion = null;
         if ((null != didYouMeanController) && (m_solrResultList.getSpellCheckResponse() != null)) {
+            // find most suitable suggestion
             List<Suggestion> suggestionList = m_solrResultList.getSpellCheckResponse().getSuggestions();
+            int queryLength = m_controller.getDidYouMean().getState().getQuery().length();
+            int minDistance = queryLength + 1;
             for (Suggestion suggestion : suggestionList) {
-                if (suggestion.getToken().equals(m_controller.getDidYouMean().getState().getQuery())) {
-                    return suggestion;
+                int currentDistance = Math.abs(queryLength - suggestion.getToken().length());
+                if (currentDistance < minDistance) {
+                    usedSuggestion = suggestion;
+                    minDistance = currentDistance;
                 }
             }
         }
-        return null;
+        return usedSuggestion;
     }
 
     /**
@@ -308,17 +325,6 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
         m_controller.addParametersForCurrentState(parameters);
         return new CmsSearchStateParameters(this, parameters);
-    }
-
-    /** Converts the search results from CmsSearchResource to CmsSearchResourceBean.
-     * @param searchResults The collection of search results to transform.
-     */
-    protected void convertSearchResults(final Collection<CmsSearchResource> searchResults) {
-
-        m_foundResources = new ArrayList<I_CmsSearchResourceBean>();
-        for (final CmsSearchResource searchResult : searchResults) {
-            m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
-        }
     }
 
     /** Removes the !{ex=...} prefix from the query.

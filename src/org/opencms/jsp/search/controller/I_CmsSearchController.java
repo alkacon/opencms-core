@@ -27,10 +27,17 @@
 
 package org.opencms.jsp.search.controller;
 
+import org.opencms.search.solr.CmsSolrQuery;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /** Interface all search controllers must implement. It consists of methods for query generation and state updates. */
 public interface I_CmsSearchController {
+
+    /** Solr query params that can have only one value. */
+    List<String> SET_VARIABLES = Arrays.asList(new String[] {"q", "rows", "start", "sort"});
 
     /** Add the request parameters that reflect the controllers current state (useful for link generation outside of a form).
      * @param parameters The request parameters reflecting the controllers currents state.
@@ -38,8 +45,9 @@ public interface I_CmsSearchController {
     void addParametersForCurrentState(Map<String, String[]> parameters);
 
     /** Generate the Solr query part specific for the controller, e.g., the part for a field facet.
-     * @return The Solr query part contstructed by the controller according to configuration and state. */
-    String generateQuery();
+     * @param query A, possibly empty, query, where further query parts are added
+     */
+    void addQueryParts(CmsSolrQuery query);
 
     /** Update the controllers state in case the term that is search for (the query as given by the user) has changed. */
     void updateForQueryChange();

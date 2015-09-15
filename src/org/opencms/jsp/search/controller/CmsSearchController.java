@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -101,31 +102,22 @@ public class CmsSearchController implements I_CmsSearchControllerMain {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        String query = "";
         final Iterator<I_CmsSearchController> it = m_controllers.iterator();
-        query += it.next().generateQuery();
+        it.next().addQueryParts(query);
         while (it.hasNext()) {
-            final String queryPart = it.next().generateQuery();
-            if (!queryPart.isEmpty()) {
-                if (!query.isEmpty()) {
-                    query += "&";
-                }
-                query += queryPart;
-            }
+            it.next().addQueryParts(query);
         }
         // fix for highlighting bug
-        if ((getHighlighting() != null) && !(query.contains("df=") || query.contains("type="))) {
+        if ((getHighlighting() != null) && !((query.getParams("df") != null) || (query.getParams("type") != null))) {
             String df = getHighlighting().getConfig().getHightlightField().trim();
             int index = df.indexOf(' ');
-            query += "&df=" + (index > 0 ? df.substring(0, index) : df);
+            query.add("df", (index > 0 ? df.substring(0, index) : df));
         }
-        query = query.startsWith("&") ? query.substring(1, query.length()) : query;
-        return query;
     }
 
     /**

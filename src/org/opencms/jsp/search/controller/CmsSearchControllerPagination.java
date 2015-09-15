@@ -30,6 +30,7 @@ package org.opencms.jsp.search.controller;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationPagination;
 import org.opencms.jsp.search.state.CmsSearchStatePagination;
 import org.opencms.jsp.search.state.I_CmsSearchStatePagination;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Map;
 
@@ -64,16 +65,14 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        final StringBuffer query = new StringBuffer();
-        query.append("rows=").append(Integer.toString(m_config.getPageSize()));
+        query.setRows(Integer.valueOf(m_config.getPageSize()));
         final int start = (m_state.getCurrentPage() - 1) * m_config.getPageSize();
-        query.append("&start=").append(Integer.toString(start));
-        return query.toString();
+        query.setStart(Integer.valueOf(start));
     }
 
     /**

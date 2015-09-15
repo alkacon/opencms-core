@@ -28,6 +28,7 @@
 package org.opencms.jsp.search.controller;
 
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationFacetField;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -63,21 +64,19 @@ public class CmsSearchControllerFacetsField implements I_CmsSearchControllerFace
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        String query = "";
         if (!m_fieldFacets.isEmpty()) {
-            query = "facet=true";
+            query.set("facet", "true");
             final Iterator<I_CmsSearchControllerFacetField> it = m_fieldFacets.values().iterator();
-            query += it.next().generateQuery();
+            it.next().addQueryParts(query);
             while (it.hasNext()) {
-                query += it.next().generateQuery();
+                it.next().addQueryParts(query);
             }
         }
-        return query;
     }
 
     /**

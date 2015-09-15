@@ -30,7 +30,10 @@ package org.opencms.jsp.search.controller;
 import org.opencms.jsp.search.config.I_CmsSearchConfigurationCommon;
 import org.opencms.jsp.search.state.CmsSearchStateCommon;
 import org.opencms.jsp.search.state.I_CmsSearchStateCommon;
+import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.util.CmsRequestUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,40 +69,56 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
     }
 
     /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#generateQuery()
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
      */
     @Override
-    public String generateQuery() {
+    public void addQueryParts(CmsSolrQuery query) {
 
-        final StringBuffer query = new StringBuffer();
+        String queryString = m_state.getQuery();
         if (!m_config.getIgnoreQueryParam()) {
-            String queryString = m_state.getQuery();
             if (m_config.getEscapeQueryChars()) {
                 queryString = ClientUtils.escapeQueryChars(queryString);
             }
             if (queryString.isEmpty() && m_config.getSearchForEmptyQueryParam()) {
                 queryString = "*";
             }
-            query.append("&q=").append(m_config.getModifiedQuery(queryString));
+            query.set("q", m_config.getModifiedQuery(queryString));
         }
 
         if (m_config.getSolrIndex() != null) {
-            query.append("&index=").append(m_config.getSolrIndex());
+            query.set("index", m_config.getSolrIndex());
         }
         if (m_config.getSolrCore() != null) {
-            query.append("&core=").append(m_config.getSolrCore());
+            query.set("core", m_config.getSolrCore());
         }
 
         if (!m_config.getExtraSolrParams().isEmpty()) {
-            query.append('&').append(m_config.getExtraSolrParams());
+            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(m_config.getExtraSolrParams());
+            for (String key : extraParamsMap.keySet()) {
+                for (String value : Arrays.asList(extraParamsMap.get(key))) {
+                    if (SET_VARIABLES.contains(key)) {
+                        query.set(key, value);
+                    } else {
+                        query.add(key, value);
+                    }
+                }
+            }
         }
         for (String additionalParam : m_state.getAdditionalParameters().keySet()) {
-            query.append('&').append(
-                resolveMacros(
-                    m_config.getAdditionalParameters().get(additionalParam),
-                    m_state.getAdditionalParameters().get(additionalParam)));
+            String additionalParamString = resolveMacros(
+                m_config.getAdditionalParameters().get(additionalParam),
+                m_state.getAdditionalParameters().get(additionalParam));
+            Map<String, String[]> extraParamsMap = CmsRequestUtil.createParameterMap(additionalParamString);
+            for (String key : extraParamsMap.keySet()) {
+                for (String value : Arrays.asList(extraParamsMap.get(key))) {
+                    if (SET_VARIABLES.contains(key)) {
+                        query.set(key, value);
+                    } else {
+                        query.add(key, value);
+                    }
+                }
+            }
         }
-        return query.toString();
     }
 
     /**
@@ -118,6 +137,16 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
     public I_CmsSearchStateCommon getState() {
 
         return m_state;
+    }
+
+    /** Replaces the %(value) macro accordingly.
+     * @param string The String where the macros should be replaced.
+     * @param value The value used for the replacement.
+     * @return The original String with %(value) macros replaced.
+     */
+    private String resolveMacros(final String string, final String value) {
+
+        return string.replaceAll("\\%\\(value\\)", value);
     }
 
     /**
@@ -160,15 +189,5 @@ public class CmsSearchControllerCommon implements I_CmsSearchControllerCommon {
             }
         }
         m_state.setAdditionalParameters(additionalParameters);
-    }
-
-    /** Replaces the %(value) macro accordingly.
-     * @param string The String where the macros should be replaced.
-     * @param value The value used for the replacement.
-     * @return The original String with %(value) macros replaced.
-     */
-    private String resolveMacros(final String string, final String value) {
-
-        return string.replaceAll("\\%\\(value\\)", value);
     }
 }
