@@ -103,7 +103,7 @@ div.cmsTransparentButton {
 	border-color:value("constants.css.borderColor");
 }
 
-div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-down, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
+div.cmsFontIconButton.cmsState.cmsState-down-hovering, div.cmsFontIconButton.cmsState.cmsState-up-hovering {
 	color:  #2197DB;
 	border-color: transparent;
 	background: transparent;

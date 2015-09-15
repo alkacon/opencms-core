@@ -34,65 +34,83 @@ import com.vaadin.server.FontIcon;
  */
 public enum FontOpenCms implements FontIcon {
 
+    /** The apps icon. */
+    APPS(0xe617),
+
     /** The clipboard icon. */
-    CLIPBOARD(0x43),
+    CLIPBOARD(0xe60f),
 
     /** The context menu icon. */
-    CONTEXT_MENU(0x4d),
+    CONTEXT_MENU(0xe616),
 
     /** The copy locale icon. */
-    COPY_LOCALE(0x6c),
+    COPY_LOCALE(0xe61a),
 
     /** The bulls eye edit icon. */
-    EDIT_POINT(0x45),
+    EDIT_POINT(0xe600),
+
+    /** The disabled bulls eye edit icon. */
+    EDIT_POINT_DISABLED(0xe601),
 
     /** The exit icon. */
-    EXIT(0x58),
+    EXIT(0xe615),
 
     /** The filter icon. */
-    FILTER(0x66),
+    FILTER(0xe60c),
 
     /** The gallery icon. */
-    GALLERY(0x47),
+    GALLERY(0xe611),
 
     /** The help icon. */
-    HELP(0x68),
+    HELP(0xe602),
+
+    /** The disabled help icon. */
+    HELP_DISABLED(0xe603),
+
+    /** The hide icon. */
+    HIDE(0xe609),
 
     /** The info icon. */
-    INFO(0x49),
+    INFO(0xe612),
 
     /** The pen/edit icon. */
-    PEN(0x70),
+    PEN(0xe614),
 
     /** The publish icon. */
-    PUBLISH(0x50),
+    PUBLISH(0xe60e),
 
     /** The redo icon. */
-    REDO(0x72),
+    REDO(0xe607),
 
     /** The remove locale icon. */
-    REMOVE_LOCALE(0x4c),
+    REMOVE_LOCALE(0xe619),
 
     /** The save icon. */
-    SAVE(0x73),
+    SAVE(0xe60b),
 
     /** The save and exit icon. */
-    SAVE_EXIT(0x78),
+    SAVE_EXIT(0xe60a),
 
     /** The search icon. */
-    SEARCH(0x46),
+    SEARCH(0xe60d),
+
+    /** The settings icon. */
+    SETTINGS(0xe618),
+
+    /** The show icon. */
+    SHOW(0xe608),
 
     /** The sitemap icon. */
-    SITEMAP(0x53),
+    SITEMAP(0xe613),
 
     /** The undo icon. */
-    UNDO(0x75),
+    UNDO(0xe606),
 
     /** The upload icon. */
-    UPLOAD(0x55),
+    UPLOAD(0xe604),
 
     /** The wand icon. */
-    WAND(0x57);
+    WAND(0xe610);
 
     /** The icon code point. */
     private int m_codepoint;

@@ -45,7 +45,6 @@ import java.util.Locale;
 
 import com.google.common.collect.ComparisonChain;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
@@ -246,6 +245,6 @@ public class CmsToolBar extends CssLayout {
                 }
             }
         }
-        return createDropDown(FontAwesome.TH_LARGE, layout);
+        return createDropDown(FontOpenCms.APPS, layout);
     }
 }
