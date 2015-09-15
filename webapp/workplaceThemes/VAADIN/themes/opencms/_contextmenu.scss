@@ -1,7 +1,5 @@
 @mixin contextmenu {
 	
-	@include valo;
-	
 	.v-context-menu-container{
 		@include valo-selection-overlay-style;
 	}
