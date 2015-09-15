@@ -1,0 +1,352 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.apps.scheduler;
+
+import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.scheduler.CmsScheduleManager;
+import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.security.CmsRoleViolationException;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsConfirmationDialog;
+import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.list.A_CmsListDialog;
+
+import org.apache.commons.logging.Log;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.themes.ValoTheme;
+
+/**
+ * Table used to display scheduled jobs, together with buttons for modifying the jobs.<p>
+ * The columns containing the buttons are implemented as generated columns.
+ */
+public class CmsJobTable extends Table implements ColumnGenerator {
+
+    /**
+     * Enum representing the actions for which buttons exist in the table rows.<p>
+     */
+    enum Action {
+        /** Enable / disable. */
+        activation,
+
+        /** Create new job from template. */
+        copy,
+
+        /** Deletes the job. */
+        delete,
+
+        /** Edits the job. */
+        edit,
+
+        /** Executes the job immediately. */
+        run;
+    }
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJobTable.class);
+
+    /** Bean container for the table. */
+    private BeanItemContainer<CmsJobBean> m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
+
+    /** Class to call for editing jobs. */
+    private I_CmsJobEditHandler m_jobEditHandler;
+
+    /**
+     * Creates a new instance.<p>
+     */
+    public CmsJobTable() {
+
+        setContainerDataSource(m_beanContainer);
+
+        reloadJobs();
+
+        setVisibleColumns();
+        for (Action action : Action.values()) {
+            addGeneratedColumn(action, this);
+            setColumnWidth(action, 30);
+        }
+
+        setVisibleColumns(
+            Action.edit,
+            Action.activation,
+            Action.copy,
+            Action.delete,
+            Action.run,
+            "name",
+            "className",
+            "lastExecution",
+            "nextExecution");
+        setColumnExpandRatio("name", 1);
+        setColumnExpandRatio("className", 1);
+        setColumnExpandRatio("lastExecution", 1);
+        setColumnExpandRatio("nextExecution", 1);
+        setSortContainerPropertyId("name");
+
+        setColumnHeader(Action.edit, "E");
+        setColumnHeader(Action.activation, "A");
+        setColumnHeader(Action.copy, "C");
+        setColumnHeader(Action.delete, "D");
+        setColumnHeader(Action.run, "X");
+
+        setColumnHeader("name", "Name");
+        setColumnHeader("className", "Class");
+        setColumnHeader("lastExecution", "Last Execution");
+        setColumnHeader("nextExecution", "Next Execution");
+    }
+
+    /**
+     * @see com.vaadin.ui.Table.ColumnGenerator#generateCell(com.vaadin.ui.Table, java.lang.Object, java.lang.Object)
+     */
+    public Object generateCell(Table source, Object itemId, Object columnId) {
+
+        final Action action = (Action)columnId;
+        CmsJobBean jobBean = (CmsJobBean)itemId;
+        final CmsScheduledJobInfo job = jobBean.getJob();
+        final CmsScheduledJobInfo jobClone = (CmsScheduledJobInfo)job.clone();
+
+        String resource = null;
+        switch (action) {
+            case activation:
+                resource = job.isActive() ? A_CmsListDialog.ICON_ACTIVE : A_CmsListDialog.ICON_INACTIVE;
+                break;
+            case copy:
+                resource = "tools/scheduler/buttons/copy.png";
+                break;
+            case delete:
+                resource = A_CmsListDialog.ICON_DELETE;
+                break;
+            case edit:
+                resource = "tools/scheduler/buttons/edit.png";
+                break;
+            case run:
+                resource = "list/rightarrow.png";
+                break;
+            default:
+        }
+
+        Button button = createIconButton(resource, action.name());
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void buttonClick(ClickEvent event) {
+
+                try {
+                    switch (action) {
+                        case activation:
+                            jobClone.setActive(!job.isActive());
+                            writeChangedJob(jobClone);
+                            break;
+                        case copy:
+                            jobClone.setActive(job.isActive());
+                            jobClone.clearId();
+                            m_jobEditHandler.editJob(
+                                jobClone,
+                                "Create copy of job",
+                                new FutureCallback<CmsScheduledJobInfo>() {
+
+                                public void onFailure(Throwable t) {
+                                    // never called
+
+                                }
+
+                                public void onSuccess(CmsScheduledJobInfo result) {
+
+                                    try {
+                                        writeChangedJob(result);
+                                    } catch (CmsException e) {
+                                        CmsErrorDialog.showErrorDialog(e);
+                                    }
+                                }
+                            });
+
+                            break;
+
+                        case delete:
+                            CmsConfirmationDialog.show(
+                                "Do you want to delete the job '" + job.getJobName() + "' now?",
+                                new Runnable() {
+
+                                public void run() {
+
+                                    try {
+                                        OpenCms.getScheduleManager().unscheduleJob(A_CmsUI.getCmsObject(), job.getId());
+                                        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                                        reloadJobs();
+                                    } catch (CmsRoleViolationException e) {
+                                        CmsErrorDialog.showErrorDialog(e);
+                                    }
+
+                                }
+                            });
+                            break;
+
+                        case edit:
+                            if (m_jobEditHandler == null) {
+                                break;
+                            }
+                            m_jobEditHandler.editJob(job, "Edit job", new FutureCallback<CmsScheduledJobInfo>() {
+
+                                public void onFailure(Throwable t) {
+                                    // not called
+
+                                }
+
+                                public void onSuccess(CmsScheduledJobInfo result) {
+
+                                    try {
+                                        CmsJobTable.this.writeChangedJob(result);
+                                    } catch (CmsException e) {
+                                        LOG.error(e.getLocalizedMessage(), e);
+                                        CmsErrorDialog.showErrorDialog(e);
+                                    }
+                                }
+                            });
+
+                            break;
+                        case run:
+                            CmsConfirmationDialog.show(
+                                "Do you want to execute the job '" + job.getJobName() + "' now?",
+                                new Runnable() {
+
+                                public void run() {
+
+                                    CmsScheduleManager scheduler = OpenCms.getScheduleManager();
+                                    scheduler.executeDirectly(job.getId());
+                                }
+                            });
+
+                            break;
+                        default:
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    CmsErrorDialog.showErrorDialog(e, new Runnable() {
+
+                        public void run() {
+                            // do nothing
+
+                        }
+                    });
+
+                }
+
+            }
+        });
+        return button;
+    }
+
+    /**
+     * Reloads the job table data.<p>
+     */
+    public void reloadJobs() {
+
+        m_beanContainer.removeAllItems();
+        for (CmsScheduledJobInfo job : OpenCms.getScheduleManager().getJobs()) {
+            m_beanContainer.addBean(new CmsJobBean(job));
+        }
+        sort();
+        refreshRowCache();
+
+    }
+
+    /**
+     * Sets the job edit handler.<p>
+     *
+     * @param handler the job edit handler
+     */
+    public void setJobEditHandler(I_CmsJobEditHandler handler) {
+
+        m_jobEditHandler = handler;
+    }
+
+    /**
+     * Creates an icon button.<p>
+     *
+     * @param subPath the relative path from the workplace resources folder
+     * @param caption the caption
+     *
+     * @return the created button
+     */
+    Button createIconButton(String subPath, String caption) {
+
+        Button button = new Button();
+        button.setStyleName(ValoTheme.BUTTON_LINK);
+        button.addStyleName(OpenCmsTheme.BUTTON_TABLE_ICON);
+        button.setIcon(getIconResource(subPath));
+        button.setDescription(caption);
+        return button;
+    }
+
+    /**
+     * Gets the icon resource for the given workplace resource path.<p>
+     *
+     * @param subPath the path relative to the workplace resources
+     *
+     * @return the icon resource
+     */
+    ExternalResource getIconResource(String subPath) {
+
+        String resPath = CmsWorkplace.getResourceUri(subPath);
+        return new ExternalResource(resPath);
+    }
+
+    /**
+     * Writes a job to the configuration and reloads the table.<p>
+     *
+     * @param jobInfo the job bean
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void writeChangedJob(CmsScheduledJobInfo jobInfo) throws CmsException {
+
+        // schedule the edited job
+        OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), jobInfo);
+        // update the XML configuration
+        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+
+        reloadJobs();
+    }
+
+}

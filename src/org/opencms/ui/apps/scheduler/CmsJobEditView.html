@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="s:org.opencms.ui.apps.scheduler" />
+</head>
+<body>
+	<v-vertical-layout margin spacing>
+		<v-panel caption="Job settings">
+			<v-form-layout margin spacing style-name="o-dialog-form">
+				<v-text-field _id="m_fieldJobName" caption="%(key.label.jobName)" description="%(key.label.jobName.help)" width="100%" />
+				<v-combo-box _id="m_fieldJobClass" immediate="true" caption="%(key.label.className)" description="%(key.label.className.help)" width="100%"/>
+				<v-combo-box _id="m_fieldCron" immediate="true" width="100%" caption="Cron expression"/>
+				<v-check-box _id="m_fieldReuseInstance" caption="Reuse instance" />
+				<v-check-box _id="m_fieldActive" caption="Active" />
+			</v-form-layout>
+		</v-panel>
+		<v-panel caption="Context info">
+			<v-form-layout margin spacing style-name="o-dialog-form">
+				<v-text-field _id="m_fieldUser" caption="User" width="100%" />
+				<v-text-field _id="m_fieldProject" caption="Project" width="100%" /> 			
+				<f-cms-resource-select-field _id="m_fieldSiteRoot" caption="Site root" width="100%" />
+				<f-cms-resource-select-field _id="m_fieldUri" caption="Requested URI" width="100%" />
+				<v-text-field _id="m_fieldLocale" caption="Locale" width="100%"/>
+				<v-text-field _id="m_fieldEncoding" caption="Encoding"  width="100%"/>
+				<v-text-field _id="m_fieldRemoteAddress" caption="Remote address" width="100%" />
+			</v-form-layout>
+		</v-panel>
+		<v-panel caption="Parameters">
+			<v-form-layout _id="m_paramContainer" margin spacing style-name="o-dialog-form">
+				<v-button _id="m_buttonAddParam">Add parameter</v-button>
+			</v-form-layout>
+		</v-panel>
+		
+	</v-vertical-layout>
+</body>
+</html>

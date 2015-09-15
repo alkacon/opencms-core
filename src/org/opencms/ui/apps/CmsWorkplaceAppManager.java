@@ -33,6 +33,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolManager;
@@ -272,6 +273,7 @@ public class CmsWorkplaceAppManager {
                 new CmsSitemapEditorConfiguration(),
                 new CmsPageEditorConfiguration(),
                 new CmsFileExplorerConfiguration(),
+                new CmsScheduledJobsAppConfig(),
                 new CmsAppHierarchyConfiguration()));
         return result;
     }

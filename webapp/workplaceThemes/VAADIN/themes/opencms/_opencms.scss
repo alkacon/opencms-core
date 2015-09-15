@@ -658,6 +658,35 @@
 	    	font-size: 64px !important;
 	    }
 	}
+	
+	.o-app-content > .v-verticallayout {
+		&.v-margin-left {
+			padding-left: 20px;
+		}
+		
+		&.v-margin-right {
+			padding-right: 20px;
+		}
+	} 
+	
+	
+	.v-button.o-button-table-icon, .v-button.o-button-unpadded {
+		padding: 0px;
+	}
+	
+	.o-dialog-form { 
+	
+			.v-formlayout-row .v-formlayout-captioncell {
+				width: 20% !important;   
+			}
+			
+			.v-formlayout-row .v-formlayout-errorcell {
+			}
+			
+			.v-formlayout-row .v-formlayout-contentcell {
+				width: 80% !important;   
+			}
+	}
 
 }
 

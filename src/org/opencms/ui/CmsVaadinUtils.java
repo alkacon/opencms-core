@@ -27,12 +27,15 @@
 
 package org.opencms.ui;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.io.ByteArrayInputStream;
@@ -41,6 +44,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -48,6 +52,8 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -120,6 +126,31 @@ public final class CmsVaadinUtils {
             LOG.error(e.getLocalizedMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    public static IndexedContainer getAvailableSitesContainer(CmsObject cms, String captionPropertyName) {
+
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            cms,
+            true,
+            true,
+            cms.getRequestContext().getOuFqn());
+        final IndexedContainer availableSites = new IndexedContainer();
+        availableSites.addContainerProperty(captionPropertyName, String.class, null);
+        Locale locale = A_CmsUI.get().getLocale();
+        for (CmsSite site : sites) {
+            Item siteItem = availableSites.addItem(site.getSiteRoot());
+            String title = CmsWorkplace.substituteSiteTitleStatic(site.getTitle(), locale);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                title = site.getSiteRoot();
+            }
+            siteItem.getItemProperty(captionPropertyName).setValue(title);
+        }
+        String currentSiteRoot = cms.getRequestContext().getSiteRoot();
+        if (!availableSites.containsId(currentSiteRoot)) {
+            availableSites.addItem(currentSiteRoot).getItemProperty(captionPropertyName).setValue(currentSiteRoot);
+        }
+        return availableSites;
     }
 
     /**
@@ -324,7 +355,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

@@ -42,6 +42,12 @@ public class OpenCmsTheme {
     public static final String APP_INFO = "o-app-info";
 
     /** CSS style name. */
+    public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
+
+    /** CSS style name. */
+    public static final String BUTTON_UNPADDED = "o-button-unpadded";
+
+    /** CSS style name. */
     public static final String COLOR_BLUE = "o-color-blue";
 
     /** CSS style name. */
@@ -73,6 +79,9 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String DIALOG_CONTENT = "o-dialog-content";
+
+    /** CSS style name. */
+    public static final String DIALOG_FORM = "o-dialog-form";
 
     /** CSS style name. */
     public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";

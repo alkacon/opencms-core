@@ -41,7 +41,6 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -70,7 +69,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -681,6 +679,34 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         readFolder(m_currentFolder);
     }
 
+    public void updateResourceInTree(CmsObject cms, CmsUUID id) {
+
+        try {
+            CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            CmsResource parent = cms.readParentFolder(id);
+            CmsUUID parentId = parent.getStructureId();
+            Item resourceItem = m_treeContainer.getItem(id);
+            if (resourceItem != null) {
+                // use the root path as name in case of the root item
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
+                    parentId == null ? resource.getRootPath() : resource.getName());
+                resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
+                if (parentId != null) {
+                    m_treeContainer.setParent(resource.getStructureId(), parentId);
+                }
+            } else {
+                addTreeItem(resource, parentId, m_treeContainer);
+            }
+        } catch (CmsVfsResourceNotFoundException e) {
+            m_treeContainer.removeItemRecursively(id);
+            LOG.debug(e.getLocalizedMessage(), e);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
     /**
      * Updates the tree items with the given ids.<p>
      *
@@ -691,30 +717,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         CmsObject cms = A_CmsUI.getCmsObject();
 
         for (CmsUUID id : ids) {
-            try {
-                CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-
-                CmsResource parent = cms.readParentFolder(id);
-                CmsUUID parentId = parent.getStructureId();
-                Item resourceItem = m_treeContainer.getItem(id);
-                if (resourceItem != null) {
-                    // use the root path as name in case of the root item
-                    resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
-                        parentId == null ? resource.getRootPath() : resource.getName());
-                    resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-                    if (parentId != null) {
-                        m_treeContainer.setParent(resource.getStructureId(), parentId);
-                    }
-                } else {
-                    addTreeItem(resource, parentId, m_treeContainer);
-                }
-            } catch (CmsVfsResourceNotFoundException e) {
-                m_treeContainer.removeItemRecursively(id);
-                LOG.debug(e.getLocalizedMessage(), e);
-            } catch (CmsException e) {
-                CmsErrorDialog.showErrorDialog(e);
-                LOG.error(e.getLocalizedMessage(), e);
-            }
+            updateResourceInTree(cms, id);
         }
 
     }
@@ -989,27 +992,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
      */
     private ComboBox createSiteSelect(CmsObject cms) {
 
-        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
-            cms,
-            true,
-            true,
-            cms.getRequestContext().getOuFqn());
-        final IndexedContainer availableSites = new IndexedContainer();
-        availableSites.addContainerProperty(SITE_CAPTION, String.class, null);
-        Locale locale = A_CmsUI.get().getLocale();
-        for (CmsSite site : sites) {
-            Item siteItem = availableSites.addItem(site.getSiteRoot());
-            String title = CmsWorkplace.substituteSiteTitleStatic(site.getTitle(), locale);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-                title = site.getSiteRoot();
-            }
-            siteItem.getItemProperty(SITE_CAPTION).setValue(title);
-        }
+        final IndexedContainer availableSites = CmsVaadinUtils.getAvailableSitesContainer(cms, SITE_CAPTION);
         ComboBox combo = new ComboBox(null, availableSites);
-        combo.setInputPrompt("You can click here");
         combo.setTextInputAllowed(true);
         combo.setNullSelectionAllowed(false);
         combo.setWidth("200px");
+        combo.setInputPrompt("You can click here");
         combo.setItemCaptionPropertyId(SITE_CAPTION);
         combo.select(cms.getRequestContext().getSiteRoot());
         combo.setFilteringMode(FilteringMode.CONTAINS);

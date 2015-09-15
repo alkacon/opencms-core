@@ -220,7 +220,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             String context = OpenCms.getSystemInfo().getContextPath();
             String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
             String vaadinVersion = Version.getFullVersion();
-            String vaadinServlet = CmsStringUtil.joinPaths(context, "opencms-login/");
+            String vaadinServlet = CmsStringUtil.joinPaths(context, "workplace/");
             String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
             String autocomplete = params.isPrivatePc() ? "on" : "off";
 

@@ -3112,6 +3112,25 @@ public final class CmsObject {
     }
 
     /**
+     * Reads all resources below the given resource matching the filter criteria,
+     * including the full tree below the path only in case the <code>readTree</code>
+     * parameter is <code>true</code>.<p>
+     *
+     * @param resource the parent resource
+     * @param filter the filter
+     * @param readTree <code>true</code> to read all sub resources
+     *
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsResource> readResources(CmsResource resource, CmsResourceFilter filter, boolean readTree)
+    throws CmsException {
+
+        return m_securityManager.readResources(m_context, resource, filter, readTree);
+    }
+
+    /**
      * Reads all resources below the given path matching the filter criteria,
      * including the full tree below the path.<p>
      *
@@ -3876,7 +3895,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-
+    
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {

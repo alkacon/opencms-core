@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="s:org.opencms.ui.apps.scheduler" />
+</head>
+<body>
+	<v-vertical-layout margin spacing>
+		<v-panel caption="Actions">
+			<v-vertical-layout margin spacing>
+				<v-button _id="m_buttonAddJob">New job</v-button>
+			</v-vertical-layout>
+		</v-panel>
+		
+		<v-panel caption="Jobs">
+			<v-vertical-layout  spacing>
+				<s-cms-job-table _id="m_jobTable" width="100%"/>
+			</v-vertical-layout>
+		</v-panel>
+		<v-vertical-layout _id="m_editorContainer" />
+		
+		
+	</v-vertical-layout>
+</body>
+</html>
