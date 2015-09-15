@@ -29,6 +29,7 @@ package org.opencms.ade.containerpage.client.ui;
 
 import org.opencms.ade.containerpage.client.CmsContainerpageHandler;
 import org.opencms.gwt.client.ui.I_CmsButton;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 
@@ -47,6 +48,16 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
     public CmsToolbarSelectionButton(CmsContainerpageHandler handler) {
 
         super(I_CmsButton.ButtonData.SELECTION, handler);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsToggleButton#getTitle()
+     */
+    @Override
+    public String getTitle() {
+
+        return "";
     }
 
     /**
@@ -78,14 +89,6 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
         } else {
             getHandler().deactivateCurrentButton();
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.CmsToggleButton#getTitle()
-     */
-    @Override
-    public String getTitle() {
-
-        return "";
+        getHandler().showToolbar(active);
     }
 }

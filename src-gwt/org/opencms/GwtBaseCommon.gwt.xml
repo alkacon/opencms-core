@@ -79,6 +79,11 @@
         <when-type-assignable class="org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer"/>
     </generate-with>
 	<set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
+	
+	<!-- Enable Gss with CssResource -->
+	<set-configuration-property name="CssResource.enableGss" value="true" />
+	<set-configuration-property name="CssResource.legacy" value="true" />
+<!--  	<set-configuration-property name="CssResource.conversionMode" value="strict" /> -->
 
 	<!-- down here only debugging stuff, should be commented out for release building -->   
 

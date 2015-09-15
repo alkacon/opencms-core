@@ -32,6 +32,7 @@ import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.file.CmsObject;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
@@ -42,12 +43,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * ADE's session cache.<p>
  *
  * @since 8.0.0
  */
 public final class CmsADESessionCache {
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
 
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
@@ -104,8 +110,11 @@ public final class CmsADESessionCache {
             } catch (NumberFormatException e) {
                 // use the default element view
                 m_elementView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+                LOG.warn("Malformed element view id '" + elementView + "'.", e);
             }
         }
+        // toolbar should be visible initially
+        m_toolbarVisible = true;
     }
 
     /**

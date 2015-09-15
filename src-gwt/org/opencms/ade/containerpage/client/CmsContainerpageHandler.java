@@ -395,22 +395,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
-     * Enables the save and reset button of the tool-bar.<p>
-     *
-     * @param enable <code>true</code> to enable
-     */
-    public void enableSaveReset(boolean enable) {
-
-        if (enable) {
-            m_editor.getSave().enable();
-            m_editor.getReset().enable();
-        } else {
-            m_editor.getSave().disable(Messages.get().key(Messages.GUI_BUTTON_SAVE_DISABLED_0));
-            m_editor.getReset().disable(Messages.get().key(Messages.GUI_BUTTON_RESET_DISABLED_0));
-        }
-    }
-
-    /**
      * Enables the toolbar buttons.<p>
      */
     public void enableToolbarButtons() {
@@ -992,16 +976,17 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Toggles the tool-bars visibility.<p>
+     *
+     * @param show <code>true</code> to show the toolbar
      */
-    public void toggleToolbar() {
+    public void showToolbar(boolean show) {
 
-        if (m_editor.isToolbarVisible()) {
-            m_editor.showToolbar(false);
-            m_controller.setToolbarVisible(false);
-        } else {
+        if (show) {
             m_editor.showToolbar(true);
             m_controller.setToolbarVisible(true);
-            activateSelection();
+        } else {
+            m_editor.showToolbar(false);
+            m_controller.setToolbarVisible(false);
         }
     }
 

@@ -88,20 +88,20 @@ public class CmsToolbar extends Composite {
         final CmsStyleVariable toolbarVisibility) {
 
         if (show) {
-            toolbarVisibility.setValue(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
-            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
-            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
+            toolbarVisibility.setValue(null);
+            //            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
         } else {
-            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
+            //            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
+            //
+            //                public void execute() {
+            //
+            //                    toolbarVisibility.setValue(
+            //                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            //                }
+            //            }, 300);
 
-                public void execute() {
-
-                    toolbarVisibility.setValue(
-                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-                }
-            }, 300);
-            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
+            toolbarVisibility.setValue(
+                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         }
     }
 
@@ -122,7 +122,6 @@ public class CmsToolbar extends Composite {
         if (show) {
             toolbarVisibility.setValue(showClass);
             CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
-            // body.getStyle().setMarginTop(m_bodyMarginTop + 36, Unit.PX);
         } else {
             CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
 
@@ -132,7 +131,6 @@ public class CmsToolbar extends Composite {
                         org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
                 }
             }, 300);
-            // body.getStyle().setMarginTop(m_bodyMarginTop, Unit.PX);
         }
     }
 

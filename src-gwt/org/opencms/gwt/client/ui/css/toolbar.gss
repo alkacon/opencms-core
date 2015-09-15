@@ -1,24 +1,126 @@
-.toolbarHide.toolbar .toolbarBackground{
-	animation: fade_away 0.5s linear;
-	@keyframes fade_away {
-		from {
-			background-color: rgba(255,255,255,1);
-			border-width: 1px;
-			border-color: rgba(201,201,201,1);
-		}
-		99% {
-			background-color: rgba(255,255,255,0);
-			border-width: 1px;
-			border-color: rgba(201,201,201,0);
-		}
-		to {
-			background-color: transparent;
-			border-width: 0;
-			border-color: transparent;
-		}
+@keyframes toolbarfadeaway {
+	from {
+		background-color: rgba(255,255,255,1);
+		border-width: 1px;
+		border-color: rgba(201,201,201,1);
+	}
+	99% {
+		background-color: rgba(255,255,255,0);
+		border-width: 1px;
+		border-color: rgba(201,201,201,0);
+	}
+	to {
+		background-color: rgba(255,255,255,0);
+		border-width: 0;
+		border-color: transparent;
+	}
+}
+@keyframes buttonfadein {
+	to {
+		opacity: 1;
+		height: 40px;
+		visibility: visible;
+	}
+	99% {
+		opacity: 0;
+		height: 40px;
+		visibility: visible;
+	}
+	from {
+		opacity: 0;
+		height: 0;
+		visibility: hidden;
+	}
+}
+	
+@keyframes toolbarfadein {
+	to {
+		background-color: rgba(255,255,255,1);
+		border-width: 1px;
+		border-color: rgba(201,201,201,1);
+	}
+	99% {
+		background-color: rgba(255,255,255,0);
+		border-width: 1px;
+		border-color: rgba(201,201,201,0);
+	}
+	from {
+		background-color: rgba(255,255,255,0);
+		border-width: 0;
+		border-color: transparent;
+	}
+}
+@keyframes buttonfadeaway {
+	from {
+		opacity: 1;
+		height: 40px;
+		visibility: visible;
+	}
+	99% {
+		opacity: 0;
+		height: 40px;
+		visibility: visible;
+	}
+	to {
+		opacity: 0;
+		height: 0;
+		visibility: hidden;
 	}
 }
 
+@keyframes logofadein {
+	to {
+		opacity: 1;
+		display:block;
+	}
+	99% {
+		opacity: 0;
+		display:block;
+	}
+	from {
+		opacity: 0;
+		display:none;
+	}
+}
+@keyframes logofadeaway {
+	from {
+		opacity: 1;
+		display:block;
+	}
+	99% {
+		opacity: 0;
+		display:block;
+	}
+	to {
+		opacity: 0;
+		display:none;
+	}
+}
+
+@keyframes buttonfadein {
+	to {
+		opacity: 1;
+		height: 40px;
+		visibility: visible;
+	}
+	99% {
+		opacity: 0;
+		height: 40px;
+		visibility: visible;
+	}
+	from {
+		opacity: 0;
+		height: 0;
+		visibility: hidden;
+	}
+}
+
+.toolbarHide.toolbar .toolbarBackground{
+	animation: toolbarfadeaway 1s 1 ease-in;
+	background-color: transparent;
+	border-width: 0;
+	border-color: transparent;
+}
 
 .toolbarHide.toolbar .toolbarButtonsRight, .toolbarHide.toolbar .toolbarButtonsLeft{
 	height: 0;
@@ -28,16 +130,28 @@
 }
 
 .toolbarHide.toolbar .toolbarCenter{
+	animation: logofadeaway 1s 1 ease-in;
 	display: none;
 }
 
+.toolbar .toolbarButtonsRight > div, .toolbar .toolbarButtonsLeft > div{
+	animation: buttonfadein 1s 1 ease-out;
+	display: inline-block;
+}
+
 .toolbarHide.toolbar .toolbarButtonsRight > div, .toolbarHide.toolbar .toolbarButtonsLeft > div {
+	animation: buttonfadeaway 1s 1 ease-in;
 	height: 0;
 	overflow: hidden;
 	visibility: hidden;
 }
 
+.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbar .toolbarButtonsLeft > div.toolbarShow {
+	animation: none;
+}
+
 .toolbarHide.toolbar .toolbarButtonsRight > div.toolbarShow, .toolbarHide.toolbar .toolbarButtonsLeft > div.toolbarShow {
+	animation: none;
 	height: 40px;
 	overflow: show;
 	visibility: visible;
@@ -76,6 +190,7 @@
 }
 
 .toolbarBackground{
+	animation: toolbarfadeout 1s 1 ease-in;
 	overflow: hidden;
 	height: 52px;
 	position:absolute;
@@ -96,10 +211,11 @@
   	right:0;
   	top: 4px;
   	text-align: center;
+  	animation: logofadein 1s 1 ease-out;
 }
 
-@sprite .toolbarBackground .toolbarLogo{
-	gwt-image: "coreImages.opencmsLogo"; 
+.toolbarBackground .toolbarLogo{
+	gwt-sprite: "coreImages.opencmsLogo"; 
 	display: inline-block;
   	height: 42px;
   	width: 170px;
@@ -153,6 +269,7 @@ div.toolbarToggle{
 	padding: 3px 3px 1px 3px;
 	z-index: value("constants.css.zIndexDND");
 }
+
 
 .toolbarToggle, .toolbarToggle * {
 	margin: 0;

@@ -37,8 +37,6 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarInfoButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarMoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarResetButton;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarSaveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
@@ -53,12 +51,9 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -134,12 +129,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** Remove button. */
     private CmsToolbarRemoveButton m_remove;
 
-    /** Reset button. */
-    private CmsToolbarResetButton m_reset;
-
-    /** Save button. */
-    private CmsToolbarSaveButton m_save;
-
     /** Selection button. */
     private CmsToolbarSelectionButton m_selection;
 
@@ -148,9 +137,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** The style variable for the display mode for small elements. */
     private CmsStyleVariable m_smallElementsStyle;
-
-    /** The toggle tool-bar button. */
-    private CmsPushButton m_toggleToolbarButton;
 
     /** The tool-bar. */
     private CmsToolbar m_toolbar;
@@ -193,7 +179,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public void disableEditing(String reason) {
 
         CmsContainerpageController.get().reinitializeButtons();
-        m_save.disable(reason);
         m_add.disable(reason);
         m_clipboard.disable(reason);
     }
@@ -209,7 +194,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             }
         }
         m_toolbar.setVisible(false);
-        m_toggleToolbarButton.setVisible(false);
     }
 
     /**
@@ -221,12 +205,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         for (Widget button : m_toolbar.getAll()) {
             // enable all buttons that are not equal save or reset or the page has changes
-            if ((button instanceof I_CmsToolbarButton) && (((button != m_save) && (button != m_reset)) || hasChanges)) {
+            if (button instanceof I_CmsToolbarButton) {
                 ((I_CmsToolbarButton)button).setEnabled(true);
             }
         }
         m_toolbar.setVisible(true);
-        m_toggleToolbarButton.setVisible(true);
     }
 
     /**
@@ -281,26 +264,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     public CmsToolbarPublishButton getPublish() {
 
         return m_publish;
-    }
-
-    /**
-     * Returns the reset button.<p>
-     *
-     * @return the reset button
-     */
-    public CmsToolbarResetButton getReset() {
-
-        return m_reset;
-    }
-
-    /**
-     * Returns the save button.<p>
-     *
-     * @return the save button
-     */
-    public CmsToolbarSaveButton getSave() {
-
-        return m_save;
     }
 
     /**
@@ -377,33 +340,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         m_toolbar = new CmsToolbar();
         RootPanel root = RootPanel.get();
         root.add(m_toolbar);
-        m_toggleToolbarButton = new CmsPushButton();
-        m_toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
-        m_toggleToolbarButton.setSize(Size.small);
-        m_toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        m_toggleToolbarButton.removeStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        m_toggleToolbarButton.addStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        root.add(m_toggleToolbarButton);
-        m_toggleToolbarButton.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                containerpageHandler.toggleToolbar();
-            }
-
-        });
-        m_toggleToolbarButton.addStyleName(I_CmsLayoutBundle.INSTANCE.containerpageCss().toolbarToggle());
-
-        m_save = new CmsToolbarSaveButton(containerpageHandler);
-        m_save.addClickHandler(clickHandler);
-        // save and reset buttons are hidden, as changes will be saved immediately
-        m_save.setVisible(false);
-        m_toolbar.addLeft(m_save);
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
         m_publish.addClickHandler(clickHandler);
@@ -464,12 +400,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
 
-        m_reset = new CmsToolbarResetButton(containerpageHandler);
-        m_reset.addClickHandler(clickHandler);
-        m_toolbar.addRight(m_reset);
-        // save and reset buttons are hidden, as changes will be saved immediately
-        m_reset.setVisible(false);
-        containerpageHandler.enableSaveReset(false);
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         m_toolbarVisibility.setValue(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
@@ -506,18 +436,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-                                                       $wnd.__openStacktraceDialog = function(event) {
-                                                       event = (event) ? event : ((window.event) ? window.event : "");
-                                                       var elem = (event.target) ? event.target : event.srcElement;
-                                                       if (elem != null) {
-                                                       var children = elem.getElementsByTagName("span");
-                                                       if (children.length > 0) {
-                                                       var title = children[0].getAttribute("title");
-                                                       var content = children[0].innerHTML;
-                                                       @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                                                       }
-                                                       }
-                                                       }
-                                                       }-*/;
+        $wnd.__openStacktraceDialog = function(event) {
+            event = (event) ? event : ((window.event) ? window.event : "");
+            var elem = (event.target) ? event.target : event.srcElement;
+            if (elem != null) {
+                var children = elem.getElementsByTagName("span");
+                if (children.length > 0) {
+                    var title = children[0].getAttribute("title");
+                    var content = children[0].innerHTML;
+                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                }
+            }
+        }
+    }-*/;
 
 }

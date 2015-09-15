@@ -2671,7 +2671,7 @@ public interface I_CmsLayoutBundle extends ClientBundle {
      *
      * @return the toolbar CSS
      */
-    @Source("toolbar.css")
+    @Source("toolbar.gss")
     I_CmsToolbarCss toolbarCss();
 
     /**

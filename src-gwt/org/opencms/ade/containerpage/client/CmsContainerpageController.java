@@ -3381,13 +3381,10 @@ public final class CmsContainerpageController {
         if (changed) {
             if (!m_pageChanged) {
                 m_pageChanged = changed;
-                if (lockContainerpage()) {
-                    m_handler.enableSaveReset(!isEditingDisabled());
-                }
+                lockContainerpage();
             }
         } else {
             m_pageChanged = changed;
-            m_handler.enableSaveReset(false);
             if (unlock) {
                 unlockContainerpage();
             }
