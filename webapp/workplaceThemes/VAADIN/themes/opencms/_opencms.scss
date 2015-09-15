@@ -5,6 +5,53 @@
   @return $start 2%, $end 98%;
 }
 
+@mixin workplace-form-wide {
+	.o-formlayout-workplace-main { 
+
+		.v-formlayout-row .v-formlayout-captioncell {
+			width: 20% !important;   
+		}
+		
+		.v-formlayout-row .v-formlayout-errorcell {
+		}
+		
+		.v-formlayout-row .v-formlayout-contentcell {
+			width: 80% !important;   
+		}
+	}
+ 
+}
+
+@mixin workplace-form-narrow {
+		.o-formlayout-workplace-main { 
+			.v-formlayout-row .v-formlayout-captioncell {
+				display: inline-block;  
+				margin-left: 0px !important; 
+				padding-left: 0px !important;
+			}
+			
+			.v-formlayout-row .v-formlayout-errorcell {
+				display: inline-block;
+				margin-left: 0px !important;   
+			}
+			
+			.v-formlayout-row .v-formlayout-contentcell {
+				display: block;  
+			}
+			
+			tr.v-formlayout-row { 
+				display: block;
+				padding-left: 8px;
+				padding-right: 8px;
+			}
+			
+			 .v-formlayout-row > td {
+			 	padding-top: 0px !important;
+			 }
+		 }
+}
+
+
 @mixin opencms {
   @include valo;
   
@@ -136,10 +183,13 @@
   			width: 500px;
   		}
   	}
+  	@include workplace-form-wide;
   }
   
   .o-responsive[width-range~="0-983px"]{
   	/* small screen styles */
+  	
+  	@include workplace-form-narrow;
  	
   	.o-toolbar{
   		.o-toolbar-items-left, .o-toolbar-items-right{
@@ -150,6 +200,8 @@
   
   .o-responsive[width-range~="984px-1240px"]{
   	/* medium screen styles */
+
+  	@include workplace-form-wide;
   	
  	.o-toolbar{
   		.o-toolbar-items-left, .o-toolbar-items-right{
@@ -539,6 +591,7 @@
 	    top: 50%;
 	    left: 50%;
 	}
+	
 
 }
 

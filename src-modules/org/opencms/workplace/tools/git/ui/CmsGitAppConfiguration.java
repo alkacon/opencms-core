@@ -41,13 +41,22 @@ import java.util.Locale;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
+/**
+ * App configuration for the Git checkin tool.<p>
+ */
 public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
     public String getAppCategory() {
 
         return "Main";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppInstance()
+     */
     public I_CmsWorkplaceApp getAppInstance() {
 
         return new I_CmsWorkplaceApp() {
@@ -56,6 +65,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
                 CmsGitCheckin checkin = new CmsGitCheckin(A_CmsUI.getCmsObject());
                 context.setAppContent(new CmsGitToolOptionsPanel(checkin));
+                context.showInfoArea(false);
             }
 
             public void onStateChange(String state) {
@@ -66,36 +76,57 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
         };
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
     public String getButtonStyle() {
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_ORANGE;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     */
     public String getHelpText(Locale locale) {
 
         return "Provides git checkin functionality.";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getIcon()
+     */
     public Resource getIcon() {
 
         return FontAwesome.GIT_SQUARE;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getId()
+     */
     public String getId() {
 
         return "gitCheckin";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
     public String getName(Locale locale) {
 
         return "Git check in";
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     */
     public int getOrder() {
 
         return 200;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, "");

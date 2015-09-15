@@ -42,12 +42,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -67,45 +65,96 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+/**
+ * Main widget for the Git check-in tool.<p>
+ */
 public class CmsGitToolOptionsPanel extends VerticalLayout {
 
+    /**
+     * Enum describing the type of action to perform.<p>
+     */
     enum ActionType {
-        checkIn, resetHead, resetRemoteHead;
+        /** Check in. */
+        checkIn,
+
+        /** Reset to HEAD. */
+        resetHead,
+
+        /** Reset to remote head. */
+        resetRemoteHead;
     }
 
-    private CheckBox m_ignoreUnclean;
-    private CheckBox m_pullFirst;
-    private CheckBox m_copyAndUnzip;
-    private CheckBox m_addAndCommit;
-    private TextArea m_commitMessage;
-    private CheckBox m_pullAfterCommit;
-    private CheckBox m_pushAutomatically;
-    private CheckBox m_excludeLib;
-    private Button m_checkinSelected;
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
-    private Button m_cancel;
-
-    private ActionType m_mode = ActionType.checkIn;
-
-    private ComboBox m_moduleSelector;
-
-    private VerticalLayout m_moduleSelectionContainer;
-
-    private CmsGitCheckin m_checkinBean;
-    private Button m_toggleOptions;
-
-    private Set<String> m_selectedModules = Sets.newHashSet();
-
-    private Map<String, CheckBox> m_moduleCheckboxes = Maps.newHashMap();
-
-    private Button m_deselectAll;
+    /** True when advanced options are currently visible. */
     protected boolean m_advancedVisible = false;
 
+    /** Map of check boxes for selectable modules, with the module names as keys. */
+    Map<String, CheckBox> m_moduleCheckboxes = Maps.newHashMap();
+
+    /** Field for 'Add and commit' setting. */
+    private CheckBox m_addAndCommit;
+
+    /** Cancel button. */
+    private Button m_cancel;
+
+    /** The check-in bean. */
+    private CmsGitCheckin m_checkinBean;
+
+    /** Button for check-in. */
+    private Button m_checkinSelected;
+
+    /** Field for 'Commit message' setting. */
+    private TextArea m_commitMessage;
+
+    /** Field for 'Copy and unzip' setting. */
+    private CheckBox m_copyAndUnzip;
+
+    /** Current window (using an array so the Vaadin field binder doesn't process this. */
     private Window[] m_currentWindow = new Window[] {null};
 
+    /** Button for deselecting all modules. */
+    private Button m_deselectAll;
+
+    /** The field for the email address. */
     private TextField m_emailField;
+
+    /** Field for 'Exclude lib' setting. */
+    private CheckBox m_excludeLib;
+
+    /** Field for 'Ignroe unclean' setting. */
+    private CheckBox m_ignoreUnclean;
+
+    /** Selected mode. */
+    private ActionType m_mode = ActionType.checkIn;
+
+    /** Container for the module selector. */
+    private VerticalLayout m_moduleSelectionContainer;
+
+    /** Module selector. */
+    private ComboBox m_moduleSelector;
+
+    /** Field for 'Pull after commit' setting. */
+    private CheckBox m_pullAfterCommit;
+
+    /** Field for 'Pull first' setting. */
+    private CheckBox m_pullFirst;
+
+    /** Field for 'Push automatically' setting. */
+    private CheckBox m_pushAutomatically;
+
+    /** Button used to toggle advanced options. */
+    private Button m_toggleOptions;
+
+    /** The field for the git user name. */
     private TextField m_userField;
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param checkinBean the bean to be used for the check-in operation.
+     */
     public CmsGitToolOptionsPanel(CmsGitCheckin checkinBean) {
         m_checkinBean = checkinBean;
         if (!checkinBean.isConfigFileReadable()) {
@@ -151,6 +200,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         });
         m_checkinSelected.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void buttonClick(ClickEvent event) {
 
                 runAction(ActionType.checkIn);
@@ -159,12 +210,16 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         });
         m_cancel.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
             public void buttonClick(ClickEvent event) {
 
                 A_CmsUI.get().getPage().setLocation(CmsVaadinUtils.getWorkplaceLink());
             }
         });
         m_deselectAll.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void buttonClick(ClickEvent event) {
 
@@ -176,9 +231,16 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         });
     }
 
+    /**
+     * Opens a modal window with the given component as content.<p>
+     *
+     * @param component the window content
+     *
+     * @return the window which is opened
+     */
     public Window addAsWindow(Component component) {
 
-        // Have to use a stupid array because Vaadin declarative tries to bind the field otherwise
+        // Have to use an array because Vaadin declarative tries to bind the field otherwise
         if (m_currentWindow[0] != null) {
             m_currentWindow[0].close();
             m_currentWindow[0] = null;
@@ -195,6 +257,11 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         return window;
     }
 
+    /**
+     * Adds a check box and info widget for a module which should be selectable for check-in.<p>
+     *
+     * @param moduleName the name of the module
+     */
     public void addSelectableModule(final String moduleName) {
 
         boolean enabled = OpenCms.getModuleManager().hasModule(moduleName);
@@ -214,7 +281,12 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_moduleSelectionContainer.addComponent(line, m_moduleSelectionContainer.getComponentCount() - 1);
     }
 
-    public Collection<String> getDirectlySelectedModules() {
+    /**
+     * Gets the modules which are selected for check-in.<p>
+     *
+     * @return the selected modules
+     */
+    public Collection<String> getSelectedModules() {
 
         List<String> result = Lists.newArrayList();
         for (Map.Entry<String, CheckBox> entry : m_moduleCheckboxes.entrySet()) {
@@ -225,20 +297,25 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         return result;
     }
 
-    public void runAction(ActionType mode) {
+    /**
+     * Executes one of the dialog actions.<p>
+     *
+     * @param action the action to perform
+     */
+    public void runAction(ActionType action) {
 
-        m_mode = mode;
+        m_mode = action;
         setActionFlags();
         setCommonParameters();
         m_checkinBean.clearModules();
-        for (String moduleName : getDirectlySelectedModules()) {
+        for (String moduleName : getSelectedModules()) {
             m_checkinBean.addModuleToExport(moduleName);
         }
         int result = m_checkinBean.checkIn();
         String log = m_checkinBean.getLogText();
         String message = null;
         boolean error = false;
-        switch (mode) {
+        switch (action) {
             case checkIn:
                 List<Button> resetButtons = new ArrayList<Button>();
 
@@ -246,6 +323,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 resetHead.setDescription(
                     "Reset local repository to HEAD. You lose uncommitted changes but get a clean repository.");
                 resetHead.addClickListener(new ClickListener() {
+
+                    private static final long serialVersionUID = 1L;
 
                     public void buttonClick(ClickEvent event) {
 
@@ -257,6 +336,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 resetRemoteHead.setDescription(
                     "Reset local repository to the head of the remote branch for conflict resolving. You lose all local changes, even committed, but unpushed ones.");
                 resetRemoteHead.addClickListener(new ClickListener() {
+
+                    private static final long serialVersionUID = 1L;
 
                     public void buttonClick(ClickEvent event) {
 
@@ -312,6 +393,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         }
     }
 
+    /**
+     * Sets the flags for the current action.<p>
+     */
     public void setActionFlags() {
 
         switch (m_mode) {
@@ -326,10 +410,18 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
             case resetRemoteHead:
                 m_checkinBean.setResetHead(false);
                 m_checkinBean.setResetRemoteHead(true);
+                break;
+            default:
+                break;
         }
 
     }
 
+    /**
+     * Changes visibility of the advanced options.<p>
+     *
+     * @param visible true if the options should be shown
+     */
     public void setAdvancedVisible(boolean visible) {
 
         for (Component component : getAdvancedOptions()) {
@@ -339,12 +431,17 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_toggleOptions.setCaption(visible ? "Hide options" : "Show options");
     }
 
+    /**
+     * Updates the selection widget for adding new modules.<p>
+     */
     public void updateNewModuleSelector() {
 
         ComboBox newModuleSelector = createModuleSelector();
         ((AbstractLayout)(m_moduleSelector.getParent())).replaceComponent(m_moduleSelector, newModuleSelector);
         m_moduleSelector = newModuleSelector;
         m_moduleSelector.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void valueChange(ValueChangeEvent event) {
 
@@ -355,6 +452,11 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         });
     }
 
+    /**
+     * Creates a new module selector, containing only the modules for which no check box is already displayed.<p>
+     *
+     * @return the new module selector
+     */
     private ComboBox createModuleSelector() {
 
         ComboBox result = new ComboBox();
@@ -378,6 +480,11 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         return result;
     }
 
+    /**
+     * Gets the fields which should be shown/hidden when the user toggles the advanced options.<p>
+     *
+     * @return the list of advanced options
+     */
     private List<? extends Component> getAdvancedOptions() {
 
         return Arrays.asList(
@@ -390,6 +497,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
             m_excludeLib);
     }
 
+    /**
+     * Transfers the parameters from the form to the check-in bean.<p>
+     */
     private void setCommonParameters() {
 
         m_checkinBean.setPullBefore(m_pullFirst.getValue().booleanValue());

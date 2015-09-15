@@ -75,6 +75,9 @@ public class OpenCmsTheme {
     public static final String DIALOG_CONTENT = "o-dialog-content";
 
     /** CSS style name. */
+    public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
+
+    /** CSS style name. */
     public static final String HIDDEN = "hidden";
 
     /** CSS style name. */
@@ -148,4 +151,5 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
+
 }
