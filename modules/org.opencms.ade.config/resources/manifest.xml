@@ -304,6 +304,12 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
 				name="modelgroup" id="314">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>				
 				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
 				</param>
 			</type>
