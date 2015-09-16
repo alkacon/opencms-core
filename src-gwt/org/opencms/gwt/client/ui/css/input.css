@@ -491,7 +491,8 @@ div.selectionInput>input[type=text]{
 
 div.selectionInput div.fader{   	
 	right: 21px;
-	bottom: 1px;
+	bottom: 0px;
+	position: absolute;
 }
 div.selectionInput .opener{
 	position: absolute;
