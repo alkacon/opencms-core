@@ -218,16 +218,14 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
         Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight) + 50;
+        int newHeight = Math.min(spaceLeft, contentHeight + 47);
         boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
         if (changedHeight || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
             int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
             CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
-            widget.setHeight((newHeight - 44) + "px");
+            widget.setHeight((newHeight - 34) + "px");
             widget.onResizeDescendant();
-            //dialog.center();
         }
     }
-
 }

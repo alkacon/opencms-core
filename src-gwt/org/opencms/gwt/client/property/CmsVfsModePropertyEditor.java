@@ -262,7 +262,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         Element innerElement = tabWidget.getWidget().getElement();
         int contentHeight = CmsDomUtil.getCurrentStyleInt(innerElement, Style.height);
         int spaceLeft = dialog.getAvailableHeight(0);
-        int newHeight = Math.min(spaceLeft, contentHeight) + 46;
+        int newHeight = Math.min(spaceLeft, contentHeight + 47);
         boolean changedHeight = m_panel.getTabPanel().getOffsetHeight() != newHeight;
         if (changedHeight || changedTab) {
             m_panel.getTabPanel().setHeight(newHeight + "px");
