@@ -67,6 +67,7 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
             CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
             navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
             navlevel.setIcon("navlevel.png");
+            navlevel.setBigIcon("navlevel_big.png");
             addCssForType(navlevel);
             addResourceNotFoundIconRule();
             return m_buffer.toString();

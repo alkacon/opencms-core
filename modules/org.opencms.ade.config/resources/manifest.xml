@@ -33,39 +33,46 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.ade.config/" />
+			<resource uri="/system/workplace/resources/filetypes/category.png" />
+			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/configfolder_big.png" />
-			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
-			<resource
-				uri="/system/workplace/resources/filetypes/module_config_big.png" />
-			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
-			<resource
-				uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/containerpage.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/containerpage_big.png" />
-			<resource uri="/system/workplace/resources/filetypes/elementgroup.png" />
-			<resource
-				uri="/system/workplace/resources/filetypes/elementgroup_big.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/containerpage_template.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/containerpage_template_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/elementgroup.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/elementgroup_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/formatter_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/formatter_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/function.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/function_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
-			<resource uri="/system/workplace/resources/filetypes/subsitemap.png" />
-			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/modelpage.png" />
 			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
-			<resource uri="/system/workplace/resources/filetypes/category.png" />
-			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
-
-			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
+			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
 			<resource
-				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
+				uri="/system/workplace/resources/filetypes/module_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/navlevel.png" />
+			<resource uri="/system/workplace/resources/filetypes/navlevel_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/subsitemap.png" />
+			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png" />
 		</resources>
 		<parameters />
 		<resourcetypes>
@@ -1097,7 +1104,6 @@
 			<relations />
 			<accesscontrol />
 		</file>
-
 		<file>
 			<source>system/workplace/resources/filetypes/navlevel.png
 			</source>
@@ -1119,6 +1125,26 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/navlevel_big.png</source>
+			<destination>system/workplace/resources/filetypes/navlevel_big.png</destination>
+			<type>image</type>
+			<uuidstructure>d1180e28-5c7d-11e5-b2da-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>d1180e29-5c7d-11e5-b2da-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Wed, 16 Sep 2015 14:18:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Sep 2015 14:18:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/containerpage.png
@@ -1164,9 +1190,6 @@
 			<relations />
 			<accesscontrol />
 		</file>
-
-
-
 		<file>
 			<source>system/workplace/resources/filetypes/modelpage_big.png
 			</source>
@@ -1255,28 +1278,6 @@
 			<relations />
 			<accesscontrol />
 		</file>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		<file>
 			<source>system/workplace/resources/filetypes/function.png</source>
 			<destination>system/workplace/resources/filetypes/function.png
@@ -1504,7 +1505,6 @@
 			<relations />
 			<accesscontrol />
 		</file>
-
 		<file>
 			<source>system/workplace/resources/filetypes/formatter_config.png
 			</source>

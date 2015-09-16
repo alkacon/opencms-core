@@ -80,6 +80,7 @@ import org.opencms.gwt.client.ui.tree.I_CmsLazyOpenHandler;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -667,7 +668,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     public String getIconForEntry(CmsClientSitemapEntry entry) {
 
         if (!entry.isSubSitemapType() && entry.isNavigationLevelType()) {
-            return "cms_type_icon " + I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navigationLevelIcon();
+            return CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_NAVLEVEL, false);
         }
         String iconClass = CmsIconUtil.getResourceIconClasses(entry.getResourceTypeName(), entry.getSitePath(), false);
         if (isNavigationMode()) {
