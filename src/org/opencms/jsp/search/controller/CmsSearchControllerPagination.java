@@ -115,7 +115,7 @@ public class CmsSearchControllerPagination implements I_CmsSearchControllerPagin
                 try {
                     m_state.setCurrentPage(Integer.valueOf(page[0]).intValue());
                     return;
-                } catch (final NumberFormatException e) {
+                } catch (@SuppressWarnings("unused") final NumberFormatException e) {
                     m_state.setCurrentPage(DEFAULT_PAGE);
                 }
             }

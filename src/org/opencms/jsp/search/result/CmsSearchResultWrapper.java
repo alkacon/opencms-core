@@ -31,7 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerDidYouMean;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
+import org.opencms.search.CmsSearchException;
 import org.opencms.search.CmsSearchResource;
+import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
@@ -71,43 +73,49 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     private Map<String, Integer> m_facetQuery;
     /** CmsObject. */
     private final CmsObject m_cmsObject;
+    /** Search exception, if one occurs. */
+    private final CmsSearchException m_exception;
+    /** The search query sent to Solr. */
+    private final CmsSolrQuery m_query;
 
     /** Constructor taking the main search form controller and the result list as normally returned.
      * @param controller The main search form controller.
      * @param resultList The result list as returned from OpenCms' embedded Solr server.
+     * @param query The complete query send to Solr.
      * @param cms The Cms object used to access XML contents, if wanted.
+     * @param exception Search exception, or <code>null</code> if no exception occurs.
      */
     public CmsSearchResultWrapper(
         final I_CmsSearchControllerMain controller,
         final CmsSolrResultList resultList,
-        final CmsObject cms) {
+        final CmsSolrQuery query,
+        final CmsObject cms,
+        final CmsSearchException exception) {
 
         m_controller = controller;
         m_solrResultList = resultList;
         m_cmsObject = cms;
-        convertSearchResults(resultList);
-        final long l = resultList.getStart() == null ? 1 : resultList.getStart().longValue() + 1;
-        m_start = Long.valueOf(l);
-        m_end = resultList.getEnd();
-        m_numFound = resultList.getNumFound();
-        m_maxScore = resultList.getMaxScore();
-        if (resultList.getFacetQuery() != null) {
-            Map<String, Integer> originalMap = resultList.getFacetQuery();
-            m_facetQuery = new HashMap<String, Integer>(originalMap.size());
-            for (String q : resultList.getFacetQuery().keySet()) {
-                m_facetQuery.put(removeLocalParamPrefix(q), originalMap.get(q));
+        m_exception = exception;
+        m_query = query;
+        if (resultList != null) {
+            convertSearchResults(resultList);
+            final long l = resultList.getStart() == null ? 1 : resultList.getStart().longValue() + 1;
+            m_start = Long.valueOf(l);
+            m_end = resultList.getEnd();
+            m_numFound = resultList.getNumFound();
+            m_maxScore = resultList.getMaxScore();
+            if (resultList.getFacetQuery() != null) {
+                Map<String, Integer> originalMap = resultList.getFacetQuery();
+                m_facetQuery = new HashMap<String, Integer>(originalMap.size());
+                for (String q : resultList.getFacetQuery().keySet()) {
+                    m_facetQuery.put(removeLocalParamPrefix(q), originalMap.get(q));
+                }
             }
-        }
-    }
-
-    /** Converts the search results from CmsSearchResource to CmsSearchResourceBean.
-     * @param searchResults The collection of search results to transform.
-     */
-    protected void convertSearchResults(final Collection<CmsSearchResource> searchResults) {
-
-        m_foundResources = new ArrayList<I_CmsSearchResourceBean>();
-        for (final CmsSearchResource searchResult : searchResults) {
-            m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
+        } else {
+            m_start = null;
+            m_end = 0;
+            m_numFound = 0;
+            m_maxScore = null;
         }
     }
 
@@ -128,7 +136,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         String suggestion = null;
         I_CmsSearchControllerDidYouMean didYouMeanController = getController().getDidYouMean();
         if ((null != didYouMeanController) && didYouMeanController.getConfig().getCollate()) {
-            if (m_solrResultList.getSpellCheckResponse() != null) {
+            if ((m_solrResultList != null) && (m_solrResultList.getSpellCheckResponse() != null)) {
                 suggestion = m_solrResultList.getSpellCheckResponse().getCollatedResult();
             }
         }
@@ -142,7 +150,8 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
 
         I_CmsSearchControllerDidYouMean didYouMeanController = getController().getDidYouMean();
         Suggestion usedSuggestion = null;
-        if ((null != didYouMeanController) && (m_solrResultList.getSpellCheckResponse() != null)) {
+        if ((null != didYouMeanController)
+            && ((m_solrResultList != null) && (m_solrResultList.getSpellCheckResponse() != null))) {
             // find most suitable suggestion
             List<Suggestion> suggestionList = m_solrResultList.getSpellCheckResponse().getSuggestions();
             int queryLength = m_controller.getDidYouMean().getState().getQuery().length();
@@ -168,6 +177,14 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getException()
+     */
+    public CmsSearchException getException() {
+
+        return m_exception;
+    }
+
+    /**
      * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFacetQuery()
      */
     @Override
@@ -188,7 +205,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
                 @Override
                 public Object transform(final Object fieldName) {
 
-                    return m_solrResultList.getFacetField(fieldName.toString());
+                    return m_solrResultList == null ? null : m_solrResultList.getFacetField(fieldName.toString());
                 }
             });
         }
@@ -201,7 +218,15 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     @Override
     public Collection<FacetField> getFieldFacets() {
 
-        return m_solrResultList.getFacetFields();
+        return m_solrResultList == null ? null : m_solrResultList.getFacetFields();
+    }
+
+    /**
+     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFinalQuery()
+     */
+    public CmsSolrQuery getFinalQuery() {
+
+        return m_query;
     }
 
     /**
@@ -210,7 +235,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     @Override
     public Map<String, Map<String, List<String>>> getHighlighting() {
 
-        return m_solrResultList.getHighLighting();
+        return m_solrResultList == null ? null : m_solrResultList.getHighLighting();
     }
 
     /**
@@ -234,7 +259,9 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
                 @Override
                 public Object transform(final Object fieldName) {
 
-                    FacetField facetResult = m_solrResultList.getFacetField(fieldName.toString());
+                    FacetField facetResult = m_solrResultList == null
+                    ? null
+                    : m_solrResultList.getFacetField(fieldName.toString());
                     I_CmsSearchControllerFacetField facetController = m_controller.getFieldFacets().getFieldFacetController().get(
                         fieldName.toString());
                     List<String> result = new ArrayList<String>();
@@ -274,7 +301,9 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     @Override
     public int getNumPages() {
 
-        return (int)((m_solrResultList.getNumFound() - 1) / m_controller.getPagination().getConfig().getPageSize()) + 1;
+        return m_solrResultList == null
+        ? 1
+        : (int)((m_solrResultList.getNumFound() - 1) / m_controller.getPagination().getConfig().getPageSize()) + 1;
     }
 
     /**
@@ -325,6 +354,17 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
         Map<String, String[]> parameters = new HashMap<String, String[]>();
         m_controller.addParametersForCurrentState(parameters);
         return new CmsSearchStateParameters(this, parameters);
+    }
+
+    /** Converts the search results from CmsSearchResource to CmsSearchResourceBean.
+     * @param searchResults The collection of search results to transform.
+     */
+    protected void convertSearchResults(final Collection<CmsSearchResource> searchResults) {
+
+        m_foundResources = new ArrayList<I_CmsSearchResourceBean>();
+        for (final CmsSearchResource searchResult : searchResults) {
+            m_foundResources.add(new CmsSearchResourceBean(searchResult, m_cmsObject));
+        }
     }
 
     /** Removes the !{ex=...} prefix from the query.

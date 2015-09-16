@@ -78,6 +78,14 @@
       <Key><![CDATA[results.didyoumean_0]]></Key>
       <Value><![CDATA[Did you mean:]]></Value>
     </Message>
+    <Message>
+      <Key><![CDATA[search.failed_0]]></Key>
+      <Value><![CDATA[The search failed. Possibly because of an erroneous final search query.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[query.compare_2]]></Key>
+      <Value><![CDATA[Your original query <em>{0}</em> was transformed to <em>{1}</em>.]]></Value>
+    </Message>
   </Bundle>
   <Bundle language="de">
     <Message>
@@ -155,6 +163,14 @@
     <Message>
       <Key><![CDATA[results.didyoumean_0]]></Key>
       <Value><![CDATA[Meinten Sie:]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[search.failed_0]]></Key>
+      <Value><![CDATA[Die Suche ist gescheitert. Wahrscheinlich war die endgültige Suchanfrage fehlerhaft.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[query.compare_2]]></Key>
+      <Value><![CDATA[Die Suchanfrage <em>{0}</em> wurde zu <em>{1}</em> transformiert.]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>

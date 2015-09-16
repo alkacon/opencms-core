@@ -101,6 +101,42 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     /** Default number of items which are checked for change for the "This page" publish dialog. */
     public static final int DEFAULT_CONTENTINFO_ROWS = 200;
 
+    /** The CmsObject for the current user. */
+    protected transient CmsObject m_cms;
+
+    /** The FlexController for the current request. */
+    protected CmsFlexController m_controller;
+
+    /** Number of entries for which content info should be added to allow correct relations in "This page" publish dialog. */
+    private Integer m_addContentInfoForEntries;
+
+    /** The "configFile" tag attribute. */
+    private String m_configFile;
+
+    /** The "configString" tag attribute. */
+    private String m_configString;
+
+    /** The "fileFormat" tag attribute converted to type FileFormat. */
+    private FileFormat m_fileFormat;
+
+    /** Search controller keeping all the config and state from the search. */
+    private I_CmsSearchControllerMain m_searchController;
+
+    /** The search index that should be used .
+     *  It will either be the configured index, or "Solr Offline" / "Solr Online" depending on the project.
+     * */
+    private CmsSolrIndex m_index;
+
+    /**
+     * Empty constructor, required for JSP tags.
+     *
+     */
+    public CmsJspTagSearch() {
+
+        super();
+        m_fileFormat = FileFormat.XML;
+    }
+
     /**
      * @see org.opencms.file.collectors.I_CmsCollectorPublishListProvider#getPublishResources(org.opencms.file.CmsObject, org.opencms.gwt.shared.I_CmsContentLoadCollectorInfo)
      */
@@ -149,69 +185,6 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
             LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
         }
         return result;
-    }
-
-    /** The CmsObject for the current user. */
-    protected transient CmsObject m_cms;
-
-    /** The FlexController for the current request. */
-    protected CmsFlexController m_controller;
-
-    /** Number of entries for which content info should be added to allow correct relations in "This page" publish dialog. */
-    private Integer m_addContentInfoForEntries;
-
-    /** The "configFile" tag attribute. */
-    private String m_configFile;
-
-    /** The "configString" tag attribute. */
-    private String m_configString;
-
-    /** The "fileFormat" tag attribute converted to type FileFormat. */
-    private FileFormat m_fileFormat;
-
-    /** Search controller keeping all the config and state from the search. */
-    private I_CmsSearchControllerMain m_searchController;
-
-    /** The search index that should be used .
-     *  It will either be the configured index, or "Solr Offline" / "Solr Online" depending on the project.
-     * */
-    private CmsSolrIndex m_index;
-
-    /**
-     * Empty constructor, required for JSP tags.
-     *
-     */
-    public CmsJspTagSearch() {
-
-        super();
-        m_fileFormat = FileFormat.XML;
-    }
-
-    /**
-     * Adds the content info for the collected resources used in the "This page" publish dialog.
-     */
-    private void addContentInfo() {
-
-        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()
-            && (null == m_searchController.getCommon().getConfig().getSolrIndex())
-            && (null != m_addContentInfoForEntries)) {
-            CmsSolrQuery query = new CmsSolrQuery();
-            m_searchController.addQueryParts(query);
-            query.setStart(Integer.valueOf(0));
-            query.setRows(m_addContentInfoForEntries);
-            CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
-            info.setCollectorClass(this.getClass().getName());
-            info.setCollectorParams(query.getQuery());
-            info.setId((new CmsUUID()).getStringValue());
-            if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
-                try {
-                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(pageContext, info);
-                } catch (JspException e) {
-                    // TODO: improve + localize error message
-                    LOG.error("Could not write content info.", e);
-                }
-            }
-        }
     }
 
     /**
@@ -266,81 +239,6 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
     public Set<CmsResource> getPublishResources(CmsObject cms, I_CmsContentLoadCollectorInfo info) throws CmsException {
 
         return getPublishResourcesInternal(cms, info);
-    }
-
-    /** Here the search query is composed and executed.
-     *  The result is wrapped in an easily usable form.
-     *  It is exposed to the JSP via the tag's "var" attribute.
-     * @return The result object exposed via the tag's attribute "var".
-     */
-    private I_SearchResultWrapper getSearchResults() {
-
-        // The second parameter is just ignored - so it does not matter
-        m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);
-        CmsSolrQuery query = new CmsSolrQuery();
-        m_searchController.addQueryParts(query);
-        try {
-            // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
-            CmsSolrResultList solrResultList = m_index.search(m_cms, query, true);
-            return new CmsSearchResultWrapper(m_searchController, solrResultList, m_cms);
-        } catch (CmsSearchException e) {
-            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
-            return null;
-        }
-    }
-
-    /**
-     * Initializes this formatter tag.
-     * <p>
-     *
-     * @throws JspException
-     *             in case something goes wrong
-     */
-    protected void init() throws JspException {
-
-        // initialize OpenCms access objects
-        m_controller = CmsFlexController.getController(pageContext.getRequest());
-        m_cms = m_controller.getCmsObject();
-
-        try {
-            I_CmsSearchConfiguration config;
-            if (m_configString != null) {
-                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString));
-            } else if (m_fileFormat == FileFormat.JSON) {
-                // read the JSON config file
-                CmsFile configFile = m_cms.readFile(m_configFile);
-                OpenCms.getLocaleManager();
-                String configString = new String(configFile.getContents(), CmsLocaleManager.getResourceEncoding(
-                    m_cms,
-                    configFile));
-                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
-            } else { // assume XML
-                CmsFile file = m_cms.readFile(m_configFile);
-                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
-                config = new CmsSearchConfiguration(new CmsXMLSearchConfigurationParser(
-                    xmlContent,
-                    m_cms.getRequestContext().getLocale()));
-            }
-            m_searchController = new CmsSearchController(config);
-
-            String indexName = m_searchController.getCommon().getConfig().getSolrIndex();
-            // try to use configured index
-            if ((indexName != null) && !indexName.trim().isEmpty()) {
-                m_index = OpenCms.getSearchManager().getIndexSolr(indexName);
-            }
-            // if not successful, use the following default
-            if (m_index == null) {
-                m_index = OpenCms.getSearchManager().getIndexSolr(
-                    m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? SOLR_ONLINE : SOLR_OFFLINE);
-            }
-
-            storeAttribute(getVar(), getSearchResults());
-
-        } catch (Exception e) { // CmsException | UnsupportedEncodingException | JSONException
-            LOG.error(e.getLocalizedMessage(), e);
-            m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
-            throw new JspException(e);
-        }
     }
 
     /**
@@ -401,6 +299,109 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
 
         if (fileFormat.toUpperCase().equals(FileFormat.JSON.toString())) {
             m_fileFormat = FileFormat.JSON;
+        }
+    }
+
+    /**
+     * Initializes this formatter tag.
+     * <p>
+     *
+     * @throws JspException
+     *             in case something goes wrong
+     */
+    protected void init() throws JspException {
+
+        // initialize OpenCms access objects
+        m_controller = CmsFlexController.getController(pageContext.getRequest());
+        m_cms = m_controller.getCmsObject();
+
+        try {
+            I_CmsSearchConfiguration config;
+            if (m_configString != null) {
+                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(m_configString));
+            } else if (m_fileFormat == FileFormat.JSON) {
+                // read the JSON config file
+                CmsFile configFile = m_cms.readFile(m_configFile);
+                OpenCms.getLocaleManager();
+                String configString = new String(
+                    configFile.getContents(),
+                    CmsLocaleManager.getResourceEncoding(m_cms, configFile));
+                config = new CmsSearchConfiguration(new CmsJSONSearchConfigurationParser(configString));
+            } else { // assume XML
+                CmsFile file = m_cms.readFile(m_configFile);
+                CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, file);
+                config = new CmsSearchConfiguration(
+                    new CmsXMLSearchConfigurationParser(xmlContent, m_cms.getRequestContext().getLocale()));
+            }
+            m_searchController = new CmsSearchController(config);
+
+            String indexName = m_searchController.getCommon().getConfig().getSolrIndex();
+            // try to use configured index
+            if ((indexName != null) && !indexName.trim().isEmpty()) {
+                m_index = OpenCms.getSearchManager().getIndexSolr(indexName);
+            }
+            // if not successful, use the following default
+            if (m_index == null) {
+                m_index = OpenCms.getSearchManager().getIndexSolr(
+                    m_cms.getRequestContext().getCurrentProject().isOnlineProject() ? SOLR_ONLINE : SOLR_OFFLINE);
+            }
+
+            storeAttribute(getVar(), getSearchResults());
+
+        } catch (Exception e) { // CmsException | UnsupportedEncodingException | JSONException
+            LOG.error(e.getLocalizedMessage(), e);
+            m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
+            throw new JspException(e);
+        }
+    }
+
+    /**
+     * Adds the content info for the collected resources used in the "This page" publish dialog.
+     */
+    private void addContentInfo() {
+
+        if (!m_cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (null == m_searchController.getCommon().getConfig().getSolrIndex())
+            && (null != m_addContentInfoForEntries)) {
+            CmsSolrQuery query = new CmsSolrQuery();
+            m_searchController.addQueryParts(query);
+            query.setStart(Integer.valueOf(0));
+            query.setRows(m_addContentInfoForEntries);
+            CmsContentLoadCollectorInfo info = new CmsContentLoadCollectorInfo();
+            info.setCollectorClass(this.getClass().getName());
+            info.setCollectorParams(query.getQuery());
+            info.setId((new CmsUUID()).getStringValue());
+            if (CmsJspTagEditable.getDirectEditProvider(pageContext) != null) {
+                try {
+                    CmsJspTagEditable.getDirectEditProvider(pageContext).insertDirectEditListMetadata(
+                        pageContext,
+                        info);
+                } catch (JspException e) {
+                    // TODO: improve + localize error message
+                    LOG.error("Could not write content info.", e);
+                }
+            }
+        }
+    }
+
+    /** Here the search query is composed and executed.
+     *  The result is wrapped in an easily usable form.
+     *  It is exposed to the JSP via the tag's "var" attribute.
+     * @return The result object exposed via the tag's attribute "var".
+     */
+    private I_SearchResultWrapper getSearchResults() {
+
+        // The second parameter is just ignored - so it does not matter
+        m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);
+        CmsSolrQuery query = new CmsSolrQuery();
+        m_searchController.addQueryParts(query);
+        try {
+            // use "complicated" constructor to allow more than 50 results -> set ignoreMaxResults to true
+            CmsSolrResultList solrResultList = m_index.search(m_cms, query, true);
+            return new CmsSearchResultWrapper(m_searchController, solrResultList, query, m_cms, null);
+        } catch (CmsSearchException e) {
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_TAG_SEARCH_SEARCH_FAILED_0), e);
+            return new CmsSearchResultWrapper(m_searchController, null, query, m_cms, e);
         }
     }
 }

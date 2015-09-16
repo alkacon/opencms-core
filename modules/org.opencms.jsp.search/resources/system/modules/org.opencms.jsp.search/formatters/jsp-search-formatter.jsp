@@ -140,7 +140,16 @@
 				<c:set var="colWidthResults" value="${hasFacets?8:12}" />
 				<div class="col-lg-${colWidthResults} col-md-${colWidthResults} col-sm-${colWidthResults} col-xs-12">
 					<c:choose>
-						<c:when test="${empty search.searchResults}">
+						<c:when test="${not empty search.exception}">
+							<h3><fmt:message key="search.failed_0" /></h3>
+							<p>
+								<fmt:message key="query.compare_2">
+									<fmt:param>${common.state.query}</fmt:param>
+									<fmt:param>${search.finalQuery.query}</fmt:param>
+								</fmt:message>
+							</p>
+						</c:when>
+						<c:when test="${empty search.searchResults && empty search.exception}">
 							<h3>
 							<c:choose>
 							<c:when test="${not empty controllers.didYouMean.config}" >

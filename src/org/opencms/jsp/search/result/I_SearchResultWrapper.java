@@ -28,6 +28,8 @@
 package org.opencms.jsp.search.result;
 
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
+import org.opencms.search.CmsSearchException;
+import org.opencms.search.solr.CmsSolrQuery;
 
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +61,10 @@ public interface I_SearchResultWrapper {
      */
     int getEnd();
 
+    /** Returns the search exception if search fails.
+     * @return The exception thrown by Solr, or <code>null</code> if the search succeeds. */
+    CmsSearchException getException();
+
     /** Returns the result of the query facet, i.e., the map from queries to the number of hits.
      * @return The result of the query facet, i.e., the map from queries to the number of hits.
      */
@@ -73,6 +79,11 @@ public interface I_SearchResultWrapper {
      * @return The collection of the search result parts for the field facets.
      */
     Collection<FacetField> getFieldFacets();
+
+    /** Returns the query object as send to Solr.
+     * @return The query object as send to Solr.
+     */
+    CmsSolrQuery getFinalQuery();
 
     /** Returns the map from the document ids to the corresponding highlighting results (as map from the highlighted field to the highlighted snippets).
      * @return The map from the document ids to the corresponding highlighting results (as map from the highlighted field to the highlighted snippets).
