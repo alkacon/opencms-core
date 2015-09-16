@@ -58,7 +58,8 @@
 			</tabs>
             <formatters>
                <formatter type="*" uri="/system/modules/org.opencms.ugc/formatters/usergenerated-default.jsp" />
-            </formatters>			
+            </formatters>	
+            <searchsettings containerPageOnly="true" />		
         </xsd:appinfo>        
     </xsd:annotation>
 </xsd:schema>
