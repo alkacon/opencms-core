@@ -164,6 +164,7 @@ div.itemIcon{
 	float: left;
 	overflow: hidden;
 	margin: 7px 4px;
+	position: relative;
 }
 
 .itemIcon .cms_type_icon{
@@ -180,7 +181,9 @@ div.itemIcon{
     white-space: nowrap;
     display: inline;
 }
-.titleRow{}
+div.titleRow{
+	margin-left: 32px;
+}
 
 .cmsHovering .buttonPanel{
 	display: block;
