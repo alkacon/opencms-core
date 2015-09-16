@@ -198,6 +198,22 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             excludeFromIndex = CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
                 || CmsSolrIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
         }
+        if (excludeFromIndex) {
+            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "true");
+        } else {
+            try {
+                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                    I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
+                        cms,
+                        resource);
+                    if ((handler != null) && handler.isContainerPageOnly()) {
+                        document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "true");
+                    }
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
 
         if (resource.getRootPath().startsWith("/system")
             || (CmsResourceTypeJsp.getJSPTypeId() == resource.getTypeId())) {

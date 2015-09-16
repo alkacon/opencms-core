@@ -267,7 +267,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         final CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
 
         try {
-            final CmsSolrResultList list = search(cms, params.getQuery(cms), false, null);
+            final CmsSolrResultList list = search(cms, params.getQuery(cms), false, null, true);
 
             if (null == list) {
                 return null;
@@ -497,7 +497,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
-        return search(cms, query, ignoreMaxRows, null);
+        return search(cms, query, ignoreMaxRows, null, false);
     }
 
     /**
@@ -549,7 +549,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
     throws Exception {
 
-        search(cms, query, ignoreMaxRows, response);
+        search(cms, query, ignoreMaxRows, response, false);
     }
 
     /**
@@ -799,10 +799,14 @@ public class CmsSolrIndex extends CmsSearchIndex {
         CmsObject cms,
         final CmsSolrQuery query,
         boolean ignoreMaxRows,
-        ServletResponse response) throws CmsSearchException {
+        ServletResponse response,
+        boolean ignoreSearchExclude) throws CmsSearchException {
 
         // check if the user is allowed to access this index
         checkOfflineAccess(cms);
+        if (!ignoreSearchExclude) {
+            query.addFilterQuery("-" + CmsSearchField.FIELD_SEARCH_EXCLUDE + ":true");
+        }
 
         int previousPriority = Thread.currentThread().getPriority();
         long startTime = System.currentTimeMillis();
