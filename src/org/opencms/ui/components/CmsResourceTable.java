@@ -50,7 +50,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.CmsVaadinUtils;
@@ -63,8 +62,6 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -111,6 +108,7 @@ public class CmsResourceTable extends A_CmsCustomComponent {
                     m_fileTable.setColumnHeader(visibleProp, CmsVaadinUtils.getMessageText(headerKey));
                 } else {
                     m_fileTable.setColumnHeader(visibleProp, "");
+                    m_fileTable.setColumnCollapsible(visibleProp, false);
                 }
             }
 
@@ -219,9 +217,6 @@ public class CmsResourceTable extends A_CmsCustomComponent {
 
     /** Flag to mark columns as invisible. */
     public static final int INVISIBLE = 2;
-
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceTable.class);
 
     /** The resource data container. */
     protected IndexedContainer m_container = new IndexedContainer();

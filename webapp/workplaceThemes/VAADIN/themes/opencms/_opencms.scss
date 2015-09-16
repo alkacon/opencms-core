@@ -84,6 +84,11 @@
     font-size: $v-font-size;
   }
   
+  /* Fix for disabled menu items - especially for non-collapsible table columns. */
+  .gwt-MenuItem span.v-disabled {
+  	display: none;
+  }
+  
   div.v-window {
      max-height: 95%;
  	 
