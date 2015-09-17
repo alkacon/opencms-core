@@ -106,6 +106,8 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -569,20 +571,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         inf.addComponent(m_searchField);
         context.setAppInfo(inf);
 
-        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
-        publishButton.addClickListener(new ClickListener() {
-
-            /** Serial version id. */
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                onClickPublish();
-            }
-        });
-        context.addToolbarButton(publishButton);
-        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.WAND));
-        context.addToolbarButton(CmsToolBar.createButton(FontOpenCms.UPLOAD));
+        initToolbarButtons(context);
         populateFolderTree();
     }
 
@@ -1066,6 +1055,52 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             siteRoot = m_currentState.substring(0, m_currentState.indexOf(STATE_SEPARATOR));
         }
         return siteRoot;
+    }
+
+    /**
+     * Initializes the app specific toolbar buttons.<p>
+     *
+     * @param context the UI context
+     */
+    private void initToolbarButtons(I_CmsAppUIContext context) {
+
+        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
+        publishButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                onClickPublish();
+            }
+        });
+        context.addToolbarButton(publishButton);
+        Button newButton = CmsToolBar.createButton(FontOpenCms.WAND);
+        newButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                Notification.show("The new resource dialog has not been implemented yet.", Type.WARNING_MESSAGE);
+            }
+
+        });
+        context.addToolbarButton(newButton);
+
+        Button uploadButton = CmsToolBar.createButton(FontOpenCms.UPLOAD);
+        uploadButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                Notification.show("The new resource dialog has not been implemented yet.", Type.WARNING_MESSAGE);
+            }
+
+        });
+        context.addToolbarButton(uploadButton);
     }
 
     /**
