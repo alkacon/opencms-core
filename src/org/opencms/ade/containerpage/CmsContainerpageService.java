@@ -438,7 +438,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             throw new CmsIllegalArgumentException(
                 org.opencms.xml.containerpage.Messages.get().container(
                     org.opencms.xml.containerpage.Messages.ERR_INVALID_ID_1,
-                    id));
+                    id),
+                e);
         }
     }
 
@@ -968,7 +969,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             try {
                 reuseMode = ElementReuseMode.valueOf(reuseModeString);
             } catch (Exception e) {
-                LOG.info("Invalid reuse mode : " + reuseModeString);
+                LOG.info("Invalid reuse mode : " + reuseModeString, e);
             }
 
             data = new CmsCntPageData(
@@ -1149,8 +1150,10 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
                 CmsResource detailResource = rootCms.readResource(detailContentId);
-                ensureLock(detailResource);
-                saveContainers(rootCms, detailResource, detailResource.getRootPath(), detailContainers);
+                CmsResource detailContainerPage = rootCms.readResource(
+                    CmsJspTagContainer.getDetailOnlyPageName(detailResource.getRootPath()));
+                ensureLock(detailContainerPage);
+                saveContainers(rootCms, detailContainerPage, detailContainerPage.getRootPath(), detailContainers);
             }
             String containerpageUri = cms.getSitePath(pageResource);
             CmsElementUtil elemUtil = new CmsElementUtil(

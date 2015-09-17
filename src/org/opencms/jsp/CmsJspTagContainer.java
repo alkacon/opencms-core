@@ -882,6 +882,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             }
         } catch (NumberFormatException e) {
             //ignore; set width to -1
+            LOG.debug("Error parsing container width.", e);
         }
         CmsContainer cont = new CmsContainer(
             getName(),
@@ -1095,6 +1096,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             containerWidth = Integer.parseInt(m_width);
         } catch (NumberFormatException e) {
             // do nothing, set width to -1
+            LOG.debug("Error parsing container width.", e);
         }
         return containerWidth;
     }
@@ -1350,6 +1352,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                                 subElementFormatterConfig.getJspStructureId());
                             formatterSitePath = cms.getSitePath(formatterResource);
                         } catch (CmsVfsResourceNotFoundException ex) {
+                            LOG.debug("Formatter JSP not found by id, try using path.", ex);
                             formatterSitePath = cms.getRequestContext().removeSiteRoot(
                                 subElementFormatterConfig.getJspRootPath());
                         }
@@ -1409,6 +1412,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                             CmsResource formatterResource = cms.readResource(formatterConfig.getJspStructureId());
                             formatter = cms.getSitePath(formatterResource);
                         } catch (CmsVfsResourceNotFoundException ex) {
+                            LOG.debug("Formatter JSP not found by id, try using path.", ex);
                             formatter = cms.getRequestContext().removeSiteRoot(formatterConfig.getJspRootPath());
                         }
                         formatter = cms.getSitePath(cms.readResource(formatterConfig.getJspStructureId()));
@@ -1416,6 +1420,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         formatter = cms.getSitePath(cms.readResource(element.getFormatterId()));
                     }
                 } catch (CmsException e) {
+                    LOG.debug("Formatter resource can not be found, try reading it form the configuration.", e);
                     // the formatter resource can not be found, try reading it form the configuration
                     CmsFormatterConfiguration elementFormatters = adeConfig.getFormatters(cms, element.getResource());
                     I_CmsFormatterBean elementFormatterBean = elementFormatters.getDefaultFormatter(
@@ -1440,6 +1445,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         CmsResource formatterResource = cms.readResource(elementFormatterBean.getJspStructureId());
                         formatter = cms.getSitePath(formatterResource);
                     } catch (CmsVfsResourceNotFoundException ex) {
+                        LOG.debug("Formatter JSP not found by id, try using path.", ex);
                         formatter = cms.getRequestContext().removeSiteRoot(elementFormatterBean.getJspRootPath());
                     }
                 }
