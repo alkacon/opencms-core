@@ -6,6 +6,7 @@
 	border-bottom: 1px solid value("constants.css.borderColor");
 	width: auto !important;
 	position: static !important;
+	height: 27px;
 }
 .gwt-TabLayoutPanel .tabPanel {
 }
@@ -229,7 +230,6 @@
 
 .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTabBar {
 	background-position: 50% 50%;
-	height: auto !important;
 	display: block;
 	background: value("constants.css.backgroundColorSoft");
 }
@@ -256,16 +256,10 @@
 	background-color: value("constants.css.backgroundColorStateStandard");
 	border-top-left-radius: value("constants.css.borderRadius");
 	border-top-right-radius: value("constants.css.borderRadius");
+	vertical-align: top;
+	margin:0 0 0 2px;
 }
-@if user.agent safari {
-	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-		margin:0 0 0 2px;
-	}
-} @else {
-	.classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab {
-		margin:0 0 -4px 2px;
-	}
-}
+
 @sprite .classicTabs.gwt-TabLayoutPanel .gwt-TabLayoutPanelTab:hover {  	
 	gwt-image: "backgrounds.stateBackground";
 	background-position: 50% 50%;
@@ -278,7 +272,7 @@
 	cursor: default;
 	font-size:value("constants.css.fontSize");
 	font-family: value("constants.css.fontFamily");
-	margin-bottom: -5px;
+	margin-bottom: -1px;
 	padding-bottom: 1px;
 }
 
