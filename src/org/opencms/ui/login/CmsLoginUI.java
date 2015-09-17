@@ -60,6 +60,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
@@ -218,6 +219,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             CmsMacroResolver resolver = new CmsMacroResolver();
             String context = OpenCms.getSystemInfo().getContextPath();
             String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
+            String vaadinVersion = Version.getFullVersion();
             String vaadinServlet = CmsStringUtil.joinPaths(context, "opencms-login/");
             String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
             String autocomplete = params.isPrivatePc() ? "on" : "off";
@@ -228,6 +230,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
             resolver.addMacro("loadingHtml", CmsVaadinConstants.LOADING_INDICATOR_HTML);
             resolver.addMacro("vaadinDir", vaadinDir);
+            resolver.addMacro("vaadinVersion", vaadinVersion);
             resolver.addMacro("vaadinServlet", vaadinServlet);
             resolver.addMacro("vaadinBootstrap", vaadinBootstrap);
             resolver.addMacro("cmsLogo", cmsLogo);

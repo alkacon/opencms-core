@@ -49,6 +49,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import elemental.events.KeyboardEvent.KeyCode;
@@ -90,13 +91,13 @@ public class CmsLoginForm extends VerticalLayout {
     private CmsLoginOuSelector m_ouSelect;
 
     /** Widget for entering the password. */
-    private CmsLoginPasswordField m_passwordField;
+    private TextField m_passwordField;
 
     /** The security field, which allows the user to choose between a private or public PC. */
     private OptionGroup m_securityField;
 
     /** Widget for entering the user name.  */
-    private CmsLoginUserField m_userField;
+    private TextField m_userField;
 
     /**
      * Creates a new instance.<p>
