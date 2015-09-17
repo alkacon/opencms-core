@@ -27,50 +27,36 @@
 
 package org.opencms.ui.contextmenu;
 
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+
+import java.util.List;
+
 /**
- * Flag to control which visibility checks should be performed by CmsStandardVisibilityCheck.<p>
+ * The about dialog action.<p>
  */
-public enum CmsVisibilityCheckFlag {
-    /** Checks if an editor is available. */
-    haseditor,
+public class CmsAboutDialogAction implements I_CmsContextMenuAction {
 
-    /** Checks if resource is deleted. */
-    deleted,
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     */
+    public void executeAction(final I_CmsDialogContext context) {
 
-    /** Check that the resource is in the current project. */
-    inproject,
+        try {
+            CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(
+                A_CmsUI.get(),
+                new I_CmsUpdateListener<String>() {
 
-    /** Checks if resource is not deleted. */
-    notdeleted,
+                    public void onUpdate(List<String> updatedItems) {
 
-    /** Check that we are in an Offline project. */
-    notonline,
-
-    /** Check that the resource is a file. */
-    file,
-
-    /** Visible in main menu. */
-    mainmenu,
-
-    /** Checks that the resource is a file which is not unchanged. */
-    notunchangedfile,
-
-    /** Checks that the resource is not new. */
-    notnew,
-
-    /** Check editor rule. */
-    roleeditor,
-
-    /** Check workplace user role. */
-    rolewpuser,
-
-    /** Checks if user has publish permissions. */
-    publishpermission,
-
-    /** Check that we have write permission. */
-    writepermisssion,
-
-    /** Checks if resource is xml content. */
-    xml;
-
+                        // nothing to do
+                    }
+                });
+            dialogExtension.showAbout();
+        } catch (Exception e) {
+            context.error(e);
+        }
+    }
 }

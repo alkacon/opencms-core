@@ -346,16 +346,27 @@
   	}
   }
   
-  .v-button.v-button-o-toolbar-button{
+  .v-menubar.v-menubar-o-toolbar-button{
+  	padding: 0;
+  	height: 36px;
+  }
+  
+  .v-button.v-button-o-toolbar-button, .v-menubar.v-menubar-o-toolbar-button > .v-menubar-menuitem{
   	font-size: $app-icon-size;
     height: 32px;
     min-width: 40px;
     line-height: 32px;
     padding: 0 5px;
     margin-top: 4px;
+    color: inherit;
+    background: transparent;
     
     img.v-icon {
       vertical-align: top;
+    }
+    
+    .v-icon{
+    	margin: 0;
     }
     
     &:focus:after {
@@ -369,6 +380,10 @@
     		color: inherit;
     	}
     }
+    
+    .v-menubar-menuitem-caption:after{
+    	display: none;
+    }
   }
   
   
@@ -378,7 +393,7 @@
   }
   
   .v-popupview-popup-o-navigator-dropdown{
-  	margin-top: 50px !important;
+  	margin-top: 45px !important;
   	margin-left: -10px !important;
   	max-height: 80%;
     overflow: auto !important;

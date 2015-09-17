@@ -47,9 +47,6 @@ import com.google.gwt.user.client.ui.Frame;
  */
 public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCommand {
 
-    /** Button to close the dialog. */
-    private CmsPushButton m_closeButton;
-
     /**
      * Creates a new context menu command.<p>
      *
@@ -61,9 +58,9 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     * Shows the OpenCms about dialog.<p>
      */
-    public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+    public static void showAbout() {
 
         final CmsPopup popup = new CmsPopup(Messages.get().key(Messages.GUI_ABOUT_DIALOG_TITLE_0));
         FlowPanel container = new FlowPanel();
@@ -81,12 +78,12 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
         popup.setMainContent(container);
         popup.center();
         popup.addDialogClose(null);
-        m_closeButton = new CmsPushButton();
-        m_closeButton.setText(Messages.get().key(Messages.GUI_CLOSE_0));
-        m_closeButton.setUseMinWidth(true);
+        CmsPushButton closeButton = new CmsPushButton();
+        closeButton.setText(Messages.get().key(Messages.GUI_CLOSE_0));
+        closeButton.setUseMinWidth(true);
 
-        m_closeButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
-        m_closeButton.addClickHandler(new ClickHandler() {
+        closeButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
+        closeButton.addClickHandler(new ClickHandler() {
 
             /**
              * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
@@ -96,8 +93,16 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
                 popup.hide();
             }
         });
-        popup.addButton(m_closeButton);
+        popup.addButton(closeButton);
         popup.addDialogClose(null);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand#execute(org.opencms.util.CmsUUID, org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler, org.opencms.gwt.shared.CmsContextMenuEntryBean)
+     */
+    public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
+
+        showAbout();
     }
 
     /**
@@ -116,7 +121,6 @@ public class CmsAbout implements I_CmsHasContextMenuCommand, I_CmsContextMenuCom
      */
     public boolean hasItemWidget() {
 
-        // TODO Auto-generated method stub
         return false;
     }
 

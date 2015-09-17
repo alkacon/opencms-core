@@ -28,14 +28,20 @@
 package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsTreeNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +58,9 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.declarative.Design;
@@ -81,7 +90,7 @@ public class CmsToolBar extends CssLayout {
 
         Design.read("CmsToolBar.html", this);
         CmsObject cms = A_CmsUI.getCmsObject();
-        m_itemsRight.addComponent(createButton(FontOpenCms.CONTEXT_MENU));
+        m_itemsRight.addComponent(createContextMenu());
         m_itemsRight.addComponent(createQuickLaunchDropDown());
         m_itemsRight.addComponent(createDropDown(
             new ExternalResource(
@@ -208,6 +217,62 @@ public class CmsToolBar extends CssLayout {
             }
         } else {
             m_itemsLeft.removeComponent(m_appIndicator);
+        }
+    }
+
+    /**
+     * Creates the context menu button.<p>
+     *
+     * @return the context menu button
+     */
+    private Component createContextMenu() {
+
+        MenuBar menuBar = new MenuBar();
+        menuBar.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        menuBar.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+        MenuItem main = menuBar.addItem("", null);
+        main.setIcon(FontOpenCms.CONTEXT_MENU);
+        CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(
+            A_CmsUI.getCmsObject(),
+            Collections.<CmsResource> emptyList());
+        CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
+            CmsAppWorkplaceUi.get().getMenuItemProvider().getMenuItems());
+        for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
+            createMenuEntry(main, node, treeBuilder);
+        }
+        return menuBar;
+    }
+
+    /**
+     * Creates the context menu entry and it's children.<p>
+     *
+     * @param parent the entry parent
+     * @param node the item tree node
+     * @param treeBuilder the tree builder
+     */
+    private void createMenuEntry(
+        MenuItem parent,
+        final CmsTreeNode<I_CmsContextMenuItem> node,
+        CmsContextMenuTreeBuilder treeBuilder) {
+
+        Command entryCommand = null;
+        if (node.getChildren().size() == 0) {
+            entryCommand = new Command() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void menuSelected(MenuItem selectedItem) {
+
+                    node.getData().executeAction(null);
+                }
+            };
+        }
+        MenuItem entry = parent.addItem(CmsVaadinUtils.localizeString(node.getData().getTitle()), entryCommand);
+        for (CmsTreeNode<I_CmsContextMenuItem> child : node.getChildren()) {
+            createMenuEntry(entry, child, treeBuilder);
+        }
+        if (treeBuilder.getVisibility(node.getData()).isInActive()) {
+            entry.setEnabled(false);
         }
     }
 

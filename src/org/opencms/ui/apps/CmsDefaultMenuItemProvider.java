@@ -31,6 +31,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.contextmenu.CmsAboutDialogAction;
 import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
 import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
 import org.opencms.ui.contextmenu.CmsDialogAction;
@@ -39,6 +41,8 @@ import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.CmsSubmenu;
+import org.opencms.ui.contextmenu.CmsUserPreferencesDialogAction;
+import org.opencms.ui.contextmenu.I_CmsContextMenuAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
@@ -55,6 +59,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.UI;
 
 /**
@@ -201,6 +207,38 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 "%(key.GUI_EXPLORER_CONTEXT_DELETE_0)",
                 3,
                 0,
-                CmsStandardVisibilityCheck.DEFAULT));
+                CmsStandardVisibilityCheck.DEFAULT),
+            new CmsDefaultContextMenuItem(
+                "about",
+                null,
+                new CmsAboutDialogAction(),
+                "%(key.GUI_EXPLORER_CONTEXT_ABOUT_0)",
+                7,
+                0,
+                CmsStandardVisibilityCheck.MAIN_MENU),
+            new CmsDefaultContextMenuItem(
+                "userpreferences",
+                null,
+                new CmsUserPreferencesDialogAction(),
+                "%(key.GUI_BUTTON_PREFERENCES_0)",
+                6,
+                0,
+                CmsStandardVisibilityCheck.MAIN_MENU),
+            new CmsDefaultContextMenuItem("publishqueue", null, new I_CmsContextMenuAction() {
+
+                public void executeAction(I_CmsDialogContext context) {
+
+                    Notification.show("Not implemented yet.", Type.WARNING_MESSAGE);
+
+                }
+            }, "%(key.GUI_BUTTON_PUBLISHQUEUE_0)", 4, 0, CmsStandardVisibilityCheck.MAIN_MENU),
+            new CmsDefaultContextMenuItem("setproject", null, new I_CmsContextMenuAction() {
+
+                public void executeAction(I_CmsDialogContext context) {
+
+                    Notification.show("Not implemented yet.", Type.WARNING_MESSAGE);
+
+                }
+            }, "%(key.GUI_LABEL_PROJECT_0)", 5, 0, CmsStandardVisibilityCheck.MAIN_MENU));
     }
 }

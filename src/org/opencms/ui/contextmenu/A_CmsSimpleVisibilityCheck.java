@@ -59,9 +59,10 @@ public abstract class A_CmsSimpleVisibilityCheck implements I_CmsHasMenuItemVisi
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if (resources.size() == 1) {
+        if (resources.size() <= 1) {
             // Single-selection case where we just delegate to getSingleVisibility
-            return getSingleVisibility(cms, resources.get(0));
+            // this applies also to main menu items
+            return getSingleVisibility(cms, resources.size() == 1 ? resources.get(0) : null);
         } else {
             if (m_singleResourceOnly) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;

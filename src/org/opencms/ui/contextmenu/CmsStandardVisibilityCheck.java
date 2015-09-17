@@ -31,6 +31,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mainmenu;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
@@ -72,9 +73,6 @@ import com.google.common.collect.Sets;
  */
 public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck {
 
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
-
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
         roleeditor,
@@ -101,14 +99,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         haseditor);
 
-    /** Visibility check for the undo function. */
-    public static final CmsStandardVisibilityCheck UNDO = new CmsStandardVisibilityCheck(
-        notunchangedfile,
-        notnew,
-        roleeditor,
-        notonline,
-        notdeleted,
-        writepermisssion);
+    /** Visibility check for main menu entries. */
+    public static final CmsStandardVisibilityCheck MAIN_MENU = new CmsStandardVisibilityCheck(mainmenu);
 
     /** Visibility check for publish option. */
     public static final CmsStandardVisibilityCheck PUBLISH = new CmsStandardVisibilityCheck(
@@ -123,8 +115,20 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         deleted,
         writepermisssion);
 
+    /** Visibility check for the undo function. */
+    public static final CmsStandardVisibilityCheck UNDO = new CmsStandardVisibilityCheck(
+        notunchangedfile,
+        notnew,
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion);
+
     /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
 
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
@@ -160,8 +164,6 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     @Override
     public CmsMenuItemVisibilityMode getSingleVisibility(CmsObject cms, CmsResource resource) {
 
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-
         if (flag(roleeditor) && !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
             return VISIBILITY_INVISIBLE;
         }
@@ -174,78 +176,90 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             return VISIBILITY_INVISIBLE;
         }
 
-        if (flag(file) && !resource.isFile()) {
-            return VISIBILITY_INVISIBLE;
-        }
+        if ((resource != null)) {
+            // in case of main menu entries, the given resource is null
+            if (flag(mainmenu)) {
+                return VISIBILITY_INVISIBLE;
+            }
 
-        if (flag(xml)) {
-            I_CmsResourceType type = resUtil.getResourceType();
-            boolean isXml = (type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage);
-            if (!isXml) {
+            CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+            if (flag(file) && !resource.isFile()) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(xml)) {
+                I_CmsResourceType type = resUtil.getResourceType();
+                boolean isXml = (type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage);
+                if (!isXml) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
+            if (flag(notunchangedfile) && resource.isFile() && resUtil.getResource().getState().isUnchanged()) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(notnew) && resource.getState().isNew()) {
+                CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+            }
+
+            if (flag(haseditor)
+                && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(publishpermission)) {
+                try {
+                    if (!cms.hasPermissions(
+                        resource,
+                        CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                        false,
+                        CmsResourceFilter.ALL)) {
+                        return VISIBILITY_INVISIBLE;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+
+                }
+
+            }
+
+            if (flag(writepermisssion)) {
+                try {
+                    if (!resUtil.isEditable()
+                        || !cms.hasPermissions(
+                            resUtil.getResource(),
+                            CmsPermissionSet.ACCESS_WRITE,
+                            false,
+                            CmsResourceFilter.ALL)) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                            Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+                    }
+                } catch (CmsException e) {
+                    LOG.debug("Error checking context menu entry permissions.", e);
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                }
+            }
+
+            if (flag(notdeleted) && resUtil.getResource().getState().isDeleted()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
+                    Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
+            }
+
+            if (flag(deleted) && !resource.getState().isDeleted()) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
+
+        } else {
+            if (!flag(mainmenu)) {
                 return VISIBILITY_INVISIBLE;
             }
         }
-
-        if (flag(notunchangedfile) && resource.isFile() && resUtil.getResource().getState().isUnchanged()) {
-            return VISIBILITY_INVISIBLE;
-        }
-
-        if (flag(notnew) && resource.getState().isNew()) {
-            CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
-        }
-
-        if (flag(haseditor)
-            && !OpenCms.getWorkplaceManager().getWorkplaceEditorManager().isEditorAvailableForResource(resource)) {
-            return VISIBILITY_INVISIBLE;
-        }
-
-        if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
-            return VISIBILITY_INVISIBLE;
-        }
-
-        if (flag(publishpermission)) {
-            try {
-                if (!cms.hasPermissions(
-                    resource,
-                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
-                    false,
-                    CmsResourceFilter.ALL)) {
-                    return VISIBILITY_INVISIBLE;
-                }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
-
-            }
-
-        }
-
-        if (flag(writepermisssion)) {
-            try {
-                if (!resUtil.isEditable()
-                    || !cms.hasPermissions(
-                        resUtil.getResource(),
-                        CmsPermissionSet.ACCESS_WRITE,
-                        false,
-                        CmsResourceFilter.ALL)) {
-                    return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                        Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
-                }
-            } catch (CmsException e) {
-                // error checking permissions, disable entry completely
-                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-            }
-        }
-
-        if (flag(notdeleted) && resUtil.getResource().getState().isDeleted()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
-        }
-
-        if (flag(deleted) && !resource.getState().isDeleted()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
-
         return VISIBILITY_ACTIVE;
     }
 

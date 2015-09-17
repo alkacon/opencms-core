@@ -48,4 +48,14 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
      */
     public void openPublishDialog(String serializedPublishData);
 
+    /**
+     * Shows the OpenCms about dialog.<p>
+     */
+    public void showAbout();
+
+    /**
+     * Shows the user preferences.<p>
+     */
+    public void showUserPreferences();
+
 }

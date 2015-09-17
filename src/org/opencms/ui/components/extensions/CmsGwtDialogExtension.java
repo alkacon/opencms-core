@@ -132,6 +132,22 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * Shows the OpenCms about dialog.<p>
+     */
+    public void showAbout() {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).showAbout();
+    }
+
+    /**
+     * Shows the user preferences.<p>
+     */
+    public void showUserPreferences() {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).showUserPreferences();
+    }
+
+    /**
      * Gets the publish data for the given project.<p>
      *
      * @param project the project to open publish dialog for

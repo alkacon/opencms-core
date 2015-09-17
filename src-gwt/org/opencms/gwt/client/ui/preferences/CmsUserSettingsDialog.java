@@ -61,7 +61,7 @@ import com.google.gwt.dom.client.Element;
 public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSubmitHandler {
 
     /** The action to execute after the user has changed their preferences. */
-    private Runnable m_finishAction;
+    Runnable m_finishAction;
 
     /** The panel used to edit the preferences. */
     CmsUserSettingsFormFieldPanel m_panel;
@@ -164,12 +164,13 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
 
             }
 
-            @SuppressWarnings("synthetic-access")
             @Override
             protected void onResponse(Void result) {
 
                 stop(false);
-                m_finishAction.run();
+                if (m_finishAction != null) {
+                    m_finishAction.run();
+                }
             }
         };
         action.execute();
