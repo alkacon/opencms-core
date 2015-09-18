@@ -720,6 +720,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle"
+				icon="document.png" bigicon="document_big.png"
 				reference="xmlcontent">
 				<newresource page="otheroptions"
 					uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle"
@@ -732,6 +733,7 @@
 			</explorertype>
 
 			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle"
+				icon="plain.png" bigicon="plain_big.png"
 				reference="plain">
 				<newresource page="otheroptions"
 					uri="newresource.jsp?newresourcetype=propertyvfsbundle" order="30"
