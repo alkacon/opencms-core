@@ -144,7 +144,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                         public void run() {
 
                             A_CmsUI.get().getPage().setLocation(
-                                OpenCms.getLinkManager().getWorkplaceLink(
+                                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                                     CmsLoginUI.m_adminCms,
                                     "/system/login", //$NON-NLS-1$
                                     false));
@@ -214,7 +214,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
     public void cancel() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        String link = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false);
+        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
         A_CmsUI.get().getPage().setLocation(link);
     }
 

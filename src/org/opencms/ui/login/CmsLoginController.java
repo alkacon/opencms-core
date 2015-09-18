@@ -212,7 +212,7 @@ public class CmsLoginController {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         UI.getCurrent().getSession().close();
-        String loginLink = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false);
+        String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
         Page.getCurrent().setLocation(loginLink);
     }
@@ -246,7 +246,7 @@ public class CmsLoginController {
      */
     public void onClickForgotPassword() {
 
-        String link = OpenCms.getLinkManager().getWorkplaceLink(
+        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             CmsLoginUI.m_adminCms,
             "/system/login", //$NON-NLS-1$
             false) + "?" + CmsLoginHelper.PARAM_RESET_PASSWORD;

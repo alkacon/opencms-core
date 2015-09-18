@@ -133,7 +133,7 @@ public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButt
                         public void run() {
 
                             A_CmsUI.get().getPage().setLocation(
-                                OpenCms.getLinkManager().getWorkplaceLink(
+                                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                                     CmsLoginUI.m_adminCms,
                                     "/system/login", //$NON-NLS-1$
                                     false));
