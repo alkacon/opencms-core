@@ -102,7 +102,6 @@ import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -207,7 +206,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     private CmsStyleVariable m_inNavigationStyle;
 
     /** Model page data beans for the model page mode. */
-    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = Maps.newHashMap();
+    private Map<CmsUUID, CmsModelPageEntry> m_modelPageData = new HashMap<CmsUUID, CmsModelPageEntry>();
 
     /** The model group pages root entry. */
     private CmsModelPageTreeItem m_modelGroupRoot;
@@ -219,7 +218,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     private CmsTree<CmsModelPageTreeItem> m_modelPageTree;
 
     /** The tree items for the model page mode, indexed by structure id. */
-    private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = Maps.newHashMap();
+    private Map<CmsUUID, CmsModelPageTreeItem> m_modelPageTreeItems = new HashMap<CmsUUID, CmsModelPageTreeItem>();
 
     /** Label to display to no galleries in this sub site message. */
     private Label m_noGalleriesLabel;
@@ -824,6 +823,18 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
     public boolean isGalleryMode() {
 
         return EditorMode.galleries == m_editorMode;
+    }
+
+    /**
+     * Returns if the given entry is a model group page.<p>
+     *
+     * @param entryId the entry id
+     *
+     * @return <code>true</code> if the given entry is a model group page
+     */
+    public boolean isModelGroupEntry(CmsUUID entryId) {
+
+        return m_modelPageTreeItems.containsKey(entryId) && m_modelPageTreeItems.get(entryId).isModelGroup();
     }
 
     /**

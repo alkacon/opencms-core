@@ -55,7 +55,7 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     }
 
     /**
-     * Chesks if the model page menu entry should be visible.<p>
+     * Checks if the model page menu entry should be visible.<p>
      *
      * @param id the id of the model page
      * @return true if the entry should be visible
@@ -63,7 +63,8 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     public static boolean checkVisible(CmsUUID id) {
 
         CmsNewResourceInfo info = CmsSitemapView.getInstance().getController().getData().getNewResourceInfoById(id);
-        boolean show = CmsSitemapView.getInstance().isModelPageMode() && (info != null) && info.isEditable();
+        boolean show = CmsSitemapView.getInstance().isModelPageMode()
+            && (((info != null) && info.isEditable()) || CmsSitemapView.getInstance().isModelGroupEntry(id));
         return show;
     }
 
@@ -134,6 +135,7 @@ public class CmsEditModelPageMenuEntry extends A_CmsSitemapMenuEntry {
     public void onShow() {
 
         CmsUUID id = getHoverbar().getId();
+
         boolean show = checkVisible(id);
         setVisible(show);
 

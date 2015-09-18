@@ -75,6 +75,41 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  */
 public class CmsElementSettingsDialog extends CmsFormDialog {
 
+    /** The model group options. */
+    protected enum GroupOption {
+
+        /** The copy elements option. */
+        copy(Messages.get().key(Messages.GUI_MODEL_GROUP_OPTION_COPY_0)),
+
+        /** The disabled option. */
+        disabled(Messages.get().key(Messages.GUI_MODEL_GROUP_OPTION_DISABLED_0)),
+
+        /** The reuse option. */
+        reuse(Messages.get().key(Messages.GUI_MODEL_GROUP_OPTION_REUSE_0));
+
+        /** The option label. */
+        private String m_label;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param label the label
+         */
+        GroupOption(String label) {
+            m_label = label;
+        }
+
+        /**
+         * Returns the option label.<p>
+         *
+         * @return the option label
+         */
+        protected String getLabel() {
+
+            return m_label;
+        }
+    }
+
     /** The template context changed flag. */
     private boolean m_changedContext;
 
@@ -105,20 +140,17 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     /** The break up model group checkbox. */
     private CmsCheckBox m_modelGroupBreakUp;
 
-    /** Checkbox to set the 'model group' status. */
-    private CmsCheckBox m_modelGroupCheckBox;
-
     /** The is model group description field. */
     private CmsTextBox m_modelGroupDescription;
+
+    /** Checkbox to set the 'model group' status. */
+    private CmsSelectBox m_modelGroupSelect;
 
     /** The is model group title field. */
     private CmsTextBox m_modelGroupTitle;
 
     /** The element setting values. */
     private Map<String, String> m_settings;
-
-    /** Checkbox to set the use as copy model status. */
-    private CmsCheckBox m_useAsCopyModel;
 
     /**
      * Constructor.<p>
@@ -145,23 +177,21 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
         m_settings = elementBean.getSettings();
         A_CmsFormFieldPanel formFieldPanel = null;
         boolean isEditableModelGroup = CmsCoreProvider.get().getUserInfo().isDeveloper()
-            && m_controller.getData().isModelGroup();
+            && m_controller.getData().isModelGroup()
+            && !m_controller.hasModelGroupChild(elementWidget);
         boolean isDeveloper = CmsCoreProvider.get().getUserInfo().isDeveloper();
         if (m_contextInfo.shouldShowElementTemplateContextSelection()
             || isDeveloper
             || m_elementBean.hasAlternativeFormatters(m_containerId)) {
             CmsFieldsetFormFieldPanel fieldSetPanel = new CmsFieldsetFormFieldPanel(
                 infoBean,
-                org.opencms.ade.containerpage.client.Messages.get().key(
-                    org.opencms.ade.containerpage.client.Messages.GUI_SETTINGS_LEGEND_0));
+                Messages.get().key(Messages.GUI_SETTINGS_LEGEND_0));
             formFieldPanel = fieldSetPanel;
             if (m_elementBean.hasAlternativeFormatters(m_containerId)) {
                 CmsFieldSet formatterFieldset = new CmsFieldSet();
                 // insert as first field-set after the element info box
                 fieldSetPanel.getMainPanel().insert(formatterFieldset, 1);
-                formatterFieldset.setLegend(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_FORMATTERS_LEGEND_0));
+                formatterFieldset.setLegend(Messages.get().key(Messages.GUI_FORMATTERS_LEGEND_0));
                 formatterFieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
                 LinkedHashMap<String, String> formatters = new LinkedHashMap<String, String>();
                 m_formatterSelect = new CmsSelectBox();
@@ -182,75 +212,25 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             }
             if (m_controller.getData().isModelPage() || isEditableModelGroup) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
-                modelGroupFieldSet.setLegend(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+                modelGroupFieldSet.setLegend(Messages.get().key(Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
 
-                if (isEditableModelGroup
-                    && !elementWidget.hasModelGroupParent()
-                    && !m_controller.hasModelGroupChild(elementWidget)) {
-                    m_modelGroupCheckBox = new CmsCheckBox(
-                        org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
-                    m_modelGroupCheckBox.setDisplayInline(false);
-                    m_modelGroupCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                    modelGroupFieldSet.add(m_modelGroupCheckBox);
-                    m_modelGroupCheckBox.setChecked(elementWidget.isModelGroup());
-                    CmsFormRow titleRow = new CmsFormRow();
-                    titleRow.getLabel().setText(
-                        org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_TITLE_0));
-                    m_modelGroupTitle = new CmsTextBox();
-                    titleRow.getWidgetContainer().add(m_modelGroupTitle);
-                    modelGroupFieldSet.add(titleRow);
-
-                    CmsFormRow descriptionRow = new CmsFormRow();
-                    descriptionRow.getLabel().setText(
-                        org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_DESCRIPTION_0));
-                    m_modelGroupDescription = new CmsTextBox();
-                    descriptionRow.getWidgetContainer().add(m_modelGroupDescription);
-                    modelGroupFieldSet.add(descriptionRow);
-
-                    if (elementWidget.isModelGroup()) {
-                        m_modelGroupTitle.setFormValueAsString(
-                            elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_TITLE));
-                        m_modelGroupDescription.setFormValueAsString(
-                            elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_DESCRIPTION));
-                    }
-
-                    m_useAsCopyModel = new CmsCheckBox(
-                        org.opencms.ade.containerpage.client.Messages.get().key(
-                            org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0));
-                    m_useAsCopyModel.setDisplayInline(false);
-                    m_useAsCopyModel.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                    m_useAsCopyModel.setChecked(
-                        Boolean.valueOf(
-                            elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue());
-                    modelGroupFieldSet.add(m_useAsCopyModel);
+                if (isEditableModelGroup && !elementWidget.hasModelGroupParent()) {
+                    addModelGroupSettings(elementBean, elementWidget, modelGroupFieldSet);
+                } else {
+                    addCreateNewCheckbox(elementBean, modelGroupFieldSet);
                 }
-                m_createNewCheckBox = new CmsCheckBox(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LABEL_0));
-                m_createNewCheckBox.setDisplayInline(false);
-                m_createNewCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
-                modelGroupFieldSet.add(m_createNewCheckBox);
                 fieldSetPanel.getMainPanel().insert(modelGroupFieldSet, 1);
-                m_createNewCheckBox.setChecked(elementBean.isCreateNew());
+
             } else if (elementWidget.isModelGroup()) {
                 CmsFieldSet modelGroupFieldSet = new CmsFieldSet();
-                modelGroupFieldSet.setLegend(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_CREATE_NEW_LEGEND_0
+                modelGroupFieldSet.setLegend(Messages.get().key(Messages.GUI_CREATE_NEW_LEGEND_0
 
                 ));
                 modelGroupFieldSet.getElement().getStyle().setMarginTop(10, Unit.PX);
-                m_modelGroupBreakUp = new CmsCheckBox(
-                    org.opencms.ade.containerpage.client.Messages.get().key(
-                        org.opencms.ade.containerpage.client.Messages.GUI_MODEL_GROUP_BREAK_UP_0));
+                m_modelGroupBreakUp = new CmsCheckBox(Messages.get().key(Messages.GUI_MODEL_GROUP_BREAK_UP_0));
                 m_modelGroupBreakUp.setDisplayInline(false);
                 m_modelGroupBreakUp.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
                 modelGroupFieldSet.add(m_modelGroupBreakUp);
@@ -382,6 +362,21 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     }
 
     /**
+     * Enables the model group title and description fields.<p>
+     *
+     * @param enabled <code>true</code> to enable
+     */
+    void setModelGroupEnabled(boolean enabled) {
+
+        if (m_modelGroupTitle != null) {
+            m_modelGroupTitle.setEnabled(enabled);
+        }
+        if (m_modelGroupDescription != null) {
+            m_modelGroupDescription.setEnabled(enabled);
+        }
+    }
+
+    /**
      * Sets the template context changed flag.<p>
      * @param changed the template context changed flag
      */
@@ -397,6 +392,7 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
      * @param fieldValues the field values
      * @param editedFields the changed fields
      */
+    @SuppressWarnings("incomplete-switch")
     void submitForm(CmsForm formParam, final Map<String, String> fieldValues, Set<String> editedFields) {
 
         if (CmsInheritanceContainerEditor.getInstance() != null) {
@@ -423,20 +419,28 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
             m_elementWidget.setCreateNew(m_createNewCheckBox.isChecked());
             fieldValues.put(CmsContainerElement.CREATE_AS_NEW, Boolean.toString(m_createNewCheckBox.isChecked()));
         }
-        if (m_modelGroupCheckBox != null) {
-            boolean modelGroup = m_modelGroupCheckBox.isChecked();
-            fieldValues.put(
-                CmsContainerElement.MODEL_GROUP_STATE,
-                (modelGroup ? ModelGroupState.isModelGroup : ModelGroupState.noGroup).name());
-            if (modelGroup) {
+        if (m_modelGroupSelect != null) {
+            GroupOption group = GroupOption.valueOf(m_modelGroupSelect.getFormValueAsString());
+            switch (group) {
+                case disabled:
+                    fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.noGroup.name());
+                    fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(false));
+                    break;
+                case copy:
+                    fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.isModelGroup.name());
+                    fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(true));
+                    break;
+                case reuse:
+                    fieldValues.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.isModelGroup.name());
+                    fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(false));
+                    break;
+            }
+            if (group != GroupOption.disabled) {
                 fieldValues.put(CmsContainerElement.MODEL_GROUP_TITLE, m_modelGroupTitle.getFormValueAsString());
                 fieldValues.put(
                     CmsContainerElement.MODEL_GROUP_DESCRIPTION,
                     m_modelGroupDescription.getFormValueAsString());
             }
-        }
-        if (m_useAsCopyModel != null) {
-            fieldValues.put(CmsContainerElement.USE_AS_COPY_MODEL, Boolean.toString(m_useAsCopyModel.isChecked()));
         }
 
         if ((m_modelGroupBreakUp != null) && m_modelGroupBreakUp.isChecked()) {
@@ -496,34 +500,105 @@ public class CmsElementSettingsDialog extends CmsFormDialog {
     }
 
     /**
+     * Adds the create new checkbox to the given field set.<p>
+     *
+     * @param elementBean the element bean
+     * @param fieldSet the field set
+     */
+    private void addCreateNewCheckbox(CmsContainerElementData elementBean, CmsFieldSet fieldSet) {
+
+        m_createNewCheckBox = new CmsCheckBox(Messages.get().key(Messages.GUI_CREATE_NEW_LABEL_0));
+        m_createNewCheckBox.setDisplayInline(false);
+        m_createNewCheckBox.getElement().getStyle().setMarginTop(7, Style.Unit.PX);
+        m_createNewCheckBox.setChecked(elementBean.isCreateNew());
+        fieldSet.add(m_createNewCheckBox);
+    }
+
+    /**
+     * Adds the model group settings fields to the given field set.<p>
+     *
+     * @param elementBean the element bean
+     * @param elementWidget the element widget
+     * @param fieldSet the field set
+     */
+    private void addModelGroupSettings(
+        CmsContainerElementData elementBean,
+        CmsContainerPageElementPanel elementWidget,
+        CmsFieldSet fieldSet) {
+
+        Map<String, String> groupOptions = new LinkedHashMap<String, String>();
+        groupOptions.put(GroupOption.disabled.name(), GroupOption.disabled.getLabel());
+        groupOptions.put(GroupOption.copy.name(), GroupOption.copy.getLabel());
+        groupOptions.put(GroupOption.reuse.name(), GroupOption.reuse.getLabel());
+        m_modelGroupSelect = new CmsSelectBox(groupOptions);
+        if (elementWidget.isModelGroup()) {
+            if (Boolean.valueOf(elementBean.getSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue()) {
+                m_modelGroupSelect.selectValue(GroupOption.copy.name());
+            } else {
+                m_modelGroupSelect.selectValue(GroupOption.reuse.name());
+            }
+        }
+        CmsFormRow selectRow = new CmsFormRow();
+        selectRow.getLabel().setText(Messages.get().key(Messages.GUI_USE_AS_MODEL_GROUP_LABEL_0));
+        selectRow.getWidgetContainer().add(m_modelGroupSelect);
+        fieldSet.add(selectRow);
+        m_modelGroupSelect.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+
+                GroupOption option = GroupOption.valueOf(event.getValue());
+                setModelGroupEnabled(option != GroupOption.disabled);
+            }
+        });
+        CmsFormRow titleRow = new CmsFormRow();
+        titleRow.getLabel().setText(Messages.get().key(Messages.GUI_MODEL_GROUP_TITLE_0));
+        m_modelGroupTitle = new CmsTextBox();
+        titleRow.getWidgetContainer().add(m_modelGroupTitle);
+        fieldSet.add(titleRow);
+
+        CmsFormRow descriptionRow = new CmsFormRow();
+        descriptionRow.getLabel().setText(Messages.get().key(Messages.GUI_MODEL_GROUP_DESCRIPTION_0));
+        m_modelGroupDescription = new CmsTextBox();
+        descriptionRow.getWidgetContainer().add(m_modelGroupDescription);
+        fieldSet.add(descriptionRow);
+
+        if (elementWidget.isModelGroup()) {
+            m_modelGroupTitle.setFormValueAsString(
+                elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_TITLE));
+            m_modelGroupDescription.setFormValueAsString(
+                elementBean.getSettings().get(CmsContainerElement.MODEL_GROUP_DESCRIPTION));
+        }
+        setModelGroupEnabled(elementWidget.isModelGroup());
+    }
+
+    /**
      * Ensures the CSS snippet with the given ID is present.<p>
      *
      * @param formatterId the ID
      * @param cssContent the CSS snippet
      */
     private native void ensureInlineCss(String formatterId, String cssContent)/*-{
-                                                                              var styles = $wnd.document.styleSheets;
-                                                                              for (var i = 0; i < styles.length; i++) {
-                                                                              // IE uses the owningElement property
-                                                                              var styleNode = styles[i].owningElement ? styles[i].owningElement
-                                                                              : styles[i].ownerNode;
-                                                                              if (styleNode != null && styleNode.rel == formatterId) {
-                                                                              // inline css is present
-                                                                              return;
-                                                                              }
-                                                                              }
-                                                                              // include inline css into head
-                                                                              var headID = $wnd.document.getElementsByTagName("head")[0];
-                                                                              var cssNode = $wnd.document.createElement('style');
-                                                                              cssNode.type = 'text/css';
-                                                                              cssNode.rel = formatterId;
-                                                                              if (cssNode.styleSheet) {
-                                                                              // in case of IE
-                                                                              cssNode.styleSheet.cssText = cssContent;
-                                                                              } else {
-                                                                              // otherwise
-                                                                              cssNode.appendChild(document.createTextNode(cssContent));
-                                                                              }
-                                                                              headID.appendChild(cssNode);
-                                                                              }-*/;
+        var styles = $wnd.document.styleSheets;
+        for (var i = 0; i < styles.length; i++) {
+            // IE uses the owningElement property
+            var styleNode = styles[i].owningElement ? styles[i].owningElement : styles[i].ownerNode;
+            if (styleNode != null && styleNode.rel == formatterId) {
+                // inline css is present
+                return;
+            }
+        }
+        // include inline css into head
+        var headID = $wnd.document.getElementsByTagName("head")[0];
+        var cssNode = $wnd.document.createElement('style');
+        cssNode.type = 'text/css';
+        cssNode.rel = formatterId;
+        if (cssNode.styleSheet) {
+            // in case of IE
+            cssNode.styleSheet.cssText = cssContent;
+        } else {
+            // otherwise
+            cssNode.appendChild(document.createTextNode(cssContent));
+        }
+        headID.appendChild(cssNode);
+    }-*/;
 }

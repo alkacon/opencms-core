@@ -190,16 +190,16 @@ public final class Messages {
     public static final String GUI_MODEL_GROUP_DESCRIPTION_0 = "GUI_MODEL_GROUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_DISABLED_CHILD_0 = "GUI_MODEL_GROUP_DISABLED_CHILD_0";
+    public static final String GUI_MODEL_GROUP_OPTION_DISABLED_0 = "GUI_MODEL_GROUP_OPTION_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_DISABLED_PARENT_0 = "GUI_MODEL_GROUP_DISABLED_PARENT_0";
+    public static final String GUI_MODEL_GROUP_OPTION_COPY_0 = "GUI_MODEL_GROUP_OPTION_COPY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MODEL_GROUP_OPTION_REUSE_0 = "GUI_MODEL_GROUP_OPTION_REUSE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_GROUP_TITLE_0 = "GUI_MODEL_GROUP_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0 = "GUI_MODEL_GROUP_USE_AS_COPY_MODEL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NO_SETTINGS_0 = "GUI_NO_SETTINGS_0";
