@@ -52,6 +52,9 @@ public final class Messages {
     public static final String GUI_CONFIRM_LEAVING_EDITOR_0 = "GUI_CONFIRM_LEAVING_EDITOR_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENT_EDITOR_TITLE_0 = "GUI_CONTENT_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOAD_GALLERY_OPEN_0 = "GUI_DOWNLOAD_GALLERY_OPEN_0";
 
     /** Message constant for key in the resource bundle. */

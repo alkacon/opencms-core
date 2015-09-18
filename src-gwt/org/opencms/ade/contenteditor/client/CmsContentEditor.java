@@ -2000,6 +2000,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     private void initToolbar() {
 
         m_toolbar = new CmsToolbar();
+        m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_CONTENT_EDITOR_TITLE_0));
         m_publishButton = createButton(
             I_CmsButton.ButtonData.PUBLISH.getTitle(),
             I_CmsButton.ButtonData.PUBLISH.getIconClass());

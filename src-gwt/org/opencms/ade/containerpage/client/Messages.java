@@ -229,6 +229,9 @@ public final class Messages {
     public static final String GUI_NOTIFICATION_UNABLE_TO_LOCK_0 = "GUI_NOTIFICATION_UNABLE_TO_LOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PAGE_EDITOR_TITLE_0 = "GUI_PAGE_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROPERTY_DIALOG_TEXT_0 = "GUI_PROPERTY_DIALOG_TEXT_0";
 
     /** Message constant for key in the resource bundle. */

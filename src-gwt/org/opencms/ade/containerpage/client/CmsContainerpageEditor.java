@@ -338,7 +338,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         //        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
-        RootPanel root = RootPanel.get();
+        m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0));
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
         m_publish.addClickHandler(clickHandler);
@@ -406,6 +406,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
             showToolbar(true);
             containerpageHandler.activateSelection();
         }
+        RootPanel root = RootPanel.get();
         root.add(m_toolbar);
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
             controller,

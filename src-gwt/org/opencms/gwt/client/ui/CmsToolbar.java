@@ -27,8 +27,9 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.util.CmsFadeAnimation;
+import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,9 +38,9 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -67,6 +68,9 @@ public class CmsToolbar extends Composite {
     @UiField
     protected FlowPanel m_buttonPanelRight;
 
+    /** The title label. */
+    private Label m_titleLabel;
+
     /**
      * Constructor.<p>
      */
@@ -89,19 +93,8 @@ public class CmsToolbar extends Composite {
 
         if (show) {
             toolbarVisibility.setValue(null);
-            //            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
         } else {
-            //            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
-            //
-            //                public void execute() {
-            //
-            //                    toolbarVisibility.setValue(
-            //                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-            //                }
-            //            }, 300);
-
-            toolbarVisibility.setValue(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
+            toolbarVisibility.setValue(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         }
     }
 
@@ -121,16 +114,8 @@ public class CmsToolbar extends Composite {
 
         if (show) {
             toolbarVisibility.setValue(showClass);
-            CmsFadeAnimation.fadeIn(toolbar.getElement(), null, 300);
         } else {
-            CmsFadeAnimation.fadeOut(toolbar.getElement(), new Command() {
-
-                public void execute() {
-
-                    toolbarVisibility.setValue(
-                        org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-                }
-            }, 300);
+            toolbarVisibility.setValue(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         }
     }
 
@@ -172,5 +157,28 @@ public class CmsToolbar extends Composite {
             all.add(it.next());
         }
         return all;
+    }
+
+    /**
+     * Sets the toolbar title label.<p>
+     *
+     * @param title the title
+     */
+    public void setAppTitle(String title) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+            if (m_titleLabel != null) {
+                m_titleLabel.removeFromParent();
+                m_titleLabel = null;
+            }
+        } else {
+
+            if (m_titleLabel == null) {
+                m_titleLabel = new Label();
+                m_titleLabel.setStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().title());
+                m_buttonPanelLeft.insert(m_titleLabel, 0);
+            }
+            m_titleLabel.setText(title);
+        }
     }
 }

@@ -1025,6 +1025,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
 
         // toolbar
         m_toolbar = new CmsSitemapToolbar(m_controller);
+        m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_SITEMAP_0));
         rootPanel.add(m_toolbar);
         CmsSitemapInfo info = m_controller.getData().getSitemapInfo();
         // header
