@@ -70,20 +70,25 @@ public class CmsCoreData implements IsSerializable {
         /** The user name. */
         private String m_name;
 
+        /** The user icon path. */
+        private String m_userIcon;
+
         /**
          * Creates a new instance.<p>
          *
          * @param name the user name
+         * @param userIcon the user icon path
          * @param isAdmin true if the user is an administrator
          * @param isDeveloper true if the user is a template developer
          * @param isCategoryManager true if the user is a category manager
          */
-        public UserInfo(String name, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
+        public UserInfo(String name, String userIcon, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
 
             m_isDeveloper = isDeveloper;
             m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_name = name;
+            m_userIcon = userIcon;
         }
 
         /**
@@ -102,6 +107,16 @@ public class CmsCoreData implements IsSerializable {
         public String getName() {
 
             return m_name;
+        }
+
+        /**
+         * Returns the user icon path.<p>
+         *
+         * @return the user icon path
+         */
+        public String getUserIcon() {
+
+            return m_userIcon;
         }
 
         /**
