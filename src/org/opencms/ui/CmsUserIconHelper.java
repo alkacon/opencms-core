@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
 public class CmsUserIconHelper {
 
     /** The color reserved for admin users. */
-    public static final Color ADMIN_COLOR = new Color(0xff, 0xa8, 0x26);
+    public static final Color ADMIN_COLOR = new Color(0x00, 0x30, 0x82);
 
     /** The big icon suffix. */
     public static final String BIG_ICON_SUFFIX = "_big_icon.png";
