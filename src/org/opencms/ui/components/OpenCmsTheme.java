@@ -152,4 +152,7 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String TOOLBAR_LOGO = "o-toolbar-logo";
 
+    /** CSS style name. */
+    public static final String USER_INFO = "o-user-info";
+
 }

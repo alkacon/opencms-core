@@ -353,11 +353,11 @@
   
   .v-button.v-button-o-toolbar-button, .v-menubar.v-menubar-o-toolbar-button > .v-menubar-menuitem{
   	font-size: $app-icon-size;
-    height: 32px;
+    height: 40px;
     min-width: 40px;
     line-height: 32px;
-    padding: 0 5px;
-    margin-top: 4px;
+    padding: 4px;
+    margin: 0;
     color: inherit;
     background: transparent;
     
@@ -386,6 +386,9 @@
     }
   }
   
+  .o-user-info .v-button.v-button-o-toolbar-button:hover{
+   	background: lighten($v-selection-color, 10%);
+  }
   
   /* Toolbar drop down */
   .v-popupview.v-popupview-o-navigator-dropdown{

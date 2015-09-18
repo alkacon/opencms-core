@@ -89,15 +89,9 @@ public class CmsToolBar extends CssLayout {
     public CmsToolBar() {
 
         Design.read("CmsToolBar.html", this);
-        CmsObject cms = A_CmsUI.getCmsObject();
         m_itemsRight.addComponent(createContextMenu());
         m_itemsRight.addComponent(createQuickLaunchDropDown());
-        m_itemsRight.addComponent(createDropDown(
-            new ExternalResource(
-                CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser())),
-            new CmsUserInfo()));
-        // the app indicator will be reattached in case the app title is set
-        m_itemsLeft.removeComponent(m_appIndicator);
+        m_itemsRight.addComponent(createUserInfoDropDown());
     }
 
     /**
@@ -212,11 +206,9 @@ public class CmsToolBar extends CssLayout {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appTitle)) {
             m_appIndicator.setValue(appTitle);
-            if (m_itemsLeft.getComponentIndex(m_appIndicator) == -1) {
-                m_itemsLeft.addComponent(m_appIndicator, 0);
-            }
+            m_appIndicator.setVisible(true);
         } else {
-            m_itemsLeft.removeComponent(m_appIndicator);
+            m_appIndicator.setVisible(false);
         }
     }
 
@@ -311,5 +303,21 @@ public class CmsToolBar extends CssLayout {
             }
         }
         return createDropDown(FontOpenCms.APPS, layout);
+    }
+
+    /**
+     * Creates the user info drop down.<p>
+     *
+     * @return the drop down component
+     */
+    private Component createUserInfoDropDown() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        Component userDropdown = createDropDown(
+            new ExternalResource(
+                CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser())),
+            new CmsUserInfo());
+        userDropdown.addStyleName(OpenCmsTheme.USER_INFO);
+        return userDropdown;
     }
 }
