@@ -25,7 +25,7 @@ li div.itemContainer.cmsHovering{
 .itemContainer div {
 	font-family: value("constants.css.fontFamily");
 	font-size: value("constants.css.fontSizeSmall");
-	line-height: 16px;
+	line-height: 17px;
 }
 @url editCursorGifUrl coreImages.editCursorGif;
 @url editCursorIcoUrl coreImages.editCursorIco;
@@ -116,7 +116,7 @@ div.itemContent {
 	background-image: literal("-webkit-linear-gradient(")value("constants.css.gradientListItem") literal(")");
 	background-image: literal("-o-linear-gradient(")value("constants.css.gradientListItem") literal(")");
 	background-image: literal("linear-gradient(")value("constants.css.gradientListItem") literal(")");
-    height: auto;
+    height: 38px;
 	position: relative;
 	white-space: nowrap;
 }
