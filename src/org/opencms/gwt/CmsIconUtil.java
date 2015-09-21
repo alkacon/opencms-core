@@ -64,11 +64,7 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
             for (CmsExplorerTypeSettings type : OpenCms.getWorkplaceManager().getExplorerTypeSettings()) {
                 addCssForType(type);
             }
-            CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
-            navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
-            navlevel.setIcon("navlevel.png");
-            navlevel.setBigIcon("navlevel_big.png");
-            addCssForType(navlevel);
+            addPseudoTypes();
             addResourceNotFoundIconRule();
             return m_buffer.toString();
         }
@@ -159,6 +155,28 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
                 CmsIconRule rule = entry.getValue();
                 addCssForIconRule(typeName, rule);
             }
+        }
+
+        /**
+         * Adds icon rule for pseudo resource types.<p>
+         */
+        private void addPseudoTypes() {
+
+            CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
+            navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
+            navlevel.setIcon("navlevel.png");
+            navlevel.setBigIcon("navlevel_big.png");
+            addCssForType(navlevel);
+            CmsExplorerTypeSettings modelgroupReuse = new CmsExplorerTypeSettings();
+            modelgroupReuse.setName(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
+            modelgroupReuse.setIcon("modelpage.png");
+            modelgroupReuse.setBigIcon("modelgroup_reuse_big.png");
+            addCssForType(modelgroupReuse);
+            CmsExplorerTypeSettings modelgroupPage = new CmsExplorerTypeSettings();
+            modelgroupPage.setName(CmsGwtConstants.TYPE_MODELGROUP_PAGE);
+            modelgroupPage.setIcon("modelpage.png");
+            modelgroupPage.setBigIcon("modelpage_groups_big.png");
+            addCssForType(modelgroupPage);
         }
 
         /**

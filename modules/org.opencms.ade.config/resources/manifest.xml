@@ -61,8 +61,11 @@
 				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/modelpage.png" />
 			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage_groups_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/module_config_big.png" />
@@ -742,7 +745,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="modelgroup" key="fileicon.modelgroup"
-				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
+				icon="containerpage.png" bigicon="modelgroup_copy_big.png" reference="xmlcontent">
 				<newresource
 					uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup"
 					order="50" autosetnavigation="false" autosettitle="false"
@@ -1191,6 +1194,54 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/modelgroup_copy_big.png</source>
+			<destination>system/workplace/resources/filetypes/modelgroup_copy_big.png</destination>
+			<type>image</type>
+			<uuidstructure>7f1699d3-603c-11e5-85f9-377ea9708e4d</uuidstructure>
+			<uuidresource>7f1699d4-603c-11e5-85f9-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 21 Sep 2015 08:41:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelgroup_copy_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/modelgroup_reuse_big.png</source>
+			<destination>system/workplace/resources/filetypes/modelgroup_reuse_big.png</destination>
+			<type>image</type>
+			<uuidstructure>7f1adf97-603c-11e5-85f9-377ea9708e4d</uuidstructure>
+			<uuidresource>7f1adf98-603c-11e5-85f9-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 21 Sep 2015 08:41:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelgroup_reuse_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/modelpage_big.png
 			</source>
 			<destination>system/workplace/resources/filetypes/modelpage_big.png
@@ -1233,6 +1284,30 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/modelpage_groups_big.png</source>
+			<destination>system/workplace/resources/filetypes/modelpage_groups_big.png</destination>
+			<type>image</type>
+			<uuidstructure>7f1cb45b-603c-11e5-85f9-377ea9708e4d</uuidstructure>
+			<uuidresource>7f1cb45c-603c-11e5-85f9-377ea9708e4d</uuidresource>
+			<datelastmodified>Mon, 21 Sep 2015 08:41:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 21 Sep 2015 08:41:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelpage_groups_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/category_big.png

@@ -36,10 +36,16 @@ public final class CmsGwtConstants {
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
     /** Context menu action id. */
-    public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+    public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
 
     /** Context menu action id. */
-    public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
+    public static final String ACTION_TEMPLATECONTEXTS = "templatecontexts";
+
+    /** CSS class name used for the DOM elements containing collector information. */
+    public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
+
+    /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
+    public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
 
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
     public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";
@@ -50,12 +56,6 @@ public final class CmsGwtConstants {
     /** Parameter to force a specific template context. */
     public static final String PARAM_TEMPLATE_CONTEXT = "__templateContext";
 
-    /** Type name for container pages. */
-    public static final String TYPE_CONTAINERPAGE = "containerpage";
-
-    /** CSS class name used for the DOM elements containing collector information. */
-    public static final String CLASS_COLLECTOR_INFO = "cms-collector-info";
-
     /** Tab id for the preference dialog. */
     public static final String TAB_BASIC = "basic";
 
@@ -65,17 +65,29 @@ public final class CmsGwtConstants {
     /** Tab id for the preference dialog. */
     public static final String TAB_HIDDEN = "hidden";
 
+    /** Type name for container pages. */
+    public static final String TYPE_CONTAINERPAGE = "containerpage";
+
+    /** The image resource type name. */
+    public static final String TYPE_IMAGE = "image";
+
+    /** Name for the pseudo-type 'modelgroup'. */
+    public static final String TYPE_MODELGROUP = "modelgroup";
+
+    /** Name for the pseudo-type 'modelgrouppage'. */
+    public static final String TYPE_MODELGROUP_PAGE = "modelgrouppage";
+
+    /** Name for the pseudo-type 'modelgroupreuse'. */
+    public static final String TYPE_MODELGROUP_REUSE = "modelgroupreuse";
+
+    /** Name for the type 'modelpage'. */
+    public static final String TYPE_MODELPAGE = "modelpage";
+
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 
     /** The xmlimage resource type name. */
     public static final String TYPE_XML_IMAGE = "xmlimage";
-
-    /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
-    public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
-
-    /** The image resource type name. */
-    public static final String TYPE_IMAGE = "image";
 
     /**
      * Hide constructor.<p>

@@ -66,6 +66,12 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     /** The resource path as a unique resource id. */
     private String m_path;
 
+    /** The pseudo resource type, used to override the default type icon. */
+    private String m_pseudoType;
+
+    /** The raw title, without any status information attached. */
+    private String m_rawTitle = "";
+
     /** Flag indicating if the result item resource is currently released and not expired. */
     private boolean m_releasedAndNotExpired;
 
@@ -74,9 +80,6 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
 
     /** The link for displaying the resource. */
     private String m_viewLink;
-
-    /** The raw title, without any status information attached. */
-    private String m_rawTitle = "";
 
     /**
      * Default constructor.<p>
@@ -144,6 +147,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public String getPath() {
 
         return m_path;
+    }
+
+    /**
+     * Returns the pseudo resource type, used to override the default type icon.<p>
+     *
+     * @return the pseudo resource type
+     */
+    public String getPseudoType() {
+
+        return m_pseudoType;
     }
 
     /**
@@ -319,6 +332,16 @@ public class CmsResultItemBean extends CmsListInfoBean implements I_CmsHasTitle,
     public void setPreset(boolean preset) {
 
         m_isPreset = preset;
+    }
+
+    /**
+     * Sets the pseudo resource type, used to override the default type icon.<p>
+     *
+     * @param pseudoType the pseudo resource type
+     */
+    public void setPseudoType(String pseudoType) {
+
+        m_pseudoType = pseudoType;
     }
 
     /**

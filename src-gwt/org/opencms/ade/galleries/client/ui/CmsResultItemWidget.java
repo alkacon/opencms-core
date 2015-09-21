@@ -39,6 +39,7 @@ import org.opencms.gwt.client.util.CmsToolTipHandler;
 import org.opencms.gwt.shared.CmsAdditionalInfoBean;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.user.client.ui.HTML;
 
@@ -110,7 +111,12 @@ public class CmsResultItemWidget extends CmsListItemWidget {
 
         super(infoBean);
         setSubtitleTitle(infoBean.getPath());
-        setIcon(CmsIconUtil.getResourceIconClasses(infoBean.getType(), infoBean.getPath(), false));
+        String type = infoBean.getType();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(infoBean.getPseudoType())) {
+            type = infoBean.getPseudoType();
+        }
+
+        setIcon(CmsIconUtil.getResourceIconClasses(type, infoBean.getPath(), false));
 
         // if resourceType=="image" prepare for tile view
         if (CmsResultsTab.isImagelikeType(infoBean.getType())) {

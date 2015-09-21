@@ -393,9 +393,15 @@ public class CmsModelGroupHelper {
                     String title = element.getIndividualSettings().get(CmsContainerElement.MODEL_GROUP_TITLE);
                     String description = element.getIndividualSettings().get(
                         CmsContainerElement.MODEL_GROUP_DESCRIPTION);
+                    String groupType = "";
+                    if (Boolean.valueOf(
+                        element.getIndividualSettings().get(CmsContainerElement.USE_AS_COPY_MODEL)).booleanValue()) {
+                        groupType = CmsContainerElement.USE_AS_COPY_MODEL;
+                    }
                     List<CmsProperty> props = new ArrayList<CmsProperty>();
                     props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, title));
                     props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, description, description));
+                    props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, groupType, groupType));
                     m_cms.writePropertyObjects(modelGroup, props);
                     List<CmsContainerBean> modelContainers = new ArrayList<CmsContainerBean>();
                     CmsContainerElementBean baseElement = element.clone();

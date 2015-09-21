@@ -37,6 +37,7 @@ import org.opencms.gwt.client.property.CmsReloadMode;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsIconUtil;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.property.CmsClientProperty;
@@ -98,7 +99,10 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         m_isModelGroup = isModelGroup;
         CmsListInfoBean infoBean = new CmsListInfoBean(title, subTitle, null);
         CmsListItemWidget content = new CmsListItemWidget(infoBean);
-        content.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", false));
+        content.setIcon(
+            CmsIconUtil.getResourceIconClasses(
+                isModelGroup ? CmsGwtConstants.TYPE_MODELGROUP_PAGE : CmsGwtConstants.TYPE_MODELPAGE,
+                false));
         initContent(content);
     }
 
@@ -259,7 +263,11 @@ public class CmsModelPageTreeItem extends CmsTreeItem {
         CmsListInfoBean infoBean = modelPage.getListInfoBean();
         infoBean.setTitle(title);
         CmsListItemWidget result = new CmsModelPageListItemWidget(infoBean);
-        result.setIcon(CmsIconUtil.getResourceIconClasses("modelpage", modelPage.getRootPath(), false));
+        result.setIcon(
+            CmsIconUtil.getResourceIconClasses(
+                m_isModelGroup ? CmsGwtConstants.TYPE_MODELGROUP_PAGE : CmsGwtConstants.TYPE_MODELPAGE,
+                modelPage.getRootPath(),
+                false));
         if (m_isModelGroup || CmsEditModelPageMenuEntry.checkVisible(modelPage.getStructureId())) {
             result.addIconClickHandler(new ClickHandler() {
 
