@@ -303,7 +303,7 @@
 					</property>
 					<property>
 						<name>search.exclude</name>
-						<value>all</value>
+						<value>true</value>
 					</property>
 				</properties>
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd
@@ -314,14 +314,12 @@
 				<properties>
 					<property>
 						<name>search.exclude</name>
-						<value>all</value>
+						<value>true</value>
 					</property>
 				</properties>				
 				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
 				</param>
 			</type>
-			
-			
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="subsitemap" key="fileicon.subsitemap"
