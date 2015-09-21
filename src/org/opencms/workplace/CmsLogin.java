@@ -611,15 +611,16 @@ public class CmsLogin extends CmsJspLoginBean {
                     m_directEditPath = getDirectEditPath(cms, settings.getUserSettings());
                 } else {
                     // there was an error during login
+                    CmsException loginException = getLoginException();
 
-                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == getLoginException().getMessageContainer().getKey()) {
+                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == loginException.getMessageContainer().getKey()) {
                         // the user account is disabled
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
                     } else
-                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
+                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == loginException.getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
-                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {
+                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == loginException.getMessageContainer().getKey()) {
                         // all logins have been disabled be the Administration
                         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
                         if (loginMessage != null) {
@@ -629,7 +630,6 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     }
                     if (m_message == null) {
-                        CmsException loginException = getLoginException();
                         if (loginException instanceof CmsCustomLoginException) {
                             m_message = loginException.getMessageContainer();
                         } else {

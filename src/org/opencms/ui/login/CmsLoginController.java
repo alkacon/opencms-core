@@ -36,6 +36,8 @@ import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsCustomLoginException;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
@@ -278,8 +280,17 @@ public class CmsLoginController {
         String pcType = m_ui.getPcType();
         CmsObject currentCms = A_CmsUI.getCmsObject();
         CmsUser userObj = null;
+
         try {
-            userObj = currentCms.readUser(realUser);
+            try {
+                userObj = currentCms.readUser(realUser);
+            } catch (CmsException e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                message = org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
+                m_ui.displayError(message.key(m_params.getLocale()));
+                return;
+            }
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
@@ -327,7 +338,40 @@ public class CmsLoginController {
             m_ui.openLoginTarget(targetInfo);
 
         } catch (Exception e) {
-            m_ui.displayError("Login failed: " + e);
+
+            // there was an error during login
+            if (e instanceof CmsException) {
+                CmsMessageContainer exceptionMessage = ((CmsException)e).getMessageContainer();
+                if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == exceptionMessage.getKey()) {
+                    // the user account is disabled
+                    message = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
+                } else
+                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
+                    // the user account is temporarily disabled because of too many login failures
+                    message = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == exceptionMessage.getKey()) {
+                    // all logins have been disabled be the Administration
+                    CmsLoginMessage loginMessage2 = OpenCms.getLoginManager().getLoginMessage();
+                    if (loginMessage2 != null) {
+                        message = org.opencms.workplace.Messages.get().container(
+                            org.opencms.workplace.Messages.GUI_LOGIN_FAILED_WITH_MESSAGE_1,
+                            loginMessage2.getMessage());
+                    }
+                }
+            }
+            if (message == null) {
+                if (e instanceof CmsCustomLoginException) {
+                    message = ((CmsCustomLoginException)e).getMessageContainer();
+                } else {
+                    // any other error - display default message
+                    message = org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
+                }
+            }
+
+            m_ui.displayError(message.key(m_params.getLocale()));
             if (e instanceof CmsException) {
                 CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
             } else {
@@ -381,11 +425,12 @@ public class CmsLoginController {
      * @param settings the workplace settings
      * @return the login target
      */
-    protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) {
+    protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) throws CmsException {
 
         m_params.getLocale();
         String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
         String target = "";
+        boolean checkRole = false;
         if (m_params.getRequestedWorkplaceApp() != null) {
 
             target = m_params.getRequestedWorkplaceApp();
@@ -394,18 +439,23 @@ public class CmsLoginController {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
                 target += "#" + UI.getCurrent().getPage().getUriFragment();
             }
+            checkRole = true;
         } else {
             boolean workplace2 = false;
+
             if (CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
                 && settings.getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2)) {
                 workplace2 = true;
+                checkRole = true;
             } else if (m_params.getRequestedResource() != null) {
                 target = m_params.getRequestedResource();
             } else if (directEditPath != null) {
                 target = directEditPath;
             } else {
                 target = CmsFrameset.JSP_WORKPLACE_URI;
+                checkRole = true;
             }
+
             UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
             boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
             if (showUserAgreement) {
@@ -420,6 +470,11 @@ public class CmsLoginController {
             } else {
                 target = OpenCms.getLinkManager().substituteLink(currentCms, target);
             }
+        }
+        if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
+            throw new CmsCustomLoginException(
+                org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
         }
         return target;
     }
