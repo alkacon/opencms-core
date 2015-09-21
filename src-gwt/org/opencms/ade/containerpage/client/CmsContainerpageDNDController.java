@@ -283,7 +283,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
     /**
     * @see org.opencms.gwt.client.dnd.I_CmsDNDController#onDrop(org.opencms.gwt.client.dnd.I_CmsDraggable, org.opencms.gwt.client.dnd.I_CmsDropTarget, org.opencms.gwt.client.dnd.CmsDNDHandler)
     */
-    public void onDrop(I_CmsDraggable draggable, I_CmsDropTarget target, CmsDNDHandler handler) {
+    public void onDrop(I_CmsDraggable draggable, final I_CmsDropTarget target, CmsDNDHandler handler) {
 
         if (m_imageDndController != null) {
             m_imageDndController.onDrop(draggable, target, handler);
@@ -295,8 +295,10 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
         boolean changedContainerpage = false;
         boolean isListItem = draggable instanceof CmsListItem;
         CmsContainerPageElementPanel listContainerElement = null;
+        CmsContainerElementData elementData = null;
         final boolean[] triggerReload = {false};
         boolean hasWritePermissions = true;
+        String copyModelReplaceId = null;
 
         if (target != m_initialDropTarget) {
             if (target instanceof I_CmsDropContainer) {
@@ -304,7 +306,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                 try {
 
                     CmsContainerPageElementPanel containerElement = null;
-                    CmsContainerElementData elementData = null;
+
                     if (m_isNew) {
                         // for new content elements dragged from the gallery menu, the given id contains the resource type name
                         elementData = m_controller.getCachedElement(m_draggableId);
@@ -337,13 +339,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                     }
                     if (container instanceof CmsContainerPageContainer) {
                         // check for the copy model group replace all instances case
-                        String copyModelReplaceId = ((CmsContainerPageContainer)container).getCopyModelReplaceId();
-                        if (copyModelReplaceId != null) {
-                            m_controller.executeCopyModelReplace(
-                                copyModelReplaceId,
-                                ((CmsContainerPageContainer)container).getFormerModelGroupParent(),
-                                elementData);
-                        }
+                        copyModelReplaceId = ((CmsContainerPageContainer)container).getCopyModelReplaceId();
                     }
                     // changes are only relevant to the container page if not group-container editing
                     changedContainerpage = !m_controller.isGroupcontainerEditing();
@@ -403,7 +399,7 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
             final CmsContainerPageElementPanel finalListContainerElement = listContainerElement;
             final String serverIdStr = CmsContainerpageController.getServerId(m_draggableId);
             CmsUUID structureId = new CmsUUID(serverIdStr);
-
+            final String modelReplaceId = copyModelReplaceId;
             AsyncCallback<String> modeCallback = new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
@@ -436,6 +432,15 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
 
                                         try {
                                             controller.replaceContainerElement(finalListContainerElement, newData);
+                                            if ((target instanceof CmsContainerPageContainer)
+                                                && (modelReplaceId != null)) {
+                                                m_controller.executeCopyModelReplace(
+                                                    modelReplaceId,
+                                                    ((CmsContainerPageContainer)target).getFormerModelGroupParent(),
+                                                    newData);
+
+                                            }
+
                                             controller.setPageChanged(checkReload);
                                         } catch (Exception e) {
                                             throw new RuntimeException(e);
@@ -446,13 +451,20 @@ public class CmsContainerpageDNDController implements I_CmsDNDController {
                         });
 
                     } else if (Objects.equal(result, CmsEditorConstants.MODE_REUSE)) {
+                        if (modelReplaceId != null) {
+                            m_controller.executeCopyModelReplace(
+                                modelReplaceId,
+                                ((CmsContainerPageContainer)target).getFormerModelGroupParent(),
+                                m_controller.getCachedElement(m_draggableId));
+                        }
                         m_controller.setPageChanged(checkReload);
                     }
 
                 }
             };
             ElementReuseMode reuseMode = CmsContainerpageController.get().getData().getElementReuseMode();
-            if (!hasWritePermissions) {
+            if (!hasWritePermissions
+                || ((elementData != null) && (elementData.isModelGroup() || elementData.isWasModelGroup()))) {
                 // User is not allowed to create this element in current view, so reuse the element instead
                 reuseMode = ElementReuseMode.reuse;
             }
