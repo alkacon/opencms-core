@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
-import org.opencms.gwt.shared.CmsIconUtil;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -110,8 +109,6 @@ public class CmsResultListItem extends CmsListItem {
         m_selectButton.setVisible(false);
         resultItemWidget.addButton(m_selectButton);
 
-        // add file icon
-        resultItemWidget.setIcon(CmsIconUtil.getResourceIconClasses(resultItem.getType(), resultItem.getPath(), false));
         if (!resultItem.isReleasedAndNotExpired()) {
             addStyleName(I_CmsLayoutBundle.INSTANCE.galleryResultItemCss().expired());
         }
