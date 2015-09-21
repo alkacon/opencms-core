@@ -245,7 +245,7 @@
    <field name="userLastModified"    type="string"       indexed="true"  stored="true" />
    <field name="userCreated"         type="string"       indexed="true"  stored="true" />
    <field name="version"             type="int"          indexed="true"  stored="true" />
-   <field name="search_exclude"      type="boolean"      indexed="true"  stored="true" />
+   <field name="search_exclude"      type="string"       indexed="true"  stored="true" />
    <field name="search_channel"      type="string"       indexed="true"  stored="true"  multiValued="true" />
    <field name="mimetype"            type="string"       indexed="true"  stored="true" />
    <field name="container_types"     type="string"       indexed="true"  stored="true" />

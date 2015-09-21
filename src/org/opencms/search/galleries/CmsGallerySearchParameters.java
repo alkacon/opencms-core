@@ -414,13 +414,13 @@ public class CmsGallerySearchParameters {
             true);
 
         // TODO: ignoresearchexclude
-        if (m_ignoreSearchExclude) {
+        if (!m_ignoreSearchExclude) {
             // Reference for the values: CmsGallerySearchIndex.java, field EXCLUDE_PROPERTY_VALUES
             query.addFilterQuery(
-                "!" + CmsSearchField.FIELD_SEARCH_EXCLUDE,
+                "-" + CmsSearchField.FIELD_SEARCH_EXCLUDE,
                 Arrays.asList(new String[] {"all", "gallery"}),
-                true,
-                false);
+                false,
+                true);
         }
 
         // set matches per page

@@ -787,6 +787,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * @param ignoreMaxRows <code>true</code> to return all all requested rows, <code>false</code> to use max rows
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
+     * @param ignoreSearchExclude if set to false, only contents with search_exclude unset or "false" will be found - typical for the the non-gallery case
      *
      * @return the found documents
      *
@@ -805,7 +806,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
         // check if the user is allowed to access this index
         checkOfflineAccess(cms);
         if (!ignoreSearchExclude) {
-            query.addFilterQuery("-" + CmsSearchField.FIELD_SEARCH_EXCLUDE + ":true");
+            query.addFilterQuery(CmsSearchField.FIELD_SEARCH_EXCLUDE + ":\"false\"");
         }
 
         int previousPriority = Thread.currentThread().getPriority();

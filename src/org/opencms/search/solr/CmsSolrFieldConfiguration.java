@@ -44,7 +44,6 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsSearchDocument;
 import org.opencms.search.documents.CmsDocumentDependency;
@@ -73,6 +72,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
+import org.apache.solr.common.SolrInputDocument;
 
 /**
  * The search field implementation for Solr.<p>
@@ -188,33 +188,35 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         //            excludeFromIndex = (match == null);
         //        }
 
-        boolean excludeFromIndex = false;
-        String propValue = CmsProperty.get(
-            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
-            propertiesSearched).getValue();
-        excludeFromIndex = Boolean.valueOf(propValue).booleanValue();
-        if (!excludeFromIndex && (propValue != null)) {
-            // property value was neither "true" nor null, must check for "all"
-            excludeFromIndex = CmsSearchIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_ALL.equalsIgnoreCase(propValue.trim())
-                || CmsSolrIndex.PROPERTY_SEARCH_EXCLUDE_VALUE_SOLR.equalsIgnoreCase(propValue.trim());
-        }
-        if (excludeFromIndex) {
-            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "true");
-        } else {
-            try {
-                if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
-                    I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(
-                        cms,
-                        resource);
-                    if ((handler != null) && handler.isContainerPageOnly()) {
-                        document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "true");
+        //        String propValue = CmsProperty.get(
+        //            CmsPropertyDefinition.PROPERTY_SEARCH_EXCLUDE,
+        //            propertiesSearched).getValue();
+        //        if (propValue != null) {
+        //            propValue = propValue.trim().toLowerCase();
+        //            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), propValue);
+        //        }
+        try {
+            if (CmsResourceTypeXmlContent.isXmlContent(resource)) {
+                I_CmsXmlContentHandler handler = CmsXmlContentDefinition.getContentHandlerForResource(cms, resource);
+                if ((handler != null) && handler.isContainerPageOnly()) {
+                    if (document.getDocument() instanceof SolrInputDocument) {
+                        SolrInputDocument doc = (SolrInputDocument)document.getDocument();
+                        doc.removeField(CmsSearchField.FIELD_SEARCH_EXCLUDE);
+                    } else {
+                        //TODO: Warning - but should not happen.
                     }
+                    document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "true");
                 }
-            } catch (CmsException e) {
-                LOG.error(e.getMessage(), e);
             }
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
         }
 
+        List<String> searchExcludeOptions = document.getMultivaluedFieldAsStringList(
+            CmsSearchField.FIELD_SEARCH_EXCLUDE);
+        if ((searchExcludeOptions == null) || searchExcludeOptions.isEmpty()) {
+            document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_EXCLUDE), "false");
+        }
         if (resource.getRootPath().startsWith("/system")
             || (CmsResourceTypeJsp.getJSPTypeId() == resource.getTypeId())) {
             document.addSearchField(m_solrFields.get(CmsSearchField.FIELD_SEARCH_CHANNEL), "gallery");
