@@ -705,6 +705,16 @@ allModuleNames.split(',').each{ moduleName ->
             println "Building ZIP for $moduleName version $moduleVersion"
             println '======================================================'
         }
+       doLast {
+       		if (project.hasProperty('module_copy_target') && file(module_copy_target).exists()){
+            	println "copying ${project.buildDir}/modulesZip/${archiveName} to ${module_copy_target}"
+            	copy {
+                	from  "${project.buildDir}/modulesZip/${archiveName}"
+                	into module_copy_target
+            	}
+            }
+	    }
+        
     }
 
     if (requiresJar.toBoolean()){
