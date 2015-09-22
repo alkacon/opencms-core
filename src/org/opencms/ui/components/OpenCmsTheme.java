@@ -164,4 +164,7 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String USER_INFO = "o-user-info";
 
+    /** CSS style name. */
+    public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";
+
 }

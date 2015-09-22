@@ -18,11 +18,17 @@
 		.v-formlayout-row .v-formlayout-contentcell {
 			width: 80% !important;   
 		}
+		
+		
 	}
+	
+	
  
 }
 
 @mixin workplace-form-narrow {
+
+		
 		.o-formlayout-workplace-main { 
 			.v-formlayout-row .v-formlayout-captioncell {
 				display: inline-block;  
@@ -677,7 +683,6 @@
 	}
 	
 	.o-dialog-form { 
-	
 			.v-formlayout-row .v-formlayout-captioncell {
 				width: 20% !important;   
 			}
@@ -688,6 +693,11 @@
 			.v-formlayout-row .v-formlayout-contentcell {
 				width: 80% !important;   
 			}
+	}
+	
+	
+	.o-app-content > .o-workplace-maxwidth {
+			max-width: 1000px; 
 	}
 
 }
