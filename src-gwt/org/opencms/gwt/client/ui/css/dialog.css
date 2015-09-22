@@ -39,9 +39,10 @@
     width: 28px;
 }
 span.closePopupImage:after{
-	content: "x";
+	content: "\00d7";
 	font-family: value("constants.css.fontFamily");
 	font-weight: bold;
+	font-size: 17px;
 	color: value("constants.css.textColorCaption");
 	line-height: 29px;
 }

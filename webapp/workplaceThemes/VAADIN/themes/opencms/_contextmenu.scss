@@ -13,7 +13,7 @@
 		float: left;
 		
 		> div, > span {
-			margin-top: 3px;
+			margin-top: 5px;
 			
 			&:first-child {
 				margin-top: 0;
@@ -30,15 +30,24 @@
 		  	font-size: $v-font-size--large;
 			@include valo-selection-item-style;
 		}
-		
-		.v-context-menu-item-basic:before, .v-context-menu-item-basic-submenu:before, .v-menubar-menuitem:before {
-			content: "";
-			width: 100%;
-			margin-top: -2px;
-			left: 0;
-			right: 0;
-			position: absolute;
-			border-top: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
+		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
+			padding-top: 2px;
+			padding-bottom: 2px;
+			
+			&:hover, &:focus {
+				outline: none;
+				box-shadow: none;
+			}
+			
+			&:before, &:hover:before, &:focus:before, &:active:before {
+				content: "";
+				margin-top: -5px;
+				left: -3px;
+				right: -3px;
+				position: absolute;
+				height: 0;
+				border-top: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
+			}
 		}
 		
 		.v-context-menu-item-basic-submenu:after {
@@ -76,6 +85,9 @@
 		.v-context-menu-item-basic-text {
 			float: left;
 			padding: 0 20px 0 0px;
+		}
+		.v-context-menu-item-basic-text, .v-menubar-menuitem-caption{
+			line-height: 26px;
 		}
 	}
 }
