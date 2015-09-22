@@ -910,7 +910,7 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     println '======================================================'
 }
 
-task war (dependsOn: [setupJar, widgetSetJar], type: Zip){
+task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 
     archiveName 'opencms.war'
     baseName 'opencms-webapp'
