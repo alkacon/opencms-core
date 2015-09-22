@@ -29,11 +29,11 @@ package org.opencms.workplace.tools.git.ui;
 
 import org.opencms.file.CmsObject;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
-import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.workplace.tools.git.CmsGitCheckin;
 
 import java.util.Locale;
@@ -44,11 +44,12 @@ import com.vaadin.server.Resource;
 /**
  * App configuration for the Git checkin tool.<p>
  */
-public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
+public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
+    @Override
     public String getAppCategory() {
 
         return "Main";
@@ -79,6 +80,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
      */
+    @Override
     public String getButtonStyle() {
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_ORANGE;
@@ -87,6 +89,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
+    @Override
     public String getHelpText(Locale locale) {
 
         return "Provides git checkin functionality.";
@@ -111,6 +114,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
      */
+    @Override
     public String getName(Locale locale) {
 
         return "Git check in";
@@ -119,6 +123,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
      */
+    @Override
     public int getOrder() {
 
         return 200;
@@ -127,6 +132,7 @@ public class CmsGitAppConfiguration implements I_CmsWorkplaceAppConfiguration {
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
+    @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, "");

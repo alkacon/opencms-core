@@ -123,6 +123,14 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getPriority()
+     */
+    public int getPriority() {
+
+        return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

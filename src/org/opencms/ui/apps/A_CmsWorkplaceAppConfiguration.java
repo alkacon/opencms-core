@@ -31,77 +31,49 @@ import org.opencms.file.CmsObject;
 
 import java.util.Locale;
 
-import com.vaadin.server.FontAwesome;
-import com.vaadin.server.Resource;
-import com.vaadin.ui.Label;
+/**
+ * Abstract superclass for workplace apps.<p>
+ */
+public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
-public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
-
-    public static class MyOtherAppComponent extends Label implements I_CmsWorkplaceApp {
-
-        public MyOtherAppComponent() {
-
-            super("MyOtherApp");
-        }
-
-        public void initUI(I_CmsAppUIContext context) {
-
-            context.setAppContent(this);
-        }
-
-        public void onStateChange(String state) {
-
-            // TODO Auto-generated method stub
-
-        }
-    }
-
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
+     */
     public String getAppCategory() {
 
-        // TODO Auto-generated method stub
-        return null;
+        return "Main";
     }
 
-    public I_CmsWorkplaceApp getAppInstance() {
-
-        return new MyOtherAppComponent();
-    }
-
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
+     */
     public String getButtonStyle() {
 
         // TODO Auto-generated method stub
-        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return null;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
+     */
     public String getHelpText(Locale locale) {
 
-        return null;
+        return "";
     }
 
-    public Resource getIcon() {
-
-        return FontAwesome.AMBULANCE;
-    }
-
-    public String getId() {
-
-        return "myotherapp";
-    }
-
-    public String getName() {
-
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
     public String getName(Locale locale) {
 
-        return "myotherapp";
+        return getId();
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
+     */
     public int getOrder() {
 
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -113,6 +85,9 @@ public class MyOtherApp implements I_CmsWorkplaceAppConfiguration {
         return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
     }
 
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
+     */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, "");

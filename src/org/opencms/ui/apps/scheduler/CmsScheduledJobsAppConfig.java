@@ -30,6 +30,7 @@ package org.opencms.ui.apps.scheduler;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsAppUIContext;
@@ -44,11 +45,12 @@ import com.vaadin.server.Resource;
 /**
  * App configuration for the job scheduler.<p>
  */
-public class CmsScheduledJobsAppConfig implements I_CmsWorkplaceAppConfiguration {
+public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
+    @Override
     public String getAppCategory() {
 
         return "Main";
@@ -76,6 +78,7 @@ public class CmsScheduledJobsAppConfig implements I_CmsWorkplaceAppConfiguration
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
      */
+    @Override
     public String getButtonStyle() {
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY;
@@ -84,6 +87,7 @@ public class CmsScheduledJobsAppConfig implements I_CmsWorkplaceAppConfiguration
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
+    @Override
     public String getHelpText(Locale locale) {
 
         return "Edit and create scheduled jobs.";
@@ -108,6 +112,7 @@ public class CmsScheduledJobsAppConfig implements I_CmsWorkplaceAppConfiguration
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
      */
+    @Override
     public String getName(Locale locale) {
 
         return "Scheduled jobs";
@@ -116,14 +121,25 @@ public class CmsScheduledJobsAppConfig implements I_CmsWorkplaceAppConfiguration
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
      */
+    @Override
     public int getOrder() {
 
         return 99;
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getPriority()
+     */
+    @Override
+    public int getPriority() {
+
+        return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
+    @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         boolean visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);

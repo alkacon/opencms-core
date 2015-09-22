@@ -40,6 +40,7 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
         // TODO Auto-generated method stub
         return null;
+
     }
 
     public I_CmsWorkplaceApp getAppInstance() {
@@ -51,7 +52,7 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
     public String getButtonStyle() {
 
         // TODO Auto-generated method stub
-        return CmsDefaultAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     public String getHelpText(Locale locale) {
@@ -79,6 +80,14 @@ public class AppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getPriority()
+     */
+    public int getPriority() {
+
+        return I_CmsWorkplaceAppConfiguration.DEFAULT_PRIORIY;
     }
 
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {

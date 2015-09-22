@@ -37,7 +37,7 @@ import com.vaadin.server.Resource;
 /**
  * The app hierarchy configuration.<p>
  */
-public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfiguration {
+public class CmsAppHierarchyConfiguration extends A_CmsWorkplaceAppConfiguration {
 
     /** The app id. */
     public static final String APP_ID = "launchpad";
@@ -45,6 +45,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
+    @Override
     public String getAppCategory() {
 
         return "none";
@@ -61,6 +62,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getButtonStyle()
      */
+    @Override
     public String getButtonStyle() {
 
         return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY;
@@ -69,6 +71,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getHelpText(java.util.Locale)
      */
+    @Override
     public String getHelpText(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.GUI_LAUNCHPAD_HELP_0);
@@ -93,6 +96,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
      */
+    @Override
     public String getName(Locale locale) {
 
         return Messages.get().getBundle(locale).key(Messages.GUI_LAUNCHPAD_TITLE_0);
@@ -101,6 +105,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getOrder()
      */
+    @Override
     public int getOrder() {
 
         return 0;
@@ -109,6 +114,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
      */
+    @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, null);

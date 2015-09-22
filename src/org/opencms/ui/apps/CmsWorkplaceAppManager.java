@@ -240,7 +240,10 @@ public class CmsWorkplaceAppManager {
     private void addAppConfigurations(Collection<I_CmsWorkplaceAppConfiguration> appConfigs) {
 
         for (I_CmsWorkplaceAppConfiguration appConfig : appConfigs) {
-            m_appsById.put(appConfig.getId(), appConfig);
+            I_CmsWorkplaceAppConfiguration old = m_appsById.get(appConfig.getId());
+            if ((old == null) || (old.getPriority() < appConfig.getPriority())) {
+                m_appsById.put(appConfig.getId(), appConfig);
+            }
         }
     }
 

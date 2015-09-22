@@ -38,6 +38,9 @@ import com.vaadin.server.Resource;
  */
 public interface I_CmsWorkplaceAppConfiguration {
 
+    /** Default priority. */
+    public static final int DEFAULT_PRIORIY = 100;
+
     /**
      * Gets the id of the app category in which this app should be displayed (null for the root category).
      *
@@ -97,6 +100,16 @@ public interface I_CmsWorkplaceAppConfiguration {
      * @return the integer used as a sort key
      */
     int getOrder();
+
+    /**
+     * Gets the priority of the app configuration.<p>
+     *
+     * Between two apps with the same id and different priorities, the one with the higher priority will override
+     * the one with the lower priority.<p>
+     *
+     * @return the priority
+     */
+    int getPriority();
 
     /**
      * Returns the visibility status of the app for the given user context.<p>
