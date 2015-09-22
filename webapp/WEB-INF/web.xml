@@ -102,6 +102,11 @@
     		<param-name>widgetset</param-name>
     		<param-value>org.opencms.ui.WidgetSet</param-value>
  		</init-param>
+ 		<!-- disabling the Vaadin heartbeat mechanism to avoid premature UI invalidation -->
+		<init-param>
+			<param-name>heartbeatInterval</param-name>
+			<param-value>-1</param-value>
+		</init-param>
     </servlet>
 
      <servlet>
