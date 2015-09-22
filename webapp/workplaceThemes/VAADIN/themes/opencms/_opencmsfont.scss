@@ -21,12 +21,12 @@
 	}
 	
 	.oc-spinner-circle:before {
-		content: "\f111";
-	}
-	.oc-spinner:before {
 		content: "\e61b";
 	}
-	.oc-spinner-dots:before {
+	.oc-spinner:before {
 		content: "\e61c";
+	}
+	.oc-spinner-dots:before {
+		content: "\e61d";
 	}
 }

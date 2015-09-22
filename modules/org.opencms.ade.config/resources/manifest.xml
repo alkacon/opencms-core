@@ -61,10 +61,13 @@
 				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy.png"/>
 			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse.png"/>
 			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/modelpage.png" />
 			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage_groups.png"/>
 			<resource uri="/system/workplace/resources/filetypes/modelpage_groups_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
 			<resource
@@ -1194,6 +1197,30 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/workplace/resources/filetypes/modelgroup_copy.png</source>
+			<destination>system/workplace/resources/filetypes/modelgroup_copy.png</destination>
+			<type>image</type>
+			<uuidstructure>1e613685-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>1e613686-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Tue, 22 Sep 2015 09:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelgroup_copy]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/filetypes/modelgroup_copy_big.png</source>
 			<destination>system/workplace/resources/filetypes/modelgroup_copy_big.png</destination>
 			<type>image</type>
@@ -1212,6 +1239,30 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/modelgroup_reuse.png</source>
+			<destination>system/workplace/resources/filetypes/modelgroup_reuse.png</destination>
+			<type>image</type>
+			<uuidstructure>1e6ad379-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>1e6ad37a-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Tue, 22 Sep 2015 09:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelgroup_reuse]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1284,6 +1335,30 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/modelpage_groups.png</source>
+			<destination>system/workplace/resources/filetypes/modelpage_groups.png</destination>
+			<type>image</type>
+			<uuidstructure>1e6ca83d-610b-11e5-afa4-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>1e6ca83e-610b-11e5-afa4-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Tue, 22 Sep 2015 09:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 22 Sep 2015 09:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[modelpage_groups]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/modelpage_groups_big.png</source>

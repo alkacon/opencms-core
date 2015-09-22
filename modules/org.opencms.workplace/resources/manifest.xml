@@ -114,37 +114,37 @@
 			<resource uri="/system/workplace/resources/filetypes/archive_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/excel.png"/>
 			<resource uri="/system/workplace/resources/filetypes/excel_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/image_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/msword.png"/>
 			<resource uri="/system/workplace/resources/filetypes/msword_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/pdf.png"/>
 			<resource uri="/system/workplace/resources/filetypes/pdf_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/powerpoint.png"/>
 			<resource uri="/system/workplace/resources/filetypes/powerpoint_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/binary.png"/>
 			<resource uri="/system/workplace/resources/filetypes/binary_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/downloadgallery.png"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/folder.png"/>
 			<resource uri="/system/workplace/resources/filetypes/folder_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/gallery.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/htmlgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/htmlgallery.png"/>
 			<resource uri="/system/workplace/resources/filetypes/htmlgallery_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/image.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/imagegallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/image.png"/>
+			<resource uri="/system/workplace/resources/filetypes/image_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/imagegallery.png"/>
 			<resource uri="/system/workplace/resources/filetypes/imagegallery_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/jsp.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/jsp_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/link.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/linkgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/link.png"/>
+			<resource uri="/system/workplace/resources/filetypes/linkgallery.png"/>
 			<resource uri="/system/workplace/resources/filetypes/linkgallery_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/menu.png"/>
 			<resource uri="/system/workplace/resources/filetypes/othertype.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/page.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/page_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/plain.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/plain.png"/>
 			<resource uri="/system/workplace/resources/filetypes/plain_big.png"/>
-			<resource uri="/system/workplace/resources/filetypes/pointer.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/pointer.png"/>
 			<resource uri="/system/workplace/resources/filetypes/pointer_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/tablegallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/tablegallery_big.png"/>
@@ -152,7 +152,7 @@
 			<resource uri="/system/workplace/resources/filetypes/unknown_folder.png"/>
 			<resource uri="/system/workplace/resources/filetypes/upload.png"/>
 			<resource uri="/system/workplace/resources/filetypes/velocity.gif"/>
-			<resource uri="/system/workplace/resources/filetypes/xmlcontent.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/xmlcontent.png"/>
 			<resource uri="/system/workplace/resources/filetypes/xmlcontent_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/html.png"/>
 			<resource uri="/system/workplace/resources/filetypes/html_big.png"/>
@@ -160,6 +160,8 @@
 			<resource uri="/system/workplace/resources/filetypes/java_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/js.png"/>
 			<resource uri="/system/workplace/resources/filetypes/js_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp.png"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/text.png"/>
 			<resource uri="/system/workplace/resources/filetypes/text_big.png"/>
 			<resource uri="/system/workplace/resources/filetypes/xml_big.png"/>
@@ -6515,8 +6517,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/binary.gif</source>
-			<destination>system/workplace/resources/filetypes/binary.gif</destination>
+			<source>system/workplace/resources/filetypes/binary.png</source>
+			<destination>system/workplace/resources/filetypes/binary.png</destination>
 			<type>image</type>
 			<uuidstructure>83cc67bd-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77c21656-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6555,8 +6557,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/downloadgallery.gif</source>
-			<destination>system/workplace/resources/filetypes/downloadgallery.gif</destination>
+			<source>system/workplace/resources/filetypes/downloadgallery.png</source>
+			<destination>system/workplace/resources/filetypes/downloadgallery.png</destination>
 			<type>image</type>
 			<uuidstructure>83d393b6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb36a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6635,8 +6637,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/folder.gif</source>
-			<destination>system/workplace/resources/filetypes/folder.gif</destination>
+			<source>system/workplace/resources/filetypes/folder.png</source>
+			<destination>system/workplace/resources/filetypes/folder.png</destination>
 			<type>image</type>
 			<uuidstructure>83ced8c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb34a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6735,8 +6737,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/htmlgallery.gif</source>
-			<destination>system/workplace/resources/filetypes/htmlgallery.gif</destination>
+			<source>system/workplace/resources/filetypes/htmlgallery.png</source>
+			<destination>system/workplace/resources/filetypes/htmlgallery.png</destination>
 			<type>image</type>
 			<uuidstructure>83dabfac-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb38a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6775,8 +6777,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/image.gif</source>
-			<destination>system/workplace/resources/filetypes/image.gif</destination>
+			<source>system/workplace/resources/filetypes/image.png</source>
+			<destination>system/workplace/resources/filetypes/image.png</destination>
 			<type>image</type>
 			<uuidstructure>83e1eba5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77d5292e-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6815,8 +6817,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/imagegallery.gif</source>
-			<destination>system/workplace/resources/filetypes/imagegallery.gif</destination>
+			<source>system/workplace/resources/filetypes/imagegallery.png</source>
+			<destination>system/workplace/resources/filetypes/imagegallery.png</destination>
 			<type>image</type>
 			<uuidstructure>83d149c3-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb35a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6935,8 +6937,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/jsp.gif</source>
-			<destination>system/workplace/resources/filetypes/jsp.gif</destination>
+			<source>system/workplace/resources/filetypes/jsp.png</source>
+			<destination>system/workplace/resources/filetypes/jsp.png</destination>
 			<type>image</type>
 			<uuidstructure>83e45ca8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77dc2e12-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6975,8 +6977,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/link.gif</source>
-			<destination>system/workplace/resources/filetypes/link.gif</destination>
+			<source>system/workplace/resources/filetypes/link.png</source>
+			<destination>system/workplace/resources/filetypes/link.png</destination>
 			<type>image</type>
 			<uuidstructure>83e6a69b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77e35a06-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -6995,8 +6997,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/linkgallery.gif</source>
-			<destination>system/workplace/resources/filetypes/linkgallery.gif</destination>
+			<source>system/workplace/resources/filetypes/linkgallery.png</source>
+			<destination>system/workplace/resources/filetypes/linkgallery.png</destination>
 			<type>image</type>
 			<uuidstructure>83d604b9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77cbb37a-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -7195,8 +7197,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/plain.gif</source>
-			<destination>system/workplace/resources/filetypes/plain.gif</destination>
+			<source>system/workplace/resources/filetypes/plain.png</source>
+			<destination>system/workplace/resources/filetypes/plain.png</destination>
 			<type>image</type>
 			<uuidstructure>83edd294-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77f8b6d0-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -7235,8 +7237,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/pointer.gif</source>
-			<destination>system/workplace/resources/filetypes/pointer.gif</destination>
+			<source>system/workplace/resources/filetypes/pointer.png</source>
+			<destination>system/workplace/resources/filetypes/pointer.png</destination>
 			<type>image</type>
 			<uuidstructure>83f04397-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>77ffbbb4-f039-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -7535,8 +7537,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/xmlcontent.gif</source>
-			<destination>system/workplace/resources/filetypes/xmlcontent.gif</destination>
+			<source>system/workplace/resources/filetypes/xmlcontent.png</source>
+			<destination>system/workplace/resources/filetypes/xmlcontent.png</destination>
 			<type>image</type>
 			<uuidstructure>83f9b980-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>78178980-f039-11d8-bd02-ddc4b68c493a</uuidresource>

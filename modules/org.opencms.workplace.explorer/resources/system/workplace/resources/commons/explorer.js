@@ -767,17 +767,17 @@ function printList(wo) {
          var lockIcon = '';
          var lockedBystring;
            if (vi.liste[i].lockState == 1) {
-            lockIcon = vi.skinPath + 'explorer/lock_other.gif';
+            lockIcon = vi.skinPath + 'explorer/lockOther.png';
             lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
          } else if (vi.liste[i].lockState == 2) {
-            lockIcon = vi.skinPath + 'explorer/lock_shared.gif';
+            lockIcon = vi.skinPath + 'explorer/lockShared.png';
             lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
          } else if (vi.liste[i].lockState == 3) {
-            lockIcon = vi.skinPath + 'explorer/lock_user.gif';
+            lockIcon = vi.skinPath + 'explorer/lockUser.png';
             lockedBystring = vr.altlockedby + " " + vi.liste[i].lockedBy + vr.altlockedin + vi.liste[i].lockedInProjectName;
          }
          if (vi.liste[i].projectState == 5) {
-            lockIcon = vi.skinPath + 'explorer/lock_other.gif';
+            lockIcon = vi.skinPath + 'explorer/lockOther.png';
          }
          if (lockIcon != '') {
             wo.write("<img src=\"" + lockIcon + "\" alt=\"" + lockedBystring + "\" title=\"" + lockedBystring + "\" border=\"0\" width=\"16\" height=\"16\"></a>");

@@ -169,12 +169,12 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
             addCssForType(navlevel);
             CmsExplorerTypeSettings modelgroupReuse = new CmsExplorerTypeSettings();
             modelgroupReuse.setName(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
-            modelgroupReuse.setIcon("modelpage.png");
+            modelgroupReuse.setIcon("modelgroup_reuse.png");
             modelgroupReuse.setBigIcon("modelgroup_reuse_big.png");
             addCssForType(modelgroupReuse);
             CmsExplorerTypeSettings modelgroupPage = new CmsExplorerTypeSettings();
             modelgroupPage.setName(CmsGwtConstants.TYPE_MODELGROUP_PAGE);
-            modelgroupPage.setIcon("modelpage.png");
+            modelgroupPage.setIcon("modelpage_groups.png");
             modelgroupPage.setBigIcon("modelpage_groups_big.png");
             addCssForType(modelgroupPage);
         }

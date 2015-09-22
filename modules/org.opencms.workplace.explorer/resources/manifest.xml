@@ -782,8 +782,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/lock_other.gif</source>
-			<destination>system/workplace/resources/explorer/lock_other.gif</destination>
+			<source>system/workplace/resources/explorer/lockOther.png</source>
+			<destination>system/workplace/resources/explorer/lockOther.png</destination>
 			<type>image</type>
 			<uuidstructure>c69a4d8f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3c6d1c9c-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -802,8 +802,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/lock_shared.gif</source>
-			<destination>system/workplace/resources/explorer/lock_shared.gif</destination>
+			<source>system/workplace/resources/explorer/lockShared.png</source>
+			<destination>system/workplace/resources/explorer/lockShared.png</destination>
 			<type>image</type>
 			<uuidstructure>c6a63472-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3c744890-f03b-11d8-bd02-ddc4b68c493a</uuidresource>
@@ -822,8 +822,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/explorer/lock_user.gif</source>
-			<destination>system/workplace/resources/explorer/lock_user.gif</destination>
+			<source>system/workplace/resources/explorer/lockUser.png</source>
+			<destination>system/workplace/resources/explorer/lockUser.png</destination>
 			<type>image</type>
 			<uuidstructure>c6aaef65-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3c7b7484-f03b-11d8-bd02-ddc4b68c493a</uuidresource>

@@ -67,7 +67,7 @@
 					order="19" autosetnavigation="false" autosettitle="false"
 					info="desc.otheroptions" />
 			</explorertype>
-			<explorertype name="folder" key="fileicon.folder" icon="folder.gif"
+			<explorertype name="folder" key="fileicon.folder" icon="folder.png"
 				bigicon="folder_big.png">
 				<newresource uri="newresource_folder.jsp" order="20"
 					autosetnavigation="false" autosettitle="false" info="desc.folder" />
@@ -217,7 +217,7 @@
 				name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace" rule="editprovider" 
 				/> <entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" 
 				rule="editprovider" /> </contextmenu> </editoptions> </explorertype> -->
-			<explorertype name="plain" key="fileicon.plain" icon="plain.gif"
+			<explorertype name="plain" key="fileicon.plain" icon="plain.png"
 				bigicon="plain_big.png">
 				<newresource uri="newresource.jsp?newresourcetype=plain"
 					order="30" autosetnavigation="false" autosettitle="false" info="desc.plain" />
@@ -339,7 +339,7 @@
 					<iconrule extension="xml" icon="xml.png" bigicon="xml_big.png" />
 				</iconrules>
 			</explorertype>
-			<explorertype name="image" key="fileicon.image" icon="image.gif"
+			<explorertype name="image" key="fileicon.image" icon="image.png"
 				bigicon="image_big.png">
 				<newresource uri="" order="40" autosetnavigation="false"
 					autosettitle="false" info="desc.image" />
@@ -451,7 +451,7 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif"
+			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.png"
 				bigicon="jsp_big.png">
 				<newresource uri="newresource.jsp?newresourcetype=jsp"
 					order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
@@ -540,7 +540,7 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="binary" key="fileicon.binary" icon="binary.gif"
+			<explorertype name="binary" key="fileicon.binary" icon="binary.png"
 				bigicon="binary_big.png">
 				<newresource uri="" order="60" autosetnavigation="false"
 					autosettitle="false" info="desc.binary" />
@@ -665,7 +665,7 @@
 				</iconrules>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer"
-				icon="pointer.gif" bigicon="pointer_big.png">
+				icon="pointer.png" bigicon="pointer_big.png">
 				<newresource uri="newresource_pointer.jsp" order="70"
 					autosetnavigation="false" autosettitle="false" info="desc.pointer" />
 				<editoptions>
@@ -746,7 +746,7 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="link" key="fileicon.link" icon="link.gif">
+			<explorertype name="link" key="fileicon.link" icon="link.png">
 				<newresource page="otheroptions" uri="newresource_sibling.jsp"
 					order="90" autosetnavigation="false" autosettitle="false" info="desc.link" />
 			</explorertype>
@@ -755,7 +755,7 @@
 					autosetnavigation="false" autosettitle="false" info="desc.upload" />
 			</explorertype>
 			<explorertype name="imagegallery" key="fileicon.imagegallery"
-				icon="imagegallery.gif" bigicon="imagegallery_big.png">
+				icon="imagegallery.png" bigicon="imagegallery_big.png">
 				<newresource page="extendedfolder"
 					uri="newresource.jsp?newresourcetype=imagegallery" order="10"
 					autosetnavigation="false" autosettitle="false" info="desc.imagegallery" />
@@ -838,7 +838,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="downloadgallery" key="fileicon.downloadgallery"
-				icon="downloadgallery.gif" bigicon="downloadgallery_big.png">
+				icon="downloadgallery.png" bigicon="downloadgallery_big.png">
 				<newresource page="extendedfolder"
 					uri="newresource.jsp?newresourcetype=downloadgallery" order="20"
 					autosetnavigation="false" autosettitle="false" info="desc.downloadgallery" />
@@ -999,14 +999,14 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="linkgallery" key="fileicon.linkgallery"
-				icon="linkgallery.gif" bigicon="linkgallery_big.png" reference="classicgallery">
+				icon="linkgallery.png" bigicon="linkgallery_big.png" reference="classicgallery">
 				<newresource page="extendedfolder"
 					uri="newresource.jsp?newresourcetype=linkgallery" order="30"
 					autosetnavigation="false" autosettitle="false" info="desc.linkgallery" />
 			</explorertype>
 			<!-- The HTML gallery and the table gallery type have been deprecated. 
 				The required resources will be removed in future OpenCms versions. <explorertype 
-				name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" bigicon="htmlgallery_big.png" 
+				name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.png" bigicon="htmlgallery_big.png" 
 				reference="classicgallery"> <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" 
 				order="40" autosetnavigation="false" autosettitle="false" info="desc.htmlgallery" 
 				/> </explorertype> <explorertype name="tablegallery" key="fileicon.tablegallery" 
@@ -1015,7 +1015,7 @@
 				order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" 
 				/> </explorertype> -->
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent"
-				icon="xmlcontent.gif" bigicon="xmlcontent_big.png">
+				icon="xmlcontent.png" bigicon="xmlcontent_big.png">
 				<newresource page="structurecontent"
 					uri="newresource.jsp?newresourcetype=xmlcontent" order="500"
 					autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
