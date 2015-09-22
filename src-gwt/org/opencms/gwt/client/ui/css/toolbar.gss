@@ -288,7 +288,7 @@
     font-weight: bold;
     padding: 4px 12px;
     width: auto !important;
-    line-height: 31px;
+    line-height: 32px;
 }
 
 .toolbarBackground div.userInfo{

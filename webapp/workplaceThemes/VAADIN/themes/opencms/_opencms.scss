@@ -269,6 +269,7 @@
   	display: block;
   	width: 100%;
   	height: 45px;
+  	padding: 0 12px;
   	border-bottom: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
   }
 
@@ -410,6 +411,7 @@
   	margin-left: -10px !important;
   	max-height: 80%;
     overflow: auto !important;
+    border: 4px solid $v-window-background-color;
   }
   
   .v-popupview-popup-o-navigator-dropdown .popupContent{

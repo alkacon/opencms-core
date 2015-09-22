@@ -104,6 +104,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
 
         // clear the width of the popup content
         getPopup().setWidth(0);
+        getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
     }
 
     /**

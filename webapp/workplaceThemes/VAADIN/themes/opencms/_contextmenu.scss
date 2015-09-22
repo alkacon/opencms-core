@@ -4,8 +4,25 @@
 		@include valo-selection-overlay-style;
 	}
 	
-	.v-context-menu {
+	.v-context-menu-container, div.v-menubar-popup{
+		border: 4px solid $v-window-background-color;
+	}
+	
+	
+	.v-context-menu, div.v-menubar-submenu {
 		float: left;
+		
+		> div, > span {
+			margin-top: 3px;
+			
+			&:first-child {
+				margin-top: 0;
+				
+				&:before {
+					display: none;
+				}
+			}
+		}
 		
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
 			float: left;
@@ -13,9 +30,18 @@
 		  	font-size: $v-font-size--large;
 			@include valo-selection-item-style;
 		}
-	
+		
+		.v-context-menu-item-basic:before, .v-context-menu-item-basic-submenu:before, .v-menubar-menuitem:before {
+			content: "";
+			width: 100%;
+			margin-top: -2px;
+			left: 0;
+			right: 0;
+			position: absolute;
+			border-top: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
+		}
+		
 		.v-context-menu-item-basic-submenu:after {
-		  // showing icon 'caret-right'
 			content: "\f0da";
 			font-family: FontAwesome;
 			float: right;

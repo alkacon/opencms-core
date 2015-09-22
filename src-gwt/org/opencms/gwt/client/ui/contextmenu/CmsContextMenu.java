@@ -83,6 +83,7 @@ public class CmsContextMenu extends Composite implements ResizeHandler, I_CmsAut
         // clear the width and the padding of the popup content (needed for sub menus)
         m_popup.setWidth(0);
         m_popup.removePadding();
+        m_popup.addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
         createContextMenu(menuData);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuBar());
         m_autoHideParent = autoHideParent;

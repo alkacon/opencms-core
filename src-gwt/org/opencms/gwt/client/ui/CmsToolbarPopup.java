@@ -43,9 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsToolbarPopup extends CmsPopup {
 
-    /** The default pop-up width. */
-    private static final int DEFAULT_WIDTH = 650;
-
     /** The 'arrow-shaped' connector element above the popup. */
     protected Element m_arrow = DOM.createDiv();
 
@@ -167,8 +164,8 @@ public class CmsToolbarPopup extends CmsPopup {
         }
 
         int arrowSpace = 10;
-        int arrowWidth = I_CmsLayoutBundle.INSTANCE.gwtImages().menuArrowTopImage().getWidth();
-        int arrowHeight = I_CmsLayoutBundle.INSTANCE.gwtImages().menuArrowTopImage().getHeight();
+        int arrowWidth = 40;
+        int arrowHeight = 12;
 
         // the optimum position for the arrow is in the middle of the button
         int arrowLeft = buttonMiddle - contentLeft - (arrowWidth / 2);

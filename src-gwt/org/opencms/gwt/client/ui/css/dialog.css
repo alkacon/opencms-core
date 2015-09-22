@@ -79,6 +79,11 @@ div.popup.popupContent, div.popupContent{
     -moz-box-sizing: content-box !important;
 }
 
+.contextMenu div.popupContent {
+	padding: 4px;
+	background: value("constants.css.backgroundColorDialogBorder");
+} 
+
 div.frameDialog div.popupMainContent {
 	position: absolute;
 	top:0px;
@@ -128,16 +133,32 @@ div.frameDialog div.popupButtonPanel {
 	margin-bottom: 10px;
 }
 
-@sprite .menuArrowTop {
-	gwt-image: "gwtImages.menuArrowTopImage";
+div.menuArrowTop, div.menuArrowBottom{
+	width: 40px;
+	height: 10px;
 	position: absolute;
-	z-index: value("constants.css.zIndexInline");
+	overflow: hidden;
 }
 
-@sprite .menuArrowBottom {
-	gwt-image: "gwtImages.menuArrowBottomImage";
+div.menuArrowTop:after, div.menuArrowBottom:after {
+	content: "";
+	height: 40px;
+	width: 40px;
 	position: absolute;
-	z-index: value("constants.css.zIndexInline");
+	transform: rotate(45deg);
+}
+
+div.menuArrowTop:after{
+	background: #3E4654;
+	top: 8px;
+}
+
+div.menuArrowBottom:after {
+	bottom: 8px;
+}
+
+.contextMenu div.menuArrowTop:after, div.menuArrowBottom:after {
+	background: value("constants.css.backgroundColorDialogBorder");
 }
 
 .hideCaption .caption{

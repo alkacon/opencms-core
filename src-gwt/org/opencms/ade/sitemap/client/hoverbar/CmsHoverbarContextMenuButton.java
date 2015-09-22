@@ -84,7 +84,7 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         //    getPopupContent().removeAutoHidePartner(getElement());
         getPopup().addAutoHidePartner(getElement());
         getPopup().setWidth(0);
-        //getPopupContent().setModal(true);
+        getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
 
         m_entries = new ArrayList<A_CmsSitemapMenuEntry>();
         if (menuItemProvider == null) {
