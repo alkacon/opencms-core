@@ -32,7 +32,6 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenu;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuCloseHandler;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.util.CmsClientCollectionUtil;
@@ -45,9 +44,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The context tool-bar menu button.<p>
@@ -60,7 +57,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
     protected List<I_CmsContextMenuEntry> m_menuEntries;
 
     /** The loading panel. */
-    private SimplePanel m_loadingPanel;
+    private CmsLoadingAnimation m_loadingPanel;
 
     /** The context menu. */
     private CmsContextMenu m_menu;
@@ -91,9 +88,7 @@ public class CmsToolbarContextButton extends A_CmsToolbarMenu<I_CmsToolbarHandle
         m_noEntriesLabel = new CmsLabel(Messages.get().key(Messages.GUI_TOOLBAR_CONTEXT_EMPTY_0));
         m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
         m_noEntriesLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        m_loadingPanel = new SimplePanel(new Image(I_CmsImageBundle.INSTANCE.loadingBigImage()));
-        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().menuInfoLabel());
-        m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
+        m_loadingPanel = new CmsLoadingAnimation();
         // create the menu panel (it's a table because of ie6)
         m_menuPanel = new FlexTable();
         // set a style name for the menu table

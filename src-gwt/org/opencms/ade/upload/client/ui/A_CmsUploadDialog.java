@@ -37,6 +37,7 @@ import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsListItemWidget.Background;
+import org.opencms.gwt.client.ui.CmsLoadingAnimation;
 import org.opencms.gwt.client.ui.CmsNotification;
 import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
@@ -622,7 +623,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
         m_loadingPanel.addStyleName(m_gwtCss.generalCss().cornerAll());
 
-        HTML animationDiv = new HTML();
+        CmsLoadingAnimation animationDiv = new CmsLoadingAnimation();
         animationDiv.addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
         m_loadingPanel.add(animationDiv);

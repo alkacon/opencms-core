@@ -47,6 +47,16 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.oc-spinner-circle:before {
+		content: "\e61b";
+	}
+	.oc-spinner:before {
+		content: "\e61c";
+	}
+	.oc-spinner-dots:before {
+		content: "\e61d";
+	}
+
 .opencms-icon[class^="opencms-icon-"] *, .opencms-icon[class*=" opencms-icon-"] *, .opencms-icon [class^="opencms-icon-"] *, .opencms-icon [class*=" opencms-icon-"] *{
 	font-family: inherit !important;
 	font-size: inherit !important;

@@ -1,4 +1,4 @@
-@external multiLineLabel; 
+@external multiLineLabel, oc-spinner, oc-spinner-circle, oc-spinner-dots, oc-spinner-bg, oc-spin-center; 
 
 .truncatingLabel{
 	overflow: hidden;
@@ -209,3 +209,88 @@ div.simpleFormInputBox{
 	float: right;
 }
 
+/** loading animation styles */
+.oc-spinner-bg {
+	background-color: #fff;        
+	top:0;
+	margin:0;
+	border-radius: 100%;    
+	display: block;
+	box-shadow: 0 0 32px #666;
+	height: 60px;
+	width: 60px;
+	position: absolute;
+}
+
+.oc-spinner, .oc-spinner-circle, .oc-spinner-dots  { 
+	top: -2px;
+	margin: 0;
+	display: block;
+	position: absolute;
+	font-size: 64px !important;
+	line-height: 64px !important;
+	font-family: opencms-font !important;
+}
+
+.oc-spinner {
+	color: #b31b34;
+}
+
+.oc-spinner-dots {
+	color: #fff;
+	animation: spin 2s infinite linear;
+	-webkit-animation: spin 2s infinite linear;
+}
+	
+.oc-spinner-circle {
+	color: #003084;
+	margin: 0 auto;
+	animation: spin-inner 4s infinite linear;
+	-webkit-animation: spin-inner 4s infinite linear;
+}
+
+.oc-spin-center {
+	position: fixed;
+	left: 50%;
+	top: 50%;  
+	text-align: center;
+	margin-top: -50px; 
+	display: block;
+}
+
+@keyframes spin-inner {
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes spin-inner {
+    50% {
+        -webkit-opacity: 0.25;
+    }
+    100% {
+        -webkit-opacity: 1;
+    }
+}
+
+@-webkit-keyframes spin {
+	0% { 
+		-webkit-transform: rotate(0deg);
+	} 
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+	0% { 
+		transform: rotate(0deg);
+	} 
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

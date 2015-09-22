@@ -72,9 +72,3 @@ div.uploadButton input.uploadFileInput {
 .loadingAnimation {
 	margin-top: 20px;
 }
-@sprite .loadingAnimation {
-	gwt-image: "gwtImages.loadingBigImage";
-	background-position: 50% 50%;
-    background-repeat: no-repeat;
-	display: inline-block;
-}

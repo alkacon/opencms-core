@@ -467,14 +467,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      *
      * @return the image resource
      */
-    @Source("images/loadingBigImage.gif")
-    ImageResource loadingBigImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
     @Source("images/loadingSmallImage.gif")
     ImageResource loadingSmallImage();
 

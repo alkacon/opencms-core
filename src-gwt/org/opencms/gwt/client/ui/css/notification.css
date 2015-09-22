@@ -49,8 +49,7 @@ div.notificationContainer {
 	left: 0;
 	height: 16px;
 }
-@sprite .notificationContainer .loadingAnimation{
-	gwt-image: "gwtImages.loadingBigImage";
+.notificationContainer .loadingAnimation{
 	display: none;
 }
 

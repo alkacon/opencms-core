@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.replace;
 
+import org.opencms.gwt.client.ui.CmsLoadingAnimation;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -152,7 +153,7 @@ public class CmsReplaceContentWidget extends Composite {
         m_loadingPanel.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().loadingPanel());
         m_loadingPanel.addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
 
-        HTML animationDiv = new HTML();
+        CmsLoadingAnimation animationDiv = new CmsLoadingAnimation();
         animationDiv.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().loadingAnimation());
         m_loadingPanel.add(animationDiv);
 
