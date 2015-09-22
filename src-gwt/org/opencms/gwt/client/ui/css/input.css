@@ -33,6 +33,8 @@ input.textBox {
 
 .comboBoxOpener input {
 	outline: none;
+	width: 100%;
+	height: 28px;
 }
 
 input.textBox:focus{
@@ -403,10 +405,6 @@ div.selectBoxOpener {
 	vertical-align: middle;
 }
 
-.comboBoxOpener { 
-   margin: 1px 12px 1px 5px; 
-}  
-
 .selectBoxSelected .comboBoxOpener{
 	border: medium none;
     color: value("constants.css.textColor");
@@ -417,7 +415,7 @@ div.selectBoxOpener {
     padding: 0px 15px 0px 0px;
     box-shadow: none;
     background:  value("constants.css.backgroundColorDialog");
-    margin-left: 5px; 
+    margin: 0 12px 0 5px; 
 }
 
 

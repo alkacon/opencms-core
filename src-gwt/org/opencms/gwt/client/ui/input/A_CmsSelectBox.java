@@ -439,7 +439,8 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /**
      * Sets the behavior of the popup if the input is bigger than the selectbox itself.
-     * @param resize
+     *
+     * @param resize <code>true</code> to resize
      */
     public void setPopupResize(boolean resize) {
 
@@ -539,7 +540,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     /**
      * Handles the focus event on the opener.<p>
      *
-     * @param event
+     * @param event the focus event
      */
     @UiHandler("m_opener")
     protected void onFocus(FocusEvent event) {
@@ -666,7 +667,7 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
         } else {
-            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight);
+            CmsDomUtil.positionElement(m_popup.getElement(), m_panel.getElement(), dx, openerHeight - 1);
             m_selectBoxState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerTop());
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         }
