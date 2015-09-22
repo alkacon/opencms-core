@@ -1177,14 +1177,6 @@
 					<name>Title</name>
 					<value><![CDATA[Dialog - New resource upload HTML]]></value>
 				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:resource=${param.resource}|path:/uploadhtml]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
