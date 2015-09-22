@@ -28,8 +28,8 @@
 package org.opencms.ui.apps.scheduler;
 
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.relations.CmsExternalLinksValidator;
@@ -45,20 +45,27 @@ import org.opencms.scheduler.jobs.CmsUnsubscribeDeletedResourcesJob;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
+import org.opencms.ui.util.I_CmsHasField;
+import org.opencms.util.CmsStringUtil;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import com.google.common.base.Strings;
+import org.apache.commons.logging.Log;
+
+import org.restlet.engine.util.StringUtils;
+
 import com.vaadin.data.Validator;
-import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -88,9 +95,16 @@ public class CmsJobEditView extends VerticalLayout {
         /**
          * @see com.vaadin.data.Validator#validate(java.lang.Object)
          */
+        @SuppressWarnings("synthetic-access")
         public void validate(Object value) throws InvalidValueException {
 
             CmsScheduledJobInfo info = new CmsScheduledJobInfo();
+            // Job name may be needed in exception
+            try {
+                info.setJobName(m_fieldJobName.getValue());
+            } catch (Exception e) {
+                // ignore
+            }
             String stringValue = (String)value;
             try {
                 info.setCronExpression(stringValue);
@@ -112,10 +126,18 @@ public class CmsJobEditView extends VerticalLayout {
         /**
          * @see com.vaadin.data.Validator#validate(java.lang.Object)
          */
+        @SuppressWarnings("synthetic-access")
         public void validate(Object value) throws InvalidValueException {
 
             CmsScheduledJobInfo info = new CmsScheduledJobInfo();
             String stringValue = (String)value;
+
+            // Job name may be needed in exception
+            try {
+                info.setJobName(m_fieldJobName.getValue());
+            } catch (Exception e) {
+                // ignore
+            }
             try {
                 info.setClassName(stringValue);
             } catch (CmsIllegalArgumentException e) {
@@ -145,8 +167,99 @@ public class CmsJobEditView extends VerticalLayout {
                 throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
 
             }
+        }
+    }
+
+    /**
+     * Converts null values to an empty string for the input widgets.<p>
+     */
+    class ComboNullToEmpty implements Converter<Object, String> {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public String convertToModel(Object value, Class<? extends String> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            return (String)value;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public Object convertToPresentation(String value, Class<? extends Object> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            if (value == null) {
+                return "";
+            }
+            return value;
 
         }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getModelType()
+         */
+        public Class<String> getModelType() {
+
+            return String.class;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
+         */
+        public Class<Object> getPresentationType() {
+
+            return Object.class;
+        }
+
+    }
+
+    /**
+     * Converts null values to an empty string for the input widgets.<p>
+     */
+    class NullToEmpty implements Converter<String, String> {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public String convertToModel(String value, Class<? extends String> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            return value;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public String convertToPresentation(String value, Class<? extends String> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            return StringUtils.nullToEmpty(value);
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getModelType()
+         */
+        public Class<String> getModelType() {
+
+            return String.class;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
+         */
+        public Class<String> getPresentationType() {
+
+            return String.class;
+        }
+
     }
 
     /**
@@ -179,7 +292,7 @@ public class CmsJobEditView extends VerticalLayout {
             deleteButton.addStyleName(ValoTheme.BUTTON_LINK);
             deleteButton.setIcon(FontAwesome.TIMES_CIRCLE);
             deleteButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
-            deleteButton.setDescription("Remove parameter");
+            deleteButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_SCHEDULER_REMOVE_PARAMETER_0));
             deleteButton.addClickListener(new ClickListener() {
 
                 private static final long serialVersionUID = 1L;
@@ -205,6 +318,9 @@ public class CmsJobEditView extends VerticalLayout {
         }
 
     }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJobEditView.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -251,12 +367,42 @@ public class CmsJobEditView extends VerticalLayout {
     /** Form containing the job parameters. */
     FormLayout m_paramContainer;
 
+    /** Edited job. */
+    private CmsScheduledJobInfo m_job = new CmsScheduledJobInfo();
+
+    /** Field group. */
+    private BeanFieldGroup<CmsScheduledJobInfo> m_group;
+
     /**
      * Creates a new instance.<p>
+     *
+     * @param job the job to be edited
      */
-    public CmsJobEditView() {
-
+    public CmsJobEditView(CmsScheduledJobInfo job) {
+        m_job = job;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+
+        BeanFieldGroup<CmsScheduledJobInfo> group = new BeanFieldGroup<CmsScheduledJobInfo>(CmsScheduledJobInfo.class);
+        group.setItemDataSource(m_job);
+        m_group = group;
+
+        bindField(m_fieldJobName, "jobName");/**/
+        bindField(m_fieldJobClass, "className");
+        bindField(m_fieldCron, "cronExpression");
+        bindField(m_fieldReuseInstance, "reuseInstance");
+        bindField(m_fieldActive, "active");
+        bindField(m_fieldUser, "contextInfo.userName");
+        bindField(m_fieldProject, "contextInfo.projectName");
+        bindField(m_fieldSiteRoot, "contextInfo.siteRoot");
+        bindField(m_fieldUri, "contextInfo.requestedUri");
+        bindField(m_fieldLocale, "contextInfo.localeName");
+        bindField(m_fieldEncoding, "contextInfo.encoding");
+        bindField(m_fieldRemoteAddress, "contextInfo.remoteAddr");
+
+        m_fieldJobName.setConverter(new NullToEmpty());
+        m_fieldJobClass.setConverter(new ComboNullToEmpty());
+        m_fieldCron.setConverter(new ComboNullToEmpty());
+
         m_buttonAddParam.addClickListener(new ClickListener() {
 
             /** Serial version id. */
@@ -291,6 +437,14 @@ public class CmsJobEditView extends VerticalLayout {
         m_fieldJobClass.addItem(CmsDeleteExpiredResourcesJob.class.getName());
         m_fieldJobClass.addItem(CmsUnsubscribeDeletedResourcesJob.class.getName());
 
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_job.getClassName())) {
+            m_fieldJobClass.addItem(m_job.getClassName());
+        }
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_job.getCronExpression())) {
+            m_fieldCron.addItem(m_job.getCronExpression());
+        }
+
         for (String item : new String[] {
             "0 0 3 * * ?",
             "0 0/30 * * * ?",
@@ -309,71 +463,28 @@ public class CmsJobEditView extends VerticalLayout {
      */
     public void loadFromBean(CmsScheduledJobInfo info) {
 
-        m_fieldJobName.setValue(Strings.nullToEmpty(info.getJobName()));
-        setComboBoxValue(m_fieldJobClass, Strings.nullToEmpty(info.getClassName()));
-        setComboBoxValue(m_fieldCron, Strings.nullToEmpty(info.getCronExpression()));
-        m_fieldReuseInstance.setValue(Boolean.valueOf(info.isReuseInstance()));
-        m_fieldActive.setValue(Boolean.valueOf(info.isActive()));
+        // all other fields already populated by field group, we still need to handle the parameters
 
-        CmsContextInfo context = info.getContextInfo();
-        m_fieldUser.setValue(context.getUserName());
-        m_fieldProject.setValue(context.getProjectName());
-        m_fieldSiteRoot.setValue(context.getSiteRoot());
-        m_fieldUri.setValue(context.getRequestedUri());
-        m_fieldLocale.setValue(context.getLocaleName());
-        m_fieldEncoding.setValue(context.getEncoding());
-        m_fieldRemoteAddress.setValue(context.getRemoteAddr());
         for (Map.Entry<String, String> entry : info.getParameters().entrySet()) {
             addParamLine(entry.getKey(), entry.getValue());
         }
     }
 
     /**
-     * Try to save the form values to the given job bean.<p>
-     *
-     * @param info the bean in which the information should be saved
+     * Try to save the form values to the edited bean.<p>
      *
      * @return true if setting the information was successful
      */
-    public boolean trySaveToBean(CmsScheduledJobInfo info) {
+    public boolean trySaveToBean() {
 
-        if (!validate()) {
+        try {
+            m_group.commit();
+        } catch (Exception e) {
+            LOG.info(e.getLocalizedMessage(), e);
             return false;
         }
-        info.setJobName(m_fieldJobName.getValue());
-        info.setClassName((String)(m_fieldJobClass.getValue()));
-        info.setCronExpression((String)m_fieldCron.getValue());
-        info.setReuseInstance(m_fieldReuseInstance.getValue().booleanValue());
-        info.setActive(m_fieldActive.getValue().booleanValue());
-        info.setParameters(readParams());
-        CmsContextInfo context = info.getContextInfo();
-        context.setUserName(m_fieldUser.getValue());
-        context.setProjectName(m_fieldProject.getValue());
-        context.setSiteRoot(m_fieldSiteRoot.getValue());
-        context.setRequestedUri(m_fieldUri.getValue());
-        context.setLocaleName(m_fieldLocale.getValue());
-        context.setEncoding(m_fieldEncoding.getValue());
-        context.setRemoteAddr(m_fieldRemoteAddress.getValue());
+        m_job.setParameters(readParams());
         return true;
-    }
-
-    /**
-     * Validates the form fields.<p>
-     *
-     * @return true if there were any validation erors
-     */
-    public boolean validate() {
-
-        List<Field<?>> fields = Arrays.<Field<?>> asList(m_fieldJobName, m_fieldJobClass, m_fieldCron);
-        boolean result = true;
-        for (Field<?> field : fields) {
-            try {
-                field.validate();
-            } catch (InvalidValueException e) {
-                result = false;
-            }
-        }
-        return result;
     }
 
     /**
@@ -384,6 +495,26 @@ public class CmsJobEditView extends VerticalLayout {
     void addParamLine(String content) {
 
         m_paramContainer.addComponent(new ParamLine(content));
+    }
+
+    /**
+     * Binds the given component to the given bean property.<p>
+     *
+     * @param field the component
+     * @param property the bean property
+     */
+    void bindField(AbstractComponent field, String property) {
+
+        Field<?> realField = null;
+        if (field instanceof Field) {
+            realField = (Field<?>)field;
+        } else if (field instanceof I_CmsHasField) {
+            realField = ((I_CmsHasField<?>)field).getField();
+        }
+        m_group.bind(realField, property);
+
+        field.setCaption(CmsVaadinUtils.getMessageText("label." + property));
+        field.setDescription(CmsVaadinUtils.getMessageText("label." + property + ".help"));
     }
 
     /**
@@ -422,19 +553,4 @@ public class CmsJobEditView extends VerticalLayout {
         addParamLine(key + "=" + value);
 
     }
-
-    /**
-     * Sets the value of a combo box, adding it as an option if it isn't already.<p>
-     *
-     * @param box the combo box
-     * @param value the value to set
-     */
-    private void setComboBoxValue(ComboBox box, String value) {
-
-        if (!box.containsId(value)) {
-            box.addItem(value);
-        }
-        box.select(value);
-    }
-
 }

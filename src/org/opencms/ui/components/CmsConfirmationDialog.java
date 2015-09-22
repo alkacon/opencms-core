@@ -36,14 +36,36 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
+/**
+ * Basic confirmation dialog.<p>
+ */
 public class CmsConfirmationDialog extends CmsBasicDialog {
 
-    private Button m_okButton; /**/
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** OK button .*/
+    private Button m_okButton;
+
+    /** Cancel button. */
     private Button m_cancelButton;
+
+    /** Label to display text. */
     private Label m_label;
+
+    /** Action to execute when confirmed. */
     private Runnable m_okAction;
+
+    /** Action to execute when cancelled. */
     private Runnable m_cancelAction;
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param message the message
+     * @param okAction the action for the confirmation case
+     * @param cancelAction the action for the cancel case
+     */
     public CmsConfirmationDialog(String message, Runnable okAction, Runnable cancelAction) {
         m_okAction = okAction;
 
@@ -52,6 +74,9 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         m_label.setValue(message);
         m_okButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
                 m_okAction.run();
@@ -59,6 +84,9 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         });
         m_cancelButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
                 m_cancelAction.run();
@@ -67,9 +95,16 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         });
     }
 
-    public static void show(String message, final Runnable okAction) {
+    /**
+     * Shows the confirmation dialog in a window.<p>
+     *
+     * @param title the window title
+     * @param message the message to display in the dialog
+     * @param okAction the action to execute when the user clicks OK
+     */
+    public static void show(String title, String message, final Runnable okAction) {
 
-        final Window window = new Window("Confirmation");
+        final Window window = new Window(title);
         CmsConfirmationDialog dialog = new CmsConfirmationDialog(message, new Runnable() {
 
             public void run() {
@@ -91,11 +126,21 @@ public class CmsConfirmationDialog extends CmsBasicDialog {
         A_CmsUI.get().addWindow(window);
     }
 
+    /**
+     * Gets the label.<p>
+     *
+     * @return the label
+     */
     public Label getLabel() {
 
         return m_label;
     }
 
+    /**
+     * Sets the message.<p>
+     *
+     * @param message the message
+     */
     public void setMessage(String message) {
 
         m_label.setValue(message);

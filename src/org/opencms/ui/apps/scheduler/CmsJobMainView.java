@@ -71,6 +71,7 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
      * @param context the app context.
      */
     public CmsJobMainView(I_CmsAppUIContext context) {
+
         m_appContext = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_jobTable.setJobEditHandler(this);
@@ -113,7 +114,9 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
     public void editJob(CmsScheduledJobInfo job, String caption, final FutureCallback<CmsScheduledJobInfo> callback) {
 
         CmsBasicDialog bd = new CmsBasicDialog();
-        final CmsJobEditView editPanel = new CmsJobEditView();
+        final CmsScheduledJobInfo jobCopy = (CmsScheduledJobInfo)job.clone();
+        jobCopy.setActive(job.isActive());
+        final CmsJobEditView editPanel = new CmsJobEditView(jobCopy);
         bd.setContent(editPanel);
         Window window = new Window(caption);
         m_window = window;
@@ -121,10 +124,11 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
         window.setContent(bd);
         window.setModal(true);
         editPanel.loadFromBean(job);
-        final CmsScheduledJobInfo jobCopy = (CmsScheduledJobInfo)job.clone();
-        Button saveButton = new Button("Save");
+        Button saveButton = new Button(
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
         bd.addButton(saveButton);
-        Button cancelButton = new Button("Cancel");
+        Button cancelButton = new Button(
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
         bd.addButton(cancelButton);
         cancelButton.addClickListener(new ClickListener() {
 
@@ -142,7 +146,7 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
 
             public void buttonClick(ClickEvent event) {
 
-                if (editPanel.trySaveToBean(jobCopy)) {
+                if (editPanel.trySaveToBean()) {
                     callback.onSuccess(jobCopy);
                     if (getWindow() != null) {
                         getWindow().close();

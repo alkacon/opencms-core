@@ -7,13 +7,13 @@
 </head>
 <body>
 	<v-vertical-layout margin spacing>
-		<v-panel caption="Actions">
+		<v-panel caption="">
 			<v-vertical-layout margin spacing>
-				<v-button _id="m_buttonAddJob">New job</v-button>
+				<v-button _id="m_buttonAddJob">%(key.GUI_NEWJOB_ADMIN_TOOL_NAME_0)</v-button>
 			</v-vertical-layout>
 		</v-panel>
 		
-		<v-panel caption="Jobs">
+		<v-panel caption="%(key.GUI_JOBS_LIST_NAME_0)">
 			<v-vertical-layout  spacing>
 				<s-cms-job-table _id="m_jobTable" width="100%"/>
 			</v-vertical-layout>

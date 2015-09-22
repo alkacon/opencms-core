@@ -8,32 +8,31 @@
 </head>
 <body>
 	<v-vertical-layout margin spacing>
-		<v-panel caption="Job settings">
+		<v-panel caption="%(key.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)">
 			<v-form-layout margin spacing style-name="o-dialog-form">
-				<v-text-field _id="m_fieldJobName" caption="%(key.label.jobName)" description="%(key.label.jobName.help)" width="100%" />
-				<v-combo-box _id="m_fieldJobClass" immediate="true" caption="%(key.label.className)" description="%(key.label.className.help)" width="100%"/>
-				<v-combo-box _id="m_fieldCron" immediate="true" width="100%" caption="Cron expression"/>
-				<v-check-box _id="m_fieldReuseInstance" caption="Reuse instance" />
-				<v-check-box _id="m_fieldActive" caption="Active" />
+				<v-text-field _id="m_fieldJobName" width="100%" />
+				<v-combo-box _id="m_fieldJobClass" immediate="true"  width="100%"/>
+				<v-combo-box _id="m_fieldCron" immediate="true" width="100%" />
+				<v-check-box _id="m_fieldReuseInstance" />
+				<v-check-box _id="m_fieldActive"  />
 			</v-form-layout>
 		</v-panel>
-		<v-panel caption="Context info">
+		<v-panel caption="%(key.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)">
 			<v-form-layout margin spacing style-name="o-dialog-form">
-				<v-text-field _id="m_fieldUser" caption="User" width="100%" />
-				<v-text-field _id="m_fieldProject" caption="Project" width="100%" /> 			
-				<f-cms-resource-select-field _id="m_fieldSiteRoot" caption="Site root" width="100%" />
-				<f-cms-resource-select-field _id="m_fieldUri" caption="Requested URI" width="100%" />
-				<v-text-field _id="m_fieldLocale" caption="Locale" width="100%"/>
-				<v-text-field _id="m_fieldEncoding" caption="Encoding"  width="100%"/>
-				<v-text-field _id="m_fieldRemoteAddress" caption="Remote address" width="100%" />
+				<v-text-field _id="m_fieldUser"  width="100%" />
+				<v-text-field _id="m_fieldProject" width="100%" /> 			
+				<f-cms-resource-select-field _id="m_fieldSiteRoot" width="100%" />
+				<f-cms-resource-select-field _id="m_fieldUri"  width="100%" />
+				<v-text-field _id="m_fieldLocale" width="100%"/>
+				<v-text-field _id="m_fieldEncoding"  width="100%"/>
+				<v-text-field _id="m_fieldRemoteAddress" width="100%" />
 			</v-form-layout>
 		</v-panel>
-		<v-panel caption="Parameters">
+		<v-panel caption="%(key.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)">
 			<v-form-layout _id="m_paramContainer" margin spacing style-name="o-dialog-form">
-				<v-button _id="m_buttonAddParam">Add parameter</v-button>
+				<v-button _id="m_buttonAddParam">%(key.GUI_SCHEDULER_ADD_PARAMETER_0)</v-button>
 			</v-form-layout>
 		</v-panel>
-		
 	</v-vertical-layout>
 </body>
 </html>

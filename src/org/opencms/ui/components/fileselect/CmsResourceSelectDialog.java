@@ -182,6 +182,7 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
             rootCms.getRequestContext().setSiteRoot("");
             CmsResource siteRootResource = rootCms.readResource(site);
             m_treeData.initRoot(rootCms, siteRootResource, m_filter);
+            m_fileTree[0].expandItem(siteRootResource.getStructureId());
             m_siteRoot = site;
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

@@ -140,6 +140,16 @@ public class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_EMAIL_MISMATCH_0 = "GUI_PWCHANGE_EMAIL_MISMATCH_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_CONFIRM_EXECUTE_1 = "GUI_SCHEDULER_CONFIRM_EXECUTE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_CONFIRM_DELETE_1 = "GUI_SCHEDULER_CONFIRM_DELETE_1";
+
+    public static final String GUI_SCHEDULER_REMOVE_PARAMETER_0 = "GUI_SCHEDULER_REMOVE_PARAMETER_0";
+
+    public static final String GUI_SCHEDULER_ADD_PARAMETER_0 = "GUI_SCHEDULER_ADD_PARAMETER_0";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

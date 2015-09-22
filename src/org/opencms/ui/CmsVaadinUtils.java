@@ -128,6 +128,14 @@ public final class CmsVaadinUtils {
         }
     }
 
+    /**
+     * Builds an IndexedContainer containing the sites selectable by the current user.<p>
+     *
+     * @param cms the CMS context
+     * @param captionPropertyName the name of the property used to store captions
+     *
+     * @return the container with the available sites
+     */
     public static IndexedContainer getAvailableSitesContainer(CmsObject cms, String captionPropertyName) {
 
         List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
@@ -355,7 +363,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

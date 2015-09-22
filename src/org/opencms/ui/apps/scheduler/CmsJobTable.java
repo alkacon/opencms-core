@@ -35,6 +35,8 @@ import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -64,19 +66,41 @@ public class CmsJobTable extends Table implements ColumnGenerator {
      */
     enum Action {
         /** Enable / disable. */
-        activation,
+        activation(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_MACTIVATE_NAME_0),
 
         /** Create new job from template. */
-        copy,
+        copy(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_COPY_NAME_0),
 
         /** Deletes the job. */
-        delete,
+        delete(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
 
         /** Edits the job. */
-        edit,
+        edit(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0),
 
         /** Executes the job immediately. */
-        run;
+        run(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EXECUTE_NAME_0);
+
+        /** The message key. */
+        private String m_key;
+
+        /**
+         * Creates a new action.<p>
+         *
+         * @param key the message key for the action
+         */
+        private Action(String key) {
+            m_key = key;
+        }
+
+        /**
+         * Gets the message key for the action.<p>
+         *
+         * @return the message key
+         */
+        String getMessageKey() {
+
+            return m_key;
+        }
     }
 
     /** Serial version id. */
@@ -121,6 +145,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         setColumnExpandRatio("lastExecution", 1);
         setColumnExpandRatio("nextExecution", 1);
         setSortContainerPropertyId("name");
+        getVisibleColumns();
 
         setColumnHeader(Action.edit, "E");
         setColumnHeader(Action.activation, "A");
@@ -128,10 +153,18 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         setColumnHeader(Action.delete, "D");
         setColumnHeader(Action.run, "X");
 
-        setColumnHeader("name", "Name");
-        setColumnHeader("className", "Class");
-        setColumnHeader("lastExecution", "Last Execution");
-        setColumnHeader("nextExecution", "Next Execution");
+        setColumnHeader(
+            "name",
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_NAME_0));
+        setColumnHeader(
+            "className",
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_NAME_0));
+        setColumnHeader(
+            "lastExecution",
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_LASTEXE_0));
+        setColumnHeader(
+            "nextExecution",
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_NEXTEXE_0));
     }
 
     /**
@@ -164,7 +197,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
             default:
         }
 
-        Button button = createIconButton(resource, action.name());
+        Button button = createIconButton(resource, CmsVaadinUtils.getMessageText(action.getMessageKey()));
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -183,7 +216,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                             jobClone.clearId();
                             m_jobEditHandler.editJob(
                                 jobClone,
-                                "Create copy of job",
+                                "Create copy of job " + jobClone.getJobName(),
                                 new FutureCallback<CmsScheduledJobInfo>() {
 
                                 public void onFailure(Throwable t) {
@@ -205,7 +238,10 @@ public class CmsJobTable extends Table implements ColumnGenerator {
 
                         case delete:
                             CmsConfirmationDialog.show(
-                                "Do you want to delete the job '" + job.getJobName() + "' now?",
+                                CmsVaadinUtils.getMessageText(action.getMessageKey()),
+                                CmsVaadinUtils.getMessageText(
+                                    Messages.GUI_SCHEDULER_CONFIRM_DELETE_1,
+                                    job.getJobName()),
                                 new Runnable() {
 
                                 public void run() {
@@ -226,7 +262,11 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                             if (m_jobEditHandler == null) {
                                 break;
                             }
-                            m_jobEditHandler.editJob(job, "Edit job", new FutureCallback<CmsScheduledJobInfo>() {
+                            m_jobEditHandler.editJob(
+                                job,
+                                CmsVaadinUtils.getMessageText(
+                                    org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0),
+                                new FutureCallback<CmsScheduledJobInfo>() {
 
                                 public void onFailure(Throwable t) {
                                     // not called
@@ -247,7 +287,10 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                             break;
                         case run:
                             CmsConfirmationDialog.show(
-                                "Do you want to execute the job '" + job.getJobName() + "' now?",
+                                CmsVaadinUtils.getMessageText(action.getMessageKey()),
+                                CmsVaadinUtils.getMessageText(
+                                    Messages.GUI_SCHEDULER_CONFIRM_EXECUTE_1,
+                                    job.getJobName()),
                                 new Runnable() {
 
                                 public void run() {

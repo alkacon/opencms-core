@@ -42,6 +42,8 @@ import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.validation.Valid;
+
 import org.apache.commons.logging.Log;
 
 import org.quartz.CronTrigger;
@@ -528,6 +530,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @return the context information for the user executing this job
      */
+    @Valid
     public CmsContextInfo getContextInfo() {
 
         return m_context;

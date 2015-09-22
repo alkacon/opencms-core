@@ -133,6 +133,15 @@ public class CmsResourceTree extends Tree {
 
         m_container.addTreeItem(m_root, null);
         m_container.readTreeLevel(cms, m_root.getStructureId(), filter);
+
+        try {
+            m_container.readTreeLevel(cms, root.getStructureId(), filter);
+            expandItem(root.getStructureId());
+            markAsDirtyRecursive();
+
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

@@ -33,6 +33,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.util.I_CmsHasField;
 import org.opencms.workplace.CmsWorkplace;
 
 import org.apache.commons.logging.Log;
@@ -41,6 +42,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
@@ -49,7 +51,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * File select field.<p>
  */
-public class CmsResourceSelectField extends HorizontalLayout {
+public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHasField<String> {
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -92,6 +94,14 @@ public class CmsResourceSelectField extends HorizontalLayout {
             }
         });
 
+    }
+
+    /**
+     * @see org.opencms.ui.util.I_CmsHasField#getField()
+     */
+    public Field<String> getField() {
+
+        return getTextField();
     }
 
     /**
