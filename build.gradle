@@ -910,12 +910,13 @@ task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('di
     println '======================================================'
 }
 
-task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
+task war (dependsOn: [setupJar, widgetSetJar], type: Zip){
 
     archiveName 'opencms.war'
     baseName 'opencms-webapp'
     extension 'war'
-    from ("${projectDir}/webapp"){
+
+	from ("${projectDir}/webapp"){
         // exclude the database drivers
         exclude '**/setup/**/*.jar'
         exclude '**/update/**'
@@ -929,10 +930,9 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         exclude '**/*.xml'
     }
     
-    // copy SOLR config files separately to avoid the replace filter corrupting them
-    from ("${projectDir}/webapp"){
-        include '**/solr/**'
-        include '**/spellcheck/**'
+	// copy SOLR config files separately to avoid the replace filter corrupting them
+    from ("${projectDir}/webapp/WEB-INF/solr"){
+        into '/WEB-INF/solr/'
     }
     
     from ("${projectDir}/webapp"){
@@ -958,6 +958,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
             RUNTIME_INFO: system_runtimeinfo
         ])
     }
+    
     from ("${project.buildDir}/libs") {
         include '*.jar'
         exclude 'opencms-components*.jar'
@@ -967,11 +968,14 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         exclude '*-javadoc.jar'
         into '/WEB-INF/lib'
     }
+    
     into ('/WEB-INF/lib') { from configurations.distribution }
+    
     fileTree('webapp/setup/database'){ include '**/*.jar'}.each {File driverJar ->
         // copy the database drivers into the lib folder
         from (driverJar.path) { into '/WEB-INF/lib' }
     }
+    
     from (modulesDistsDir) { into '/WEB-INF/packages/modules' }
 
     from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
