@@ -27,12 +27,12 @@
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu {
 			float: left;
 			clear: left;
-		  	font-size: $v-font-size--large;
-			@include valo-selection-item-style;
+		  	@include valo-selection-item-style;
 		}
 		.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
 			padding-top: 2px;
 			padding-bottom: 2px;
+			font-size: $v-font-size--large;
 			
 			&:hover, &:focus {
 				outline: none;
