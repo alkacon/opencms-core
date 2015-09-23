@@ -37,6 +37,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.login.CmsLoginController.CmsLoginTargetInfo;
@@ -480,6 +481,8 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         setLocale(params.getLocale());
         m_loginForm = new CmsLoginForm(m_controller, params.getLocale());
         m_controller.onInit();
-
+        getPage().setTitle(
+            CmsAppWorkplaceUi.WINDOW_TITLE_PREFIX
+                + CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LOGIN_HEADLINE_0));
     }
 }

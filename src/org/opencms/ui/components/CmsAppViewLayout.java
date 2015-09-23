@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 
 import com.vaadin.server.Responsive;
@@ -105,6 +106,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
      */
     public void setAppTitle(String title) {
 
+        CmsAppWorkplaceUi.setWindowTitle(title);
         m_toolbar.setAppTitle(title);
     }
 

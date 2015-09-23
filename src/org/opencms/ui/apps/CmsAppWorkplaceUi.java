@@ -74,6 +74,15 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
+
+    /** The OpenCms window title prefix. */
+    public static final String WINDOW_TITLE_PREFIX = "OpenCms - ";
+
     /** The current view in case it implements view change listener. */
     private View m_currentView;
 
@@ -83,12 +92,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
-
     /**
      * Gets the current UI instance.<p>
      *
@@ -97,6 +100,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public static CmsAppWorkplaceUi get() {
 
         return (CmsAppWorkplaceUi)A_CmsUI.get();
+    }
+
+    /**
+     * Sets the window title adding an OpenCms prefix.<p>
+     *
+     * @param title the window title
+     */
+    public static void setWindowTitle(String title) {
+
+        get().getPage().setTitle(WINDOW_TITLE_PREFIX + title);
     }
 
     /**
