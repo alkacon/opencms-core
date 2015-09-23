@@ -75,6 +75,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -325,6 +326,8 @@ public class CmsJobEditView extends VerticalLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    private HorizontalLayout m_buttonBar;
+
     /** Button to add a new parameter. */
     private Button m_buttonAddParam;
 
@@ -373,6 +376,8 @@ public class CmsJobEditView extends VerticalLayout {
     /** Field group. */
     private BeanFieldGroup<CmsScheduledJobInfo> m_group;
 
+    private Label m_titleLabel;
+
     /**
      * Creates a new instance.<p>
      *
@@ -385,6 +390,7 @@ public class CmsJobEditView extends VerticalLayout {
         BeanFieldGroup<CmsScheduledJobInfo> group = new BeanFieldGroup<CmsScheduledJobInfo>(CmsScheduledJobInfo.class);
         group.setItemDataSource(m_job);
         m_group = group;
+        m_titleLabel.addStyleName(ValoTheme.LABEL_H2);
 
         bindField(m_fieldJobName, "jobName");/**/
         bindField(m_fieldJobClass, "className");
@@ -468,6 +474,24 @@ public class CmsJobEditView extends VerticalLayout {
         for (Map.Entry<String, String> entry : info.getParameters().entrySet()) {
             addParamLine(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * Sets the buttons for the edit view.<p>
+     *
+     * @param buttons the buttons
+     */
+    public void setButtons(Component... buttons) {
+
+        m_buttonBar.removeAllComponents();
+        for (Component button : buttons) {
+            m_buttonBar.addComponent(button);
+        }
+    }
+
+    public void setTitle(String caption) {
+
+        m_titleLabel.setValue(caption);
     }
 
     /**

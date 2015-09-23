@@ -7,9 +7,11 @@
   	<meta name="package-mapping" content="s:org.opencms.ui.apps.scheduler" />
 </head>
 <body>
-	<v-vertical-layout margin spacing>
+	<v-vertical-layout>
+	<v-vertical-layout :center margin spacing style-name="o-workplace-maxwidth">
+		<v-label _id="m_titleLabel" />
 		<v-panel caption="%(key.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)">
-			<v-form-layout margin spacing style-name="o-dialog-form">
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<v-text-field _id="m_fieldJobName" width="100%" />
 				<v-combo-box _id="m_fieldJobClass" immediate="true"  width="100%"/>
 				<v-combo-box _id="m_fieldCron" immediate="true" width="100%" />
@@ -18,7 +20,7 @@
 			</v-form-layout>
 		</v-panel>
 		<v-panel caption="%(key.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)">
-			<v-form-layout margin spacing style-name="o-dialog-form">
+			<v-form-layout margin spacing style-name="o-formlayout-workplace-main">
 				<v-text-field _id="m_fieldUser"  width="100%" />
 				<v-text-field _id="m_fieldProject" width="100%" /> 			
 				<f-cms-resource-select-field _id="m_fieldSiteRoot" width="100%" />
@@ -29,10 +31,16 @@
 			</v-form-layout>
 		</v-panel>
 		<v-panel caption="%(key.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)">
-			<v-form-layout _id="m_paramContainer" margin spacing style-name="o-dialog-form">
+			<v-form-layout _id="m_paramContainer" margin spacing style-name="o-formlayout-workplace-main">
 				<v-button _id="m_buttonAddParam">%(key.GUI_SCHEDULER_ADD_PARAMETER_0)</v-button>
 			</v-form-layout>
 		</v-panel>
+		<v-panel>
+			<v-horizontal-layout width="100%">
+				<v-horizontal-layout :center margin spacing style-name="o-dialog-button-bar" _id="m_buttonBar" />
+			</v-horizontal-layout>
+		</v-panel>
+	</v-vertical-layout>
 	</v-vertical-layout>
 </body>
 </html>

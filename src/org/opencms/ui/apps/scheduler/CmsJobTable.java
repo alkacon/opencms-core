@@ -45,7 +45,6 @@ import org.opencms.workplace.list.A_CmsListDialog;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.util.concurrent.FutureCallback;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
@@ -158,7 +157,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
             CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_NAME_0));
         setColumnHeader(
             "className",
-            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_NAME_0));
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_CLASS_0));
         setColumnHeader(
             "lastExecution",
             CmsVaadinUtils.getMessageText(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_COL_LASTEXE_0));
@@ -214,25 +213,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                         case copy:
                             jobClone.setActive(job.isActive());
                             jobClone.clearId();
-                            m_jobEditHandler.editJob(
-                                jobClone,
-                                "Create copy of job " + jobClone.getJobName(),
-                                new FutureCallback<CmsScheduledJobInfo>() {
-
-                                public void onFailure(Throwable t) {
-                                    // never called
-
-                                }
-
-                                public void onSuccess(CmsScheduledJobInfo result) {
-
-                                    try {
-                                        writeChangedJob(result);
-                                    } catch (CmsException e) {
-                                        CmsErrorDialog.showErrorDialog(e);
-                                    }
-                                }
-                            });
+                            m_jobEditHandler.editJob(jobClone, "Create copy of job " + jobClone.getJobName());
 
                             break;
 
@@ -265,24 +246,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                             m_jobEditHandler.editJob(
                                 job,
                                 CmsVaadinUtils.getMessageText(
-                                    org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0),
-                                new FutureCallback<CmsScheduledJobInfo>() {
-
-                                public void onFailure(Throwable t) {
-                                    // not called
-
-                                }
-
-                                public void onSuccess(CmsScheduledJobInfo result) {
-
-                                    try {
-                                        CmsJobTable.this.writeChangedJob(result);
-                                    } catch (CmsException e) {
-                                        LOG.error(e.getLocalizedMessage(), e);
-                                        CmsErrorDialog.showErrorDialog(e);
-                                    }
-                                }
-                            });
+                                    org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0));
 
                             break;
                         case run:

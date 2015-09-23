@@ -30,26 +30,30 @@ package org.opencms.ui.apps.scheduler;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
-import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 
-import com.google.common.util.concurrent.FutureCallback;
+import org.apache.commons.logging.Log;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Widget to display the job table and additional buttons to perform actions  on the jobs.<p>
  */
 public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandler {
+
+    /** Log instance for this  class. */
+    private static final Log LOG = CmsLog.getLog(CmsJobMainView.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
@@ -62,9 +66,6 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
 
     /** Table containing the jobs. */
     protected CmsJobTable m_jobTable;
-
-    /** Window used to display the dialog for editing jobs. Using object as the type to prevent declarative widget binding. */
-    private Object m_window;
 
     /**
      * Creates a new instance.<p>
@@ -87,25 +88,7 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
 
                 CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
                 jobInfo.setContextInfo(new CmsContextInfo());
-                editJob(jobInfo, "Create new job", new FutureCallback<CmsScheduledJobInfo>() {
-
-                    public void onFailure(Throwable t) {
-                        // never called
-
-                    }
-
-                    public void onSuccess(CmsScheduledJobInfo result) {
-
-                        try {
-                            OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), result);
-                            OpenCms.writeConfiguration(CmsSystemConfiguration.class);
-                            m_jobTable.reloadJobs();
-                        } catch (CmsException e) {
-                            CmsErrorDialog.showErrorDialog(e);
-                        }
-
-                    }
-                });
+                editJob(jobInfo, "Create new job");
 
             }
         });
@@ -113,63 +96,75 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
     }
 
     /**
-     * @see org.opencms.ui.apps.scheduler.I_CmsJobEditHandler#editJob(org.opencms.scheduler.CmsScheduledJobInfo, java.lang.String, com.google.common.util.concurrent.FutureCallback)
+     * @see org.opencms.ui.apps.scheduler.I_CmsJobEditHandler#editJob(org.opencms.scheduler.CmsScheduledJobInfo, java.lang.String)
      */
-    public void editJob(CmsScheduledJobInfo job, String caption, final FutureCallback<CmsScheduledJobInfo> callback) {
+    public void editJob(CmsScheduledJobInfo job, String caption) {
 
-        CmsBasicDialog bd = new CmsBasicDialog();
         final CmsScheduledJobInfo jobCopy = (CmsScheduledJobInfo)job.clone();
         jobCopy.setActive(job.isActive());
         final CmsJobEditView editPanel = new CmsJobEditView(jobCopy);
-        bd.setContent(editPanel);
-        Window window = new Window(caption);
-        m_window = window;
-        window.setWidth("800px");
-        window.setContent(bd);
-        window.setModal(true);
-        editPanel.loadFromBean(job);
+        editPanel.setTitle(caption);
+        editPanel.loadFromBean(jobCopy);
+
         Button saveButton = new Button(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
-        bd.addButton(saveButton);
+
         Button cancelButton = new Button(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
-        bd.addButton(cancelButton);
+        editPanel.setButtons(saveButton, cancelButton);
+        m_appContext.setAppContent(editPanel);
+        CmsAppWorkplaceUi.get().changeCurrentAppState("edit");
+        saveButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings({"synthetic-access"})
+            public void buttonClick(ClickEvent event) {
+
+                m_appContext.setAppContent(new CmsJobMainView(m_appContext));
+                try {
+                    if (editPanel.trySaveToBean()) {
+                        OpenCms.getScheduleManager().scheduleJob(A_CmsUI.getCmsObject(), jobCopy);
+                        OpenCms.writeConfiguration(CmsSystemConfiguration.class);
+                        restoreMainView();
+                    }
+
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    CmsErrorDialog.showErrorDialog(e, new Runnable() {
+
+                        public void run() {
+
+                            restoreMainView();
+
+                        }
+                    });
+                }
+
+            }
+
+        });
+
         cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
             public void buttonClick(ClickEvent event) {
 
-                getWindow().close();
+                restoreMainView();
+
             }
         });
-
-        saveButton.addClickListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                if (editPanel.trySaveToBean()) {
-                    callback.onSuccess(jobCopy);
-                    if (getWindow() != null) {
-                        getWindow().close();
-                    }
-                }
-            }
-        });
-        window.center();
-        A_CmsUI.get().addWindow(window);
-
     }
 
     /**
-     * Gets the currently opened window (may be null).<p>
-     *
-     * @return the currently opened window
+     * Restores the main view after leaving the editing mode.<p>
      */
-    protected Window getWindow() {
+    public void restoreMainView() {
 
-        return (Window)m_window;
+        m_appContext.setAppContent(CmsJobMainView.this);
+        m_jobTable.reloadJobs();
+        CmsAppWorkplaceUi.get().changeCurrentAppState("");
     }
+
 }

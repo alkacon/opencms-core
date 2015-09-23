@@ -29,8 +29,6 @@ package org.opencms.ui.apps.scheduler;
 
 import org.opencms.scheduler.CmsScheduledJobInfo;
 
-import com.google.common.util.concurrent.FutureCallback;
-
 /**
  * Interface ued to open the editor dialog for a scheduled job.<p>
  */
@@ -41,8 +39,7 @@ public interface I_CmsJobEditHandler {
      *
      * @param job the job being edited
      * @param caption the caption to display
-     * @param callback the callback to call when the user has finished editing the job
      */
-    void editJob(CmsScheduledJobInfo job, String caption, FutureCallback<CmsScheduledJobInfo> callback);
+    void editJob(CmsScheduledJobInfo job, String caption);
 
 }
