@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
@@ -41,6 +42,8 @@ import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -65,8 +68,31 @@ import com.vaadin.ui.Window;
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
+    /**
+     * View which directly changes the state to the launchpad.<p>
+     */
+    class LaunchpadRedirectView implements View {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @see com.vaadin.navigator.View#enter(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+         */
+        public void enter(ViewChangeEvent event) {
+
+            A_CmsUI.get().getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
+        }
+    }
+
     /** The editor window name, used for page and sitemap editor. */
     public static final String EDITOR_WINDOW_NAME = "opencms_edit_window";
+
+    /** The OpenCms window title prefix. */
+    public static final String WINDOW_TITLE_PREFIX = "OpenCms - ";
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAppWorkplaceUi.class);
 
     /** Menu item manager. */
     private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
@@ -74,14 +100,8 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
-
-    /** The OpenCms window title prefix. */
-    public static final String WINDOW_TITLE_PREFIX = "OpenCms - ";
+    /** Launch pad redirect view. */
+    protected View m_launchRedirect = new LaunchpadRedirectView();
 
     /** The current view in case it implements view change listener. */
     private View m_currentView;
@@ -91,6 +111,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
+
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
 
     /**
      * Gets the current UI instance.<p>
@@ -194,9 +220,10 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         I_CmsWorkplaceAppConfiguration appConfig = OpenCms.getWorkplaceAppManager().getAppConfiguration(viewName);
         if (appConfig != null) {
             return new CmsAppView(appConfig);
+        } else {
+            LOG.warn("Nonexistant view '" + viewName + "' requested");
+            return m_launchRedirect;
         }
-
-        return null;
     }
 
     /**
