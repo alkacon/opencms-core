@@ -127,7 +127,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         setVisibleColumns();
         for (Action action : Action.values()) {
             addGeneratedColumn(action, this);
-            setColumnWidth(action, 30);
+            setColumnWidth(action, 26);
         }
 
         setVisibleColumns(
