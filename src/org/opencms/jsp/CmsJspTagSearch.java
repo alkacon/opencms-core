@@ -42,7 +42,7 @@ import org.opencms.jsp.search.config.parser.CmsXMLSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
-import org.opencms.jsp.search.result.I_SearchResultWrapper;
+import org.opencms.jsp.search.result.I_CmsSearchResultWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -389,7 +389,7 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
      *  It is exposed to the JSP via the tag's "var" attribute.
      * @return The result object exposed via the tag's attribute "var".
      */
-    private I_SearchResultWrapper getSearchResults() {
+    private I_CmsSearchResultWrapper getSearchResults() {
 
         // The second parameter is just ignored - so it does not matter
         m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);

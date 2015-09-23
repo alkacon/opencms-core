@@ -39,7 +39,7 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Interface of the JSP EL friendly wrapper for all Solr search results and the search form controller. */
-public interface I_SearchResultWrapper {
+public interface I_CmsSearchResultWrapper {
 
     /** Returns the main controller for the search form.
      * @return The main controller for the search form.

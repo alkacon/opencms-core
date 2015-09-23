@@ -52,7 +52,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
     /** Map of request parameters, representing the search's state. */
     Map<String, String[]> m_params;
     /** The result of the search. */
-    I_SearchResultWrapper m_result;
+    I_CmsSearchResultWrapper m_result;
 
     /** Map with page numbers as keys and the according state parameters as values. */
     Map<String, I_CmsSearchStateParameters> m_paginationMap;
@@ -75,7 +75,7 @@ public class CmsSearchStateParameters implements I_CmsSearchStateParameters {
      * @param result The search result, according to which the parameters are manipulated.
      * @param params The original parameter set.
      */
-    CmsSearchStateParameters(final I_SearchResultWrapper result, final Map<String, String[]> params) {
+    CmsSearchStateParameters(final I_CmsSearchResultWrapper result, final Map<String, String[]> params) {
 
         m_params = params;
         m_result = result;

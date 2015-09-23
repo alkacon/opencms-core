@@ -49,7 +49,7 @@ import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 
 /** Wrapper for the whole search result. Also allowing to access the search form controller. */
-public class CmsSearchResultWrapper implements I_SearchResultWrapper {
+public class CmsSearchResultWrapper implements I_CmsSearchResultWrapper {
 
     /** The result list as returned normally. */
     final CmsSolrResultList m_solrResultList;
@@ -120,7 +120,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getController()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getController()
      */
     @Override
     public I_CmsSearchControllerMain getController() {
@@ -129,7 +129,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanCollated()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getDidYouMeanCollated()
      */
     public String getDidYouMeanCollated() {
 
@@ -144,7 +144,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getDidYouMeanSuggestion()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getDidYouMeanSuggestion()
      */
     public Suggestion getDidYouMeanSuggestion() {
 
@@ -168,7 +168,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getEnd()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getEnd()
      */
     @Override
     public int getEnd() {
@@ -177,7 +177,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getException()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getException()
      */
     public CmsSearchException getException() {
 
@@ -185,7 +185,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFacetQuery()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getFacetQuery()
      */
     @Override
     public Map<String, Integer> getFacetQuery() {
@@ -194,7 +194,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFieldFacet()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getFieldFacet()
      */
     @Override
     public Map<String, FacetField> getFieldFacet() {
@@ -213,7 +213,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFieldFacets()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getFieldFacets()
      */
     @Override
     public Collection<FacetField> getFieldFacets() {
@@ -222,7 +222,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getFinalQuery()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getFinalQuery()
      */
     public CmsSolrQuery getFinalQuery() {
 
@@ -230,7 +230,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getHighlighting()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getHighlighting()
      */
     @Override
     public Map<String, Map<String, List<String>>> getHighlighting() {
@@ -239,7 +239,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getMaxScore()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getMaxScore()
      */
     @Override
     public Float getMaxScore() {
@@ -248,7 +248,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getMissingSelectedFieldFacetEntries()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getMissingSelectedFieldFacetEntries()
      */
     @Override
     public Map<String, List<String>> getMissingSelectedFieldFacetEntries() {
@@ -287,7 +287,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getNumFound()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getNumFound()
      */
     @Override
     public long getNumFound() {
@@ -296,7 +296,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getNumPages()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getNumPages()
      */
     @Override
     public int getNumPages() {
@@ -307,7 +307,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getPageNavFirst()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getPageNavFirst()
      */
     @Override
     public int getPageNavFirst() {
@@ -318,7 +318,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getPageNavLast()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getPageNavLast()
      */
     @Override
     public int getPageNavLast() {
@@ -329,7 +329,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getSearchResults()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getSearchResults()
      */
     @Override
     public Collection<I_CmsSearchResourceBean> getSearchResults() {
@@ -338,7 +338,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getStart()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getStart()
      */
     @Override
     public Long getStart() {
@@ -347,7 +347,7 @@ public class CmsSearchResultWrapper implements I_SearchResultWrapper {
     }
 
     /**
-     * @see org.opencms.jsp.search.result.I_SearchResultWrapper#getStateParameters()
+     * @see org.opencms.jsp.search.result.I_CmsSearchResultWrapper#getStateParameters()
      */
     public CmsSearchStateParameters getStateParameters() {
 
