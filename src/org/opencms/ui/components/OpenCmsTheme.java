@@ -39,6 +39,9 @@ public class OpenCmsTheme {
     public static final String APP_BUTTON = "o-app-button";
 
     /** CSS style name. */
+    public static final String APP_BUTTON_PADDED = "o-app-button-padded";
+
+    /** CSS style name. */
     public static final String APP_CONTENT = "o-app-content";
 
     /** CSS style name. */

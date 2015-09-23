@@ -83,7 +83,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY + " " + OpenCmsTheme.APP_BUTTON_PADDED;
     }
 
     /**

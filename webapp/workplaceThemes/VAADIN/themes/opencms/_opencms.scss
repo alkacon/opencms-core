@@ -463,6 +463,10 @@
   		width:	$app-icon-size;
   		height: $app-icon-size;
   	} 
+  	
+  	&.o-app-button-padded img.v-icon {
+  		padding: 9px; 
+  	}
   }
   .v-button.v-button-o-app-button.o-color-cyan .v-icon{
   	background: $cyan;
