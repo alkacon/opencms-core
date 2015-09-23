@@ -68,7 +68,7 @@ public class CmsFileExplorerConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getHelpText(Locale locale) {
 
-        return "The explorer";
+        return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_HELP_0);
     }
 
     /**
@@ -92,7 +92,7 @@ public class CmsFileExplorerConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getName(Locale locale) {
 
-        return "Explorer";
+        return Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_TITLE_0);
     }
 
     /**

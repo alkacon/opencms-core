@@ -28,7 +28,6 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
@@ -42,8 +41,6 @@ import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
-
-import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
@@ -67,9 +64,6 @@ import com.vaadin.ui.Window;
 @Theme("opencms")
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
-
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAppWorkplaceUi.class);
 
     /** Menu item manager. */
     private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;

@@ -363,7 +363,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
@@ -402,7 +402,7 @@ public final class CmsVaadinUtils {
             String resolvedDesign = resolver.resolveMacros(design);
             Design.read(new ByteArrayInputStream(resolvedDesign.getBytes(encoding)), component);
         } catch (IOException e) {
-            throw new RuntimeException("Could not read design");
+            throw new RuntimeException("Could not read design", e);
         } finally {
             try {
                 designStream.close();

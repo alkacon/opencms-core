@@ -35,7 +35,6 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
@@ -47,8 +46,6 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -64,9 +61,6 @@ import com.vaadin.ui.TextField;
  * Dialog used to change resource modification times.<p>
  */
 public class CmsSecureExportDialog extends CmsBasicDialog {
-
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSecureExportDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -260,16 +254,4 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
         combo.setItemCaption("false", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_FALSE_0));
         combo.setItemCaption("", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_SECURE_NOT_SET_0));
     }
-
-    /**
-     * Returns true if the given string value is the representation of a boolean value.<p<
-     *
-     * @param value the string to check
-     * @return true if the string is the representation of a boolean value
-     */
-    private boolean isBoolean(String value) {
-
-        return "true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value);
-    }
-
 }

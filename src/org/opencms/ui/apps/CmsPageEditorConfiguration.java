@@ -90,7 +90,7 @@ public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguratio
      */
     public String getHelpText(Locale locale) {
 
-        return "The page editor";
+        return Messages.get().getBundle(locale).key(Messages.GUI_PAGEEDITOR_HELP_0);
     }
 
     /**
@@ -114,7 +114,7 @@ public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguratio
      */
     public String getName(Locale locale) {
 
-        return "Page editor";
+        return Messages.get().getBundle(locale).key(Messages.GUI_PAGEEDITOR_TITLE_0);
     }
 
     /**

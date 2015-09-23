@@ -39,19 +39,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PW_FIELD1_0 = "GUI_CHANGE_PW_FIELD1_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGIN_OPTIONS_SHOW_0 = "GUI_LOGIN_OPTIONS_SHOW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOGIN_OPTIONS_HIDE_0 = "GUI_LOGIN_OPTIONS_HIDE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PW_FIELD2_0 = "GUI_CHANGE_PW_FIELD2_0";
@@ -60,13 +54,16 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_TEXT_0 = "GUI_FORGOT_PASSWORD_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INVALID_DATE_FORMAT_0 = "GUI_INVALID_DATE_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_OPTIONS_HIDE_0 = "GUI_LOGIN_OPTIONS_HIDE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGIN_OPTIONS_SHOW_0 = "GUI_LOGIN_OPTIONS_SHOW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_ENTER_NEW_PASSWORD_0 = "GUI_PLEASE_ENTER_NEW_PASSWORD_0";
@@ -75,10 +72,13 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0 = "GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PWCHANGE_FORGOT_PASSWORD_0 = "GUI_PWCHANGE_FORGOT_PASSWORD_0";
+    public static final String GUI_PWCHANGE_EMAIL_CAPTION_0 = "GUI_PWCHANGE_EMAIL_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PWCHANGE_EMAIL_CAPTION_0 = "GUI_PWCHANGE_EMAIL_CAPTION_0";
+    public static final String GUI_PWCHANGE_EMAIL_MISMATCH_0 = "GUI_PWCHANGE_EMAIL_MISMATCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PWCHANGE_FORGOT_PASSWORD_0 = "GUI_PWCHANGE_FORGOT_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0 = "GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0";
@@ -120,10 +120,22 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
+    public static final String GUI_SCHEDULER_ADD_PARAMETER_0 = "GUI_SCHEDULER_ADD_PARAMETER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_CONFIRM_DELETE_1 = "GUI_SCHEDULER_CONFIRM_DELETE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_CONFIRM_EXECUTE_1 = "GUI_SCHEDULER_CONFIRM_EXECUTE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_REMOVE_PARAMETER_0 = "GUI_SCHEDULER_REMOVE_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_RECURSIVE_0 = "GUI_UNDO_RECURSIVE_0";
@@ -131,24 +143,14 @@ public class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PWCHANGE_EMAIL_MISMATCH_0 = "GUI_PWCHANGE_EMAIL_MISMATCH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SCHEDULER_CONFIRM_EXECUTE_1 = "GUI_SCHEDULER_CONFIRM_EXECUTE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SCHEDULER_CONFIRM_DELETE_1 = "GUI_SCHEDULER_CONFIRM_DELETE_1";
-
-    public static final String GUI_SCHEDULER_REMOVE_PARAMETER_0 = "GUI_SCHEDULER_REMOVE_PARAMETER_0";
-
-    public static final String GUI_SCHEDULER_ADD_PARAMETER_0 = "GUI_SCHEDULER_ADD_PARAMETER_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

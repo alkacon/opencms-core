@@ -49,8 +49,14 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory {
 
-    private class DummyApp implements I_CmsWorkplaceApp {
+    /**
+     * Used in case the requested app can not be displayed to the current user.<p>
+     */
+    protected class NotAvailableApp implements I_CmsWorkplaceApp {
 
+        /**
+         * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
+         */
         public void initUI(I_CmsAppUIContext context) {
 
             Label label = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_APP_NOT_AVAILABLE_0));
@@ -62,10 +68,12 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
             context.setAppContent(content);
         }
 
+        /**
+         * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
+         */
         public void onStateChange(String state) {
 
-            // TODO Auto-generated method stub
-
+            // nothing to do
         }
 
     }
@@ -128,7 +136,7 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
 
         if (m_app == null) {
             if (!m_appConfig.getVisibility(A_CmsUI.getCmsObject()).isActive()) {
-                m_app = new DummyApp();
+                m_app = new NotAvailableApp();
             } else {
                 m_app = m_appConfig.getAppInstance();
             }

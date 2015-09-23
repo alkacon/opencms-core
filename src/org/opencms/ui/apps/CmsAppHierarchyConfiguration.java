@@ -71,7 +71,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getHelpText(Locale locale) {
 
-        return "Displays all available apps";
+        return Messages.get().getBundle(locale).key(Messages.GUI_LAUNCHPAD_HELP_0);
     }
 
     /**
@@ -95,7 +95,7 @@ public class CmsAppHierarchyConfiguration implements I_CmsWorkplaceAppConfigurat
      */
     public String getName(Locale locale) {
 
-        return "Launchpad";
+        return Messages.get().getBundle(locale).key(Messages.GUI_LAUNCHPAD_TITLE_0);
     }
 
     /**

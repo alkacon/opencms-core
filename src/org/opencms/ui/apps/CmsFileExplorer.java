@@ -69,6 +69,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -242,14 +243,18 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         public void buildContextMenu(List<CmsResource> resources, ContextMenu menu) {
 
             if (resources.size() == 1) {
+                Locale locale = UI.getCurrent().getLocale();
                 CmsUUID editId = resources.iterator().next().getStructureId();
-                ContextMenuItem editTitle = menu.addItem("Edit title");
+                ContextMenuItem editTitle = menu.addItem(
+                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_EDIT_TITLE_0));
                 editTitle.addItemClickListener(
                     new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_TITLE));
-                ContextMenuItem editNavText = menu.addItem("Edit navigation text");
+                ContextMenuItem editNavText = menu.addItem(
+                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0));
                 editNavText.addItemClickListener(
                     new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT));
-                ContextMenuItem editResourceName = menu.addItem("Rename");
+                ContextMenuItem editResourceName = menu.addItem(
+                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_RENAME_0));
                 editResourceName.addItemClickListener(
                     new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_RESOURCE_NAME));
             }
@@ -485,7 +490,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
         m_searchField = new TextField();
         m_searchField.setIcon(FontOpenCms.FILTER);
-        m_searchField.setInputPrompt("Filter");
+        m_searchField.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_FILTER_0));
         m_searchField.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         m_searchField.addTextChangeListener(new TextChangeListener() {
 
@@ -679,6 +685,12 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         readFolder(m_currentFolder);
     }
 
+    /**
+     * Updates the give tree item.<p>
+     *
+     * @param cms the cms context
+     * @param id the item id
+     */
     public void updateResourceInTree(CmsObject cms, CmsUUID id) {
 
         try {
@@ -997,7 +1009,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         combo.setTextInputAllowed(true);
         combo.setNullSelectionAllowed(false);
         combo.setWidth("200px");
-        combo.setInputPrompt("You can click here");
+        combo.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
         combo.setItemCaptionPropertyId(SITE_CAPTION);
         combo.select(cms.getRequestContext().getSiteRoot());
         combo.setFilteringMode(FilteringMode.CONTAINS);
@@ -1084,7 +1097,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
             public void buttonClick(ClickEvent event) {
 
-                Notification.show("The new resource dialog has not been implemented yet.", Type.WARNING_MESSAGE);
+                Notification.show("The upload dialog has not been implemented yet.", Type.WARNING_MESSAGE);
             }
 
         });

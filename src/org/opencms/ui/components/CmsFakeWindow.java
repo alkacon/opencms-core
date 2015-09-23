@@ -64,6 +64,7 @@ public class CmsFakeWindow extends CustomLayout {
         setId(RandomStringUtils.randomAlphabetic(8));
 
         try {
+            @SuppressWarnings("resource")
             InputStream layoutStream = CmsVaadinUtils.readCustomLayout(getClass(), "CmsFakeWindow.html");
             initTemplateContentsFromInputStream(layoutStream);
         } catch (Exception e) {

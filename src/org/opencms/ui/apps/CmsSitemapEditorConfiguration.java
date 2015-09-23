@@ -90,7 +90,7 @@ public class CmsSitemapEditorConfiguration implements I_CmsWorkplaceAppConfigura
      */
     public String getHelpText(Locale locale) {
 
-        return "The sitemap editor";
+        return Messages.get().getBundle(locale).key(Messages.GUI_SITEMAP_HELP_0);
     }
 
     /**
@@ -114,7 +114,7 @@ public class CmsSitemapEditorConfiguration implements I_CmsWorkplaceAppConfigura
      */
     public String getName(Locale locale) {
 
-        return "Sitemap editor";
+        return Messages.get().getBundle(locale).key(Messages.GUI_SITEMAP_TITLE_0);
     }
 
     /**
