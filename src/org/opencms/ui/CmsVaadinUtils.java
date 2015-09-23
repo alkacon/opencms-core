@@ -54,6 +54,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -196,6 +197,19 @@ public final class CmsVaadinUtils {
     public static String getWorkplaceLink() {
 
         return CmsStringUtil.joinPaths("/", OpenCms.getSystemInfo().getContextPath(), "workplace");
+    }
+
+    /**
+     * Gets external resource from workplace resource folder.<p>
+     *
+     * @param subPath path relative to workplace resource folder
+     *
+     * @return the external resource
+     */
+    public static ExternalResource getWorkplaceResource(String subPath) {
+
+        return new ExternalResource(CmsWorkplace.getResourceUri(subPath));
+
     }
 
     /**

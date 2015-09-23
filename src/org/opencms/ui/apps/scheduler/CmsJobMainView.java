@@ -44,6 +44,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Widget to display the job table and additional buttons to perform actions  on the jobs.<p>
@@ -75,6 +76,9 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
         m_appContext = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_jobTable.setJobEditHandler(this);
+        m_buttonAddJob.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        m_buttonAddJob.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        m_buttonAddJob.setIcon(CmsVaadinUtils.getWorkplaceResource("tools/scheduler/icons/big/scheduler_new.png"));
         m_buttonAddJob.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
