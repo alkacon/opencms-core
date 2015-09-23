@@ -213,7 +213,10 @@ public class CmsJobTable extends Table implements ColumnGenerator {
                         case copy:
                             jobClone.setActive(job.isActive());
                             jobClone.clearId();
-                            m_jobEditHandler.editJob(jobClone, "Create copy of job " + jobClone.getJobName());
+                            String title = CmsVaadinUtils.getMessageText(
+                                org.opencms.ui.Messages.GUI_SCHEDULER_TITLE_COPY_1,
+                                jobClone.getJobName());
+                            m_jobEditHandler.editJob(jobClone, title);
 
                             break;
 

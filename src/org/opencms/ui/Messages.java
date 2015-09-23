@@ -132,6 +132,12 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_SCHEDULER_REMOVE_PARAMETER_0 = "GUI_SCHEDULER_REMOVE_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_TITLE_COPY_1 = "GUI_SCHEDULER_TITLE_COPY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SCHEDULER_TITLE_CREATE_0 = "GUI_SCHEDULER_TITLE_CREATE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
 
     /** Message constant for key in the resource bundle. */

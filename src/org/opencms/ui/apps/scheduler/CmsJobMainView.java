@@ -88,7 +88,7 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
 
                 CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
                 jobInfo.setContextInfo(new CmsContextInfo());
-                editJob(jobInfo, "Create new job");
+                editJob(jobInfo, CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_SCHEDULER_TITLE_CREATE_0));
 
             }
         });
