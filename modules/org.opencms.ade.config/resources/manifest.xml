@@ -57,6 +57,8 @@
 			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/image_xml.png" />
+			<resource uri="/system/workplace/resources/filetypes/image_xml_big.png" />
 			<resource
 				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
 			<resource
@@ -340,7 +342,7 @@
 					autosetnavigation="false" autosettitle="false" info="" />
 			</explorertype>
 			<explorertype name="xmlimage" key="fileicon.xmlimage"
-				icon="image.gif" bigicon="image_big.png" reference="xmlcontent">
+				icon="image_xml.gif" bigicon="image_xml_big.png" reference="xmlcontent">
 				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage"
 					order="490" autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
 			</explorertype>
@@ -1558,6 +1560,54 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/image_xml.png</source>
+			<destination>system/workplace/resources/filetypes/image_xml.png</destination>
+			<type>image</type>
+			<uuidstructure>c9eee56b-61cb-11e5-bd18-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>c9eee56c-61cb-11e5-bd18-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Wed, 23 Sep 2015 08:19:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Sep 2015 08:19:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image_xml]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/image_xml_big.png</source>
+			<destination>system/workplace/resources/filetypes/image_xml_big.png</destination>
+			<type>image</type>
+			<uuidstructure>c9f59c2f-61cb-11e5-bd18-a1aa1f21b3dc</uuidstructure>
+			<uuidresource>c9f59c30-61cb-11e5-bd18-a1aa1f21b3dc</uuidresource>
+			<datelastmodified>Wed, 23 Sep 2015 08:19:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Sep 2015 08:19:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[image_xml_big]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/filetypes/inheritancegroup.png
