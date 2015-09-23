@@ -171,6 +171,28 @@ public class CmsToolbar extends Composite {
     }
 
     /**
+     * Inserts a widget into the left button panel.<p>
+     *
+     * @param widget the widget to add
+     * @param index the before index
+     */
+    public void insertLeft(Widget widget, int index) {
+
+        m_buttonPanelLeft.insert(widget, index);
+    }
+
+    /**
+     * Inserts a widget into the left button panel.<p>
+     *
+     * @param widget the widget to add
+     * @param index the before index
+     */
+    public void insertRight(Widget widget, int index) {
+
+        m_buttonPanelRight.insert(widget, index);
+    }
+
+    /**
      * Sets the toolbar title label.<p>
      *
      * @param title the title

@@ -248,9 +248,15 @@
   	width: 170px;
 }
 
+@media screen and (max-width: 1024px) {
+	div.toolbarBackground .toolbarLogo{
+		display: none;
+	}
+}
+
 .toolbarBackground .toolbarContent{
 	margin: 0 20px;
-  	min-width: 700px;
+  	min-width: 800px;
   	text-align: center;
   	display: block;
 }

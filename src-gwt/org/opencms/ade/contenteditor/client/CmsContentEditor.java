@@ -66,7 +66,6 @@ import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsConfirmDialogHandler;
 import org.opencms.gwt.client.ui.I_CmsModelSelectHandler;
-import org.opencms.gwt.client.ui.input.CmsLabel;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -256,9 +255,6 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** Flag indicating the editor was opened as the stand alone version, not from within any other module. */
     private boolean m_isStandAlone;
-
-    /** The locale select label. */
-    private CmsLabel m_localeLabel;
 
     /** The locale select box. */
     private CmsSelectBox m_localeSelect;
@@ -984,7 +980,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         }
         m_cancelButton = null;
         m_localeSelect = null;
-        m_localeLabel = null;
         m_deleteLocaleButton = null;
         m_copyLocaleButton = null;
         m_openFormButton = null;
@@ -1929,13 +1924,6 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_availableLocales.size() < 2) {
             return;
         }
-        if (m_localeLabel == null) {
-            m_localeLabel = new CmsLabel();
-            m_localeLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
-            m_localeLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().textBig());
-            m_localeLabel.setText(Messages.get().key(Messages.GUI_TOOLBAR_LANGUAGE_0));
-            m_toolbar.addLeft(m_localeLabel);
-        }
         Map<String, String> selectOptions = new HashMap<String, String>();
         for (Entry<String, String> localeEntry : m_availableLocales.entrySet()) {
             if (m_contentLocales.contains(localeEntry.getKey())) {
@@ -1946,7 +1934,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         }
         if (m_localeSelect == null) {
             m_localeSelect = new CmsSelectBox(selectOptions);
-            m_toolbar.addLeft(m_localeSelect);
+            m_toolbar.insertRight(m_localeSelect, 1);
             m_localeSelect.addStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().inlineBlock());
             m_localeSelect.getElement().getStyle().setWidth(100, Unit.PX);
             m_localeSelect.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
@@ -1964,7 +1952,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         if (m_deleteLocaleButton == null) {
             m_deleteLocaleButton = createButton(
                 Messages.get().key(Messages.GUI_TOOLBAR_DELETE_LOCALE_0),
-                "opencms-icon-delete-locale");
+                "opencms-icon-remove-locale");
             m_deleteLocaleButton.addClickHandler(new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -1972,7 +1960,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     confirmDeleteLocale();
                 }
             });
-            m_toolbar.addLeft(m_deleteLocaleButton);
+            m_toolbar.insertRight(m_deleteLocaleButton, 2);
         }
         if (m_contentLocales.size() > 1) {
             m_deleteLocaleButton.enable();
@@ -1990,7 +1978,7 @@ public final class CmsContentEditor extends CmsEditorBase {
                     openCopyLocaleDialog();
                 }
             });
-            m_toolbar.addLeft(m_copyLocaleButton);
+            m_toolbar.insertRight(m_copyLocaleButton, 3);
         }
     }
 
@@ -2079,7 +2067,6 @@ public final class CmsContentEditor extends CmsEditorBase {
             }
         });
         m_undoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_UNDO_DISABLED_0));
-        m_undoButton.getElement().getStyle().setMarginLeft(10, Unit.PX);
         m_undoButton.setVisible(false);
         m_toolbar.addLeft(m_undoButton);
         m_redoButton = createButton(Messages.get().key(Messages.GUI_TOOLBAR_REDO_0), "opencms-icon-redo");
@@ -2093,7 +2080,6 @@ public final class CmsContentEditor extends CmsEditorBase {
             }
         });
         m_redoButton.disable(Messages.get().key(Messages.GUI_TOOLBAR_REDO_DISABLED_0));
-        m_redoButton.getElement().getStyle().setMarginRight(20, Unit.PX);
         m_redoButton.setVisible(false);
         m_toolbar.addLeft(m_redoButton);
 

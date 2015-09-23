@@ -206,6 +206,11 @@
   		.o-toolbar-items-left, .o-toolbar-items-right{
   			width: 250px;
   		}
+  		div.o-toolbar-center {
+  			div.o-toolbar-logo{
+  				display: none;
+  			}
+  		}
   	}
   }
   
@@ -315,6 +320,7 @@
   			display: block;
     		float: left;
     		font-size: 20px;
+    		line-height: 32px;
     		font-weight: bold;
     		width: auto !important;
     		border-radius: $v-border-radius;
@@ -329,7 +335,9 @@
   		position: absolute;
   		left: 0;
   		right:0;
+  		top: 4px;
   		text-align: center;
+  		min-width: 700px;
   		
   		.o-toolbar-logo{
   			display: inline-block;
@@ -338,7 +346,7 @@
   			background: url("img/opencmsLogo.png") no-repeat transparent; 
   		}
   	}
-  	.o-toolbar-items-left, .o-toolbar-items-right, .o-toolbar-center{
+  	.o-toolbar-items-left, .o-toolbar-items-right{
   		margin: 5px 0;
   	}
   
