@@ -66,6 +66,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
             public void initUI(I_CmsAppUIContext context) {
 
                 context.setAppContent(new CmsJobMainView(context));
+                context.showInfoArea(false);
 
             }
 
