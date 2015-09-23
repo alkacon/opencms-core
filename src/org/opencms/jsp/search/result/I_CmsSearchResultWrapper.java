@@ -133,5 +133,5 @@ public interface I_CmsSearchResultWrapper {
     /** Returns the map from a sort option name to the link parameters that should be appended when you want to display that search option.
      * @return The map from a sort option name to the link parameters that should be appended when you want to display that search option.
      */
-    CmsSearchStateParameters getStateParameters();
+    I_CmsSearchStateParameters getStateParameters();
 }
