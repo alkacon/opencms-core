@@ -901,7 +901,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                             CmsObject cms = A_CmsUI.getCmsObject();
                             CmsResource res = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            A_CmsUI.get().getPage().open(link, "_blank");
+                            A_CmsUI.get().getPage().open(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
                         } catch (CmsVfsResourceNotFoundException e) {
                             LOG.info(e.getLocalizedMessage(), e);
                         } catch (CmsException e) {

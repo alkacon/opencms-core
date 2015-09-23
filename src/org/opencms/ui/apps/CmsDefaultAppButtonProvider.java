@@ -62,8 +62,13 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
 
             public void buttonClick(ClickEvent event) {
 
-                CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-                ui.showApp(appConfig);
+                if ((appConfig instanceof I_CmsHasAppLaunchCommand)
+                    && (((I_CmsHasAppLaunchCommand)appConfig).getAppLaunchCommand() != null)) {
+                    ((I_CmsHasAppLaunchCommand)appConfig).getAppLaunchCommand().run();
+                } else {
+                    CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
+                    ui.showApp(appConfig);
+                }
             }
         });
         Resource icon = appConfig.getIcon();

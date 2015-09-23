@@ -65,26 +65,29 @@ import com.vaadin.ui.Window;
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
+    /** The editor window name, used for page and sitemap editor. */
+    public static final String EDITOR_WINDOW_NAME = "opencms_edit_window";
+
     /** Menu item manager. */
     private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
 
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    /** The current view in case it implements view change listener. */
+    private View m_currentView;
+
+    /** Cache for workplace locale. */
+    private CmsExpiringValue<Locale> m_localeCache = new CmsExpiringValue<Locale>(1000);
+
+    /** The navigation state manager. */
+    private NavigationStateManager m_navigationStateManager;
+
     static {
         m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
         m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
         m_workplaceMenuItemProvider.initialize();
     }
-
-    /** Cache for workplace locale. */
-    private CmsExpiringValue<Locale> m_localeCache = new CmsExpiringValue<Locale>(1000);
-
-    /** The current view in case it implements view change listener. */
-    private View m_currentView;
-
-    /** The navigation state manager. */
-    private NavigationStateManager m_navigationStateManager;
 
     /**
      * Gets the current UI instance.<p>

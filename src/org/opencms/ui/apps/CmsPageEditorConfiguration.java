@@ -28,38 +28,30 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.server.Resource;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.UI;
 
 /**
  * The page editor app configuration.<p>
  */
-public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguration {
+public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguration, I_CmsHasAppLaunchCommand {
 
-    public static class DummyApp extends CustomComponent implements I_CmsWorkplaceApp {
-
-        public DummyApp() {
-
-            setCompositionRoot(new Label("Hello world"));
-
-        }
-
-        public void initUI(I_CmsAppUIContext context) {
-
-            context.setAppContent(this);
-        }
-
-        public void onStateChange(String state) {
-
-            // TODO Auto-generated method stub
-
-        }
-    }
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -74,7 +66,21 @@ public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguratio
      */
     public I_CmsWorkplaceApp getAppInstance() {
 
-        return new DummyApp();
+        throw new IllegalStateException("The editor app should be launched through the app launch command only.");
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsHasAppLaunchCommand#getAppLaunchCommand()
+     */
+    public Runnable getAppLaunchCommand() {
+
+        return new Runnable() {
+
+            public void run() {
+
+                openPageEditor();
+            }
+        };
     }
 
     /**
@@ -131,6 +137,30 @@ public class CmsPageEditorConfiguration implements I_CmsWorkplaceAppConfiguratio
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
         return new CmsAppVisibilityStatus(true, true, null);
+    }
+
+    /**
+     * Opens the page editor for the current site.<p>
+     */
+    void openPageEditor() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
+            && !OpenCms.getSiteManager().getSharedFolder().equals(siteRoot)) {
+            try {
+                CmsResource res = cms.readDefaultFile("/");
+                if (res != null) {
+                    String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                    UI.getCurrent().getPage().open(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                    return;
+                }
+            } catch (CmsException e) {
+                LOG.debug("Unable to open page editor for site " + siteRoot + ".", e);
+            }
+
+        }
+        Notification.show("The page editor is not available for the current site.", Type.WARNING_MESSAGE);
     }
 
 }
