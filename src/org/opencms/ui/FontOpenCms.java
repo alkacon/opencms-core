@@ -37,6 +37,48 @@ public enum FontOpenCms implements FontIcon {
     /** The apps icon. */
     APPS(0xe617),
 
+    /** The circle icon. */
+    CIRCLE(0xe62a),
+
+    /** The circle cancel icon. */
+    CIRCLE_CANCEL(0x622),
+
+    /** The circle check icon. */
+    CIRCLE_CHECK(0xe61e),
+
+    /** The circle invert icon. */
+    CIRCLE_INV(0xe62b),
+
+    /** The circle invert cancel icon. */
+    CIRCLE_INV_CANCEL(0xe623),
+
+    /** The circle invert check icon. */
+    CIRCLE_INV_CHECK(0xe61f),
+
+    /** The circle invert minus icon. */
+    CIRCLE_INV_MINUS(0xe629),
+
+    /** The circle invert pause icon. */
+    CIRCLE_INV_PAUSE(0x0621),
+
+    /** The circle invert play icon. */
+    CIRCLE_INV_PLAY(0xe625),
+
+    /** The circle invert plus icon. */
+    CIRCLE_INV_PLUS(0xe627),
+
+    /** The circle minus icon. */
+    CIRCLE_MINUS(0xe628),
+
+    /** The circle pause icon. */
+    CIRCLE_PAUSE(0xe620),
+
+    /** The circle play icon. */
+    CIRCLE_PLAY(0xe624),
+
+    /** The circle plus icon. */
+    CIRCLE_PLUS(0xe626),
+
     /** The clipboard icon. */
     CLIPBOARD(0xe60f),
 
