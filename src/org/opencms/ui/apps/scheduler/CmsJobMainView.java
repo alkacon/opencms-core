@@ -38,9 +38,11 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -52,7 +54,7 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandler {
 
-    /** Log instance for this  class. */
+    /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJobMainView.class);
 
     /** The serial version id. */
@@ -79,7 +81,7 @@ public class CmsJobMainView extends VerticalLayout implements I_CmsJobEditHandle
         m_jobTable.setJobEditHandler(this);
         m_buttonAddJob.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         m_buttonAddJob.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        m_buttonAddJob.setIcon(CmsVaadinUtils.getWorkplaceResource("tools/scheduler/icons/big/scheduler_new.png"));
+        m_buttonAddJob.setIcon(new ExternalResource(OpenCmsTheme.getImageLink("scheduler/scheduler_big_add.png")));
         m_buttonAddJob.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;

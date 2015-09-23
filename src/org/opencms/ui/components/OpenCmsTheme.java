@@ -27,6 +27,9 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+
 /**
  * Contains the CSS style name constants used within the theme.<p>
  */
@@ -40,6 +43,9 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String APP_INFO = "o-app-info";
+
+    /** CSS style name. */
+    public static final String BUTTON_ICON_SMALL = "o-button-icon-small";
 
     /** CSS style name. */
     public static final String BUTTON_TABLE_ICON = "o-button-table-icon";
@@ -166,5 +172,20 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";
+
+    /**
+     * Gets the link to an image below the img-extra folder.<p>
+     *
+     * @param imagePath the image path below img-extra
+     *
+     * @return the complete image link
+     */
+    public static String getImageLink(String imagePath) {
+
+        return CmsStringUtil.joinPaths(
+            OpenCms.getSystemInfo().getContextPath(),
+            "VAADIN/themes/opencms/img-extra",
+            imagePath);
+    }
 
 }

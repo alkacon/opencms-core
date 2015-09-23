@@ -36,17 +36,18 @@ import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.list.A_CmsListDialog;
 
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -176,24 +177,28 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         final CmsScheduledJobInfo job = jobBean.getJob();
         final CmsScheduledJobInfo jobClone = (CmsScheduledJobInfo)job.clone();
 
-        String resource = null;
+        Resource resource = null;
+        String resPath = null;
         switch (action) {
             case activation:
-                resource = job.isActive() ? A_CmsListDialog.ICON_ACTIVE : A_CmsListDialog.ICON_INACTIVE;
+                resource = job.isActive() ? FontOpenCms.CIRCLE_CHECK : FontOpenCms.CIRCLE_PAUSE;
                 break;
             case copy:
-                resource = "tools/scheduler/buttons/copy.png";
+                resource = FontOpenCms.CIRCLE_PLUS;
                 break;
             case delete:
-                resource = A_CmsListDialog.ICON_DELETE;
+                resource = FontOpenCms.CIRCLE_MINUS;
                 break;
             case edit:
-                resource = "tools/scheduler/buttons/edit.png";
+                resPath = OpenCmsTheme.getImageLink("scheduler/scheduler.png");
                 break;
             case run:
-                resource = "list/rightarrow.png";
+                resource = FontOpenCms.CIRCLE_PLAY;
                 break;
             default:
+        }
+        if ((resource == null) && (resPath != null)) {
+            resource = new ExternalResource(resPath);
         }
 
         Button button = createIconButton(resource, CmsVaadinUtils.getMessageText(action.getMessageKey()));
@@ -314,17 +319,19 @@ public class CmsJobTable extends Table implements ColumnGenerator {
     /**
      * Creates an icon button.<p>
      *
-     * @param subPath the relative path from the workplace resources folder
+     * @param icon the resource for the icon
      * @param caption the caption
      *
      * @return the created button
      */
-    Button createIconButton(String subPath, String caption) {
+    Button createIconButton(Resource icon, String caption) {
 
         Button button = new Button();
-        button.setStyleName(ValoTheme.BUTTON_LINK);
+
         button.addStyleName(OpenCmsTheme.BUTTON_TABLE_ICON);
-        button.setIcon(getIconResource(subPath));
+        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        button.addStyleName(OpenCmsTheme.BUTTON_ICON_SMALL);
+        button.setIcon(icon);
         button.setDescription(caption);
         return button;
     }

@@ -36,10 +36,11 @@ import org.opencms.ui.apps.I_CmsAppButtonProvider;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.apps.I_CmsWorkplaceApp;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
-import com.vaadin.server.FontAwesome;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
@@ -99,7 +100,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return FontAwesome.LIST;
+        return new ExternalResource(OpenCmsTheme.getImageLink("scheduler/scheduler_big.png"));
     }
 
     /**
