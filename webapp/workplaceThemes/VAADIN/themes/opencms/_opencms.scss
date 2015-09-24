@@ -463,8 +463,8 @@
 	  		top: 1px;
 	  		position: absolute;
 	  		z-index: 0;
-	  		background: -moz-radial-gradient(#fff 30%, #bbb 100%);
-  			background: radial-gradient(#fff 30%, #bbb 100%);
+	  		background-image: -moz-radial-gradient(#fff 30%, #bbb 100%);
+	  		@include  radial-gradient(#fff 30%, #bbb 100%);
   		}
   	
 	  	span.v-button-caption{
