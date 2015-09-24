@@ -39,13 +39,16 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsDbPool;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.db.jpa.CmsSqlManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.loader.CmsImageLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsShell;
@@ -2324,6 +2327,31 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public void setServerName(String name) {
 
         setExtProperty("server.name", name);
+    }
+
+    /**
+     * Sets the start view for the given user.<p>
+     *
+     * @param userName the name of the user
+     * @param view the start view path
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void setStartView(String userName, String view) throws CmsException {
+
+        try {
+
+            CmsUser user = m_cms.readUser(userName);
+            user.getAdditionalInfo().put(
+                CmsUserSettings.PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                    + CmsWorkplaceConfiguration.N_WORKPLACEVIEW,
+                view);
+            m_cms.writeUser(user);
+        } catch (CmsException e) {
+            e.printStackTrace(System.err);
+            throw e;
+        }
     }
 
     /**
