@@ -47,11 +47,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The workplace app manager.<p>
@@ -121,6 +123,9 @@ public class CmsWorkplaceAppManager {
 
     /** The logger for this class. */
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
+
+    /** Legacy apps explicitly hidden from new workplace. */
+    private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
 
     /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
@@ -295,10 +300,14 @@ public class CmsWorkplaceAppManager {
 
             I_CmsToolHandler handler = tool.getHandler();
             String path = handler.getPath();
+
             // only collecting first path level tools
             if ((path.length() > 1) && (path.indexOf(CmsToolManager.TOOLPATH_SEPARATOR, 1) < 0)) {
-                configs.add(new CmsLegacyAppConfiguration(handler));
+                if (!LEGACY_BLACKLIST.contains(path)) {
+                    configs.add(new CmsLegacyAppConfiguration(handler));
+                }
             }
+
         }
         return configs;
     }
