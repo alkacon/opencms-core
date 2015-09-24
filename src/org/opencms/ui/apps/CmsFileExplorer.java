@@ -242,7 +242,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
          */
         public void buildContextMenu(List<CmsResource> resources, ContextMenu menu) {
 
-            if (resources.size() == 1) {
+            if ((resources.size() == 1) && !resources.get(0).getState().isDeleted()) {
                 Locale locale = UI.getCurrent().getLocale();
                 CmsUUID editId = resources.iterator().next().getStructureId();
                 ContextMenuItem editTitle = menu.addItem(
