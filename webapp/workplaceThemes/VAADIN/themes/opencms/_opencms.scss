@@ -207,7 +207,7 @@
   			width: 250px;
   		}
   		div.o-toolbar-center {
-  			div.o-toolbar-logo{
+  			span.o-toolbar-logo{
   				display: none;
   			}
   		}
@@ -429,7 +429,7 @@
   }
   
   .v-popupview-popup-o-navigator-dropdown .popupContent{
-  	max-width: 400px;
+  	max-width: 370px;
   }
   
   /* Resource info box */ 
@@ -444,50 +444,72 @@
   /* App buttons */
   .v-button.v-button-o-app-button{
    	font-size: $v-font-size--small;
+   	
+   	> span.v-button-wrap {
+   	
+   		text-align: center;
+   		line-height: 48px;
+   		width: 140px;
+   		height: 70px;
+   		position: relative;
+   		
+   		&:before {
+	  		content: "";
+	  		display: block;
+	  		height: 48px;
+  			width: 48px;
+  			border-radius: 4px;
+	  		left: 46px;
+	  		top: 1px;
+	  		position: absolute;
+	  		z-index: 0;
+	  		background: -moz-radial-gradient(#fff 30%, #bbb 100%);
+  			background: radial-gradient(#fff 30%, #bbb 100%);
+  		}
   	
-  	span.v-button-caption{
-  		width: 140px;
-  		text-overflow: ellipsis;
-  		overflow: hidden;
-  		display: inline-block;
-  		margin: 0;
-  	}
-  	
-  	.v-icon{
-  		font-size: $app-icon-size;
-  		border-radius: 4px;
-  		width: 50px;
-  	}
-  	
-  	img.v-icon{
-  		width:	$app-icon-size;
-  		height: $app-icon-size;
-  	} 
-  	
-  	&.o-app-button-padded img.v-icon {
-  		padding: 9px; 
-  	}
+	  	span.v-button-caption{
+	  		text-overflow: ellipsis;
+	  		overflow: hidden;
+	  		display: block;
+	  		margin: 0;
+	  		line-height: 20px;
+	  		position:absolute;
+	  		left: 0;
+	  		right: 0;
+	  		height: 20px;
+	  		bottom: 0;
+	  	}
+	  	
+	  	.v-icon{
+	  		display: inline;
+	  		font-size: $app-icon-size;
+	  		line-height: 48px;
+	  		vertical-align: middle;
+	  		color: $white;
+	  		position: relative;
+	  	}
+	}
+	
+	  &.o-color-cyan > span.v-button-wrap:before{
+	  	background: $cyan;
+	  }
+	  &.o-color-red > span.v-button-wrap:before{
+	  	background: $red;
+	  }
+	  &.o-color-blue  > span.v-button-wrap:before{
+	  	background: $blue;
+	  }
+	  &.o-color-orange  > span.v-button-wrap:before{
+	  	background: $orange-dark;
+	  }
+	  &.o-color-gray  > span.v-button-wrap:before{
+	  	background: $gray-dark;
+	  }
+	  &.o-color-transparent > span.v-button-wrap:before{
+	  	display: none;
+	  }
   }
-  .v-button.v-button-o-app-button.o-color-cyan .v-icon{
-  	background: $cyan;
-  	color: $white;
-  }
-  .v-button.v-button-o-app-button.o-color-red .v-icon{
-  	background: $red;
-  	color: $white;
-  }
-  .v-button.v-button-o-app-button.o-color-blue .v-icon{
-  	background: $blue;
-  	color: $white;
-  }
-  .v-button.v-button-o-app-button.o-color-orange .v-icon{
-  	background: $orange-dark;
-  	color: $white;
-  }
-  .v-button.v-button-o-app-button.o-color-gray .v-icon{
-  	background: $gray-dark;
-  	color: $white;
-  }
+
   
   /* explorer bread crumb path input styles */
   .o-crumb-wrapper{

@@ -83,7 +83,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getButtonStyle() {
 
-        return I_CmsAppButtonProvider.BUTTON_STYLE_GRAY + " " + OpenCmsTheme.APP_BUTTON_PADDED;
+        return I_CmsAppButtonProvider.BUTTON_STYLE_TRANSPARENT;
     }
 
     /**
@@ -100,7 +100,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("scheduler/scheduler_big.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/scheduler.png"));
     }
 
     /**
@@ -126,7 +126,7 @@ public class CmsScheduledJobsAppConfig extends A_CmsWorkplaceAppConfiguration {
     @Override
     public int getOrder() {
 
-        return 99;
+        return 8;
     }
 
     /**
