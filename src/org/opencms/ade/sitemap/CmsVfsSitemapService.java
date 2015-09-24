@@ -125,9 +125,9 @@ import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.containerpage.CmsContainerBean;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
 import org.opencms.xml.containerpage.CmsContainerPageBean;
+import org.opencms.xml.containerpage.CmsDynamicFunctionBean;
 import org.opencms.xml.containerpage.CmsXmlContainerPage;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
-import org.opencms.xml.containerpage.CmsXmlDynamicFunctionHandler;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -1635,7 +1635,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                         String functionDetailContainer = getFunctionDetailContainerName(parentFolder);
                         CmsUUID functionStructureId = new CmsUUID(change.getCreateParameter());
                         CmsResource functionFormatter = cms.readResource(
-                            CmsXmlDynamicFunctionHandler.FORMATTER_PATH,
+                            CmsDynamicFunctionBean.FORMATTER_PATH,
                             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                         addFunctionDetailElement(
                             cms,

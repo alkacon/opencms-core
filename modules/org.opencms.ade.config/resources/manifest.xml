@@ -822,6 +822,30 @@
 			<accesscontrol />
 		</file>
 		<file>
+			<source>system/modules/org.opencms.ade.config/.config</source>
+			<destination>system/modules/org.opencms.ade.config/.config</destination>
+			<type>module_config</type>
+			<uuidstructure>2baf86ab-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
+			<uuidresource>2baf86ac-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
+			<datelastmodified>Tue, 28 Jun 2011 15:48:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.ade.config/classes
 			</destination>
 			<type>folder</type>
@@ -998,6 +1022,83 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.ade.config/formatters</destination>
+			<type>folder</type>
+			<uuidstructure>2bb6d9af-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
+			<datelastmodified>Thu, 24 Sep 2015 13:14:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/formatters/function.jsp</source>
+			<destination>system/modules/org.opencms.ade.config/formatters/function.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>2bb86051-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
+			<uuidresource>2bb86052-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 07:20:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[container-element;locale]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/formatters/group-container.jsp</source>
+			<destination>system/modules/org.opencms.ade.config/formatters/group-container.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>2bbb94a4-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
+			<uuidresource>2bbb94a5-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 07:20:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Formatter for group-containers]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/formatters/xmlimage.jsp</source>
+			<destination>system/modules/org.opencms.ade.config/formatters/xmlimage.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>2bbf8c48-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
+			<uuidresource>2bbf8c49-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
+			<datelastmodified>Wed, 04 May 2011 07:20:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[container-element;locale]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>

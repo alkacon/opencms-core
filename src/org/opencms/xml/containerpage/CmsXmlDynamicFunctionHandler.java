@@ -46,9 +46,6 @@ import java.util.Map;
  */
 public class CmsXmlDynamicFunctionHandler extends CmsDefaultXmlContentHandler {
 
-    /** The path of the formatter which calls the JSP. */
-    public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.containerpage/formatters/function.jsp";
-
     /** The node name for the formatter settings. */
     public static final String N_CONTAINER_SETTINGS = "ContainerSettings";
 

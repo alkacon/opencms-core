@@ -40,7 +40,7 @@
     			<validationrules/>
     			<searchsettings containerPageOnly="true"/>
     			<formatters>
-    				<formatter uri="/system/modules/org.opencms.ade.containerpage/formatters/xmlimage.jsp" type="image" preview="true" />
+    				<formatter uri="/system/modules/org.opencms.ade.config/formatters/xmlimage.jsp" type="image" preview="true" />
     			</formatters>
     			<synchronizations> 
                 	<synchronization element="Image" />

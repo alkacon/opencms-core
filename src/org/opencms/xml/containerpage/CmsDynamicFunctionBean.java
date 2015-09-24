@@ -175,7 +175,7 @@ public class CmsDynamicFunctionBean {
     }
 
     /** The path of the formatter which calls the JSP. */
-    public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.containerpage/formatters/function.jsp";
+    public static final String FORMATTER_PATH = "/system/modules/org.opencms.ade.config/formatters/function.jsp";
 
     /** The function formatter resource. */
     private CmsResource m_functionFormatter;
