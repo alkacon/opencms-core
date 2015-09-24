@@ -41,6 +41,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
@@ -213,6 +214,9 @@ public class CmsLoginController {
     public static void logout() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
+        if (UI.getCurrent() instanceof CmsAppWorkplaceUi) {
+            ((CmsAppWorkplaceUi)UI.getCurrent()).onWindowClose();
+        }
         UI.getCurrent().getSession().close();
         String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
@@ -423,7 +427,10 @@ public class CmsLoginController {
      *
      * @param currentCms the current CMS context
      * @param settings the workplace settings
+     *
      * @return the login target
+     *
+     * @throws CmsException in case the user has insufficient permissions to access the login target
      */
     protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) throws CmsException {
 
