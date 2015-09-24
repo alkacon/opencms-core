@@ -120,18 +120,6 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
 
             }
 
-            public String getClientAction() {
-
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public String getGlobalId() {
-
-                // TODO Auto-generated method stub
-                return null;
-            }
-
             public String getId() {
 
                 return id;
@@ -165,12 +153,6 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
             public boolean isLeafItem() {
 
                 return false;
-            }
-
-            public void setGlobalId(String globalId) {
-
-                // TODO Auto-generated method stub
-
             }
 
         };

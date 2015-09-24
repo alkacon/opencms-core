@@ -28,18 +28,15 @@
 package org.opencms.ui.contextmenu;
 
 import org.opencms.main.CmsLog;
-import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.MutableClassToInstanceMap;
 
 /**
@@ -58,9 +55,6 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
     /** Item cache. */
     private List<I_CmsContextMenuItem> m_itemCache = Lists.newArrayList();
 
-    /** Cache of items by global id. */
-    private Map<String, I_CmsContextMenuItem> m_itemsByGlobalId = Maps.newHashMap();
-
     /**
      * Creates a new instance.<p>
      */
@@ -70,7 +64,6 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
         for (I_CmsContextMenuItemProvider provider : providerLoader) {
             addProvider(provider);
         }
-
     }
 
     /**
@@ -101,18 +94,6 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
     }
 
     /**
-     * Gets the context menu item by its global id.<p>
-     *
-     * @param globalId the global id
-     *
-     * @return the menu item with the global id, or null if none was found
-     */
-    public I_CmsContextMenuItem getItemByGlobalId(String globalId) {
-
-        return m_itemsByGlobalId.get(globalId);
-    }
-
-    /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider#getMenuItems()
      */
     public List<I_CmsContextMenuItem> getMenuItems() {
@@ -131,22 +112,7 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
         for (I_CmsContextMenuItemProvider provider : m_providerMap.values()) {
             result.addAll(provider.getMenuItems());
         }
-        for (I_CmsContextMenuItem item : result) {
-            String globalId = item.getGlobalId();
-            if (globalId == null) {
-                globalId = "" + new CmsUUID();
-                item.setGlobalId(globalId);
-            }
-            // Note that we don't clear m_itemsByGlobalId. This is because
-            // we use global ids to uniquely identify context menu items on the client,
-            // and a call to initialize might happen while there is still an active client session
-            // using 'old' context menu items (obtained before the call to initialize()). Since we can't really
-            // guarantee that the 'same' menu item always has the same global id, we just leave the old items
-            // in the map instead.
-            m_itemsByGlobalId.put(item.getGlobalId(), item);
-        }
-        m_itemCache.clear();
-        m_itemCache.addAll(result);
+        m_itemCache = result;
     }
 
 }

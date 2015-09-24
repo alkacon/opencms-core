@@ -48,24 +48,6 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
     void executeAction(I_CmsDialogContext context);
 
     /**
-     * Gets the client action string.<p>
-     *
-     * This is used for context menu actions which are implemented as purely client-side (non-Vaadin) dialogs.
-     *
-     * @return the client action string
-     */
-    String getClientAction();
-
-    /**
-     * Gets the global id.<p>
-     *
-     * The global id should uniquely identify a context menu item.<p<
-     *
-     * @return the global id
-     */
-    String getGlobalId();
-
-    /**
      * Gets the id.<p>
      *
      * The id does not need to be unique among all context menu items which are in use in the system, but
@@ -129,12 +111,5 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
      * @return true if this is a leaf item
      */
     boolean isLeafItem();
-
-    /**
-     * Sets the global id.<p>
-     *
-     * @param globalId the global id
-     */
-    void setGlobalId(String globalId);
 
 }
