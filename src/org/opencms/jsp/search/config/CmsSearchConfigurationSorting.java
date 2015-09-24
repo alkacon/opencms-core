@@ -36,17 +36,30 @@ public class CmsSearchConfigurationSorting implements I_CmsSearchConfigurationSo
     private final String m_sortParam;
     /** The available sort options. */
     private final Collection<I_CmsSearchConfigurationSortOption> m_options;
+    /** The default sort option. */
+    private final I_CmsSearchConfigurationSortOption m_defaultOption;
 
     /** Constructor setting all options.
      * @param sortParam The request parameter used to send the currently chosen search option.
      * @param options The available sort options.
+     * @param defaultOption The default sort option.
      */
     public CmsSearchConfigurationSorting(
         final String sortParam,
-        final Collection<I_CmsSearchConfigurationSortOption> options) {
+        final Collection<I_CmsSearchConfigurationSortOption> options,
+        final I_CmsSearchConfigurationSortOption defaultOption) {
 
         m_sortParam = sortParam;
         m_options = options;
+        m_defaultOption = defaultOption;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.config.I_CmsSearchConfigurationSorting#getDefaultSortOption()
+     */
+    public I_CmsSearchConfigurationSortOption getDefaultSortOption() {
+
+        return m_defaultOption;
     }
 
     /**

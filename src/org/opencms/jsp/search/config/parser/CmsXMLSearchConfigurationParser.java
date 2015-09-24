@@ -352,7 +352,11 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     @Override
     public I_CmsSearchConfigurationSorting parseSorting() {
 
-        return new CmsSearchConfigurationSorting(getSortParam(), getSortOptions());
+        List<I_CmsSearchConfigurationSortOption> options = getSortOptions();
+        I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
+        ? options.get(0)
+        : null;
+        return new CmsSearchConfigurationSorting(getSortParam(), options, defaultOption);
     }
 
     /** Helper to read a mandatory String value list.

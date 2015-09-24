@@ -54,6 +54,7 @@ import org.opencms.main.CmsLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -355,7 +356,11 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     @Override
     public I_CmsSearchConfigurationSorting parseSorting() {
 
-        return new CmsSearchConfigurationSorting(getSortParam(), getSortOptions());
+        List<I_CmsSearchConfigurationSortOption> options = getSortOptions();
+        I_CmsSearchConfigurationSortOption defaultOption = (options != null) && !options.isEmpty()
+        ? options.get(0)
+        : null;
+        return new CmsSearchConfigurationSorting(getSortParam(), options, defaultOption);
     }
 
     /** Initialization that parses the String to a JSON object.
@@ -666,7 +671,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
      */
     private List<I_CmsSearchConfigurationSortOption> getSortOptions() {
 
-        final List<I_CmsSearchConfigurationSortOption> options = new ArrayList<I_CmsSearchConfigurationSortOption>();
+        final List<I_CmsSearchConfigurationSortOption> options = new LinkedList<I_CmsSearchConfigurationSortOption>();
         try {
             final JSONArray sortOptions = m_configObject.getJSONArray(JSON_KEY_SORTOPTIONS);
             for (int i = 0; i < sortOptions.length(); i++) {

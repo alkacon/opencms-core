@@ -50,6 +50,7 @@ public class CmsSearchControllerSorting implements I_CmsSearchControllerSorting 
 
         m_config = config;
         m_state = new CmsSearchStateSorting();
+        m_state.setSelectedOption(m_config.getDefaultSortOption());
     }
 
     /**
@@ -58,7 +59,7 @@ public class CmsSearchControllerSorting implements I_CmsSearchControllerSorting 
     @Override
     public void addParametersForCurrentState(final Map<String, String[]> parameters) {
 
-        if (null != m_state.getSelected()) {
+        if ((null != m_state.getSelected()) && (m_config.getDefaultSortOption() != m_state.getCheckSelected())) {
             parameters.put(m_config.getSortParam(), new String[] {m_state.getSelected().getParamValue()});
         }
     }

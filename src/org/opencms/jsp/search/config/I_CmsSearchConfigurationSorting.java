@@ -32,6 +32,11 @@ import java.util.Collection;
 /** The interface a sort configuration must implement. */
 public interface I_CmsSearchConfigurationSorting {
 
+    /** Returns the sort configuration that is used as default.
+     * @return The sort configuration that is used as default.
+     */
+    I_CmsSearchConfigurationSortOption getDefaultSortOption();
+
     /** Returns the configurations of all available sort options.
      * @return The configurations of all available sort options.
      */
