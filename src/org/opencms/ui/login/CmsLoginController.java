@@ -447,7 +447,8 @@ public class CmsLoginController {
                 && settings.getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2)) {
                 workplace2 = true;
                 checkRole = true;
-            } else if (m_params.getRequestedResource() != null) {
+            } else if ((m_params.getRequestedResource() != null)
+                && !CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
                 target = m_params.getRequestedResource();
             } else if (directEditPath != null) {
                 target = directEditPath;
