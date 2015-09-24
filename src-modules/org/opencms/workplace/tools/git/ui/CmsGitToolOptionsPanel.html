@@ -6,7 +6,7 @@
 </head>
 <body>
 	<v-vertical-layout margin>
-		<v-vertical-layout :center  spacing style-name="o-workplace-maxwidth">
+		<v-vertical-layout :center spacing style-name="o-workplace-maxwidth">
 			<v-panel caption="Module selection">
 				<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
 					<v-horizontal-layout spacing>
@@ -17,8 +17,8 @@
 			</v-panel>
 			<v-panel caption="Settings">
 				<v-form-layout style-name="o-formlayout-workplace-main" margin spacing>
-					<v-text-field _id="m_userField" width="100%" caption="Git user" />
-					<v-text-field _id="m_emailField" width="100%" caption="Git email" />
+					<v-text-field _id="m_userField" width="100%" caption="Git user" input-prompt="Not adjusted if empty" />
+					<v-text-field _id="m_emailField" width="100%" caption="Git email"  input-prompt="Not adjusted if empty"/>
 					<v-text-area _id="m_commitMessage" width="100%" caption="Commit message" />
 					<v-button _id="m_toggleOptions" caption="Toggle options" />
 					<v-vertical-layout spacing>
