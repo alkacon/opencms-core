@@ -519,10 +519,13 @@ public class CmsLogin extends CmsJspLoginBean {
         }
 
         CmsObject cms = getCmsObject();
-        if (shouldUseNewLogin()
-            && (getRequest().getParameter("logout") == null)
-            && cms.getRequestContext().getCurrentUser().isGuestUser()) {
-            return CmsLoginUI.displayVaadinLoginDialog(cms, getRequest());
+        if (shouldUseNewLogin() && (cms.getRequestContext().getCurrentUser().isGuestUser())) {
+            if (getRequest().getParameter(PARAM_ACTION_LOGOUT) != null) {
+                getResponse().sendRedirect(OpenCms.getLinkManager().substituteLink(cms, "/system/login"));
+                return "";
+            } else {
+                return CmsLoginUI.displayVaadinLoginDialog(cms, getRequest());
+            }
         }
 
         m_message = null;
