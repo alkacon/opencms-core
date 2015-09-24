@@ -3,29 +3,29 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.0.0</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Wed, 29 Jun 2011 08:58:42 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.ade.config</name>
-		<nicename><![CDATA[OpenCms 9 ADE Configuration]]></nicename>
+		<nicename><![CDATA[OpenCms ADE Configuration]]></nicename>
 		<group>OpenCms ADE</group>
 		<class />
 		<description><![CDATA[Configuration for OpenCms websites.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-		<version>9.5.2</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
 		<datecreated />
 		<userinstalled />
 		<dateinstalled />
 		<dependencies>
-			<dependency name="org.opencms.gwt" version="9.0.0" />
-			<dependency name="org.opencms.workplace" version="9.0.0" />
+			<dependency name="org.opencms.gwt" version="10.0.0" />
+			<dependency name="org.opencms.workplace" version="10.0.0" />
 			<dependency name="org.opencms.workplace.categories"
-				version="7.0.0" />
+				version="10.0.0" />
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"

@@ -3,20 +3,20 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.4.x</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Fri, 02 May 2014 08:42:08 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.locale.de</name>
-		<nicename><![CDATA[OpenCms 9 German localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 10 German localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
 <p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.5.1</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

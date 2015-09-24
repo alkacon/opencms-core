@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.0.0</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Mon, 25 Jun 2007 14:18:23 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -16,15 +16,15 @@
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
 <p>Install this module if you want to modify file properties or content elements.</p>
 <p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.0.1</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.administration" version="9.0.0"/>
-			<dependency name="org.opencms.workplace.tools.database" version="9.0.0"/>
+			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
+			<dependency name="org.opencms.workplace.tools.database" version="10.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.content/lib/" destination="WEB-INF/lib/"/>

@@ -3,26 +3,26 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>10.0.0</opencms_version>
     <createdate>Thu, 11 Mar 2010 08:48:38 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
   </info>
   <module>
     <name>org.opencms.ade.containerpage</name>
-    <nicename><![CDATA[OpenCms 9 ADE Containerpade Editor]]></nicename>
+    <nicename><![CDATA[OpenCms ADE Containerpade Editor]]></nicename>
     <group>OpenCms ADE</group>
     <class/>
     <description><![CDATA[The containerpage editor.<br>
 		<i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.2</version>
+    <version>10.0.0</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[info@alkacon.com]]></authoremail>
     <datecreated/>
     <userinstalled/>
     <dateinstalled/>
     <dependencies>
-      <dependency name="org.opencms.ade.config" version="9.0.0"/>
+      <dependency name="org.opencms.ade.config" version="10.0.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.containerpage/resources/" destination="resources/ade/"/>

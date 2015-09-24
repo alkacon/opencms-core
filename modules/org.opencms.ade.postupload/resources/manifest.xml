@@ -3,26 +3,26 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>10.0.0</opencms_version>
     <createdate>Mon, 09 Jul 2012 08:33:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.ade.postupload</name>
-		<nicename><![CDATA[OpenCms 9 post-upload dialog]]></nicename>
+		<nicename><![CDATA[OpenCms post-upload dialog]]></nicename>
 		<group>OpenCms ADE</group>
 		<class/>
 		<description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.2</version>
+    <version>10.0.0</version>
     <authorname/>
     <authoremail/>
     <datecreated/>
     <userinstalled/>
     <dateinstalled/>
     <dependencies>
-      <dependency name="org.opencms.ade.config" version="9.0.0"/>
+      <dependency name="org.opencms.ade.config" version="10.0.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.postupload/resources/" destination="resources/ade/"/>

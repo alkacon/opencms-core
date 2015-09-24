@@ -3,18 +3,18 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.0.0</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Mon, 30 May 2011 08:07:38 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.jquery</name>
-		<nicename><![CDATA[OpenCms 9 jQuery library]]></nicename>
+		<nicename><![CDATA[OpenCms jQuery library]]></nicename>
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[This modules includes the jQuery javascript libraries as well as several plugins used by OpenCms]]></description>
-		<version>9.5.0</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

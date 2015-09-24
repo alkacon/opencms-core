@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.4.4</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Thu, 03 Apr 2014 09:36:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -15,7 +15,7 @@
 		<class>org.opencms.ugc.CmsUgcModuleAction</class>
 		<description><![CDATA[<p>User generated content API</p>
 								<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.5.2</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail />
 		<datecreated />

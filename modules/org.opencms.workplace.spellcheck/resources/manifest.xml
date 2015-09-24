@@ -3,19 +3,19 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.4.0</opencms_version>
+		<opencms_version>10.0.0</opencms_version>
 		<createdate>Thu, 13 Mar 2014 15:38:24 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.spellcheck</name>
-		<nicename><![CDATA[OpenCms 9 Spellcheck Dictionaries]]></nicename>
+		<nicename><![CDATA[OpenCms Spellcheck Dictionaries]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class>org.opencms.search.solr.spellchecking.CmsSpellcheckingModuleAction</class>
 		<description><![CDATA[<p>This module contains the OpenCms spellcheck dictionaries.</p>
 <p><i>&copy; 2013 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>9.5.0</version>
+		<version>10.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

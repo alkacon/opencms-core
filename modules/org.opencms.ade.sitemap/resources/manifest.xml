@@ -3,27 +3,25 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>10.0.0</opencms_version>
     <createdate>Mon, 15 Mar 2010 15:26:37 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
   </info>
   <module>
     <name>org.opencms.ade.sitemap</name>
-    <nicename><![CDATA[OpenCms 9 Sitemap]]></nicename>
+    <nicename><![CDATA[OpenCms Sitemap]]></nicename>
     <group>OpenCms ADE</group>
     <class/>
-    <description><![CDATA[<p>ADE Sitemap Editor.</p>
-
-<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-    <version>9.5.2</version>
+    <description><![CDATA[<p>ADE Sitemap Editor.</p><p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+    <version>10.0.0</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[info@alkacon.com]]></authoremail>
     <datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
     <userinstalled/>
     <dateinstalled/>
     <dependencies>
-      <dependency name="org.opencms.ade.config" version="9.0.0"/>
+      <dependency name="org.opencms.ade.config" version="10.0.0"/>
     </dependencies>
     <exportpoints>
       <exportpoint uri="/system/modules/org.opencms.ade.sitemap/resources/" destination="resources/ade/"/>
