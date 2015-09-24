@@ -85,8 +85,7 @@ public class CmsContextMenuTreeBuilder {
      */
     public CmsTreeNode<I_CmsContextMenuItem> buildAll(List<I_CmsContextMenuItem> availableItems) {
 
-        List<I_CmsContextMenuItem> visibleItems = filterVisible(availableItems, m_cms, m_resources);
-        CmsTreeNode<I_CmsContextMenuItem> result = buildTree(visibleItems);
+        CmsTreeNode<I_CmsContextMenuItem> result = buildTree(availableItems);
         removeEmptySubtrees(result);
         return result;
 
@@ -129,6 +128,7 @@ public class CmsContextMenuTreeBuilder {
         // Now sort by order. Since all children of a node should be processed in one iteration of the following loop,
         // this order also applies to the child order of each tree node built in the next step
         List<I_CmsContextMenuItem> uniqueItems = Lists.newArrayList(itemsById.values());
+        uniqueItems = filterVisible(uniqueItems, m_cms, m_resources);
         Collections.sort(uniqueItems, new Comparator<I_CmsContextMenuItem>() {
 
             public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
