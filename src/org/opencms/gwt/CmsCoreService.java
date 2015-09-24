@@ -74,7 +74,9 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsUserIconHelper;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -812,7 +814,19 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             String resourceRootFolder = structureId != null
             ? CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath())
             : getCmsObject().getRequestContext().getSiteRoot();
-            result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
+            String siteRoot = site != null
+            ? site.getSiteRoot()
+            : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
+            ? OpenCms.getSiteManager().getSharedFolder()
+            : "";
+            CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
+            String link = CmsVaadinUtils.getWorkplaceLink()
+                + "#explorer/"
+                + siteRoot
+                + "!"
+                + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
+            result = link;
         } catch (Throwable e) {
             error(e);
         }
