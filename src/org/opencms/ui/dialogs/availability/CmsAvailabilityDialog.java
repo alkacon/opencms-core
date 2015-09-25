@@ -31,8 +31,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -41,6 +43,8 @@ import org.opencms.ui.components.CmsBasicDialog;
 
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -53,6 +57,9 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.VerticalLayout;
 
 public class CmsAvailabilityDialog extends CmsBasicDialog {
+
+    /** Logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAvailabilityDialog.class);
 
     private Button m_cancelButton;
     private I_CmsDialogContext m_dialogContext;
@@ -160,7 +167,11 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
             }
         } finally {
             if (lockActionRecord.getChange() == LockChange.locked) {
-                cms.unlockResource(resource);
+                try {
+                    cms.unlockResource(resource);
+                } catch (CmsLockException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
 
         }

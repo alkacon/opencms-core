@@ -37,6 +37,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -209,7 +210,11 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 } finally {
                     if (m_lockActionRecord.getChange() == LockChange.locked) {
                         CmsResource updatedRes = cms.readResource(res.getStructureId(), CmsResourceFilter.ALL);
-                        cms.unlockResource(updatedRes);
+                        try {
+                            cms.unlockResource(updatedRes);
+                        } catch (CmsLockException e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
                     }
 
                 }

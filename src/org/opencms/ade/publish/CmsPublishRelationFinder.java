@@ -336,6 +336,7 @@ public class CmsPublishRelationFinder {
         Set<CmsResource> directlyRelatedResources = Sets.newHashSet();
         List<CmsRelation> relations = getRelationsFromResource(currentResource);
         for (CmsRelation relation : relations) {
+            LOG.info("Trying to read resource for relation " + relation.getTargetPath());
             CmsResource target = getResource(relation.getTargetId());
             if (target != null) {
                 if (relation.getType().isStrong() || shouldAddWeakRelationTarget(target)) {
@@ -400,7 +401,7 @@ public class CmsPublishRelationFinder {
                 resource = m_cms.readResource(structureId, CmsResourceFilter.ALL);
                 m_resources.put(structureId, resource);
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.info(e.getLocalizedMessage(), e);
             }
         }
         return resource;

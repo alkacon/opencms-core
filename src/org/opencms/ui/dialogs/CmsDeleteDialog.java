@@ -33,8 +33,10 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -51,6 +53,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -66,6 +70,9 @@ import com.vaadin.ui.VerticalLayout;
  * Dialog for deleting resources.<p>
  */
 public class CmsDeleteDialog extends CmsBasicDialog {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsDeleteDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -123,10 +130,14 @@ public class CmsDeleteDialog extends CmsBasicDialog {
                             cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
                         } finally {
                             if (lockRecord.getChange().equals(LockChange.locked)) {
-                                try {
-                                    cms.unlockResource(resource);
-                                } catch (CmsVfsResourceNotFoundException e) {
-                                    System.out.println(e);
+                                if (!resource.getState().isNew()) {
+                                    try {
+                                        cms.unlockResource(resource);
+                                    } catch (CmsVfsResourceNotFoundException e) {
+                                        LOG.warn(e.getLocalizedMessage(), e);
+                                    } catch (CmsLockException e) {
+                                        LOG.warn(e.getLocalizedMessage(), e);
+                                    }
                                 }
                             }
                         }

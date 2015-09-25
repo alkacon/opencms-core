@@ -33,8 +33,10 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
@@ -46,6 +48,8 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -61,6 +65,9 @@ import com.vaadin.ui.TextField;
  * Dialog used to change resource modification times.<p>
  */
 public class CmsSecureExportDialog extends CmsBasicDialog {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSecureExportDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -217,7 +224,11 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
                 cms.writeResource(resource);
             } finally {
                 if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
-                    m_context.getCms().unlockResource(resource);
+                    try {
+                        cms.unlockResource(resource);
+                    } catch (CmsLockException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }

@@ -32,13 +32,17 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
+import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+
+import org.apache.commons.logging.Log;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -49,6 +53,9 @@ import com.vaadin.ui.CheckBox;
  * Dialog used to change resource modification times.<p>
  */
 public class CmsUndoDialog extends CmsBasicDialog {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUndoDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -134,7 +141,11 @@ public class CmsUndoDialog extends CmsBasicDialog {
                 cms.undoChanges(cms.getSitePath(resource), mode);
             } finally {
                 if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
-                    m_context.getCms().unlockResource(resource);
+                    try {
+                        m_context.getCms().unlockResource(resource);
+                    } catch (CmsLockException e) {
+                        LOG.warn(e.getLocalizedMessage(), e);
+                    }
                 }
 
             }
