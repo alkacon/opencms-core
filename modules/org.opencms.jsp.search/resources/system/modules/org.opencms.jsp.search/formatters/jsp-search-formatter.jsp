@@ -204,13 +204,13 @@
 									<a href='<cms:link>${searchResult.fields["path"]}</cms:link>'>${searchResult.fields["Title_prop"]}</a>
 									<p>
 										<!-- if highlighting is returned - show it; otherwise show content_en (up to 250 characters) -->
+										<c:if test="${not empty search.highlighting}">
+											<c:set var="highlightSnippet" value='${search.highlighting[searchResult.fields["id"]][search.controller.highlighting.config.hightlightField][0]}' />
+										</c:if>
 										<c:choose>
-											<c:when test="${not empty search.highlighting}">
+											<c:when test="${not empty highlightSnippet}">
 												<%-- To avoid destroying the HTML, if the highlighted snippet contains unbalanced tag, use the htmlConverter for cleaning the HTML. --%>
-												<c:set var="highlightSnippet" value='${search.highlighting[searchResult.fields["id"]][search.controller.highlighting.config.hightlightField][0]}' />
-												<c:if test="${not empty highlightSnippet}">
-													<%= htmlConverter.convertToString((String) pageContext.getAttribute("highlightSnippet")) %>
-												</c:if>
+												<%= htmlConverter.convertToString((String) pageContext.getAttribute("highlightSnippet")) %>
 											</c:when>
 											<c:otherwise>
 												${cms:trimToSize(fn:escapeXml(searchResult.fields["content_en"]),250)}
