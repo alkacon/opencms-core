@@ -15,6 +15,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.0.0_alpha_1 - September 28, 2015
+- Extended lookup of login-form property to also work with detail pages.
+- Made pointers/htmlredirects work for internationalized domain names.
+- Improved synchronization in SQL manager and content type definitions.
+* Fixed issue #323 with missing manifest entries for Russian localization.
+* Fixed script tag generation in action elements for better IE compatibility.
+* Fixed issue where import failed due to missing principals.
+* Fixed issue with null pointers during inline editing.
+* Fixed issue with null pointers when reading search document dependencies.
+
 OpenCms 9.5.2 - June 24, 2015
 ! Added Japanese localization (provided by Yuta Aoki).
 ! Added Czech localization (provided by Filip Kratochvil).
