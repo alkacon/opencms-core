@@ -405,15 +405,11 @@ public class CmsFrameset extends CmsWorkplace {
         }
         // add eventual request parameters to startup uri
         if (getJsp().getRequest().getParameterMap().size() > 0) {
-            @SuppressWarnings("unchecked")
-            Set<Entry<?, ?>> params = getJsp().getRequest().getParameterMap().entrySet();
-            Iterator<Entry<?, ?>> i = params.iterator();
+            Set<Entry<String, String[]>> params = getJsp().getRequest().getParameterMap().entrySet();
+            Iterator<Entry<String, String[]>> i = params.iterator();
             while (i.hasNext()) {
-                Entry<?, ?> entry = i.next();
-                result = CmsRequestUtil.appendParameter(
-                    result,
-                    (String)entry.getKey(),
-                    ((String[])entry.getValue())[0]);
+                Entry<String, String[]> entry = i.next();
+                result = CmsRequestUtil.appendParameter(result, entry.getKey(), entry.getValue()[0]);
             }
         }
         // append the frame name to the startup uri
