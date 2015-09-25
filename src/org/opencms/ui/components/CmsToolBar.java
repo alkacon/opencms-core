@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
-import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
@@ -259,7 +258,7 @@ public class CmsToolBar extends CssLayout {
                 }
             };
         }
-        MenuItem entry = parent.addItem(CmsVaadinUtils.localizeString(node.getData().getTitle()), entryCommand);
+        MenuItem entry = parent.addItem((node.getData().getTitle(A_CmsUI.get().getLocale())), entryCommand);
         for (CmsTreeNode<I_CmsContextMenuItem> child : node.getChildren()) {
             createMenuEntry(entry, child, treeBuilder);
         }

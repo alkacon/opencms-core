@@ -27,7 +27,7 @@
 
 package org.opencms.ui.contextmenu;
 
-import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 
 import java.lang.reflect.Constructor;
@@ -62,7 +62,7 @@ public class CmsDialogAction implements I_CmsContextMenuAction {
         try {
             Constructor<? extends Component> constructor = m_dialogClass.getConstructor(I_CmsDialogContext.class);
             Component component = constructor.newInstance(context);
-            context.start(CmsVaadinUtils.localizeString(context.getMenuItem().getTitle()), component);
+            context.start(context.getMenuItem().getTitle(A_CmsUI.get().getLocale()), component);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

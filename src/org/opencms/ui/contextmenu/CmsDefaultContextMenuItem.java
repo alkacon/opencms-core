@@ -30,11 +30,14 @@ package org.opencms.ui.contextmenu;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.logging.Log;
@@ -162,11 +165,16 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
     }
 
     /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getTitle()
+     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getTitle(java.util.Locale)
      */
-    public String getTitle() {
+    public String getTitle(Locale locale) {
 
-        return m_title;
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+        if (m_title == null) {
+            return "";
+        }
+        return resolver.resolveMacros(m_title);
     }
 
     /**

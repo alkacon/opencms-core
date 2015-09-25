@@ -276,7 +276,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
          */
         String getTitle(I_CmsContextMenuItem item) {
 
-            return CmsVaadinUtils.localizeString(item.getTitle());
+            return CmsVaadinUtils.localizeString(item.getTitle(A_CmsUI.get().getLocale()));
         }
 
         /**

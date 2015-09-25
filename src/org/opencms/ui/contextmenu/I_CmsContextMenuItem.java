@@ -33,6 +33,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Interface for workplace context menu items.<p>
@@ -91,9 +92,11 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
     /**
      * Gets the title.<p>
      *
+     * @param locale the locale
+     *
      * @return the title
      */
-    String getTitle();
+    String getTitle(Locale locale);
 
     /**
      * Computes the visibility for this context menu items with the given CMS context and resources.<p>
