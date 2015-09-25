@@ -33,7 +33,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
@@ -70,9 +69,6 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
 
     /** The visibility check for this item. */
     protected I_CmsHasMenuItemVisibility m_visibility;
-
-    /** Default global id. */
-    private String m_globalId = "" + new CmsUUID();
 
     /**
      * Creates a new instance.<p>
@@ -113,22 +109,6 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
         } else {
             LOG.warn("Empty action in context menu item " + m_id + " . Configuration error?");
         }
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getClientAction()
-     */
-    public String getClientAction() {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getGlobalId()
-     */
-    public String getGlobalId() {
-
-        return m_globalId;
     }
 
     /**
@@ -194,14 +174,6 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
     public boolean isLeafItem() {
 
         return true;
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#setGlobalId(java.lang.String)
-     */
-    public void setGlobalId(String globalId) {
-
-        m_globalId = globalId;
     }
 
     /**
