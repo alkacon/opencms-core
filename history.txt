@@ -24,6 +24,7 @@ OpenCms 10.0.0_alpha_1 - September 28, 2015
 * Fixed issue where import failed due to missing principals.
 * Fixed issue with null pointers during inline editing.
 * Fixed issue with null pointers when reading search document dependencies.
+* Fixed issue where validation messages where not displayed in the workplace locale.
 
 OpenCms 9.5.2 - June 24, 2015
 ! Added Japanese localization (provided by Yuta Aoki).

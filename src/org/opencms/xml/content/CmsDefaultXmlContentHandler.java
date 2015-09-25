@@ -1960,7 +1960,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         additionalValues.put(CmsMacroResolver.KEY_VALIDATION_PATH, value.getPath());
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setMessages(
-            getMessages(cms.getRequestContext().getLocale())).setAdditionalMacros(additionalValues);
+            getMessages(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms))).setAdditionalMacros(additionalValues);
 
         return resolver.resolveMacros(message);
     }
