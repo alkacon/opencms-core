@@ -167,15 +167,15 @@
   	background: $v-app-background-color;
   }
   
-  .o-state-deleted, .v-table-row-o-state-deleted, .v-tree-node-caption-o-state-deleted{
+  .o-state-deleted, .v-table-row-o-state-deleted, .v-tree-node-o-state-deleted{
   	text-decoration: line-through;
   }
   
-  .o-state-changed, .v-table-row-o-state-changed, .v-tree-node-caption-o-state-changed{
+  .o-state-changed, .v-table-row-o-state-changed, .v-tree-node-o-state-changed{
   	color: $red;
   }
   
-  .o-state-new, .v-table-row-o-state-new, .v-tree-node-caption-o-state-new{
+  .o-state-new, .v-table-row-o-state-new, .v-tree-node-o-state-new{
   	color: $o-button-blue;
   }
   
