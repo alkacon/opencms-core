@@ -48,31 +48,51 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Availability dialog.<p>
+ */
 public class CmsAvailabilityDialog extends CmsBasicDialog {
+
+    private static final long serialVersionUID = 1L;
 
     /** Logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailabilityDialog.class);
 
+    /** The cancel button. */
     private Button m_cancelButton;
+
+    /** The dialog context. */
     private I_CmsDialogContext m_dialogContext;
 
+    /** Date field. */
     private DateField m_expiredField;
+
+    /** OK button. */
     private Button m_okButton;
+
+    /** Date field. */
     private DateField m_releasedField;
+
+    /** Option to reset the expiration. */
     private CheckBox m_resetExpired;
 
+    /** Option to reset the relase date. */
     private CheckBox m_resetReleased;
 
+    /** Option to enable subresource modification. */
     private CheckBox m_subresourceModificationField;
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param dialogContext the dialog context
+     */
     public CmsAvailabilityDialog(I_CmsDialogContext dialogContext) {
 
         super();
@@ -101,11 +121,11 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         m_subresourceModificationField.setVisible(hasFolders);
         initResetCheckbox(m_resetReleased, m_releasedField);
         initResetCheckbox(m_resetExpired, m_expiredField);
-
-        AbstractComponentContainer cont = new VerticalLayout();
-
         m_okButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
                 if (validate()) {
@@ -123,6 +143,9 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
         m_cancelButton.addClickListener(new ClickListener() {
 
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
                 m_dialogContext.finish(null);
@@ -131,6 +154,11 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         displayResourceInfo(m_dialogContext.getResources());
     }
 
+    /**
+     * Actually performs the availability change.<p>
+     *
+     * @throws CmsException if something goes wrong
+     */
     protected void changeAvailability() throws CmsException {
 
         Date released = m_releasedField.getValue();
@@ -144,6 +172,18 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
     }
 
+    /**
+     * Changes availability.<p>
+     *
+     * @param resource the resource
+     * @param released release date
+     * @param resetReleased reset release date
+     * @param expired expiration date
+     * @param resetExpired reset expiration date
+     * @param modifySubresources modify children
+     *
+     * @throws CmsException if somthing goes wrong
+     */
     private void changeAvailability(
         CmsResource resource,
         Date released,
@@ -177,9 +217,17 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         }
     }
 
+    /**
+     * Creates a reset checkbox which can enable / disable a date field.<p>
+     *
+     * @param box the check box
+     * @param field the date field
+     */
     private void initResetCheckbox(CheckBox box, final DateField field) {
 
         box.addValueChangeListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
 
             public void valueChange(ValueChangeEvent event) {
 
@@ -194,6 +242,11 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         });
     }
 
+    /**
+     * Validates release / expiration.<p>
+     *
+     * @return true if the fields are valid.
+     */
     private boolean validate() {
 
         return m_releasedField.isValid() && m_expiredField.isValid();
