@@ -208,7 +208,8 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                     }
                 } finally {
                     if (m_lockActionRecord.getChange() == LockChange.locked) {
-                        cms.unlockResource(res);
+                        CmsResource updatedRes = cms.readResource(res.getStructureId(), CmsResourceFilter.ALL);
+                        cms.unlockResource(updatedRes);
                     }
 
                 }
