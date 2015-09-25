@@ -41,6 +41,9 @@
 				<searchsetting element="Fragmenter" searchcontent="false" />
 				<searchsetting element="UseFastVectorHighlighting" searchcontent="false" />
 			</searchsettings>
+			<validationrules>
+				<rule element="Field" regex=".+" type="error" message="%(key.error.highlighting.field)" />
+			</validationrules>
 		</xsd:appinfo>
 	</xsd:annotation>
 

@@ -58,7 +58,7 @@
 					<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 						<div class="input-group">
 							<!-- Display select box with sort options where the currently chosen option is selected -->
-							<select name="${sort.config.sortParam}" class="form-control">
+							<select name="${sort.config.sortParam}"  class="form-control" onchange="submitSearchForm()" >
 								<c:forEach var="option" items="${sort.config.sortOptions}">
 									<option value="${option.paramValue}"
 										${sort.state.checkSelected[option]?"selected":""}>${option.label}</option>
@@ -89,7 +89,7 @@
 												<label> <input type="checkbox"
 													name="${facetController.config.paramKey}"
 													value="${entry.query}"
-													onclick="submitsearch()"
+													onclick="submitSearchForm()"
 													${facetController.state.isChecked[entry.query]?"checked":""} />
 													${entry.label} (${search.facetQuery[entry.query]})
 												</label>

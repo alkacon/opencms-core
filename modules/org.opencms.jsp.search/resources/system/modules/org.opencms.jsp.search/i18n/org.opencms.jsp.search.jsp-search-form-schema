@@ -474,6 +474,10 @@
       <Key><![CDATA[validation.error.suggestion.count]]></Key>
       <Value><![CDATA[Die Anzahl der maximalen Vorschläge muss als nicht-negative Zahl eingegeben werden.]]></Value>
     </Message>
+    <Message>
+      <Key><![CDATA[error.highlighting.field]]></Key>
+      <Value><![CDATA[Bitte spezifizieren Sie das Feld, in dem gehighlightet werden soll, z.B. "text" oder "content_de".]]></Value>
+    </Message>
   </Bundle>
   <Bundle language="en">
     <Message>
@@ -947,6 +951,10 @@
     <Message>
       <Key><![CDATA[validation.error.suggestion.count]]></Key>
       <Value><![CDATA[The number of maximal suggestions must be given as non-negative number.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[error.highlighting.field]]></Key>
+      <Value><![CDATA[Please specify the field you want to use for highlighting, e.g., "text" or "content_en".]]></Value>
     </Message>
   </Bundle>
 </XmlVfsBundles>
