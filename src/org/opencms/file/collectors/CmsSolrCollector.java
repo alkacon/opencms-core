@@ -157,7 +157,10 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
 
         name = name == null ? COLLECTORS[1] : name;
         Map<String, String> paramsAsMap = getParamsAsMap(param);
-        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART));
+        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(
+            paramsAsMap.get(SOLR_PART),
+            true,
+            cms.getRequestContext().getEncoding());
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
         boolean excludeTimerange = Boolean.valueOf(
             paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();
