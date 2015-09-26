@@ -16,6 +16,24 @@ Legend:
 - General comment
 
 OpenCms 10.0.0_alpha_1 - September 28, 2015
+! Modernized the look & feel of the overall user interface .
+! Introduced the Launchpad as the central starting place for the user.
+! New file explorer with support for column sorting, filtering and large folders.
+! Developers can now export and import modules through a SMB network share.
+! New Git App allows committing of module content directly from the workplace.
+! New <cms:search> tag combines SOLR based resource collection and full text searches.
+! Drag and Drop of images directly in the page editor.
+! Copy groups allow creation of boiler plate layouts with text / images.
+! Reuse groups allow reusing nested container structures on several pages.
+! Users are identified with an identicon in the toolbar.
+! Improved the template editor with support for inherited and disabled templates.
+! New <cms:edit> tag allows editing of arbitary resources based on UID.
+! Added a reset password option to the login dialog.
+! Nested container structures can now be copied using the clipboard.
+! Support for local configuration change sets based on XSLT.
+! Modules can be exported with a reduced manifest.xml to avoid merge conflicts.
+! Optimized resources types, formatters and views in the demo template application.
+! Updated the responsive demo template based on Bootstrap.
 - Extended lookup of login-form property to also work with detail pages.
 - Made pointers/htmlredirects work for internationalized domain names.
 - Improved synchronization in SQL manager and content type definitions.
