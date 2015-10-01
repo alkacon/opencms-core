@@ -39,6 +39,7 @@ import org.opencms.gwt.client.I_CmsEditableData;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog;
 import org.opencms.gwt.client.ui.contenteditor.CmsContentEditorDialog.DialogOptions;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.http.client.URL;
@@ -67,6 +68,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     /** The container-page handler. */
     private CmsContainerpageHandler m_handler;
 
+    /** Flag indicating the content editor is currently opened. */
+    private boolean m_editorOpened;
+
     /**
      * Constructor.<p>
      *
@@ -83,6 +87,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
     public void closeContentEditor() {
 
         CmsContentEditor.getInstance().closeEditor();
+        m_editorOpened = false;
     }
 
     /**
@@ -107,6 +112,7 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         m_handler.m_controller.setContentEditing(false);
         m_handler.m_controller.reInitInlineEditing();
         m_currentElementId = null;
+        m_editorOpened = false;
     }
 
     /**
@@ -115,70 +121,72 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      * @param element the container element widget
      * @param inline <code>true</code> to open the in-line editor for the given element if available
      */
-    public void openDialog(
+    public void openDialog(final CmsContainerPageElementPanel element, final boolean inline) {
 
-        final CmsContainerPageElementPanel element,
-        final boolean inline) {
+        if (!m_editorOpened) {
+            m_editorOpened = true;
+            m_handler.disableToolbarButtons();
+            m_handler.deactivateCurrentButton();
+            m_currentElementId = element.getId();
+            final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
+            final Runnable classicEdit = new Runnable() {
 
-        m_handler.disableToolbarButtons();
-        m_handler.deactivateCurrentButton();
-        m_currentElementId = element.getId();
-        final String serverId = CmsContainerpageController.getServerId(getCurrentElementId());
-        final Runnable classicEdit = new Runnable() {
+                public void run() {
 
-            public void run() {
-
-                CmsEditableData editableData = new CmsEditableData();
-                editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
-                editableData.setStructureId(new CmsUUID(serverId));
-                editableData.setSitePath(element.getSitePath());
-                CmsContentEditorDialog.get().openEditDialog(
-                    editableData,
-                    false,
-                    null,
-                    new DialogOptions(),
-                    CmsContentEditorHandler.this);
-            }
-        };
-
-        if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
-            classicEdit.run();
-        } else {
-            String editorLocale = CmsCoreProvider.get().getLocale();
-
-            Command onClose = new Command() {
-
-                public void execute() {
-
-                    addClosedEditorHistoryItem();
-                    onClose(element.getSitePath(), new CmsUUID(serverId), false);
+                    CmsEditableData editableData = new CmsEditableData();
+                    editableData.setElementLanguage(CmsCoreProvider.get().getLocale());
+                    editableData.setStructureId(new CmsUUID(serverId));
+                    editableData.setSitePath(element.getSitePath());
+                    CmsContentEditorDialog.get().openEditDialog(
+                        editableData,
+                        false,
+                        null,
+                        new DialogOptions(),
+                        CmsContentEditorHandler.this);
                 }
             };
-            if (inline && CmsContentEditor.hasEditable(element.getElement())) {
-                addEditingHistoryItem(true);
-                CmsEditorContext context = getEditorContext();
-                context.setHtmlContextInfo(getContextInfo(element));
-                // remove expired style before initializing the editor
-                element.setReleasedAndNotExpired(true);
-                CmsContentEditor.getInstance().openInlineEditor(
-                    context,
-                    new CmsUUID(serverId),
-                    editorLocale,
-                    element,
-                    onClose);
-            } else {
-                addEditingHistoryItem(false);
 
-                CmsContentEditor.getInstance().openFormEditor(
-                    getEditorContext(),
-                    editorLocale,
-                    serverId,
-                    null,
-                    null,
-                    null,
-                    null,
-                    onClose);
+            if (m_handler.m_controller.getData().isUseClassicEditor() || element.isNewEditorDisabled()) {
+                classicEdit.run();
+            } else {
+                String editorLocale = CmsCoreProvider.get().getLocale();
+
+                Command onClose = new Command() {
+
+                    public void execute() {
+
+                        addClosedEditorHistoryItem();
+                        onClose(element.getSitePath(), new CmsUUID(serverId), false);
+                    }
+                };
+                if (inline && CmsContentEditor.hasEditable(element.getElement())) {
+                    addEditingHistoryItem(true);
+                    CmsEditorContext context = getEditorContext();
+                    context.setHtmlContextInfo(getContextInfo(element));
+                    // remove expired style before initializing the editorm_dependingElementId
+                    element.setReleasedAndNotExpired(true);
+                    CmsContentEditor.getInstance().openInlineEditor(
+                        context,
+                        new CmsUUID(serverId),
+                        editorLocale,
+                        element,
+                        onClose);
+                } else {
+                    addEditingHistoryItem(false);
+
+                    CmsContentEditor.getInstance().openFormEditor(
+                        getEditorContext(),
+                        editorLocale,
+                        serverId,
+                        null,
+                        null,
+                        null,
+                        null,
+                        onClose);
+                }
             }
+        } else {
+            CmsDebugLog.getInstance().printLine("Editor is already being opened.");
         }
     }
 
@@ -196,41 +204,46 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
         String dependingElementId,
         String mode) {
 
-        m_handler.disableToolbarButtons();
-        m_handler.deactivateCurrentButton();
-        if ((editableData.getStructureId() != null) && !isNew) {
-            m_currentElementId = editableData.getStructureId().toString();
-        } else {
-            m_currentElementId = null;
-        }
-        m_dependingElementId = dependingElementId;
-        if (m_handler.m_controller.getData().isUseClassicEditor()) {
-            CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, new DialogOptions(), this);
-        } else {
-            String newLink = null;
-            if (isNew) {
-                newLink = editableData.getNewLink();
-                // the new link is URL encoded twice, decode it
-                newLink = URL.decodeQueryString(newLink);
-                newLink = URL.decodeQueryString(newLink);
+        if (!m_editorOpened) {
+            m_editorOpened = true;
+            m_handler.disableToolbarButtons();
+            m_handler.deactivateCurrentButton();
+            if ((editableData.getStructureId() != null) && !isNew) {
+                m_currentElementId = editableData.getStructureId().toString();
+            } else {
+                m_currentElementId = null;
             }
-            addEditingHistoryItem(isNew);
-            CmsContentEditor.getInstance().openFormEditor(
-                getEditorContext(),
-                CmsCoreProvider.get().getLocale(),
-                editableData.getStructureId().toString(),
-                newLink,
-                null,
-                editableData.getPostCreateHandler(),
-                mode,
-                new Command() {
+            m_dependingElementId = dependingElementId;
+            if (m_handler.m_controller.getData().isUseClassicEditor()) {
+                CmsContentEditorDialog.get().openEditDialog(editableData, isNew, mode, new DialogOptions(), this);
+            } else {
+                String newLink = null;
+                if (isNew) {
+                    newLink = editableData.getNewLink();
+                    // the new link is URL encoded twice, decode it
+                    newLink = URL.decodeQueryString(newLink);
+                    newLink = URL.decodeQueryString(newLink);
+                }
+                addEditingHistoryItem(isNew);
+                CmsContentEditor.getInstance().openFormEditor(
+                    getEditorContext(),
+                    CmsCoreProvider.get().getLocale(),
+                    editableData.getStructureId().toString(),
+                    newLink,
+                    null,
+                    editableData.getPostCreateHandler(),
+                    mode,
+                    new Command() {
 
-                    public void execute() {
+                        public void execute() {
 
-                        addClosedEditorHistoryItem();
-                        onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
-                    }
-                });
+                            addClosedEditorHistoryItem();
+                            onClose(editableData.getSitePath(), editableData.getStructureId(), isNew);
+                        }
+                    });
+            }
+        } else {
+            CmsDebugLog.getInstance().printLine("Editor is already being opened.");
         }
     }
 
@@ -241,36 +254,42 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openEditorForHistory(String historyHash) {
 
-        if (historyHash.startsWith(EDITOR_HASH_KEY)) {
-            m_handler.m_controller.setContentEditing(true);
-            String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
-            if (id.contains(",")) {
-                String[] ids = id.split(",");
-                m_currentElementId = ids[0];
-                m_dependingElementId = ids[1];
-            } else {
-                m_currentElementId = id;
-            }
-            Command onClose = new Command() {
-
-                public void execute() {
-
-                    addClosedEditorHistoryItem();
-                    onClose(null, new CmsUUID(getCurrentElementId()), false);
+        if (!m_editorOpened) {
+            m_editorOpened = true;
+            CmsDebugLog.getInstance().printLine("EditorHandler - Opening editor from history");
+            if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+                m_handler.m_controller.setContentEditing(true);
+                String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
+                if (id.contains(",")) {
+                    String[] ids = id.split(",");
+                    m_currentElementId = URL.decodePathSegment(ids[0]);
+                    m_dependingElementId = URL.decodePathSegment(ids[1]);
+                } else {
+                    m_currentElementId = URL.decodePathSegment(id);
                 }
-            };
-            String editorLocale = CmsCoreProvider.get().getLocale();
-            CmsContentEditor.getInstance().openFormEditor(
-                getEditorContext(),
-                editorLocale,
-                m_currentElementId,
-                null,
-                null,
-                null,
-                null,
-                onClose);
+                Command onClose = new Command() {
+
+                    public void execute() {
+
+                        addClosedEditorHistoryItem();
+                        onClose(null, new CmsUUID(getCurrentElementId()), false);
+                    }
+                };
+                String editorLocale = CmsCoreProvider.get().getLocale();
+                CmsContentEditor.getInstance().openFormEditor(
+                    getEditorContext(),
+                    editorLocale,
+                    m_currentElementId,
+                    null,
+                    null,
+                    null,
+                    null,
+                    onClose);
+            } else {
+                closeContentEditor();
+            }
         } else {
-            closeContentEditor();
+            CmsDebugLog.getInstance().printLine("Editor is already being opened.");
         }
     }
 
