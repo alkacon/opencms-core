@@ -67,6 +67,11 @@ public class CmsExplorerTypeAccess {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
 
+    static {
+        flushListener = new CmsExplorerTypeAccessFlushListener();
+        flushListener.install();
+    }
+
     /** The map of configured access control entries. */
     private Map<String, String> m_accessControl;
 
@@ -83,11 +88,6 @@ public class CmsExplorerTypeAccess {
 
         m_accessControl = new HashMap<String, String>();
         flushListener.add(this);
-    }
-
-    static {
-        flushListener = new CmsExplorerTypeAccessFlushListener();
-        flushListener.install();
     }
 
     /**
@@ -230,7 +230,7 @@ public class CmsExplorerTypeAccess {
         }
         List<CmsRole> roles = null;
         try {
-            roles = OpenCms.getRoleManager().getRolesForResource(cms, user.getName(), cms.getSitePath(resource));
+            roles = OpenCms.getRoleManager().getRolesForResource(cms, user, resource);
         } catch (CmsException e) {
             // error reading the roles of the current user
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()), e);

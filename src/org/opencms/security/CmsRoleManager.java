@@ -54,23 +54,6 @@ public class CmsRoleManager {
     private final CmsSecurityManager m_securityManager;
 
     /**
-     * Returns the groups which constitute a given role, i.e. the set of groups such that a member of any of them
-     * has the given role.<p>
-     *
-     * @param cms the CMS context
-     * @param role the role
-     * @param directUsersOnly if true, only the role's direct group will be returned
-     *
-     * @return the groups constituting the given role
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public Set<CmsGroup> getRoleGroups(CmsObject cms, CmsRole role, boolean directUsersOnly) throws CmsException {
-
-        return m_securityManager.getRoleGroups(cms.getRequestContext(), role, directUsersOnly);
-    }
-
-    /**
      * Default constructor.<p>
      *
      * @param securityManager the security manager
@@ -157,6 +140,37 @@ public class CmsRoleManager {
     }
 
     /**
+     * Returns a list of those organizational units whose members can be managed by the current user.<p>
+     *
+     * @param cms the current CMS context
+     * @param ouFqn the fully qualified name of the organizational unit
+     * @param includeSubOus if sub organizational units should be included in the search
+     * @param includeWebusers if webuser organizational units should be included in the search
+     *
+     * @return a list of organizational units
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsOrganizationalUnit> getManageableOrgUnits(
+        CmsObject cms,
+        String ouFqn,
+        boolean includeSubOus,
+        boolean includeWebusers) throws CmsException {
+
+        List<CmsOrganizationalUnit> result = Lists.newArrayList();
+        List<CmsOrganizationalUnit> ous = getOrgUnitsForRole(
+            cms,
+            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
+            includeSubOus);
+        for (CmsOrganizationalUnit ou : ous) {
+            if (includeWebusers || !ou.hasFlagWebuser()) {
+                result.add(ou);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns all resources of organizational units for which the current user has
      * the given role role.<p>
      *
@@ -216,37 +230,6 @@ public class CmsRoleManager {
     }
 
     /**
-     * Returns a list of those organizational units whose members can be managed by the current user.<p>
-     *
-     * @param cms the current CMS context
-     * @param ouFqn the fully qualified name of the organizational unit
-     * @param includeSubOus if sub organizational units should be included in the search
-     * @param includeWebusers if webuser organizational units should be included in the search
-     *
-     * @return a list of organizational units
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public List<CmsOrganizationalUnit> getManageableOrgUnits(
-        CmsObject cms,
-        String ouFqn,
-        boolean includeSubOus,
-        boolean includeWebusers) throws CmsException {
-
-        List<CmsOrganizationalUnit> result = Lists.newArrayList();
-        List<CmsOrganizationalUnit> ous = getOrgUnitsForRole(
-            cms,
-            CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn),
-            includeSubOus);
-        for (CmsOrganizationalUnit ou : ous) {
-            if (includeWebusers || !ou.hasFlagWebuser()) {
-                result.add(ou);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Returns all the organizational units for which the current user has the given role.<p>
      *
      * @param cms the current cms context
@@ -261,6 +244,23 @@ public class CmsRoleManager {
     throws CmsException {
 
         return m_securityManager.getOrgUnitsForRole(cms.getRequestContext(), role, includeSubOus);
+    }
+
+    /**
+     * Returns the groups which constitute a given role, i.e. the set of groups such that a member of any of them
+     * has the given role.<p>
+     *
+     * @param cms the CMS context
+     * @param role the role
+     * @param directUsersOnly if true, only the role's direct group will be returned
+     *
+     * @return the groups constituting the given role
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public Set<CmsGroup> getRoleGroups(CmsObject cms, CmsRole role, boolean directUsersOnly) throws CmsException {
+
+        return m_securityManager.getRoleGroups(cms.getRequestContext(), role, directUsersOnly);
     }
 
     /**
@@ -285,6 +285,22 @@ public class CmsRoleManager {
             roles.add(CmsRole.valueOf(group));
         }
         return roles;
+    }
+
+    /**
+     * Returns all roles the given user has over the given resource.<p>
+     *
+     * @param cms the current cms context
+     * @param user the user
+     * @param resource the resource
+     *
+     * @return a list of {@link CmsRole} objects
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public List<CmsRole> getRolesForResource(CmsObject cms, CmsUser user, CmsResource resource) throws CmsException {
+
+        return m_securityManager.getRolesForResource(cms.getRequestContext(), user, resource);
     }
 
     /**
