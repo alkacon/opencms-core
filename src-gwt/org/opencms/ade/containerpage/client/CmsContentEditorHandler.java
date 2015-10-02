@@ -254,10 +254,10 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
      */
     public void openEditorForHistory(String historyHash) {
 
-        if (!m_editorOpened) {
-            m_editorOpened = true;
-            CmsDebugLog.getInstance().printLine("EditorHandler - Opening editor from history");
-            if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+        if (historyHash.startsWith(EDITOR_HASH_KEY)) {
+            if (!m_editorOpened) {
+                m_editorOpened = true;
+                CmsDebugLog.getInstance().printLine("EditorHandler - Opening editor from history");
                 m_handler.m_controller.setContentEditing(true);
                 String id = historyHash.substring(EDITOR_HASH_KEY.length(), historyHash.indexOf(";"));
                 if (id.contains(",")) {
@@ -285,11 +285,9 @@ public class CmsContentEditorHandler implements I_CmsContentEditorHandler {
                     null,
                     null,
                     onClose);
-            } else {
-                closeContentEditor();
             }
         } else {
-            CmsDebugLog.getInstance().printLine("Editor is already being opened.");
+            closeContentEditor();
         }
     }
 
