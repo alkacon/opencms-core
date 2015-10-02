@@ -70,7 +70,7 @@ public class CmsRelationTargetListBean implements IsSerializable {
         if (!m_processedIds.contains(resource.getStructureId())) {
             m_resources.add(resource);
             m_processedIds.add(resource.getStructureId());
-            m_changed |= resource.getState().isChanged();
+            m_changed |= !(resource.getState().isUnchanged());
         }
     }
 
