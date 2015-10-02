@@ -500,6 +500,7 @@ implements I_CmsSitemapChangeHandler, I_CmsSitemapLoadHandler {
                     parentModel.getSitePath() != null);
                 m_parentModelPageTreeItems.put(parentModel.getStructureId(), treeItem);
                 m_parentModelPageRoot.addChild(treeItem);
+                m_modelPageData.put(parentModel.getStructureId(), parentModel);
             }
             if (m_parentModelPageRoot.getChildren().getWidgetCount() > 0) {
                 m_modelPageTree.add(m_parentModelPageRoot);
