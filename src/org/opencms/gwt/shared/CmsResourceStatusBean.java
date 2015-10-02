@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
@@ -71,6 +72,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Navigation text. */
     private String m_navText;
+
+    /** Relation sources from other sites. */
+    private ArrayList<CmsResourceStatusRelationBean> m_otherSiteRelationSources = Lists.newArrayList();
 
     /** Permissions. */
     private String m_permissions;
@@ -190,6 +194,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public String getNavText() {
 
         return m_navText;
+    }
+
+    /**
+     * Gets relation sources for other sites.<p>
+     *
+     * @return relation sources for other sites
+     */
+    public ArrayList<CmsResourceStatusRelationBean> getOtherSiteRelationSources() {
+
+        return m_otherSiteRelationSources;
     }
 
     /**
@@ -473,10 +487,10 @@ public class CmsResourceStatusBean implements IsSerializable {
     }
 
     /**
-     * Sets the user last modified.
-     *
-     * @param userLastModified the new user last modified
-     */
+    * Sets the user last modified.
+    *
+    * @param userLastModified the new user last modified
+    */
     public void setUserLastModified(String userLastModified) {
 
         m_userLastModified = userLastModified;

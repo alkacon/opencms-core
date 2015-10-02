@@ -74,7 +74,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
         final CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
         m_tabPanel = tabPanel;
         tabPanel.setAutoResize(true);
-        tabPanel.setAutoResizeHeightDelta(40);
+        tabPanel.setAutoResizeHeightDelta(45);
         final List<CmsResourceRelationView> relationViews = new ArrayList<CmsResourceRelationView>();
         for (Map.Entry<CmsResourceStatusTabId, String> tabEntry : statusBean.getTabs().entrySet()) {
             switch (tabEntry.getKey()) {

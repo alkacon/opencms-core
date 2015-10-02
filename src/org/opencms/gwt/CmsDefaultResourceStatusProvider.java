@@ -57,13 +57,17 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,6 +75,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Maps;
 
 /**
  * Helper class to generate all the data which is necessary for the resource status dialog(s).<p>
@@ -269,18 +276,86 @@ public class CmsDefaultResourceStatusProvider {
                         contentLocale,
                         relationResource,
                         permissionInfo);
-                    result.getRelationSources().add(relationBean);
+                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(relationResource.getRootPath());
+                    if ((site != null)
+                        && !CmsStringUtil.isPrefixPath(
+                            cms.getRequestContext().getSiteRoot(),
+                            relationResource.getRootPath())) {
+                        String siteTitle = site.getTitle();
+                        if (siteTitle == null) {
+                            siteTitle = site.getUrl();
+                        } else {
+                            siteTitle = CmsWorkplace.substituteSiteTitleStatic(
+                                siteTitle,
+                                OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+                        }
+                        relationBean.setSiteRoot(site.getSiteRoot());
+                        result.getOtherSiteRelationSources().add(relationBean);
+                        relationBean.getInfoBean().setTitle(
+                            "[" + siteTitle + "] " + relationBean.getInfoBean().getTitle());
+                    } else {
+                        result.getRelationSources().add(relationBean);
+                    }
+
                 }
             } catch (CmsVfsResourceNotFoundException notfound) {
                 LOG.error(notfound.getLocalizedMessage(), notfound);
                 continue;
             }
         }
+        sortOtherSiteRelations(cms, result);
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
         }
         result.setTabs(getTabClientData(cms, resource));
         return result;
+    }
+
+    /**
+     * Sorts relation beans from other sites by site order.<p>
+     *
+     * @param cms the current CMS context
+     * @param resStatus the bean in which to sort the relation beans
+     */
+    public void sortOtherSiteRelations(CmsObject cms, CmsResourceStatusBean resStatus) {
+
+        final List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            cms,
+            false,
+            false,
+            cms.getRequestContext().getOuFqn());
+        Collections.sort(resStatus.getOtherSiteRelationSources(), new Comparator<CmsResourceStatusRelationBean>() {
+
+            private Map<String, Integer> m_rankCache = Maps.newHashMap();
+
+            public int compare(CmsResourceStatusRelationBean o1, CmsResourceStatusRelationBean o2) {
+
+                return ComparisonChain.start().compare(rank(o1), rank(o2)).compare(
+                    o1.getSitePath(),
+                    o2.getSitePath()).result();
+
+            }
+
+            public int rank(CmsResourceStatusRelationBean r) {
+
+                if (m_rankCache.containsKey(r.getSiteRoot())) {
+                    return m_rankCache.get(r.getSiteRoot()).intValue();
+                }
+
+                int j = 0;
+                int result = Integer.MAX_VALUE;
+                for (CmsSite site : sites) {
+                    if (site.getSiteRoot().equals(r.getSiteRoot())) {
+                        result = j;
+                        break;
+                    }
+                    j += 1;
+                }
+
+                m_rankCache.put(r.getSiteRoot(), new Integer(result));
+                return result;
+            }
+        });
     }
 
     /**

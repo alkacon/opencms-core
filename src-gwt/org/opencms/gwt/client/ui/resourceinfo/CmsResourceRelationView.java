@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsListItem;
@@ -84,15 +85,11 @@ public class CmsResourceRelationView extends Composite {
     /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
     protected static Set<String> m_filteredActions = new HashSet<String>();
 
-    static {
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-        m_filteredActions.add(CmsLogout.class.getName());
-    }
-
     /** The panel containing the resource boxes. */
     protected CmsList<CmsListItem> m_list = new CmsList<CmsListItem>();
+
+    /** List for relations from other sites. */
+    protected CmsList<CmsListItem> m_otherSitesList = new CmsList<CmsListItem>();
 
     /** Main panel. */
     protected FlowPanel m_panel = new FlowPanel();
@@ -139,12 +136,20 @@ public class CmsResourceRelationView extends Composite {
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
         m_scrollPanel = scrollPanel;
         scrollPanel.add(m_list);
+
         fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
         fieldset.setLegend(getLegend());
         fieldset.add(scrollPanel);
         m_panel.add(fieldset);
         fill();
+    }
+
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+        m_filteredActions.add(CmsLogout.class.getName());
     }
 
     /**
@@ -187,6 +192,14 @@ public class CmsResourceRelationView extends Composite {
             item.add(new Label(getEmptyMessage()));
             m_list.add(item);
         } else {
+            if ((m_mode == Mode.sources) && !m_statusBean.getOtherSiteRelationSources().isEmpty()) {
+                m_otherSitesList = ensureOtherSitesList();
+                for (CmsResourceStatusRelationBean relationBean : m_statusBean.getOtherSiteRelationSources()) {
+                    CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
+                    CmsListItem item = new CmsListItem(itemWidget);
+                    m_otherSitesList.add(item);
+                }
+            }
             for (CmsResourceStatusRelationBean relationBean : relationBeans) {
                 CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                 CmsListItem item = new CmsListItem(itemWidget);
@@ -262,7 +275,32 @@ public class CmsResourceRelationView extends Composite {
                 m_list.add(item);
             }
         }
-        m_list.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 20);
+
+        m_list.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 5);
+        if (m_otherSitesList.getParent() != null) {
+            m_otherSitesList.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 5);
+        }
+
+    }
+
+    /**
+     * Adds the panel containing relations from other sites.<p>
+     *
+     * @return the added CmsList
+     */
+    private CmsList<CmsListItem> ensureOtherSitesList() {
+
+        CmsFieldSet fieldset = new CmsFieldSet();
+        CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
+        m_scrollPanel = scrollPanel;
+        scrollPanel.add(m_otherSitesList);
+        fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
+        fieldset.setLegend(Messages.get().key(Messages.GUI_RESOURCEINFO_OTHERSITES_LEGEND_0));
+        fieldset.add(scrollPanel);
+        m_panel.add(fieldset);
+        return m_otherSitesList;
+
     }
 
     /**

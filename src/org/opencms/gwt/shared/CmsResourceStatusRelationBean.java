@@ -51,6 +51,9 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     /** The site path of the resource. */
     private String m_sitePath;
 
+    /** The site root. */
+    private String m_siteRoot;
+
     /** The structure id of the resource. */
     private CmsUUID m_structureId;
 
@@ -123,6 +126,16 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     }
 
     /**
+     * Returns the siteRoot.<p>
+     *
+     * @return the siteRoot
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+
+    /**
      * Returns the structure id of the resource.<p>
      *
      * @return the structure id of the resource
@@ -181,6 +194,16 @@ public class CmsResourceStatusRelationBean implements IsSerializable {
     public void setSitePath(String path) {
 
         m_sitePath = path;
+    }
+
+    /**
+     * Sets the siteRoot.<p>
+     *
+     * @param siteRoot the siteRoot to set
+     */
+    public void setSiteRoot(String siteRoot) {
+
+        m_siteRoot = siteRoot;
     }
 
     /**

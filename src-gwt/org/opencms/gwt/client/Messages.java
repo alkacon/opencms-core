@@ -607,6 +607,9 @@ public final class Messages {
     public static final String GUI_RESOURCEINFO_LABEL_USERMODIFIED_0 = "GUI_RESOURCEINFO_LABEL_USERMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCEINFO_OTHERSITES_LEGEND_0 = "GUI_RESOURCEINFO_OTHERSITES_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESTORE_CHECKBOX_UNDO_MOVE_0 = "GUI_RESTORE_CHECKBOX_UNDO_MOVE_0";
 
     /** Message constant for key in the resource bundle. */
