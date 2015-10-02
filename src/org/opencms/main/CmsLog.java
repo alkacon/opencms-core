@@ -29,6 +29,8 @@ package org.opencms.main;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
@@ -70,14 +72,6 @@ public final class CmsLog {
     private static String m_logFileRfsPath;
 
     /**
-     * Hides the public constructor.<p>
-     */
-    private CmsLog() {
-
-        // hides the public constructor
-    }
-
-    /**
      * Initializes the OpenCms logger configuration.<p>
      */
     static {
@@ -90,7 +84,7 @@ public final class CmsLog {
             URL url = Loader.getResource("log4j.properties");
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
-                File log4jProps = new File(url.getPath());
+                File log4jProps = new File(URLDecoder.decode(url.getPath(), Charset.defaultCharset().name()));
                 String path = log4jProps.getAbsolutePath();
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
                 String webInfPath = log4jProps.getParent();
@@ -122,11 +116,20 @@ public final class CmsLog {
                 INIT.info(". Log4j config file    : " + path);
             }
         } catch (SecurityException e) {
-            // ignore, may be caused if environment can't be written
+            // may be caused if environment can't be written
+            e.printStackTrace(System.err);
         } catch (Exception e) {
             // unexpected but nothing we can do about it, print stack trace and continue
             e.printStackTrace(System.err);
         }
+    }
+
+    /**
+     * Hides the public constructor.<p>
+     */
+    private CmsLog() {
+
+        // hides the public constructor
     }
 
     /**
