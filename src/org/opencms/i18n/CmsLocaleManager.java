@@ -83,6 +83,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** The default locale, this is the first configured locale. */
     private static Locale m_defaultLocale;
 
+    /**
+     * Required for setting the default locale on the first possible time.<p>
+     */
+    static {
+        setDefaultLocale();
+    }
+
     /** The set of available locale names. */
     private List<Locale> m_availableLocales;
 
@@ -133,13 +140,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
         m_availableLocales.add(defaultLocale);
-    }
-
-    /**
-     * Required for setting the default locale on the first possible time.<p>
-     */
-    static {
-        setDefaultLocale();
     }
 
     /**
@@ -495,7 +495,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                 CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
                 true).getValue();
         } catch (CmsException exc) {
-            // noop
+            LOG.debug("Could not read available locales property for resource " + resource.getRootPath(), exc);
         }
 
         List<Locale> result = null;
@@ -528,7 +528,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
                 CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES,
                 true).getValue();
         } catch (CmsException exc) {
-            // noop
+            LOG.debug("Could not read available locales property for resource " + resourceName, exc);
         }
 
         List<Locale> result = null;
@@ -1097,20 +1097,27 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private List<String> loadProfiles(List<Locale> locales) throws Exception {
 
         List<String> profiles = new ArrayList<String>();
+        List<String> languagesAdded = new ArrayList<String>();
         for (Locale locale : locales) {
             try {
                 String lang = locale.getLanguage();
-                String profileFile = "profiles" + "/" + lang;
-                InputStream is = getClass().getClassLoader().getResourceAsStream(profileFile);
-                if (is != null) {
-                    String profile = IOUtils.toString(is, "UTF-8");
-                    if ((profile != null) && (profile.length() > 0)) {
-                        profiles.add(profile);
+                // make sure not to add a profile twice
+                if (!languagesAdded.contains(lang)) {
+                    languagesAdded.add(lang);
+                    String profileFile = "profiles" + "/" + lang;
+                    InputStream is = getClass().getClassLoader().getResourceAsStream(profileFile);
+                    if (is != null) {
+                        String profile = IOUtils.toString(is, "UTF-8");
+                        if ((profile != null) && (profile.length() > 0)) {
+                            profiles.add(profile);
+                        }
+                        is.close();
+                    } else {
+                        LOG.warn(
+                            Messages.get().getBundle().key(
+                                Messages.INIT_I18N_LAND_DETECT_PROFILE_NOT_AVAILABLE_1,
+                                locale));
                     }
-                    is.close();
-                } else {
-                    LOG.warn(
-                        Messages.get().getBundle().key(Messages.INIT_I18N_LAND_DETECT_PROFILE_NOT_AVAILABLE_1, locale));
                 }
             } catch (Exception e) {
                 LOG.error(
