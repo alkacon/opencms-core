@@ -199,6 +199,22 @@ public final class CmsJspStandardContextBean {
         }
 
         /**
+         * Returns the resource type name of the element resource.<p>
+         *
+         * @return the resource type name
+         */
+        public String getResourceTypeName() {
+
+            String result = "";
+            try {
+                result = OpenCms.getResourceManager().getResourceType(m_wrappedElement.getResource()).getTypeName();
+            } catch (Exception e) {
+                CmsJspStandardContextBean.LOG.error(e.getLocalizedMessage(), e);
+            }
+            return result;
+        }
+
+        /**
          * Returns a lazy initialized setting map.<p>
          *
          * @return the settings
@@ -873,6 +889,7 @@ public final class CmsJspStandardContextBean {
                         return wrapper;
 
                     } catch (CmsException e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
                         return new CmsDynamicFunctionBeanWrapper(m_cms, null);
                     }
                 }
@@ -940,6 +957,7 @@ public final class CmsJspStandardContextBean {
                 try {
                     functionBean = parser.parseFunctionBean(m_cms, content);
                 } catch (CmsException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
                     return new CmsDynamicFunctionFormatWrapper(m_cms, null);
                 }
                 String type = getContainer().getType();
@@ -948,7 +966,7 @@ public final class CmsJspStandardContextBean {
                 try {
                     widthNum = Integer.parseInt(width);
                 } catch (NumberFormatException e) {
-                    // NOOP
+                    LOG.debug(e.getLocalizedMessage(), e);
                 }
                 CmsDynamicFunctionBean.Format format = functionBean.getFormatForContainer(m_cms, type, widthNum);
                 CmsDynamicFunctionFormatWrapper wrapper = new CmsDynamicFunctionFormatWrapper(m_cms, format);
@@ -1132,7 +1150,7 @@ public final class CmsJspStandardContextBean {
                     true).getValue();
             }
         } catch (CmsException e) {
-            // NOOP, result will be an empty string
+            LOG.debug(e.getLocalizedMessage(), e);
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
             result = "";
@@ -1319,7 +1337,7 @@ public final class CmsJspStandardContextBean {
         try {
             m_cms = OpenCms.initCmsObject(cms);
         } catch (CmsException e) {
-            // should not happen
+            LOG.error(e.getLocalizedMessage(), e);
             m_cms = cms;
         }
     }
@@ -1374,7 +1392,7 @@ public final class CmsJspStandardContextBean {
                 try {
                     width = Integer.parseInt(container.getWidth());
                 } catch (Exception e) {
-                    // ignore
+                    LOG.debug(e.getLocalizedMessage(), e);
                 }
                 formatter = formatters.getDefaultSchemaFormatter(container.getType(), width);
             } catch (CmsException e1) {
