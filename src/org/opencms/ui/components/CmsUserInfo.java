@@ -35,6 +35,10 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
@@ -42,6 +46,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -51,6 +56,9 @@ public class CmsUserInfo extends VerticalLayout {
 
     /** The serial version id. */
     private static final long serialVersionUID = 7215454442218119869L;
+
+    /** The HTML line break. */
+    private static final String LINE_BREAK = "<br />";
 
     /** The image. */
     private Image m_image;
@@ -122,27 +130,34 @@ public class CmsUserInfo extends VerticalLayout {
      */
     private String generateInfoHtml(CmsUser user) {
 
-        String infoHtml = "<b>" + user.getFullName() + "</b><br />";
+        StringBuffer infoHtml = new StringBuffer(128);
+        infoHtml.append("<b>").append(user.getFullName()).append("</b>").append(LINE_BREAK);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
-            infoHtml += user.getEmail() + "<br />";
+            infoHtml.append(user.getEmail()).append(LINE_BREAK);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getInstitution())) {
-            infoHtml += user.getInstitution() + "<br />";
+            infoHtml.append(user.getInstitution()).append(LINE_BREAK);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getAddress())) {
-            infoHtml += user.getAddress() + "<br />";
+            infoHtml.append(user.getAddress()).append(LINE_BREAK);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getZipcode())) {
-            infoHtml += user.getZipcode() + "<br />";
+            infoHtml.append(user.getZipcode()).append(LINE_BREAK);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCity())) {
-            infoHtml += user.getCity() + "<br />";
+            infoHtml.append(user.getCity()).append(LINE_BREAK);
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCountry())) {
-            infoHtml += user.getCountry() + "<br />";
+            infoHtml.append(user.getCountry()).append(LINE_BREAK);
         }
+        Locale locale = UI.getCurrent().getLocale();
+        infoHtml.append(
+            Messages.get().getBundle(locale).key(
+                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
+                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
+                    LINE_BREAK);
 
-        return infoHtml;
+        return infoHtml.toString();
     }
 
 }
