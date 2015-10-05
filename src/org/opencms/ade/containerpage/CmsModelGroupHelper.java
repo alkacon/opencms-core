@@ -31,6 +31,7 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElement.ModelGroupState;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -461,6 +462,27 @@ public class CmsModelGroupHelper {
     }
 
     /**
+     * Adjusts formatter settings and initializes a new instance id for the given container element.<p>
+     *
+     * @param element the container element
+     * @param originalContainer the original parent container name
+     * @param adjustedContainer the target container name
+     *
+     * @return the new element instance
+     */
+    private CmsContainerElementBean adjustSettings(
+        CmsContainerElementBean element,
+        String originalContainer,
+        String adjustedContainer) {
+
+        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+        settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
+        String formatterId = settings.remove(CmsFormatterConfig.getSettingsKeyForContainer(originalContainer));
+        settings.put(CmsFormatterConfig.getSettingsKeyForContainer(adjustedContainer), formatterId);
+        return CmsContainerElementBean.cloneWithSettings(element, settings);
+    }
+
+    /**
      * Returns the descending instance id's to the given element instance.<p>
      *
      * @param instanceId the instance id
@@ -502,18 +524,23 @@ public class CmsModelGroupHelper {
 
         if (containerByParent.containsKey(modelInstanceId)) {
             for (CmsContainerBean container : containerByParent.get(modelInstanceId)) {
+                String adjustedContainerName = replaceModelId + container.getName().substring(modelInstanceId.length());
+
                 List<CmsContainerElementBean> elements = new ArrayList<CmsContainerElementBean>();
                 for (CmsContainerElementBean element : container.getElements()) {
-                    CmsContainerElementBean copyElement = initNewInstanceId(element);
+                    CmsContainerElementBean copyElement = adjustSettings(
+                        element,
+                        container.getName(),
+                        adjustedContainerName);
                     m_sessionCache.setCacheContainerElement(copyElement.editorHash(), copyElement);
                     elements.add(copyElement);
                     result.addAll(
                         collectModelStructure(element.getInstanceId(), copyElement.getInstanceId(), containerByParent));
                 }
-                String adjustedName = replaceModelId + container.getName().substring(modelInstanceId.length());
+
                 result.add(
                     new CmsContainerBean(
-                        adjustedName,
+                        adjustedContainerName,
                         container.getType(),
                         replaceModelId,
                         container.getMaxElements(),
@@ -705,20 +732,6 @@ public class CmsModelGroupHelper {
             settings.put(CmsContainerElement.MODEL_GROUP_STATE, ModelGroupState.wasModelGroup.name());
         }
         return CmsContainerElementBean.cloneWithSettings(baseElement, settings);
-    }
-
-    /**
-     * Initializes a new instance id for the given container element.<p>
-     *
-     * @param element the container element
-     *
-     * @return the new element instance
-     */
-    private CmsContainerElementBean initNewInstanceId(CmsContainerElementBean element) {
-
-        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-        settings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
-        return CmsContainerElementBean.cloneWithSettings(element, settings);
     }
 
     /**
