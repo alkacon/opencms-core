@@ -500,8 +500,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     @Override
     public void shutDown() {
-
-        m_solr.shutdown();
+        if (null != m_solr) {
+            m_solr.shutdown();
+        }
     }
 
     /**

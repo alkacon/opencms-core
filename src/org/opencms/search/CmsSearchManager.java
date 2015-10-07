@@ -2535,7 +2535,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(Messages.INIT_INDEX_CONFIGURED_2, index, index.getProject()));
                 } else {
-                    CmsLog.INIT.info(
+                    CmsLog.INIT.warn(
                         Messages.get().getBundle().key(
                             Messages.INIT_INDEX_NOT_CONFIGURED_2,
                             index,
