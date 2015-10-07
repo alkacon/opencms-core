@@ -48,6 +48,9 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
     /** The log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsSpellcheckingModuleAction.class);
 
+    /** The indexing thread. */
+    private Thread m_indexingThread;
+
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
@@ -75,7 +78,9 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
                         // Repeat check every five seconds
                         Thread.sleep(5 * 1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOG.warn(e.getLocalizedMessage(), e);
+                        // maybe OpenCms is being shutdown, just return
+                        return;
                     }
                 }
 
@@ -91,7 +96,8 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
 
         };
 
-        new Thread(r, "CmsSpellcheckingModuleIndexingThread").start();
+        m_indexingThread = new Thread(r, "CmsSpellcheckingModuleIndexingThread");
+        m_indexingThread.start();
     }
 
     /**
@@ -99,7 +105,7 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
      */
     public void moduleUninstall(CmsModule module) {
 
-        // Ignore
+        shutDown(module);
     }
 
     /**
@@ -123,7 +129,15 @@ public final class CmsSpellcheckingModuleAction implements I_CmsModuleAction {
      */
     public void shutDown(CmsModule module) {
 
-        // Ignore
+        if ((m_indexingThread != null) && m_indexingThread.isAlive()) {
+            try {
+                m_indexingThread.interrupt();
+                m_indexingThread.join(10 * 1000);
+            } catch (Exception e) {
+                LOG.warn("Exception while shutting down spellcheck indexing thread.", e);
+            }
+        }
+        m_indexingThread = null;
     }
 
 }

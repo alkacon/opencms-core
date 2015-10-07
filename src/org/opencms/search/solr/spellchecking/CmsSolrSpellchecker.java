@@ -73,15 +73,6 @@ public final class CmsSolrSpellchecker {
     /** The singleton instance of this class. */
     private static CmsSolrSpellchecker instance;
 
-    /** The SolrCore object. */
-    private SolrCore m_core;
-
-    /** The Solr CoreContainer object. */
-    private CoreContainer m_coreContainer;
-
-    /** The SolrServer object. */
-    private SolrServer m_solrServer;
-
     /** Constant, defining the default spellchecker language. */
     private static final String LANG_DEFAULT = "en";
 
@@ -114,6 +105,15 @@ public final class CmsSolrSpellchecker {
 
     /** Constant, defining the parameter name used to check and rebuild the index. */
     private static final String HTTP_PARAMETER_CHECKREBUILD = "check";
+
+    /** The SolrCore object. */
+    private SolrCore m_core;
+
+    /** The Solr CoreContainer object. */
+    private CoreContainer m_coreContainer;
+
+    /** The SolrServer object. */
+    private SolrServer m_solrServer;
 
     /**
      * Private constructor due to usage of the Singleton pattern.
@@ -213,6 +213,14 @@ public final class CmsSolrSpellchecker {
     }
 
     /**
+     * Shuts down the SOLR spell check server.
+     */
+    public void shutDown() {
+
+        m_solrServer.shutdown();
+    }
+
+    /**
      * Parses and adds dictionaries to the Solr index.
      *
      * @param cms The OpenCms object.
@@ -259,7 +267,7 @@ public final class CmsSolrSpellchecker {
                     final List<String> l = solrSuggestions.get(key).getAlternatives();
                     suggestions.put(key, l);
                 } catch (JSONException e) {
-                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
+                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ", e);
                 }
             }
         }
@@ -288,7 +296,7 @@ public final class CmsSolrSpellchecker {
             try {
                 response.put(JSON_ERROR, true);
             } catch (JSONException ex) {
-                LOG.debug("Error while assembling spellcheck response in JSON format. ");
+                LOG.debug("Error while assembling spellcheck response in JSON format.", ex);
             }
         }
 
@@ -452,7 +460,7 @@ public final class CmsSolrSpellchecker {
             QueryResponse qres = m_solrServer.query(query);
             return qres.getSpellCheckResponse();
         } catch (SolrServerException e) {
-            LOG.debug("Exception while performing spellcheck query...");
+            LOG.debug("Exception while performing spellcheck query...", e);
         }
 
         return null;

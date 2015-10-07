@@ -177,6 +177,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          *
          * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
          */
+        @SuppressWarnings("unchecked")
         public void cmsEvent(CmsEvent event) {
 
             switch (event.getType()) {
@@ -390,6 +391,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 // offline update frequency change - clear interrupt status
                                 offlineUpdateFrequency = getOfflineUpdateFrequency();
                             }
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
                     if (m_isAlive) {
@@ -472,6 +474,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         Thread.sleep(waitTime);
                     } catch (InterruptedException e) {
                         // continue
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                     waitSteps++;
                     // wait 5 times then stop waiting
@@ -506,6 +509,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     thread.join(waitTime);
                 } catch (InterruptedException e) {
                     // continue
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 if (thread.isAlive()) {
                     LOG.warn(
@@ -828,6 +832,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         } catch (ClassNotFoundException e) {
             // allow Lucene standard classes to be written in a short form
             analyzerClass = Class.forName(LUCENE_ANALYZER + className);
+            LOG.warn(e.getLocalizedMessage(), e);
         }
 
         // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
@@ -1164,6 +1169,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         } catch (CmsLoaderException e) {
             // ignore, unknown resource type, resource can not be indexed
+            LOG.info(e.getLocalizedMessage(), e);
         }
         return getDocumentFactory(resourceType, mimeType);
     }
@@ -1473,9 +1479,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         // get the core container that contains one core for each configured index
         if (m_coreContainer == null) {
-            m_coreContainer = createCoreContainer();
+            initCoreContainer();
         }
-        SolrCore spellcheckCore = m_coreContainer.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
+        SolrCore spellcheckCore = null;
+        if (m_coreContainer != null) {
+            spellcheckCore = m_coreContainer.getCore(CmsSolrSpellchecker.SPELLCHECKER_INDEX_CORE);
+        }
         if (spellcheckCore == null) {
             LOG.error(
                 Messages.get().getBundle().key(
@@ -1522,6 +1531,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_adminCms = OpenCms.initCmsObject(cms);
         } catch (CmsException e) {
             // this should never happen
+            LOG.error(e.getLocalizedMessage(), e);
         }
         // make sure the site root is the root site
         m_adminCms.getRequestContext().setSiteRoot("/");
@@ -1760,11 +1770,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         // get the core container that contains one core for each configured index
         if (m_coreContainer == null) {
-            m_coreContainer = createCoreContainer();
+            initCoreContainer();
         }
 
         // create a new core if no core exists for the given index
-        if (!m_coreContainer.getCoreNames().contains(index.getName())) {
+        if ((m_coreContainer != null) && !m_coreContainer.getCoreNames().contains(index.getName())) {
             // Being sure the core container is not 'null',
             // we can create a core for this index if not already existent
             File dataDir = new File(index.getPath());
@@ -2080,8 +2090,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         try {
             m_highlighter = (I_CmsTermHighlighter)Class.forName(highlighter).newInstance();
-        } catch (Exception exc) {
+        } catch (Exception e) {
             m_highlighter = null;
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -2402,6 +2413,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             } catch (Exception e) {
                 // may be a missconfigured index, ignore
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -2513,7 +2525,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 } catch (Exception e) {
                     if (CmsLog.INIT.isWarnEnabled()) {
                         // in this case the index will be disabled
-                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index));
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index), e);
                     }
                 }
             }
@@ -2733,6 +2745,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
 
@@ -2892,6 +2905,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
                 }
@@ -2934,8 +2948,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             cms = OpenCms.initCmsObject(m_adminCms);
             // set site root and project for this index
             cms.getRequestContext().setSiteRoot("/");
-        } catch (CmsException e1) {
-            // NOOP, should never happen
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         Iterator<CmsSearchIndex> j = m_offlineIndexes.iterator();
@@ -2975,35 +2989,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
         }
-    }
-
-    /**
-     * Creates the Solr core container.<p>
-     *
-     * @return the created core container
-     */
-    private CoreContainer createCoreContainer() {
-
-        CoreContainer container = null;
-        try {
-            // get the core container
-            // still no core container: create it
-            container = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
-            if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(
-                    Messages.get().getBundle().key(
-                        Messages.INIT_SOLR_CORE_CONTAINER_CREATED_2,
-                        m_solrConfig.getHome(),
-                        m_solrConfig.getSolrFile().getName()));
-            }
-        } catch (Exception e) {
-            LOG.error(
-                Messages.get().container(
-                    Messages.ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1,
-                    m_solrConfig.getSolrFile().getAbsolutePath()),
-                e);
-        }
-        return container;
     }
 
     /**
@@ -3051,6 +3036,33 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Initializes the Solr core container.<p>
+     */
+    private synchronized void initCoreContainer() {
+
+        if (m_coreContainer == null) {
+            try {
+                // get the core container
+                // still no core container: create it
+                m_coreContainer = new CoreContainer(m_solrConfig.getHome(), m_solrConfig.getSolrFile());
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(
+                        Messages.get().getBundle().key(
+                            Messages.INIT_SOLR_CORE_CONTAINER_CREATED_2,
+                            m_solrConfig.getHome(),
+                            m_solrConfig.getSolrFile().getName()));
+                }
+            } catch (Exception e) {
+                LOG.error(
+                    Messages.get().container(
+                        Messages.ERR_SOLR_CORE_CONTAINER_NOT_CREATED_1,
+                        m_solrConfig.getSolrFile().getAbsolutePath()),
+                    e);
+            }
+        }
+    }
+
+    /**
      * Shuts down the Solr core container.<p>
      */
     private void shutDownSolrContainer() {
@@ -3058,16 +3070,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (m_coreContainer != null) {
             for (SolrCore core : m_coreContainer.getCores()) {
                 m_coreContainer.remove(core.getName());
-                if (core.getOpenCount() > 1) {
+                if (core.getOpenCount() > 0) {
                     LOG.error(
                         "There are still " + core.getOpenCount() + " open Solr cores left, potetial resource leak!");
-                    for (int i = 0; i <= core.getOpenCount(); i++) {
+                    while (core.getOpenCount() >= 0) {
                         core.close();
                     }
                 } else {
                     // close the last one
                     core.close();
                 }
+            }
+            CmsSolrSpellchecker spell = CmsSolrSpellchecker.getInstance();
+            if (spell != null) {
+                spell.shutDown();
             }
             m_coreContainer.shutdown();
             if (CmsLog.INIT.isInfoEnabled()) {
