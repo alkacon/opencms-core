@@ -44,6 +44,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
+import org.opencms.util.CmsRequestUtil;
 
 /**
  * Default implementation of the locale handler.<p>
@@ -88,7 +89,8 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             // must switch project id in stored Admin context to match current project
             adminCms.getRequestContext().setCurrentProject(project);
             adminCms.getRequestContext().setUri(resourceName);
-
+            CmsRequestUtil.warpRequestTime(adminCms, req);
+            
             // now get default m_locale names
             CmsResource res = null;
             try {
