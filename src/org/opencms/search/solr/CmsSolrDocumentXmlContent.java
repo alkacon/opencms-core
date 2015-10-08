@@ -100,7 +100,10 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
             // loop over the locales of the content 
             for (Locale locale : xmlContent.getLocales()) {
-                StringBuffer textContent = new StringBuffer();
+            	
+            	//Issues #230: Cleanup the variable for each iteration
+            	StringBuffer textContent = new StringBuffer();
+
                 // store the locales of the content as space separated field
                 locales.append(locale.toString());
                 locales.append(' ');
@@ -108,7 +111,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
                 // loop over the available element paths of the current content locale
                 List<String> paths = xmlContent.getNames(locale);
                 for (String xpath : paths) {
-
+                	
                     // try to get the value extraction for the current element path
                     String extracted = null;
                     I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
@@ -150,7 +153,7 @@ public class CmsSolrDocumentXmlContent extends CmsDocumentXmlContent {
 
             // add the locales that have been indexed for this document as item and return the extraction result
             items.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
-            return new CmsExtractionResult(defaultContent, items);
+            return new CmsExtractionResult(defaultContent, items, xmlContent.getHandler().getSearchFields());
 
         } catch (Throwable t) {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource), t);
