@@ -52,5 +52,5 @@ public interface I_CmsUploadButtonHandler {
      *
      * @param button the button for which the handler instance has been set
      */
-    void setButton(CmsUploadButton button);
+    void setButton(I_CmsUploadButton button);
 }

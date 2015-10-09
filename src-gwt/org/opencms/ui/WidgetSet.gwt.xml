@@ -7,6 +7,7 @@
 
 	<inherits name="org.opencms.GwtBaseCommon" />
 	<inherits name="org.opencms.ade.publish.PublishDialogCommon" />
+	<inherits name="org.opencms.ade.upload.UploadCommon" />
 	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
 
 	<source path="client" />

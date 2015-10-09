@@ -29,7 +29,7 @@ package org.opencms.gwt.client.ui.replace;
 
 import org.opencms.gwt.client.ui.contextmenu.CmsReplace;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
-import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.util.CmsUUID;
 
@@ -52,7 +52,7 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
     private CmsUUID m_structureId;
 
     /** The upload button. */
-    private CmsUploadButton m_uploadButton;
+    private I_CmsUploadButton m_uploadButton;
 
     /** The dialog close handler. */
     private CloseHandler<PopupPanel> m_closeHandler;
@@ -104,6 +104,14 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#setButton(org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton)
+     */
+    public void setButton(I_CmsUploadButton button) {
+
+        m_uploadButton = button;
+    }
+
+    /**
      * Sets the dialog close handler.<p>
      *
      * @param closeHandler the close handler
@@ -114,14 +122,6 @@ public class CmsReplaceHandler implements I_CmsUploadButtonHandler {
         if (m_dialog != null) {
             m_dialog.addCloseHandler(closeHandler);
         }
-    }
-
-    /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#setButton(org.opencms.gwt.client.ui.input.upload.CmsUploadButton)
-     */
-    public void setButton(CmsUploadButton button) {
-
-        m_uploadButton = button;
     }
 
     /**

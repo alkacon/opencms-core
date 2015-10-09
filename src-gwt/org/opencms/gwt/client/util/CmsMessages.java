@@ -338,7 +338,7 @@ public class CmsMessages {
             if (m_dictionary != null) {
                 return m_dictionary.get(keyName);
             }
-        } catch (MissingResourceException e) {
+        } catch (@SuppressWarnings("unused") MissingResourceException e) {
             // not found, return warning
             if (allowNull) {
                 return null;

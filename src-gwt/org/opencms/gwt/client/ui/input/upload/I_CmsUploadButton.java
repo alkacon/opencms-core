@@ -25,20 +25,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
-
-import com.vaadin.shared.communication.ServerRpc;
+package org.opencms.gwt.client.ui.input.upload;
 
 /**
- * Handles window close calls.<p>
+ * The upload button interface.<p>
  */
-public interface I_CmsWindowCloseServerRpc extends ServerRpc {
+public interface I_CmsUploadButton {
 
     /**
-     * Executed on window close.p>
+     * Creates and adds a file input.<p>
      *
-     * @param syncToken the sync token is used to trigger synchronous rpc requests,
-     *        it's value needs to be set to org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN
+     * @return returns the previous file input widget
      */
-    void windowClosed(String syncToken);
+    CmsFileInput createFileInput();
+
+    /**
+     * Gets the upload button handler instance for this button.<p>
+     *
+     * @return the upload button handler
+     */
+    I_CmsUploadButtonHandler getButtonHandler();
+
+    /**
+     * Reinitializes the button with a new button handler.<p>
+     *
+     * @param buttonHandler the button handler
+     */
+    void reinitButton(I_CmsUploadButtonHandler buttonHandler);
 }

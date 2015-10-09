@@ -25,20 +25,38 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.rpc;
+package org.opencms.ui.shared.components;
 
-import com.vaadin.shared.communication.ServerRpc;
+import com.vaadin.shared.ui.button.ButtonState;
 
 /**
- * Handles window close calls.<p>
+ * The upload button state.<p>
  */
-public interface I_CmsWindowCloseServerRpc extends ServerRpc {
+public class CmsUploadState extends ButtonState {
+
+    /** Serial version id. */
+    private static final long serialVersionUID = -763395505975462778L;
+
+    /** The upload target folder root path. */
+    private String m_targetFolderRootPath;
 
     /**
-     * Executed on window close.p>
+     * Returns the targetFolderRootPath.<p>
      *
-     * @param syncToken the sync token is used to trigger synchronous rpc requests,
-     *        it's value needs to be set to org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN
+     * @return the targetFolderRootPath
      */
-    void windowClosed(String syncToken);
+    public String getTargetFolderRootPath() {
+
+        return m_targetFolderRootPath;
+    }
+
+    /**
+     * Sets the targetFolderRootPath.<p>
+     *
+     * @param targetFolderRootPath the targetFolderRootPath to set
+     */
+    public void setTargetFolderRootPath(String targetFolderRootPath) {
+
+        m_targetFolderRootPath = targetFolderRootPath;
+    }
 }

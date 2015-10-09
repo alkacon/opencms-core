@@ -52,6 +52,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadProgressInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsUploader;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadDialog;
 import org.opencms.gwt.client.util.CmsChangeHeightAnimation;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -94,6 +95,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Provides an upload dialog.<p>
@@ -212,7 +214,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     };
 
     /** The upload button of this dialog. */
-    private CmsUploadButton m_uploadButton;
+    private I_CmsUploadButton m_uploadButton;
 
     /** The upload service instance. */
     private I_CmsUploadServiceAsync m_uploadService;
@@ -1146,7 +1148,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_selectionDone = true;
         if (!m_filesToUpload.isEmpty()) {
             m_okButton.disable(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_OK_DISABLE_UPLOADING_0));
-            m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
+            if (m_uploadButton instanceof UIObject) {
+                ((UIObject)m_uploadButton).getElement().getStyle().setDisplay(Display.NONE);
+            }
             showProgress();
             submit();
         }
@@ -1209,10 +1213,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             });
         buttonHandler.setUploadDialog(this);
         // add a new upload button
-        m_uploadButton = new CmsUploadButton(buttonHandler);
-        m_uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
-        m_uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
-        addButton(m_uploadButton);
+        CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
+        uploadButton.addStyleName(I_CmsLayoutBundle.INSTANCE.uploadCss().uploadDialogButton());
+        uploadButton.setText(Messages.get().key(Messages.GUI_UPLOAD_BUTTON_ADD_FILES_0));
+        addButton(uploadButton);
+        m_uploadButton = uploadButton;
     }
 
     /**
@@ -1312,8 +1317,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         m_selectionDone = true;
         m_okButton.enable();
         displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
-        m_uploadButton.getElement().getStyle().setDisplay(Display.NONE);
-
+        if (m_uploadButton instanceof UIObject) {
+            ((UIObject)m_uploadButton).getElement().getStyle().setDisplay(Display.NONE);
+        }
         // clear the list
         m_fileList.clearList();
 

@@ -27,18 +27,19 @@
 
 package org.opencms.ui.shared.rpc;
 
+import java.util.List;
+
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
- * Handles window close calls.<p>
+ * The upload RPC interface.<p>
  */
-public interface I_CmsWindowCloseServerRpc extends ServerRpc {
+public interface I_CmsUploadRpc extends ServerRpc {
 
     /**
-     * Executed on window close.p>
+     * Called once the upload is finished.<p>
      *
-     * @param syncToken the sync token is used to trigger synchronous rpc requests,
-     *        it's value needs to be set to org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN
+     * @param uploadedFiles the uploaded file root paths
      */
-    void windowClosed(String syncToken);
+    void onUploadFinished(List<String> uploadedFiles);
 }

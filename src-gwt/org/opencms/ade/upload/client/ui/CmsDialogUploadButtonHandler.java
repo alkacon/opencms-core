@@ -31,7 +31,7 @@ import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
-import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 
 import java.util.List;
@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
 
     /** The upload button instance. */
-    private CmsUploadButton m_button;
+    private I_CmsUploadButton m_button;
 
     /** The close handler for the upload dialog. */
     private CloseHandler<PopupPanel> m_closeHandler;
@@ -164,9 +164,9 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
     }
 
     /**
-     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#setButton(org.opencms.gwt.client.ui.input.upload.CmsUploadButton)
+     * @see org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler#setButton(org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton)
      */
-    public void setButton(CmsUploadButton button) {
+    public void setButton(I_CmsUploadButton button) {
 
         m_button = button;
     }

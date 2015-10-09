@@ -114,6 +114,24 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
     }
 
     /**
+     * @see com.google.gwt.user.client.ui.Widget#onAttach()
+     */
+    @Override
+    public void onAttach() {
+
+        super.onAttach();
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onDetach()
+     */
+    @Override
+    public void onDetach() {
+
+        super.onDetach();
+    }
+
+    /**
      * Sets the the flag for allowing multiple file selection.<p>
      *
      * @param allow <code>true</code> if the multiple file selection should be allowed

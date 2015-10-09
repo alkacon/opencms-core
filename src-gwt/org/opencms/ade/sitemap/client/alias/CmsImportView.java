@@ -40,6 +40,7 @@ import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.input.upload.CmsUploadButton;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButton;
 import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.gwt.shared.alias.CmsAliasImportResult;
 import org.opencms.util.CmsStringUtil;
@@ -142,7 +143,7 @@ public class CmsImportView extends Composite {
 
             }
 
-            public void setButton(CmsUploadButton button) {
+            public void setButton(I_CmsUploadButton button) {
 
                 // do nothing
 

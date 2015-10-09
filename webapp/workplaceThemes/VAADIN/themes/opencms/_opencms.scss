@@ -565,6 +565,20 @@
   	display: none;  
   }
   
+  /* upload button styles */
+  div.o-upload-button{
+  	overflow: hidden;
+	position: relative;
+  
+  	input[type=file] {
+		position: absolute;
+		right: -1px;
+		top: -10px;
+		z-index: 10;
+		opacity: 0;
+  	}
+  }
+  
   /* file explorer styles */
   .v-table-cell-wrapper > .v-widget.o-inline-textfield{
   	padding: 2px 4px;

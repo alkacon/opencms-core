@@ -53,6 +53,8 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
 import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.CmsUploadButton;
+import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -388,6 +390,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
 
     /** The folder tree data container. */
     private HierarchicalContainer m_treeContainer;
+
+    /** The upload button. */
+    private CmsUploadButton m_uploadButton;
 
     /**
      * Constructor.<p>
@@ -804,6 +809,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
                 CmsAppWorkplaceUi.get().changeCurrentAppState(m_currentState);
             }
             m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
+            m_uploadButton.setTargetFolder(folder.getRootPath());
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
@@ -1096,18 +1102,17 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         });
         context.addToolbarButton(newButton);
 
-        Button uploadButton = CmsToolBar.createButton(FontOpenCms.UPLOAD);
-        uploadButton.addClickListener(new ClickListener() {
+        m_uploadButton = new CmsUploadButton(FontOpenCms.UPLOAD, "/");
+        m_uploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        m_uploadButton.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
+        m_uploadButton.addUploadListsner(new I_UploadListener() {
 
-            private static final long serialVersionUID = 1L;
+            public void onUploadFinished(List<String> uploadedFiles) {
 
-            public void buttonClick(ClickEvent event) {
-
-                Notification.show("The upload dialog has not been implemented yet.", Type.WARNING_MESSAGE);
+                updateAll();
             }
-
         });
-        context.addToolbarButton(uploadButton);
+        context.addToolbarButton(m_uploadButton);
     }
 
     /**

@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  *
  * @since 8.0.0
  */
-public class CmsUploadButton extends Composite implements HasHorizontalAlignment {
+public class CmsUploadButton extends Composite implements HasHorizontalAlignment, I_CmsUploadButton {
 
     /** The ui-binder interface. */
     protected interface I_CmsUploadButtonUiBinder extends UiBinder<CmsFlowPanel, CmsUploadButton> {
