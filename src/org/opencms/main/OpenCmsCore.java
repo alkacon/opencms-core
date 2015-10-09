@@ -1775,7 +1775,9 @@ public final class OpenCmsCore {
 
                 try {
                     // the first thing we have to do is to wait until the current publish process finishes
-                    m_publishEngine.shutDown();
+                    if (null != m_publishEngine) {
+                        m_publishEngine.shutDown();
+                    }
                 } catch (Throwable e) {
                     CmsLog.INIT.error(
                         Messages.get().getBundle().key(Messages.LOG_ERROR_PUBLISH_SHUTDOWN_1, e.getMessage()),
