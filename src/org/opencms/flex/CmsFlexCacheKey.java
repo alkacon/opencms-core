@@ -117,7 +117,7 @@ public class CmsFlexCacheKey {
     private static final String CACHE_20_DEVICE = "device";
 
     /** Flex cache keyword: container-element. */
-    private static final String CACHE_22_CONTAINER_ELEMENT = "container-element";
+    private static final String CACHE_21_CONTAINER_ELEMENT = "container-element";
 
     /** The list of keywords of the Flex cache language. */
     private static final List<String> CACHE_COMMANDS = Arrays.asList(
@@ -143,7 +143,7 @@ public class CmsFlexCacheKey {
             CACHE_18_ATTRS,
             CACHE_19_NO_ATTRS,
             CACHE_20_DEVICE,
-            CACHE_22_CONTAINER_ELEMENT});
+            CACHE_21_CONTAINER_ELEMENT});
 
     /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
@@ -371,7 +371,7 @@ public class CmsFlexCacheKey {
         }
 
         if (m_containerElement != null) {
-            appendKeyValue(str, CACHE_22_CONTAINER_ELEMENT, key.getContainerElement());
+            appendKeyValue(str, CACHE_21_CONTAINER_ELEMENT, key.getContainerElement());
         }
 
         if (m_locale != null) {
@@ -608,7 +608,7 @@ public class CmsFlexCacheKey {
             appendKeyValue(str, CACHE_20_DEVICE, m_device);
         }
         if (m_containerElement != null) {
-            appendKeyValue(str, CACHE_22_CONTAINER_ELEMENT, m_containerElement);
+            appendKeyValue(str, CACHE_21_CONTAINER_ELEMENT, m_containerElement);
         }
         if (m_locale != null) {
             // add locale
