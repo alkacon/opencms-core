@@ -25,98 +25,74 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
+package org.opencms.ui.components.extensions;
 
-import org.opencms.ui.shared.components.CmsUploadState;
+import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
+import org.opencms.ui.shared.components.CmsUploadAreaState;
 import org.opencms.ui.shared.rpc.I_CmsUploadRpc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.server.Resource;
-import com.vaadin.ui.Button;
+import com.vaadin.server.AbstractExtension;
+import com.vaadin.ui.AbstractComponent;
 
 /**
- * The upload button.<p>
+ * Extends the given component to be an upload drop area.<p>
  */
-public class CmsUploadButton extends Button implements I_CmsUploadRpc {
+public class CmsUploadAreaExtension extends AbstractExtension implements I_CmsUploadRpc {
 
-    /**
-     * Upload listener interface.<p>
-     */
-    public interface I_UploadListener {
+    /** The serial version id. */
+    private static final long serialVersionUID = 3978957151754705873L;
 
-        /**
-         * Called once the upload is finished.<p>
-         *
-         * @param uploadedFiles the uploaded files root paths
-         */
-        void onUploadFinished(List<String> uploadedFiles);
-    }
-
-    /** Serial version id. */
-    private static final long serialVersionUID = -8591991683786743571L;
-
-    /** The upoad listeners. */
-    private List<I_UploadListener> m_uploadListener;
+    /** The registered window close listeners. */
+    private List<I_UploadListener> m_listeners;
 
     /**
      * Constructor.<p>
      *
-     * @param icon the button icon
-     * @param targetFolderRootPath the target folder path
+     * @param component the component to extend
      */
-    public CmsUploadButton(Resource icon, String targetFolderRootPath) {
-        this(targetFolderRootPath);
-        setIcon(icon);
-    }
-
-    /**
-     * Constructor.<p>
-     *
-     * @param targetFolderRootPath the upload target folder root path
-     */
-    public CmsUploadButton(String targetFolderRootPath) {
-        super();
+    public CmsUploadAreaExtension(AbstractComponent component) {
+        extend(component);
         registerRpc(this);
-        m_uploadListener = new ArrayList<I_UploadListener>();
-        getState().setTargetFolderRootPath(targetFolderRootPath);
+        m_listeners = new ArrayList<I_UploadListener>();
     }
 
     /**
-     * Adds an upload listener.<p>
+     * Adds a window close listener.<p>
      *
-     * @param listener the listener instance
+     * @param listener the listener to add
      */
     public void addUploadListener(I_UploadListener listener) {
 
-        m_uploadListener.add(listener);
+        m_listeners.add(listener);
     }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsUploadRpc#onUploadFinished(java.util.List)
      */
-    public void onUploadFinished(List<String> uploadedFiles) {
+    public void onUploadFinished(List<String> files) {
 
-        for (I_UploadListener listener : m_uploadListener) {
-            listener.onUploadFinished(uploadedFiles);
+        for (I_UploadListener listener : m_listeners) {
+            listener.onUploadFinished(files);
         }
     }
 
     /**
-     * Removes the given upload listener.<p>
+     * Removes the given window close listener.<p>
      *
      * @param listener the listener to remove
      */
     public void removeUploadListener(I_UploadListener listener) {
 
-        m_uploadListener.remove(listener);
+        m_listeners.remove(listener);
     }
 
     /**
      * Sets the upload target folder.<p>
      *
-     * @param targetFolder the upload target
+     * @param targetFolder the folder root path
      */
     public void setTargetFolder(String targetFolder) {
 
@@ -124,11 +100,11 @@ public class CmsUploadButton extends Button implements I_CmsUploadRpc {
     }
 
     /**
-     * @see com.vaadin.ui.AbstractComponent#getState()
+     * @see com.vaadin.server.AbstractClientConnector#getState()
      */
     @Override
-    protected CmsUploadState getState() {
+    protected CmsUploadAreaState getState() {
 
-        return (CmsUploadState)super.getState();
+        return (CmsUploadAreaState)super.getState();
     }
 }

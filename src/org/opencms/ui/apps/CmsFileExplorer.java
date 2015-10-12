@@ -59,6 +59,7 @@ import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -394,6 +395,9 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
+    /** The upload drop area extension. */
+    private CmsUploadAreaExtension m_uploadArea;
+
     /**
      * Constructor.<p>
      */
@@ -409,6 +413,15 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             public void itemClick(ItemClickEvent event) {
 
                 handleFileItemClick(event);
+            }
+        });
+
+        m_uploadArea = new CmsUploadAreaExtension(m_fileTable);
+        m_uploadArea.addUploadListener(new I_UploadListener() {
+
+            public void onUploadFinished(List<String> uploadedFiles) {
+
+                updateAll();
             }
         });
         m_treeContainer = new HierarchicalContainer();
@@ -810,6 +823,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             }
             m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
             m_uploadButton.setTargetFolder(folder.getRootPath());
+            m_uploadArea.setTargetFolder(folder.getRootPath());
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
@@ -1105,7 +1119,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         m_uploadButton = new CmsUploadButton(FontOpenCms.UPLOAD, "/");
         m_uploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         m_uploadButton.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
-        m_uploadButton.addUploadListsner(new I_UploadListener() {
+        m_uploadButton.addUploadListener(new I_UploadListener() {
 
             public void onUploadFinished(List<String> uploadedFiles) {
 

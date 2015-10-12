@@ -233,7 +233,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         buttonHandler.setIsTargetRootPath(false);
         m_uploadButton = new CmsUploadButton(buttonHandler);
         m_uploadButton.setText(null);
-        m_uploadButton.setTitle(Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
+        m_uploadButton.setTitle(
+            Messages.get().key(Messages.GUI_GALLERY_UPLOAD_TITLE_1, configuration.getUploadFolder()));
         m_uploadButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         m_uploadButton.setImageClass(I_CmsImageBundle.INSTANCE.style().uploadSmallIcon());
         m_uploadButton.removeStyleName(I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
@@ -264,7 +265,8 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
             @Override
             public I_CmsFormWidget createWidget(Map<String, String> widgetParams) {
 
-                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(widgetParams.get("configuration"));
+                CmsGalleryConfigurationJSO conf = CmsGalleryConfigurationJSO.parseConfiguration(
+                    widgetParams.get("configuration"));
                 CmsGalleryField galleryField = new CmsGalleryField(conf, false);
                 return galleryField;
             }
@@ -602,7 +604,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param structureId the resource structure id
      * @param croppingParameter the selected cropping
      */
-    protected void setValueFromGallery(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+    protected void setValueFromGallery(
+        String resourcePath,
+        CmsUUID structureId,
+        CmsCroppingParamBean croppingParameter) {
 
         m_croppingParam = croppingParameter;
         String path = resourcePath;
@@ -628,8 +633,9 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_uploadTarget)) {
             // disable the upload button as no target folder is available
-            m_uploadButton.disable(org.opencms.ade.upload.client.Messages.get().key(
-                org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
+            m_uploadButton.disable(
+                org.opencms.ade.upload.client.Messages.get().key(
+                    org.opencms.ade.upload.client.Messages.GUI_UPLOAD_BUTTON_NO_TARGET_0));
         } else {
             // make sure the upload button is available
             m_uploadButton.enable();
@@ -807,7 +813,10 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
         I_CmsGalleryWidgetHandler handler = new I_CmsGalleryWidgetHandler() {
 
             @Override
-            public void setWidgetValue(String resourcePath, CmsUUID structureId, CmsCroppingParamBean croppingParameter) {
+            public void setWidgetValue(
+                String resourcePath,
+                CmsUUID structureId,
+                CmsCroppingParamBean croppingParameter) {
 
                 setValueFromGallery(resourcePath, structureId, croppingParameter);
             }
@@ -822,40 +831,40 @@ implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasRes
      * @param element the drop zone element
      */
     private native void initUploadZone(JavaScriptObject element)/*-{
-                                                                                                   // check for file api support
-                                                                                                   if ((typeof FileReader == 'function' || typeof FileReader == 'object')&&(typeof FormData == 'function' || typeof FormData == 'object')) {
-                                                                                                   var self=this;
+        // check for file api support
+        if ((typeof FileReader == 'function' || typeof FileReader == 'object')
+                && (typeof FormData == 'function' || typeof FormData == 'object')) {
+            var self = this;
 
-                                                                                                   function dragover(event) {
-                                                                                                   event.stopPropagation();
-                                                                                                   event.preventDefault();
-                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
-                                                                                                   }
+            function dragover(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOver()();
+            }
 
+            function dragleave(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+            }
 
-                                                                                                   function dragleave(event) {
-                                                                                                   event.stopPropagation();
-                                                                                                   event.preventDefault();
-                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-                                                                                                   }
+            function drop(event) {
+                event.preventDefault();
+                self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
+                if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget != null) {
+                    var dt = event.dataTransfer;
+                    var files = dt.files;
+                    self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                }
+            }
 
-                                                                                                   function drop(event) {
-                                                                                                   event.preventDefault();
-                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::onDragOut()();
-                                                                                                   if (self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::m_uploadTarget!=null){
-                                                                                                   var dt = event.dataTransfer;
-                                                                                                   var files = dt.files;
-                                                                                                   self.@org.opencms.ade.galleries.client.ui.CmsGalleryField::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
-                                                                                                   }
-                                                                                                   }
-
-                                                                                                   element.addEventListener("dragover", dragover, false);
-                                                                                                   element.addEventListener("dragexit", dragleave, false);
-                                                                                                   element.addEventListener("dragleave", dragleave, false);
-                                                                                                   element.addEventListener("dragend", dragleave, false);
-                                                                                                   element.addEventListener("drop", drop, false);
-                                                                                                   }
-                                                                                                   }-*/;
+            element.addEventListener("dragover", dragover, false);
+            element.addEventListener("dragexit", dragleave, false);
+            element.addEventListener("dragleave", dragleave, false);
+            element.addEventListener("dragend", dragleave, false);
+            element.addEventListener("drop", drop, false);
+        }
+    }-*/;
 
     /**
      * Opens the upload dialog with the given file references to upload.<p>

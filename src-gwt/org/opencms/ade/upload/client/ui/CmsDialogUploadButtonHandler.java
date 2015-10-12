@@ -148,9 +148,11 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
                 I_CmsUploadContext context = m_contextFactory.get();
                 m_uploadDialog.setContext(context);
                 updateDialog();
-                // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
-                m_button.reinitButton(
-                    new CmsDialogUploadButtonHandler(m_contextFactory, m_targetFolder, m_isTargetRootPath));
+                if (m_button != null) {
+                    // the current upload button is located outside the dialog, reinitialize it with a new button handler instance
+                    m_button.reinitButton(
+                        new CmsDialogUploadButtonHandler(m_contextFactory, m_targetFolder, m_isTargetRootPath));
+                }
             } catch (Exception e) {
                 CmsErrorDialog.handleException(
                     new Exception(
@@ -160,7 +162,9 @@ public class CmsDialogUploadButtonHandler implements I_CmsUploadButtonHandler {
             }
         }
         m_uploadDialog.addFiles(files);
-        m_button.createFileInput();
+        if (m_button != null) {
+            m_button.createFileInput();
+        }
     }
 
     /**

@@ -565,6 +565,15 @@
   	display: none;  
   }
   
+  div.o-upload-drop{
+  	position: relative;
+  	background-color: $v-selection-color;
+  	
+  	> * {
+  		opacity: 0.6;
+  	}
+  }
+  
   /* upload button styles */
   div.o-upload-button{
   	overflow: hidden;
