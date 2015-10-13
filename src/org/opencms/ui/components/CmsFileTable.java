@@ -65,8 +65,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -206,7 +204,7 @@ public class CmsFileTable extends CmsResourceTable {
     private static final long serialVersionUID = 5460048685141699277L;
 
     /** The selected resources. */
-    protected List<CmsResource> m_currentResources = Lists.newArrayList();
+    protected List<CmsResource> m_currentResources = new ArrayList<CmsResource>();
 
     /** The current file property edit handler. */
     I_CmsFilePropertyEditHandler m_editHandler;
@@ -280,7 +278,7 @@ public class CmsFileTable extends CmsResourceTable {
 
                 @SuppressWarnings("unchecked")
                 Set<CmsUUID> selectedIds = (Set<CmsUUID>)event.getProperty().getValue();
-                List<CmsResource> selectedResources = Lists.newArrayList();
+                List<CmsResource> selectedResources = new ArrayList<CmsResource>();
                 for (CmsUUID id : selectedIds) {
                     try {
                         CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
@@ -523,7 +521,7 @@ public class CmsFileTable extends CmsResourceTable {
         for (CmsUUID id : ids) {
             updateItem(id);
         }
-        m_fileTable.setValue(Sets.newHashSet());
+        clearSelection();
     }
 
     /**

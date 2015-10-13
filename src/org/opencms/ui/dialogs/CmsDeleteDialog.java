@@ -72,7 +72,7 @@ import com.vaadin.ui.VerticalLayout;
 public class CmsDeleteDialog extends CmsBasicDialog {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDeleteDialog.class);
+    static final Log LOG = CmsLog.getLog(CmsDeleteDialog.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
@@ -99,7 +99,6 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     public CmsDeleteDialog(final I_CmsDialogContext context) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         displayResourceInfo(context.getResources());
-        //   new CmsMaxHeightExtension(m_container, 300);
 
         final CmsObject cms = A_CmsUI.getCmsObject();
 

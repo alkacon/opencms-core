@@ -35,6 +35,7 @@ import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.I_CmsComponentFactory;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
+import org.opencms.ui.components.extensions.CmsHistoryExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -58,7 +59,6 @@ import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 /**
@@ -100,6 +100,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
+
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
@@ -112,11 +118,8 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
+    /** The history extension. */
+    private CmsHistoryExtension m_history;
 
     /**
      * Gets the current UI instance.<p>
@@ -236,6 +239,22 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Executes the history back function.<p>
+     */
+    public void historyBack() {
+
+        m_history.historyBack();
+    }
+
+    /**
+     * Executes the history forward function.<p>
+     */
+    public void historyForward() {
+
+        m_history.historyForward();
+    }
+
+    /**
      * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
      */
     public void onWindowClose() {
@@ -283,6 +302,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if (component != null) {
             setContent(component);
         }
+
     }
 
     /**
@@ -306,7 +326,8 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
                 markAsDirtyRecursive();
             }
         });
-        CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(UI.getCurrent());
+        m_history = new CmsHistoryExtension(getCurrent());
+        CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(getCurrent());
         windowClose.addWindowCloseListener(this);
         navigator.addViewChangeListener(this);
 
@@ -316,5 +337,4 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             showHome();
         }
     }
-
 }

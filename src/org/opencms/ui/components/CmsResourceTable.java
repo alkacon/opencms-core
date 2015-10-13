@@ -59,6 +59,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -304,6 +305,14 @@ public class CmsResourceTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Clears the value selection.<p>
+     */
+    public void clearSelection() {
+
+        m_fileTable.setValue(Collections.emptySet());
+    }
+
+    /**
      * Fills the resource table.<p>
      *
      * @param cms the current CMS context
@@ -318,6 +327,15 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             fillItem(cms, resource, wpLocale);
         }
         m_fileTable.sort();
+        clearSelection();
+    }
+
+    /**
+     * Selects all resources.<p>
+     */
+    public void selectAll() {
+
+        m_fileTable.setValue(m_fileTable.getItemIds());
     }
 
     /**

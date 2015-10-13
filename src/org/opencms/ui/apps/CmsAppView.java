@@ -36,6 +36,14 @@ import org.opencms.ui.components.CmsAppViewLayout;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
@@ -47,7 +55,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory {
+public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory, Handler {
 
     /**
      * Used in case the requested app can not be displayed to the current user.<p>
@@ -78,8 +86,26 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
 
     }
 
+    /** The history back action. */
+    private static final Action ACTION_HISTORY_BACK = new ShortcutAction(
+        "Alt+ArrowLeft",
+        ShortcutAction.KeyCode.ARROW_LEFT,
+        new int[] {ShortcutAction.ModifierKey.ALT});
+
+    /** The history forward action. */
+    private static final Action ACTION_HISTORY_FORWARD = new ShortcutAction(
+        "Alt+ArrowRight",
+        ShortcutAction.KeyCode.ARROW_RIGHT,
+        new int[] {ShortcutAction.ModifierKey.ALT});
+
     /** The serial version id. */
     private static final long serialVersionUID = -8128528863875050216L;
+
+    /** The default shortcut actions. */
+    private Map<Action, Runnable> m_defaultActions;
+
+    /** The app shortcut actions. */
+    private Map<Action, Runnable> m_appActions;
 
     /** The app configuration. */
     private I_CmsWorkplaceAppConfiguration m_appConfig;
@@ -95,6 +121,21 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
     public CmsAppView(I_CmsWorkplaceAppConfiguration appConfig) {
 
         m_appConfig = appConfig;
+        m_defaultActions = new HashMap<Action, Runnable>();
+        m_defaultActions.put(ACTION_HISTORY_BACK, new Runnable() {
+
+            public void run() {
+
+                ((CmsAppWorkplaceUi)UI.getCurrent()).historyBack();
+            }
+        });
+        m_defaultActions.put(ACTION_HISTORY_FORWARD, new Runnable() {
+
+            public void run() {
+
+                ((CmsAppWorkplaceUi)UI.getCurrent()).historyForward();
+            }
+        });
     }
 
     /**
@@ -123,6 +164,7 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
+        UI.getCurrent().removeActionHandler(this);
         if (m_app instanceof ViewChangeListener) {
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
@@ -158,7 +200,35 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
             newState = newState.substring(1);
         }
         m_app.onStateChange(newState);
+        if (m_app instanceof I_CmsHasShortcutActions) {
+            m_appActions = ((I_CmsHasShortcutActions)m_app).getShortcutActions();
+        }
+        UI.getCurrent().addActionHandler(this);
+    }
 
+    /**
+     * @see com.vaadin.event.Action.Handler#getActions(java.lang.Object, java.lang.Object)
+     */
+    public Action[] getActions(Object target, Object sender) {
+
+        if (m_appActions != null) {
+            Set<Action> actions = new HashSet<Action>(m_defaultActions.keySet());
+            actions.addAll(m_appActions.keySet());
+            return actions.toArray(new Action[actions.size()]);
+        }
+        return m_defaultActions.keySet().toArray(new Action[m_defaultActions.size()]);
+    }
+
+    /**
+     * @see com.vaadin.event.Action.Handler#handleAction(com.vaadin.event.Action, java.lang.Object, java.lang.Object)
+     */
+    public void handleAction(Action action, Object sender, Object target) {
+
+        if ((m_appActions != null) && m_appActions.containsKey(action)) {
+            m_appActions.get(action).run();
+        } else if (m_defaultActions.containsKey(action)) {
+            m_defaultActions.get(action).run();
+        }
     }
 
     /**

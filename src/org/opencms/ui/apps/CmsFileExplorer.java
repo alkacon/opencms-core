@@ -61,8 +61,10 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
+import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
@@ -89,12 +91,14 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.Action;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -124,7 +128,8 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * The file explorer app.<p>
  */
-public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
+public class CmsFileExplorer
+implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
 
     /**
      * Handles inline editing within the file table.<p>
@@ -326,6 +331,30 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         }
     }
 
+    /** The delete shortcut. */
+    private static final Action ACTION_DELETE = new ShortcutAction("Del", ShortcutAction.KeyCode.DELETE, null);
+
+    /** The open parent folder shortcut. */
+    private static final Action ACTION_FOLDER_UP = new ShortcutAction(
+        "Alt+ArrowUp",
+        ShortcutAction.KeyCode.ARROW_UP,
+        new int[] {ShortcutAction.ModifierKey.ALT});
+
+    /** The edit properties shortcut. */
+    private static final Action ACTION_PROPERTIES = new ShortcutAction(
+        "Alt+Enter",
+        ShortcutAction.KeyCode.ENTER,
+        new int[] {ShortcutAction.ModifierKey.ALT});
+
+    /** The rename shortcut. */
+    private static final Action ACTION_RENAME = new ShortcutAction("F2", ShortcutAction.KeyCode.F2, null);
+
+    /** The select all shortcut. */
+    private static final Action ACTION_SELECT_ALL = new ShortcutAction(
+        "Ctrl+A",
+        ShortcutAction.KeyCode.A,
+        new int[] {ShortcutAction.ModifierKey.CTRL});
+
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
@@ -392,17 +421,70 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     /** The folder tree data container. */
     private HierarchicalContainer m_treeContainer;
 
+    /** The upload drop area extension. */
+    private CmsUploadAreaExtension m_uploadArea;
+
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
-    /** The upload drop area extension. */
-    private CmsUploadAreaExtension m_uploadArea;
+    /** The explorer shortcuts. */
+    Map<Action, Runnable> m_shortcutActions;
 
     /**
      * Constructor.<p>
      */
     @SuppressWarnings("unchecked")
     public CmsFileExplorer() {
+        m_shortcutActions = new HashMap<Action, Runnable>();
+        m_shortcutActions.put(ACTION_DELETE, new Runnable() {
+
+            public void run() {
+
+                if (!m_fileTable.getSelectedIds().isEmpty()) {
+                    I_CmsDialogContext context1 = createDialogContext(null);
+                    context1.start("Delete", new CmsDeleteDialog(context1));
+                }
+            }
+        });
+
+        m_shortcutActions.put(ACTION_FOLDER_UP, new Runnable() {
+
+            public void run() {
+
+                showParentFolder();
+            }
+        });
+
+        m_shortcutActions.put(ACTION_PROPERTIES, new Runnable() {
+
+            public void run() {
+
+                if (m_fileTable.getSelectedIds().size() == 1) {
+                    new CmsEditPropertiesAction().executeAction(createDialogContext(null));
+                }
+            }
+        });
+
+        m_shortcutActions.put(ACTION_RENAME, new Runnable() {
+
+            public void run() {
+
+                if (m_fileTable.getSelectedIds().size() == 1) {
+                    CmsUUID id = m_fileTable.getSelectedIds().iterator().next();
+                    new ContextMenuEditHandler(
+                        id,
+                        CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).contextMenuItemClicked(null);
+                }
+            }
+        });
+
+        m_shortcutActions.put(ACTION_SELECT_ALL, new Runnable() {
+
+            public void run() {
+
+                m_fileTable.selectAll();
+            }
+        });
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new MenuBuilder());
@@ -557,6 +639,14 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsHasShortcutActions#getShortcutActions()
+     */
+    public Map<Action, Runnable> getShortcutActions() {
+
+        return m_shortcutActions;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
      */
     public void initUI(I_CmsAppUIContext context) {
@@ -577,6 +667,7 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
         }
         sp.setSecondComponent(m_fileTable);
         sp.setSplitPosition(400 - 1, Unit.PIXELS);
+
         context.setAppContent(sp);
         context.showInfoArea(true);
         HorizontalLayout inf = new HorizontalLayout();
@@ -992,6 +1083,18 @@ public class CmsFileExplorer implements I_CmsWorkplaceApp, ViewChangeListener, I
             m_crumbs.removeStyleName(OpenCmsTheme.HIDDEN);
         } else {
             m_crumbs.addStyleName(OpenCmsTheme.HIDDEN);
+        }
+    }
+
+    /**
+     * Shows the parent folder, if available.<p>
+     */
+    void showParentFolder() {
+
+        CmsUUID parentId = (CmsUUID)m_treeContainer.getParent(m_currentFolder);
+        if (parentId != null) {
+            readFolder(parentId);
+            m_fileTree.select(parentId);
         }
     }
 
