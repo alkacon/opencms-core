@@ -967,7 +967,7 @@ public class CmsADEConfigData {
         }
         applyAllFormatterChanges(externalFormattersById, formatterCacheState);
         for (I_CmsFormatterBean formatter : externalFormattersById.values()) {
-            if (typeName.equals(formatter.getResourceTypeName())) {
+            if (formatter.getResourceTypeNames().contains(typeName)) {
                 formatters.add(formatter);
             }
         }

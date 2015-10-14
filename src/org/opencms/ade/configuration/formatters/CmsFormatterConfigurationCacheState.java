@@ -164,7 +164,9 @@ public class CmsFormatterConfigurationCacheState {
         if (m_formattersByType == null) {
             ArrayListMultimap<String, I_CmsFormatterBean> formattersByType = ArrayListMultimap.create();
             for (I_CmsFormatterBean formatter : m_formatters.values()) {
-                formattersByType.put(formatter.getResourceTypeName(), formatter);
+                for (String typeName : formatter.getResourceTypeNames()) {
+                    formattersByType.put(typeName, formatter);
+                }
             }
             m_formattersByType = formattersByType;
         }

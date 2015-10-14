@@ -509,7 +509,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             javascriptHeadIncludes,
             inlineJavascript,
             niceName,
-            resourceTypeName,
+            Collections.singleton(resourceTypeName),
             rank,
             id,
             settings,
@@ -620,7 +620,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             javascriptHeadIncludes,
             inlineJavascript,
             niceName,
-            resourceTypeName,
+            Collections.singleton(resourceTypeName),
             rank,
             id,
             settings,
@@ -679,7 +679,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             javascriptHeadIncludes,
             inlineJavascript,
             niceName,
-            resourceTypeName,
+            Collections.singleton(resourceTypeName),
             rank,
             id,
             settings,
@@ -693,7 +693,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     /**
      * Gets the set of nice names of all formatters in a list.<p>
      *
-     * @param formatters
+     * @param formatters the formatter beans
      * @return the set of formatter names
      */
     private Set<String> getFormatterNames(Collection<I_CmsFormatterBean> formatters) {
@@ -726,7 +726,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
     /**
      * Creates a set of strings.<p>
      *
-     * @param names
+     * @param names the names
+     *
      * @return the set of strings
      */
     private Set<String> names(String... names) {

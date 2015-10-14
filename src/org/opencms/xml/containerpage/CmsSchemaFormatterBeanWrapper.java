@@ -36,6 +36,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -201,15 +202,15 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
 
     /**
      *
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeName()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeNames()
      */
-    public String getResourceTypeName() {
+    public Collection<String> getResourceTypeNames() {
 
         try {
-            return OpenCms.getResourceManager().getResourceType(m_elementResource).getTypeName();
+            return Collections.singleton(OpenCms.getResourceManager().getResourceType(m_elementResource).getTypeName());
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
-            return "xmlcontent";
+            return Collections.singleton("xmlcontent");
         }
     }
 

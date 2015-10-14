@@ -32,6 +32,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -121,7 +122,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     private int m_rank;
 
     /** The resource type name. */
-    private String m_resourceTypeName;
+    private Collection<String> m_resourceTypeNames;
 
     /** Indicates if the content should be searchable in the online index when this formatter is used. */
     private boolean m_search;
@@ -145,7 +146,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param javascriptHeadIncludes the JavaScript headincludes
      * @param inlineJavascript the in-line JavaScript
      * @param niceName the configuration display name
-     * @param resourceTypeName the resource type name
+     * @param resourceTypeNames the resource type names
      * @param rank the configuration rank
      * @param id the configuration id
      * @param settings the settings configuration
@@ -168,7 +169,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         List<String> javascriptHeadIncludes,
         String inlineJavascript,
         String niceName,
-        String resourceTypeName,
+        Collection<String> resourceTypeNames,
         int rank,
         String id,
         Map<String, CmsXmlContentProperty> settings,
@@ -190,7 +191,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
         m_id = id;
         m_niceName = niceName;
-        m_resourceTypeName = resourceTypeName;
+        m_resourceTypeNames = resourceTypeNames;
         m_rank = rank;
         m_inlineCss = inlineCss;
         m_inlineJavascript = inlineJavascript;
@@ -239,7 +240,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String> emptyList(),
             "",
             rootPath,
-            "",
+            Collections.<String> emptySet(),
             1000,
             null,
             Collections.<String, CmsXmlContentProperty> emptyMap(),
@@ -284,12 +285,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
             try {
                 m_minWidth = Integer.parseInt(minWidthStr);
-            } catch (NumberFormatException e) {
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
                 //ignore; width will be -1
             }
             try {
                 m_maxWidth = Integer.parseInt(maxWidthStr);
-            } catch (NumberFormatException e) {
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
                 //ignore; maxWidth will be max. integer
             }
         }
@@ -328,7 +329,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             Collections.<String> emptyList(),
             "",
             jspRootPath,
-            "",
+            Collections.<String> emptySet(),
             DEFAULT_SCHEMA_RANK,
             null,
             Collections.<String, CmsXmlContentProperty> emptyMap(),
@@ -483,12 +484,12 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     }
 
     /**
-     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeName()
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#getResourceTypeNames()
      */
     @Override
-    public String getResourceTypeName() {
+    public Collection<String> getResourceTypeNames() {
 
-        return m_resourceTypeName;
+        return m_resourceTypeNames;
     }
 
     /**

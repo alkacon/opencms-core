@@ -48,6 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 
@@ -69,7 +71,9 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
          */
         public int compare(I_CmsFormatterBean first, I_CmsFormatterBean second) {
 
-            return ComparisonChain.start().compare(first.getResourceTypeName(), second.getResourceTypeName()).compare(
+            SortedSet<String> firstSet = new TreeSet<String>(first.getResourceTypeNames());
+            SortedSet<String> secondSet = new TreeSet<String>(second.getResourceTypeNames());
+            return ComparisonChain.start().compare(firstSet.toString(), secondSet.toString()).compare(
                 first.getRank(),
                 second.getRank()).result();
         }
@@ -89,9 +93,9 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
     public static CmsSelectWidgetOption getWidgetOptionForFormatter(CmsObject cms, I_CmsFormatterBean formatter) {
 
         String name = formatter.getNiceName()
-            + " ["
-            + formatter.getResourceTypeName()
-            + "]  "
+            + " "
+            + formatter.getResourceTypeNames().toString()
+            + "  "
             + " ("
             + formatter.getJspRootPath()
             + ")";
@@ -113,7 +117,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
         try {
             Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
             niceTypeName = CmsWorkplaceMessages.getResourceTypeName(locale, typeName);
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             // resource type name will be used as a fallback
         }
         CmsSelectWidgetOption option = new CmsSelectWidgetOption(

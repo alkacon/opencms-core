@@ -30,6 +30,7 @@ package org.opencms.xml.containerpage;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -143,11 +144,11 @@ public interface I_CmsFormatterBean {
     int getRank();
 
     /**
-     * Gets the resource type name.<p>
+     * Gets the resource type names.<p>
      *
-     * @return the resource type name
+     * @return the resource type names
      */
-    String getResourceTypeName();
+    Collection<String> getResourceTypeNames();
 
     /**
      * Gets the defined settings.<p>

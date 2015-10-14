@@ -77,6 +77,17 @@ public class CmsFormatterBeanParser {
 
             super(message);
         }
+
+        /**
+         * Creates a new exception.<p>
+         *
+         * @param message the error message
+         * @param cause the cause
+         */
+        public ParseException(String message, Throwable cause) {
+
+            super(message, cause);
+        }
     }
 
     /** The logger instance for this class. */
@@ -191,7 +202,7 @@ public class CmsFormatterBeanParser {
     private int m_rank;
 
     /** Parsed field. */
-    private String m_resourceType;
+    private Set<String> m_resourceType;
 
     /** Parsed field. */
     private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
@@ -248,13 +259,12 @@ public class CmsFormatterBeanParser {
         int rank;
         try {
             rank = Integer.parseInt(rankStr);
-        } catch (NumberFormatException e) {
+        } catch (@SuppressWarnings("unused") NumberFormatException e) {
             rank = CmsFormatterBean.DEFAULT_CONFIGURATION_RANK;
         }
         m_rank = rank;
 
-        String resType = getString(root, N_TYPE, null);
-        m_resourceType = resType.trim();
+        m_resourceType = getStringSet(root, N_TYPE);
 
         String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
@@ -333,6 +343,27 @@ public class CmsFormatterBeanParser {
     }
 
     /**
+     * Returns a set of string values.<p>
+     *
+     * @param val the location of the parent value
+     * @param path the path of the sub-values
+     *
+     * @return a set of string values
+     */
+    private Set<String> getStringSet(I_CmsXmlContentLocation val, String path) {
+
+        Set<String> valueSet = new HashSet<String>();
+        if ((val != null)) {
+            List<I_CmsXmlContentValueLocation> singleValueLocs = val.getSubValues(path);
+            for (I_CmsXmlContentValueLocation singleValueLoc : singleValueLocs) {
+                String value = singleValueLoc.getValue().getStringValue(m_cms).trim();
+                valueSet.add(value);
+            }
+        }
+        return valueSet;
+    }
+
+    /**
      * Parses the head includes.<p>
      *
      * @param formatterLoc the parent value location
@@ -397,11 +428,11 @@ public class CmsFormatterBeanParser {
             try {
                 m_width = Integer.parseInt(widthStr);
             } catch (Exception e) {
-                throw new ParseException("Invalid container width: [" + widthStr + "]");
+                throw new ParseException("Invalid container width: [" + widthStr + "]", e);
             }
             try {
                 m_maxWidth = Integer.parseInt(maxWidthStr);
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 m_maxWidth = Integer.MAX_VALUE;
             }
         } else {

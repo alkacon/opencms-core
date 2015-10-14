@@ -15,7 +15,7 @@
     <xsd:complexType name="OpenCmsNewFormatter">
         <xsd:sequence>
         	<xsd:element name="NiceName" type="OpenCmsString" />
-        	<xsd:element name="Type" type="OpenCmsString" />
+        	<xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
     	    <xsd:element name="Jsp" type="OpenCmsVfsFile" />
         	<xsd:element name="Rank" type="OpenCmsString"/>
         	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
