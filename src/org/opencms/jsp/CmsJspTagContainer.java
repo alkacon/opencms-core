@@ -287,7 +287,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
-            if (!element.getSettings().containsKey(settingsKey)) {
+            if (!element.getSettings().containsKey(settingsKey)
+                || CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(element.getSettings().get(settingsKey))) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
                     cms,
                     element.getResource()).getAllMatchingFormatters(containerType, containerWidth, allowNested)) {
@@ -306,15 +307,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                             new CmsUUID(formatterConfigId));
-                } else if (CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(formatterConfigId)) {
-                    try {
-                        formatterBean = OpenCms.getResourceManager().getResourceType(
-                            element.getResource().getTypeId()).getFormattersForResource(
-                                cms,
-                                element.getResource()).getDefaultFormatter(containerType, containerWidth, allowNested);
-                    } catch (CmsLoaderException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
                 }
             }
         } else {
