@@ -1351,8 +1351,8 @@ public final class CmsResourceUtil {
     private CmsMessages getMessages() {
 
         if (m_messages == null) {
-            if (m_request != null) {
-                m_messages = Messages.get().getBundle(m_request.getLocale());
+            if (m_cms != null) {
+                m_messages = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
             } else {
                 m_messages = Messages.get().getBundle();
             }
