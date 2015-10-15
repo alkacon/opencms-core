@@ -64,141 +64,204 @@ public class CmsResourceTableProperty {
         "PROPERTY_DATE_CREATED",
         String.class,
         null,
-        GUI_INPUT_DATECREATED_0);
+        GUI_INPUT_DATECREATED_0,
+        true,
+        0,
+        150);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_EXPIRED = new CmsResourceTableProperty(
         "PROPERTY_DATE_EXPIRED",
         String.class,
         "-",
-        GUI_INPUT_DATEEXPIRED_0);
+        GUI_INPUT_DATEEXPIRED_0,
+        true,
+        0,
+        150);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_DATE_MODIFIED",
         String.class,
         null,
-        GUI_INPUT_DATELASTMODIFIED_0);
+        GUI_INPUT_DATELASTMODIFIED_0,
+        true,
+        0,
+        150);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_RELEASED = new CmsResourceTableProperty(
         "PROPERTY_DATE_RELEASED",
         String.class,
         "-",
-        GUI_INPUT_DATERELEASED_0);
+        GUI_INPUT_DATERELEASED_0,
+        true,
+        0,
+        150);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_IS_FOLDER = new CmsResourceTableProperty(
         "PROPERTY_IS_FOLDER",
         Boolean.class,
         null,
-        null);
+        null,
+        true,
+        0,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_NAVIGATION_TEXT = new CmsResourceTableProperty(
         "PROPERTY_NAVIGATION_TEXT",
         String.class,
         null,
-        GUI_INPUT_NAVTEXT_0);
+        GUI_INPUT_NAVTEXT_0,
+        true,
+        2,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_PERMISSIONS = new CmsResourceTableProperty(
         "PROPERTY_PERMISSIONS",
         String.class,
         null,
-        GUI_INPUT_PERMISSIONS_0);
+        GUI_INPUT_PERMISSIONS_0,
+        true,
+        0,
+        100);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_RESOURCE_NAME = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_NAME",
         String.class,
         null,
-        GUI_INPUT_NAME_0);
-
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
-        "PROPERTY_SITE_PATH",
-        String.class,
-        null,
-        null);
+        GUI_INPUT_NAME_0,
+        false,
+        2,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_RESOURCE_TYPE = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_TYPE",
         String.class,
         null,
-        GUI_INPUT_TYPE_0);
+        GUI_INPUT_TYPE_0,
+        true,
+        0,
+        0);
+
+    /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
+        "PROPERTY_SITE_PATH",
+        String.class,
+        null,
+        null,
+        true,
+        0,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_SIZE = new CmsResourceTableProperty(
         "PROPERTY_SIZE",
         Integer.class,
         null,
-        GUI_INPUT_SIZE_0);
+        GUI_INPUT_SIZE_0,
+        true,
+        0,
+        100);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_STATE = new CmsResourceTableProperty(
         "PROPERTY_STATE",
         CmsResourceState.class,
         null,
-        null);
+        null,
+        true,
+        0,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_STATE_NAME = new CmsResourceTableProperty(
         "PROPERTY_STATE_NAME",
         String.class,
         null,
-        GUI_INPUT_STATE_0);
+        GUI_INPUT_STATE_0,
+        true,
+        0,
+        100);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_TITLE = new CmsResourceTableProperty(
         "PROPERTY_TITLE",
         String.class,
         null,
-        GUI_INPUT_TITLE_0);
+        GUI_INPUT_TITLE_0,
+        true,
+        2,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_TYPE_ICON = new CmsResourceTableProperty(
         "PROPERTY_TYPE_ICON",
         Component.class,
         null,
-        "");
+        "",
+        false,
+        0,
+        40);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_CREATED = new CmsResourceTableProperty(
         "PROPERTY_USER_CREATED",
         String.class,
         null,
-        GUI_INPUT_USERCREATED_0);
+        GUI_INPUT_USERCREATED_0,
+        true,
+        0,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_LOCKED = new CmsResourceTableProperty(
         "PROPERTY_USER_LOCKED",
         String.class,
         null,
-        GUI_INPUT_LOCKEDBY_0);
+        GUI_INPUT_LOCKEDBY_0,
+        true,
+        0,
+        0);
 
     /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_USER_MODIFIED",
         String.class,
         null,
-        GUI_INPUT_USERLASTMODIFIED_0);
+        GUI_INPUT_USERLASTMODIFIED_0,
+        true,
+        0,
+        0);
 
     /** Map to keep track of default columns by name. */
     private static Map<String, CmsResourceTableProperty> m_columnsByName;
 
-    /** The column id. */
-    private String m_id;
+    /** The column collapsible flag. */
+    private boolean m_collapsible;
 
     /** The column type. */
     private Class<?> m_columnType;
 
+    /** The column width. */
+    private int m_columnWidth;
+
     /** Default value for the column. */
     private Object m_defaultValue;
 
+    /** The column expand ratio. */
+    private float m_expandRatio;
+
     /** The message key for the column header. */
     private String m_headerKey;
+
+    /** The column id. */
+    private String m_id;
 
     /**
      * Creates a new instance.<p>
@@ -207,13 +270,25 @@ public class CmsResourceTableProperty {
      * @param columnType the column type
      * @param defaultValue the default value
      * @param headerKey the message key for the header
+     * @param collapsible the column collapsible flag
+     * @param expandRation the column expand ratio
+     * @param columnWidth the column width
      */
-    public CmsResourceTableProperty(String id, Class<?> columnType, Object defaultValue, String headerKey) {
+    public CmsResourceTableProperty(
+        String id,
+        Class<?> columnType,
+        Object defaultValue,
+        String headerKey,
+        boolean collapsible,
+        float expandRation,
+        int columnWidth) {
         m_id = id;
         m_columnType = columnType;
         m_defaultValue = defaultValue;
         m_headerKey = headerKey;
-
+        m_collapsible = collapsible;
+        m_expandRatio = expandRation;
+        m_columnWidth = columnWidth;
     }
 
     /**
@@ -280,6 +355,16 @@ public class CmsResourceTableProperty {
     }
 
     /**
+     * Returns the column width.<p>
+     *
+     * @return the column width
+     */
+    public int getColumnWidth() {
+
+        return m_columnWidth;
+    }
+
+    /**
      * Returns the defaultValue.<p>
      *
      * @return the defaultValue
@@ -287,6 +372,16 @@ public class CmsResourceTableProperty {
     public Object getDefaultValue() {
 
         return m_defaultValue;
+    }
+
+    /**
+     * Returns the expand ratio.<p>
+     *
+     * @return the expand ratio
+     */
+    public float getExpandRatio() {
+
+        return m_expandRatio;
     }
 
     /**
@@ -316,6 +411,16 @@ public class CmsResourceTableProperty {
     public int hashCode() {
 
         return m_id.hashCode();
+    }
+
+    /**
+     * Returns the column collapsible flag.<p>
+     *
+     * @return the column collapsible flag
+     */
+    public boolean isCollapsible() {
+
+        return m_collapsible;
     }
 
     /**

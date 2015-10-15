@@ -109,7 +109,13 @@ public class CmsResourceTable extends A_CmsCustomComponent {
                     m_fileTable.setColumnHeader(visibleProp, CmsVaadinUtils.getMessageText(headerKey));
                 } else {
                     m_fileTable.setColumnHeader(visibleProp, "");
-                    m_fileTable.setColumnCollapsible(visibleProp, false);
+                }
+                m_fileTable.setColumnCollapsible(visibleProp, visibleProp.isCollapsible());
+                if (visibleProp.getColumnWidth() > 0) {
+                    m_fileTable.setColumnWidth(visibleProp, visibleProp.getColumnWidth());
+                }
+                if (visibleProp.getExpandRatio() > 0) {
+                    m_fileTable.setColumnExpandRatio(visibleProp, visibleProp.getExpandRatio());
                 }
             }
 

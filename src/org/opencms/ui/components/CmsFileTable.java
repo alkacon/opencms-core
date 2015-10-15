@@ -264,9 +264,6 @@ public class CmsFileTable extends CmsResourceTable {
 
         }.buildColumns();
 
-        // setting icon column width explicitly
-        m_fileTable.setColumnWidth(CmsResourceTableProperty.PROPERTY_TYPE_ICON, 40);
-
         m_fileTable.setSortContainerPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_menu = new CmsContextMenu();
         m_fileTable.addValueChangeListener(new ValueChangeListener() {
