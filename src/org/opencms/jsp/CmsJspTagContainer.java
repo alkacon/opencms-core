@@ -185,7 +185,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if (formatterBean != null) {
             String formatterConfigId = formatterBean.getId();
             if (formatterConfigId == null) {
-                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID + element.getFormatterId().toString();
             }
             element.getSettings().put(settingsKey, formatterConfigId);
             element.setFormatterId(formatterBean.getJspStructureId());
@@ -288,14 +288,15 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
             if (!element.getSettings().containsKey(settingsKey)
-                || CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(element.getSettings().get(settingsKey))) {
+                || element.getSettings().get(settingsKey).startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
                     cms,
                     element.getResource()).getAllMatchingFormatters(containerType, containerWidth, allowNested)) {
                     if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                         String formatterConfigId = formatter.getId();
                         if (formatterConfigId == null) {
-                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
+                                + element.getFormatterId().toString();
                         }
                         formatterBean = formatter;
                         break;

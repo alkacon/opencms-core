@@ -1368,25 +1368,28 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
 
         I_CmsFormatterBean formatter = null;
+        String formatterConfigId = null;
         if ((element.getSettings() != null)
             && element.getSettings().containsKey(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()))) {
-            String formatterConfigId = element.getSettings().get(
+            formatterConfigId = element.getSettings().get(
                 CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
             if (CmsUUID.isValidUUID(formatterConfigId)) {
                 formatter = OpenCms.getADEManager().getCachedFormatters(false).getFormatters().get(
                     new CmsUUID(formatterConfigId));
-            }
-            if (formatter == null) {
-                formatter = formatters.getDefaultSchemaFormatter(containerType, containerWidth);
+            } else if (formatterConfigId.startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)
+                && CmsUUID.isValidUUID(formatterConfigId.substring(CmsFormatterConfig.SCHEMA_FORMATTER_ID.length()))) {
+                formatter = formatters.getFormatterSelection(containerType, containerWidth, true).get(
+                    formatterConfigId);
             }
         }
         if (formatter == null) {
             formatter = formatters.getDefaultFormatter(containerType, containerWidth, true);
+            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatter.getJspStructureId().toString();
         }
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
             Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-            settings.put(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()), formatter.getId());
+            settings.put(CmsFormatterConfig.getSettingsKeyForContainer(container.getName()), formatterConfigId);
             newElementBean = new CmsContainerElementBean(
                 element.getId(),
                 formatter.getJspStructureId(),
