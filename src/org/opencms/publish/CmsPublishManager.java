@@ -87,6 +87,9 @@ public class CmsPublishManager {
     /** The maximum size of the publish history. */
     private int m_publishHistorySize;
 
+    /** Publish job verifier. */
+    private CmsPublishListVerifier m_publishListVerifier = new CmsPublishListVerifier();
+
     /** The publish list remove mode. */
     private CmsPublishManager.PublishListRemoveMode m_publishListRemoveMode;
 
@@ -257,6 +260,16 @@ public class CmsPublishManager {
     public int getPublishHistorySize() {
 
         return m_publishHistorySize;
+    }
+
+    /**
+     * Gets the publish job verifier.<p>
+     *
+     * @return the publish job verifier
+     */
+    public CmsPublishListVerifier getPublishListVerifier() {
+
+        return m_publishListVerifier;
     }
 
     /**

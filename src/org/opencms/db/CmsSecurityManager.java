@@ -1563,6 +1563,10 @@ public final class CmsSecurityManager {
         CmsResource.CmsResourceDeleteMode siblingMode) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(context);
+        final CmsUUID forbiddenFolderId = OpenCms.getPublishManager().getPublishListVerifier().addForbiddenParentFolder(
+            resource.getRootPath(),
+            Messages.get().getBundle(locale).key(Messages.ERR_FORBIDDEN_PARENT_CURRENTLY_DELETING_0));
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
@@ -1591,6 +1595,7 @@ public final class CmsSecurityManager {
                 Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)),
                 e);
         } finally {
+            OpenCms.getPublishManager().getPublishListVerifier().removeForbiddenParentFolder(forbiddenFolderId);
             dbc.clear();
         }
     }

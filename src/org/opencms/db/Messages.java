@@ -244,6 +244,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ERROR_INITIALIZING_DRIVER_1 = "ERR_ERROR_INITIALIZING_DRIVER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_FORBIDDEN_PARENT_CURRENTLY_DELETING_0 = "ERR_FORBIDDEN_PARENT_CURRENTLY_DELETING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_ACL_ENTRIES_1 = "ERR_GET_ACL_ENTRIES_1";
 
     /** Message constant for key in the resource bundle. */

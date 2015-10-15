@@ -6086,6 +6086,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // check the parent folders
         checkParentFolders(dbc, publishList);
         ensureSubResourcesOfMovedFoldersPublished(cms, dbc, publishList);
+        OpenCms.getPublishManager().getPublishListVerifier().checkPublishList(publishList);
 
         try {
             // fire an event that a project is to be published

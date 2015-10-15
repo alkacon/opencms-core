@@ -36,6 +36,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -1367,16 +1368,29 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public Locale getWorkplaceLocale(CmsObject cms) {
 
-        Locale wpLocale = new CmsUserSettings(cms.getRequestContext().getCurrentUser()).getLocale();
+        return getWorkplaceLocale(cms.getRequestContext());
+    }
+
+    /**
+     * Gets the workplace locale for the given request context.<p>
+     *
+     * @param requestContext the request context
+     *
+     * @return the workplace locale for the request context
+     */
+    public Locale getWorkplaceLocale(CmsRequestContext requestContext) {
+
+        Locale wpLocale = new CmsUserSettings(requestContext.getCurrentUser()).getLocale();
         if (wpLocale == null) {
             // fall back
             wpLocale = getDefaultLocale();
             if (wpLocale == null) {
                 // fall back
-                wpLocale = cms.getRequestContext().getLocale();
+                wpLocale = requestContext.getLocale();
             }
         }
         return wpLocale;
+
     }
 
     /**

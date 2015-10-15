@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PUBLISH_ENGINE_QUEUE_1 = "ERR_PUBLISH_ENGINE_QUEUE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_FORBIDDEN_PARENT_FOLDER_3 = "ERR_PUBLISH_FORBIDDEN_PARENT_FOLDER_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_JOB_ABORT_ERROR_1 = "ERR_PUBLISH_JOB_ABORT_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
