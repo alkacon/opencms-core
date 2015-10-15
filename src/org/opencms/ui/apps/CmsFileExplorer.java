@@ -553,7 +553,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 return CmsFileTable.getStateStyle(source.getContainerDataSource().getItem(itemId));
             }
         });
-
+        m_fileTree.setNullSelectionAllowed(false);
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
         m_infoPath = new TextField();
         A_CmsFocusShortcutListener shortcutListener = new A_CmsFocusShortcutListener("Open path", KeyCode.ENTER, null) {
@@ -915,6 +915,12 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             m_openedPaths.put(cms.getRequestContext().getSiteRoot(), sitePath);
             m_uploadButton.setTargetFolder(folder.getRootPath());
             m_uploadArea.setTargetFolder(folder.getRootPath());
+            if (!m_fileTree.isExpanded(folderId)) {
+                expandCurrentFolder();
+            }
+            if (!m_fileTree.isSelected(folderId)) {
+                m_fileTree.select(folderId);
+            }
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
