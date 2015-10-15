@@ -21,14 +21,9 @@
 		
 		
 	}
-	
-	
- 
 }
 
 @mixin workplace-form-narrow {
-
-		
 		.o-formlayout-workplace-main { 
 			.v-formlayout-row .v-formlayout-captioncell {
 				display: inline-block;  
@@ -69,6 +64,27 @@
   /* Overrides to the valo theme */
   div.v-tree-node-caption:after{
   	border-radius: 0;
+  }
+  
+  div.v-tree-node-caption:hover span{
+  	color: #ffffff;
+  	position: relative;
+  	z-index: 1;
+  	&:before{
+  		content: "";
+  		position: absolute;
+  		top: 4px;
+  		left: -2px;
+  		right: 95px;
+  		bottom: 4px;
+  		z-index: -1;
+  		background: $v-selection-color;
+  		border-radius: $v-border-radius;
+  	}
+  }
+  
+  div.v-tree-node-selected.v-tree-node-caption:hover span:before{
+  	background: lighten($v-selection-color,10%);
   }
   
   div.v-table-header-wrap,
@@ -458,7 +474,7 @@
 	  		display: block;
 	  		height: 48px;
   			width: 48px;
-  			border-radius: 4px;
+  			border-radius: $v-border-radius;
 	  		left: 46px;
 	  		top: 1px;
 	  		position: absolute;
@@ -597,6 +613,26 @@
   
   .v-table .v-table-row-odd{
     background-color: $o-medium-background-color;
+  }
+  
+  .v-table .o-hover-column:hover div{
+  	color: #ffffff;
+  	position: relative;
+  	z-index: 1;
+  	&:before{
+  		content:"";
+  		background: $v-selection-color;
+  		position: absolute;
+  		top:-5px;
+  		left:4px;
+  		right:4px;
+  		bottom: -5px;
+  		z-index: -1;
+  		border-radius: $v-border-radius;
+  	}
+  }
+  .v-table .v-selected .o-hover-column:hover div:before{
+  	background: lighten($v-selection-color,10%);
   }
   
   /* fixes tooltip issues */

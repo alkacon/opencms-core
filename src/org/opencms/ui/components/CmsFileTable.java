@@ -303,7 +303,10 @@ public class CmsFileTable extends CmsResourceTable {
 
             public String getStyle(Table source, Object itemId, Object propertyId) {
 
-                return getStateStyle(m_container.getItem(itemId));
+                return getStateStyle(m_container.getItem(itemId))
+                    + (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME == propertyId
+                    ? " " + OpenCmsTheme.HOVER_COLUMN
+                    : "");
             }
         });
 

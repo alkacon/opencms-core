@@ -99,6 +99,9 @@ public class OpenCmsTheme {
     public static final String HIDDEN = "hidden";
 
     /** CSS style name. */
+    public static final String HOVER_COLUMN = "o-hover-column";
+
+    /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
 
     /** CSS style name. */

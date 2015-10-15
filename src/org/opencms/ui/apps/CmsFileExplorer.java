@@ -1002,7 +1002,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 if ((event.getPropertyId() == null)
                     || CmsResourceTableProperty.PROPERTY_TYPE_ICON.equals(event.getPropertyId())) {
                     m_fileTable.openContextMenu(event);
-                } else {
+                } else if (CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.equals(event.getPropertyId())) {
                     Boolean isFolder = (Boolean)event.getItem().getItemProperty(
                         CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                     if ((isFolder != null) && isFolder.booleanValue()) {
