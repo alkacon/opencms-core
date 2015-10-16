@@ -163,9 +163,15 @@ public final class CmsEncoder {
             try {
                 URI uri = new URI(uriString);
                 String authority = uri.getAuthority(); // getHost won't work when we have special characters
+                int colonPos = authority.indexOf(':');
+                if (colonPos >= 0) {
+                    authority = IDN.toASCII(authority.substring(0, colonPos)) + authority.substring(colonPos);
+                } else {
+                    authority = IDN.toASCII(authority);
+                }
                 URI uriWithCorrectedHost = new URI(
                     uri.getScheme(),
-                    IDN.toASCII(authority),
+                    authority,
                     uri.getPath(),
                     uri.getQuery(),
                     uri.getFragment());
