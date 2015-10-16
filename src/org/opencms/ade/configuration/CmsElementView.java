@@ -38,6 +38,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -78,29 +79,43 @@ public class CmsElementView {
     /** The default element view title key. */
     public static final String GUI_ELEMENT_VIEW_DEFAULT_TITLE_0 = "GUI_ELEMENT_VIEW_DEFAULT_TITLE_0";
 
+    /** The order node. */
+    public static final String N_ORDER = "Order";
+
     /** The title node. */
     public static final String N_TITLE = "Title";
 
     /** The title key node. */
     public static final String N_TITLE_KEY = "TitleKey";
 
-    /** The order node. */
-    public static final String N_ORDER = "Order";
-
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementView.class);
-
-    /** The view resource. */
-    private CmsResource m_resource;
 
     /** The view title. */
     String m_title;
 
-    /** The title localization key. */
-    private String m_titleKey;
+    /** Synthetic id for non-resource views. */
+    private CmsUUID m_id;
 
     /** The order. */
     private int m_order;
+
+    /** The view resource. */
+    private CmsResource m_resource;
+
+    /** The title localization key. */
+    private String m_titleKey;
+
+    /**
+     * Creates a new element view based on the given explorer type.<p>
+     *
+     * @param explorerType the explorer type
+     */
+    public CmsElementView(CmsExplorerTypeSettings explorerType) {
+        m_id = getExplorerTypeViewId(explorerType.getName());
+        m_titleKey = explorerType.getKey();
+        m_order = Integer.valueOf(explorerType.getNewResourceOrder()).intValue();
+    }
 
     /**
      * Constructor.<p>
@@ -129,13 +144,27 @@ public class CmsElementView {
     }
 
     /**
+     * Helper method to compute the uuid for views based on explorer types.<p>
+     *
+     * @param typeName the explorer type name
+     * @return the element view id computed from the type name
+     */
+    public static CmsUUID getExplorerTypeViewId(String typeName) {
+
+        return CmsUUID.getConstantUUID("elementview-" + typeName);
+
+    }
+
+    /**
      * Returns the element view id.<p>
      *
      * @return the group id
      */
     public CmsUUID getId() {
 
-        if (m_resource != null) {
+        if (m_id != null) {
+            return m_id;
+        } else if (m_resource != null) {
             return m_resource.getStructureId();
         } else {
             // only in case of the default element view
@@ -199,6 +228,7 @@ public class CmsElementView {
             } else {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ELEMENT_AUTHOR);
             }
+
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }

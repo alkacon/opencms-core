@@ -90,17 +90,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the attribute containing the name of the big icon. */
     public static final String A_BIGICON = "bigicon";
 
+    /** The 'description' attribute. */
+    public static final String A_DESCRIPTION = "description";
+
+    /** The 'error' attribute. */
+    public static final String A_ERROR = "error";
+
     /** The name of the attribute for file extensions in icon rules. */
     public static final String A_EXTENSION = "extension";
-
-    /** The "tab" attribute. */
-    public static final String A_TAB = "tab";
 
     /** The "info" attribute. */
     public static final String A_INFO = "info";
 
     /** The name of the mode attribute. */
     public static final String A_MODE = "mode";
+
+    /** The 'widget-config' attribute. */
+    public static final String A_NICE_NAME = "nice-name";
 
     /** The attribute name of the optional attribute for the user-info node. */
     public static final String A_OPTIONAL = "optional";
@@ -132,17 +138,26 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "rule" attribute. */
     public static final String A_RULE = "rule";
 
+    /** The 'rule-regex' attribute. */
+    public static final String A_RULE_REGEX = "rule-regex";
+
     /** The "rules" attribute. */
     public static final String A_RULES = "rules";
 
     /** The "shownavigation" attribute. */
     public static final String A_SHOWNAVIGATION = "shownavigation";
 
+    /** The "tab" attribute. */
+    public static final String A_TAB = "tab";
+
     /** The "target" attribute. */
     public static final String A_TARGET = "target";
 
     /** The attribute name of the widget attribute for the user-info node. */
     public static final String A_WIDGET = "widget";
+
+    /** The 'widget-config' attribute. */
+    public static final String A_WIDGET_CONFIG = "widget-config";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
@@ -402,6 +417,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the inherit permissions on folder node. */
     public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
 
+    /** The node name for a preference. */
+    public static final String N_PREFERENCE = "preference";
+
     /** The name of the preference-tab element. */
     public static final String N_PREFERENCE_TAB = "preference-tab";
 
@@ -507,9 +525,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The node name of the user-info node. */
     public static final String N_USERINFO = "user-info";
 
-    /** The node name for a preference. */
-    public static final String N_PREFERENCE = "preference";
-
     /** The node name of the user-infos node. */
     public static final String N_USERINFOS = "user-infos";
 
@@ -543,20 +558,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The name of the xmlcontentautocorrection node. */
     public static final String N_XMLCONTENTAUTOCORRECTION = "xmlcontentautocorrection";
 
-    /** The 'widget-config' attribute. */
-    public static final String A_WIDGET_CONFIG = "widget-config";
+    /** The elementview attribute. */
+    private static final String A_ELEMENTVIEW = "elementview";
 
-    /** The 'widget-config' attribute. */
-    public static final String A_NICE_NAME = "nice-name";
-
-    /** The 'description' attribute. */
-    public static final String A_DESCRIPTION = "description";
-
-    /** The 'rule-regex' attribute. */
-    public static final String A_RULE_REGEX = "rule-regex";
-
-    /** The 'error' attribute. */
-    public static final String A_ERROR = "error";
+    /** The isview attribute. */
+    private static final String A_ISVIEW = "isview";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -574,12 +580,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 5);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 7);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_BIGICON);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 4, A_REFERENCE);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 5, A_ELEMENTVIEW);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 6, A_ISVIEW);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 3);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 0, A_EXTENSION);
@@ -688,6 +696,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
                 if (settings.getReference() != null) {
                     explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
                 }
+
+                if (settings.getElementView() != null) {
+                    explorerTypeElement.addAttribute(A_ELEMENTVIEW, settings.getElementView());
+                }
+
+                if (settings.isView()) {
+                    explorerTypeElement.addAttribute(A_ISVIEW, "true");
+                }
+
                 // create subnode <newresource>
                 Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
                 if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {

@@ -27,6 +27,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
@@ -103,6 +104,8 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Manages the global OpenCms workplace settings for all users.<p>
@@ -191,6 +194,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The explorer type settings as Map with resource type name as key. */
     private Map<String, CmsExplorerTypeSettings> m_explorerTypeSettingsMap;
+
+    /** The element views generated from explorer types. */
+    private Map<CmsUUID, CmsElementView> m_explorerTypeViews = Maps.newHashMap();
 
     /** The workplace export points. */
     private Set<CmsExportPoint> m_exportPoints;
@@ -889,6 +895,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
 
         return m_explorerTypeSettings;
+    }
+
+    /**
+     * Gets the element views generated from explorer types.<p>
+     *
+     * @return the map of element views from the explorer types
+     */
+    public Map<CmsUUID, CmsElementView> getExplorerTypeViews() {
+
+        return Collections.unmodifiableMap(m_explorerTypeViews);
+
     }
 
     /**
@@ -2118,6 +2135,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         // make the settings unmodifiable and store them in the global variables
         m_explorerTypeSettings = Collections.unmodifiableList(explorerTypeSettings);
         m_explorerTypeSettingsMap = Collections.unmodifiableMap(explorerTypeSettingsMap);
+
+        m_explorerTypeViews = Maps.newHashMap();
+        Set<String> explorerTypeViews = Sets.newHashSet();
+        for (CmsExplorerTypeSettings explorerType : getExplorerTypeSettings()) {
+            if (explorerType.isView()) {
+                explorerTypeViews.add(explorerType.getName());
+            }
+        }
+
+        for (String typeName : explorerTypeViews) {
+            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+            CmsElementView elemView = new CmsElementView(explorerType);
+            m_explorerTypeViews.put(elemView.getId(), elemView);
+        }
+
     }
 
     /**

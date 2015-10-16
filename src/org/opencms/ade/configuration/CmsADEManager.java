@@ -98,6 +98,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * This is the main class used to access the ADE configuration and also accomplish some other related tasks
  * like loading/saving favorite and recent lists.<p>
@@ -454,7 +456,11 @@ public class CmsADEManager {
     public Map<CmsUUID, CmsElementView> getElementViews(CmsObject cms) {
 
         CmsConfigurationCache cache = getCache(isOnline(cms));
-        return cache.getState().getElementViews();
+        Map<CmsUUID, CmsElementView> result = Maps.newHashMap();
+        result.putAll(OpenCms.getWorkplaceManager().getExplorerTypeViews());
+        result.putAll(cache.getState().getElementViews());
+        return result;
+
     }
 
     /**

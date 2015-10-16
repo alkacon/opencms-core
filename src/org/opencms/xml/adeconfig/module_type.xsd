@@ -18,7 +18,7 @@
 	        <xsd:element name="NamePattern" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="Order" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="DetailPagesDisabled" type="OpenCmsBoolean" minOccurs="0" maxOccurs="1" />
-	        <xsd:element name="ElementView" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1" />
+	        <xsd:element name="ElementView" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1" />
 	        <xsd:element name="ShowInDefaultView" type="OpenCmsBoolean" minOccurs="0" />
 	        <xsd:element name="CopyInModels" type="OpenCmsBoolean" minOccurs="0" />
         </xsd:sequence>

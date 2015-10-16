@@ -50,7 +50,7 @@ import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
 import org.opencms.xml.content.I_CmsXmlContentLocation;
 import org.opencms.xml.content.I_CmsXmlContentValueLocation;
-import org.opencms.xml.types.CmsXmlVfsFileValue;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -199,17 +199,20 @@ public class CmsConfigurationReader {
     /** The widget configuration node name. */
     public static final String N_WIDGET_CONFIG = "WidgetConfig";
 
+    /** Scheme for explorer type view links. */
+    public static final String VIEW_SCHEME = "view://";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationReader.class);
+
+    /** The CopyInModels node name. */
+    private static final String N_COPY_IN_MODELS = "CopyInModels";
 
     /** The PageRelative node name. */
     private static final String N_PAGE_RELATIVE = "PageRelative";
 
     /** The ShowInDefaultView node name. */
     private static final String N_SHOW_IN_DEFAULT_VIEW = "ShowInDefaultView";
-
-    /** The CopyInModels node name. */
-    private static final String N_COPY_IN_MODELS = "CopyInModels";
 
     /** The CMS context used for reading the configuration data. */
     private CmsObject m_cms;
@@ -574,8 +577,13 @@ public class CmsConfigurationReader {
         CmsUUID elementView = null;
         if (elementViewLoc != null) {
             try {
-                CmsXmlVfsFileValue elementViewValue = (CmsXmlVfsFileValue)elementViewLoc.getValue();
-                elementView = elementViewValue.getLink(m_cms).getStructureId();
+                CmsXmlVarLinkValue elementViewValue = (CmsXmlVarLinkValue)elementViewLoc.getValue();
+                String stringValue = elementViewValue.getStringValue(m_cms);
+                if (stringValue.startsWith(VIEW_SCHEME)) {
+                    elementView = new CmsUUID(stringValue.substring(VIEW_SCHEME.length()));
+                } else {
+                    elementView = elementViewValue.getLink(m_cms).getStructureId();
+                }
             } catch (Exception e) {
                 // in case parsing the link fails, the default element view will be used
             }

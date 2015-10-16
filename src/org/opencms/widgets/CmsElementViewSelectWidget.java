@@ -70,6 +70,9 @@ public class CmsElementViewSelectWidget extends CmsSelectWidget {
             String value = "";
             if (view.getResource() != null) {
                 value = cms.getSitePath(view.getResource());
+            } else if ((view.getId() != null) && !view.getId().isNullUUID()) {
+                // synthetic view
+                value = "view://" + view.getId();
             }
             options.add(new CmsSelectWidgetOption(value, false, view.getTitle(cms, widgetDialog.getLocale())));
         }

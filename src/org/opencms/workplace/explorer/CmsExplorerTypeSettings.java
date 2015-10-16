@@ -96,6 +96,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The description image. */
     private String m_descriptionImage;
 
+    /** The element view for this explorer type. */
+    private String m_elementView;
+
     /**The edit options flag. */
     private boolean m_hasEditOptions;
 
@@ -107,6 +110,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
     /** The info. */
     private String m_info;
+
+    /** Flag indicating whether this explorer type represents a view. */
+    private boolean m_isView;
 
     /** The key. */
     private String m_key;
@@ -386,6 +392,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Gets the element view name.<p>
+     *
+     * @return the element view name
+     */
+    public String getElementView() {
+
+        return m_elementView;
+    }
+
+    /**
      * Returns the icon path and file name of the explorer type setting.<p>
      *
      * @return the icon path and file name of the explorer type setting
@@ -635,6 +651,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Returns true if this explorer type represents a view.<p>
+     *
+     * @return true if this explorer type represents a view
+     */
+    public boolean isView() {
+
+        return m_isView;
+    }
+
+    /**
      * Sets the access object of the type settings.<p>
      *
      * @param access access object
@@ -722,6 +748,20 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public void setEditOptions() {
 
         m_hasEditOptions = true;
+    }
+
+    /**
+     * Sets the reference of the explorer type setting.<p>
+     *
+     * @param elementView the element view
+     */
+    public void setElementView(String elementView) {
+
+        m_elementView = elementView;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Setting element view to " + elementView);
+
+        }
     }
 
     /**
@@ -923,14 +963,26 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * @param icon the icon path and file name of the explorer type setting
      * @param bigIcon the file name of the big icon
      * @param reference the reference of the explorer type setting
+     * @param elementView the element view
+     * @param isView 'true' if this type represents an element view
      */
-    public void setTypeAttributes(String name, String key, String icon, String bigIcon, String reference) {
+    public void setTypeAttributes(
+        String name,
+        String key,
+        String icon,
+        String bigIcon,
+        String reference,
+        String elementView,
+        String isView) {
 
         setName(name);
         setKey(key);
         setIcon(icon);
         setBigIcon(bigIcon);
         setReference(reference);
+        setElementView(elementView);
+        m_isView = Boolean.valueOf(isView).booleanValue();
+
     }
 
 }
