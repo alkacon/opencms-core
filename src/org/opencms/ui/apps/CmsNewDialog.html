@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+  		<o-cms-basic-dialog size-full>
+  			<content>
+  				<v-vertical-layout  margin spacing size-full>
+	  					<v-combo-box _id="m_viewSelector" width="200px"/>
+	  					<v-check-box _id="m_defaultLocationCheckbox" caption="%(key.GUI_NEWRESOURCEDIALOG_USE_DEFAULT_0)"></v-check-box>
+	  					<v-panel height="500px">
+	  						<v-vertical-layout style-name="o-reduced-margin o-reduced-spacing o-resinfo-pointer" margin spacing _id="m_typeContainer" />
+	  					</v-panel>
+  				</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_cancelButton">%(key.GUI_DIALOG_BUTTON_CANCEL_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  </body>
+</html>

@@ -61,7 +61,7 @@ public class CmsEditPropertiesAction implements I_CmsContextMenuAction {
                         context.finish(updatedIds);
                     }
                 });
-            dialogExtension.editProperties(context.getResources().get(0).getStructureId());
+            dialogExtension.editProperties(context.getResources().get(0).getStructureId(), false);
         } catch (Exception e) {
             context.error(e);
         }

@@ -426,6 +426,41 @@ public class CmsUserSettings {
     }
 
     /**
+     * Gets a configured preference.<p>
+     *
+     * @param cms the cms context
+     * @param key the settings key
+     * @param useDefault true if we want the default value if no value is configured
+     *
+     * @return the preference value
+     */
+    public static String getAdditionalPreference(CmsObject cms, String key, boolean useDefault) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsUserSettings settings = new CmsUserSettings(user);
+        return settings.getAdditionalPreference(key, useDefault);
+    }
+
+    /**
+     * Sets a configured preference.<p>
+     *
+     * @param cms the Cms context
+     * @param key the setting name
+     * @param value the value
+     */
+    public static void setAdditionalPreference(CmsObject cms, String key, String value) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        CmsUserSettings settings = new CmsUserSettings(user);
+        settings.setAdditionalPreference(key, value);
+        try {
+            settings.save(cms);
+        } catch (CmsException e) {
+            LOG.error("Could not store preference " + key + ": " + e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * Gets the value for a user defined preference.<p>
      *
      * @param name the name of the preference

@@ -64,11 +64,13 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
      *
      * @param structureId the structure id of a resource
      * @param contextMenuHandler the context menu handler
+     * @param editName if true, provides a field for changing the file name
      * @param cancelHandler callback which is executed if the user cancels the property dialog
      */
     public static void editProperties(
         final CmsUUID structureId,
         final I_CmsContextMenuHandler contextMenuHandler,
+        final boolean editName,
         final Runnable cancelHandler) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
@@ -84,10 +86,13 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             protected void onResponse(CmsPropertiesBean result) {
 
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
+
                 handler.setPropertiesBean(result);
+                handler.setEditableName(editName);
                 CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(
                     result.getPropertyDefinitions(),
                     handler);
+
                 editor.setShowResourceProperties(!handler.isFolder());
                 stop(false);
                 final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
@@ -140,7 +145,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                editProperties(structureId, handler, null);
+                editProperties(structureId, handler, false, null);
             }
 
             public A_CmsContextMenuItem getItemWidget(

@@ -66,6 +66,15 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_OPTIONS_SHOW_0 = "GUI_LOGIN_OPTIONS_SHOW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0 = "GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCEDIALOG_TITLE_0 = "GUI_NEWRESOURCEDIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCEDIALOG_USE_DEFAULT_0 = "GUI_NEWRESOURCEDIALOG_USE_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PLEASE_ENTER_NEW_PASSWORD_0 = "GUI_PLEASE_ENTER_NEW_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */

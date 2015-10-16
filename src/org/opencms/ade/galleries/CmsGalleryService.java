@@ -362,6 +362,60 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     }
 
     /**
+     * Returns the resource types beans.<p>
+     *
+     * @param resourceTypes the resource types
+     * @param creatableTypes the creatable types
+     * @param deactivatedTypes the deactivated types
+     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration
+     *
+     * @return the resource types
+     */
+    public List<CmsResourceTypeBean> buildTypesList(
+        List<I_CmsResourceType> resourceTypes,
+        Set<String> creatableTypes,
+        Set<String> deactivatedTypes,
+        final List<String> typesForTypeTab) {
+
+        List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
+
+        for (CmsResourceTypeBean typeBean : result) {
+            if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+                if (!typesForTypeTab.contains(typeBean.getType())) {
+                    if (typeBean.getVisibility() != TypeVisibility.hidden) {
+                        typeBean.setVisibility(TypeVisibility.showOptional);
+                    }
+                }
+            }
+            typeBean.setDeactivated(deactivatedTypes.contains(typeBean.getType()));
+        }
+        if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
+            Collections.sort(result, new Comparator<CmsResourceTypeBean>() {
+
+                public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
+
+                    return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
+                        first.getType(),
+                        second.getType()).result();
+                }
+
+                int searchTypeRank(CmsResourceTypeBean type) {
+
+                    int index = typesForTypeTab.indexOf(type.getType());
+                    if (index == -1) {
+                        return Integer.MAX_VALUE;
+                    } else {
+                        return index;
+                    }
+                }
+            });
+
+        }
+
+        return result;
+    }
+
+    /**
      * @see org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService#deleteResource(java.lang.String)
      */
     public void deleteResource(String resourcePath) throws CmsRpcException {
@@ -569,9 +623,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
      * @return the gallery data
      */
     public CmsGalleryDataBean getInitialSettingsForContainerPage(
-        List<I_CmsResourceType> resourceTypes,
-        Set<String> creatableTypes,
-        Set<String> deactivatedTypes,
+        List<CmsResourceTypeBean> types,
         String uri,
         String locale) {
 
@@ -594,7 +646,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setScope(getWorkplaceSettings().getLastSearchScope());
             data.setTabIds(GalleryMode.ade.getTabs());
             data.setReferenceSitePath(uri);
-            List<CmsResourceTypeBean> types = buildTypesList(resourceTypes, creatableTypes, deactivatedTypes, null);
             data.setTypes(types);
             Map<String, CmsGalleryTypeInfo> adeGalleryTypeInfos = readGalleryInfosByTypeBeans(types);
             data.setGalleries(buildGalleriesList(adeGalleryTypeInfos));
@@ -1516,60 +1567,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             }
         }
         return list;
-    }
-
-    /**
-     * Returns the resource types beans.<p>
-     *
-     * @param resourceTypes the resource types
-     * @param creatableTypes the creatable types
-     * @param deactivatedTypes the deactivated types
-     * @param typesForTypeTab the types which should be shown in the types tab according to the gallery configuration
-     *
-     * @return the resource types
-     */
-    private List<CmsResourceTypeBean> buildTypesList(
-        List<I_CmsResourceType> resourceTypes,
-        Set<String> creatableTypes,
-        Set<String> deactivatedTypes,
-        final List<String> typesForTypeTab) {
-
-        List<CmsResourceTypeBean> result = buildTypesList(resourceTypes, creatableTypes);
-
-        for (CmsResourceTypeBean typeBean : result) {
-            if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
-                if (!typesForTypeTab.contains(typeBean.getType())) {
-                    if (typeBean.getVisibility() != TypeVisibility.hidden) {
-                        typeBean.setVisibility(TypeVisibility.showOptional);
-                    }
-                }
-            }
-            typeBean.setDeactivated(deactivatedTypes.contains(typeBean.getType()));
-        }
-        if ((typesForTypeTab != null) && (typesForTypeTab.size() > 0)) {
-            Collections.sort(result, new Comparator<CmsResourceTypeBean>() {
-
-                public int compare(CmsResourceTypeBean first, CmsResourceTypeBean second) {
-
-                    return ComparisonChain.start().compare(searchTypeRank(first), searchTypeRank(second)).compare(
-                        first.getType(),
-                        second.getType()).result();
-                }
-
-                int searchTypeRank(CmsResourceTypeBean type) {
-
-                    int index = typesForTypeTab.indexOf(type.getType());
-                    if (index == -1) {
-                        return Integer.MAX_VALUE;
-                    } else {
-                        return index;
-                    }
-                }
-            });
-
-        }
-
-        return result;
     }
 
     /**

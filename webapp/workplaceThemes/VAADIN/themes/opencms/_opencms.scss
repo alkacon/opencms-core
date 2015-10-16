@@ -813,7 +813,18 @@
 		color: $alkacon-gray; 
 		vertical-align: middle; 
 	}
-
+	
+	.o-resource-info:hover .o-resinfo-hidden-icon {
+		visibility: visible; 
+	}
+	
+	.o-resinfo-hidden-icon {
+		visibility: hidden; 
+	}
+	
+	.o-resinfo-pointer .o-resource-info:hover {
+		cursor: pointer; 
+	}
 }
 
 .oc-spin-center {

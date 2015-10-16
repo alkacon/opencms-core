@@ -76,6 +76,9 @@ public class CmsElementView {
     /** The default element view. */
     public static final CmsElementView DEFAULT_ELEMENT_VIEW = new CmsElementView();
 
+    /** Default order if not configured. */
+    public static final int DEFAULT_ORDER = 1000;
+
     /** The default element view title key. */
     public static final String GUI_ELEMENT_VIEW_DEFAULT_TITLE_0 = "GUI_ELEMENT_VIEW_DEFAULT_TITLE_0";
 
@@ -93,6 +96,9 @@ public class CmsElementView {
 
     /** The view title. */
     String m_title;
+
+    /** The explorer type. */
+    private CmsExplorerTypeSettings m_explorerType;
 
     /** Synthetic id for non-resource views. */
     private CmsUUID m_id;
@@ -112,6 +118,7 @@ public class CmsElementView {
      * @param explorerType the explorer type
      */
     public CmsElementView(CmsExplorerTypeSettings explorerType) {
+        m_explorerType = explorerType;
         m_id = getExplorerTypeViewId(explorerType.getName());
         m_titleKey = explorerType.getKey();
         m_order = Integer.valueOf(explorerType.getNewResourceOrder()).intValue();
@@ -152,6 +159,17 @@ public class CmsElementView {
     public static CmsUUID getExplorerTypeViewId(String typeName) {
 
         return CmsUUID.getConstantUUID("elementview-" + typeName);
+
+    }
+
+    /**
+     * Gets the explorer type settings.<p>
+     *
+     * @return the explorer type
+     */
+    public CmsExplorerTypeSettings getExplorerType() {
+
+        return m_explorerType;
 
     }
 
@@ -213,10 +231,17 @@ public class CmsElementView {
      * Checks whether the current user has permissions to use the element view.<p>
      *
      * @param cms the cms context
+     * @param folder used for permission checks for explorertype based views
      *
      * @return <code>true</code> if the current user has permissions to use the element view
      **/
-    public boolean hasPermission(CmsObject cms) {
+    public boolean hasPermission(CmsObject cms, CmsResource folder) {
+
+        if ((m_explorerType != null) && (folder != null)) {
+            CmsPermissionSet permSet = m_explorerType.getAccess().getPermissions(cms, folder);
+            String permString = permSet.getPermissionString();
+            return permString.contains("+v");
+        }
 
         try {
             if (m_resource != null) {
@@ -256,10 +281,10 @@ public class CmsElementView {
                 m_order = Integer.parseInt(orderVal.getStringValue(cms));
             } catch (Exception e) {
                 LOG.error(e.getLocalizedMessage(), e);
-                m_order = Integer.MAX_VALUE;
+                m_order = DEFAULT_ORDER;
             }
         } else {
-            m_order = Integer.MAX_VALUE;
+            m_order = DEFAULT_ORDER;
         }
     }
 }

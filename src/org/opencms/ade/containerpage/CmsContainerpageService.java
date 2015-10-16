@@ -32,7 +32,6 @@ import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsModelPageConfig;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
-import org.opencms.ade.configuration.CmsResourceTypeConfig.AddMenuVisibility;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReferenceParser;
 import org.opencms.ade.containerpage.inherited.CmsInheritedContainerState;
@@ -55,6 +54,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.ade.detailpage.CmsDetailPageResourceHandler;
 import org.opencms.ade.galleries.CmsGalleryService;
 import org.opencms.ade.galleries.shared.CmsGalleryDataBean;
+import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -125,7 +125,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -141,7 +140,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -153,17 +151,17 @@ import com.google.common.collect.Sets;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
-    /** The model group pages path fragment. */
-    public static final String MODEL_GROUP_PATH_FRAGMENT = "/.content/.modelgroups/";
-
-    /** The source container page id settings key. */
-    public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
-
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
     /** Session attribute name used to store the selected clipboard tab. */
     public static final String ATTR_CLIPBOARD_TAB = "clipboardtab";
+
+    /** The model group pages path fragment. */
+    public static final String MODEL_GROUP_PATH_FRAGMENT = "/.content/.modelgroups/";
+
+    /** The source container page id settings key. */
+    public static final String SOURCE_CONTAINERPAGE_ID_SETTING = "source_containerpage_id";
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(CmsContainerpageService.class);
@@ -171,14 +169,14 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /** Serial version UID. */
     private static final long serialVersionUID = -6188370638303594280L;
 
+    /** The configuration data of the current container page context. */
+    private CmsADEConfigData m_configData;
+
     /** The session cache. */
     private CmsADESessionCache m_sessionCache;
 
     /** The workplace settings. */
     private CmsWorkplaceSettings m_workplaceSettings;
-
-    /** The configuration data of the current container page context. */
-    private CmsADEConfigData m_configData;
 
     /**
      * Generates the model resource data list.<p>
@@ -709,7 +707,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#getGalleryDataForPage(java.util.List, org.opencms.util.CmsUUID, java.lang.String, java.lang.String)
      */
     public CmsGalleryDataBean getGalleryDataForPage(
-        List<CmsContainer> containers,
+        final List<CmsContainer> containers,
         CmsUUID elementView,
         String uri,
         String locale) throws CmsRpcException {
@@ -719,67 +717,28 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
 
             CmsObject cms = getCmsObject();
 
-            CmsADEConfigData config = getConfigData(cms.getRequestContext().addSiteRoot(uri));
-            CmsResource pageResource = cms.readResource(uri, CmsResourceFilter.IGNORE_EXPIRATION);
-            List<I_CmsResourceType> resourceTypes = new ArrayList<I_CmsResourceType>();
-            Set<String> disabledTypes = new HashSet<String>();
-            final Set<String> typesAtTheEndOfTheList = Sets.newHashSet();
-            for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-                boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
-                    typeConfig.getTypeName());
-                try {
-                    AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
+            CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper();
+            List<CmsResourceTypeBean> resTypeBeans = typeHelper.getResourceTypes(
+                cms,
+                cms.getRequestContext().addSiteRoot(uri),
+                uri,
+                elementView,
+                new I_CmsResourceTypeEnabledCheck() {
 
-                    if (visibility == AddMenuVisibility.disabled) {
-                        continue;
+                    public boolean checkEnabled(
+                        CmsObject paramCms,
+                        CmsADEConfigData config,
+                        I_CmsResourceType resType) {
+
+                        boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
+                            resType.getTypeName());
+                        return isModelGroup || config.hasFormatters(paramCms, resType, containers);
                     }
-
-                    if (isModelGroup || (visibility == AddMenuVisibility.fromOtherView)) {
-                        typesAtTheEndOfTheList.add(typeConfig.getTypeName());
-                    }
-
-                    if (typeConfig.checkViewable(cms, uri)) {
-                        String typeName = typeConfig.getTypeName();
-                        I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(typeName);
-                        if (!isModelGroup && !config.hasFormatters(cms, resType, containers)) {
-                            disabledTypes.add(typeName);
-                        }
-                        resourceTypes.add(resType);
-                    }
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-            Set<String> creatableTypes = new HashSet<String>();
-            for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(
-                getCmsObject(),
-                CmsResource.getParentFolder(pageResource.getRootPath()))) {
-                if (typeConfig.isHiddenFromAddMenu(elementView) || disabledTypes.contains(typeConfig.getTypeName())) {
-                    continue;
-                }
-                String typeName = typeConfig.getTypeName();
-                creatableTypes.add(typeName);
-            }
-
+                });
             CmsGalleryService srv = new CmsGalleryService();
             srv.setCms(cms);
             srv.setRequest(getRequest());
-            // we put the types 'imported' from other views at the end of the list. Since the sort is stable,
-            // relative position of other types remains unchanged
-            Collections.sort(resourceTypes, new Comparator<I_CmsResourceType>() {
-
-                public int compare(I_CmsResourceType first, I_CmsResourceType second) {
-
-                    return ComparisonChain.start().compare(rank(first), rank(second)).result();
-                }
-
-                int rank(I_CmsResourceType type) {
-
-                    return typesAtTheEndOfTheList.contains(type.getTypeName()) ? 1 : 0;
-                }
-            });
-
-            data = srv.getInitialSettingsForContainerPage(resourceTypes, creatableTypes, disabledTypes, uri, locale);
+            data = srv.getInitialSettingsForContainerPage(resTypeBeans, locale, uri);
 
         } catch (Exception e) {
             error(e);
@@ -985,7 +944,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 useClassicEditor,
                 info,
                 isEditSmallElements(request, cms),
-                Lists.newArrayList(getElementViews().values()),
+                Lists.newArrayList(getElementViews(containerPage).values()),
                 getSessionCache().getElementView(),
                 reuseMode,
                 isModelPage,
@@ -1815,9 +1774,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     /**
      * Returns the available element views.<p>
      *
+     * @param checkRes resource for checking view permissions
+     *
      * @return the element views
      */
-    private Map<CmsUUID, CmsElementViewInfo> getElementViews() {
+    private Map<CmsUUID, CmsElementViewInfo> getElementViews(CmsResource checkRes) {
 
         Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
         CmsObject cms = getCmsObject();
@@ -1832,7 +1793,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
             // add only element view that are used within the type configuration and the user has sufficient permissions for
-            if (usedIds.contains(view.getId()) && view.hasPermission(cms)) {
+            if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes)) {
                 result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
             }
         }

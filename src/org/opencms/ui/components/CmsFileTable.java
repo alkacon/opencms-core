@@ -60,7 +60,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -516,14 +515,13 @@ public class CmsFileTable extends CmsResourceTable {
     /**
      * Updates all items with ids from the given list.<p>
      *
-     * @param ids the list of resource structure ids to update
+     * @param id the resource structure id to update
+     * @param remove true if the item should be removed only
      */
-    public void update(Collection<CmsUUID> ids) {
+    public void update(CmsUUID id, boolean remove) {
 
-        for (CmsUUID id : ids) {
-            updateItem(id);
-        }
-        clearSelection();
+        updateItem(id, remove);
+
     }
 
     /**
@@ -564,7 +562,7 @@ public class CmsFileTable extends CmsResourceTable {
 
         m_fileTable.setEditable(false);
         if (m_editItemId != null) {
-            updateItem(m_editItemId);
+            updateItem(m_editItemId, false);
         }
         m_editItemId = null;
         m_editProperty = null;
@@ -576,13 +574,20 @@ public class CmsFileTable extends CmsResourceTable {
      * Updates the given item in the file table.<p>
      *
      * @param itemId the item id
+     * @param remove true if the item should be removed only
      */
-    private void updateItem(CmsUUID itemId) {
+    private void updateItem(CmsUUID itemId, boolean remove) {
+
+        if (remove) {
+            m_container.removeItem(itemId);
+            return;
+        }
 
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource resource = cms.readResource(itemId, CmsResourceFilter.ALL);
             fillItem(cms, resource, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms));
+
         } catch (CmsVfsResourceNotFoundException e) {
             m_container.removeItem(itemId);
             LOG.debug("Failed to update file table item, removing it from view.", e);

@@ -135,6 +135,12 @@ public class OpenCmsTheme {
     public static final String REDUCED_SPACING = "o-reduced-spacing";
 
     /** CSS style name. */
+    public static final String RESINFO_HIDDEN_ICON = "o-resinfo-hidden-icon";
+
+    /** CSS style name. */
+    public static final String RESINFO_POINTER = "o-resinfo-pointer";
+
+    /** CSS style name. */
     public static final String RESOURCE_ICON = "o-resource-icon";
 
     /** CSS style name. */

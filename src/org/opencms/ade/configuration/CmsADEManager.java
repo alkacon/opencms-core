@@ -635,7 +635,7 @@ public class CmsADEManager {
                 if (localConfigData != null) {
                     Map<CmsUUID, CmsElementView> elmenetViews = getElementViews(cms);
                     hasView = elmenetViews.containsKey(localConfigData.getElementView())
-                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms);
+                        && elmenetViews.get(localConfigData.getElementView()).hasPermission(cms, resource);
                 }
             }
             // the user may only have write permissions if he is allowed to view the resource

@@ -183,7 +183,8 @@ public class CmsModuleAddResourceTypeThread extends A_CmsReportThread {
                 m_resInfo.getBigIcon(),
                 "xmlcontent",
                 null,
-                "false");
+                "false",
+                null);
             setting.setNewResourceUri("newresource_xmlcontent.jsp?newresourcetype=" + m_resInfo.getName());
             setting.setNewResourcePage("structurecontent");
             setting.setAutoSetNavigation("false");

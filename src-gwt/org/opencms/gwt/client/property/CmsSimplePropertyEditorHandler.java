@@ -38,6 +38,7 @@ import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
 import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -58,6 +59,9 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /** The context menu handler. */
     private I_CmsContextMenuHandler m_handler;
+
+    /** Flag controlling whether the file name is editable. */
+    private boolean m_hasEditableName;
 
     /**
      * Creates a new instance.<p>
@@ -139,7 +143,11 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public String getName() {
 
-        return CmsResource.getName(m_propertiesBean.getSitePath());
+        String result = CmsResource.getName(m_propertiesBean.getSitePath());
+        if (result.endsWith("/") && (result.length() > 0)) {
+            result = result.substring(0, result.length() - 1);
+        }
+        return result;
     }
 
     /**
@@ -179,7 +187,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#handleSubmit(java.lang.String, java.lang.String, java.util.List, boolean, org.opencms.gwt.client.property.CmsReloadMode)
      */
     public void handleSubmit(
-        String newUrlName,
+        final String newUrlName,
         String vfsPath,
         final List<CmsPropertyModification> propertyChanges,
         boolean editedName,
@@ -194,11 +202,18 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
             public void execute() {
 
                 start(300, false);
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(newUrlName)) {
+                    propertyChanges.add(
+                        new CmsPropertyModification(
+                            null,
+                            CmsPropertyModification.FILE_NAME_PROPERTY,
+                            newUrlName,
+                            true));
+                }
                 CmsPropertyChangeSet changeBean = new CmsPropertyChangeSet(
                     m_propertiesBean.getStructureId(),
                     propertyChanges);
                 vfsService.saveProperties(changeBean, this);
-
             }
 
             @Override
@@ -219,7 +234,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
      */
     public boolean hasEditableName() {
 
-        return false;
+        return m_hasEditableName;
     }
 
     /**
@@ -244,6 +259,16 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     public boolean isSimpleMode() {
 
         return false;
+    }
+
+    /**
+     * Enables / disables editable file name.<p>
+     *
+     * @param editable true if the file name should be editable
+     */
+    public void setEditableName(boolean editable) {
+
+        m_hasEditableName = editable;
     }
 
     /**

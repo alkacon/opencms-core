@@ -120,6 +120,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The name. */
     private String m_name;
 
+    /** The name pattern. */
+    private String m_namePattern;
+
     /** Optional class name for a new resource handler. */
     private String m_newResourceHandlerClassName;
 
@@ -481,6 +484,16 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Gets the name pattern.<p>
+     *
+     * @return the name pattern
+     */
+    public String getNamePattern() {
+
+        return m_namePattern;
     }
 
     /**
@@ -965,6 +978,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * @param reference the reference of the explorer type setting
      * @param elementView the element view
      * @param isView 'true' if this type represents an element view
+     * @param namePattern the name pattern
      */
     public void setTypeAttributes(
         String name,
@@ -973,7 +987,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         String bigIcon,
         String reference,
         String elementView,
-        String isView) {
+        String isView,
+        String namePattern) {
 
         setName(name);
         setKey(key);
@@ -982,6 +997,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         setReference(reference);
         setElementView(elementView);
         m_isView = Boolean.valueOf(isView).booleanValue();
+        m_namePattern = namePattern;
 
     }
 

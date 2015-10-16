@@ -38,6 +38,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Locale;
 
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 
@@ -52,8 +53,14 @@ public class CmsResourceInfo extends Panel {
     /** The sub title label. */
     private Label m_bottomText;
 
+    /** The button label. */
+    private Label m_buttonLabel;
+
     /** The resource icon. */
     private CmsResourceIcon m_icon;
+
+    /** The main container. */
+    private CssLayout m_mainContainer;
 
     /** The title label. */
     private Label m_topText;
@@ -76,6 +83,7 @@ public class CmsResourceInfo extends Panel {
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
             resUtil.getLockState(),
             resource.getState());
+        m_buttonLabel.setVisible(false);
     }
 
     /**
@@ -91,6 +99,7 @@ public class CmsResourceInfo extends Panel {
         m_topText.setValue(top);
         m_bottomText.setValue(bottom);
         m_icon.initContent(iconPath, 0, null);
+
     }
 
     /**
@@ -99,5 +108,25 @@ public class CmsResourceInfo extends Panel {
     private CmsResourceInfo() {
 
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+    }
+
+    /**
+     * Gets the button label.<p>
+     *
+     * @return the button label
+     */
+    public Label getButtonLabel() {
+
+        return m_buttonLabel;
+    }
+
+    /**
+     * Gets the main container.<p>
+     *
+     * @return the main container
+     */
+    public CssLayout getMainContainer() {
+
+        return m_mainContainer;
     }
 }

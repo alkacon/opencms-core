@@ -41,6 +41,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSerializable {
 
+    /** Enum for data source from which resource type bean was constructed. */
+    public enum Origin {
+        /** from sitemap config. */
+        config,
+
+        /** from other source. */
+        other, /** unknown. */
+        unknown
+    }
+
     /** Enum representing the visibility of a resource type in the bean. */
     public enum TypeVisibility {
         /** Never displayed. */
@@ -52,6 +62,9 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     /** Flag to indicate if the current user may create a new resource of this type. */
     private boolean m_creatableType;
 
+    /** The creation path. */
+    private String m_createPath;
+
     /** The deactivated flag. */
     private boolean m_deactivated;
 
@@ -60,6 +73,11 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** An array of gallery type names associated with this content type. */
     private ArrayList<String> m_galleryTypeNames;
+
+    private String m_namePattern;
+
+    /** Origin. */
+    private Origin m_origin = Origin.unknown;
 
     /** The name of the preview provider. */
     private String m_previewProviderName;
@@ -75,6 +93,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
 
     /** Visibility of this type. */
     private TypeVisibility m_visibility = TypeVisibility.showAlways;
+
+    /**
+     * Gets the creation path.<p>
+     *
+     * @return the creation path
+     */
+    public String getCreatePath() {
+
+        return m_createPath;
+    }
 
     /**
      * Returns the description.<p>
@@ -94,6 +122,21 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public ArrayList<String> getGalleryTypeNames() {
 
         return m_galleryTypeNames;
+    }
+
+    public String getNamePattern() {
+
+        return m_namePattern;
+    }
+
+    /**
+     * Returns the origin.<p>
+     *
+     * @return the origin
+     */
+    public Origin getOrigin() {
+
+        return m_origin;
     }
 
     /**
@@ -177,6 +220,16 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     }
 
     /**
+     * Sets the creation path.<p>
+     *
+     * @param createPath the creation path
+     */
+    public void setCreatePath(String createPath) {
+
+        m_createPath = createPath;
+    }
+
+    /**
      * Sets the type deactivated.<p>
      *
      * @param deactivated if the type is deactivated
@@ -204,6 +257,21 @@ public class CmsResourceTypeBean implements I_CmsHasTitle, I_CmsHasType, IsSeria
     public void setGalleryTypeNames(ArrayList<String> galleryNames) {
 
         m_galleryTypeNames = galleryNames;
+    }
+
+    public void setNamePattern(String pattern) {
+
+        m_namePattern = pattern;
+    }
+
+    /**
+     * Sets the origin.<p>
+     *
+     * @param origin the origin to set
+     */
+    public void setOrigin(Origin origin) {
+
+        m_origin = origin;
     }
 
     /**

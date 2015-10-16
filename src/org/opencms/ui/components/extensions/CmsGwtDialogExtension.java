@@ -85,10 +85,11 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      * Open property editor for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource
+     * @param editName controls whether the file name should be editable
      */
-    public void editProperties(CmsUUID structureId) {
+    public void editProperties(CmsUUID structureId, boolean editName) {
 
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).editProperties("" + structureId);
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).editProperties("" + structureId, editName);
     }
 
     /**
@@ -100,7 +101,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }

@@ -95,6 +95,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -142,6 +143,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
+
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -153,9 +157,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
-
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -1331,13 +1332,18 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 if (propMod.isFileNameProperty()) {
                     // in case of the file name property, the resource needs to be renamed
                     if (!resource.getStructureId().equals(propMod.getId())) {
-                        throw new IllegalStateException("Invalid structure id in property changes!");
+                        if (propMod.getId() != null) {
+                            throw new IllegalStateException("Invalid structure id in property changes.");
+                        }
                     }
                     CmsResource.checkResourceName(propMod.getValue());
-                    String oldSitePath = cms.getSitePath(resource);
+                    String oldSitePath = CmsFileUtil.removeTrailingSeparator(cms.getSitePath(resource));
                     String parentPath = CmsResource.getParentFolder(oldSitePath);
-                    String newSitePath = CmsStringUtil.joinPaths(parentPath, propMod.getValue());
-                    cms.moveResource(oldSitePath, newSitePath);
+                    String newSitePath = CmsFileUtil.removeTrailingSeparator(
+                        CmsStringUtil.joinPaths(parentPath, propMod.getValue()));
+                    if (!oldSitePath.equals(newSitePath)) {
+                        cms.moveResource(oldSitePath, newSitePath);
+                    }
                     // read the resource again to update name and path
                     resource = cms.readResource(resource.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
                 } else {

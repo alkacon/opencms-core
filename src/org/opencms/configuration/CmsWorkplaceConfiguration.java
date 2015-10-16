@@ -102,8 +102,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "info" attribute. */
     public static final String A_INFO = "info";
 
+    /** The isview attribute. */
+    public static final String A_ISVIEW = "isview";
+
     /** The name of the mode attribute. */
     public static final String A_MODE = "mode";
+
+    /** The name pattern attrribute. */
+    public static final String A_NAME_PATTERN = "name-pattern";
 
     /** The 'widget-config' attribute. */
     public static final String A_NICE_NAME = "nice-name";
@@ -561,9 +567,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The elementview attribute. */
     private static final String A_ELEMENTVIEW = "elementview";
 
-    /** The isview attribute. */
-    private static final String A_ISVIEW = "isview";
-
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
 
@@ -580,7 +583,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 7);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 8);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
@@ -588,6 +591,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_EXPLORERTYPE, 4, A_REFERENCE);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 5, A_ELEMENTVIEW);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 6, A_ISVIEW);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 7, A_NAME_PATTERN);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 3);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 0, A_EXTENSION);
@@ -703,6 +707,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
                 if (settings.isView()) {
                     explorerTypeElement.addAttribute(A_ISVIEW, "true");
+                }
+
+                if (settings.getNamePattern() != null) {
+                    explorerTypeElement.addAttribute(A_NAME_PATTERN, settings.getNamePattern());
                 }
 
                 // create subnode <newresource>

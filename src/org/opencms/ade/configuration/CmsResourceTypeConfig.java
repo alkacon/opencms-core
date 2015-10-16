@@ -83,14 +83,14 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
     /** Flag which controls whether adding elements of this type using ADE is disabled. */
     private boolean m_addDisabled;
 
+    /** Elements of this type when used in models should be copied instead of reused. */
+    private Boolean m_copyInModels;
+
     /** The flag for disabling detail pages. */
     private boolean m_detailPagesDisabled;
 
     /** True if this is a disabled configuration. */
     private boolean m_disabled;
-
-    /** Elements of this type when used in models should be copied instead of reused. */
-    private Boolean m_copyInModels;
 
     /** The element view id. */
     private CmsUUID m_elementView;
@@ -184,8 +184,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
      */
     public boolean checkCreatable(CmsObject cms, String pageFolderRootPath) throws CmsException {
 
-        if (cms.getRequestContext().getCurrentProject().isOnlineProject()
-            || "".equals(cms.getRequestContext().getSiteRoot())) {
+        if (cms.getRequestContext().getCurrentProject().isOnlineProject()) {
             return false;
         }
         if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN)) {
@@ -263,12 +262,12 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
 
         try {
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
-            CmsResource siteRoot = cms.readResource(referenceUri);
+            CmsResource referenceResource = cms.readResource(referenceUri);
             if (settings == null) {
                 // no explorer type
                 return false;
             }
-            return settings.getAccess().getPermissions(cms, siteRoot).requiresViewPermission();
+            return settings.getAccess().getPermissions(cms, referenceResource).requiresViewPermission();
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
             return false;

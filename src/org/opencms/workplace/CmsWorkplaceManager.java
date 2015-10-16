@@ -43,6 +43,8 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsEncoder;
@@ -50,6 +52,7 @@ import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -104,6 +107,7 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -777,6 +781,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Gets the default name pattern for the given type.<p>
+     *
+     * @param type the type name
+     * @return the default name pattern for the type
+     */
+    public String getDefaultNamePattern(String type) {
+
+        CmsExplorerTypeSettings settings = getExplorerTypeSetting(type);
+        if ((settings != null) && (settings.getNamePattern() != null)) {
+            return settings.getNamePattern();
+        }
+        return "new_" + type + "_%(number)";
+    }
+
+    /**
      * Returns the Workplace default user settings.<p>
      *
      * @return  the Workplace default user settings
@@ -895,6 +914,31 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
 
         return m_explorerTypeSettings;
+    }
+
+    /**
+     * Gets the explorer types for the given view name.<p>
+     *
+     * @param viewName the view name
+     *
+     * @return the explorer names for the given view names
+     */
+    public List<CmsExplorerTypeSettings> getExplorerTypesForView(String viewName) {
+
+        List<CmsExplorerTypeSettings> result = Lists.newArrayList();
+        for (CmsExplorerTypeSettings explorerType : getExplorerTypeSettings()) {
+            String currentViewName = explorerType.getElementView();
+            if (currentViewName == null) {
+                currentViewName = getDefaultView(explorerType.getName());
+            }
+            if ((currentViewName != null) && currentViewName.equals(viewName)) {
+                if (OpenCms.getResourceManager().hasResourceType(explorerType.getName())) {
+                    result.add(explorerType);
+                }
+            }
+
+        }
+        return result;
     }
 
     /**
@@ -2049,6 +2093,31 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         I_CmsGroupNameTranslation translation = getGroupNameTranslation();
         return translation.translateGroupName(groupName, keepOu);
+    }
+
+    /**
+     * Gets the default view name ( = explorer type) for the given type.<p>
+     *
+     * @param typeName a resource type name
+     * @return the default view for the given type
+     */
+    String getDefaultView(String typeName) {
+
+        if (OpenCms.getResourceManager().hasResourceType(typeName) && (getExplorerTypeSetting("view_other") != null)) {
+            try {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
+                if ((type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlContainerPage)) {
+                    return "view_xmlcontent";
+                } else if (type.isFolder()) {
+                    return "view_folder";
+                } else {
+                    return "view_other";
+                }
+            } catch (CmsLoaderException e) {
+                // shouldn't happen, we checked before
+            }
+        }
+        return "otheroptions";
     }
 
     /**

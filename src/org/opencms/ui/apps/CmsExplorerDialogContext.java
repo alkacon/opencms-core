@@ -29,6 +29,10 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
@@ -39,6 +43,8 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 import com.google.common.collect.Lists;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
@@ -48,20 +54,24 @@ import com.vaadin.ui.Window;
  */
 public class CmsExplorerDialogContext implements I_CmsDialogContext {
 
+    /** Logger instance for this class. */
+    @SuppressWarnings("unused")
+    private static final Log LOG = CmsLog.getLog(CmsExplorerDialogContext.class);
+
     /** The explorer app context. */
     private I_CmsAppUIContext m_appContext;
 
     /** The explorer instance. */
     private CmsFileExplorer m_explorer;
 
+    /** The current context menu item. */
+    private I_CmsContextMenuItem m_item;
+
     /** List of selected resources. */
     private List<CmsResource> m_resources;
 
     /** The window used to display the dialog. */
     private Window m_window;
-
-    /** The current context menu item. */
-    private I_CmsContextMenuItem m_item;
 
     /**
      * Creates a new instance.<p>
@@ -121,6 +131,33 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
             }
         }
         m_explorer.update(ids);
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#focus(org.opencms.util.CmsUUID)
+     */
+    public void focus(CmsUUID cmsUUID) {
+
+        try {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            CmsResource res = cms.readResource(cmsUUID, CmsResourceFilter.ALL);
+            String rootPath = res.getRootPath();
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+            if (siteRoot == null) {
+                if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
+                    siteRoot = OpenCms.getSiteManager().getSharedFolder();
+                } else {
+                    siteRoot = "";
+                }
+            }
+            CmsObject otherSiteCms = OpenCms.initCmsObject(cms);
+            otherSiteCms.getRequestContext().setSiteRoot(siteRoot);
+            String sitePath = otherSiteCms.getRequestContext().removeSiteRoot(CmsResource.getParentFolder(rootPath));
+            m_explorer.changeSite(siteRoot, sitePath, true);
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+
+        }
     }
 
     /**

@@ -121,8 +121,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
@@ -448,6 +446,21 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         }
     }
 
+    /** The opened paths session attribute name. */
+    public static final String OPENED_PATHS = "explorer-opened-paths";
+
+    /** Site selector caption property. */
+    public static final String SITE_CAPTION = "site_caption";
+
+    /** Site selector site root property. */
+    public static final String SITE_ROOT = "site_root";
+
+    /** The state separator string. */
+    public static final String STATE_SEPARATOR = "!!";
+
+    /** Logger instance for this class. */
+    static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
+
     /** The delete shortcut. */
     private static final Action ACTION_DELETE = new ShortcutAction("Del", ShortcutAction.KeyCode.DELETE, null);
 
@@ -472,21 +485,6 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         ShortcutAction.KeyCode.A,
         new int[] {ShortcutAction.ModifierKey.CTRL});
 
-    /** The opened paths session attribute name. */
-    public static final String OPENED_PATHS = "explorer-opened-paths";
-
-    /** Site selector caption property. */
-    public static final String SITE_CAPTION = "site_caption";
-
-    /** Site selector site root property. */
-    public static final String SITE_ROOT = "site_root";
-
-    /** The state separator string. */
-    public static final String STATE_SEPARATOR = "!!";
-
-    /** Logger instance for this class. */
-    static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
-
     /** The files and folder resource filter. */
     private static final CmsResourceFilter FILES_N_FOLDERS = CmsResourceFilter.ONLY_VISIBLE;
 
@@ -510,6 +508,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
     /** The info path. */
     TextField m_infoPath;
+
+    /** The explorer shortcuts. */
+    Map<Action, Runnable> m_shortcutActions;
 
     /** The bread crumb click listener. */
     private ClickListener m_crumbListener;
@@ -543,9 +544,6 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
-
-    /** The explorer shortcuts. */
-    Map<Action, Runnable> m_shortcutActions;
 
     /**
      * Constructor.<p>
@@ -767,6 +765,35 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * Changes to the given site and path.<p>
+     *
+     * @param siteRoot the site root
+     * @param path the path inside the site
+     */
+    public void changeSite(String siteRoot, String path) {
+
+        changeSite(siteRoot, path, false);
+
+    }
+
+    /**
+     * Switches to the requested site.<p>
+     *
+     * @param siteRoot the site root
+     * @param path the folder path to open
+     * @param force force the path change, even if we are currently in the same site
+     */
+    public void changeSite(String siteRoot, String path, boolean force) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        if (!cms.getRequestContext().getSiteRoot().equals(siteRoot) || force) {
+            cms.getRequestContext().setSiteRoot(siteRoot);
+            populateFolderTree();
+            openPath(path);
+        }
+    }
+
+    /**
      * Returns the current folder id.<p>
      *
      * @return the current folder structure id
@@ -926,12 +953,27 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     public void update(Collection<CmsUUID> ids) {
 
-        if (ids.contains(m_currentFolder)) {
-            readFolder(m_currentFolder);
-        } else {
-            m_fileTable.update(ids);
+        try {
+            CmsResource currentFolderRes = A_CmsUI.getCmsObject().readResource(m_currentFolder, CmsResourceFilter.ALL);
+            for (CmsUUID id : ids) {
+                boolean remove = false;
+                try {
+                    CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
+
+                    remove = !CmsResource.getParentFolder(resource.getRootPath()).equals(
+                        currentFolderRes.getRootPath());
+
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // ignore
+                }
+                m_fileTable.update(id, remove);
+                updateTree(id, remove);
+
+            }
+            m_fileTable.clearSelection();
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
         }
-        updateTree(ids);
     }
 
     /**
@@ -947,11 +989,20 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      *
      * @param cms the cms context
      * @param id the item id
+     * @param remove if the entry with the id should be removed
      */
-    public void updateResourceInTree(CmsObject cms, CmsUUID id) {
+    public void updateResourceInTree(CmsObject cms, CmsUUID id, boolean remove) {
+
+        if (remove) {
+            m_treeContainer.removeItemRecursively(id);
+            return;
+        }
 
         try {
             CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+            if (resource.isFile()) {
+                return;
+            }
 
             CmsResource parent = cms.readParentFolder(id);
             CmsUUID parentId = parent.getStructureId();
@@ -979,15 +1030,13 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /**
      * Updates the tree items with the given ids.<p>
      *
-     * @param ids the ids for which the tree should be updated
+     * @param id the
+     * @param remove if true, only remove the tree entry
      */
-    public void updateTree(Collection<CmsUUID> ids) {
+    public void updateTree(CmsUUID id, boolean remove) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-
-        for (CmsUUID id : ids) {
-            updateResourceInTree(cms, id);
-        }
+        updateResourceInTree(cms, id, remove);
 
     }
 
@@ -1091,22 +1140,6 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
-        }
-    }
-
-    /**
-     * Switches to the requested site.<p>
-     *
-     * @param siteRoot the site root
-     * @param path the folder path to open
-     */
-    void changeSite(String siteRoot, String path) {
-
-        CmsObject cms = A_CmsUI.getCmsObject();
-        if (!cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-            cms.getRequestContext().setSiteRoot(siteRoot);
-            populateFolderTree();
-            openPath(path);
         }
     }
 
@@ -1359,9 +1392,24 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             private static final long serialVersionUID = 1L;
 
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                Notification.show("The new resource dialog has not been implemented yet.", Type.WARNING_MESSAGE);
+                try {
+                    CmsObject cms = A_CmsUI.getCmsObject();
+
+                    CmsResource folderRes = cms.readResource(m_currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+                    I_CmsDialogContext newDialogContext = createDialogContext(null);
+
+                    CmsNewDialog newDialog = new CmsNewDialog(folderRes, newDialogContext);
+                    newDialogContext.start(
+                        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_TITLE_0),
+                        newDialog);
+
+                } catch (Exception e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+
             }
 
         });

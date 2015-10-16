@@ -139,18 +139,22 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     protected List<String> m_changed = Lists.newArrayList();
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#editProperties(java.lang.String)
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#editProperties(java.lang.String, boolean)
      */
-    public void editProperties(String editStructureId) {
+    public void editProperties(String editStructureId, boolean editName) {
 
-        CmsEditProperties.editProperties(new CmsUUID(editStructureId), new ContextMenuHandler(), new Runnable() {
+        CmsEditProperties.editProperties(
+            new CmsUUID(editStructureId),
+            new ContextMenuHandler(),
+            editName,
+            new Runnable() {
 
-            public void run() {
+                public void run() {
 
-                // Handle cancel
-                close(0);
-            }
-        });
+                    // Handle cancel
+                    close(0);
+                }
+            });
     }
 
     /**

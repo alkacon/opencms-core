@@ -58,6 +58,13 @@ public interface I_CmsDialogContext {
     public void finish(Collection<CmsUUID> result);
 
     /**
+     * Tell the system that the resoource with the given id should be shown somehow.<p>
+     *
+     * @param structureId the structure id of a resource
+     */
+    public void focus(CmsUUID structureId);
+
+    /**
      * Gets the menu item for which this context was created.<p>
      *
      * @return the menu item

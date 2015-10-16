@@ -25,38 +25,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.shared.components;
+package org.opencms.ade.containerpage;
 
-import com.vaadin.shared.communication.ClientRpc;
+import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.file.CmsObject;
+import org.opencms.file.types.I_CmsResourceType;
 
 /**
- * Server-to-client Interface for the GWT dialog extension.<p>
+ * Checks whether types are enabled for Add/New dialogs.<p>
  */
-public interface I_CmsGwtDialogClientRpc extends ClientRpc {
+public interface I_CmsResourceTypeEnabledCheck {
 
     /**
-     * Tells the client to open the property editing dialog for the resource with the given structure id.<p>
+     * Check whether the given type is enabled for a dialog.<p>
      *
-     * @param structureId the structure id of a resource, as a string
-     * @param editName if true, makes the file name editable
-     */
-    public void editProperties(String structureId, boolean editName);
-
-    /**
-     * Opens the publish dialog with the given publish data.<p>
+     * @param cms the cms context
+     * @param config the current sitemap config
+     * @param resType the resource type
      *
-     * @param serializedPublishData the publish data, an instance of CmsPublishData serialized with the GWT serialization mechanism
+     * @return true if the type is enabled
      */
-    public void openPublishDialog(String serializedPublishData);
-
-    /**
-     * Shows the OpenCms about dialog.<p>
-     */
-    public void showAbout();
-
-    /**
-     * Shows the user preferences.<p>
-     */
-    public void showUserPreferences();
+    public boolean checkEnabled(CmsObject cms, CmsADEConfigData config, I_CmsResourceType resType);
 
 }

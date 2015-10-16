@@ -56,7 +56,6 @@ public class CmsPropertyChangeSet implements IsSerializable {
 
         m_propertyChanges = propertyChanges;
         m_target = target;
-
     }
 
     /**
