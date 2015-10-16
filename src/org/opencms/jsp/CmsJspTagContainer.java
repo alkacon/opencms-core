@@ -185,7 +185,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if (formatterBean != null) {
             String formatterConfigId = formatterBean.getId();
             if (formatterConfigId == null) {
-                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID + element.getFormatterId().toString();
+                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
+                    + formatterBean.getJspStructureId().toString();
             }
             element.getSettings().put(settingsKey, formatterConfigId);
             element.setFormatterId(formatterBean.getJspStructureId());
