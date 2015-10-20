@@ -116,15 +116,15 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the complex attribute names
      */
     private static native String[] getComplexAttributeNames(JavaScriptObject entityWrapper)/*-{
-                                                                                           var attr = entityWrapper.getAttributes();
-                                                                                           var result = [];
-                                                                                           for (i = 0; i < attr.length; i++) {
-                                                                                           if (!attr[i].isSimpleValue()) {
-                                                                                           result.push(attr[i].getAttributeName());
-                                                                                           }
-                                                                                           }
-                                                                                           return result;
-                                                                                           }-*/;
+        var attr = entityWrapper.getAttributes();
+        var result = [];
+        for (i = 0; i < attr.length; i++) {
+            if (!attr[i].isSimpleValue()) {
+                result.push(attr[i].getAttributeName());
+            }
+        }
+        return result;
+    }-*/;
 
     /**
      * Returns the complex attribute values of the given entity.<p>
@@ -137,8 +137,8 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
     private static native JavaScriptObject[] getComplexAttributeValues(
         JavaScriptObject entityWrapper,
         String attributeName)/*-{
-                             return entityWrapper.getAttribute(attributeName).getComplexValues();
-                             }-*/;
+        return entityWrapper.getAttribute(attributeName).getComplexValues();
+    }-*/;
 
     /**
      * Returns the entity type.<p>
@@ -148,8 +148,8 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the entity type name
      */
     private static native String getEntityType(JavaScriptObject entityWrapper)/*-{
-                                                                              return entityWrapper.getTypeName();
-                                                                              }-*/;
+        return entityWrapper.getTypeName();
+    }-*/;
 
     /**
      * Returns the simple attribute names of the given entity.<p>
@@ -159,15 +159,15 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the simple attribute names
      */
     private static native String[] getSimpleAttributeNames(JavaScriptObject entityWrapper)/*-{
-                                                                                          var attr = entityWrapper.getAttributes();
-                                                                                          var result = [];
-                                                                                          for (i = 0; i < attr.length; i++) {
-                                                                                          if (attr[i].isSimpleValue()) {
-                                                                                          result.push(attr[i].getAttributeName());
-                                                                                          }
-                                                                                          }
-                                                                                          return result;
-                                                                                          }-*/;
+        var attr = entityWrapper.getAttributes();
+        var result = [];
+        for (i = 0; i < attr.length; i++) {
+            if (attr[i].isSimpleValue()) {
+                result.push(attr[i].getAttributeName());
+            }
+        }
+        return result;
+    }-*/;
 
     /**
      * Returns the simple attribute values of the given entity.<p>
@@ -178,8 +178,8 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      * @return the simple attribute values
      */
     private static native String[] getSimpleAttributeValues(JavaScriptObject entityWrapper, String attributeName)/*-{
-                                                                                                                 return entityWrapper.getAttribute(attributeName).getSimpleValues();
-                                                                                                                 }-*/;
+        return entityWrapper.getAttribute(attributeName).getSimpleValues();
+    }-*/;
 
     /**
      * @see org.opencms.acacia.client.entity.I_CmsEntityBackend#changeEntityContentValues(org.opencms.acacia.shared.CmsEntity, org.opencms.acacia.shared.CmsEntity)
@@ -253,19 +253,16 @@ public final class CmsEntityBackend implements I_CmsEntityBackend {
      */
     public List<Element> getAttributeElements(String entityId, String attributeName, Element context) {
 
-        String selector = "[about='"
-            + entityId
-            + "'][property*='"
-            + attributeName
-            + "'], [about='"
-            + entityId
-            + "'] [property*='"
-            + attributeName
-            + "']";
+        StringBuffer select = new StringBuffer();
+        select.append("[about='").append(entityId).append("'][property$='").append(attributeName).append("'], ");
+        select.append("[about='").append(entityId).append("'] [property$='").append(attributeName).append("'], ");
+        select.append("[about='").append(entityId).append("'][property*='").append(attributeName).append("['], ");
+        select.append("[about='").append(entityId).append("'] [property*='").append(attributeName).append("[']");
+
         if (context == null) {
             context = Document.get().getDocumentElement();
         }
-        return select(selector, context);
+        return select(select.toString(), context);
     }
 
     /**
