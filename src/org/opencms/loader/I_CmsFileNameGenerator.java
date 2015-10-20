@@ -48,6 +48,18 @@ public interface I_CmsFileNameGenerator {
     PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.5d");
 
     /**
+     * Returns a unique copy filename for the given base name and the parent folder.<p>
+     * For example from the given baseName 'test.txt' the copy file name 'test_copy.txt' will be generated.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param parentFolder the parent folder of the file
+     * @param baseName the base file name
+     *
+     * @return the unique file name
+     */
+    String getCopyFileName(CmsObject cms, String parentFolder, String baseName);
+
+    /**
      * Generates a new file name based on the provided OpenCms user context and name pattern.<p>
      *
      * Used by the collector API as well as the galleries introduced with OpenCms 8 (ADE).

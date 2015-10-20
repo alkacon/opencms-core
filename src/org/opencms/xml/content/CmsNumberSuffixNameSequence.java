@@ -44,6 +44,12 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
     /** The counter which keeps track of how often the next() method has been called. */
     private int m_counter;
 
+    /** The name prefix. */
+    private String m_prefix;
+
+    /** The name suffix. */
+    private String m_suffix;
+
     /**
      * Creates a new instance.<p>
      *
@@ -52,6 +58,12 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
     public CmsNumberSuffixNameSequence(String str) {
 
         m_baseName = str;
+
+        int dot = m_baseName.lastIndexOf(".");
+        if (dot > 0) {
+            m_prefix = m_baseName.substring(0, dot);
+            m_suffix = m_baseName.substring(dot);
+        }
     }
 
     /**
@@ -69,8 +81,12 @@ public class CmsNumberSuffixNameSequence implements Iterator<String> {
 
         String result = m_baseName;
         if (m_counter > 0) {
-            String numberSuffix = I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(m_counter);
-            result = m_baseName + "-" + numberSuffix;
+            String numberSuffix = "-" + I_CmsFileNameGenerator.NUMBER_FORMAT.sprintf(m_counter);
+            if (m_prefix == null) {
+                result = m_baseName + numberSuffix;
+            } else {
+                result = m_prefix + numberSuffix + m_suffix;
+            }
         }
         m_counter += 1;
         return result;

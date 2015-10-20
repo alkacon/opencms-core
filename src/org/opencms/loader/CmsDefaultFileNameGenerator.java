@@ -102,6 +102,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     /** Start sequence for macro with digits. */
     private static final String MACRO_NUMBER_DIGIT_SEPARATOR = ":";
 
+    /** The copy file name insert. */
+    public static final String COPY_FILE_NAME_INSERT = "-copy";
+
     /**
      * Checks the given pattern for the number macro.<p>
      *
@@ -154,6 +157,21 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             macro = macro + MACRO_NUMBER_DIGIT_SEPARATOR + n;
         }
         return pattern.contains(macroStart + macro + macroEnd);
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getCopyFileName(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public String getCopyFileName(CmsObject cms, String parentFolder, String baseName) {
+
+        String name = baseName;
+        int dot = name.lastIndexOf(".");
+        if (dot > 0) {
+            name = name.substring(0, dot) + COPY_FILE_NAME_INSERT + name.substring(dot);
+        } else {
+            name += COPY_FILE_NAME_INSERT;
+        }
+        return getUniqueFileName(cms, parentFolder, name);
     }
 
     /**
