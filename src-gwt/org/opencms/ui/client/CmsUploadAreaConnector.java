@@ -125,25 +125,44 @@ public class CmsUploadAreaConnector extends AbstractExtensionConnector {
                 && (typeof FormData == 'function' || typeof FormData == 'object')) {
             var self = this;
 
+            function isFileDrag(event) {
+                var result = true;
+                var dt = event.dataTransfer;
+                for (var i = 0; i < dt.types.length; i++) {
+                    // in case the types list contains text/html, we assume a DOM element is dragged, and no files
+                    if (dt.types[i] == "text/html") {
+                        result = false;
+                        break;
+                    }
+                }
+                return result;
+            }
+
             function dragover(event) {
-                event.stopPropagation();
-                event.preventDefault();
-                self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOver()();
+                if (isFileDrag(event)) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOver()();
+                }
             }
 
             function dragleave(event) {
-                event.stopPropagation();
-                event.preventDefault();
-                self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
+                if (isFileDrag(event)) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
+                }
             }
 
             function drop(event) {
-                event.stopPropagation();
-                event.preventDefault();
-                self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
-                var dt = event.dataTransfer;
-                var files = dt.files;
-                self.@org.opencms.ui.client.CmsUploadAreaConnector::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                if (isFileDrag(event)) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    self.@org.opencms.ui.client.CmsUploadAreaConnector::dragOut()();
+                    var dt = event.dataTransfer;
+                    var files = dt.files;
+                    self.@org.opencms.ui.client.CmsUploadAreaConnector::openUploadWithFiles(Lcom/google/gwt/core/client/JavaScriptObject;)(files);
+                }
             }
 
             element.addEventListener("dragover", dragover, false);
