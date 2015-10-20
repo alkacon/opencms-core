@@ -27,6 +27,7 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 import org.opencms.ui.shared.components.CmsMaxHeightState;
 import org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc;
@@ -57,10 +58,14 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     /** The widget to enhance. */
     private Widget m_widget;
 
+    /** The currently set height. */
+    private int m_currentHeight;
+
     /**
      * Constructor.<p>
      */
     public CmsMaxHeightConnector() {
+        m_currentHeight = -1;
         m_rpc = getRpcProxy(I_CmsMaxHeightServerRpc.class);
     }
 
@@ -90,9 +95,13 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     protected void handleMutation() {
 
         int maxHeight = getState().getMaxHeight();
-        if ((maxHeight > 0) && (m_widget.getOffsetHeight() > maxHeight)) {
-            m_rpc.fixHeight(maxHeight);
-            removeObserver();
+        if ((m_currentHeight > 0)
+            && ((CmsPositionBean.getInnerDimensions(m_widget.getElement()).getHeight() + 10) < m_currentHeight)) {
+            m_currentHeight = -1;
+            m_rpc.fixHeight(m_currentHeight);
+        } else if ((maxHeight > 0) && (m_widget.getOffsetHeight() > maxHeight)) {
+            m_currentHeight = maxHeight;
+            m_rpc.fixHeight(m_currentHeight);
         }
     }
 
@@ -117,7 +126,6 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
 
         // pass in the target node, as well as the observer options
         observer.observe(element, config);
-
     }-*/;
 
     /**

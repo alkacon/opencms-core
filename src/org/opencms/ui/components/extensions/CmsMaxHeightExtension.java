@@ -63,7 +63,11 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
      */
     public void fixHeight(int height) {
 
-        m_component.setHeight(height, Unit.PIXELS);
+        if (height < 1) {
+            m_component.setHeightUndefined();
+        } else {
+            m_component.setHeight(height, Unit.PIXELS);
+        }
     }
 
     /**
