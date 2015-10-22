@@ -27,12 +27,13 @@
 
 package org.opencms.ui.components;
 
-import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.data.Validator;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 
 /**
  * File table inline edit handler.<p>
  */
-public interface I_CmsFilePropertyEditHandler {
+public interface I_CmsFilePropertyEditHandler extends Validator, TextChangeListener {
 
     /**
      * Cancels the edit process.<p>
@@ -45,14 +46,4 @@ public interface I_CmsFilePropertyEditHandler {
      * @param value the value to save
      */
     void save(String value);
-
-    /**
-     * Validates the value.<p>
-     *
-     * @param value the value
-     *
-     * @throws InvalidValueException in case the value is not valid
-     */
-    void validate(String value) throws InvalidValueException;
-
 }

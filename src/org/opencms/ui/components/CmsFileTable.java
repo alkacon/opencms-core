@@ -69,7 +69,6 @@ import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator;
 import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
@@ -79,6 +78,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -94,7 +94,7 @@ public class CmsFileTable extends CmsResourceTable {
     /**
      * File edit handler.<p>
      */
-    public class FileEditHandler implements BlurListener, Validator {
+    public class FileEditHandler implements BlurListener {
 
         /** The serial version id. */
         private static final long serialVersionUID = -2286815522247807054L;
@@ -105,16 +105,6 @@ public class CmsFileTable extends CmsResourceTable {
         public void blur(BlurEvent event) {
 
             stopEdit();
-        }
-
-        /**
-         * @see com.vaadin.data.Validator#validate(java.lang.Object)
-         */
-        public void validate(Object value) throws InvalidValueException {
-
-            if (m_editHandler != null) {
-                m_editHandler.validate((String)value);
-            }
         }
     }
 
@@ -136,8 +126,9 @@ public class CmsFileTable extends CmsResourceTable {
             if (itemId.equals(getEditItemId()) && isEditProperty((CmsResourceTableProperty)propertyId)) {
                 result = super.createField(container, itemId, propertyId, uiContext);
                 result.addStyleName(OpenCmsTheme.INLINE_TEXTFIELD);
-                result.addValidator(m_fileEditHandler);
+                result.addValidator(m_editHandler);
                 if (result instanceof TextField) {
+                    ((TextField)result).setComponentError(null);
                     ((TextField)result).addShortcutListener(new ShortcutListener("Cancel edit", KeyCode.ESCAPE, null) {
 
                         private static final long serialVersionUID = 1L;
@@ -159,6 +150,8 @@ public class CmsFileTable extends CmsResourceTable {
                         }
                     });
                     ((TextField)result).addBlurListener(m_fileEditHandler);
+                    ((TextField)result).setTextChangeEventMode(TextChangeEventMode.LAZY);
+                    ((TextField)result).addTextChangeListener(m_editHandler);
                 }
                 result.focus();
             }

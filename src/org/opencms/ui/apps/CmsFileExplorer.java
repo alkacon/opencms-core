@@ -40,6 +40,7 @@ import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -91,7 +92,6 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.Action;
@@ -108,9 +108,11 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.UserError;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
@@ -144,6 +146,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      * Handles inline editing within the file table.<p>
      */
     public class ContextMenuEditHandler implements ContextMenuItemClickListener, I_CmsFilePropertyEditHandler {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -9160838301862765592L;
 
         /** The edited content structure id. */
         private CmsUUID m_editId;
@@ -243,12 +248,44 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         }
 
         /**
-         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#validate(java.lang.String)
+         * @see com.vaadin.event.FieldEvents.TextChangeListener#textChange(com.vaadin.event.FieldEvents.TextChangeEvent)
          */
-        public void validate(String value) throws InvalidValueException {
+        public void textChange(TextChangeEvent event) {
 
-            // TODO validate file name
+            TextField tf = (TextField)event.getSource();
+            try {
+                validate(event.getText());
+                tf.setComponentError(null);
+            } catch (InvalidValueException e) {
+                tf.setComponentError(new UserError(e.getHtmlMessage(), ContentMode.HTML, null));
+            }
+        }
 
+        /**
+         * @see com.vaadin.data.Validator#validate(java.lang.Object)
+         */
+        public void validate(Object value) throws InvalidValueException {
+
+            if ((m_editProperty == CmsResourceTableProperty.PROPERTY_RESOURCE_NAME) && (value instanceof String)) {
+                try {
+                    String newName = (String)value;
+                    CmsResource.checkResourceName(newName);
+                    CmsObject cms = A_CmsUI.getCmsObject();
+                    CmsResource res = cms.readResource(m_editId);
+                    if (!res.getName().equals(newName)) {
+                        String sourcePath = cms.getSitePath(res);
+                        if (cms.existsResource(
+                            CmsStringUtil.joinPaths(CmsResource.getParentFolder(sourcePath), newName))) {
+                            throw new InvalidValueException("The selected filename already exists.");
+                        }
+                    }
+                } catch (CmsIllegalArgumentException e) {
+                    throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
+                } catch (CmsException e) {
+                    LOG.warn("Error while validating new filename", e);
+                    throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
+                }
+            }
         }
     }
 
