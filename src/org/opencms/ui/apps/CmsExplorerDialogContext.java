@@ -36,6 +36,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -100,12 +101,13 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
     }
 
     /**
-     * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.List)
+     * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
      */
-    public void finish(List<CmsUUID> ids) {
+    public void finish(Collection<CmsUUID> ids) {
 
         if (m_window != null) {
             m_window.close();
+            m_window = null;
         }
         if (ids == null) {
             ids = Lists.newArrayList();

@@ -60,6 +60,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -235,6 +236,7 @@ public class CmsFileTable extends CmsResourceTable {
         super();
         m_container.setItemSorter(new FileSorter());
         m_fileTable.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        m_fileTable.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
         m_fileTable.setSizeFull();
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setSelectable(true);
@@ -516,7 +518,7 @@ public class CmsFileTable extends CmsResourceTable {
      *
      * @param ids the list of resource structure ids to update
      */
-    public void update(List<CmsUUID> ids) {
+    public void update(Collection<CmsUUID> ids) {
 
         for (CmsUUID id : ids) {
             updateItem(id);

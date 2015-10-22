@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="src-modules"/>
 	<classpathentry kind="src" path="src-setup"/>
 	<classpathentry kind="src" path="src-components"/>
-	<classpathentry excluding="org/opencms/gwt/client/super_src/" kind="src" path="src-gwt"/>
+	<classpathentry excluding="org/opencms/gwt/client/super_src/|org/opencms/ui/client/super_src/" kind="src" path="src-gwt"/>
 	<classpathentry kind="src" path="test-gwt"/>
 	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

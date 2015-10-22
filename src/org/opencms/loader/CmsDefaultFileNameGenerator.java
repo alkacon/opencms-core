@@ -167,9 +167,13 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
         String name = baseName;
         int dot = name.lastIndexOf(".");
         if (dot > 0) {
-            name = name.substring(0, dot) + COPY_FILE_NAME_INSERT + name.substring(dot);
+            if (!name.substring(0, dot).endsWith(COPY_FILE_NAME_INSERT)) {
+                name = name.substring(0, dot) + COPY_FILE_NAME_INSERT + name.substring(dot);
+            }
         } else {
-            name += COPY_FILE_NAME_INSERT;
+            if (!name.endsWith(COPY_FILE_NAME_INSERT)) {
+                name += COPY_FILE_NAME_INSERT;
+            }
         }
         return getUniqueFileName(cms, parentFolder, name);
     }

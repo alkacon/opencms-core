@@ -96,6 +96,9 @@ public class OpenCmsTheme {
     public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
 
     /** CSS style name. */
+    public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
+
+    /** CSS style name. */
     public static final String HIDDEN = "hidden";
 
     /** CSS style name. */
@@ -139,6 +142,9 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";
+
+    /** CSS style name. */
+    public static final String SIMPLE_DRAG = "o-simple-drag";
 
     /** CSS style name. */
     public static final String STATE_CHANGED = "o-state-changed";

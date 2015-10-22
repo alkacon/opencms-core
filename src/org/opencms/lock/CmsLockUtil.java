@@ -19,12 +19,12 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.lock;
 
 import org.opencms.file.CmsObject;
@@ -36,6 +36,9 @@ import org.opencms.main.CmsException;
 
 import java.util.List;
 
+/**
+ * Locking utility class.<p>
+ */
 public class CmsLockUtil {
 
     /**
@@ -48,7 +51,7 @@ public class CmsLockUtil {
      * @throws CmsException if something goes wrong
      */
     public static CmsLockActionRecord ensureLock(CmsObject cms, CmsResource resource) throws CmsException {
-    
+
         LockChange change = LockChange.unchanged;
         List<CmsResource> blockingResources = cms.getBlockingLockedResources(resource);
         if ((blockingResources != null) && !blockingResources.isEmpty()) {

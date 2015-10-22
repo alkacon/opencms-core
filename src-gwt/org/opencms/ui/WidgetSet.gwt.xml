@@ -12,6 +12,7 @@
 
 	<source path="client" />
 	<source path="shared" />
+	<super-source path="client/super_src/" /> 
 	
 	<replace-with class="org.opencms.ui.client.CmsLoadingIndicator">
     	<when-type-is class="com.vaadin.client.VLoadingIndicator"/>

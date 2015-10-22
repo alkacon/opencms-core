@@ -68,8 +68,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.event.dd.DropHandler;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
+import com.vaadin.ui.Table.TableDragMode;
 
 /**
  * Generic table for displaying lists of resources.<p>
@@ -358,6 +360,26 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         for (Object key : m_fileTable.getVisibleColumns()) {
             m_fileTable.setColumnCollapsed(key, collapsedSet.contains(key));
         }
+    }
+
+    /**
+     * Sets the table drag mode.<p>
+     *
+     * @param dragMode the drag mode
+     */
+    public void setDragMode(TableDragMode dragMode) {
+
+        m_fileTable.setDragMode(dragMode);
+    }
+
+    /**
+     * Sets the table drop handler.<p>
+     *
+     * @param handler the drop handler
+     */
+    public void setDropHandler(DropHandler handler) {
+
+        m_fileTable.setDropHandler(handler);
     }
 
     /**

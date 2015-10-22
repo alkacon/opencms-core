@@ -377,6 +377,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPY_KEEP_PERMISSIONS_0 = "GUI_COPY_KEEP_PERMISSIONS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_MOVE_FILE_0 = "GUI_COPY_MOVE_MOVE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_MOVE_FOLDER_0 = "GUI_COPY_MOVE_MOVE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_TARGET_FOLDER_0 = "GUI_COPY_MOVE_TARGET_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_MOVE_MOVE_RESOURCES_0 = "GUI_COPY_MOVE_MOVE_RESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MULTI_2 = "GUI_COPY_MULTI_2";
 
     /** Message constant for key in the resource bundle. */
@@ -758,6 +770,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_VERSION_0 = "GUI_LABEL_VERSION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_WORKPLACE_2_VIEW_0 = "GUI_LABEL_WORKPLACE_2_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_RELATION_LIST_NAME_0 = "GUI_LINK_RELATION_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1046,6 +1061,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0 = "GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_LIST_ALL_PROJECTS_0 = "GUI_PREF_LIST_ALL_PROJECTS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1110,9 +1128,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_REUSE_MODE_COPY_0 = "GUI_PREF_REUSE_MODE_COPY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0 = "GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_REUSE_MODE_REUSE_0 = "GUI_PREF_REUSE_MODE_REUSE_0";
@@ -1662,8 +1677,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    public static final String GUI_LABEL_WORKPLACE_2_VIEW_0 = "GUI_LABEL_WORKPLACE_2_VIEW_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

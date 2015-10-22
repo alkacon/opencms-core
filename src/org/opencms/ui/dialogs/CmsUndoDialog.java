@@ -34,13 +34,16 @@ import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.util.CmsUUID;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -112,44 +115,53 @@ public class CmsUndoDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    undo();
-                    m_context.finish(null);
-                } catch (Exception e) {
-                    m_context.error(e);
-                }
+                undo();
+
             }
         });
         displayResourceInfo(m_context.getResources());
     }
 
     /**
-     * Touches the selected files.<p>
-     *
-     * @throws CmsException if something goes wrong
+     * Undoes the changes.<p>
      */
-    protected void undo() throws CmsException {
+    protected void undo() {
 
-        boolean recursive = m_modifySubresourcesField.getValue().booleanValue();
-        boolean undoMove = m_undoMoveField.getValue().booleanValue();
-        CmsObject cms = m_context.getCms();
-        for (CmsResource resource : m_context.getResources()) {
-            CmsLockActionRecord actionRecord = null;
-            try {
-                actionRecord = CmsLockUtil.ensureLock(m_context.getCms(), resource);
-                CmsResourceUndoMode mode = CmsResourceUndoMode.getUndoMode(undoMove, recursive);
-                cms.undoChanges(cms.getSitePath(resource), mode);
-            } finally {
-                if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
-                    try {
-                        m_context.getCms().unlockResource(resource);
-                    } catch (CmsLockException e) {
-                        LOG.warn(e.getLocalizedMessage(), e);
+        try {
+            boolean recursive = m_modifySubresourcesField.getValue().booleanValue();
+            boolean undoMove = m_undoMoveField.getValue().booleanValue();
+            CmsObject cms = m_context.getCms();
+            Set<CmsUUID> updateResources = new HashSet<CmsUUID>();
+            for (CmsResource resource : m_context.getResources()) {
+                updateResources.add(resource.getStructureId());
+                if (undoMove) {
+                    // in case a move is undone, add the former parent folder
+                    updateResources.add(cms.readParentFolder(resource.getStructureId()).getStructureId());
+                }
+                CmsLockActionRecord actionRecord = null;
+                try {
+                    actionRecord = CmsLockUtil.ensureLock(m_context.getCms(), resource);
+                    CmsResourceUndoMode mode = CmsResourceUndoMode.getUndoMode(undoMove, recursive);
+                    cms.undoChanges(cms.getSitePath(resource), mode);
+                    if (undoMove) {
+                        // in case a move is undone, also add the new parent folder
+                        updateResources.add(cms.readParentFolder(resource.getStructureId()).getStructureId());
                     }
+                } finally {
+                    if ((actionRecord != null) && (actionRecord.getChange() == LockChange.locked)) {
+                        try {
+                            m_context.getCms().unlockResource(cms.readResource(resource.getStructureId()));
+                        } catch (CmsLockException e) {
+                            LOG.warn(e.getLocalizedMessage(), e);
+                        }
+                    }
+
                 }
 
             }
-
+            m_context.finish(updateResources);
+        } catch (Exception e) {
+            m_context.error(e);
         }
 
     }

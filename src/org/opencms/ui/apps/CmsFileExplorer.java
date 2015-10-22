@@ -42,6 +42,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
@@ -64,6 +65,7 @@ import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
@@ -73,6 +75,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -100,12 +103,17 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.event.dd.DropHandler;
+import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
+import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -115,6 +123,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.CollapseEvent;
@@ -122,6 +132,7 @@ import com.vaadin.ui.Tree.CollapseListener;
 import com.vaadin.ui.Tree.ExpandEvent;
 import com.vaadin.ui.Tree.ExpandListener;
 import com.vaadin.ui.Tree.ItemStyleGenerator;
+import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -240,6 +251,112 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             // TODO validate file name
 
+        }
+    }
+
+    /** The drop handler for copy/move operations. */
+    public class ExplorerDropHandler implements DropHandler {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = 5392136127699472654L;
+
+        /**
+         * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
+         */
+        public void drop(DragAndDropEvent dragEvent) {
+
+            try {
+                List<CmsResource> resources;
+                if ((dragEvent.getTransferable().getSourceComponent() instanceof Table)
+                    && !m_fileTable.getSelectedResources().isEmpty()) {
+                    resources = m_fileTable.getSelectedResources();
+                } else {
+                    CmsObject cms = A_CmsUI.getCmsObject();
+                    CmsUUID sourceId = (CmsUUID)dragEvent.getTransferable().getData("itemId");
+                    CmsResource source = cms.readResource(sourceId);
+                    resources = Collections.singletonList(source);
+                }
+                CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+                    m_appContext,
+                    CmsFileExplorer.this,
+                    resources,
+                    null);
+                CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+                dialog.setTargetFolder(getTargetId(dragEvent));
+                context.start("Copy move", dialog);
+            } catch (Exception e) {
+                LOG.error("Moving resource failed", e);
+            }
+
+        }
+
+        /**
+         * @see com.vaadin.event.dd.DropHandler#getAcceptCriterion()
+         */
+        public AcceptCriterion getAcceptCriterion() {
+
+            return new ServerSideCriterion() {
+
+                private static final long serialVersionUID = 1L;
+
+                public boolean accept(DragAndDropEvent dragEvent) {
+
+                    CmsUUID targetId = getTargetId(dragEvent);
+
+                    return mayDrop(targetId);
+                }
+            };
+        }
+
+        /**
+         * Returns the drag target id.<p>
+         *
+         * @param dragEvent the drag event
+         *
+         * @return the drag target id
+         */
+        protected CmsUUID getTargetId(DragAndDropEvent dragEvent) {
+
+            CmsUUID targetId = null;
+            if (dragEvent.getTargetDetails() instanceof AbstractSelectTargetDetails) {
+                AbstractSelectTargetDetails target = (AbstractSelectTargetDetails)dragEvent.getTargetDetails();
+                targetId = (CmsUUID)target.getItemIdOver();
+            }
+            try {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsResource target = cms.readResource(targetId);
+                if (target.isFile()) {
+                    targetId = null;
+                }
+            } catch (CmsException e) {
+                targetId = null;
+                LOG.debug("Checking drop target failed, use current folder.", e);
+            }
+
+            if (targetId == null) {
+                targetId = getCurrentFolder();
+            }
+            return targetId;
+        }
+
+        /**
+         * Evaluates if a drop on the given target is allowed
+         *
+         * @param targetId the target id
+         *
+         * @return <code>true</code> if the resources may be dropped to the given target
+         */
+        protected boolean mayDrop(CmsUUID targetId) {
+
+            boolean result = false;
+            try {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsResource target = cms.readResource(targetId);
+                result = cms.hasPermissions(target, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+            } catch (Exception e) {
+                LOG.debug("Checking folder write permissions failed", e);
+            }
+            return result;
         }
     }
 
@@ -485,6 +602,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 m_fileTable.selectAll();
             }
         });
+
         m_fileTable = new CmsFileTable();
         m_fileTable.setSizeFull();
         m_fileTable.setMenuBuilder(new MenuBuilder());
@@ -511,6 +629,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
         m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
         m_fileTree = new Tree();
+        m_fileTree.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
+        m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
         m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON);
@@ -554,6 +674,14 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             }
         });
         m_fileTree.setNullSelectionAllowed(false);
+
+        // init drag and drop
+        ExplorerDropHandler handler = new ExplorerDropHandler();
+        m_fileTable.setDropHandler(handler);
+        m_fileTable.setDragMode(TableDragMode.MULTIROW);
+        m_fileTree.setDropHandler(handler);
+        m_fileTree.setDragMode(TreeDragMode.NONE);
+
         m_siteSelector = createSiteSelect(A_CmsUI.getCmsObject());
         m_infoPath = new TextField();
         A_CmsFocusShortcutListener shortcutListener = new A_CmsFocusShortcutListener("Open path", KeyCode.ENTER, null) {
@@ -636,6 +764,16 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             m_fileTable.getTableSettings());
         UI.getCurrent().getSession().setAttribute(OPENED_PATHS, m_openedPaths);
         return true;
+    }
+
+    /**
+     * Returns the current folder id.<p>
+     *
+     * @return the current folder structure id
+     */
+    public CmsUUID getCurrentFolder() {
+
+        return m_currentFolder;
     }
 
     /**
@@ -786,9 +924,13 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      *
      * @param ids the ids of the table entries to update
      */
-    public void update(List<CmsUUID> ids) {
+    public void update(Collection<CmsUUID> ids) {
 
-        m_fileTable.update(ids);
+        if (ids.contains(m_currentFolder)) {
+            readFolder(m_currentFolder);
+        } else {
+            m_fileTable.update(ids);
+        }
         updateTree(ids);
     }
 
@@ -822,7 +964,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 if (parentId != null) {
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
                 }
-            } else {
+            } else if (resource.isFolder()) {
                 addTreeItem(resource, parentId, m_treeContainer);
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -839,7 +981,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      *
      * @param ids the ids for which the tree should be updated
      */
-    public void updateTree(List<CmsUUID> ids) {
+    public void updateTree(Collection<CmsUUID> ids) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
 

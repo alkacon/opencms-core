@@ -33,6 +33,7 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.Component;
@@ -54,7 +55,7 @@ public interface I_CmsDialogContext {
      *
      * @param result the list of structure ids of changed resources
      */
-    public void finish(List<CmsUUID> result);
+    public void finish(Collection<CmsUUID> result);
 
     /**
      * Gets the menu item for which this context was created.<p>

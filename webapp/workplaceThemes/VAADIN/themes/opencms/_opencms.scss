@@ -74,9 +74,9 @@
   		content: "";
   		position: absolute;
   		top: 4px;
-  		left: -2px;
+  		left: -3px;
   		right: 95px;
-  		bottom: 4px;
+  		bottom: 3px;
   		z-index: -1;
   		background: $v-selection-color;
   		border-radius: $v-border-radius;
@@ -87,6 +87,15 @@
   	background: lighten($v-selection-color,10%);
   }
   
+  /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */ 
+  div.v-table-drag .v-table-body .v-table-focus {
+  	$outline-width: max($v-table-border-width, 1px);
+  	outline: $outline-width solid $v-focus-color;
+  	outline-offset: -$outline-width;
+  }
+
+  
+  /** Changed table header styling */
   div.v-table-header-wrap,
   div.v-table-footer-wrap,
   div.v-table-header-drag {
@@ -155,6 +164,12 @@
   .v-button.o-button-plain {
   		min-width: 100px;
   		@include valo-button-style($unit-size: 30px, $font-weight: bold);
+  }
+  
+  div.o-full-width-padding {
+  	display: block;
+  	width: auto !important;
+  	padding: 4px;
   }
   
   .o-reduced-spacing > .v-spacing{
