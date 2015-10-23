@@ -69,8 +69,12 @@ public class CmsAddDialogTypeHelper {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAddDialogTypeHelper.class);
 
+    public CmsAddDialogTypeHelper() {
+        LOG.debug("Creating type helper.");
+    }
+
     /**
-     * Creates list of resource type beans for gallery or 'New' dialog
+     * Creates list of resource type beans for gallery or 'New' dialog.<p>
      *
      * @param cms the CMS context
      * @param folderRootPath the current folder
@@ -115,8 +119,13 @@ public class CmsAddDialogTypeHelper {
 
     }
 
+    protected boolean exclude(String typeName) {
+
+        return false;
+    }
+
     /**
-     * Creates list of resource type beans for gallery or 'New' dialog
+     * Creates list of resource type beans for gallery or 'New' dialog.<p>
      *
      * @param cms the CMS context
      * @param folderRootPath the current folder
@@ -227,7 +236,16 @@ public class CmsAddDialogTypeHelper {
                 typeBean.setOrigin(Origin.other);
             }
         }
-        return results;
+
+        List<CmsResourceTypeBean> filteredResults = Lists.newArrayList();
+        for (CmsResourceTypeBean result : results) {
+            if (exclude(result.getType())) {
+                continue;
+            }
+            filteredResults.add(result);
+        }
+
+        return filteredResults;
 
     }
 

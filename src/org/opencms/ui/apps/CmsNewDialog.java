@@ -64,8 +64,10 @@ import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.MouseEvents;
@@ -78,13 +80,16 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.declarative.Design;
 
 /**
  * Dialog for creating new resources.<p>
  */
+@DesignRoot
 public class CmsNewDialog extends CmsBasicDialog {
 
     /** Default value for the 'default location' check box. */
@@ -101,33 +106,31 @@ public class CmsNewDialog extends CmsBasicDialog {
     private static final long serialVersionUID = 1L;
 
     /** The cancel button. */
-    private Button m_cancelButton;
+    protected Button m_cancelButton;
 
     /** The created resource. */
-    private CmsResource m_createdResource;
-
-    //private TextField m_titleField;
+    protected CmsResource m_createdResource;
 
     /** The current view id. */
-    private CmsUUID m_currentViewId;
+    protected CmsUUID m_currentViewId;
 
     /** Check box for enabling / disabling default creation folders. */
-    private CheckBox m_defaultLocationCheckbox;
+    protected CheckBox m_defaultLocationCheckbox;
 
     /** The dialog context. */
-    private I_CmsDialogContext m_dialogContext;
+    protected I_CmsDialogContext m_dialogContext;
 
     /** The current folder. */
-    private CmsResource m_folderResource;
+    protected CmsResource m_folderResource;
 
     /** The selected type. */
-    private CmsResourceTypeBean m_selectedType;
+    protected CmsResourceTypeBean m_selectedType;
 
     /** Container for the type list. */
-    private VerticalLayout m_typeContainer;
+    protected VerticalLayout m_typeContainer;
 
     /** Element view selector. */
-    private ComboBox m_viewSelector;
+    protected ComboBox m_viewSelector;
 
     /**
      * Creates a new instance.<p>
@@ -142,7 +145,15 @@ public class CmsNewDialog extends CmsBasicDialog {
         m_folderResource = folderResource;
         m_dialogContext = context;
 
-        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
+        Design.read(this);
+        CmsVaadinUtils.visitDescendants(this, new Predicate<Component>() {
+
+            public boolean apply(Component component) {
+
+                component.setCaption(CmsVaadinUtils.localizeString(component.getCaption()));
+                return true;
+            }
+        });
         CmsUUID sessionView = (CmsUUID)VaadinService.getCurrentRequest().getWrappedSession().getAttribute(
             SETTING_STANDARD_VIEW);
         if (sessionView == null) {
@@ -196,6 +207,102 @@ public class CmsNewDialog extends CmsBasicDialog {
         }
     }
 
+    public void handleSelection(final CmsResourceTypeBean typeFinal) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        m_selectedType = typeFinal;
+        Boolean useDefaultLocation = m_defaultLocationCheckbox.getValue();
+        if (useDefaultLocation.booleanValue() && (m_selectedType.getCreatePath() != null)) {
+            try {
+                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                    cms,
+                    m_folderResource.getRootPath());
+
+                CmsResourceTypeConfig typeConfig = configData.getResourceType(m_selectedType.getType());
+                CmsResource createdResource = null;
+                if (typeConfig != null) {
+                    createdResource = typeConfig.createNewElement(cms, m_folderResource.getRootPath());
+                }
+                m_createdResource = createdResource;
+                CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
+                    UI.getCurrent(),
+                    new I_CmsUpdateListener<String>() {
+
+                        public void onUpdate(List<String> updatedItems) {
+
+                            List<CmsUUID> ids = Lists.newArrayList();
+                            if (updatedItems.isEmpty()) {
+                                removeResource();
+                            } else {
+                                for (String item : updatedItems) {
+                                    CmsUUID id = new CmsUUID(item);
+                                    ids.add(id);
+                                }
+                            }
+                            finish(ids);
+
+                        }
+
+                    });
+
+                m_dialogContext.finish(new ArrayList<CmsUUID>());
+                if (createdResource != null) {
+                    gwtDialogExt.editProperties(createdResource.getStructureId(), true);
+                }
+
+            } catch (Exception e) {
+                m_dialogContext.error(e);
+            }
+
+        } else {
+            String sitePath = cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath());
+            String namePattern = m_selectedType.getNamePattern();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePattern)) {
+                namePattern = OpenCms.getWorkplaceManager().getDefaultNamePattern(m_selectedType.getType());
+            }
+            String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
+            String realCreatePath;
+            try {
+                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, fileName, 6);
+            } catch (CmsException e1) {
+                realCreatePath = CmsStringUtil.joinPaths(sitePath, RandomStringUtils.randomAlphabetic(8));
+            }
+
+            try {
+                CmsResource createdResource = cms.createResource(
+                    realCreatePath,
+                    OpenCms.getResourceManager().getResourceType(m_selectedType.getType()),
+                    null,
+                    Lists.<CmsProperty> newArrayList());
+                cms.unlockResource(createdResource);
+                m_createdResource = createdResource;
+                CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
+                    UI.getCurrent(),
+                    new I_CmsUpdateListener<String>() {
+
+                        public void onUpdate(List<String> updatedItems) {
+
+                            List<CmsUUID> ids = Lists.newArrayList();
+                            if (updatedItems.isEmpty()) {
+                                removeResource();
+                            } else {
+                                for (String item : updatedItems) {
+                                    CmsUUID id = new CmsUUID(item);
+                                    ids.add(id);
+                                }
+                            }
+                            finish(ids);
+                        }
+                    });
+                m_dialogContext.finish(new ArrayList<CmsUUID>());
+                gwtDialogExt.editProperties(createdResource.getStructureId(), true);
+            } catch (Exception e) {
+                m_dialogContext.error(e);
+            }
+
+        }
+    } // end
+
     /**
      * Initializes and displays the type list for the given view.<p>
      *
@@ -212,7 +319,7 @@ public class CmsNewDialog extends CmsBasicDialog {
         }
         m_typeContainer.removeAllComponents();
 
-        CmsAddDialogTypeHelper typeHelper = new CmsAddDialogTypeHelper();
+        CmsAddDialogTypeHelper typeHelper = getTypeHelper();
         final CmsObject cms = A_CmsUI.getCmsObject();
         List<CmsResourceTypeBean> typeBeans = typeHelper.getResourceTypes(
             cms,
@@ -261,114 +368,21 @@ public class CmsNewDialog extends CmsBasicDialog {
                         @SuppressWarnings("synthetic-access")
                         public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
 
-                            m_selectedType = typeFinal;
-                            Boolean useDefaultLocation = m_defaultLocationCheckbox.getValue();
-                            if (useDefaultLocation.booleanValue() && (m_selectedType.getCreatePath() != null)) {
-                                try {
-                                    CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                                        cms,
-                                        m_folderResource.getRootPath());
-
-                                    CmsResourceTypeConfig typeConfig = configData.getResourceType(
-                                        m_selectedType.getType());
-                                    CmsResource createdResource = null;
-                                    if (typeConfig != null) {
-                                        createdResource = typeConfig.createNewElement(
-                                            cms,
-                                            m_folderResource.getRootPath());
-                                    }
-                                    m_createdResource = createdResource;
-                                    CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
-                                        UI.getCurrent(),
-                                        new I_CmsUpdateListener<String>() {
-
-                                        public void onUpdate(List<String> updatedItems) {
-
-                                            List<CmsUUID> ids = Lists.newArrayList();
-                                            if (updatedItems.isEmpty()) {
-                                                removeResource();
-                                            } else {
-                                                for (String item : updatedItems) {
-                                                    CmsUUID id = new CmsUUID(item);
-                                                    ids.add(id);
-                                                }
-                                            }
-                                            finish(ids);
-
-                                        }
-
-                                    });
-
-                                    m_dialogContext.finish(new ArrayList<CmsUUID>());
-                                    if (createdResource != null) {
-                                        gwtDialogExt.editProperties(createdResource.getStructureId(), true);
-                                    }
-
-                                } catch (Exception e) {
-                                    m_dialogContext.error(e);
-                                }
-
-                            } else {
-                                String sitePath = cms.getRequestContext().removeSiteRoot(
-                                    m_folderResource.getRootPath());
-                                String namePattern = m_selectedType.getNamePattern();
-                                if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePattern)) {
-                                    namePattern = OpenCms.getWorkplaceManager().getDefaultNamePattern(
-                                        m_selectedType.getType());
-                                }
-                                String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
-                                String realCreatePath;
-                                try {
-                                    realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
-                                        cms,
-                                        fileName,
-                                        6);
-                                } catch (CmsException e1) {
-                                    realCreatePath = CmsStringUtil.joinPaths(
-                                        sitePath,
-                                        RandomStringUtils.randomAlphabetic(8));
-                                }
-
-                                try {
-                                    CmsResource createdResource = cms.createResource(
-                                        realCreatePath,
-                                        OpenCms.getResourceManager().getResourceType(m_selectedType.getType()),
-                                        null,
-                                        Lists.<CmsProperty> newArrayList());
-                                    cms.unlockResource(createdResource);
-                                    m_createdResource = createdResource;
-                                    CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
-                                        UI.getCurrent(),
-                                        new I_CmsUpdateListener<String>() {
-
-                                        public void onUpdate(List<String> updatedItems) {
-
-                                            List<CmsUUID> ids = Lists.newArrayList();
-                                            if (updatedItems.isEmpty()) {
-                                                removeResource();
-                                            } else {
-                                                for (String item : updatedItems) {
-                                                    CmsUUID id = new CmsUUID(item);
-                                                    ids.add(id);
-                                                }
-                                            }
-                                            finish(ids);
-                                        }
-                                    });
-                                    m_dialogContext.finish(new ArrayList<CmsUUID>());
-                                    gwtDialogExt.editProperties(createdResource.getStructureId(), true);
-                                } catch (Exception e) {
-                                    m_dialogContext.error(e);
-                                }
-
-                            }
+                            handleSelection(typeFinal);
 
                         }
+
                     });
                 }
 
             }
         }
+    }
+
+    protected CmsAddDialogTypeHelper getTypeHelper() {
+
+        return new CmsAddDialogTypeHelper();
+
     }
 
     /**

@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Function;
@@ -231,6 +232,9 @@ public final class CmsVaadinUtils {
      */
     public static String localizeString(String baseString) {
 
+        if (baseString == null) {
+            return null;
+        }
         CmsWorkplaceMessages wpMessages = OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
         CmsMacroResolver resolver = new CmsMacroResolver();
         resolver.setMessages(wpMessages);
@@ -270,11 +274,23 @@ public final class CmsVaadinUtils {
     public static void readAndLocalizeDesign(Component component, CmsMessages messages, Map<String, String> macros) {
 
         Class<?> componentClass = component.getClass();
-        String filename = componentClass.getSimpleName() + ".html";
-        @SuppressWarnings("resource")
-        InputStream designStream = componentClass.getResourceAsStream(filename);
+        List<Class<?>> classes = Lists.newArrayList();
+        classes.add(componentClass);
+        classes.addAll(ClassUtils.getAllSuperclasses(componentClass));
+        InputStream designStream = null;
+        for (Class<?> cls : classes) {
+            if (cls.getName().startsWith("com.vaadin")) {
+                break;
+            }
+            String filename = cls.getSimpleName() + ".html";
+            designStream = cls.getResourceAsStream(filename);
+            if (designStream != null) {
+                break;
+            }
+
+        }
         if (designStream == null) {
-            throw new IllegalArgumentException("Design not found: " + filename);
+            throw new IllegalArgumentException("Design not found for : " + component.getClass());
         }
         readAndLocalizeDesign(component, designStream, messages, macros);
     }
@@ -377,7 +393,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

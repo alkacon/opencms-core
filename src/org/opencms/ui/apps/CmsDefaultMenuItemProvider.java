@@ -45,6 +45,7 @@ import org.opencms.ui.contextmenu.CmsUserPreferencesDialogAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
+import org.opencms.ui.dialogs.CmsChangeTypeDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsSecureExportDialog;
 import org.opencms.ui.dialogs.CmsTouchDialog;
@@ -171,6 +172,18 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                     UI.getCurrent().getPage().open(url, "_self");
                 }
             },
+
+            new CmsDefaultContextMenuItem(
+                "changetype",
+                "advanced",
+                new CmsDialogAction(CmsChangeTypeDialog.class),
+                "Change type",
+                0,
+                0,
+
+                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)
+
+        ),
 
             new CmsDefaultContextMenuItem(
                 "editcode",
