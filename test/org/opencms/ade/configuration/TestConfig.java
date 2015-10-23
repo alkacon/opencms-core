@@ -187,10 +187,6 @@ public class TestConfig extends OpenCmsTestCase {
         assertEquals(1, creatableTypes.size());
         assertEquals(binary, creatableTypes.get(0).getTypeName());
 
-        creatableTypes = config1.getCreatableTypes(cms, null);
-        // because we're in the root site
-        assertEquals(0, creatableTypes.size());
-
         cms.getRequestContext().setSiteRoot("/sites/default");
         creatableTypes = config1.getCreatableTypes(cms, null);
 
