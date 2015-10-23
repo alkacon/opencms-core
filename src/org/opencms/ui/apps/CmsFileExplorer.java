@@ -375,7 +375,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         }
 
         /**
-         * Evaluates if a drop on the given target is allowed
+         * Evaluates if a drop on the given target is allowed.<p>
          *
          * @param targetId the target id
          *
@@ -1001,7 +1001,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                         currentFolderRes.getRootPath());
 
                 } catch (CmsVfsResourceNotFoundException e) {
-                    // ignore
+                    remove = true;
                 }
                 m_fileTable.update(id, remove);
                 updateTree(id, remove);
@@ -1026,14 +1026,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      *
      * @param cms the cms context
      * @param id the item id
-     * @param remove if the entry with the id should be removed
      */
-    public void updateResourceInTree(CmsObject cms, CmsUUID id, boolean remove) {
-
-        if (remove) {
-            m_treeContainer.removeItemRecursively(id);
-            return;
-        }
+    public void updateResourceInTree(CmsObject cms, CmsUUID id) {
 
         try {
             CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -1052,7 +1046,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 if (parentId != null) {
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
                 }
-            } else if (resource.isFolder()) {
+            } else {
                 addTreeItem(resource, parentId, m_treeContainer);
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -1073,7 +1067,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     public void updateTree(CmsUUID id, boolean remove) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        updateResourceInTree(cms, id, remove);
+        updateResourceInTree(cms, id);
 
     }
 
