@@ -66,7 +66,7 @@
   	border-radius: 0;
   }
   
-  div.v-tree-node-caption:hover span{
+  div.v-tree-node-caption:hover span, div.v-tree-node-caption-drag-center span{
   	color: #ffffff;
   	position: relative;
   	z-index: 1;
@@ -83,9 +83,15 @@
   	}
   }
   
-  div.v-tree-node-selected.v-tree-node-caption:hover span:before{
+  div.v-tree-node-selected.v-tree-node-caption:hover span:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span:before{
   	background: lighten($v-selection-color,10%);
   }
+  
+   div.v-tree-node-caption-drag-center{
+   	@include box-shadow(none);
+   	position: static;
+   	outline: none;
+   }
   
   /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */ 
   div.v-table-drag .v-table-body .v-table-focus {
@@ -102,6 +108,13 @@
   	@include valo-gradient($o-dark-background-color);
   	font-size: $v-font-size;
   }
+  
+  .v-table-row:hover > td.v-table-cell-content, .v-table-row-odd:hover > td.v-table-cell-content {
+  	$background-color: $v-table-background-color or valo-table-background-color();
+  	$bg: mix($v-focus-color, $background-color, 20%);
+  	background-color: $bg;
+  	color: valo-font-color($bg);
+  } 
   
   div.v-panel-caption {
     @include valo-panel-caption-style($o-dark-background-color);
