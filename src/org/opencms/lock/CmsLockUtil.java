@@ -39,7 +39,14 @@ import java.util.List;
 /**
  * Locking utility class.<p>
  */
-public class CmsLockUtil {
+public final class CmsLockUtil {
+
+    /**
+     * Hidden constructor.
+     */
+    private CmsLockUtil() {
+        // Hide constructor for util class
+    }
 
     /**
      * Static helper method to lock a resource.<p>

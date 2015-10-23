@@ -68,6 +68,7 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
+import org.opencms.ui.dialogs.CmsNewDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;

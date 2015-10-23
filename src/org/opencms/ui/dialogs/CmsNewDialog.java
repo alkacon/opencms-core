@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.apps;
+package org.opencms.ui.dialogs;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsElementView;
@@ -176,12 +176,10 @@ public class CmsNewDialog extends CmsBasicDialog {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
                 try {
                     init(m_currentViewId, ((Boolean)event.getProperty().getValue()).booleanValue());
-
                 } catch (Exception e) {
                     m_dialogContext.error(e);
                 }
@@ -207,7 +205,113 @@ public class CmsNewDialog extends CmsBasicDialog {
         }
     }
 
-    public void handleSelection(final CmsResourceTypeBean typeFinal) {
+    /**
+     * Initializes and displays the type list for the given view.<p>
+     *
+     * @param viewId the view id
+     * @param useDefault true if we should use the default location for resource creation
+     *
+     * @throws CmsException if something goes wrong.
+     */
+    public void init(CmsUUID viewId, boolean useDefault) throws CmsException {
+
+        m_currentViewId = viewId;
+        if (!viewId.equals(m_viewSelector.getValue())) {
+            m_viewSelector.setValue(viewId);
+        }
+        m_typeContainer.removeAllComponents();
+
+        CmsAddDialogTypeHelper typeHelper = getTypeHelper();
+        final CmsObject cms = A_CmsUI.getCmsObject();
+        List<CmsResourceTypeBean> typeBeans = typeHelper.getResourceTypes(
+            cms,
+            m_folderResource.getRootPath(),
+            cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
+            viewId,
+            null);
+        for (CmsResourceTypeBean type : typeBeans) {
+            final String typeName = type.getType();
+            String title = typeName;
+            String subtitle = getSubtitle(type, useDefault);
+            CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+            String iconUri = explorerType.getBigIconIfAvailable();
+            title = CmsVaadinUtils.getMessageText(explorerType.getKey());
+            //subtitle = CmsVaadinUtils.getMessageText(explorerType.getInfo());
+            CmsResourceInfo info = new CmsResourceInfo(
+                title,
+                subtitle,
+                CmsWorkplace.getResourceUri("filetypes/" + iconUri));
+            Label label = new Label();
+
+            label.setContentMode(ContentMode.HTML);
+            label.setValue(FontAwesome.PLUS.getHtml());
+
+            //info.getMainContainer().addComponent(label);
+            m_typeContainer.addComponent(info);
+
+            info.getButtonLabel().setContentMode(ContentMode.HTML);
+            info.getButtonLabel().setValue(FontAwesome.PLUS.getHtml());
+            info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
+            final CmsResourceTypeBean typeFinal = type;
+            info.addClickListener(new MouseEvents.ClickListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+
+                    handleSelection(typeFinal);
+
+                }
+
+            });
+
+        }
+    }
+
+    /**
+     * Gets the subtitle for the type info widget.<p>
+     *
+     * @param type the type
+     * @param useDefault true if we are in 'use default' mode
+     *
+     * @return the subtitle
+     */
+    protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
+
+        String subtitle = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0);
+        if (useDefault && (type.getOrigin() == Origin.config) && (type.getCreatePath() != null)) {
+            subtitle = type.getCreatePath();
+        }
+        return subtitle;
+    }
+
+    /**
+     * Creates type helper which is responsible for generating the type list.<p>
+     *
+     * @return the type helper
+     */
+    protected CmsAddDialogTypeHelper getTypeHelper() {
+
+        return new CmsAddDialogTypeHelper() {
+
+            @Override
+            protected boolean exclude(CmsResourceTypeBean type) {
+
+                String typeName = type.getType();
+                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+                boolean noCreate = !(type.isCreatableType() && !type.isDeactivated());
+                return noCreate || (explorerType == null) || CmsStringUtil.isEmpty(explorerType.getNewResourceUri());
+            }
+        };
+
+    }
+
+    /**
+     * Handles selection of a type.<p>
+     *
+     * @param typeFinal the selected type
+     */
+    protected void handleSelection(final CmsResourceTypeBean typeFinal) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         m_selectedType = typeFinal;
@@ -228,6 +332,7 @@ public class CmsNewDialog extends CmsBasicDialog {
                     UI.getCurrent(),
                     new I_CmsUpdateListener<String>() {
 
+                        @SuppressWarnings("synthetic-access")
                         public void onUpdate(List<String> updatedItems) {
 
                             List<CmsUUID> ids = Lists.newArrayList();
@@ -280,6 +385,7 @@ public class CmsNewDialog extends CmsBasicDialog {
                     UI.getCurrent(),
                     new I_CmsUpdateListener<String>() {
 
+                        @SuppressWarnings("synthetic-access")
                         public void onUpdate(List<String> updatedItems) {
 
                             List<CmsUUID> ids = Lists.newArrayList();
@@ -304,88 +410,6 @@ public class CmsNewDialog extends CmsBasicDialog {
     } // end
 
     /**
-     * Initializes and displays the type list for the given view.<p>
-     *
-     * @param viewId the view id
-     * @param useDefault true if we should use the default location for resource creation
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void init(CmsUUID viewId, boolean useDefault) throws CmsException {
-
-        m_currentViewId = viewId;
-        if (!viewId.equals(m_viewSelector.getValue())) {
-            m_viewSelector.setValue(viewId);
-        }
-        m_typeContainer.removeAllComponents();
-
-        CmsAddDialogTypeHelper typeHelper = getTypeHelper();
-        final CmsObject cms = A_CmsUI.getCmsObject();
-        List<CmsResourceTypeBean> typeBeans = typeHelper.getResourceTypes(
-            cms,
-            m_folderResource.getRootPath(),
-            cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
-            viewId,
-            null);
-        for (CmsResourceTypeBean type : typeBeans) {
-
-            if (type.isCreatableType() && !type.isDeactivated()) {
-
-                final String typeName = type.getType();
-
-                String title = typeName;
-                String subtitle = CmsVaadinUtils.getMessageText(
-                    org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0);
-                if (useDefault && (type.getOrigin() == Origin.config) && (type.getCreatePath() != null)) {
-                    subtitle = type.getCreatePath();
-
-                }
-                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-                if (explorerType != null) {
-                    String iconUri = explorerType.getBigIconIfAvailable();
-                    title = CmsVaadinUtils.getMessageText(explorerType.getKey());
-                    //subtitle = CmsVaadinUtils.getMessageText(explorerType.getInfo());
-                    CmsResourceInfo info = new CmsResourceInfo(
-                        title,
-                        subtitle,
-                        CmsWorkplace.getResourceUri("filetypes/" + iconUri));
-                    Label label = new Label();
-
-                    label.setContentMode(ContentMode.HTML);
-                    label.setValue(FontAwesome.PLUS.getHtml());
-
-                    //info.getMainContainer().addComponent(label);
-                    m_typeContainer.addComponent(info);
-
-                    info.getButtonLabel().setContentMode(ContentMode.HTML);
-                    info.getButtonLabel().setValue(FontAwesome.PLUS.getHtml());
-                    info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
-                    final CmsResourceTypeBean typeFinal = type;
-                    info.addClickListener(new MouseEvents.ClickListener() {
-
-                        private static final long serialVersionUID = 1L;
-
-                        @SuppressWarnings("synthetic-access")
-                        public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
-
-                            handleSelection(typeFinal);
-
-                        }
-
-                    });
-                }
-
-            }
-        }
-    }
-
-    protected CmsAddDialogTypeHelper getTypeHelper() {
-
-        return new CmsAddDialogTypeHelper();
-
-    }
-
-    /**
      * Initializes the view selector, using the given view id as an initial value.<p>
      *
      * @param startView the start view
@@ -407,6 +431,21 @@ public class CmsNewDialog extends CmsBasicDialog {
         m_viewSelector.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
         for (CmsElementView view : viewList) {
             if (view.hasPermission(A_CmsUI.getCmsObject(), m_folderResource)) {
+
+                try {
+                    List<CmsResourceTypeBean> typeBeans = getTypeHelper().getResourceTypes(
+                        A_CmsUI.getCmsObject(),
+                        m_folderResource.getRootPath(),
+                        A_CmsUI.getCmsObject().getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
+                        view.getId(),
+                        null);
+                    if (typeBeans.isEmpty()) {
+                        continue;
+                    }
+                } catch (CmsException e) {
+                    continue;
+                }
+
                 m_viewSelector.addItem(view.getId());
                 m_viewSelector.setItemCaption(
                     view.getId(),
@@ -415,7 +454,7 @@ public class CmsNewDialog extends CmsBasicDialog {
 
         }
         if (m_viewSelector.getItem(startView) == null) {
-            startView = CmsUUID.getNullUUID();
+            startView = (CmsUUID)(m_viewSelector.getItemIds().iterator().next());
         }
         m_viewSelector.addValueChangeListener(new ValueChangeListener() {
 

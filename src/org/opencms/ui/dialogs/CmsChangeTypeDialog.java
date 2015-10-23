@@ -39,16 +39,29 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsNewDialog;
 
 import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
+/**
+ * Dialog for changing the resource type.<p>
+ */
 public class CmsChangeTypeDialog extends CmsNewDialog {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChangeTypeDialog.class);
 
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param context the dialog context
+     *
+     * @throws CmsException if something goes wrong
+     */
     public CmsChangeTypeDialog(I_CmsDialogContext context)
     throws CmsException {
         super(A_CmsUI.getCmsObject().readParentFolder(context.getResources().get(0).getStructureId()), context);
@@ -56,7 +69,7 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     }
 
     /**
-     * @see org.opencms.ui.apps.CmsNewDialog#handleSelection(org.opencms.ade.galleries.shared.CmsResourceTypeBean)
+     * @see org.opencms.ui.dialogs.CmsNewDialog#handleSelection(org.opencms.ade.galleries.shared.CmsResourceTypeBean)
      */
     @Override
     public void handleSelection(CmsResourceTypeBean typeBean) {
@@ -71,9 +84,10 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
         } catch (CmsException e) {
             m_dialogContext.error(e);
         } finally {
-            if (lockRecord.getChange() == LockChange.locked) {
+            if ((lockRecord != null) && (lockRecord.getChange() == LockChange.locked)) {
                 try {
                     cms.unlockResource(changeRes);
+                    m_dialogContext.finish(Arrays.asList(changeRes.getStructureId()));
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage());
                 }
@@ -83,16 +97,28 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     }
 
     /**
-     * @see org.opencms.ui.apps.CmsNewDialog#getTypeHelper()
+     *
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getSubtitle(org.opencms.ade.galleries.shared.CmsResourceTypeBean, boolean)
+     */
+    @Override
+    protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
+
+        return "";
+    }
+
+    /**
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getTypeHelper()
      */
     @Override
     protected CmsAddDialogTypeHelper getTypeHelper() {
 
         return new CmsAddDialogTypeHelper() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
-            protected boolean exclude(String typeName) {
+            protected boolean exclude(CmsResourceTypeBean type) {
 
+                String typeName = type.getType();
                 try {
                     boolean isFolder = m_dialogContext.getResources().get(0).isFolder();
                     return OpenCms.getResourceManager().getResourceType(typeName).isFolder() != isFolder;

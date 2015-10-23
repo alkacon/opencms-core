@@ -41,7 +41,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -69,6 +68,9 @@ public class CmsAddDialogTypeHelper {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAddDialogTypeHelper.class);
 
+    /**
+     * Creates a new instance.<p>
+     */
     public CmsAddDialogTypeHelper() {
         LOG.debug("Creating type helper.");
     }
@@ -119,7 +121,14 @@ public class CmsAddDialogTypeHelper {
 
     }
 
-    protected boolean exclude(String typeName) {
+    /**
+     * Function used to check if a given resource type should be excluded from the result.<p>
+     *
+     * @param type  the type
+     *
+     * @return true if the given type should be excluded
+     */
+    protected boolean exclude(CmsResourceTypeBean type) {
 
         return false;
     }
@@ -214,9 +223,6 @@ public class CmsAddDialogTypeHelper {
                 continue;
             }
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-            if (CmsStringUtil.isEmpty(explorerType.getNewResourceUri())) {
-                continue;
-            }
             CmsPermissionSet permissions = explorerType.getAccess().getPermissions(
                 cms,
                 cms.readResource(checkViewableReferenceUri));
@@ -239,7 +245,7 @@ public class CmsAddDialogTypeHelper {
 
         List<CmsResourceTypeBean> filteredResults = Lists.newArrayList();
         for (CmsResourceTypeBean result : results) {
-            if (exclude(result.getType())) {
+            if (exclude(result)) {
                 continue;
             }
             filteredResults.add(result);

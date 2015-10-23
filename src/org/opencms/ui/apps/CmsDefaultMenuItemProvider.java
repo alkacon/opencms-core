@@ -177,13 +177,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
                 "changetype",
                 "advanced",
                 new CmsDialogAction(CmsChangeTypeDialog.class),
-                "Change type",
+                "%(key.GUI_EXPLORER_CONTEXT_TYPE_0)",
                 0,
                 0,
-
-                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)
-
-        ),
+                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)),
 
             new CmsDefaultContextMenuItem(
                 "editcode",
