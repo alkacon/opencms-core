@@ -55,6 +55,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.Messages;
@@ -261,6 +262,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
         }
         return VISIBILITY_ACTIVE;
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
+     */
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+        return getVisibility(context.getCms(), context.getResources());
     }
 
     /**

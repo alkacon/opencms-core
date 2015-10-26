@@ -25,78 +25,47 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
+package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.util.CmsMacroResolver;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.logging.Log;
-
 /**
- * Base class for leaf context menu items.<p>
+ * A workplace action context menu item.<p>
  */
-public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
-
-    /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDefaultContextMenuItem.class);
-
-    /** The item id. */
-    protected String m_id;
+public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
 
     /** The parent item id. */
-    protected String m_parentId;
+    private String m_parentId;
 
     /** The order. */
-    protected int m_order;
+    private int m_order;
 
     /** The priority. */
-    protected int m_priority;
+    private int m_priority;
 
-    /** The title (may contain localization macros). */
-    private String m_title;
-
-    /** The action to execute when the item is clicked. */
-    protected I_CmsContextMenuAction m_action;
-
-    /** The visibility check for this item. */
-    protected I_CmsHasMenuItemVisibility m_visibility;
+    /** The workplace action. */
+    private I_CmsWorkplaceAction m_action;
 
     /**
      * Creates a new instance.<p>
      *
-     * @param id the id
-     * @param parentId the parent item id
      * @param action the action to execute
-     * @param title the title (may contain localization macros)
+     * @param parentId the parent item id
      * @param order the order
      * @param priority the priority
-     * @param visibility the object used to check visibility
      */
-    public CmsDefaultContextMenuItem(
-        String id,
-        String parentId,
-        I_CmsContextMenuAction action,
-
-        String title,
-        int order,
-        int priority,
-        I_CmsHasMenuItemVisibility visibility) {
-        m_id = id;
+    public CmsContextMenuActionItem(I_CmsWorkplaceAction action, String parentId, int order, int priority) {
         m_parentId = parentId;
-        m_title = title;
         m_order = order;
         m_priority = priority;
         m_action = action;
-        m_visibility = visibility;
     }
 
     /**
@@ -104,11 +73,7 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        if (m_action != null) {
-            m_action.executeAction(context);
-        } else {
-            LOG.warn("Empty action in context menu item " + m_id + " . Configuration error?");
-        }
+        m_action.executeAction(context);
     }
 
     /**
@@ -116,7 +81,7 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
      */
     public String getId() {
 
-        return m_id;
+        return m_action.getId();
     }
 
     /**
@@ -149,12 +114,7 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
      */
     public String getTitle(Locale locale) {
 
-        CmsMacroResolver resolver = new CmsMacroResolver();
-        resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
-        if (m_title == null) {
-            return "";
-        }
-        return resolver.resolveMacros(m_title);
+        return m_action.getTitle();
     }
 
     /**
@@ -162,10 +122,7 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if (m_visibility == null) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-        }
-        return m_visibility.getVisibility(cms, resources);
+        return m_action.getVisibility(cms, resources);
     }
 
     /**
@@ -184,12 +141,4 @@ public class CmsDefaultContextMenuItem implements I_CmsContextMenuItem {
         return true;
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-
-        return ReflectionToStringBuilder.toString(this);
-    }
 }

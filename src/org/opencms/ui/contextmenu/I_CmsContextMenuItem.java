@@ -114,5 +114,4 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
      * @return true if this is a leaf item
      */
     boolean isLeafItem();
-
 }

@@ -27,42 +27,32 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.file.CmsObject;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.contextmenu.CmsAboutDialogAction;
-import org.opencms.ui.contextmenu.CmsBlockingLockCheck;
-import org.opencms.ui.contextmenu.CmsDefaultContextMenuItem;
-import org.opencms.ui.contextmenu.CmsDialogAction;
-import org.opencms.ui.contextmenu.CmsDirectPublishDialogAction;
-import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
-import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
+import org.opencms.ui.actions.CmsAboutDialogAction;
+import org.opencms.ui.actions.CmsAvailabilityDialogAction;
+import org.opencms.ui.actions.CmsChangeTypeDialogAction;
+import org.opencms.ui.actions.CmsContextMenuActionItem;
+import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsDeleteDialogAction;
+import org.opencms.ui.actions.CmsDirectPublishDialogAction;
+import org.opencms.ui.actions.CmsEditCodeDialogAction;
+import org.opencms.ui.actions.CmsEditDialogAction;
+import org.opencms.ui.actions.CmsPreferencesDialogAction;
+import org.opencms.ui.actions.CmsProjectDialogAction;
+import org.opencms.ui.actions.CmsPropertiesDialogAction;
+import org.opencms.ui.actions.CmsPublishQueueDialogAction;
+import org.opencms.ui.actions.CmsSecureExportDialogAction;
+import org.opencms.ui.actions.CmsTouchDialogAction;
+import org.opencms.ui.actions.CmsUndeleteDialogAction;
+import org.opencms.ui.actions.CmsUndoDialogAction;
 import org.opencms.ui.contextmenu.CmsSubmenu;
-import org.opencms.ui.contextmenu.CmsUserPreferencesDialogAction;
-import org.opencms.ui.contextmenu.I_CmsContextMenuAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
-import org.opencms.ui.dialogs.CmsChangeTypeDialog;
-import org.opencms.ui.dialogs.CmsDeleteDialog;
-import org.opencms.ui.dialogs.CmsSecureExportDialog;
-import org.opencms.ui.dialogs.CmsTouchDialog;
-import org.opencms.ui.dialogs.CmsUndeleteDialog;
-import org.opencms.ui.dialogs.CmsUndoDialog;
-import org.opencms.ui.dialogs.availability.CmsAvailabilityDialog;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.UI;
 
 /**
  * Default implementation of menu item provider.<p>
@@ -84,171 +74,25 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
      */
     public List<I_CmsContextMenuItem> getMenuItems() {
 
+        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0);
+
         return Arrays.<I_CmsContextMenuItem> asList(
-            new CmsDefaultContextMenuItem(
-                "availability",
-                "advanced",
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsAvailabilityDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_AVAILABILITY_0)",
-                1,
-                0,
-                CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDefaultContextMenuItem(
-                "undo",
-                null,
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsUndoDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_UNDOCHANGES_0)",
-                3,
-                0,
-                CmsStandardVisibilityCheck.UNDO),
-            new CmsDefaultContextMenuItem(
-                "secureexport",
-                "advanced",
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsSecureExportDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_SECURE_0)",
-                2,
-                0,
-                CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDefaultContextMenuItem(
-                "touch",
-                "advanced",
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsTouchDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_TOUCH_0)",
-                0,
-                0,
-                CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDefaultContextMenuItem(
-                "undelete",
-                null,
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsUndeleteDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_UNDELETE_0)",
-                5,
-                0,
-                CmsStandardVisibilityCheck.UNDELETE),
-
-            new CmsDefaultContextMenuItem(
-                "properties",
-                null,
-                new CmsBlockingLockCheck(new CmsEditPropertiesAction()),
-                "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0)",
-                7,
-                0,
-                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)),
-
-            new CmsDefaultContextMenuItem(
-                "directpublish",
-                null,
-                new CmsDirectPublishDialogAction(),
-                "%(key.GUI_EXPLORER_CONTEXT_PUBLISH_0)",
-                1,
-                0,
-                CmsStandardVisibilityCheck.PUBLISH),
-
-            new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 6, 0),
-
-            new CmsDefaultContextMenuItem(
-                "edit",
-                null,
-                null,
-                "%(key.GUI_EXPLORER_CONTEXT_EDIT_0)",
-                0,
-                0,
-                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.EDIT)) {
-
-                @Override
-                public void executeAction(org.opencms.ui.I_CmsDialogContext context) {
-
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    String url = OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/editors/editor.jsp");
-                    url += "?resource=";
-                    url += cms.getSitePath(context.getResources().get(0));
-                    url += "&backlink=";
-                    try {
-                        url += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        url += UI.getCurrent().getPage().getLocation().toString();
-                    }
-                    UI.getCurrent().getPage().open(url, "_self");
-                }
-            },
-
-            new CmsDefaultContextMenuItem(
-                "changetype",
-                "advanced",
-                new CmsDialogAction(CmsChangeTypeDialog.class),
-                "%(key.GUI_EXPLORER_CONTEXT_TYPE_0)",
-                0,
-                0,
-                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.DEFAULT)),
-
-            new CmsDefaultContextMenuItem(
-                "editcode",
-                "advanced",
-                null,
-                "%(key.GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0)",
-                0,
-                0,
-                new CmsMenuItemVisibilitySingleOnly(CmsStandardVisibilityCheck.EDIT_CODE)) {
-
-                @Override
-                public void executeAction(org.opencms.ui.I_CmsDialogContext context) {
-
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    String url = OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/editors/editor.jsp");
-                    url += "?resource=";
-                    url += cms.getSitePath(context.getResources().get(0));
-                    url += "&editastext=true";
-                    url += "&backlink=";
-                    try {
-                        url += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                        url += UI.getCurrent().getPage().getLocation().toString();
-                    }
-                    UI.getCurrent().getPage().open(url, "_self");
-                }
-            },
-
-            new CmsDefaultContextMenuItem(
-                "delete",
-                null,
-                new CmsBlockingLockCheck(new CmsDialogAction(CmsDeleteDialog.class)),
-                "%(key.GUI_EXPLORER_CONTEXT_DELETE_0)",
-                3,
-                0,
-                CmsStandardVisibilityCheck.DEFAULT),
-            new CmsDefaultContextMenuItem(
-                "about",
-                null,
-                new CmsAboutDialogAction(),
-                "%(key.GUI_EXPLORER_CONTEXT_ABOUT_0)",
-                7,
-                0,
-                CmsStandardVisibilityCheck.MAIN_MENU),
-            new CmsDefaultContextMenuItem(
-                "userpreferences",
-                null,
-                new CmsUserPreferencesDialogAction(),
-                "%(key.GUI_BUTTON_PREFERENCES_0)",
-                6,
-                0,
-                CmsStandardVisibilityCheck.MAIN_MENU),
-            new CmsDefaultContextMenuItem("publishqueue", null, new I_CmsContextMenuAction() {
-
-                public void executeAction(I_CmsDialogContext context) {
-
-                    Notification.show("Not implemented yet.", Type.WARNING_MESSAGE);
-
-                }
-            }, "%(key.GUI_BUTTON_PUBLISHQUEUE_0)", 4, 0, CmsStandardVisibilityCheck.MAIN_MENU),
-            new CmsDefaultContextMenuItem("setproject", null, new I_CmsContextMenuAction() {
-
-                public void executeAction(I_CmsDialogContext context) {
-
-                    Notification.show("Not implemented yet.", Type.WARNING_MESSAGE);
-
-                }
-            }, "%(key.GUI_LABEL_PROJECT_0)", 5, 0, CmsStandardVisibilityCheck.MAIN_MENU));
+            advanced,
+            new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 3, 0),
+            new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1, 0),
+            new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 2, 0),
+            new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 3, 0),
+            new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 2, 0),
+            new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 0, 0),
+            new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 5, 0),
+            new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 7, 0),
+            new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 1, 0),
+            new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 0, 0),
+            new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 0, 0),
+            new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 0, 0),
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 7, 0),
+            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 6, 0),
+            new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 4, 0),
+            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 5, 0));
     }
 }

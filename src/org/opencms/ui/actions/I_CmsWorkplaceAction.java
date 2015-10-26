@@ -25,36 +25,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
+package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
-
-import java.util.List;
+import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 
 /**
- * Interface used to check menu item visibility for context menus.<p>
+ * Workplace action interface.<p>
  */
-public interface I_CmsHasMenuItemVisibility {
+public interface I_CmsWorkplaceAction extends I_CmsHasMenuItemVisibility {
 
     /**
-     * Gets the visibility for the current resource and CMS context.<p>
+     * Executes the action.<p>
      *
-     * @param cms the CMS context to use
-     * @param resources the list of resources to check
-     *
-     * @return the visibility
+     * @param context the current dialog context.<p>
      */
-    CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources);
+    void executeAction(I_CmsDialogContext context);
 
     /**
-     * Gets the visibility for the current dialog context.<p>
+     * The action id.<p>
+     *
+     * @return the action id
+     */
+    String getId();
+
+    /**
+     * Returns the localized action title.<p>
+     *
+     * @return the action title
+     */
+    String getTitle();
+
+    /**
+     * Checks whether this action should be active in the given dialog context.<p>
      *
      * @param context the dialog context
      *
-     * @return the visibility
+     * @return <code>true</code> if this action should be active in the given dialog context
      */
-    CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context);
+    boolean isActive(I_CmsDialogContext context);
 }

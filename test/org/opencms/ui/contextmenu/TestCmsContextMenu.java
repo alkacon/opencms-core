@@ -151,6 +151,11 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
                 return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
 
+            public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
+
+                return getVisibility(context.getCms(), context.getResources());
+            }
+
             public boolean isLeafItem() {
 
                 return false;

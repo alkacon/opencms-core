@@ -50,6 +50,9 @@ import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsPropertiesDialogAction;
+import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.components.A_CmsFocusShortcutListener;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsFileTable;
@@ -63,7 +66,6 @@ import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
-import org.opencms.ui.contextmenu.CmsEditPropertiesAction;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
@@ -296,30 +298,21 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         /** The serial version id. */
         private static final long serialVersionUID = 5392136127699472654L;
 
+        /** The copy move action. */
+        final I_CmsWorkplaceAction COPY_MOVE_ACTION = new CmsCopyMoveDialogAction();
+
         /**
          * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
          */
         public void drop(DragAndDropEvent dragEvent) {
 
             try {
-                List<CmsResource> resources;
-                if ((dragEvent.getTransferable().getSourceComponent() instanceof Table)
-                    && !m_fileTable.getSelectedResources().isEmpty()) {
-                    resources = m_fileTable.getSelectedResources();
-                } else {
-                    CmsObject cms = A_CmsUI.getCmsObject();
-                    CmsUUID sourceId = (CmsUUID)dragEvent.getTransferable().getData("itemId");
-                    CmsResource source = cms.readResource(sourceId);
-                    resources = Collections.singletonList(source);
+                CmsExplorerDialogContext context = getContext(dragEvent);
+                if (COPY_MOVE_ACTION.isActive(context)) {
+                    CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+                    dialog.setTargetFolder(getTargetId(dragEvent));
+                    context.start(COPY_MOVE_ACTION.getTitle(), dialog);
                 }
-                CmsExplorerDialogContext context = new CmsExplorerDialogContext(
-                    m_appContext,
-                    CmsFileExplorer.this,
-                    resources,
-                    null);
-                CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
-                dialog.setTargetFolder(getTargetId(dragEvent));
-                context.start("Copy move", dialog);
             } catch (Exception e) {
                 LOG.error("Moving resource failed", e);
             }
@@ -337,8 +330,15 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
                 public boolean accept(DragAndDropEvent dragEvent) {
 
+                    try {
+                        if (!COPY_MOVE_ACTION.isActive(getContext(dragEvent))) {
+                            return false;
+                        }
+                    } catch (CmsException e) {
+                        LOG.error("Drag an drop evaluation failed", e);
+                        return false;
+                    }
                     CmsUUID targetId = getTargetId(dragEvent);
-
                     return mayDrop(targetId);
                 }
             };
@@ -393,6 +393,35 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 LOG.debug("Checking folder write permissions failed", e);
             }
             return result;
+        }
+
+        /**
+         * Returns the dialog context to use.<p>
+         *
+         * @param dragEvent the drag event
+         *
+         * @return the dialog context
+         *
+         * @throws CmsException if reading the drag resource fails
+         */
+        CmsExplorerDialogContext getContext(DragAndDropEvent dragEvent) throws CmsException {
+
+            List<CmsResource> resources;
+            if ((dragEvent.getTransferable().getSourceComponent() instanceof Table)
+                && !m_fileTable.getSelectedResources().isEmpty()) {
+                resources = m_fileTable.getSelectedResources();
+            } else {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsUUID sourceId = (CmsUUID)dragEvent.getTransferable().getData("itemId");
+                CmsResource source = cms.readResource(sourceId);
+                resources = Collections.singletonList(source);
+            }
+            CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+                m_appContext,
+                CmsFileExplorer.this,
+                resources,
+                null);
+            return context;
         }
     }
 
@@ -612,8 +641,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             public void run() {
 
-                if (m_fileTable.getSelectedIds().size() == 1) {
-                    new CmsEditPropertiesAction().executeAction(createDialogContext(null));
+                I_CmsWorkplaceAction propAction = new CmsPropertiesDialogAction();
+                I_CmsDialogContext context = createDialogContext(null);
+                if (propAction.getVisibility(A_CmsUI.getCmsObject(), context.getResources()).isActive()) {
+                    propAction.executeAction(context);
                 }
             }
         });
@@ -1003,6 +1034,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
                 } catch (CmsVfsResourceNotFoundException e) {
                     remove = true;
+                    LOG.debug("Could not read update resource " + id, e);
                 }
                 m_fileTable.update(id, remove);
                 updateTree(id, remove);
@@ -1244,6 +1276,27 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * Opens the new resource dialog.<p>
+     */
+    void onClickNew() {
+
+        try {
+            CmsObject cms = A_CmsUI.getCmsObject();
+
+            CmsResource folderRes = cms.readResource(m_currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+            I_CmsDialogContext newDialogContext = createDialogContext(null);
+
+            CmsNewDialog newDialog = new CmsNewDialog(folderRes, newDialogContext);
+            newDialogContext.start(
+                CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_TITLE_0),
+                newDialog);
+
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
      * Opens the given site path.<p>
      *
      * @param path the path
@@ -1424,24 +1477,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    CmsObject cms = A_CmsUI.getCmsObject();
-
-                    CmsResource folderRes = cms.readResource(m_currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-                    I_CmsDialogContext newDialogContext = createDialogContext(null);
-
-                    CmsNewDialog newDialog = new CmsNewDialog(folderRes, newDialogContext);
-                    newDialogContext.start(
-                        CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_TITLE_0),
-                        newDialog);
-
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-
+                onClickNew();
             }
 
         });

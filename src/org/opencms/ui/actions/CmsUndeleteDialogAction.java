@@ -25,31 +25,52 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
+package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
+import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.ui.dialogs.CmsUndeleteDialog;
+import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
 /**
- * Decorator for menu item visibility classes which always returns INVISIBLE if more than one resource
- * is passed, but otherwise delegates the decision to its wrapped instance.<p>
+ * The undelete dialog action.<p>
  */
-public class CmsMenuItemVisibilitySingleOnly implements I_CmsHasMenuItemVisibility {
+public class CmsUndeleteDialogAction extends A_CmsWorkplaceAction {
 
-    /** The wrapped instance to delegate to. */
-    private I_CmsHasMenuItemVisibility m_visibility;
+    /** The action id. */
+    public static final String ACTION_ID = "undelete";
+
+    /** The action visibility. */
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.UNDELETE;
 
     /**
-     * Creates a new instance wrapping the given visibility handler.<p>
-     *
-     * @param visibility the wrapped visibility handler
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
-    public CmsMenuItemVisibilitySingleOnly(I_CmsHasMenuItemVisibility visibility) {
-        m_visibility = visibility;
+    public void executeAction(I_CmsDialogContext context) {
+
+        openDialog(new CmsUndeleteDialog(context), context);
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
+     */
+    public String getId() {
+
+        return ACTION_ID;
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     */
+    public String getTitle() {
+
+        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_UNDELETE_0);
     }
 
     /**
@@ -57,17 +78,6 @@ public class CmsMenuItemVisibilitySingleOnly implements I_CmsHasMenuItemVisibili
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        if (resources.size() != 1) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        }
-        return m_visibility.getVisibility(cms, resources);
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
-
-        return getVisibility(context.getCms(), context.getResources());
+        return VISIBILITY.getVisibility(cms, resources);
     }
 }
