@@ -792,7 +792,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if ((settings != null) && (settings.getNamePattern() != null)) {
             return settings.getNamePattern();
         }
-        return "new_" + type + "_%(number)";
+        if (type.equals("sitemap_config") || type.equals("module_config")) {
+            return ".config%(number)";
+        }
+        if (type.equals("content_folder")) {
+            return ".content%(number)";
+        }
+        return "new_" + type + "%(number)";
     }
 
     /**

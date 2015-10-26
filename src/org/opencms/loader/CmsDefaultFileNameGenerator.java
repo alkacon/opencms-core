@@ -62,10 +62,10 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     public class CmsNumberFactory implements Factory {
 
         /** The actual number. */
-        private int m_number;
+        protected int m_number;
 
         /** Format for file create parameter. */
-        private PrintfFormat m_numberFormat;
+        protected PrintfFormat m_numberFormat;
 
         /**
          * Create a new number factory.<p>
@@ -180,6 +180,14 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
     }
 
     /**
+     * @see org.opencms.loader.I_CmsFileNameGenerator#getNewFileName(org.opencms.file.CmsObject, java.lang.String, int)
+     */
+    public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException {
+
+        return getNewFileName(cms, namePattern, defaultDigits, false);
+    }
+
+    /**
      * Returns a new resource name based on the provided OpenCms user context and name pattern.<p>
      *
      * The pattern in this default implementation must be a path which may contain the macro <code>%(number)</code>.
@@ -192,12 +200,14 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      * @param cms the current OpenCms user context
      * @param namePattern the  pattern to be used when generating the new resource name
      * @param defaultDigits the default number of digits to use for numbering the created file names
+     * @param explorerMode if true, the file name is first tried without a numeric macro, also underscores are inserted automatically before the number macro and don't need to be part of the name pattern
      *
      * @return a new resource name based on the provided OpenCms user context and name pattern
      *
      * @throws CmsException in case something goes wrong
      */
-    public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException {
+    public String getNewFileName(CmsObject cms, String namePattern, int defaultDigits, boolean explorerMode)
+    throws CmsException {
 
         String checkPattern = cms.getRequestContext().removeSiteRoot(namePattern);
         String folderName = CmsResource.getFolderPath(checkPattern);
@@ -211,7 +221,7 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             fileNames.add(cms.getSitePath(res));
         }
 
-        return getNewFileNameFromList(fileNames, checkPattern, defaultDigits);
+        return getNewFileNameFromList(fileNames, checkPattern, defaultDigits, explorerMode);
     }
 
     /**
@@ -248,10 +258,15 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
      * @param fileNames the list of file names already existing in the folder
      * @param checkPattern the pattern to be used when generating the new resource name
      * @param defaultDigits the default number of digits to use for numbering the created file names
+     * @param explorerMode if true, first the file name without a number is tried, and also an underscore is automatically inserted before the number macro
      *
      * @return a new resource name based on the provided OpenCms user context and name pattern
      */
-    protected String getNewFileNameFromList(List<String> fileNames, String checkPattern, int defaultDigits) {
+    protected String getNewFileNameFromList(
+        List<String> fileNames,
+        String checkPattern,
+        int defaultDigits,
+        final boolean explorerMode) {
 
         if (!hasNumberMacro(checkPattern)) {
             throw new IllegalArgumentException(
@@ -289,7 +304,23 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
             useDigits = Character.getNumericValue(n);
         }
 
-        CmsNumberFactory numberFactory = new CmsNumberFactory(useDigits);
+        CmsNumberFactory numberFactory = new CmsNumberFactory(useDigits) {
+
+            @Override
+            public Object create() {
+
+                if (explorerMode) {
+                    if (m_number == 1) {
+                        return "";
+                    } else {
+                        return "_" + m_numberFormat.sprintf(m_number - 1);
+                    }
+                } else {
+                    return super.create();
+                }
+            }
+
+        };
         resolver.addDynamicMacro(macro, numberFactory);
         Set<String> checked = new HashSet<String>();
         int j = 0;
@@ -310,4 +341,5 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
 
         return checkFileName;
     }
+
 }

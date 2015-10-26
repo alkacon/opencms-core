@@ -53,25 +53,26 @@ public class TestCmsDefaultFileNameGenerator extends OpenCmsTestCase {
 
         CmsDefaultFileNameGenerator defaultGenerator = new CmsDefaultFileNameGenerator();
 
-        String next5Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number).xml", 5);
+        String next5Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number).xml", 5, false);
         assertEquals("/file_00003.xml", next5Name);
 
-        String next4Name = defaultGenerator.getNewFileNameFromList(NAMES_4, "/file_%(number).xml", 4);
+        String next4Name = defaultGenerator.getNewFileNameFromList(NAMES_4, "/file_%(number).xml", 4, false);
         assertEquals("/file_0003.xml", next4Name);
 
-        String next45Name = defaultGenerator.getNewFileNameFromList(NAMES_4, "/file_%(number:4).xml", 5);
+        String next45Name = defaultGenerator.getNewFileNameFromList(NAMES_4, "/file_%(number:4).xml", 5, false);
         assertEquals("/file_0003.xml", next45Name);
 
-        String next54Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number:5).xml", 4);
+        String next54Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number:5).xml", 4, false);
         assertEquals("/file_00003.xml", next54Name);
 
         String nextEmptyName = defaultGenerator.getNewFileNameFromList(
             Collections.<String> emptyList(),
             "/file_%(number:1).xml",
-            4);
+            4,
+            false);
         assertEquals("/file_1.xml", nextEmptyName);
 
-        String next9Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number:9).xml", 4);
+        String next9Name = defaultGenerator.getNewFileNameFromList(NAMES_5, "/file_%(number:9).xml", 4, false);
         assertEquals("/file_000000001.xml", next9Name);
     }
 }

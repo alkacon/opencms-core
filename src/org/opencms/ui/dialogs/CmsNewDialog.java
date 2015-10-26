@@ -370,7 +370,7 @@ public class CmsNewDialog extends CmsBasicDialog {
             String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
             String realCreatePath;
             try {
-                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, fileName, 6);
+                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, fileName, 6, true);
             } catch (CmsException e1) {
                 realCreatePath = CmsStringUtil.joinPaths(sitePath, RandomStringUtils.randomAlphabetic(8));
             }

@@ -75,6 +75,23 @@ public interface I_CmsFileNameGenerator {
     String getNewFileName(CmsObject cms, String namePattern, int defaultDigits) throws CmsException;
 
     /**
+     * Generates a new file name based on the provided OpenCms user context and name pattern.<p>
+     *
+     * Used by the collector API as well as the galleries introduced with OpenCms 8 (ADE).
+     *
+     * @param cms the current OpenCms user context
+     * @param namePattern the pattern to be used when generating the new resource name
+     * @param defaultDigits the default number of digits to use for numbering the created file names
+     * @param explorerMode if true, tries the name without a number, and also automatically inserts an underscore before the number
+     *
+     * @return a new resource name based on the provided OpenCms user context and name pattern
+     *
+     * @throws CmsException in case something goes wrong
+     */
+    String getNewFileName(CmsObject cms, String namePattern, int defaultDigits, boolean explorerMode)
+    throws CmsException;
+
+    /**
      * Returns a unique filename for the given base name and the parent folder.<p>
      *
      * @param cms the current OpenCms user context
