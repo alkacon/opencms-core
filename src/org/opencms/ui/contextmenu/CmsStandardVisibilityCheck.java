@@ -32,13 +32,18 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mainmenu;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mylock;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.noinheritedlock;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.nootherlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.otherlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.xml;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
@@ -50,6 +55,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -125,11 +131,26 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notdeleted,
         writepermisssion);
 
+    /** Visibility check for the undo function. */
+    public static final CmsStandardVisibilityCheck UNLOCK = new CmsStandardVisibilityCheck(mylock, noinheritedlock);
+
     /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
+
+    /** Check for locking resources. */
+    public static final CmsStandardVisibilityCheck LOCK = new CmsStandardVisibilityCheck(
+        unlocked,
+        roleeditor,
+        notonline,
+        notdeleted);
+
+    /** Permission check for stealing locks. */
+    public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
+        otherlock,
+        noinheritedlock);
 
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
@@ -196,6 +217,39 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 }
             }
 
+            if (flag(unlocked)) {
+                CmsLock lock = resUtil.getLock();
+                return lock.isUnlocked() ? VISIBILITY_ACTIVE : VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(otherlock)) {
+                CmsLock lock = resUtil.getLock();
+                if (lock.isUnlocked() || lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
+            if (flag(nootherlock)) {
+                CmsLock lock = resUtil.getLock();
+                if (!lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
+            if (flag(mylock)) {
+                CmsLock lock = resUtil.getLock();
+                if (!lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
+            if (flag(noinheritedlock)) {
+                CmsLock lock = resUtil.getLock();
+                if (lock.isInherited()) {
+                    return VISIBILITY_INVISIBLE;
+                }
+            }
+
             if (flag(notunchangedfile) && resource.isFile() && resUtil.getResource().getState().isUnchanged()) {
                 return VISIBILITY_INVISIBLE;
             }
@@ -236,7 +290,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                         || !cms.hasPermissions(
                             resUtil.getResource(),
                             CmsPermissionSet.ACCESS_WRITE,
-                            false,
+                            true,
                             CmsResourceFilter.ALL)) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                             Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);

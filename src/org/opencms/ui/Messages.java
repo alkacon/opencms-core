@@ -33,7 +33,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Message bundle class.<p>
  */
-public class Messages extends A_CmsMessageBundle {
+public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";

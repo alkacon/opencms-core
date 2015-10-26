@@ -34,6 +34,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import java.util.List;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -44,22 +45,47 @@ public class CmsLockedResourcesList extends CmsBasicDialog {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The label used to display the message. */
+    private Label m_messageLabel;
+
     /** The box containing the individual widgets for locked resources. */
     private VerticalLayout m_resourceBox;
 
     /** The OK button. */
     private Button m_okButton;
 
+    /** The cancel button. */
+    private Button m_cancelButton;
+
     /**
      * Creates a new instance.<p>
      *
      * @param cms the CMS context
      * @param resources the locked resources to display
+     * @param message the message to display
      * @param nextAction the action to execute after clicking the OK button
+     * @param cancelAction the action to execute after clicking the Cancel button
      */
-    public CmsLockedResourcesList(CmsObject cms, List<CmsResource> resources, Runnable nextAction) {
+    public CmsLockedResourcesList(
+        CmsObject cms,
+        List<CmsResource> resources,
+        String message,
+        Runnable nextAction,
+        Runnable cancelAction) {
+
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        m_okButton.addClickListener(CmsVaadinUtils.createClickListener(nextAction));
+        m_messageLabel.setValue(message);
+        if (nextAction != null) {
+            m_okButton.addClickListener(CmsVaadinUtils.createClickListener(nextAction));
+        } else {
+            m_okButton.setVisible(false);
+        }
+
+        if (cancelAction != null) {
+            m_cancelButton.addClickListener(CmsVaadinUtils.createClickListener(cancelAction));
+        } else {
+            m_cancelButton.setVisible(false);
+        }
         for (CmsResource resource : resources) {
             m_resourceBox.addComponent(new CmsResourceInfo(resource));
         }

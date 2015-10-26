@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsLockedResourcesList;
 import org.opencms.util.CmsUUID;
@@ -109,16 +110,20 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
             return false;
         } else {
 
-            CmsLockedResourcesList dialog = new CmsLockedResourcesList(cms, blocked, new Runnable() {
+            CmsLockedResourcesList dialog = new CmsLockedResourcesList(
+                cms,
+                blocked,
+                CmsVaadinUtils.getMessageText(Messages.GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0),
+                new Runnable() {
 
-                public void run() {
+                    public void run() {
 
-                    List<CmsUUID> noStructureIds = Collections.emptyList();
-                    context.finish(noStructureIds);
-                }
+                        List<CmsUUID> noStructureIds = Collections.emptyList();
+                        context.finish(noStructureIds);
+                    }
 
-            });
-
+                },
+                null);
             context.start(
                 CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCKS_0),
                 dialog);

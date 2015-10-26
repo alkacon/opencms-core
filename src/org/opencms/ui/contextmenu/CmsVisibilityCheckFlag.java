@@ -67,10 +67,24 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if user has publish permissions. */
     publishpermission,
 
+    /** Checks if resource is unlocked. */
+    unlocked,
+
+    /** Checks if resource is locked by different user. */
+    otherlock,
+
+    /** Checks if resource is locked by current user. */
+    mylock,
+
+    /** Checks if resource is not locked by different user. */
+    nootherlock,
+
+    /** Checks that lock is not inherited. */
+    noinheritedlock,
+
     /** Check that we have write permission. */
     writepermisssion,
 
     /** Checks if resource is xml content. */
     xml;
-
 }
