@@ -44,16 +44,18 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.server.FontAwesome;
+
 /**
  * Dialog for changing the resource type.<p>
  */
 public class CmsChangeTypeDialog extends CmsNewDialog {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChangeTypeDialog.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a new instance.<p>
@@ -97,6 +99,15 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     }
 
     /**
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getActionIconHtml()
+     */
+    @Override
+    protected String getActionIconHtml() {
+
+        return FontAwesome.CHECK.getHtml();
+    }
+
+    /**
      *
      * @see org.opencms.ui.dialogs.CmsNewDialog#getSubtitle(org.opencms.ade.galleries.shared.CmsResourceTypeBean, boolean)
      */
@@ -121,7 +132,9 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
                 String typeName = type.getType();
                 try {
                     boolean isFolder = m_dialogContext.getResources().get(0).isFolder();
-                    return OpenCms.getResourceManager().getResourceType(typeName).isFolder() != isFolder;
+                    boolean identicalTypeGroup = OpenCms.getResourceManager().getResourceType(
+                        typeName).isFolder() == isFolder;
+                    return !identicalTypeGroup;
                 } catch (Exception e) {
                     LOG.debug(e.getLocalizedMessage(), e);
                     return false;

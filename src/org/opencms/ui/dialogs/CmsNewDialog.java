@@ -81,7 +81,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
@@ -241,16 +240,9 @@ public class CmsNewDialog extends CmsBasicDialog {
                 title,
                 subtitle,
                 CmsWorkplace.getResourceUri("filetypes/" + iconUri));
-            Label label = new Label();
-
-            label.setContentMode(ContentMode.HTML);
-            label.setValue(FontAwesome.PLUS.getHtml());
-
-            //info.getMainContainer().addComponent(label);
             m_typeContainer.addComponent(info);
-
             info.getButtonLabel().setContentMode(ContentMode.HTML);
-            info.getButtonLabel().setValue(FontAwesome.PLUS.getHtml());
+            info.getButtonLabel().setValue(getActionIconHtml());
             info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
             final CmsResourceTypeBean typeFinal = type;
             info.addClickListener(new MouseEvents.ClickListener() {
@@ -266,6 +258,16 @@ public class CmsNewDialog extends CmsBasicDialog {
             });
 
         }
+    }
+
+    /**
+     * Gets the HTML for the action buttons the type info boxes.<p>
+     *
+     * @return the HTML for the buttons
+     */
+    protected String getActionIconHtml() {
+
+        return FontAwesome.PLUS.getHtml();
     }
 
     /**
