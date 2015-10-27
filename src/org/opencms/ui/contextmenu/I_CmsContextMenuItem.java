@@ -73,7 +73,7 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
      * Gets the id of the parent entry.<p>
      *
      * If this returns null, the context menu item will be inserted at the root level of the context menu,
-     * otherwise, it will be added as a sub-entry of the context menu entry with the given id (if such an
+     * otherwise, it will be added I_CmsContextMenuActionas a sub-entry of the context menu entry with the given id (if such an
      * entry exists; otherwise, the child entry will be ignored).
      *
      * @return the parent id
