@@ -1731,7 +1731,7 @@
 				<preference name="gallery.imagegallery" />
 				<preference name="gallery.downloadgallery" />
 				<preference name="gallery.htmlgallery" />		
-				<preference name="org.opencms.ui.apps.CmsFileExplorerSettings" value="{'collapsed_collumns':['PROPERTY_NAVIGATION_TEXT','PROPERTY_PERMISSIONS','PROPERTY_USER_MODIFIED','PROPERTY_DATE_MODIFIED','PROPERTY_DATE_RELEASED','PROPERTY_DATE_EXPIRED','PROPERTY_DATE_CREATED','PROPERTY_USER_CREATED','PROPERTY_STATE_NAME','PROPERTY_USER_LOCKED'],'sort_column':'PROPERTY_RESOURCE_NAME','sort_order':true}"/>		
+				<preference name="org.opencms.ui.apps.CmsFileExplorerSettings" value="{'collapsed_collumns':['PROPERTY_PROJECT','PROPERTY_NAVIGATION_TEXT','PROPERTY_PERMISSIONS','PROPERTY_USER_MODIFIED','PROPERTY_DATE_MODIFIED','PROPERTY_DATE_RELEASED','PROPERTY_DATE_EXPIRED','PROPERTY_DATE_CREATED','PROPERTY_USER_CREATED','PROPERTY_STATE_NAME','PROPERTY_USER_LOCKED'],'sort_column':'PROPERTY_RESOURCE_NAME','sort_order':true}"/>		
 			</preference-tab>
 		</default-preferences>
 		<workplace-customfoot>

@@ -223,6 +223,10 @@
   	color: $o-button-blue;
   }
   
+  .o-project-other, .v-table-row-o-project-other, .v-tree-node-o-project-other{
+  	color: $gray;
+  }
+  
   .v-tree-node-caption-o-state-changed > div:before, .v-tree-node-caption-o-state-new > div:before{
   	color: $v-font-color;
   }
@@ -294,6 +298,17 @@
   	}
   	.o-lock-other{
   		background: transparent url(img/lockOther.png) no-repeat center right;
+  	}
+  	
+  	.o-sibling{
+  		position: absolute;
+  		bottom: 0;
+  		left: 0;
+  		height:16px;
+  		width: 16px;
+  		color: transparent;
+	  	z-index:2;
+	  	background: transparent url(img/sibling.png) no-repeat center right;
   	}
   	
   	.o-state-changed, .o-state-new {

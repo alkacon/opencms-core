@@ -31,9 +31,11 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_C
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
@@ -238,6 +240,7 @@ public class CmsFileTable extends CmsResourceTable {
 
             {
                 column(PROPERTY_TYPE_ICON);
+                column(PROPERTY_PROJECT);
                 column(PROPERTY_RESOURCE_NAME);
                 column(PROPERTY_TITLE);
                 column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
@@ -254,6 +257,7 @@ public class CmsFileTable extends CmsResourceTable {
                 column(PROPERTY_USER_LOCKED);
                 column(PROPERTY_IS_FOLDER, INVISIBLE);
                 column(PROPERTY_STATE, INVISIBLE);
+                column(PROPERTY_INSIDE_PROJECT, INVISIBLE);
             }
 
         }.buildColumns();
@@ -315,9 +319,14 @@ public class CmsFileTable extends CmsResourceTable {
 
         String result = "";
         if (resourceItem != null) {
-            CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
-                CmsResourceTableProperty.PROPERTY_STATE).getValue();
-            result = getStateStyle(state);
+            if (((Boolean)resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue()).booleanValue()) {
+
+                CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
+                    CmsResourceTableProperty.PROPERTY_STATE).getValue();
+                result = getStateStyle(state);
+            } else {
+                result = OpenCmsTheme.PROJECT_OTHER;
+            }
         }
         return result;
     }

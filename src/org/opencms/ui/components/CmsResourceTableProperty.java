@@ -27,6 +27,7 @@
 
 package org.opencms.ui.components;
 
+import static org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0;
@@ -52,6 +53,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
+import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
 /**
@@ -130,6 +132,26 @@ public class CmsResourceTableProperty {
         100);
 
     /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_PROJECT = new CmsResourceTableProperty(
+        "PROPERTY_PROJECT",
+        Component.class,
+        null,
+        GUI_LABEL_PROJECT_0,
+        true,
+        0,
+        32);
+
+    /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_INSIDE_PROJECT = new CmsResourceTableProperty(
+        "PROPERTY_INSIDE_PROJECT",
+        Boolean.class,
+        Boolean.TRUE,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_RESOURCE_NAME = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_NAME",
         String.class,
@@ -203,6 +225,16 @@ public class CmsResourceTableProperty {
     public static final CmsResourceTableProperty PROPERTY_TYPE_ICON = new CmsResourceTableProperty(
         "PROPERTY_TYPE_ICON",
         Component.class,
+        null,
+        "",
+        false,
+        0,
+        40);
+
+    /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_TYPE_ICON_RESOURCE = new CmsResourceTableProperty(
+        "PROPERTY_TYPE_ICON_RESOURCE",
+        Resource.class,
         null,
         "",
         false,

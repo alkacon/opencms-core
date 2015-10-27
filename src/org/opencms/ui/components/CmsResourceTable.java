@@ -31,9 +31,11 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_C
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_MODIFIED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_DATE_RELEASED;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOLDER;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
@@ -69,6 +71,8 @@ import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.dd.DropHandler;
+import com.vaadin.server.ThemeResource;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.Table.TableDragMode;
@@ -268,7 +272,31 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             new CmsResourceIcon(
                 CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
                 resUtil.getLockState(),
-                resource.getState()));
+                resource.getState(),
+                resUtil.getLinkType() == 1));
+
+        Image projectFlag = null;
+        switch (resUtil.getProjectState().getMode()) {
+            case 1:
+                projectFlag = new Image(
+                    resUtil.getLockedInProjectName(),
+                    new ThemeResource("img/project_flag_current.png"));
+                break;
+            case 2:
+                projectFlag = new Image(
+                    resUtil.getLockedInProjectName(),
+                    new ThemeResource("img/project_flag_other.png"));
+                break;
+            case 5:
+                projectFlag = new Image(
+                    resUtil.getLockedInProjectName(),
+                    new ThemeResource("img/project_flag_publish.png"));
+                break;
+            default:
+        }
+        resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
+        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
+
         resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
         resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
         resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());

@@ -56,10 +56,11 @@ public class CmsResourceIcon extends Label {
      * @param iconPath the resource icon
      * @param lockState the lock state
      * @param state the resource state
+     * @param sibling the sibling flag
      */
-    public CmsResourceIcon(String iconPath, int lockState, CmsResourceState state) {
+    public CmsResourceIcon(String iconPath, int lockState, CmsResourceState state, boolean sibling) {
         this();
-        initContent(iconPath, lockState, state);
+        initContent(iconPath, lockState, state, sibling);
     }
 
     /**
@@ -68,9 +69,10 @@ public class CmsResourceIcon extends Label {
      * @param iconPath the resource icon
      * @param lockState the lock state
      * @param state the resource state
+     * @param sibling the sibling flag
      */
     @SuppressWarnings("incomplete-switch")
-    public void initContent(String iconPath, int lockState, CmsResourceState state) {
+    public void initContent(String iconPath, int lockState, CmsResourceState state, boolean sibling) {
 
         String content = "<img src=\"" + iconPath + "\" />";
 
@@ -88,16 +90,30 @@ public class CmsResourceIcon extends Label {
                 break;
         }
         if (lockIcon != null) {
-            content += "<span class=\"" + lockIcon + "\"></span>";
+            content += getOverlaySpan(lockIcon);
         }
         if (state != null) {
             if (state.isChanged()) {
-                content += "<span class=\"" + OpenCmsTheme.STATE_CHANGED + "\"></span>";
+                content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED);
             } else if (state.isNew()) {
-                content += "<span class=\"" + OpenCmsTheme.STATE_NEW + "\"></span>";
+                content += getOverlaySpan(OpenCmsTheme.STATE_NEW);
             }
+        }
+        if (sibling) {
+            content += getOverlaySpan(OpenCmsTheme.SIBLING);
         }
         setValue(content);
     }
 
+    /**
+     * Generates an overlay icon span.<p>
+     *
+     * @param cssClass the CSS class
+     *
+     * @return the span element string
+     */
+    private String getOverlaySpan(String cssClass) {
+
+        return "<span class=\"" + cssClass + "\"></span>";
+    }
 }

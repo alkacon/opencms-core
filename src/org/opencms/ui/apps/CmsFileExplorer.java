@@ -27,7 +27,8 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.db.CmsResourceState;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -76,6 +77,7 @@ import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -113,7 +115,6 @@ import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -692,15 +693,17 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             }
         });
         m_treeContainer = new HierarchicalContainer();
-        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
-        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
-        m_treeContainer.addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
+        addTreeContainerProperties(
+            CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
+            CmsResourceTableProperty.PROPERTY_STATE,
+            CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE,
+            CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT);
         m_fileTree = new Tree();
         m_fileTree.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_fileTree.setWidth("100%");
         m_fileTree.setContainerDataSource(m_treeContainer);
-        m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON);
+        m_fileTree.setItemIconPropertyId(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE);
         m_fileTree.setItemCaptionPropertyId(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
         m_fileTree.addExpandListener(new ExpandListener() {
 
@@ -1002,10 +1005,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         m_treeContainer.removeAllItems();
         try {
             CmsResource siteRoot = cms.readResource("/", FOLDERS);
-            addTreeItem(siteRoot, null, m_treeContainer);
+            addTreeItem(cms, siteRoot, null, m_treeContainer);
             List<CmsResource> folderResources = cms.readResources("/", FOLDERS, false);
             for (CmsResource resource : folderResources) {
-                addTreeItem(resource, siteRoot.getStructureId(), m_treeContainer);
+                addTreeItem(cms, resource, siteRoot.getStructureId(), m_treeContainer);
             }
             m_fileTree.expandItem(siteRoot.getStructureId());
         } catch (CmsException e) {
@@ -1080,7 +1083,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                     m_treeContainer.setParent(resource.getStructureId(), parentId);
                 }
             } else {
-                addTreeItem(resource, parentId, m_treeContainer);
+                addTreeItem(cms, resource, parentId, m_treeContainer);
             }
         } catch (CmsVfsResourceNotFoundException e) {
             m_treeContainer.removeItemRecursively(id);
@@ -1198,7 +1201,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             m_treeContainer.setChildrenAllowed(parentId, !folderResources.isEmpty());
 
             for (CmsResource resource : folderResources) {
-                addTreeItem(resource, parentId, m_treeContainer);
+                addTreeItem(cms, resource, parentId, m_treeContainer);
             }
             m_fileTree.markAsDirtyRecursive();
         } catch (CmsException e) {
@@ -1365,13 +1368,26 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * Adds the given properties to the tree container.<p>
+     *
+     * @param properties the properties tom add
+     */
+    private void addTreeContainerProperties(CmsResourceTableProperty... properties) {
+
+        for (CmsResourceTableProperty property : properties) {
+            m_treeContainer.addContainerProperty(property, property.getColumnType(), property.getDefaultValue());
+        }
+    }
+
+    /**
      * Adds an item to the folder tree.<p>
      *
+     * @param cms the cms context
      * @param resource the folder resource
      * @param parentId the parent folder id
      * @param container the data container
      */
-    private void addTreeItem(CmsResource resource, CmsUUID parentId, HierarchicalContainer container) {
+    private void addTreeItem(CmsObject cms, CmsResource resource, CmsUUID parentId, HierarchicalContainer container) {
 
         Item resourceItem = container.getItem(resource.getStructureId());
         if (resourceItem == null) {
@@ -1382,8 +1398,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             parentId == null ? resource.getRootPath() : resource.getName());
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         if (parentId != null) {
             container.setParent(resource.getStructureId(), parentId);

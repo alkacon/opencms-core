@@ -129,6 +129,9 @@ public class OpenCmsTheme {
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
 
     /** CSS style name. */
+    public static final String PROJECT_OTHER = "o-project-other";
+
+    /** CSS style name. */
     public static final String REDUCED_MARGIN = "o-reduced-margin";
 
     /** CSS style name. */
@@ -148,6 +151,9 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";
+
+    /** CSS style name. */
+    public static final String SIBLING = "o-sibling";
 
     /** CSS style name. */
     public static final String SIMPLE_DRAG = "o-simple-drag";
