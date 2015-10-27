@@ -37,6 +37,7 @@ import org.opencms.gwt.CmsPrefetchSerializationPolicy;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
@@ -93,6 +94,17 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc#onClose(boolean)
+     */
+    public void onClose(boolean reinitUI) {
+
+        remove();
+        if (reinitUI) {
+            CmsAppWorkplaceUi.get().reload();
+        }
+    }
+
+    /**
      * @see org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc#onClose(java.util.List, long)
      */
     public void onClose(List<String> changedStructureIds, long delayMillis) {
@@ -101,7 +113,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (@SuppressWarnings("unused") InterruptedException e) {
                 // ignore
             }
         }

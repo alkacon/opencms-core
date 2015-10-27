@@ -61,7 +61,6 @@ public class CmsHistoryConnector extends AbstractExtensionConnector {
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
 
-        // TODO Auto-generated method stub
         super.onStateChanged(stateChangeEvent);
 
         executeHistoryAction();

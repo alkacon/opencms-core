@@ -32,13 +32,11 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.ui.dialogs.CmsProjectSelectDialog;
 import org.opencms.workplace.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
-
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 
 /**
  * The set project dialog action.<p>
@@ -49,14 +47,14 @@ public class CmsProjectDialogAction extends A_CmsWorkplaceAction {
     public static final String ACTION_ID = "setproject";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT;
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.MAIN_MENU;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        Notification.show("Not implemented yet.", Type.WARNING_MESSAGE);
+        openDialog(new CmsProjectSelectDialog(context), context);
     }
 
     /**

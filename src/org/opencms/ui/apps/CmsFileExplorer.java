@@ -420,8 +420,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             CmsExplorerDialogContext context = new CmsExplorerDialogContext(
                 m_appContext,
                 CmsFileExplorer.this,
-                resources,
-                null);
+                resources);
             return context;
         }
     }
@@ -505,7 +504,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
                     public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
 
-                        data.executeAction(createDialogContext(data));
+                        data.executeAction(createDialogContext());
                     }
                 });
 
@@ -624,7 +623,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             public void run() {
 
                 if (!m_fileTable.getSelectedIds().isEmpty()) {
-                    I_CmsDialogContext context1 = createDialogContext(null);
+                    I_CmsDialogContext context1 = createDialogContext();
                     context1.start("Delete", new CmsDeleteDialog(context1));
                 }
             }
@@ -643,7 +642,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             public void run() {
 
                 I_CmsWorkplaceAction propAction = new CmsPropertiesDialogAction();
-                I_CmsDialogContext context = createDialogContext(null);
+                I_CmsDialogContext context = createDialogContext();
                 if (propAction.getVisibility(A_CmsUI.getCmsObject(), context.getResources()).isActive()) {
                     propAction.executeAction(context);
                 }
@@ -1128,13 +1127,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /**
      * Creates the dialog context for dialogs opened from the context menu.<p>
      *
-     * @param item the context menu item
-     *
      * @return the dialog context
      */
-    protected I_CmsDialogContext createDialogContext(I_CmsContextMenuItem item) {
+    protected I_CmsDialogContext createDialogContext() {
 
-        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources(), item);
+        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources());
     }
 
     /**
@@ -1287,7 +1284,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             CmsObject cms = A_CmsUI.getCmsObject();
 
             CmsResource folderRes = cms.readResource(m_currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
-            I_CmsDialogContext newDialogContext = createDialogContext(null);
+            I_CmsDialogContext newDialogContext = createDialogContext();
 
             CmsNewDialog newDialog = new CmsNewDialog(folderRes, newDialogContext);
             newDialogContext.start(

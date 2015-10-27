@@ -29,7 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.I_CmsComponentFactory;
+import org.opencms.ui.I_CmsAppView;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.CmsAppViewLayout;
@@ -44,7 +44,6 @@ import java.util.Set;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -55,7 +54,7 @@ import com.vaadin.ui.themes.ValoTheme;
 /**
  * Displays the selected app.<p>
  */
-public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseListener, I_CmsComponentFactory, Handler {
+public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler {
 
     /**
      * Used in case the requested app can not be displayed to the current user.<p>
@@ -168,34 +167,26 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
         if (m_app instanceof ViewChangeListener) {
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
+        UI.getCurrent().removeActionHandler(this);
         return true;
     }
 
     /**
-     * @see org.opencms.ui.I_CmsComponentFactory#createComponent()
+     * @see org.opencms.ui.I_CmsAppView#createComponent()
      */
     public Component createComponent() {
 
         if (m_app == null) {
-            if (!m_appConfig.getVisibility(A_CmsUI.getCmsObject()).isActive()) {
-                m_app = new NotAvailableApp();
-            } else {
-                m_app = m_appConfig.getAppInstance();
-            }
-            CmsAppViewLayout layout = new CmsAppViewLayout();
-            layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
-            m_app.initUI(layout);
-            return layout;
+            return reinitComponent();
         }
         return null;
     }
 
     /**
-     * @see com.vaadin.navigator.View#enter(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     * @see org.opencms.ui.I_CmsAppView#enter(java.lang.String)
      */
-    public void enter(ViewChangeEvent event) {
+    public void enter(String newState) {
 
-        String newState = event.getParameters();
         if (newState.startsWith(NavigationState.PARAM_SEPARATOR)) {
             newState = newState.substring(1);
         }
@@ -204,6 +195,15 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
             m_appActions = ((I_CmsHasShortcutActions)m_app).getShortcutActions();
         }
         UI.getCurrent().addActionHandler(this);
+    }
+
+    /**
+     * @see com.vaadin.navigator.View#enter(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void enter(ViewChangeEvent event) {
+
+        String newState = event.getParameters();
+        enter(newState);
     }
 
     /**
@@ -239,5 +239,26 @@ public class CmsAppView implements View, ViewChangeListener, I_CmsWindowCloseLis
         if (m_app instanceof I_CmsWindowCloseListener) {
             ((I_CmsWindowCloseListener)m_app).onWindowClose();
         }
+        UI.getCurrent().removeActionHandler(this);
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#reinitComponent()
+     */
+    public Component reinitComponent() {
+
+        if (m_app != null) {
+            beforeViewChange(
+                new ViewChangeEvent(CmsAppWorkplaceUi.get().getNavigator(), this, this, m_appConfig.getId(), ""));
+        }
+        if (!m_appConfig.getVisibility(A_CmsUI.getCmsObject()).isActive()) {
+            m_app = new NotAvailableApp();
+        } else {
+            m_app = m_appConfig.getAppInstance();
+        }
+        CmsAppViewLayout layout = new CmsAppViewLayout();
+        layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
+        m_app.initUI(layout);
+        return layout;
     }
 }

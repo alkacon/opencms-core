@@ -145,7 +145,7 @@ public final class CmsVaadinUtils {
             true,
             true,
             cms.getRequestContext().getOuFqn());
-        final IndexedContainer availableSites = new IndexedContainer();
+        IndexedContainer availableSites = new IndexedContainer();
         availableSites.addContainerProperty(captionPropertyName, String.class, null);
         Locale locale = A_CmsUI.get().getLocale();
         for (CmsSite site : sites) {
@@ -393,7 +393,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

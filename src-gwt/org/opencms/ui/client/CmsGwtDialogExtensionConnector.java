@@ -215,10 +215,19 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
             public void run() {
 
-                // Handle cancel
-                close(0);
+                close(true);
             }
         });
+    }
+
+    /**
+     *  Disposes of the extension and tells the server whether to re-init the UI.<p>
+     *
+     * @param reinitUI <code>true</code> to reinit the UI
+     */
+    protected void close(boolean reinitUI) {
+
+        getRpcProxy(I_CmsGwtDialogServerRpc.class).onClose(reinitUI);
     }
 
     /**

@@ -30,6 +30,7 @@ package org.opencms.ui.components;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.FontOpenCms;
@@ -41,8 +42,10 @@ import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -69,6 +72,36 @@ import com.vaadin.ui.themes.ValoTheme;
  * The workplace toolbar.<p>
  */
 public class CmsToolBar extends CssLayout {
+
+    /** Toolbar dialog context. */
+    protected static class ToolbarContext extends A_CmsDialogContext {
+
+        /**
+         * Constructor.<p>
+         */
+        protected ToolbarContext() {
+            super(null, Collections.<CmsResource> emptyList());
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
+         */
+        public void finish(Collection<CmsUUID> result) {
+
+            if (m_window != null) {
+                m_window.close();
+                m_window = null;
+            }
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#focus(org.opencms.util.CmsUUID)
+         */
+        public void focus(CmsUUID structureId) {
+
+            // nothing to do
+        }
+    }
 
     /** The serial version id. */
     private static final long serialVersionUID = -4551194983054069395L;
@@ -254,7 +287,7 @@ public class CmsToolBar extends CssLayout {
 
                 public void menuSelected(MenuItem selectedItem) {
 
-                    node.getData().executeAction(null);
+                    node.getData().executeAction(new ToolbarContext());
                 }
             };
         }

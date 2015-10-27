@@ -25,38 +25,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.contextmenu;
+package org.opencms.ui;
 
-import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
-
-import java.util.List;
+import com.vaadin.navigator.View;
+import com.vaadin.ui.Component;
 
 /**
- * The about dialog action.<p>
+ * Factory to create components.<p>
  */
-public class CmsAboutDialogAction implements I_CmsContextMenuAction {
+public interface I_CmsAppView extends View {
 
     /**
-     * @see org.opencms.ui.contextmenu.I_CmsContextMenuAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     * Generates a component.<p>
+     *
+     * @return the component
      */
-    public void executeAction(final I_CmsDialogContext context) {
+    Component createComponent();
 
-        try {
-            CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(
-                A_CmsUI.get(),
-                new I_CmsUpdateListener<String>() {
+    /**
+     * Enters the view.<p>
+     *
+     * @param state the state to set
+     */
+    void enter(String state);
 
-                    public void onUpdate(List<String> updatedItems) {
-
-                        // nothing to do
-                    }
-                });
-            dialogExtension.showAbout();
-        } catch (Exception e) {
-            context.error(e);
-        }
-    }
+    /**
+     * Creates a new component instance.<p>
+     *
+     * @return the new component
+     */
+    Component reinitComponent();
 }

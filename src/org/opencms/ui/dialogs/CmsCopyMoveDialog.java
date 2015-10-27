@@ -349,6 +349,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     private FormLayout initForm() {
 
         FormLayout form = new FormLayout();
+        form.setWidth("100%");
         m_targetFolder = new CmsResourceSelectField();
         m_targetFolder.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));

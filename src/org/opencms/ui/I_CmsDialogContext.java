@@ -30,7 +30,6 @@ package org.opencms.ui;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.I_CmsAppUIContext;
-import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -58,18 +57,16 @@ public interface I_CmsDialogContext {
     public void finish(Collection<CmsUUID> result);
 
     /**
-     * Tell the system that the resoource with the given id should be shown somehow.<p>
+     * Tell the system that the resource with the given id should be shown somehow.<p>
      *
      * @param structureId the structure id of a resource
      */
     public void focus(CmsUUID structureId);
 
     /**
-     * Gets the menu item for which this context was created.<p>
-     *
-     * @return the menu item
+     * Reloads the UI.<p>
      */
-    public I_CmsContextMenuItem getMenuItem();
+    public void reload();
 
     /**
      * Returns the app UI context.<p>

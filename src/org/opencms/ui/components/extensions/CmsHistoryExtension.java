@@ -54,7 +54,7 @@ public class CmsHistoryExtension extends AbstractExtension {
      */
     public void historyBack() {
 
-        getState().setHistoryDirection(-1);
+        getState().setHistoryDirection(CmsHistoryState.HISTORY_BACK);
     }
 
     /**
@@ -62,7 +62,7 @@ public class CmsHistoryExtension extends AbstractExtension {
      */
     public void historyForward() {
 
-        getState().setHistoryDirection(1);
+        getState().setHistoryDirection(CmsHistoryState.HISTORY_FORWARD);
     }
 
     /**

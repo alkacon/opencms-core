@@ -69,8 +69,6 @@ public class CmsLegacyApp extends BrowserFrame implements I_CmsWorkplaceApp {
 
         context.setAppContent(this);
         context.showInfoArea(false);
-
-        // TODO: add site and project select to toolbar
     }
 
     /**

@@ -34,6 +34,12 @@ import com.vaadin.shared.AbstractComponentState;
  */
 public class CmsHistoryState extends AbstractComponentState {
 
+    /** The history back flag. */
+    public static final int HISTORY_BACK = 1;
+
+    /** The history forward flag. */
+    public static final int HISTORY_FORWARD = 2;
+
     /** the serial version id. */
     private static final long serialVersionUID = -7299145857595566596L;
 
@@ -57,7 +63,7 @@ public class CmsHistoryState extends AbstractComponentState {
      */
     public boolean isHistoryBack() {
 
-        return m_historyDirection < 0;
+        return m_historyDirection == HISTORY_BACK;
     }
 
     /**
@@ -67,7 +73,7 @@ public class CmsHistoryState extends AbstractComponentState {
      */
     public boolean isHistoryForward() {
 
-        return m_historyDirection > 0;
+        return m_historyDirection == HISTORY_FORWARD;
     }
 
     /**

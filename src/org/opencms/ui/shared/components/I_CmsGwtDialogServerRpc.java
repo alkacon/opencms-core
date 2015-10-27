@@ -37,11 +37,17 @@ import com.vaadin.shared.communication.ServerRpc;
 public interface I_CmsGwtDialogServerRpc extends ServerRpc {
 
     /**
+     *  Disposes of the extension and tells the server whether to re-init the UI.<p>
+     *
+     * @param reinitUI <code>true</code> to reinit the UI
+     */
+    void onClose(boolean reinitUI);
+
+    /**
      * Disposes of the extension, and tells the server which resources have changed.<p>
      *
      * @param changedStructureIds the structure ids of changed resources, as strings
      * @param delayMillis time to delay the RPC (for allowing short background operations to finish)
      */
-    public void onClose(List<String> changedStructureIds, long delayMillis);
-
+    void onClose(List<String> changedStructureIds, long delayMillis);
 }

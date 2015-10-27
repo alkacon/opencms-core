@@ -32,7 +32,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
-import org.opencms.ui.I_CmsComponentFactory;
+import org.opencms.ui.I_CmsAppView;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
@@ -41,6 +41,8 @@ import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Locale;
 
@@ -239,6 +241,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Returns the workplace settings.<p>
+     *
+     * @return the workplace settings
+     */
+    public CmsWorkplaceSettings getWorkplaceSettings() {
+
+        return (CmsWorkplaceSettings)getSession().getSession().getAttribute(
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+    }
+
+    /**
      * Executes the history back function.<p>
      */
     public void historyBack() {
@@ -261,6 +274,18 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         if ((m_currentView != null) && (m_currentView instanceof I_CmsWindowCloseListener)) {
             ((I_CmsWindowCloseListener)m_currentView).onWindowClose();
+        }
+    }
+
+    /**
+     * Reloads the current UI.<p>
+     */
+    public void reload() {
+
+        if (m_currentView instanceof I_CmsAppView) {
+            Component component = ((I_CmsAppView)m_currentView).reinitComponent();
+            setContent(component);
+            ((I_CmsAppView)m_currentView).enter(getAppState());
         }
     }
 
@@ -294,8 +319,8 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         // remove current component form the view change listeners
         m_currentView = view;
         Component component = null;
-        if (view instanceof I_CmsComponentFactory) {
-            component = ((I_CmsComponentFactory)view).createComponent();
+        if (view instanceof I_CmsAppView) {
+            component = ((I_CmsAppView)view).createComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
         }

@@ -31,47 +31,24 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-
 import com.google.common.collect.Lists;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Window;
 
 /**
  * Dialog context for the explorer.<p>
  */
-public class CmsExplorerDialogContext implements I_CmsDialogContext {
-
-    /** Logger instance for this class. */
-    @SuppressWarnings("unused")
-    private static final Log LOG = CmsLog.getLog(CmsExplorerDialogContext.class);
-
-    /** The explorer app context. */
-    private I_CmsAppUIContext m_appContext;
+public class CmsExplorerDialogContext extends A_CmsDialogContext {
 
     /** The explorer instance. */
     private CmsFileExplorer m_explorer;
-
-    /** The current context menu item. */
-    private I_CmsContextMenuItem m_item;
-
-    /** List of selected resources. */
-    private List<CmsResource> m_resources;
-
-    /** The window used to display the dialog. */
-    private Window m_window;
 
     /**
      * Creates a new instance.<p>
@@ -79,35 +56,13 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
      * @param appContext the app context
      * @param explorer the explorer app instance
      * @param resources the list of selected resources
-     * @param item the context menu item for which this context is created
      */
     public CmsExplorerDialogContext(
         I_CmsAppUIContext appContext,
         CmsFileExplorer explorer,
-        List<CmsResource> resources,
-        I_CmsContextMenuItem item) {
-        m_resources = resources;
-        m_appContext = appContext;
+        List<CmsResource> resources) {
+        super(appContext, resources);
         m_explorer = explorer;
-        m_item = item;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#error(java.lang.Throwable)
-     */
-    public void error(Throwable error) {
-
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
-        CmsErrorDialog.showErrorDialog(error, new Runnable() {
-
-            public void run() {
-
-                finish(null);
-            }
-        });
     }
 
     /**
@@ -157,51 +112,6 @@ public class CmsExplorerDialogContext implements I_CmsDialogContext {
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
 
-        }
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
-     */
-    public I_CmsAppUIContext getAppContext() {
-
-        return m_appContext;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getCms()
-     */
-    public CmsObject getCms() {
-
-        return A_CmsUI.getCmsObject();
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getMenuItem()
-     */
-    public I_CmsContextMenuItem getMenuItem() {
-
-        return m_item;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#getResources()
-     */
-    public List<CmsResource> getResources() {
-
-        return m_resources;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
-     */
-    public void start(String title, Component dialog) {
-
-        if (dialog != null) {
-            m_window = CmsBasicDialog.prepareWindow();
-            m_window.setCaption(title);
-            m_window.setContent(dialog);
-            A_CmsUI.get().addWindow(m_window);
         }
     }
 }
