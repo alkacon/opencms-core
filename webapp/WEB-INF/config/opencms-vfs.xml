@@ -327,7 +327,7 @@
 				<mimetype extension=".ip" type="application/x-ip2" />
 				<mimetype extension=".jcm" type="application/x-java-commerce" />
 				<mimetype extension=".jnlp" type="application/x-java-jnlp-file" />
-				<mimetype extension=".js" type="application/x-javascript" />
+				<mimetype extension=".js" type="application/javascript" />
 				<mimetype extension=".skd" type="application/x-koan" />
 				<mimetype extension=".skm" type="application/x-koan" />
 				<mimetype extension=".skp" type="application/x-koan" />

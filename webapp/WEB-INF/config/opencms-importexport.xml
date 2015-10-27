@@ -67,6 +67,7 @@
 			<suffix key=".pdf" />
 			<suffix key=".txt" />
 			<suffix key=".css" />
+			<suffix key=".js" />
 			<suffix key=".zip" />
 			<suffix key=".swf" />
 		</defaultsuffixes>
