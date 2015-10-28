@@ -125,11 +125,20 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String NAVIGATOR_DROPDOWN = "o-navigator-dropdown";
 
-    /** Path to the OpenCms logo  theme resource. */
+    /** Path to the OpenCms logo theme resource. */
     public static final String OPENCMS_LOGO_PATH = "img/opencmsLogo.png";
+
+    /** Path to the project current theme resource. */
+    public static final String PROJECT_CURRENT_PATH = "img/project_current.png";
 
     /** CSS style name. */
     public static final String PROJECT_OTHER = "o-project-other";
+
+    /** Path to the project other theme resource. */
+    public static final String PROJECT_OTHER_PATH = "img/project_other.png";
+
+    /** Path to the project publish theme resource. */
+    public static final String PROJECT_PUBLISH_PATH = "img/project_publish.png";
 
     /** CSS style name. */
     public static final String REDUCED_MARGIN = "o-reduced-margin";

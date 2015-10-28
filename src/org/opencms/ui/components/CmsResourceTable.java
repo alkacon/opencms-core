@@ -281,17 +281,17 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             case 1:
                 projectFlag = new Image(
                     resUtil.getLockedInProjectName(),
-                    new ThemeResource("img/project_flag_current.png"));
+                    new ThemeResource(OpenCmsTheme.PROJECT_CURRENT_PATH));
                 break;
             case 2:
                 projectFlag = new Image(
                     resUtil.getLockedInProjectName(),
-                    new ThemeResource("img/project_flag_other.png"));
+                    new ThemeResource(OpenCmsTheme.PROJECT_OTHER_PATH));
                 break;
             case 5:
                 projectFlag = new Image(
                     resUtil.getLockedInProjectName(),
-                    new ThemeResource("img/project_flag_publish.png"));
+                    new ThemeResource(OpenCmsTheme.PROJECT_PUBLISH_PATH));
                 break;
             default:
         }
