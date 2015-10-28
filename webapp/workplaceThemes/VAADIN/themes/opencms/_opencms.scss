@@ -92,6 +92,10 @@
    	position: static;
    	outline: none;
    }
+   
+   div.v-table{
+   	color: $v-font-color;
+   }
   
   /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */ 
   div.v-table-drag .v-table-body .v-table-focus {
