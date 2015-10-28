@@ -52,6 +52,101 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
     /**
+     * Helper class which encapsulates the differences between the contexts where the property edit dialog is opened.<p>
+     */
+    public static class PropertyEditingContext {
+
+        /** The dialog instance. */
+        protected CmsFormDialog m_formDialog;
+
+        /** The form handler. */
+        protected CmsDialogFormHandler m_formHandler;
+
+        /** The cancel handler. */
+        protected Runnable m_cancelHandler;
+
+        /**
+         * Creates the property definition button.<p>
+         *
+         * @return the property definition button
+         */
+        public CmsPropertyDefinitionButton createPropertyDefinitionButton() {
+
+            return new CmsPropertyDefinitionButton() {
+
+                /**
+                 * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
+                 */
+                @Override
+                public void onBeforeEditPropertyDefinition() {
+
+                    m_formDialog.hide();
+                }
+            };
+
+        }
+
+        /**
+         * Gets the form dialog.<p>
+         *
+         * @return the form dialog
+         */
+        public CmsFormDialog getDialog() {
+
+            return m_formDialog;
+        }
+
+        /**
+         * Initializes the close handler of the dialog.<p>
+         */
+        public void initCloseHandler() {
+
+            if (m_cancelHandler != null) {
+                m_formDialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                    public void onClose(CloseEvent<PopupPanel> event) {
+
+                        if (!m_formHandler.isSubmitting()) {
+                            m_cancelHandler.run();
+                        }
+                    }
+                });
+            }
+        }
+
+        /**
+         * Sets the cancel handler.<p>
+         *
+         * @param cancelHandler the cancel handler
+         */
+        public void setCancelHandler(Runnable cancelHandler) {
+
+            m_cancelHandler = cancelHandler;
+        }
+
+        /**
+         * Sets the form dialog.<p>
+         *
+         * @param formDialog the form dialog
+         */
+        public void setDialog(CmsFormDialog formDialog) {
+
+            m_formDialog = formDialog;
+        }
+
+        /**
+         * Sets the form handler.<p>
+         *
+         * @param formHandler the form handler
+         */
+        public void setFormHandler(CmsDialogFormHandler formHandler) {
+
+            m_formHandler = formHandler;
+        }
+
+    }
+
+    /**
      * Hidden utility class constructor.<p>
      */
     private CmsEditProperties() {
@@ -66,12 +161,14 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
      * @param contextMenuHandler the context menu handler
      * @param editName if true, provides a field for changing the file name
      * @param cancelHandler callback which is executed if the user cancels the property dialog
+     * @param editContext the editing context
      */
     public static void editProperties(
         final CmsUUID structureId,
         final I_CmsContextMenuHandler contextMenuHandler,
         final boolean editName,
-        final Runnable cancelHandler) {
+        final Runnable cancelHandler,
+        final PropertyEditingContext editContext) {
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -86,6 +183,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             protected void onResponse(CmsPropertiesBean result) {
 
                 CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
+                editContext.setCancelHandler(cancelHandler);
 
                 handler.setPropertiesBean(result);
                 handler.setEditableName(editName);
@@ -94,32 +192,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                     handler);
 
                 editor.setShowResourceProperties(!handler.isFolder());
+                editor.setReadOnly(result.isReadOnly());
                 stop(false);
                 final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
-                CmsPropertyDefinitionButton defButton = new CmsPropertyDefinitionButton() {
+                editContext.setDialog(dialog);
 
-                    /**
-                     * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
-                     */
-                    @Override
-                    public void onBeforeEditPropertyDefinition() {
-
-                        dialog.hide();
-                    }
-                };
+                CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
                 defButton.installOnDialog(dialog);
                 final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                if (cancelHandler != null) {
-                    dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
-
-                        public void onClose(CloseEvent<PopupPanel> event) {
-
-                            if (!formHandler.isSubmitting()) {
-                                cancelHandler.run();
-                            }
-                        }
-                    });
-                }
+                editContext.setFormHandler(formHandler);
+                editContext.initCloseHandler();
 
                 formHandler.setDialog(dialog);
                 I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
@@ -145,7 +227,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                editProperties(structureId, handler, false, null);
+                editProperties(structureId, handler, false, null, new PropertyEditingContext());
             }
 
             public A_CmsContextMenuItem getItemWidget(

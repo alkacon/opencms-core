@@ -30,18 +30,13 @@ package org.opencms.ade.properties.client;
 import org.opencms.ade.properties.shared.I_CmsAdePropertiesConstants;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsCoreProvider;
-import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
-import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionDialog;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
-import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
-import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
-import org.opencms.gwt.shared.property.CmsPropertiesBean;
+import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
+import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties.PropertyEditingContext;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -107,38 +102,22 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
      */
     protected void editProperties(final CmsUUID structureId) {
 
-        CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
+        CmsEditProperties.editProperties(structureId, null, false, null, new PropertyEditingContext() {
 
             @Override
-            public void execute() {
+            public CmsPropertyDefinitionButton createPropertyDefinitionButton() {
 
-                start(0, true);
-                CmsCoreProvider.getVfsService().loadPropertyData(structureId, this);
-            }
-
-            @Override
-            protected void onResponse(CmsPropertiesBean result) {
-
-                I_CmsLayoutBundle.INSTANCE.propertiesCss().ensureInjected();
-                CmsSimplePropertyEditorHandler handler = new PropertyEditorHandler();
-                handler.setPropertiesBean(result);
-                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(
-                    result.getPropertyDefinitions(),
-                    handler);
-                editor.setReadOnly(result.isReadOnly());
-                editor.setShowResourceProperties(!handler.isFolder());
-                stop(false);
-                final CmsFormDialog dialog = new CmsFormDialog(handler.getDialogTitle(), editor.getForm());
                 CmsPropertyDefinitionButton button = new CmsPropertyDefinitionButton() {
 
                     /**
                      * @see org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton#onBeforeEditPropertyDefinition()
                      */
+                    @SuppressWarnings("synthetic-access")
                     @Override
                     public void onBeforeEditPropertyDefinition() {
 
                         m_needsPropertyDefinitionDialog = true;
-                        dialog.hide();
+                        m_formDialog.hide();
                     }
 
                     @Override
@@ -147,15 +126,13 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                         closeDelayed();
                     }
                 };
-                button.installOnDialog(dialog);
-                CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                formHandler.setDialog(dialog);
-                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
-                formHandler.setSubmitHandler(submitHandler);
-                editor.getForm().setFormHandler(formHandler);
-                editor.initializeWidgets(dialog);
-                dialog.centerHorizontally(50);
-                dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+                return button;
+            }
+
+            @Override
+            public void initCloseHandler() {
+
+                m_formDialog.addCloseHandler(new CloseHandler<PopupPanel>() {
 
                     public void onClose(CloseEvent<PopupPanel> event) {
 
@@ -163,10 +140,9 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
                     }
 
                 });
-                dialog.catchNotifications();
             }
-        };
-        action.execute();
+
+        });
     }
 
     /**

@@ -154,7 +154,8 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
                     // Handle cancel
                     close(0);
                 }
-            });
+            },
+            new CmsEditProperties.PropertyEditingContext());
     }
 
     /**
