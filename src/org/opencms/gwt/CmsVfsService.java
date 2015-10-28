@@ -143,9 +143,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -157,6 +154,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -305,14 +305,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         String originalSiteRoot = cms.getRequestContext().getSiteRoot();
         CmsPropertiesBean result = new CmsPropertiesBean();
         CmsResource resource = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
-        boolean hasPermissions = cms.hasPermissions(
-            resource,
-            CmsPermissionSet.ACCESS_WRITE,
-            false,
-            CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsLock lock = cms.getLock(resource);
-        boolean lockedByOtherUser = !lock.isUnlocked() && !lock.isOwnedBy(cms.getRequestContext().getCurrentUser());
-        result.setReadOnly(!hasPermissions || lockedByOtherUser);
+        result.setReadOnly(!isWritable(cms, resource));
         result.setFolder(resource.isFolder());
         result.setContainerPage(CmsResourceTypeXmlContainerPage.isContainerPage(resource));
         String sitePath = cms.getSitePath(resource);
@@ -498,6 +491,34 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             result.put(structureId, propertyConfig);
         }
         return result;
+    }
+
+    /**
+     * Returns whether the current user has write permissions, the resource is lockable or already locked by the current user and is in the current project.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return <code>true</code> if the resource is writable
+     *
+     * @throws CmsException in case checking the permissions fails
+     */
+    protected static boolean isWritable(CmsObject cms, CmsResource resource) throws CmsException {
+
+        boolean writable = cms.hasPermissions(
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            false,
+            CmsResourceFilter.IGNORE_EXPIRATION);
+        if (writable) {
+            CmsLock lock = cms.getLock(resource);
+            writable = lock.isUnlocked() || lock.isOwnedBy(cms.getRequestContext().getCurrentUser());
+            if (writable) {
+                CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+                writable = resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing();
+            }
+        }
+        return writable;
     }
 
     /**
