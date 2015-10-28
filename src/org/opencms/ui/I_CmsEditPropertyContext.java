@@ -25,30 +25,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
-
-import com.vaadin.data.Validator;
-import com.vaadin.event.FieldEvents.TextChangeListener;
+package org.opencms.ui;
 
 /**
- * File table inline edit handler.<p>
+ * Action context that allows direct editing of single properties.<p>
  */
-public interface I_CmsFilePropertyEditHandler extends Validator, TextChangeListener {
+public interface I_CmsEditPropertyContext {
 
     /**
-     * Cancels the edit process.<p>
-     */
-    void cancel();
-
-    /**
-     * Saves the value.<p>
+     * Start the editing process.<p>
      *
-     * @param value the value to save
+     * @param propertyId the property to edit
      */
-    void save(String value);
+    void editProperty(Object propertyId);
 
     /**
-     * Starts the edit process.<p>
+     * Checks whether the given property is editable.<p>
+     *
+     * @param propertyId the property id
+     *
+     * @return <code>true</code> if the given property is editable
      */
-    void start();
+    boolean isPropertyEditable(Object propertyId);
 }

@@ -34,7 +34,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.I_CmsEditPropertyContext;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -45,7 +47,7 @@ import com.google.common.collect.Lists;
 /**
  * Dialog context for the explorer.<p>
  */
-public class CmsExplorerDialogContext extends A_CmsDialogContext {
+public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_CmsEditPropertyContext {
 
     /** The explorer instance. */
     private CmsFileExplorer m_explorer;
@@ -63,6 +65,14 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext {
         List<CmsResource> resources) {
         super(appContext, resources);
         m_explorer = explorer;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsEditPropertyContext#editProperty(java.lang.Object)
+     */
+    public void editProperty(Object propertyId) {
+
+        m_explorer.editItemProperty(getResources().get(0).getStructureId(), (CmsResourceTableProperty)propertyId);
     }
 
     /**
@@ -113,5 +123,15 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext {
             CmsErrorDialog.showErrorDialog(e);
 
         }
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsEditPropertyContext#isPropertyEditable(java.lang.Object)
+     */
+    public boolean isPropertyEditable(Object propertyId) {
+
+        return (getResources().size() == 1)
+            && (propertyId instanceof CmsResourceTableProperty)
+            && m_explorer.isPropertyEditable((CmsResourceTableProperty)propertyId);
     }
 }

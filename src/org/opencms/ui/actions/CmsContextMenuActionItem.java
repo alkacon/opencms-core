@@ -130,7 +130,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
      */
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        return getVisibility(context.getCms(), context.getResources());
+        return m_action.getVisibility(context);
     }
 
     /**

@@ -256,9 +256,7 @@ public class CmsToolBar extends CssLayout {
         menuBar.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         MenuItem main = menuBar.addItem("", null);
         main.setIcon(FontOpenCms.CONTEXT_MENU);
-        CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(
-            A_CmsUI.getCmsObject(),
-            Collections.<CmsResource> emptyList());
+        CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(new ToolbarContext());
         CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
             CmsAppWorkplaceUi.get().getMenuItemProvider().getMenuItems());
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {

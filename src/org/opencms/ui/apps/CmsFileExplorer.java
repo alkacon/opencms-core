@@ -84,7 +84,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -149,7 +148,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /**
      * Handles inline editing within the file table.<p>
      */
-    public class ContextMenuEditHandler implements ContextMenuItemClickListener, I_CmsFilePropertyEditHandler {
+    public class ContextMenuEditHandler implements I_CmsFilePropertyEditHandler {
 
         /** The serial version id. */
         private static final long serialVersionUID = -9160838301862765592L;
@@ -189,22 +188,6 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 } catch (CmsException e) {
                     LOG.warn("Failed to unlock resource " + m_editId.toString(), e);
                 }
-            }
-        }
-
-        /**
-         * @see org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener#contextMenuItemClicked(org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent)
-         */
-        public void contextMenuItemClicked(ContextMenuItemClickEvent event) {
-
-            CmsObject cms = A_CmsUI.getCmsObject();
-            try {
-                CmsResource res = cms.readResource(m_editId);
-                m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
-                m_fileTable.startEdit(m_editId, m_editProperty, this);
-            } catch (CmsException e) {
-                CmsErrorDialog.showErrorDialog(e);
-                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
 
@@ -249,6 +232,22 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 CmsErrorDialog.showErrorDialog(e);
             }
 
+        }
+
+        /**
+         * @see org.opencms.ui.components.I_CmsFilePropertyEditHandler#start()
+         */
+        public void start() {
+
+            CmsObject cms = A_CmsUI.getCmsObject();
+            try {
+                CmsResource res = cms.readResource(m_editId);
+                m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
+                m_fileTable.startEdit(m_editId, m_editProperty, this);
+            } catch (CmsException e) {
+                CmsErrorDialog.showErrorDialog(e);
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
         }
 
         /**
@@ -438,25 +437,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
          */
         public void buildContextMenu(List<CmsResource> resources, ContextMenu menu) {
 
-            if ((resources.size() == 1) && !resources.get(0).getState().isDeleted()) {
-                Locale locale = UI.getCurrent().getLocale();
-                CmsUUID editId = resources.iterator().next().getStructureId();
-                ContextMenuItem editTitle = menu.addItem(
-                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_EDIT_TITLE_0));
-                editTitle.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_TITLE));
-                ContextMenuItem editNavText = menu.addItem(
-                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0));
-                editNavText.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT));
-                ContextMenuItem editResourceName = menu.addItem(
-                    Messages.get().getBundle(locale).key(Messages.GUI_EXPLORER_RENAME_0));
-                editResourceName.addItemClickListener(
-                    new ContextMenuEditHandler(editId, CmsResourceTableProperty.PROPERTY_RESOURCE_NAME));
-            }
-            CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(
-                A_CmsUI.getCmsObject(),
-                m_fileTable.getSelectedResources());
+            CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(createDialogContext());
             m_treeBuilder = treeBuilder;
             CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(m_menuItemProvider.getMenuItems());
             for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
@@ -653,11 +634,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             public void run() {
 
-                if (m_fileTable.getSelectedIds().size() == 1) {
+                if ((m_fileTable.getSelectedIds().size() == 1)
+                    && isPropertyEditable(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)) {
                     CmsUUID id = m_fileTable.getSelectedIds().iterator().next();
-                    new ContextMenuEditHandler(
-                        id,
-                        CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).contextMenuItemClicked(null);
+                    editItemProperty(id, CmsResourceTableProperty.PROPERTY_RESOURCE_NAME);
                 }
             }
         });
@@ -1132,6 +1112,33 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     protected I_CmsDialogContext createDialogContext() {
 
         return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources());
+    }
+
+    /**
+     * Edits the given property for the requested item.<p>
+     *
+     * @param itemId the item id
+     * @param propertyId the property id
+     */
+    protected void editItemProperty(CmsUUID itemId, CmsResourceTableProperty propertyId) {
+
+        new ContextMenuEditHandler(itemId, propertyId).start();
+    }
+
+    /**
+     * Checks whether the given property is editable.<p>
+     *
+     * @param propertyId the property id
+     *
+     * @return <code>true</code> if the given property is editable
+     */
+    protected boolean isPropertyEditable(CmsResourceTableProperty propertyId) {
+
+        return String.class.equals(propertyId.getColumnType())
+            && ((propertyId == CmsResourceTableProperty.PROPERTY_RESOURCE_NAME)
+                || (propertyId == CmsResourceTableProperty.PROPERTY_TITLE)
+                || (propertyId == CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT))
+            && m_fileTable.isColumnVisible(propertyId);
     }
 
     /**

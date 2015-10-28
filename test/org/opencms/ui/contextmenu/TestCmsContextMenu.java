@@ -54,7 +54,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
             entry("baz", "foo", 0, 2),
             entry("qux", "foo", 0, 3));
 
-        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null, null);
+        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null);
         CmsTreeNode<I_CmsContextMenuItem> root = builder.buildTree(items);
         List<CmsTreeNode<I_CmsContextMenuItem>> topLevel = root.getChildren();
         assertEquals(2, topLevel.size());
@@ -75,7 +75,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
             entry("foo", null, 0, 0),
             entry("foo", null, 100, 100),
             entry("foo", null, 1, 1));
-        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null, null);
+        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null);
         CmsTreeNode<I_CmsContextMenuItem> root = builder.buildTree(items);
         List<CmsTreeNode<I_CmsContextMenuItem>> topLevel = root.getChildren();
         assertEquals(1, topLevel.size());
@@ -93,7 +93,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
             entry("bar", "baz", 0, 1),
             entry("baz", "bar", 0, 2));
 
-        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null, null);
+        CmsContextMenuTreeBuilder builder = new CmsContextMenuTreeBuilder(null);
         CmsTreeNode<I_CmsContextMenuItem> root = builder.buildTree(items);
         List<CmsTreeNode<I_CmsContextMenuItem>> topLevel = root.getChildren();
         assertEquals(1, topLevel.size());
@@ -153,7 +153,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
 
             public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-                return getVisibility(context.getCms(), context.getResources());
+                return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
 
             public boolean isLeafItem() {

@@ -61,6 +61,7 @@ import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -364,6 +365,19 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
         m_fileTable.sort();
         clearSelection();
+    }
+
+    /**
+     * Returns if the column with the given property id is visible and not collapsed.<p>
+     *
+     * @param propertyId the property id
+     *
+     * @return <code>true</code> if the column is visible
+     */
+    public boolean isColumnVisible(CmsResourceTableProperty propertyId) {
+
+        return Arrays.asList(m_fileTable.getVisibleColumns()).contains(propertyId)
+            && !m_fileTable.isColumnCollapsed(propertyId);
     }
 
     /**

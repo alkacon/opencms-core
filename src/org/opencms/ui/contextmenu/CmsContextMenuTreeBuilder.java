@@ -27,9 +27,8 @@
 
 package org.opencms.ui.contextmenu;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -56,11 +55,8 @@ public class CmsContextMenuTreeBuilder {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContextMenuTreeBuilder.class);
 
-    /** The current Cms context. */
-    private CmsObject m_cms;
-
-    /** The list of resources for which to build the context menu. */
-    private List<CmsResource> m_resources;
+    /** The dialog context. */
+    private I_CmsDialogContext m_context;
 
     /** Cached visibilities for context menu entries. */
     private IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode> m_visiblities = new IdentityHashMap<I_CmsContextMenuItem, CmsMenuItemVisibilityMode>();
@@ -68,12 +64,10 @@ public class CmsContextMenuTreeBuilder {
     /**
      * Creates a new instance.<p>
      *
-     * @param cms the CMS context
-     * @param resources the resources for which the context menu should be build
+     * @param context the dialog context
      */
-    public CmsContextMenuTreeBuilder(CmsObject cms, List<CmsResource> resources) {
-        m_cms = cms;
-        m_resources = resources;
+    public CmsContextMenuTreeBuilder(I_CmsDialogContext context) {
+        m_context = context;
     }
 
     /**
@@ -128,7 +122,7 @@ public class CmsContextMenuTreeBuilder {
         // Now sort by order. Since all children of a node should be processed in one iteration of the following loop,
         // this order also applies to the child order of each tree node built in the next step
         List<I_CmsContextMenuItem> uniqueItems = Lists.newArrayList(itemsById.values());
-        uniqueItems = filterVisible(uniqueItems, m_cms, m_resources);
+        uniqueItems = filterVisible(uniqueItems);
         Collections.sort(uniqueItems, new Comparator<I_CmsContextMenuItem>() {
 
             public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
@@ -178,15 +172,10 @@ public class CmsContextMenuTreeBuilder {
      * Filters out invisible context menu items from a given list.<p>
      *
      * @param items the items
-     * @param cms the CMS context to use
-     * @param resources the resources for which the context menu should be used
      *
      * @return the list of context menu items
      */
-    public List<I_CmsContextMenuItem> filterVisible(
-        List<I_CmsContextMenuItem> items,
-        CmsObject cms,
-        List<CmsResource> resources) {
+    public List<I_CmsContextMenuItem> filterVisible(List<I_CmsContextMenuItem> items) {
 
         List<I_CmsContextMenuItem> result = Lists.newArrayList();
         for (I_CmsContextMenuItem item : items) {
@@ -208,7 +197,7 @@ public class CmsContextMenuTreeBuilder {
 
         CmsMenuItemVisibilityMode result = m_visiblities.get(item);
         if (result == null) {
-            result = item.getVisibility(m_cms, m_resources);
+            result = item.getVisibility(m_context);
             m_visiblities.put(item, result);
         }
         return result;

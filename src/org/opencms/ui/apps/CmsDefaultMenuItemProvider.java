@@ -37,6 +37,7 @@ import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
 import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
+import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
@@ -48,6 +49,7 @@ import org.opencms.ui.actions.CmsTouchDialogAction;
 import org.opencms.ui.actions.CmsUndeleteDialogAction;
 import org.opencms.ui.actions.CmsUndoDialogAction;
 import org.opencms.ui.actions.CmsUnlockAction;
+import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.ui.contextmenu.CmsSubmenu;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -81,6 +83,25 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
 
         return Arrays.<I_CmsContextMenuItem> asList(
             advanced,
+            new CmsContextMenuActionItem(
+                new CmsEditPropertyAction(
+                    CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
+                    Messages.GUI_EXPLORER_RENAME_0),
+                null,
+                2,
+                0),
+            new CmsContextMenuActionItem(
+                new CmsEditPropertyAction(CmsResourceTableProperty.PROPERTY_TITLE, Messages.GUI_EXPLORER_EDIT_TITLE_0),
+                null,
+                3,
+                0),
+            new CmsContextMenuActionItem(
+                new CmsEditPropertyAction(
+                    CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
+                    Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0),
+                null,
+                4,
+                0),
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 3, 0),
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1, 0),
             new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 2, 0),
