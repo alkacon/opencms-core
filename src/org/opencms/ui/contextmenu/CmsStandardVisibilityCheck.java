@@ -290,7 +290,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                         || !cms.hasPermissions(
                             resUtil.getResource(),
                             CmsPermissionSet.ACCESS_WRITE,
-                            true,
+                            false,
                             CmsResourceFilter.ALL)) {
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                             Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
