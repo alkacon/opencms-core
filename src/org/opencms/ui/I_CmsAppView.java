@@ -43,6 +43,16 @@ public interface I_CmsAppView extends View {
     Component createComponent();
 
     /**
+     * Disables the global keyboard shortcuts.<p>
+     */
+    void disableGlobalShortcuts();
+
+    /**
+     * Enables the global keyboard shortcuts.<p>
+     */
+    void enableGlobalShortcuts();
+
+    /**
      * Enters the view.<p>
      *
      * @param state the state to set

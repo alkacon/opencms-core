@@ -182,6 +182,26 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Disables the global keyboard shortcuts.<p>
+     */
+    public void disableGlobalShortcuts() {
+
+        if (m_currentView instanceof I_CmsAppView) {
+            ((I_CmsAppView)m_currentView).disableGlobalShortcuts();
+        }
+    }
+
+    /**
+     * Enables the global keyboard shortcuts.<p>
+     */
+    public void enableGlobalShortcuts() {
+
+        if (m_currentView instanceof I_CmsAppView) {
+            ((I_CmsAppView)m_currentView).enableGlobalShortcuts();
+        }
+    }
+
+    /**
      * Returns the state parameter of the current app.<p>
      *
      * @return the state parameter of the current app

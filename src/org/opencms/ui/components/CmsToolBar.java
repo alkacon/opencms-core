@@ -45,7 +45,6 @@ import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -81,17 +80,6 @@ public class CmsToolBar extends CssLayout {
          */
         protected ToolbarContext() {
             super(null, Collections.<CmsResource> emptyList());
-        }
-
-        /**
-         * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
-         */
-        public void finish(Collection<CmsUUID> result) {
-
-            if (m_window != null) {
-                m_window.close();
-                m_window = null;
-            }
         }
 
         /**

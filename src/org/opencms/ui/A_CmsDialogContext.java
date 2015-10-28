@@ -33,7 +33,9 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.util.CmsUUID;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.vaadin.ui.Component;
@@ -83,6 +85,18 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
+     */
+    public void finish(Collection<CmsUUID> result) {
+
+        if (m_window != null) {
+            m_window.close();
+            m_window = null;
+        }
+        CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#getAppContext()
      */
     public I_CmsAppUIContext getAppContext() {
@@ -124,6 +138,7 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     public void start(String title, Component dialog) {
 
         if (dialog != null) {
+            CmsAppWorkplaceUi.get().disableGlobalShortcuts();
             m_window = CmsBasicDialog.prepareWindow();
             m_window.setCaption(title);
             m_window.setContent(dialog);

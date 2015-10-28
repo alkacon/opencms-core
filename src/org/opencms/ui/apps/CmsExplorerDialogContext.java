@@ -78,12 +78,10 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     /**
      * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
      */
+    @Override
     public void finish(Collection<CmsUUID> ids) {
 
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
+        super.finish(ids);
         if (ids == null) {
             ids = Lists.newArrayList();
             for (CmsResource res : getResources()) {

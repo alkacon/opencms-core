@@ -163,11 +163,10 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
-        UI.getCurrent().removeActionHandler(this);
+        disableGlobalShortcuts();
         if (m_app instanceof ViewChangeListener) {
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
-        UI.getCurrent().removeActionHandler(this);
         return true;
     }
 
@@ -180,6 +179,24 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
             return reinitComponent();
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#disableGlobalShortcuts()
+     */
+    public void disableGlobalShortcuts() {
+
+        UI.getCurrent().removeActionHandler(this);
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#enableGlobalShortcuts()
+     */
+    public void enableGlobalShortcuts() {
+
+        // to avoid multiple action handler registration, remove this first
+        UI.getCurrent().removeActionHandler(this);
+        UI.getCurrent().addActionHandler(this);
     }
 
     /**
@@ -239,7 +256,7 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
         if (m_app instanceof I_CmsWindowCloseListener) {
             ((I_CmsWindowCloseListener)m_app).onWindowClose();
         }
-        UI.getCurrent().removeActionHandler(this);
+        disableGlobalShortcuts();
     }
 
     /**

@@ -189,6 +189,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                     LOG.warn("Failed to unlock resource " + m_editId.toString(), e);
                 }
             }
+            CmsAppWorkplaceUi.get().enableGlobalShortcuts();
         }
 
         /**
@@ -225,7 +226,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                             LOG.warn(e.getLocalizedMessage(), e);
                         }
                     }
-
+                    CmsAppWorkplaceUi.get().enableGlobalShortcuts();
                 }
             } catch (CmsException e) {
                 LOG.error("Exception while saving changed " + m_editProperty + " to resource " + m_editId, e);
@@ -243,6 +244,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             try {
                 CmsResource res = cms.readResource(m_editId);
                 m_lockActionRecord = CmsLockUtil.ensureLock(cms, res);
+                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
                 m_fileTable.startEdit(m_editId, m_editProperty, this);
             } catch (CmsException e) {
                 CmsErrorDialog.showErrorDialog(e);
