@@ -111,7 +111,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
      *
      * @return the context menu item
      */
-    private I_CmsContextMenuItem entry(final String id, final String parentId, final int priority, final int order) {
+    private I_CmsContextMenuItem entry(final String id, final String parentId, final int priority, final float order) {
 
         return new I_CmsContextMenuItem() {
 
@@ -126,7 +126,7 @@ public class TestCmsContextMenu extends OpenCmsTestCase {
                 return id;
             }
 
-            public int getOrder() {
+            public float getOrder() {
 
                 return order;
             }

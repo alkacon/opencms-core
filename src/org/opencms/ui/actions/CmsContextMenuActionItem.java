@@ -45,7 +45,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
     private String m_parentId;
 
     /** The order. */
-    private int m_order;
+    private float m_order;
 
     /** The priority. */
     private int m_priority;
@@ -61,7 +61,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
      * @param order the order
      * @param priority the priority
      */
-    public CmsContextMenuActionItem(I_CmsWorkplaceAction action, String parentId, int order, int priority) {
+    public CmsContextMenuActionItem(I_CmsWorkplaceAction action, String parentId, float order, int priority) {
         m_parentId = parentId;
         m_order = order;
         m_priority = priority;
@@ -87,7 +87,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
     /**
      * @see org.opencms.ui.contextmenu.I_CmsContextMenuItem#getOrder()
      */
-    public int getOrder() {
+    public float getOrder() {
 
         return m_order;
 

@@ -67,7 +67,7 @@ public interface I_CmsContextMenuItem extends I_CmsHasMenuItemVisibility, I_CmsC
      *
      * @return the order
      */
-    int getOrder();
+    float getOrder();
 
     /**
      * Gets the id of the parent entry.<p>

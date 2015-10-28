@@ -127,7 +127,7 @@ public class CmsContextMenuTreeBuilder {
 
             public int compare(I_CmsContextMenuItem a, I_CmsContextMenuItem b) {
 
-                return Integer.compare(a.getOrder(), b.getOrder());
+                return Float.compare(a.getOrder(), b.getOrder());
             }
         });
         Set<String> processedIds = Sets.newHashSet();
