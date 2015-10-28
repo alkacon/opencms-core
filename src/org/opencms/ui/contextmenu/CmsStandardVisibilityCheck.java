@@ -233,7 +233,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             if (flag(unlocked)) {
                 CmsLock lock = resUtil.getLock();
-                return lock.isUnlocked() ? VISIBILITY_ACTIVE : VISIBILITY_INVISIBLE;
+                if (!lock.isUnlocked()) {
+                    return VISIBILITY_INVISIBLE;
+                }
             }
 
             if (flag(otherlock)) {
@@ -278,7 +280,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 return VISIBILITY_INVISIBLE;
             }
 
-            if (flag(inproject) && !resUtil.isInsideProject() && !resUtil.getProjectState().isLockedForPublishing()) {
+            if (flag(inproject) && (!resUtil.isInsideProject() || resUtil.getProjectState().isLockedForPublishing())) {
                 return VISIBILITY_INVISIBLE;
             }
 

@@ -185,7 +185,7 @@ public class CmsLockAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return CmsVaadinUtils.getMessageText("GUI_EXPLORER_CONTEXT_LOCK_0");
+        return CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCK_0);
     }
 
     /**
