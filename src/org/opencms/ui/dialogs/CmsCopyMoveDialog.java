@@ -242,6 +242,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
             getRootCms().copyResource(source.getRootPath(), finalTarget, copyMode);
             getRootCms().unlockResource(finalTarget);
+            CmsResource copyResource = getRootCms().readResource(finalTarget);
+            m_updateResources.add(copyResource.getStructureId());
         }
     }
 
