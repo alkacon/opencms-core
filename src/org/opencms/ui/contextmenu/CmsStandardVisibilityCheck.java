@@ -80,12 +80,16 @@ import com.google.common.collect.Sets;
  */
 public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck {
 
+    /** Default visibility check for view operations on resources. */
+    public static final CmsStandardVisibilityCheck VIEW = new CmsStandardVisibilityCheck(roleeditor, notdeleted);
+
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
         roleeditor,
         notonline,
         notdeleted,
-        writepermisssion);
+        writepermisssion,
+        inproject);
 
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
@@ -94,6 +98,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         notdeleted,
         writepermisssion,
+        inproject,
         haseditor);
 
     /** Like DEFAULT, but only active for files. */
@@ -104,6 +109,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         notdeleted,
         writepermisssion,
+        inproject,
         haseditor);
 
     /** Visibility check for main menu entries. */
@@ -113,14 +119,16 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     public static final CmsStandardVisibilityCheck PUBLISH = new CmsStandardVisibilityCheck(
         notunchangedfile,
         publishpermission,
-        notonline);
+        notonline,
+        inproject);
 
     /** Visibility check for undelete option. */
     public static final CmsStandardVisibilityCheck UNDELETE = new CmsStandardVisibilityCheck(
         roleeditor,
         notonline,
         deleted,
-        writepermisssion);
+        writepermisssion,
+        inproject);
 
     /** Visibility check for the undo function. */
     public static final CmsStandardVisibilityCheck UNDO = new CmsStandardVisibilityCheck(
@@ -129,10 +137,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         roleeditor,
         notonline,
         notdeleted,
-        writepermisssion);
+        writepermisssion,
+        inproject);
 
     /** Visibility check for the undo function. */
-    public static final CmsStandardVisibilityCheck UNLOCK = new CmsStandardVisibilityCheck(mylock, noinheritedlock);
+    public static final CmsStandardVisibilityCheck UNLOCK = new CmsStandardVisibilityCheck(
+        mylock,
+        noinheritedlock,
+        inproject);
 
     /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
@@ -145,12 +157,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         unlocked,
         roleeditor,
         notonline,
-        notdeleted);
+        notdeleted,
+        inproject);
 
     /** Permission check for stealing locks. */
     public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
         otherlock,
-        noinheritedlock);
+        noinheritedlock,
+        inproject);
 
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
