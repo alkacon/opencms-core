@@ -28,12 +28,14 @@
 package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
 import org.opencms.lock.CmsLockUtil;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -51,6 +53,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -75,6 +78,9 @@ public class CmsUndoDialog extends CmsBasicDialog {
     /** The OK  button. */
     private Button m_okButton;
 
+    /** Label with info text. */
+    private Label m_infoText;
+
     /** The date selection field. */
     private CheckBox m_undoMoveField;
 
@@ -89,15 +95,27 @@ public class CmsUndoDialog extends CmsBasicDialog {
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
-
+        m_infoText.setValue(
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_UNDO_CONFIRMATION_0));
         boolean hasFolders = false;
+        boolean hasMoved = false;
         for (CmsResource resource : context.getResources()) {
             if (resource.isFolder()) {
                 hasFolders = true;
                 break;
+            } else {
+                try {
+                    CmsObject cms = OpenCms.initCmsObject(context.getCms());
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    CmsResource onlineres = cms.readResource(resource.getStructureId());
+                    hasMoved |= !onlineres.getRootPath().equals(resource.getRootPath());
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
             }
         }
         m_modifySubresourcesField.setVisible(hasFolders);
+        m_undoMoveField.setVisible(hasFolders || hasMoved);
         m_cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
