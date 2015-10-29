@@ -178,6 +178,8 @@ public class CmsAddDialogTypeHelper {
 
         Multimap<CmsUUID, CmsResourceTypeBean> result = ArrayListMultimap.create();
 
+        // Sort list to make sure that 'Other types' view is processed last, because we may need to display
+        // types filtered / removed from other views, which we only know once we have processed these views
         Collections.sort(views, new Comparator<CmsElementView>() {
 
             public int compare(CmsElementView view0, CmsElementView view1) {

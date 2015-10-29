@@ -42,6 +42,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
@@ -213,7 +214,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         private static final long serialVersionUID = 1L;
 
         {
-            put("folder", new Integer(100));
+            put("folder", new Integer(50));
             put("plain", new Integer(200));
             put("jsp", new Integer(300));
             put("htmlredirect", new Integer(400));
@@ -1029,6 +1030,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         List<CmsExplorerTypeSettings> result = Lists.newArrayList();
         for (CmsExplorerTypeSettings explorerType : getExplorerTypeSettings()) {
+
             String currentViewName = explorerType.getElementView();
             if (currentViewName == null) {
                 currentViewName = getDefaultView(explorerType.getName());
@@ -1037,6 +1039,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 if (OpenCms.getResourceManager().hasResourceType(explorerType.getName())) {
                     result.add(explorerType);
                 }
+            } else if (CmsResourceTypeFolder.getStaticTypeName().equals(explorerType.getName())
+                && "view_folders|view_basic".contains(viewName)) {
+                result.add(explorerType);
             }
 
         }

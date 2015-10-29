@@ -312,6 +312,7 @@ public class CmsNewDialog extends CmsBasicDialog {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         m_selectedType = typeFinal;
+
         Boolean useDefaultLocation = m_defaultLocationCheckbox.getValue();
         if (useDefaultLocation.booleanValue() && (m_selectedType.getCreatePath() != null)) {
             try {
@@ -357,15 +358,21 @@ public class CmsNewDialog extends CmsBasicDialog {
             }
 
         } else {
+            boolean explorerNameGenerationMode = false;
             String sitePath = cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath());
             String namePattern = m_selectedType.getNamePattern();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePattern)) {
                 namePattern = OpenCms.getWorkplaceManager().getDefaultNamePattern(m_selectedType.getType());
+                explorerNameGenerationMode = true;
             }
             String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
             String realCreatePath;
             try {
-                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(cms, fileName, 6, true);
+                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
+                    cms,
+                    fileName,
+                    6,
+                    explorerNameGenerationMode);
             } catch (CmsException e1) {
                 realCreatePath = CmsStringUtil.joinPaths(sitePath, RandomStringUtils.randomAlphabetic(8));
             }
