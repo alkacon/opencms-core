@@ -8,8 +8,10 @@
   		<o-cms-basic-dialog size-full>
   			<content>
   				<v-vertical-layout  margin spacing size-full>
-	  					<v-combo-box _id="m_viewSelector" width="200px"/>
-	  					<v-check-box _id="m_defaultLocationCheckbox" caption="%(key.GUI_NEWRESOURCEDIALOG_USE_DEFAULT_0)"></v-check-box>
+	  					<v-horizontal-layout width="100%">
+		  					<v-combo-box _id="m_viewSelector" width="250px"/>
+		  					<v-check-box _id="m_defaultLocationCheckbox" :middle :right caption="%(key.GUI_NEWRESOURCEDIALOG_USE_DEFAULT_0)"></v-check-box>
+		  				</v-horizontal-layout>
 	  					<v-panel height="500px">
 	  						<v-vertical-layout style-name="o-reduced-margin o-reduced-spacing o-resinfo-pointer" margin spacing _id="m_typeContainer" />
 	  					</v-panel>
