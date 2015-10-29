@@ -43,8 +43,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
-import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsEncoder;
@@ -52,7 +50,6 @@ import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -121,6 +118,48 @@ import com.google.common.collect.Sets;
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEventListener {
 
+    /**
+     * Helper class used to easily define default view mappings for standard resource types.<p>
+     */
+    static class ViewRules {
+
+        /**
+         * Internal view map.<p>
+         */
+        private Map<String, String> m_viewMap = Maps.newHashMap();
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param rules an array of strings of the form 'foo,bar,baz:view1', where foo, ... are type names and view1 is a view name (explorertype)
+         */
+        public ViewRules(String... rules) {
+            for (String rule : rules) {
+                int colIndex = rule.indexOf(':');
+                if (colIndex != -1) {
+                    String before = rule.substring(0, colIndex);
+                    String after = rule.substring(colIndex + 1);
+                    for (String token : CmsStringUtil.splitAsList(before, ",")) {
+                        m_viewMap.put(token.trim(), after);
+                    }
+                }
+
+            }
+        }
+
+        /**
+         * Gets the view configured for the given type.<p>
+         *
+         * @param type a resource type name
+         * @return the view explorer type for the given resource type
+         */
+        public String getViewForType(String type) {
+
+            return m_viewMap.get(type);
+
+        }
+    }
+
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
@@ -129,6 +168,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** Key name for the session workplace settings. */
     public static final String SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+
+    /** Default view configuration. */
+    static ViewRules m_defaultViewRules = new ViewRules(
+        "folder,plain,jsp,htmlredirect,containerpage:view_basic",
+        "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
+        "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config:view_configs",
+        "xmlcontent,pointer:view_other");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
@@ -159,6 +205,45 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The default user settings. */
     private CmsDefaultUserSettings m_defaultUserSettings;
+
+    /** Default view orders. */
+    private Map<String, Integer> m_defaultViewOrders = new HashMap<String, Integer>() {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        {
+            put("folder", new Integer(100));
+            put("plain", new Integer(200));
+            put("jsp", new Integer(300));
+            put("htmlredirect", new Integer(400));
+            put("containerpage", new Integer(500));
+
+            put("imagegallery", new Integer(100));
+            put("downloadgallery", new Integer(200));
+            put("linkgallery", new Integer(300));
+            put("subsitemap", new Integer(400));
+            put("content_folder", new Integer(500));
+            put("formatter_config", new Integer(100));
+
+            put("xmlvfsbundle", new Integer(200));
+            put("propertyvfsbundle", new Integer(300));
+            put("sitemap_config", new Integer(400));
+            put("sitemap_master_config", new Integer(500));
+            put("module_config", new Integer(600));
+            put("elementview", new Integer(700));
+            put("seo_file", new Integer(800));
+            put("containerpage_template", new Integer(900));
+            put("inheritance_config", new Integer(1000));
+
+            put("xmlcontent", new Integer(100));
+            put("pointer", new Integer(200));
+
+            put("modelgroup", new Integer(100));
+            put("xmlimage", new Integer(200));
+
+        }
+    };
 
     /** The configured dialog handlers. */
     private Map<String, I_CmsDialogHandler> m_dialogHandler;
@@ -325,7 +410,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             2,
             TimeUnit.MINUTES).concurrencyLevel(3);
         m_workplaceServerUserChecks = cb.build();
-
     }
 
     /**
@@ -809,6 +893,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public CmsDefaultUserSettings getDefaultUserSettings() {
 
         return m_defaultUserSettings;
+    }
+
+    /**
+     * Gets the default view order for the given type name (or null, if there is no default view order).<p>
+     *
+     * @param typeName the type name
+     *
+     * @return the default view order for the type
+     */
+    public Integer getDefaultViewOrder(String typeName) {
+
+        return m_defaultViewOrders.get(typeName);
     }
 
     /**
@@ -2109,21 +2205,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     String getDefaultView(String typeName) {
 
-        if (OpenCms.getResourceManager().hasResourceType(typeName) && (getExplorerTypeSetting("view_other") != null)) {
-            try {
-                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
-                if ((type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlContainerPage)) {
-                    return "view_xmlcontent";
-                } else if (type.isFolder()) {
-                    return "view_folder";
-                } else {
-                    return "view_other";
-                }
-            } catch (CmsLoaderException e) {
-                // shouldn't happen, we checked before
-            }
+        String result = m_defaultViewRules.getViewForType(typeName);
+        if (result == null) {
+            result = "view_other";
         }
-        return "otheroptions";
+        return result;
     }
 
     /**

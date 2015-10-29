@@ -159,6 +159,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
     /** The "target" attribute. */
     public static final String A_TARGET = "target";
 
+    /** Name of the attribute used to determine order of types in element views. */
+    public static final String A_VIEW_ORDER = "view-order";
+
     /** The attribute name of the widget attribute for the user-info node. */
     public static final String A_WIDGET = "widget";
 
@@ -583,7 +586,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
 
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 8);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 9);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
@@ -592,6 +595,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_EXPLORERTYPE, 5, A_ELEMENTVIEW);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 6, A_ISVIEW);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 7, A_NAME_PATTERN);
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 8, A_VIEW_ORDER);
 
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, "addIconRule", 3);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ICONRULES + "/" + N_ICONRULE, 0, A_EXTENSION);
@@ -711,6 +715,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
                 if (settings.getNamePattern() != null) {
                     explorerTypeElement.addAttribute(A_NAME_PATTERN, settings.getNamePattern());
+                }
+
+                if (settings.getViewOrder(false) != null) {
+                    explorerTypeElement.addAttribute(A_VIEW_ORDER, "" + settings.getViewOrder(false));
                 }
 
                 // create subnode <newresource>

@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -98,7 +99,6 @@ public class CmsNewDialog extends CmsBasicDialog {
     public static final String SETTING_STANDARD_VIEW = "newDialogStandardView";
 
     /** Logger instance for this class. */
-    @SuppressWarnings("unused")
     private static final Log LOG = CmsLog.getLog(CmsNewDialog.class);
 
     /** Serial version id. */
@@ -111,7 +111,7 @@ public class CmsNewDialog extends CmsBasicDialog {
     protected CmsResource m_createdResource;
 
     /** The current view id. */
-    protected CmsUUID m_currentViewId;
+    protected CmsElementView m_currentView;
 
     /** Check box for enabling / disabling default creation folders. */
     protected CheckBox m_defaultLocationCheckbox;
@@ -128,6 +128,9 @@ public class CmsNewDialog extends CmsBasicDialog {
     /** Container for the type list. */
     protected VerticalLayout m_typeContainer;
 
+    /** The type helper. */
+    protected CmsAddDialogTypeHelper m_typeHelper;
+
     /** Element view selector. */
     protected ComboBox m_viewSelector;
 
@@ -136,11 +139,8 @@ public class CmsNewDialog extends CmsBasicDialog {
      *
      * @param folderResource the folder resource
      * @param context the context
-     *
-     * @throws CmsException if something goes wrong
      */
-    public CmsNewDialog(CmsResource folderResource, I_CmsDialogContext context)
-    throws CmsException {
+    public CmsNewDialog(CmsResource folderResource, I_CmsDialogContext context) {
         m_folderResource = folderResource;
         m_dialogContext = context;
 
@@ -158,7 +158,7 @@ public class CmsNewDialog extends CmsBasicDialog {
         if (sessionView == null) {
             sessionView = CmsUUID.getNullUUID();
         }
-        CmsUUID initView = initViews(sessionView);
+        CmsElementView initView = initViews(sessionView);
 
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -178,7 +178,7 @@ public class CmsNewDialog extends CmsBasicDialog {
             public void valueChange(ValueChangeEvent event) {
 
                 try {
-                    init(m_currentViewId, ((Boolean)event.getProperty().getValue()).booleanValue());
+                    init(m_currentView, ((Boolean)event.getProperty().getValue()).booleanValue());
                 } catch (Exception e) {
                     m_dialogContext.error(e);
                 }
@@ -207,27 +207,21 @@ public class CmsNewDialog extends CmsBasicDialog {
     /**
      * Initializes and displays the type list for the given view.<p>
      *
-     * @param viewId the view id
+     * @param view the element view
      * @param useDefault true if we should use the default location for resource creation
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void init(CmsUUID viewId, boolean useDefault) throws CmsException {
+    public void init(CmsElementView view, boolean useDefault) {
 
-        m_currentViewId = viewId;
-        if (!viewId.equals(m_viewSelector.getValue())) {
-            m_viewSelector.setValue(viewId);
+        m_currentView = view;
+        if (!view.getId().equals(m_viewSelector.getValue())) {
+            m_viewSelector.setValue(view.getId());
         }
         m_typeContainer.removeAllComponents();
-
-        CmsAddDialogTypeHelper typeHelper = getTypeHelper();
-        final CmsObject cms = A_CmsUI.getCmsObject();
-        List<CmsResourceTypeBean> typeBeans = typeHelper.getResourceTypes(
-            cms,
-            m_folderResource.getRootPath(),
-            cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
-            viewId,
-            null);
+        List<CmsResourceTypeBean> typeBeans = m_typeHelper.getPrecomputedTypes(view);
+        if (typeBeans == null) {
+            LOG.warn("precomputed type list is null: " + view.getTitle(A_CmsUI.getCmsObject(), Locale.ENGLISH));
+            return;
+        }
         for (CmsResourceTypeBean type : typeBeans) {
             final String typeName = type.getType();
             String title = typeName;
@@ -235,7 +229,6 @@ public class CmsNewDialog extends CmsBasicDialog {
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
             String iconUri = explorerType.getBigIconIfAvailable();
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
-            //subtitle = CmsVaadinUtils.getMessageText(explorerType.getInfo());
             CmsResourceInfo info = new CmsResourceInfo(
                 title,
                 subtitle,
@@ -261,6 +254,27 @@ public class CmsNewDialog extends CmsBasicDialog {
     }
 
     /**
+     * Creates type helper which is responsible for generating the type list.<p>
+     *
+     * @return the type helper
+     */
+    protected CmsAddDialogTypeHelper createTypeHelper() {
+
+        return new CmsAddDialogTypeHelper() {
+
+            @Override
+            protected boolean exclude(CmsResourceTypeBean type) {
+
+                String typeName = type.getType();
+                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
+                boolean noCreate = !(type.isCreatableType() && !type.isDeactivated());
+                return noCreate || (explorerType == null) || CmsStringUtil.isEmpty(explorerType.getNewResourceUri());
+            }
+        };
+
+    }
+
+    /**
      * Gets the HTML for the action buttons the type info boxes.<p>
      *
      * @return the HTML for the buttons
@@ -283,29 +297,10 @@ public class CmsNewDialog extends CmsBasicDialog {
         String subtitle = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0);
         if (useDefault && (type.getOrigin() == Origin.config) && (type.getCreatePath() != null)) {
             subtitle = type.getCreatePath();
+            CmsObject cms = A_CmsUI.getCmsObject();
+            subtitle = cms.getRequestContext().removeSiteRoot(subtitle);
         }
         return subtitle;
-    }
-
-    /**
-     * Creates type helper which is responsible for generating the type list.<p>
-     *
-     * @return the type helper
-     */
-    protected CmsAddDialogTypeHelper getTypeHelper() {
-
-        return new CmsAddDialogTypeHelper() {
-
-            @Override
-            protected boolean exclude(CmsResourceTypeBean type) {
-
-                String typeName = type.getType();
-                CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
-                boolean noCreate = !(type.isCreatableType() && !type.isDeactivated());
-                return noCreate || (explorerType == null) || CmsStringUtil.isEmpty(explorerType.getNewResourceUri());
-            }
-        };
-
     }
 
     /**
@@ -414,11 +409,11 @@ public class CmsNewDialog extends CmsBasicDialog {
     /**
      * Initializes the view selector, using the given view id as an initial value.<p>
      *
-     * @param startView the start view
+     * @param startId the start view
      *
      * @return the start view
      */
-    private CmsUUID initViews(CmsUUID startView) {
+    private CmsElementView initViews(CmsUUID startId) {
 
         Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject());
         List<CmsElementView> viewList = new ArrayList<CmsElementView>(viewMap.values());
@@ -431,23 +426,20 @@ public class CmsNewDialog extends CmsBasicDialog {
 
         });
         m_viewSelector.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
+        m_typeHelper = createTypeHelper();
+        m_typeHelper.precomputeTypeLists(
+            A_CmsUI.getCmsObject(),
+            m_folderResource.getRootPath(),
+            A_CmsUI.getCmsObject().getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
+            viewList,
+            null);
         for (CmsElementView view : viewList) {
-            if (view.hasPermission(A_CmsUI.getCmsObject(), m_folderResource)) {
 
-                try {
-                    List<CmsResourceTypeBean> typeBeans = getTypeHelper().getResourceTypes(
-                        A_CmsUI.getCmsObject(),
-                        m_folderResource.getRootPath(),
-                        A_CmsUI.getCmsObject().getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
-                        view.getId(),
-                        null);
-                    if (typeBeans.isEmpty()) {
-                        continue;
-                    }
-                } catch (CmsException e) {
+            if (view.hasPermission(A_CmsUI.getCmsObject(), m_folderResource)) {
+                List<CmsResourceTypeBean> typeBeans = m_typeHelper.getPrecomputedTypes(view);
+                if (typeBeans.isEmpty()) {
                     continue;
                 }
-
                 m_viewSelector.addItem(view.getId());
                 m_viewSelector.setItemCaption(
                     view.getId(),
@@ -455,8 +447,8 @@ public class CmsNewDialog extends CmsBasicDialog {
             }
 
         }
-        if (m_viewSelector.getItem(startView) == null) {
-            startView = (CmsUUID)(m_viewSelector.getItemIds().iterator().next());
+        if (m_viewSelector.getItem(startId) == null) {
+            startId = (CmsUUID)(m_viewSelector.getItemIds().iterator().next());
         }
         m_viewSelector.addValueChangeListener(new ValueChangeListener() {
 
@@ -464,18 +456,15 @@ public class CmsNewDialog extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
-                try {
-                    init((CmsUUID)(event.getProperty().getValue()), true);
-                    VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                        SETTING_STANDARD_VIEW,
-                        (event.getProperty().getValue()));
-                } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                CmsElementView selectedView = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(
+                    event.getProperty().getValue());
+                init(selectedView, true);
+                VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                    SETTING_STANDARD_VIEW,
+                    (event.getProperty().getValue()));
             }
         });
-        return startView;
+        return OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(startId);
     }
 
     /**

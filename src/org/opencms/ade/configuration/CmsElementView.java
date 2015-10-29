@@ -77,7 +77,7 @@ public class CmsElementView {
     public static final CmsElementView DEFAULT_ELEMENT_VIEW = new CmsElementView();
 
     /** Default order if not configured. */
-    public static final int DEFAULT_ORDER = 1000;
+    public static final int DEFAULT_ORDER = 1060;
 
     /** The default element view title key. */
     public static final String GUI_ELEMENT_VIEW_DEFAULT_TITLE_0 = "GUI_ELEMENT_VIEW_DEFAULT_TITLE_0";
@@ -145,9 +145,9 @@ public class CmsElementView {
     private CmsElementView() {
 
         // the default view
-        m_title = "Default";
+        m_title = "Content elements";
         m_titleKey = GUI_ELEMENT_VIEW_DEFAULT_TITLE_0;
-        m_order = Integer.MIN_VALUE;
+        m_order = 1050;
     }
 
     /**
@@ -239,8 +239,8 @@ public class CmsElementView {
 
         if ((m_explorerType != null) && (folder != null)) {
             CmsPermissionSet permSet = m_explorerType.getAccess().getPermissions(cms, folder);
-            String permString = permSet.getPermissionString();
-            return permString.contains("+v");
+            boolean result = permSet.requiresViewPermission();
+            return result;
         }
 
         try {
@@ -258,6 +258,16 @@ public class CmsElementView {
             LOG.error(e.getLocalizedMessage(), e);
         }
         return false;
+    }
+
+    /**
+     * 'Other types' view, for everything that isn't assigned to any other view.<p>
+     *
+     * @return true if this is the 'other types' view
+     */
+    public boolean isOther() {
+
+        return (m_explorerType != null) && m_explorerType.getName().equals("view_other");
     }
 
     /**

@@ -150,6 +150,9 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The title key. */
     private String m_titleKey;
 
+    /** The configured view order. */
+    private Integer m_viewOrder;
+
     /**
      * Default constructor.<p>
      */
@@ -576,6 +579,29 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     }
 
     /**
+     * Gets the view order, optionally using a default value if the view order is not configured.<p>
+     *
+     * @param useDefault true if a default should be returned in the case where the view order is not configured
+     *
+     * @return the view order
+     */
+    public Integer getViewOrder(boolean useDefault) {
+
+        Integer defaultViewOrder = OpenCms.getWorkplaceManager().getDefaultViewOrder(m_name);
+        Integer result = null;
+        if (m_viewOrder != null) {
+            result = m_viewOrder;
+        } else if (useDefault) {
+            if (defaultViewOrder != null) {
+                result = defaultViewOrder;
+            } else {
+                result = new Integer(9999);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns true if this explorer type entry has explicit edit options set.<p>
      *
      * @return true if this explorer type entry has explicit edit options set
@@ -979,6 +1005,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      * @param elementView the element view
      * @param isView 'true' if this type represents an element view
      * @param namePattern the name pattern
+     * @param viewOrder the view order
      */
     public void setTypeAttributes(
         String name,
@@ -988,7 +1015,8 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         String reference,
         String elementView,
         String isView,
-        String namePattern) {
+        String namePattern,
+        String viewOrder) {
 
         setName(name);
         setKey(key);
@@ -996,6 +1024,11 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         setBigIcon(bigIcon);
         setReference(reference);
         setElementView(elementView);
+        try {
+            m_viewOrder = Integer.valueOf(viewOrder);
+        } catch (NumberFormatException e) {
+            LOG.debug("Type " + name + " has no or invalid view order:" + viewOrder);
+        }
         m_isView = Boolean.valueOf(isView).booleanValue();
         m_namePattern = namePattern;
 

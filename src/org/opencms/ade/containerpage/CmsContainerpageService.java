@@ -722,7 +722,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 cms,
                 cms.getRequestContext().addSiteRoot(uri),
                 uri,
-                elementView,
+                OpenCms.getADEManager().getElementViews(cms).get(elementView),
                 new I_CmsResourceTypeEnabledCheck() {
 
                     public boolean checkEnabled(
@@ -1793,7 +1793,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
             // add only element view that are used within the type configuration and the user has sufficient permissions for
-            if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes)) {
+            if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes) && !view.isOther()) {
                 result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
             }
         }

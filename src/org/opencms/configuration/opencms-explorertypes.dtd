@@ -16,7 +16,7 @@
 	newresource,
 	accesscontrol?,
 	editoptions?, iconrules?)>
-<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED reference CDATA #IMPLIED elementview CDATA #IMPLIED isview CDATA #IMPLIED name-pattern CDATA #IMPLIED>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #IMPLIED bigicon CDATA #IMPLIED reference CDATA #IMPLIED elementview CDATA #IMPLIED isview CDATA #IMPLIED name-pattern CDATA #IMPLIED view-order CDATA #IMPLIED>
 
 
 <!--

@@ -99,29 +99,10 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     }
 
     /**
-     * @see org.opencms.ui.dialogs.CmsNewDialog#getActionIconHtml()
+     * @see org.opencms.ui.dialogs.CmsNewDialog#createTypeHelper()
      */
     @Override
-    protected String getActionIconHtml() {
-
-        return FontAwesome.CHECK.getHtml();
-    }
-
-    /**
-     *
-     * @see org.opencms.ui.dialogs.CmsNewDialog#getSubtitle(org.opencms.ade.galleries.shared.CmsResourceTypeBean, boolean)
-     */
-    @Override
-    protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
-
-        return "";
-    }
-
-    /**
-     * @see org.opencms.ui.dialogs.CmsNewDialog#getTypeHelper()
-     */
-    @Override
-    protected CmsAddDialogTypeHelper getTypeHelper() {
+    protected CmsAddDialogTypeHelper createTypeHelper() {
 
         return new CmsAddDialogTypeHelper() {
 
@@ -141,6 +122,25 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
                 }
             }
         };
+    }
+
+    /**
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getActionIconHtml()
+     */
+    @Override
+    protected String getActionIconHtml() {
+
+        return FontAwesome.CHECK.getHtml();
+    }
+
+    /**
+     *
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getSubtitle(org.opencms.ade.galleries.shared.CmsResourceTypeBean, boolean)
+     */
+    @Override
+    protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
+
+        return "";
     }
 
 }

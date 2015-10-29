@@ -92,7 +92,7 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
         StringBuffer resultBuffer = new StringBuffer();
         boolean first = true;
         for (CmsElementView view : views) {
-            if (view.hasPermission(cms, null)) {
+            if (view.hasPermission(cms, null) && !view.isOther()) {
                 if (!first) {
                     resultBuffer.append("|");
                 }

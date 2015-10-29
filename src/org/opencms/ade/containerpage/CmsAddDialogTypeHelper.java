@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -54,9 +55,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 /**
@@ -68,6 +71,15 @@ public class CmsAddDialogTypeHelper {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAddDialogTypeHelper.class);
 
+    /** All types from the ADE config previously processed. */
+    private Set<String> m_allAdeTypes = Sets.newHashSet();
+
+    /** Cached type lists. */
+    private Multimap<CmsUUID, CmsResourceTypeBean> m_cachedTypes;
+
+    /** All types from the ADE config previously included in a result list. */
+    private Set<String> m_includedAdeTypes = Sets.newHashSet();
+
     /**
      * Creates a new instance.<p>
      */
@@ -76,12 +88,23 @@ public class CmsAddDialogTypeHelper {
     }
 
     /**
+     * Gets the precomputed type list for the given view.<p>
+     *
+     * @param view the element view
+     * @return the precomputed type list, or null if the list wasn't precomputed
+     */
+    public List<CmsResourceTypeBean> getPrecomputedTypes(CmsElementView view) {
+
+        return Lists.newArrayList(m_cachedTypes.get(view.getId()));
+    }
+
+    /**
      * Creates list of resource type beans for gallery or 'New' dialog.<p>
      *
      * @param cms the CMS context
      * @param folderRootPath the current folder
      * @param checkViewableReferenceUri the reference uri to use for viewability check
-     * @param viewId the view id
+     * @param elementView the element view
      * @param checkEnabled object to check whether resource types should be enabled
      *
      * @return the list of resource type beans
@@ -92,33 +115,87 @@ public class CmsAddDialogTypeHelper {
         CmsObject cms,
         String folderRootPath,
         String checkViewableReferenceUri,
-        CmsUUID viewId,
+        CmsElementView elementView,
         I_CmsResourceTypeEnabledCheck checkEnabled) throws CmsException {
 
-        CmsElementView elementView = OpenCms.getADEManager().getElementViews(cms).get(viewId);
         if (elementView == null) {
             LOG.error("Element view is null");
             return Collections.emptyList();
         }
         List<I_CmsResourceType> additionalTypes = Lists.newArrayList();
+
+        // First store the types in a map, to avoid duplicates
+        Map<String, I_CmsResourceType> additionalTypeMap = Maps.newHashMap();
+
         if (elementView.getExplorerType() != null) {
-            CmsElementView elemView = OpenCms.getADEManager().getElementViews(cms).get(viewId);
-            if (elemView != null) {
-                List<CmsExplorerTypeSettings> explorerTypes = OpenCms.getWorkplaceManager().getExplorerTypesForView(
-                    elemView.getExplorerType().getName());
-                for (CmsExplorerTypeSettings explorerType : explorerTypes) {
-                    additionalTypes.add(OpenCms.getResourceManager().getResourceType(explorerType.getName()));
+            List<CmsExplorerTypeSettings> explorerTypes = OpenCms.getWorkplaceManager().getExplorerTypesForView(
+                elementView.getExplorerType().getName());
+            for (CmsExplorerTypeSettings explorerType : explorerTypes) {
+                if (elementView.isOther() && m_includedAdeTypes.contains(explorerType.getName())) {
+                    continue;
+                }
+                additionalTypeMap.put(
+                    explorerType.getName(),
+                    OpenCms.getResourceManager().getResourceType(explorerType.getName()));
+            }
+        }
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER) && elementView.isOther()) {
+            Set<String> hiddenTypes = new HashSet<String>(m_allAdeTypes);
+            hiddenTypes.removeAll(m_includedAdeTypes);
+            for (String typeName : hiddenTypes) {
+                if (OpenCms.getResourceManager().hasResourceType(typeName)) {
+                    additionalTypeMap.put(typeName, OpenCms.getResourceManager().getResourceType(typeName));
                 }
             }
         }
+        additionalTypes.addAll(additionalTypeMap.values());
+
         return internalGetResourceTypesFromConfig(
             cms,
             folderRootPath,
             checkViewableReferenceUri,
-            viewId,
+            elementView,
             additionalTypes,
             checkEnabled);
 
+    }
+
+    /**
+     * Precomputes type lists for multiple views.<p>
+     *
+     * @param cms the CMS context
+     * @param folderRootPath the current folder
+     * @param checkViewableReferenceUri the reference uri to use for viewability check
+     * @param views the views for which to generate the type lists
+     * @param check object to check whether resource types should be enabled
+     */
+    public void precomputeTypeLists(
+        CmsObject cms,
+        String folderRootPath,
+        String checkViewableReferenceUri,
+        List<CmsElementView> views,
+        I_CmsResourceTypeEnabledCheck check) {
+
+        Multimap<CmsUUID, CmsResourceTypeBean> result = ArrayListMultimap.create();
+
+        Collections.sort(views, new Comparator<CmsElementView>() {
+
+            public int compare(CmsElementView view0, CmsElementView view1) {
+
+                return ComparisonChain.start().compareFalseFirst(view0.isOther(), view1.isOther()).result();
+            }
+        });
+
+        for (CmsElementView view : views) {
+            try {
+                result.putAll(
+                    view.getId(),
+                    getResourceTypes(cms, folderRootPath, checkViewableReferenceUri, view, check));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        m_cachedTypes = result;
     }
 
     /**
@@ -151,7 +228,7 @@ public class CmsAddDialogTypeHelper {
         CmsObject cms,
         String folderRootPath,
         String checkViewableReferenceUri,
-        CmsUUID elementView,
+        CmsElementView elementView,
         List<I_CmsResourceType> additionalTypes,
         I_CmsResourceTypeEnabledCheck checkEnabled) throws CmsException {
 
@@ -164,11 +241,12 @@ public class CmsAddDialogTypeHelper {
         Map<String, String> createPaths = Maps.newHashMap();
         Map<String, String> namePatterns = Maps.newHashMap();
         for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+            m_allAdeTypes.add(typeConfig.getTypeName());
             typesFromConfig.add(typeConfig.getTypeName());
             boolean isModelGroup = CmsResourceTypeXmlContainerPage.MODEL_GROUP_TYPE_NAME.equals(
                 typeConfig.getTypeName());
             try {
-                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView);
+                AddMenuVisibility visibility = typeConfig.getAddMenuVisibility(elementView.getId());
 
                 if (visibility == AddMenuVisibility.disabled) {
                     continue;
@@ -191,7 +269,8 @@ public class CmsAddDialogTypeHelper {
         }
         Set<String> creatableTypes = new HashSet<String>();
         for (CmsResourceTypeConfig typeConfig : config.getCreatableTypes(cms, folderRootPath)) {
-            if (typeConfig.isHiddenFromAddMenu(elementView) || disabledTypes.contains(typeConfig.getTypeName())) {
+            if (typeConfig.isHiddenFromAddMenu(elementView.getId())
+                || disabledTypes.contains(typeConfig.getTypeName())) {
                 continue;
             }
             createPaths.put(typeConfig.getTypeName(), typeConfig.getFolderPath(cms, folderRootPath));
@@ -199,7 +278,7 @@ public class CmsAddDialogTypeHelper {
             String typeName = typeConfig.getTypeName();
             creatableTypes.add(typeName);
         }
-
+        m_includedAdeTypes.addAll(createPaths.keySet());
         CmsGalleryService srv = new CmsGalleryService();
         srv.setCms(cms);
         // we put the types 'imported' from other views at the end of the list. Since the sort is stable,
@@ -217,17 +296,41 @@ public class CmsAddDialogTypeHelper {
             }
         });
 
+        Collections.sort(additionalTypes, new Comparator<I_CmsResourceType>() {
+
+            public int compare(I_CmsResourceType type1, I_CmsResourceType type2) {
+
+                CmsExplorerTypeSettings settings1 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    type1.getTypeName());
+                CmsExplorerTypeSettings settings2 = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                    type2.getTypeName());
+                return ComparisonChain.start().compare(
+                    settings1.getViewOrder(true),
+                    settings2.getViewOrder(true)).compare(
+                        parse(settings1.getNewResourceOrder()),
+                        parse(settings2.getNewResourceOrder())).result();
+
+            }
+
+            long parse(String order) {
+
+                try {
+                    return Integer.parseInt(order);
+                } catch (NumberFormatException e) {
+                    return 9999;
+                }
+            }
+        });
         for (I_CmsResourceType addType : additionalTypes) {
             String typeName = addType.getTypeName();
-            if (typesFromConfig.contains(typeName)) { //  type was already processed (although it may not be in the result list)
+            if (typesFromConfig.contains(typeName) && !elementView.isOther()) { //  type was already processed (although it may not be in the result list)
                 continue;
             }
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
             CmsPermissionSet permissions = explorerType.getAccess().getPermissions(
                 cms,
                 cms.readResource(checkViewableReferenceUri));
-            String permString = permissions.getPermissionString();
-            if (permString.contains("+c") && permString.contains("+v")) {
+            if (permissions.requiresControlPermission() && permissions.requiresViewPermission()) {
                 resourceTypes.add(addType);
                 creatableTypes.add(addType.getTypeName());
             }

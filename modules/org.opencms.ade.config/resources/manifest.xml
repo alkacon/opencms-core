@@ -762,6 +762,37 @@
 				</accesscontrol>
 			</explorertype>
 			
+			
+			
+			<explorertype name="view_basic" key="fileicon.view_basic" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="1000" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="view_folders" key="fileicon.folder" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="1100" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="view_configs" key="fileicon.view_configs" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="1200" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			
+			
 			<explorertype name="view_xmlcontent" key="fileicon.structurecontent" 
 				icon="menu.png" reference="folder" isview="true">
 				<newresource uri="" order="1002" autosetnavigation="false" autosettitle="false"
@@ -773,23 +804,12 @@
 			
 			<explorertype name="view_other" key="fileicon.otheroptions" 
 				icon="menu.png" reference="folder" isview="true">
-				<newresource uri="" order="1003" autosetnavigation="false" autosettitle="false"
+				<newresource uri="" order="1300" autosetnavigation="false" autosettitle="false"
 					info="" />
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
 				</accesscontrol>
 			</explorertype>
-			
-			<explorertype name="view_folder" key="fileicon.folder" 
-				icon="menu.png" reference="folder" isview="true">
-				<newresource uri="" order="1001" autosetnavigation="false" autosettitle="false"
-					info="" />
-				<accesscontrol>
-					<accessentry principal="DEFAULT" permissions="+r+v" />
-				</accesscontrol>
-			</explorertype>
-			
-			
 		</explorertypes>
 	</module>
 	<files>
