@@ -36,6 +36,7 @@ import org.opencms.ui.I_CmsAppView;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
+import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
@@ -60,6 +61,7 @@ import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
@@ -344,6 +346,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         } else if (view instanceof Component) {
             component = (Component)view;
         }
+        initializeClientPolling(component);
         if (component != null) {
             setContent(component);
         }
@@ -380,6 +383,19 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             navigator.navigateTo(fragment);
         } else {
             showHome();
+        }
+    }
+
+    /**
+     * Initializes client polling to avoid session expiration<p>
+     *
+     * @param component the view component
+     */
+    @SuppressWarnings("unused")
+    private void initializeClientPolling(Component component) {
+
+        if (component instanceof AbstractComponent) {
+            new CmsPollServerExtension((AbstractComponent)component);
         }
     }
 }
