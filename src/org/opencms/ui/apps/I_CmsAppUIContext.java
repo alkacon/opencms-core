@@ -27,6 +27,8 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.ui.I_CmsDialogContext;
+
 import com.vaadin.ui.Component;
 
 /**
@@ -66,6 +68,13 @@ public interface I_CmsAppUIContext {
      * @param title the app title
      */
     void setAppTitle(String title);
+
+    /**
+     * Sets the dialog context for context menu entries.<p>
+     *
+     * @param context the dialog context
+     */
+    void setMenuDialogContext(I_CmsDialogContext context);
 
     /**
      * Sets the info grid visibility.<p>

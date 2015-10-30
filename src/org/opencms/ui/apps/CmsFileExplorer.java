@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -839,10 +840,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     public void changeSite(String siteRoot, String path, boolean force) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        if (!cms.getRequestContext().getSiteRoot().equals(siteRoot) || force) {
+        if (force || !cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
             cms.getRequestContext().setSiteRoot(siteRoot);
             populateFolderTree();
             openPath(path);
+            m_siteSelector.select(siteRoot);
         }
     }
 
@@ -870,6 +872,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     public void initUI(I_CmsAppUIContext context) {
 
         m_appContext = context;
+        m_appContext.setMenuDialogContext(new CmsExplorerDialogContext(m_appContext, this, null));
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
         sp.setFirstComponent(m_fileTree);
@@ -929,6 +932,22 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * Call if site and or project have been changed.<p>
+     *
+     * @param project the project
+     * @param siteRoot the site root
+     */
+    public void onSiteOrProjectChange(CmsProject project, String siteRoot) {
+
+        if ((siteRoot != null) && !siteRoot.equals(getSiteRootFromState())) {
+            changeSite(siteRoot, m_openedPaths.get(siteRoot), true);
+        } else if ((project != null) && !project.getUuid().equals(getProjectIdFromState())) {
+            populateFolderTree();
+            openPath(getPathFromState());
+        }
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
      */
     public void onStateChange(String state) {
@@ -939,11 +958,21 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             CmsObject cms = A_CmsUI.getCmsObject();
             String siteRoot = getSiteRootFromState();
             String path = getPathFromState();
-            if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
+            CmsUUID projectId = getProjectIdFromState();
+            if ((projectId != null) && !cms.getRequestContext().getCurrentProject().getUuid().equals(projectId)) {
+                try {
+                    CmsProject project = cms.readProject(projectId);
+                    cms.getRequestContext().setCurrentProject(project);
+                    CmsAppWorkplaceUi.get().getWorkplaceSettings().setProject(project.getUuid());
+                } catch (CmsException e) {
+                    LOG.warn("Error reading project from history state", e);
+                }
+                changeSite(siteRoot, path, true);
+            } else if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
                 changeSite(siteRoot, path);
-                m_siteSelector.select(siteRoot);
+            } else {
+                openPath(path);
             }
-            openPath(path);
         }
     }
 
@@ -1170,7 +1199,12 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             ? ""
             : cms.getSitePath(folder);
 
-            String state = normalizeState(cms.getRequestContext().getSiteRoot() + STATE_SEPARATOR + sitePath);
+            String state = normalizeState(
+                cms.getRequestContext().getCurrentProject().getUuid().toString()
+                    + STATE_SEPARATOR
+                    + cms.getRequestContext().getSiteRoot()
+                    + STATE_SEPARATOR
+                    + sitePath);
 
             if (!(state).equals(m_currentState)) {
                 m_currentState = state;
@@ -1458,9 +1492,26 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         String path = null;
         if (m_currentState.contains(STATE_SEPARATOR)) {
-            path = m_currentState.substring(m_currentState.indexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length());
+            path = m_currentState.substring(m_currentState.lastIndexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length());
         }
         return path;
+    }
+
+    /**
+     * Returns the project id from the current state.<p>
+     *
+     * @return the project id
+     */
+    private CmsUUID getProjectIdFromState() {
+
+        CmsUUID projectId = null;
+        if (m_currentState.contains(STATE_SEPARATOR)) {
+            String id = m_currentState.substring(0, m_currentState.indexOf(STATE_SEPARATOR));
+            if (CmsUUID.isValidUUID(id)) {
+                projectId = new CmsUUID(id);
+            }
+        }
+        return projectId;
     }
 
     /**
@@ -1472,7 +1523,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         String siteRoot = null;
         if (m_currentState.contains(STATE_SEPARATOR)) {
-            siteRoot = m_currentState.substring(0, m_currentState.indexOf(STATE_SEPARATOR));
+            siteRoot = m_currentState.substring(
+                m_currentState.indexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length(),
+                m_currentState.lastIndexOf(STATE_SEPARATOR));
         }
         return siteRoot;
     }
@@ -1533,15 +1586,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         String result = "";
         if (state.contains(STATE_SEPARATOR)) {
-            if (!state.startsWith(STATE_SEPARATOR) && !state.startsWith("/")) {
-                // in case the site root part is not empty, it should start with a slash
-                result = "/" + state;
-            } else {
-                result = state;
-                // make sure to remove excessive slashes, may get introduced through vaadin state handling
-                while (result.startsWith("//")) {
-                    result = result.substring(1);
-                }
+            result = state;
+            while (result.startsWith("/")) {
+                result = result.substring(1);
             }
         }
         return result;

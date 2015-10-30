@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -73,6 +74,16 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     public void editProperty(Object propertyId) {
 
         m_explorer.editItemProperty(getResources().get(0).getStructureId(), (CmsResourceTableProperty)propertyId);
+    }
+
+    /**
+     * @see org.opencms.ui.A_CmsDialogContext#finish(org.opencms.file.CmsProject, java.lang.String)
+     */
+    @Override
+    public void finish(CmsProject project, String siteRoot) {
+
+        super.finish(null);
+        m_explorer.onSiteOrProjectChange(project, siteRoot);
     }
 
     /**

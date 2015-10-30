@@ -28,6 +28,7 @@
 package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
@@ -36,6 +37,7 @@ import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.vaadin.ui.Component;
@@ -63,7 +65,7 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      */
     protected A_CmsDialogContext(I_CmsAppUIContext appContext, List<CmsResource> resources) {
         m_appContext = appContext;
-        m_resources = resources;
+        m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
     }
 
     /**
@@ -71,10 +73,7 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      */
     public void error(Throwable error) {
 
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
+        closeWindow();
         CmsErrorDialog.showErrorDialog(error, new Runnable() {
 
             public void run() {
@@ -85,14 +84,23 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#finish(org.opencms.file.CmsProject, java.lang.String)
+     */
+    public void finish(CmsProject project, String siteRoot) {
+
+        if ((project != null) || (siteRoot != null)) {
+            reload();
+        } else {
+            finish(null);
+        }
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#finish(java.util.Collection)
      */
     public void finish(Collection<CmsUUID> result) {
 
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
+        closeWindow();
         CmsAppWorkplaceUi.get().enableGlobalShortcuts();
     }
 
@@ -125,10 +133,7 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      */
     public void reload() {
 
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
-        }
+        closeWindow();
         CmsAppWorkplaceUi.get().reload();
     }
 
@@ -143,6 +148,17 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
             m_window.setCaption(title);
             m_window.setContent(dialog);
             A_CmsUI.get().addWindow(m_window);
+        }
+    }
+
+    /**
+     * Closes the dialog window.<p>
+     */
+    protected void closeWindow() {
+
+        if (m_window != null) {
+            m_window.close();
+            m_window = null;
         }
     }
 }

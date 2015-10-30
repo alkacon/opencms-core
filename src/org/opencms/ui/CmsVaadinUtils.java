@@ -27,9 +27,12 @@
 
 package org.opencms.ui;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
@@ -42,7 +45,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -188,6 +193,40 @@ public final class CmsVaadinUtils {
     public static String getMessageText(String key, Object... args) {
 
         return getWpMessagesForCurrentLocale().key(key, args);
+    }
+
+    /**
+     * Returns the selectable projects container.<p>
+     *
+     * @param cms the CMS context
+     * @param captionPropertyName the name of the property used to store captions
+     *
+     * @return the projects container
+     */
+    public static IndexedContainer getProjectsContainer(CmsObject cms, String captionPropertyName) {
+
+        IndexedContainer result = new IndexedContainer();
+        result.addContainerProperty(captionPropertyName, String.class, null);
+        Locale locale = A_CmsUI.get().getLocale();
+        List<CmsProject> projects = getAvailableProjects(cms);
+        boolean isSingleOu = isSingleOu(projects);
+        for (CmsProject project : projects) {
+            String projectName = project.getSimpleName();
+            if (!isSingleOu && !project.isOnlineProject()) {
+                try {
+                    projectName = projectName
+                        + " - "
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, project.getOuFqn()).getDisplayName(
+                            locale);
+                } catch (CmsException e) {
+                    LOG.debug("Error reading project OU.", e);
+                    projectName = projectName + " - " + project.getOuFqn();
+                }
+            }
+            Item projectItem = result.addItem(project.getUuid());
+            projectItem.getItemProperty(captionPropertyName).setValue(projectName);
+        }
+        return result;
     }
 
     /**
@@ -393,7 +432,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
@@ -440,6 +479,66 @@ public final class CmsVaadinUtils {
                 LOG.warn(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Returns the available projects.<p>
+     *
+     * @param cms the CMS context
+     *
+     * @return the available projects
+     */
+    private static List<CmsProject> getAvailableProjects(CmsObject cms) {
+
+        // get all project information
+        List<CmsProject> allProjects;
+        try {
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(cms);
+            if (!settings.getListAllProjects()) {
+                ouFqn = cms.getRequestContext().getCurrentUser().getOuFqn();
+            }
+            allProjects = new ArrayList<CmsProject>(
+                OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, ouFqn, settings.getListAllProjects()));
+            Iterator<CmsProject> itProjects = allProjects.iterator();
+            while (itProjects.hasNext()) {
+                CmsProject prj = itProjects.next();
+                if (prj.isHiddenFromSelector()) {
+                    itProjects.remove();
+                }
+            }
+        } catch (CmsException e) {
+            // should usually never happen
+            LOG.error(e.getLocalizedMessage(), e);
+            allProjects = Collections.emptyList();
+        }
+        return allProjects;
+    }
+
+    /**
+     * Returns whether only a single OU is visible to the current user.<p>
+     *
+     * @param projects the selectable projects
+     *
+     * @return <code>true</code> if only a single OU is visible to the current user
+     */
+    private static boolean isSingleOu(List<CmsProject> projects) {
+
+        String ouFqn = null;
+        for (CmsProject project : projects) {
+            if (project.isOnlineProject()) {
+                // skip the online project
+                continue;
+            }
+            if (ouFqn == null) {
+                // set the first ou
+                ouFqn = project.getOuFqn();
+            } else if (!ouFqn.equals(project.getOuFqn())) {
+                // break if one different ou is found
+                return false;
+            }
+        }
+        return true;
     }
 
 }

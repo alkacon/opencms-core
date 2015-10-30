@@ -28,6 +28,7 @@
 package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.util.CmsUUID;
@@ -47,26 +48,30 @@ public interface I_CmsDialogContext {
      *
      * @param error the error which occcurred
      */
-    public void error(Throwable error);
+    void error(Throwable error);
+
+    /**
+     * Signals that the dialog has finished.<p>
+     * Call when current project and or site have been changed.<p>
+     *
+     * @param project changed project
+     * @param siteRoot changed site root
+     */
+    void finish(CmsProject project, String siteRoot);
 
     /**
      * Signals that the dialog has finished.<p>
      *
      * @param result the list of structure ids of changed resources
      */
-    public void finish(Collection<CmsUUID> result);
+    void finish(Collection<CmsUUID> result);
 
     /**
      * Tell the system that the resource with the given id should be shown somehow.<p>
      *
      * @param structureId the structure id of a resource
      */
-    public void focus(CmsUUID structureId);
-
-    /**
-     * Reloads the UI.<p>
-     */
-    public void reload();
+    void focus(CmsUUID structureId);
 
     /**
      * Returns the app UI context.<p>
@@ -88,6 +93,11 @@ public interface I_CmsDialogContext {
      * @return the list of resources
      */
     List<CmsResource> getResources();
+
+    /**
+     * Reloads the UI.<p>
+     */
+    void reload();
 
     /**
      * Called to start up the dialog with the given main widget and title string.<p>

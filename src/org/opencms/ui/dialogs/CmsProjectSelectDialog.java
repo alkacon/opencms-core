@@ -27,7 +27,6 @@
 
 package org.opencms.ui.dialogs;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -39,14 +38,10 @@ import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.Button;
@@ -65,7 +60,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     static final Log LOG = CmsLog.getLog(CmsProjectSelectDialog.class);
 
     /** The project name property. */
-    private static final String PROJECT_NAME = "project-name";
+    private static final String CAPTION_PROPERTY = "caption";
 
     /** The serial version id. */
     private static final long serialVersionUID = 4455901453008760434L;
@@ -81,6 +76,9 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
 
     /** The project select. */
     private ComboBox m_projectComboBox;
+
+    /** The site select. */
+    private ComboBox m_siteComboBox;
 
     /**
      * Constructor.<p>
@@ -130,81 +128,23 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
 
         try {
             CmsProject project = m_context.getCms().readProject((CmsUUID)m_projectComboBox.getValue());
-
-            m_context.getCms().getRequestContext().setCurrentProject(project);
-            CmsAppWorkplaceUi.get().getWorkplaceSettings().setProject(project.getUuid());
-            m_context.reload();
+            if (!m_context.getCms().getRequestContext().getCurrentProject().equals(project)) {
+                m_context.getCms().getRequestContext().setCurrentProject(project);
+                CmsAppWorkplaceUi.get().getWorkplaceSettings().setProject(project.getUuid());
+                m_context.reload();
+            } else {
+                project = null;
+            }
+            String siteRoot = (String)m_siteComboBox.getValue();
+            if (!m_context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
+                m_context.getCms().getRequestContext().setSiteRoot(siteRoot);
+            } else {
+                siteRoot = null;
+            }
+            m_context.finish(project, siteRoot);
         } catch (CmsException e) {
             m_context.error(e);
         }
-    }
-
-    /**
-     * Returns the available projects.<p>
-     *
-     * @return the available projects
-     */
-    private List<CmsProject> getAvailableProjects() {
-
-        // get all project information
-        List<CmsProject> allProjects;
-        try {
-            String ouFqn = "";
-            CmsUserSettings settings = new CmsUserSettings(m_context.getCms());
-            if (!settings.getListAllProjects()) {
-                ouFqn = m_context.getCms().getRequestContext().getCurrentUser().getOuFqn();
-            }
-            allProjects = new ArrayList<CmsProject>(
-                OpenCms.getOrgUnitManager().getAllAccessibleProjects(
-                    m_context.getCms(),
-                    ouFqn,
-                    settings.getListAllProjects()));
-            Iterator<CmsProject> itProjects = allProjects.iterator();
-            while (itProjects.hasNext()) {
-                CmsProject prj = itProjects.next();
-                if (prj.isHiddenFromSelector()) {
-                    itProjects.remove();
-                }
-            }
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            allProjects = Collections.emptyList();
-        }
-        return allProjects;
-    }
-
-    /**
-     * Returns the selectable projects container.<p>
-     *
-     * @return the projects container
-     */
-    private IndexedContainer getProjectsContainer() {
-
-        IndexedContainer result = new IndexedContainer();
-        result.addContainerProperty(PROJECT_NAME, String.class, null);
-        List<CmsProject> projects = getAvailableProjects();
-        boolean isSingleOu = isSingleOu(projects);
-        for (CmsProject project : projects) {
-            String projectName = project.getSimpleName();
-            if (!isSingleOu && !project.isOnlineProject()) {
-                try {
-                    projectName = projectName
-                        + " - "
-                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(
-                            m_context.getCms(),
-                            project.getOuFqn()).getDisplayName(getLocale());
-                } catch (CmsException e) {
-                    LOG.debug("Error reading project OU.", e);
-                    projectName = projectName + " - " + project.getOuFqn();
-                }
-            }
-            Item projectItem = result.addItem(project.getUuid());
-            projectItem.getItemProperty(PROJECT_NAME).setValue(projectName);
-        }
-        return result;
     }
 
     /**
@@ -217,16 +157,13 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         FormLayout form = new FormLayout();
         form.setWidth("100%");
 
-        final IndexedContainer projects = getProjectsContainer();
-        m_projectComboBox = new ComboBox(
-            CmsVaadinUtils.getWpMessagesForCurrentLocale().key(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0),
-            projects);
-        m_projectComboBox.setTextInputAllowed(true);
-        m_projectComboBox.setNullSelectionAllowed(false);
-        m_projectComboBox.setWidth("100%");
-        m_projectComboBox.setInputPrompt(
-            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
-        m_projectComboBox.setItemCaptionPropertyId(PROJECT_NAME);
+        IndexedContainer sites = CmsVaadinUtils.getAvailableSitesContainer(m_context.getCms(), CAPTION_PROPERTY);
+        m_siteComboBox = prepareComboBox(sites, org.opencms.workplace.Messages.GUI_LABEL_SITE_0);
+        m_siteComboBox.select(m_context.getCms().getRequestContext().getSiteRoot());
+        form.addComponent(m_siteComboBox);
+
+        IndexedContainer projects = CmsVaadinUtils.getProjectsContainer(m_context.getCms(), CAPTION_PROPERTY);
+        m_projectComboBox = prepareComboBox(projects, org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0);
         CmsUUID currentProjectId = m_context.getCms().getRequestContext().getCurrentProject().getUuid();
         if (projects.containsId(currentProjectId)) {
             m_projectComboBox.select(currentProjectId);
@@ -243,34 +180,28 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             }
         }
 
-        m_projectComboBox.setFilteringMode(FilteringMode.CONTAINS);
         form.addComponent(m_projectComboBox);
         return form;
     }
 
     /**
-     * Returns whether only a single OU is visible to the current user.<p>
+     * Prepares a combo box.<p>
      *
-     * @param projects the selectable projects
+     * @param container the indexed item container
+     * @param captionKey the caption message key
      *
-     * @return <code>true</code> if only a single OU is visible to the current user
+     * @return the combo box
      */
-    private boolean isSingleOu(List<CmsProject> projects) {
+    private ComboBox prepareComboBox(IndexedContainer container, String captionKey) {
 
-        String ouFqn = null;
-        for (CmsProject project : projects) {
-            if (project.isOnlineProject()) {
-                // skip the online project
-                continue;
-            }
-            if (ouFqn == null) {
-                // set the first ou
-                ouFqn = project.getOuFqn();
-            } else if (!ouFqn.equals(project.getOuFqn())) {
-                // break if one different ou is found
-                return false;
-            }
-        }
-        return true;
+        ComboBox result = new ComboBox(CmsVaadinUtils.getWpMessagesForCurrentLocale().key(captionKey), container);
+        result.setTextInputAllowed(true);
+        result.setNullSelectionAllowed(false);
+        result.setWidth("100%");
+        result.setInputPrompt(
+            Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_EXPLORER_CLICK_TO_EDIT_0));
+        result.setItemCaptionPropertyId(CAPTION_PROPERTY);
+        result.setFilteringMode(FilteringMode.CONTAINS);
+        return result;
     }
 }
