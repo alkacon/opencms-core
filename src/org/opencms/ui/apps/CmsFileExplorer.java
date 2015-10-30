@@ -1306,7 +1306,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                             CmsObject cms = A_CmsUI.getCmsObject();
                             CmsResource res = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                            A_CmsUI.get().getPage().open(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                            A_CmsUI.get().openPageOrWarn(
+                                link,
+                                CmsAppWorkplaceUi.EDITOR_WINDOW_NAME,
+                                CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_POPUP_BLOCKED_0));
                         } catch (CmsVfsResourceNotFoundException e) {
                             LOG.info(e.getLocalizedMessage(), e);
                         } catch (CmsException e) {

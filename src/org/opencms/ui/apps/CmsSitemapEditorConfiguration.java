@@ -45,7 +45,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.UI;
 
 /**
  * The sitemap editor app configuration.<p>
@@ -169,7 +168,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
             try {
                 CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
                 String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                UI.getCurrent().getPage().open(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                A_CmsUI.get().openPageOrWarn(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
                 return;
             } catch (CmsException e) {
                 LOG.debug("Unable to open sitemap editor.", e);

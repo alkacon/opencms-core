@@ -81,6 +81,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PLEASE_ENTER_NEW_PASSWORD_0 = "GUI_PLEASE_ENTER_NEW_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_POPUP_BLOCKED_0 = "GUI_POPUP_BLOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0 = "GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0";
 
     /** Message constant for key in the resource bundle. */

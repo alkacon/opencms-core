@@ -44,7 +44,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.UI;
 
 /**
  * The page editor app configuration.<p>
@@ -159,7 +158,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
                 CmsResource res = cms.readDefaultFile("/");
                 if (res != null) {
                     String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                    UI.getCurrent().getPage().open(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                    A_CmsUI.get().openPageOrWarn(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
                     return;
                 }
             } catch (CmsException e) {

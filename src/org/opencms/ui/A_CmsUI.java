@@ -31,11 +31,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsUIServlet;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.components.extensions.CmsWindowExtension;
 
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -47,6 +50,16 @@ public abstract class A_CmsUI extends UI {
 
     /** Serial version id. */
     private static final long serialVersionUID = 989182479322461838L;
+
+    /** Extension used for opening new browser windows. */
+    private CmsWindowExtension m_windowExtension;
+
+    /**
+     * Constructor.<p>
+     */
+    public A_CmsUI() {
+        m_windowExtension = new CmsWindowExtension(this);
+    }
 
     /**
      * Returns the current UI.<p>
@@ -66,6 +79,35 @@ public abstract class A_CmsUI extends UI {
     public static CmsObject getCmsObject() {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+    }
+
+    /**
+     * Tries to open a new browser window, and shows a warning if opening the window fails (usually because of popup blockers).<p>
+     *
+     * @param link the URL to open in the new window
+     * @param target the target window name
+     */
+    public void openPageOrWarn(String link, String target) {
+
+        openPageOrWarn(link, target, CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_POPUP_BLOCKED_0));
+    }
+
+    /**
+     * Tries to open a new browser window, and shows a warning if opening the window fails (usually because of popup blockers).<p>
+     *
+     * @param link the URL to open in the new window
+     * @param target the target window name
+     * @param warning the warning to show if opening the window fails
+     */
+    public void openPageOrWarn(String link, String target, final String warning) {
+
+        m_windowExtension.open(link, target, new Runnable() {
+
+            public void run() {
+
+                Notification.show(warning, Type.ERROR_MESSAGE);
+            }
+        });
     }
 
     /**
