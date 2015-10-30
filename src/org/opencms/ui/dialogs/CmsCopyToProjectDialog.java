@@ -35,7 +35,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.workplace.commons.Messages;
 
@@ -58,7 +57,7 @@ import com.vaadin.ui.VerticalLayout;
 public class CmsCopyToProjectDialog extends CmsBasicDialog {
 
     /** Logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFileExplorer.class);
+    private static final Log LOG = CmsLog.getLog(CmsCopyToProjectDialog.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = -3016972948701432951L;

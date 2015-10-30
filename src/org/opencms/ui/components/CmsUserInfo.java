@@ -152,10 +152,13 @@ public class CmsUserInfo extends VerticalLayout {
         }
         Locale locale = UI.getCurrent().getLocale();
         infoHtml.append(
-            Messages.get().getBundle(locale).key(
+            CmsVaadinUtils.getMessageText(
                 Messages.GUI_USER_INFO_ONLINE_SINCE_1,
                 DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
                     LINE_BREAK);
+        infoHtml.append(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
+        infoHtml.append(": ");
+        infoHtml.append(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName()).append(LINE_BREAK);
 
         return infoHtml.toString();
     }
