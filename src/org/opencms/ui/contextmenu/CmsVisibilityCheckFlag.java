@@ -31,32 +31,50 @@ package org.opencms.ui.contextmenu;
  * Flag to control which visibility checks should be performed by CmsStandardVisibilityCheck.<p>
  */
 public enum CmsVisibilityCheckFlag {
-    /** Checks if an editor is available. */
-    haseditor,
-
     /** Checks if resource is deleted. */
     deleted,
-
-    /** Check that the resource is in the current project. */
-    inproject,
-
-    /** Checks if resource is not deleted. */
-    notdeleted,
-
-    /** Check that we are in an Offline project. */
-    notonline,
 
     /** Check that the resource is a file. */
     file,
 
+    /** Checks if an editor is available. */
+    haseditor,
+
+    /** Check that the resource is in the current project. */
+    inproject,
+
     /** Visible in main menu. */
     mainmenu,
+
+    /** Checks if resource is locked by current user. */
+    mylock,
+
+    /** Checks that lock is not inherited. */
+    noinheritedlock,
+
+    /** Checks if resource is not locked by different user. */
+    nootherlock,
+
+    /** Checks if resource is not deleted. */
+    notdeleted,
+
+    /** Checks that the resource is not in the current project. */
+    notinproject,
+
+    /** Checks that the resource is not new. */
+    notnew,
+
+    /** Check that we are in an Offline project. */
+    notonline,
 
     /** Checks that the resource is a file which is not unchanged. */
     notunchangedfile,
 
-    /** Checks that the resource is not new. */
-    notnew,
+    /** Checks if resource is locked by different user. */
+    otherlock,
+
+    /** Checks if user has publish permissions. */
+    publishpermission,
 
     /** Check editor rule. */
     roleeditor,
@@ -64,23 +82,8 @@ public enum CmsVisibilityCheckFlag {
     /** Check workplace user role. */
     rolewpuser,
 
-    /** Checks if user has publish permissions. */
-    publishpermission,
-
     /** Checks if resource is unlocked. */
     unlocked,
-
-    /** Checks if resource is locked by different user. */
-    otherlock,
-
-    /** Checks if resource is locked by current user. */
-    mylock,
-
-    /** Checks if resource is not locked by different user. */
-    nootherlock,
-
-    /** Checks that lock is not inherited. */
-    noinheritedlock,
 
     /** Check that we have write permission. */
     writepermisssion,

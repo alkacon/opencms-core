@@ -36,6 +36,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mylock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.noinheritedlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.nootherlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notdeleted;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notinproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
@@ -80,9 +81,6 @@ import com.google.common.collect.Sets;
  */
 public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck {
 
-    /** Default visibility check for view operations on resources. */
-    public static final CmsStandardVisibilityCheck VIEW = new CmsStandardVisibilityCheck(roleeditor, notdeleted);
-
     /** Default visibility check for 'edit-like' operations on resources. */
     public static final CmsStandardVisibilityCheck DEFAULT = new CmsStandardVisibilityCheck(
         roleeditor,
@@ -112,14 +110,35 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         inproject,
         haseditor);
 
+    /** Check for locking resources. */
+    public static final CmsStandardVisibilityCheck LOCK = new CmsStandardVisibilityCheck(
+        unlocked,
+        roleeditor,
+        notonline,
+        notdeleted,
+        inproject);
+
     /** Visibility check for main menu entries. */
     public static final CmsStandardVisibilityCheck MAIN_MENU = new CmsStandardVisibilityCheck(mainmenu);
+
+    /** Visibility check used for copy to project dialog. */
+    public static final CmsStandardVisibilityCheck OTHER_PROJECT = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        notinproject);
 
     /** Visibility check for publish option. */
     public static final CmsStandardVisibilityCheck PUBLISH = new CmsStandardVisibilityCheck(
         notunchangedfile,
         publishpermission,
         notonline,
+        inproject);
+
+    /** Permission check for stealing locks. */
+    public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
+        otherlock,
+        noinheritedlock,
         inproject);
 
     /** Visibility check for undelete option. */
@@ -146,25 +165,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         noinheritedlock,
         inproject);
 
+    /** Default visibility check for view operations on resources. */
+    public static final CmsStandardVisibilityCheck VIEW = new CmsStandardVisibilityCheck(roleeditor, notdeleted);
+
     /** Always active. */
     public static final I_CmsHasMenuItemVisibility VISIBLE = new CmsStandardVisibilityCheck();
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStandardVisibilityCheck.class);
-
-    /** Check for locking resources. */
-    public static final CmsStandardVisibilityCheck LOCK = new CmsStandardVisibilityCheck(
-        unlocked,
-        roleeditor,
-        notonline,
-        notdeleted,
-        inproject);
-
-    /** Permission check for stealing locks. */
-    public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
-        otherlock,
-        noinheritedlock,
-        inproject);
 
     /** The set of flags. */
     private Set<CmsVisibilityCheckFlag> m_flags = Sets.newHashSet();
@@ -281,6 +289,11 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
 
             if (flag(inproject) && (!resUtil.isInsideProject() || resUtil.getProjectState().isLockedForPublishing())) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(notinproject)
+                && (resUtil.isInsideProject() || resUtil.getProjectState().isLockedForPublishing())) {
                 return VISIBILITY_INVISIBLE;
             }
 

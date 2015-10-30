@@ -33,6 +33,7 @@ import org.opencms.ui.actions.CmsAvailabilityDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.CmsCopyMoveDialogAction;
+import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
 import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
 import org.opencms.ui.actions.CmsEditCodeDialogAction;
@@ -87,6 +88,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsLockAction(), null, 0, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 0, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 0, 0),
+            new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 0, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 2, 0),
             // TODO: add publish scheduled entry here
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 6, 0),

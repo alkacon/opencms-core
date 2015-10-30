@@ -29,6 +29,7 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 
@@ -37,6 +38,7 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
@@ -52,30 +54,30 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The available window widths. */
     public enum DialogWidth {
+        /** The maximum width of 90% of the window width. */
+        max,
+
         /** The default width of 600px. */
         narrow,
 
         /** The wide width of 800px. */
-        wide,
-
-        /** The maximum width of 90% of the window width. */
-        max
+        wide
     }
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The main panel. */
-    private VerticalLayout m_mainPanel;
+    /** The button bar. */
+    private HorizontalLayout m_buttonPanel;
 
     /** The content panel. */
     private Panel m_contentPanel;
 
-    /** The button bar. */
-    private HorizontalLayout m_buttonPanel;
-
     /** The resource info component. */
     private Component m_infoComponent;
+
+    /** The main panel. */
+    private VerticalLayout m_mainPanel;
 
     /**
      * Creates new instance.<p>
@@ -177,18 +179,9 @@ public class CmsBasicDialog extends VerticalLayout {
                 m_infoComponent = new CmsResourceInfo(resources.get(0));
                 m_mainPanel.addComponent(m_infoComponent, 0);
             } else {
-                m_infoComponent = new Panel(Messages.get().getBundle().key(Messages.GUI_RESOURCE_INFO_0));
-                m_infoComponent.addStyleName("v-scrollable");
-                m_infoComponent.setSizeFull();
-                VerticalLayout resourcePanel = new VerticalLayout();
-                ((Panel)m_infoComponent).setContent(resourcePanel);
-                resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
-                resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
-                resourcePanel.setSpacing(true);
-                resourcePanel.setMargin(true);
-                for (CmsResource resource : resources) {
-                    resourcePanel.addComponent(new CmsResourceInfo(resource));
-                }
+                m_infoComponent = createResourceListPanel(
+                    Messages.get().getBundle().key(Messages.GUI_RESOURCE_INFO_0),
+                    resources);
                 m_mainPanel.addComponent(m_infoComponent, 0);
                 m_mainPanel.setExpandRatio(m_infoComponent, 1);
 
@@ -235,6 +228,51 @@ public class CmsBasicDialog extends VerticalLayout {
         if (content instanceof Layout.MarginHandler) {
             ((Layout.MarginHandler)content).setMargin(true);
         }
+    }
+
+    /**
+     * Creates an 'Cancel' button.<p>
+     *
+     * @return the button
+     */
+    protected Button createButtonCancel() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
+    }
+
+    /**
+     * Creates an 'OK' button.<p>
+     *
+     * @return the button
+     */
+    protected Button createButtonOK() {
+
+        return new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
+    }
+
+    /**
+     * Creates a resource list panel.<p>
+     *
+     * @param caption the caption to use
+     * @param resources the resources
+     *
+     * @return the panel
+     */
+    protected Panel createResourceListPanel(String caption, List<CmsResource> resources) {
+
+        Panel result = new Panel(caption);
+        result.addStyleName("v-scrollable");
+        result.setSizeFull();
+        VerticalLayout resourcePanel = new VerticalLayout();
+        result.setContent(resourcePanel);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_MARGIN);
+        resourcePanel.addStyleName(OpenCmsTheme.REDUCED_SPACING);
+        resourcePanel.setSpacing(true);
+        resourcePanel.setMargin(true);
+        for (CmsResource resource : resources) {
+            resourcePanel.addComponent(new CmsResourceInfo(resource));
+        }
+        return result;
     }
 
     /**

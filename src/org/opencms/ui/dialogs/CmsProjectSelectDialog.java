@@ -88,7 +88,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
     public CmsProjectSelectDialog(I_CmsDialogContext context) {
         m_context = context;
         setContent(initForm());
-        m_okButton = new Button(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_OK_0));
+        m_okButton = createButtonOK();
         m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -99,8 +99,7 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             }
         });
         addButton(m_okButton);
-        m_cancelButton = new Button(
-            CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
+        m_cancelButton = createButtonCancel();
         m_cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -131,7 +130,6 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
             if (!m_context.getCms().getRequestContext().getCurrentProject().equals(project)) {
                 m_context.getCms().getRequestContext().setCurrentProject(project);
                 CmsAppWorkplaceUi.get().getWorkplaceSettings().setProject(project.getUuid());
-                m_context.reload();
             } else {
                 project = null;
             }
