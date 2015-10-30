@@ -36,9 +36,6 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -61,6 +58,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INVALID_DATE_FORMAT_0 = "GUI_INVALID_DATE_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_DIALOG_TITLE_0 = "GUI_LOCK_DIALOG_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPTIONS_HIDE_0 = "GUI_LOGIN_OPTIONS_HIDE_0";
@@ -163,6 +163,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";

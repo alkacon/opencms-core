@@ -226,6 +226,51 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
+     * Gets the availability dialog information for the given resource.<p>
+     *
+     * @param cms the CMS context
+     * @param res the resource for which to get the availability info
+     * @return the availability info
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsAvailabilityInfoBean getAvailabilityInfoStatic(CmsObject cms, CmsResource res)
+    throws CmsException {
+
+        CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+        result.setVfsPath(resourceSitePath);
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
+        result.setResType(type.getTypeName());
+
+        result.setDateReleased(res.getDateReleased());
+        result.setDateExpired(res.getDateExpired());
+
+        String notificationInterval = cms.readPropertyObject(
+            res,
+            CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+            false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
+            result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
+        }
+
+        String notificationEnabled = cms.readPropertyObject(
+            res,
+            CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+            false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
+            result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
+        }
+
+        result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
+
+        result.setResponsibles(getResponsiblesStatic(cms, res.getRootPath()));
+
+        return result;
+    }
+
+    /**
      * Returns the no preview reason if there is any.<p>
      *
      * @param cms the current cms context
@@ -288,6 +333,58 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsListInfoBean result = getPageInfo(cms, resource);
         addLockInfo(cms, resource, result);
+        return result;
+    }
+
+    /**
+     * Gets the responsible principals for a resource with a given path.<p>
+     *
+     * @param cms the CMS context
+     * @param vfsPath the path of the resource
+     * @return the map of principals, with the principals as keys and the path as values
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static Map<CmsPrincipalBean, String> getResponsiblesStatic(CmsObject cms, String vfsPath)
+    throws CmsException {
+
+        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
+        List<CmsResource> parentResources = new ArrayList<CmsResource>();
+        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
+        // get all parent folders of the current file
+        parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
+
+        for (CmsResource resource : parentResources) {
+            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
+            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            try {
+
+                cms.getRequestContext().setSiteRoot("/");
+                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
+                for (CmsAccessControlEntry ace : entries) {
+                    if (ace.isResponsible()) {
+                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                        if (principal != null) {
+                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
+                                principal.getName(),
+                                principal.getDescription(),
+                                principal.isGroup());
+                            if (!resource.getRootPath().equals(vfsPath)) {
+                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
+                                    result.put(prinBean, sitePath);
+                                } else {
+                                    result.put(prinBean, resource.getRootPath());
+                                }
+                            } else {
+                                result.put(prinBean, null);
+                            }
+                        }
+                    }
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(storedSiteRoot);
+            }
+        }
         return result;
     }
 
@@ -530,6 +627,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         CmsObject cms = getCmsObject();
         try {
             CmsProperty titleProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, title, null);
+            @SuppressWarnings("deprecation")
             CmsResource resource = cms.createResource(
                 CmsStringUtil.joinPaths(parentFolderPath, resourceName),
                 CmsResourceTypePointer.getStaticTypeId(),
@@ -1627,40 +1725,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         CmsObject cms = getCmsObject();
         try {
-            CmsAvailabilityInfoBean result = new CmsAvailabilityInfoBean();
-
-            result.setPageInfo(getPageInfo(res));
-
-            String resourceSitePath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
-            result.setVfsPath(resourceSitePath);
-
-            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
-            result.setResType(type.getTypeName());
-
-            result.setDateReleased(res.getDateReleased());
-            result.setDateExpired(res.getDateExpired());
-
-            String notificationInterval = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationInterval)) {
-                result.setNotificationInterval(Integer.valueOf(notificationInterval).intValue());
-            }
-
-            String notificationEnabled = cms.readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
-                false).getValue();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(notificationEnabled)) {
-                result.setNotificationEnabled(Boolean.valueOf(notificationEnabled).booleanValue());
-            }
-
-            result.setHasSiblings(cms.readSiblings(resourceSitePath, CmsResourceFilter.ALL).size() > 1);
-
-            result.setResponsibles(getResponsibles(res.getRootPath()));
-
-            return result;
+            CmsAvailabilityInfoBean avail = getAvailabilityInfoStatic(cms, res);
+            avail.setPageInfo(getPageInfo(res));
+            return avail;
         } catch (CmsException e) {
             error(e);
             return null; // will never be reached
@@ -1808,6 +1875,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("unused")
     private List<CmsResource> getLinkSources(CmsObject cms, CmsResource resource, HashSet<CmsUUID> deleteIds)
     throws CmsException {
 
@@ -1937,66 +2005,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             title,
             cms.getSitePath(resource),
             locale.toString());
-    }
-
-    /**
-     * Returns a map of principals of responsible users together with the resource path where the
-     * responsibility was found.<p>
-     *
-     * @param vfsPath the path pointing on the resource to get the responsible users for
-     *
-     * @return a map of principal beans
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    private Map<CmsPrincipalBean, String> getResponsibles(String vfsPath) throws CmsRpcException {
-
-        Map<CmsPrincipalBean, String> result = new HashMap<CmsPrincipalBean, String>();
-        List<CmsResource> parentResources = new ArrayList<CmsResource>();
-
-        CmsObject cms = getCmsObject();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(vfsPath);
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(resourceSitePath, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            error(e);
-        }
-
-        for (CmsResource resource : parentResources) {
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-            String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            try {
-
-                cms.getRequestContext().setSiteRoot("/");
-                List<CmsAccessControlEntry> entries = cms.getAccessControlEntries(resource.getRootPath(), false);
-                for (CmsAccessControlEntry ace : entries) {
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            CmsPrincipalBean prinBean = new CmsPrincipalBean(
-                                principal.getName(),
-                                principal.getDescription(),
-                                principal.isGroup());
-                            if (!resource.getRootPath().equals(vfsPath)) {
-                                if (resource.getRootPath().startsWith(storedSiteRoot)) {
-                                    result.put(prinBean, sitePath);
-                                } else {
-                                    result.put(prinBean, resource.getRootPath());
-                                }
-                            } else {
-                                result.put(prinBean, null);
-                            }
-                        }
-                    }
-                }
-            } catch (CmsException e) {
-                error(e);
-            } finally {
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-        return result;
     }
 
     /**

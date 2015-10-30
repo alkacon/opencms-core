@@ -7,17 +7,33 @@
   <body>
   		<o-cms-basic-dialog>
   			<content>
-	  			<v-form-layout>
-	  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATERELEASED_0)" spacing>
-	 					<o-cms-date-field _id="m_releasedField" />
-	  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetReleased" :middle />
-	  				</v-horizontal-layout> 
-	  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATEEXPIRED_0)" spacing>
-	  					<o-cms-date-field _id="m_expiredField" />
-	  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetExpired" :middle />
-	  				</v-horizontal-layout>
-	  				<v-check-box _id="m_subresourceModificationField" caption="%(key.GUI_TOUCH_MODIFY_SUBRESOURCES_0)" />
-	  			</v-form-layout>
+  				<v-vertical-layout spacing>
+	  				<v-panel caption="%(key.GUI_AVAILABILITY_0)">
+			  			<v-form-layout margin>
+			  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATERELEASED_0)" spacing>
+			 					<o-cms-date-field _id="m_releasedField" />
+			  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetReleased" :middle />
+			  				</v-horizontal-layout> 
+			  				<v-horizontal-layout caption="%(key.GUI_INPUT_DATEEXPIRED_0)" spacing>
+			  					<o-cms-date-field _id="m_expiredField" />
+			  					<v-check-box caption="%(key.GUI_DIALOG_BUTTON_RESET_0)" _id="m_resetExpired" :middle />
+			  				</v-horizontal-layout>
+			  				<v-check-box _id="m_subresourceModificationField" caption="%(key.GUI_TOUCH_MODIFY_SUBRESOURCES_0)" />
+			  			</v-form-layout>
+		  			</v-panel>
+		  			<v-panel caption="%(key.GUI_AVAILABILITY_RESPONSIBLES_0)" _id="m_responsiblesPanel" visible="false">
+		  				<v-vertical-layout _id="m_responsiblesContainer" style-name="o-reduced-spacing o-reduced-margin" spacing margin/>
+		  			</v-panel>
+		  			<v-panel caption="%(key.GUI_NOTIFICATION_SETTINGS_0)" _id="m_notificationPanel" visible="true">
+		  				<v-vertical-layout margin spacing>
+			  				<v-form-layout>
+			  					<v-text-field _id="m_notificationIntervalField" caption="%(key.GUI_NOTIFICATION_INTERVAL_0)"/>
+			  					<v-check-box _id="m_modifySiblingsField"  :middle caption="%(key.GUI_AVAILABILITY_MODIFY_SIBLINGS_0)" />
+			  					<v-check-box _id="m_notificationEnabledField" caption="%(key.GUI_AVAILABILITY_ENABLE_NOTIFICATION_0)" :middle />
+			  				</v-form-layout>
+	  					</v-vertical-layout>
+		  			</v-panel>
+	  			</v-vertical-layout>
   			</content>
   			<buttons>
   				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
