@@ -72,6 +72,45 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeSettings.class);
 
+    /** Default view orders. */
+    private static Map<String, Integer> m_defaultViewOrders = new HashMap<String, Integer>() {
+
+        /** Serial version id. */
+        private static final long serialVersionUID = 1L;
+
+        {
+            put("folder", new Integer(50));
+            put("plain", new Integer(200));
+            put("jsp", new Integer(300));
+            put("htmlredirect", new Integer(400));
+            put("containerpage", new Integer(500));
+
+            put("imagegallery", new Integer(100));
+            put("downloadgallery", new Integer(200));
+            put("linkgallery", new Integer(300));
+            put("subsitemap", new Integer(400));
+            put("content_folder", new Integer(500));
+            put("formatter_config", new Integer(100));
+
+            put("xmlvfsbundle", new Integer(200));
+            put("propertyvfsbundle", new Integer(300));
+            put("sitemap_config", new Integer(400));
+            put("sitemap_master_config", new Integer(500));
+            put("module_config", new Integer(600));
+            put("elementview", new Integer(700));
+            put("seo_file", new Integer(800));
+            put("containerpage_template", new Integer(900));
+            put("inheritance_config", new Integer(1000));
+
+            put("xmlcontent", new Integer(100));
+            put("pointer", new Integer(200));
+
+            put("modelgroup", new Integer(100));
+            put("xmlimage", new Integer(200));
+
+        }
+    };
+
     /** The explorer type access. */
     private CmsExplorerTypeAccess m_access;
 
@@ -169,6 +208,18 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
         m_newResourceOrder = new Integer(0);
         m_iconRules = new HashMap<String, CmsIconRule>();
 
+    }
+
+    /**
+     * Gets the default view order for the given type name (or null, if there is no default view order).<p>
+     *
+     * @param typeName the type name
+     *
+     * @return the default view order for the type
+     */
+    public static Integer getDefaultViewOrder(String typeName) {
+
+        return m_defaultViewOrders.get(typeName);
     }
 
     /**
@@ -587,7 +638,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
      */
     public Integer getViewOrder(boolean useDefault) {
 
-        Integer defaultViewOrder = OpenCms.getWorkplaceManager().getDefaultViewOrder(m_name);
+        Integer defaultViewOrder = getDefaultViewOrder(m_name);
         Integer result = null;
         if (m_viewOrder != null) {
             result = m_viewOrder;
