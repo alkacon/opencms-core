@@ -40,6 +40,7 @@ import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsLockAction;
+import org.opencms.ui.actions.CmsLockedResourcesAction;
 import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
@@ -130,7 +131,10 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 0, 0),
             new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 2, 0),
             new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 4, 0),
-            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 8, 0));
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 8, 0),
+            new CmsContextMenuActionItem(new CmsLockedResourcesAction(), null, 0, 0)
+
+        );
 
     }
 

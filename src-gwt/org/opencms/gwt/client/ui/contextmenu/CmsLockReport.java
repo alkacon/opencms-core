@@ -76,7 +76,7 @@ public class CmsLockReport implements I_CmsHasContextMenuCommand, I_CmsContextMe
                 handler.refreshResource(structureId);
 
             }
-        });
+        }, null);
     }
 
     /**

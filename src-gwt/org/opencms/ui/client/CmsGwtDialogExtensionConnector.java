@@ -32,6 +32,7 @@ import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
+import org.opencms.gwt.client.ui.CmsLockReportDialog;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
@@ -51,6 +52,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -151,11 +153,31 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
                 public void run() {
 
-                    // Handle cancel
                     close(0);
                 }
             },
             new CmsEditProperties.PropertyEditingContext());
+    }
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openLockReport(java.lang.String)
+     */
+    public void openLockReport(final String structureId) {
+
+        CmsLockReportDialog.openDialogForResource(new CmsUUID(structureId), new Command() {
+
+            public void execute() {
+
+                m_changed.add("" + structureId);
+            }
+        }, new Command() {
+
+            public void execute() {
+
+                close(0);
+            }
+        });
+
     }
 
     /**

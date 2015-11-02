@@ -113,12 +113,22 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }
         m_updateListener.onUpdate(changedStructureIds);
 
+    }
+
+    /**
+     * Opens the lock report for the given resource.<p>
+     *
+     * @param resource the resource for which to display the lock report
+     */
+    public void openLockReport(CmsResource resource) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openLockReport(resource.getStructureId().toString());
     }
 
     /**

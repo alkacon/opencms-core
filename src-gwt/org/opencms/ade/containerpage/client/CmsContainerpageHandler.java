@@ -732,7 +732,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
                 m_controller.reloadElements(new String[] {element.getStructureId().toString()});
             }
-        });
+        }, null);
     }
 
     /**

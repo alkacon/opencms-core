@@ -40,23 +40,30 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
      * @param structureId the structure id of a resource, as a string
      * @param editName if true, makes the file name editable
      */
-    public void editProperties(String structureId, boolean editName);
+    void editProperties(String structureId, boolean editName);
+
+    /**
+     * Opens the lock report dialog.<p>
+     *
+     * @param structureId the structure id of the resource to open the dialog for
+     */
+    void openLockReport(String structureId);
 
     /**
      * Opens the publish dialog with the given publish data.<p>
      *
      * @param serializedPublishData the publish data, an instance of CmsPublishData serialized with the GWT serialization mechanism
      */
-    public void openPublishDialog(String serializedPublishData);
+    void openPublishDialog(String serializedPublishData);
 
     /**
      * Shows the OpenCms about dialog.<p>
      */
-    public void showAbout();
+    void showAbout();
 
     /**
      * Shows the user preferences.<p>
      */
-    public void showUserPreferences();
+    void showUserPreferences();
 
 }

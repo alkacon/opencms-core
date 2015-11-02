@@ -135,6 +135,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         inproject);
 
+    /** Default check for 'locked resources' action. */
+    public static final CmsStandardVisibilityCheck SHOW_LOCKS = new CmsStandardVisibilityCheck(notonline, inproject);
+
     /** Permission check for stealing locks. */
     public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
         otherlock,

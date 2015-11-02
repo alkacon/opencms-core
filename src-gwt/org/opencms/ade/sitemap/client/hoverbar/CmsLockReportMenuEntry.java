@@ -68,7 +68,7 @@ public class CmsLockReportMenuEntry extends A_CmsSitemapMenuEntry {
 
                 controller.updateEntry(entry.getId());
             }
-        });
+        }, null);
 
     }
 

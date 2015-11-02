@@ -1,0 +1,98 @@
+/*
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (c) Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.ui.actions;
+
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
+import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
+import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+/**
+ * Action for showing locked resources by opening the GWT lock report.<p>
+ */
+public final class CmsLockedResourcesAction extends A_CmsWorkplaceAction {
+
+    /** The visibility check for this action. */
+    private I_CmsHasMenuItemVisibility m_visibility = new CmsMenuItemVisibilitySingleOnly(
+        CmsStandardVisibilityCheck.SHOW_LOCKS);
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     */
+    public void executeAction(final I_CmsDialogContext context) {
+
+        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
+
+            public void onUpdate(List<String> updatedItems) {
+
+                List<CmsUUID> ids = Lists.newArrayList();
+                for (String item : updatedItems) {
+                    ids.add(new CmsUUID(item));
+                }
+                context.finish(ids);
+            }
+        });
+        extension.openLockReport(context.getResources().get(0));
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
+     */
+    public String getId() {
+
+        return "lockedresources";
+    }
+
+    /**
+     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
+     */
+    public String getTitle() {
+
+        return CmsVaadinUtils.getMessageText(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_LOCKS_0);
+    }
+
+    /**
+     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
+     */
+    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
+
+        return m_visibility.getVisibility(cms, resources);
+    }
+}

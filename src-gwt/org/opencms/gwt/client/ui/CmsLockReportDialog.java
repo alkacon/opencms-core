@@ -46,6 +46,7 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * The lock report dialog.<p>
@@ -110,8 +111,9 @@ public final class CmsLockReportDialog extends CmsPopup {
      *
      * @param structureId the structure id of the resource to unlock
      * @param onUnlock command to execute after unlocking
+     * @param optionalOnCloseCommand optional action to execute when the dialog is closed
      */
-    private CmsLockReportDialog(CmsUUID structureId, Command onUnlock) {
+    private CmsLockReportDialog(CmsUUID structureId, Command onUnlock, final Command optionalOnCloseCommand) {
 
         super(Messages.get().key(Messages.GUI_LOCK_REPORT_TITLE_0));
         m_structureId = structureId;
@@ -132,6 +134,16 @@ public final class CmsLockReportDialog extends CmsPopup {
         });
         addButton(m_closeButton);
         addDialogClose(null);
+        if (optionalOnCloseCommand != null) {
+            addCloseHandler(new CloseHandler<PopupPanel>() {
+
+                public void onClose(CloseEvent<PopupPanel> event) {
+
+                    optionalOnCloseCommand.execute();
+
+                }
+            });
+        }
         m_unlockButton = new CmsPushButton();
         m_unlockButton.setText(Messages.get().key(Messages.GUI_UNLOCK_0));
         m_unlockButton.setUseMinWidth(true);
@@ -156,10 +168,14 @@ public final class CmsLockReportDialog extends CmsPopup {
      *
      * @param structureId the structure id of the resource
      * @param onUnlock the command to execute after the has been unlocked
+     * @param optionalOnCloseCommand the optional command to execute when the lock report dialog is closed
      */
-    public static void openDialogForResource(final CmsUUID structureId, Command onUnlock) {
+    public static void openDialogForResource(
+        final CmsUUID structureId,
+        Command onUnlock,
+        Command optionalOnCloseCommand) {
 
-        final CmsLockReportDialog dialog = new CmsLockReportDialog(structureId, onUnlock);
+        final CmsLockReportDialog dialog = new CmsLockReportDialog(structureId, onUnlock, optionalOnCloseCommand);
         CmsRpcAction<CmsLockReportInfo> action = new CmsRpcAction<CmsLockReportInfo>() {
 
             @Override
