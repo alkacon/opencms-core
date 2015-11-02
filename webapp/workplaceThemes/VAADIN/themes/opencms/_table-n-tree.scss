@@ -1,0 +1,105 @@
+@mixin o-tree {
+  div.v-tree-node-caption:after{
+  	border-radius: 0;
+  }
+  
+  div.v-tree-node-caption:hover span, div.v-tree-node-caption-drag-center span{
+  	color: #ffffff;
+  	position: relative;
+  	z-index: 1;
+  	&:before{
+  		content: "";
+  		position: absolute;
+  		top: 4px;
+  		left: -3px;
+  		right: 95px;
+  		bottom: 3px;
+  		z-index: -1;
+  		background: $v-selection-color;
+  		border-radius: $v-border-radius;
+  	}
+  }
+  
+  div.v-tree-node-selected.v-tree-node-caption:hover span:before, div.v-tree-node-selected.v-tree-node-caption-drag-center span:before{
+  	background: lighten($v-selection-color,10%);
+  }
+  
+   div.v-tree-node-caption-drag-center{
+   	@include box-shadow(none);
+   	position: static;
+   	outline: none;
+   }
+   
+  [class*="v-tree-node-caption-o-state-"] > div:before{
+  	color: $v-font-color;
+  }
+}
+
+@mixin o-table {
+  div.v-table{
+   	color: $v-font-color;
+  }
+  
+    div.v-table-caption-container {
+    border-color: darken($o-dark-background-color, 10%);
+  }
+  
+  /* Overriding drag and drop styling in table, keeping the focus highlighting to avoid flickering */ 
+  div.v-table-drag .v-table-body .v-table-focus {
+  	$outline-width: max($v-table-border-width, 1px);
+  	outline: $outline-width solid $v-focus-color;
+  	outline-offset: -$outline-width;
+  }
+
+  
+  /** Changed table header styling */
+  div.v-table-header-wrap,
+  div.v-table-footer-wrap,
+  div.v-table-header-drag {
+  	@include valo-gradient($o-dark-background-color);
+  	font-size: $v-font-size;
+  }
+  
+  .v-table-row:hover > td.v-table-cell-content, .v-table-row-odd:hover > td.v-table-cell-content {
+  	$background-color: $v-table-background-color or valo-table-background-color();
+  	$bg: mix($v-focus-color, $background-color, 20%);
+  	background-color: $bg;
+  	color: valo-font-color($bg);
+  } 
+  
+    .v-table-cell-wrapper > .v-widget.o-resource-icon {
+  	margin-top: 0;
+  	margin-bottom: 0;
+  }
+  
+    /* file explorer styles */
+  .v-table-cell-wrapper > .v-widget.o-inline-textfield{
+  	padding: 2px 4px;
+  	width: 100%;
+  	height: auto;
+  }
+  
+  .v-table .v-table-row-odd{
+    background-color: $o-medium-background-color;
+  }
+  
+  .v-table .o-hover-column:hover div{
+  	color: #ffffff;
+  	position: relative;
+  	z-index: 1;
+  	&:before{
+  		content:"";
+  		background: $v-selection-color;
+  		position: absolute;
+  		top:-5px;
+  		left:4px;
+  		right:4px;
+  		bottom: -5px;
+  		z-index: -1;
+  		border-radius: $v-border-radius;
+  	}
+  }
+  .v-table .v-selected .o-hover-column:hover div:before{
+  	background: lighten($v-selection-color,10%);
+  }
+}

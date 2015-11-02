@@ -1,0 +1,63 @@
+@mixin o-toolbar {
+	.o-toolbar{
+  	position: fixed;
+  	z-index: 2;
+  	width: 100%;
+  	display: block;
+  	background: $v-app-background-color;
+  	overflow: hidden;
+  	height: $toolbar-height;
+  	text-align: center;
+  	border-bottom: valo-border($border: $v-border, $color: $v-app-background-color, $strength: 1);
+  	
+  	.o-toolbar-inner{
+  		margin: 0 $toolbar-padding;
+  		min-width: 700px;
+  		text-align: center;
+  		display: block;
+  		
+  		.o-toolbar-app-indicator{
+  			display: block;
+    		float: left;
+    		font-size: 20px;
+    		line-height: 32px;
+    		font-weight: bold;
+    		width: auto !important;
+    		border-radius: $v-border-radius;
+    		padding: 4px 12px;
+		    color: $gray-lighter;
+		    @include valo-gradient($gray-darker);
+    	}
+  	}
+  	
+  	.o-toolbar-center{
+  		display: block;
+  		position: absolute;
+  		left: 0;
+  		right:0;
+  		top: 4px;
+  		text-align: center;
+  		min-width: 700px;
+  		
+  		.o-toolbar-logo{
+  			display: inline-block;
+  			height: 42px;
+  			width: 170px;
+  			background: url("img/opencmsLogo.png") no-repeat transparent; 
+  		}
+  	}
+  	.o-toolbar-items-left, .o-toolbar-items-right{
+  		margin: 5px 0;
+  	}
+  
+  	.o-toolbar-items-left{
+  		float: left;
+  		text-align: left;
+  	}
+  
+  	.o-toolbar-items-right{
+  		float: right;
+  		text-align: right;
+  	}
+  }
+} 

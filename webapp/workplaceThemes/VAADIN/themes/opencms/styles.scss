@@ -2,12 +2,21 @@
 @import "opencms";
 @import "opencmsfont";
 @import "contextmenu";
+@import "table-n-tree";
+@import "toolbar";
+@import "buttons";
+@import "loading-spinner";
 
 @include opencmsfont;
 
 .opencms {
    @include opencms;
-   @include contextmenu;
+   @include o-contextmenu;
+   @include o-table;
+   @include o-tree;
+   @include o-toolbar;
+   @include o-buttons;
+   @include o-loading-spinner;
 }
 
 html {

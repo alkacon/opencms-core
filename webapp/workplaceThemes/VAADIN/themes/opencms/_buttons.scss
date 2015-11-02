@@ -1,0 +1,169 @@
+@mixin o-buttons {
+	
+	.o-dialog-button-bar .v-button, .v-button.o-button-blue {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $o-button-blue);
+  }
+  
+  
+  .o-dialog-button-bar .v-button.o-button-red, .v-button.o-button-red {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $red);
+  }
+  
+  .o-dialog-button-bar .v-button.o-button-green, .v-button.o-button-green {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $green);
+  }
+  
+  .v-button.o-button-plain {
+  		min-width: 100px;
+  		@include valo-button-style($unit-size: 30px, $font-weight: bold);
+  }
+  
+  .v-menubar.v-menubar-o-toolbar-button{
+  	padding: 0;
+  	height: 36px;
+  }
+  
+  .v-button.v-button-o-toolbar-button, .v-menubar.v-menubar-o-toolbar-button > .v-menubar-menuitem{
+  	font-size: $app-icon-size;
+    height: 40px;
+    min-width: 40px;
+    line-height: 32px;
+    padding: 4px;
+    margin: 0;
+    color: inherit;
+    background: transparent;
+    
+    img.v-icon {
+      vertical-align: top;
+    }
+    
+    .v-icon{
+    	margin: 0;
+    }
+    
+    &:focus:after {
+    	border-color: transparent;
+    	box-shadow: none;
+    }
+    
+    &:hover{
+    	color: $v-selection-color;
+    	&.v-disabled{
+    		color: inherit;
+    	}
+    }
+    
+    .v-menubar-menuitem-caption:after{
+    	display: none;
+    }
+  }
+  
+  .o-user-info .v-button.v-button-o-toolbar-button{
+  	padding: 2px;
+  	border: 2px solid #4E545B;
+  	
+  	&:after{
+  		border: none;
+  	}
+  	
+  	&:hover{
+   		border-color: $v-selection-color;
+  	}
+  }
+  
+  /* App buttons */
+  .v-button.v-button-o-app-button{
+   	font-size: $v-font-size--small;
+   	
+   	> span.v-button-wrap {
+   	
+   		text-align: center;
+   		line-height: 48px;
+   		width: 140px;
+   		height: 70px;
+   		position: relative;
+   		
+   		&:before {
+	  		content: "";
+	  		display: block;
+	  		height: 48px;
+  			width: 48px;
+  			border-radius: $v-border-radius;
+	  		left: 46px;
+	  		top: 1px;
+	  		position: absolute;
+	  		z-index: 0;
+	  		background-image: -moz-radial-gradient(#fff 30%, #bbb 100%);
+	  		@include  radial-gradient(#fff 30%, #bbb 100%);
+  		}
+  	
+	  	span.v-button-caption{
+	  		text-overflow: ellipsis;
+	  		overflow: hidden;
+	  		display: block;
+	  		margin: 0;
+	  		line-height: 20px;
+	  		position:absolute;
+	  		left: 0;
+	  		right: 0;
+	  		height: 20px;
+	  		bottom: 0;
+	  	}
+	  	
+	  	.v-icon{
+	  		display: inline;
+	  		font-size: $app-icon-size;
+	  		line-height: 48px;
+	  		vertical-align: middle;
+	  		color: $white;
+	  		position: relative;
+	  	}
+	}
+	
+	  &.o-color-cyan > span.v-button-wrap:before{
+	  	background: $cyan;
+	  }
+	  &.o-color-red > span.v-button-wrap:before{
+	  	background: $red;
+	  }
+	  &.o-color-blue  > span.v-button-wrap:before{
+	  	background: $blue;
+	  }
+	  &.o-color-orange  > span.v-button-wrap:before{
+	  	background: $orange-dark;
+	  }
+	  &.o-color-gray  > span.v-button-wrap:before{
+	  	background: $gray-dark;
+	  }
+	  &.o-color-transparent > span.v-button-wrap:before{
+	  	display: none;
+	  }
+  }
+  
+  /* upload button styles */
+  div.o-upload-button{
+  	overflow: hidden;
+	position: relative;
+  
+  	input[type=file] {
+		position: absolute;
+		right: -1px;
+		top: -10px;
+		z-index: 10;
+		opacity: 0;
+  	}
+  }
+  
+  .v-button.o-button-table-icon, .v-button.o-button-unpadded {
+		padding: 0px;
+	}
+	
+	.o-button-icon-small .opencms-font {
+		font-size: 16px;
+		color: $alkacon-gray; 
+		vertical-align: middle; 
+	}
+}

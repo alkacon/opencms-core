@@ -1,0 +1,141 @@
+@mixin o-loading-spinner {
+	.v-loading-indicator, .v-app-loading { 
+  	    /* Hide original loading animation while still displaying its children */ 
+  		visibility: hidden !important;
+  		width: 100% !important;
+  		height: 100% !important; 
+  		position: fixed !important;
+  		background-color: rgba(0,0,0,0.0) !important;
+  		animation: none !important; 
+  		-webkit-animation: none !important; 
+  		pointer-events: auto !important; 
+  	}
+  	
+  	.v-loading-indicator.v-loading-indicator[style*="none"] { 
+  	    /* Original style uses !important, so we need both !important and the double class selector to override it. */ 
+  		display: none !important;
+  	}
+  	
+  	.o-loading-indicator {
+  	    *, & { 
+  	    	visibility: visible !important;
+  	    }
+  		background-color: $gray-dark;
+  		width: 100%;  
+  		height: 100%;
+  		position: fixed; 
+  		background-color: rgba($gray-dark, 0.5);
+  		pointer-events: auto; 
+  		left: 0px;
+  		right: 0px;
+  		top: 0px;
+  		bottom: 0px;
+  	} 
+	
+    .oc-spinner-bg {
+	    background-color: #fff;        
+	    top:0;
+	    margin:0;
+	    border-radius: 100%;    
+	    display: block;
+	    box-shadow: 0 0 32px #666;
+	    height: 60px;
+	    width: 60px;
+	    position: absolute;
+	}
+	
+	
+	.v-app-loading:before, .v-app-loading:after {
+		display: none !important; 
+	}
+
+	.oc-spin-outer, .oc-spin-inner, .oc-spin-dots  { 
+		top: -2px;
+		margin: 0;
+	}
+
+	.oc-spin-outer {
+	    color: #b31b34;
+	    display: block;
+	    position: absolute;
+	}
+
+	.oc-spin-dots {
+	    color: #fff;
+	    display: block;
+	    animation: spin 2s infinite linear;
+	    -webkit-animation: spin 2s infinite linear;
+	    position: absolute;
+	}
+	
+	.oc-spin-inner {
+	    color: #003084;
+	    margin: 0 auto;
+	    display: block;
+	    position: absolute;
+	    animation: spin-inner 4s infinite linear;
+	    -webkit-animation: spin-inner 4s infinite linear;
+	}
+
+	.oc-spin-center {
+	    position: fixed;
+	    left: 50%;
+	    top: 50%;  
+	    text-align: center;
+	    margin-top: -50px; 
+	    margin-left: -32px;
+	    display: block;
+	    line-height: 64px;
+	    
+	    &, * {  
+	    	font-size: 64px !important;
+	    }
+	}
+	
+	.o-app-content > .v-verticallayout {
+		&.v-margin-left {
+			padding-left: 20px;
+		}
+		
+		&.v-margin-right {
+			padding-right: 20px;
+		}
+	} 
+}
+
+@keyframes spin-inner {
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes spin-inner {
+    50% {
+        -webkit-opacity: 0.25;
+    }
+    100% {
+        -webkit-opacity: 1;
+    }
+}
+
+@-webkit-keyframes spin {
+	0% { 
+		-webkit-transform: rotate(0deg);
+	} 
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+	0% { 
+		transform: rotate(0deg);
+	} 
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
