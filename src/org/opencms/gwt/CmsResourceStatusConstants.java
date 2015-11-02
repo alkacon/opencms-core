@@ -28,10 +28,12 @@
 package org.opencms.gwt;
 
 import static org.opencms.gwt.Messages.GUI_STATUS_TAB_FROM_CP_0;
+import static org.opencms.gwt.Messages.GUI_STATUS_TAB_FROM_OTHER_0;
 import static org.opencms.gwt.Messages.GUI_STATUS_TAB_FROM_XML_0;
 import static org.opencms.gwt.Messages.GUI_STATUS_TAB_STATUS_0;
 import static org.opencms.gwt.Messages.GUI_STATUS_TAB_TO_CP_0;
 import static org.opencms.gwt.Messages.GUI_STATUS_TAB_TO_OTHER_0;
+import static org.opencms.gwt.Messages.GUI_STATUS_TAB_TO_XML_0;
 import static org.opencms.gwt.Messages.get;
 import static org.opencms.gwt.shared.CmsResourceStatusTabId.tabRelationsFrom;
 import static org.opencms.gwt.shared.CmsResourceStatusTabId.tabRelationsTo;
@@ -77,12 +79,13 @@ public final class CmsResourceStatusConstants {
         LinkedHashMap<CmsResourceStatusTabId, CmsMessageContainer> contentTabs = Maps.newLinkedHashMap();
         contentTabs.put(tabRelationsFrom, get().container(GUI_STATUS_TAB_FROM_XML_0));
         contentTabs.put(tabStatus, get().container(GUI_STATUS_TAB_STATUS_0));
-        contentTabs.put(tabRelationsTo, get().container(GUI_STATUS_TAB_TO_OTHER_0));
+        contentTabs.put(tabRelationsTo, get().container(GUI_STATUS_TAB_TO_XML_0));
         STATUS_TABS_CONTENT = Collections.unmodifiableMap(contentTabs);
 
         LinkedHashMap<CmsResourceStatusTabId, CmsMessageContainer> otherTabs = Maps.newLinkedHashMap();
         otherTabs.put(tabStatus, get().container(GUI_STATUS_TAB_STATUS_0));
         otherTabs.put(tabRelationsTo, get().container(GUI_STATUS_TAB_TO_OTHER_0));
+        otherTabs.put(tabRelationsFrom, get().container(GUI_STATUS_TAB_FROM_OTHER_0));
         STATUS_TABS_OTHER = Collections.unmodifiableMap(otherTabs);
     }
 

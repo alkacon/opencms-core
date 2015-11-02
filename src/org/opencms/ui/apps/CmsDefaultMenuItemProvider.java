@@ -45,6 +45,7 @@ import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
+import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.actions.CmsSecureExportDialogAction;
 import org.opencms.ui.actions.CmsStealLockAction;
 import org.opencms.ui.actions.CmsTouchDialogAction;
@@ -117,6 +118,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 1700, 0),
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
             new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
+            new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
             // TODO: add relations entry here
             // TODO: add permissions entry here
             advanced,

@@ -115,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_STATUS_TAB_FROM_CP_0 = "GUI_STATUS_TAB_FROM_CP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_TAB_FROM_OTHER_0 = "GUI_STATUS_TAB_FROM_OTHER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_TAB_FROM_XML_0 = "GUI_STATUS_TAB_FROM_XML_0";
 
     /** Message constant for key in the resource bundle. */

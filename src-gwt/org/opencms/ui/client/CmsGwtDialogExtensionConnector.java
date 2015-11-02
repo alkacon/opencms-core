@@ -39,11 +39,13 @@ import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
+import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +159,21 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
                 }
             },
             new CmsEditProperties.PropertyEditingContext());
+    }
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openInfoDialog(java.lang.String)
+     */
+    public void openInfoDialog(String string) {
+
+        CmsResourceInfoDialog.load(new CmsUUID(string), true, new ArrayList<CmsUUID>(), new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                close(0);
+            }
+        });
+
     }
 
     /**

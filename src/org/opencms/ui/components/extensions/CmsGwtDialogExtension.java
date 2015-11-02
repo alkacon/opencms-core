@@ -122,6 +122,16 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * Opens the resource info dialog.<p>
+     *
+     * @param resource the resource
+     */
+    public void openInfoDialog(CmsResource resource) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openInfoDialog(resource.getStructureId().toString());
+    }
+
+    /**
      * Opens the lock report for the given resource.<p>
      *
      * @param resource the resource for which to display the lock report
@@ -249,7 +259,6 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
             LOG.error(e.getLocalizedMessage(), e);
             return null;
         }
-
     }
 
 }

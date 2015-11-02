@@ -43,6 +43,13 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     void editProperties(String structureId, boolean editName);
 
     /**
+     * Opens the resource info dialog for the resource with the given structure id.<p>
+     *
+     * @param structureId the structure id of a resource, as a string
+     */
+    void openInfoDialog(String structureId);
+
+    /**
      * Opens the lock report dialog.<p>
      *
      * @param structureId the structure id of the resource to open the dialog for
