@@ -62,7 +62,7 @@
 			@include valo-selection-item-selected-style;
 		}
 	
-		.v-context-menu-item-basic.v-context-menu-item-disabled {
+		.v-context-menu-item-basic.v-context-menu-item-disabled > div{
 			opacity: 0.3;
 			filter: alpha(opacity = 30);
 			zoom: 1;
