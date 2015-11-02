@@ -81,58 +81,61 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
      */
     public List<I_CmsContextMenuItem> getMenuItems() {
 
-        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 26, 0);
+        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2200, 0);
 
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
         return Arrays.<I_CmsContextMenuItem> asList(
-            new CmsContextMenuActionItem(new CmsLockAction(), null, 0, 0),
-            new CmsContextMenuActionItem(new CmsUnlockAction(), null, 0, 0),
-            new CmsContextMenuActionItem(new CmsStealLockAction(), null, 0, 0),
-            new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 0, 0),
-            new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 2, 0),
+            new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
+            new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
+            new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),
+            new CmsContextMenuActionItem(new CmsLockedResourcesAction(), null, 120, 0),
+            new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
+            new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
             // TODO: add publish scheduled entry here
-            new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 6, 0),
-            new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 8, 0),
+            new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 700, 0),
+            new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 900, 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(
                     CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
                     Messages.GUI_EXPLORER_RENAME_0),
                 null,
-                10,
+                1100,
                 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(CmsResourceTableProperty.PROPERTY_TITLE, Messages.GUI_EXPLORER_EDIT_TITLE_0),
                 null,
-                12,
+                1300,
                 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(
                     CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT,
                     Messages.GUI_EXPLORER_EDIT_NAVIGATION_TEXT_0),
                 null,
-                14,
+                1500,
                 0),
-            new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 16, 0),
-            new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 18, 0),
-            new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 20, 0),
+            new CmsContextMenuActionItem(new CmsDeleteDialogAction(), null, 1700, 0),
+            new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
+            new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
             // TODO: add relations entry here
             // TODO: add permissions entry here
             advanced,
-            new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 0, 0),
-            new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 2, 0),
-            new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 4, 0),
-            new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 6, 0),
-            new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 8, 0),
+
+            new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
+            new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
+            // TODO: add publish scheduled entry here
+            new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
+            new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
+            new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
+
             // TODO: add history entry here
-            new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 30, 0),
+            new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
 
             // toolbar menu entries
-            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 0, 0),
-            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 2, 0),
-            new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 4, 0),
-            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 8, 0),
-            new CmsContextMenuActionItem(new CmsLockedResourcesAction(), null, 0, 0)
+            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 100, 0),
+            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 300, 0),
+            new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 500, 0),
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0)
 
         );
 
