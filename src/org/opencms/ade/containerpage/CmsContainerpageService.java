@@ -738,7 +738,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             CmsGalleryService srv = new CmsGalleryService();
             srv.setCms(cms);
             srv.setRequest(getRequest());
-            data = srv.getInitialSettingsForContainerPage(resTypeBeans, locale, uri);
+            data = srv.getInitialSettingsForContainerPage(resTypeBeans, uri, locale);
 
         } catch (Exception e) {
             error(e);
