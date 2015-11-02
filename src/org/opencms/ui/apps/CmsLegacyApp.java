@@ -36,8 +36,6 @@ import org.opencms.workplace.tools.I_CmsToolHandler;
 import javax.servlet.http.HttpServletRequest;
 
 import com.vaadin.server.ExternalResource;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.BrowserFrame;
 
 /**
@@ -78,9 +76,7 @@ public class CmsLegacyApp extends BrowserFrame implements I_CmsWorkplaceApp {
 
         // only act on initial state change
         if (getSource() == null) {
-            CmsWorkplace wp = new CmsWorkplace(
-                A_CmsUI.getCmsObject(),
-                ((WrappedHttpSession)VaadinService.getCurrentRequest().getWrappedSession()).getHttpSession()) {
+            CmsWorkplace wp = new CmsWorkplace(A_CmsUI.getCmsObject(), CmsAppWorkplaceUi.get().getHttpSession()) {
 
                 @Override
                 protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {

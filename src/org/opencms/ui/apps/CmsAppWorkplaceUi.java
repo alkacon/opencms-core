@@ -28,7 +28,10 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
@@ -47,6 +50,9 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.annotations.Theme;
@@ -61,8 +67,11 @@ import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.Window;
 
 /**
@@ -184,6 +193,38 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Checks for new broadcasts.<p>
+     */
+    public void checkBroadcasts() {
+
+        CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
+        Buffer queue = info.getBroadcastQueue();
+        if (!queue.isEmpty()) {
+            CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(
+                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
+            StringBuffer broadcasts = new StringBuffer();
+            while (!queue.isEmpty()) {
+                CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
+                String from = broadcastMessage.getUser() != null
+                ? broadcastMessage.getUser().getName()
+                : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
+                String date = messages.getDateTime(broadcastMessage.getSendTime());
+                String content = broadcastMessage.getMessage();
+                broadcasts.append("<p><em>").append(date).append("</em><br />");
+                broadcasts.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(
+                    " <b>").append(from).append("</b>:<br />");
+                broadcasts.append(content).append("<br /></p>");
+            }
+            Notification notification = new Notification(
+                messages.key(Messages.GUI_BROADCAST_TITLE_0),
+                broadcasts.toString(),
+                Type.ERROR_MESSAGE,
+                true);
+            notification.show(getPage());
+        }
+    }
+
+    /**
      * Disables the global keyboard shortcuts.<p>
      */
     public void disableGlobalShortcuts() {
@@ -212,6 +253,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         NavigationState state = new NavigationState(m_navigationStateManager.getState());
         return state.getParams();
+    }
+
+    /**
+     * Returns the HTTP session.<p>
+     *
+     * @return the HTTP session
+     */
+    public HttpSession getHttpSession() {
+
+        return ((WrappedHttpSession)getSession().getSession()).getHttpSession();
     }
 
     /**

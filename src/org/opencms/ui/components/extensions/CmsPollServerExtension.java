@@ -28,6 +28,7 @@
 package org.opencms.ui.components.extensions;
 
 import org.opencms.main.CmsLog;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.shared.rpc.I_CmsPollServerRpc;
 
 import org.apache.commons.logging.Log;
@@ -64,5 +65,6 @@ public class CmsPollServerExtension extends AbstractExtension implements I_CmsPo
         if (LOG.isDebugEnabled()) {
             LOG.debug("Client poll recieved.");
         }
+        CmsAppWorkplaceUi.get().checkBroadcasts();
     }
 }

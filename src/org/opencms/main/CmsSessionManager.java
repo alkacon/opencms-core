@@ -331,7 +331,6 @@ public class CmsSessionManager {
      *
      * @param message the message to broadcast
      */
-    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsObject cms, String message) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
@@ -359,7 +358,6 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param sessionId the OpenCms session uuid target (receiver) of the broadcast
      */
-    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsObject cms, String message, String sessionId) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
@@ -385,7 +383,6 @@ public class CmsSessionManager {
      * @param message the message to broadcast
      * @param toUser the target (receiver) of the broadcast
      */
-    @SuppressWarnings("unchecked")
     public void sendBroadcast(CmsUser fromUser, String message, CmsUser toUser) {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {

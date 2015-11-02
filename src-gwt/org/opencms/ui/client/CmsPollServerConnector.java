@@ -77,7 +77,7 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
     }
 
     /** The polling delay in milliseconds. */
-    private static final int POLLING_DELAY_MS = 300 * 1000;
+    private static final int POLLING_DELAY_MS = 120 * 1000;
 
     /** The serial version id. */
     private static final long serialVersionUID = -3661096843568550285L;
