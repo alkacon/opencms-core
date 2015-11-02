@@ -368,6 +368,16 @@ public class CmsResourceTable extends A_CmsCustomComponent {
     }
 
     /**
+     * Returns the number of currently visible items.<p>
+     *
+     * @return the number of currentliy visible items
+     */
+    public int getItemCount() {
+
+        return m_container.size();
+    }
+
+    /**
      * Returns if the column with the given property id is visible and not collapsed.<p>
      *
      * @param propertyId the property id

@@ -545,6 +545,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /** The serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Threshold for updating the complete folder after file changes. */
+    private static final int UPDATE_FOLDER_THRESHOLD = 200;
+
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
 
@@ -1037,21 +1040,26 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         try {
             CmsResource currentFolderRes = A_CmsUI.getCmsObject().readResource(m_currentFolder, CmsResourceFilter.ALL);
+            boolean updateFolder = m_fileTable.getItemCount() < UPDATE_FOLDER_THRESHOLD;
             for (CmsUUID id : ids) {
-                boolean remove = false;
-                try {
-                    CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
+                if (!updateFolder) {
+                    boolean remove = false;
+                    try {
+                        CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
 
-                    remove = !CmsResource.getParentFolder(resource.getRootPath()).equals(
-                        currentFolderRes.getRootPath());
+                        remove = !CmsResource.getParentFolder(resource.getRootPath()).equals(
+                            currentFolderRes.getRootPath());
 
-                } catch (CmsVfsResourceNotFoundException e) {
-                    remove = true;
-                    LOG.debug("Could not read update resource " + id, e);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        remove = true;
+                        LOG.debug("Could not read update resource " + id, e);
+                    }
+                    m_fileTable.update(id, remove);
                 }
-                m_fileTable.update(id, remove);
-                updateTree(id, remove);
-
+                updateTree(id);
+            }
+            if (updateFolder) {
+                readFolder(m_currentFolder);
             }
             m_fileTable.clearSelection();
         } catch (CmsException e) {
@@ -1108,9 +1116,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      * Updates the tree items with the given ids.<p>
      *
      * @param id the
-     * @param remove if true, only remove the tree entry
      */
-    public void updateTree(CmsUUID id, boolean remove) {
+    public void updateTree(CmsUUID id) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         updateResourceInTree(cms, id);
@@ -1282,9 +1289,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             m_fileTable.stopEdit();
 
         } else if (!event.isCtrlKey() && !event.isShiftKey()) {
+            CmsUUID itemId = (CmsUUID)event.getItemId();
+            boolean openedFolder = false;
             // don't interfere with multi-selection using control key
             if (event.getButton().equals(MouseButton.RIGHT)) {
-                m_fileTable.handleSelection((CmsUUID)event.getItemId());
+                m_fileTable.handleSelection(itemId);
                 m_fileTable.openContextMenu(event);
             } else {
                 if ((event.getPropertyId() == null)
@@ -1295,16 +1304,15 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                         CmsResourceTableProperty.PROPERTY_IS_FOLDER).getValue();
                     if ((isFolder != null) && isFolder.booleanValue()) {
                         expandCurrentFolder();
-                        if (m_fileTree.getItem(event.getItemId()) != null) {
-                            m_fileTree.select(event.getItemId());
+                        if (m_fileTree.getItem(itemId) != null) {
+                            m_fileTree.select(itemId);
                         }
-                        readFolder((CmsUUID)event.getItemId());
-
+                        readFolder(itemId);
+                        openedFolder = true;
                     } else {
-                        CmsUUID id = (CmsUUID)event.getItemId();
                         try {
                             CmsObject cms = A_CmsUI.getCmsObject();
-                            CmsResource res = cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
+                            CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
                             A_CmsUI.get().openPageOrWarn(
                                 link,
@@ -1317,6 +1325,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                         }
                     }
                 }
+
+            }
+            // update the item on click to show any available changes
+            if (!openedFolder) {
+                m_fileTable.update(itemId, false);
             }
         }
     }
