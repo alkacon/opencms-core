@@ -3,6 +3,13 @@
   	border-radius: 0;
   }
   
+  div.v-tree-node-caption:hover:after{
+  	$background-color: $v-table-background-color or valo-table-background-color();
+  	$bg: mix($v-focus-color, $background-color, 20%);
+  	background-color: $bg;
+  	opacity: 1;
+  }
+  
   div.v-tree-node-caption:hover span, div.v-tree-node-caption-drag-center span{
   	color: #ffffff;
   	position: relative;
@@ -60,11 +67,10 @@
   	font-size: $v-font-size;
   }
   
-  .v-table-row:hover > td.v-table-cell-content, .v-table-row-odd:hover > td.v-table-cell-content {
+  .v-table-row:hover > .v-table-cell-content, .v-table-row-odd:hover > .v-table-cell-content {
   	$background-color: $v-table-background-color or valo-table-background-color();
   	$bg: mix($v-focus-color, $background-color, 20%);
   	background-color: $bg;
-  	color: valo-font-color($bg);
   } 
   
     .v-table-cell-wrapper > .v-widget.o-resource-icon {
