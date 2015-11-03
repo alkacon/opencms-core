@@ -102,6 +102,11 @@
 		height: $o-layout-reduced-spacing;
 		width: $o-layout-reduced-spacing;
 	}
+	
+	.o-spacing-5 > .v-spacing { 
+		height: 5px;
+		width: 5px; 
+	}
   
 	.v-panel-content > .v-margin-left.o-reduced-margin {
 		padding-left: $o-layout-reduced-margin;
@@ -356,6 +361,7 @@
 		float: left; 
 		position: static;
 		width: 100%;
+		border-radius: 4px; 
 		 	
 		&:after {
 			border: none !important;  
@@ -406,4 +412,9 @@
 	.o-resinfo-pointer .o-resource-info:hover {
 		cursor: pointer; 
 	}
+	
+	.o-resource-info-title {
+		margin-top: -1px;
+	}
+		
 }

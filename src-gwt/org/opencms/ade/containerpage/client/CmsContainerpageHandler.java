@@ -315,7 +315,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 });
             }
         });
-        result.getElement().getStyle().setWidth(160, Unit.PX);
+        result.getElement().getStyle().setWidth(250, Unit.PX);
 
         return result;
     }

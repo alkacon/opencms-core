@@ -1,11 +1,11 @@
-@external html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+@external o-addIcon, html-face, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
-@sprite .cmsState-down .addIcon, .cmsState-up-hovering .addIcon, .cmsState-down-hovering .addIcon{
+@sprite .cmsState-down .addIcon, .cmsState-up-hovering .addIcon, .cmsState-down-hovering .addIcon, .o-addIcon:hover {
     gwt-image: "icons.addIconActive";
     display: inline-block;
     vertical-align: middle;
 }
-@sprite .cmsState-up .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down-disabled .addIcon{
+@sprite .cmsState-up .addIcon, .cmsState-up-disabled .addIcon, .cmsState-down-disabled .addIcon, .o-addIcon {
     gwt-image: "icons.addIconDeactivated";
     display: inline-block;
     vertical-align: middle;
