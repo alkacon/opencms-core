@@ -489,10 +489,10 @@ if [[ $pullbefore == 1 ]]; then
 	cd $REPOSITORY_HOME
 	if [[ ! -z "$GIT_SSH" ]]; then
 		echo "  * Pulling with specified ssh keys."
-		ssh-agent bash -c "ssh-add $GIT_SSH; git pull"
+		ssh-agent bash -c "ssh-add $GIT_SSH; git pull -v"
 	else
 		echo "  * Pulling."
-		git pull
+		git pull -v
 	fi
 	pullExitCode=$?
 	if [[ $pullExitCode != 0 ]]; then
@@ -609,10 +609,10 @@ if [[ $commit == 1 ]]; then
 	echo " * Check in to GIT repository"
 	echo "   * Step 1: adjust the git configuration ...:"
 	adjustGitConfig
-	echo "   * Step 2: git add --all $MODULE_PATH/*"
-	git add --all $MODULE_PATH/* | awk '$0="   "$0'
-	echo "   * Step 3: bash -c \"git commit -m \\\"$commitMessage\\\" \""
-	bash -c "git commit -m \"$commitMessage\"" | awk '$0="     "$0'
+	echo "   * Step 2: git add -v --all $MODULE_PATH/*"
+	git add -v --all $MODULE_PATH/* | awk '$0="   "$0'
+	echo "   * Step 3: bash -c \"git commit -v -m \\\"$commitMessage\\\" \""
+	bash -c "git commit -v -m \"$commitMessage\"" | awk '$0="     "$0'
 	resetGitConfig
 else
 	echo " * Auto-commit disabled. Nothing to do."
@@ -625,10 +625,10 @@ if [[ $pullafter == 1 ]]; then
 	cd $REPOSITORY_HOME
 	if [[ ! -z "$GIT_SSH" ]]; then
 		echo "  * Pulling with specified ssh keys."
-		ssh-agent bash -c "ssh-add $GIT_SSH; git pull"
+		ssh-agent bash -c "ssh-add $GIT_SSH; git pull -v"
 	else
 		echo "  * Pulling."
-		git pull
+		git pull -v
 	fi
 	pullExitCode=$?
 	if [[ $pullExitCode != 0 ]]; then
@@ -652,7 +652,7 @@ if [[ $push == 1 ]]; then
 	else
 		echo
 		echo " * Pushing changes."
-		git push
+		git push -v
 		pushExitCode=$?
 	fi
 	if [[ $pushExitCode != 0 ]]; then
