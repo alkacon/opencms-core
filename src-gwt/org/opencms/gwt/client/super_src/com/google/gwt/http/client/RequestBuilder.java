@@ -432,7 +432,7 @@ public class RequestBuilder {
      * @param data the request data
      */
     private void evaluateSync(String data){
-        if (!m_sync && data.contains(org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN)){
+        if (!m_sync && data!=null && data.contains(org.opencms.gwt.client.rpc.CmsRpcAction.SYNC_TOKEN)){
             m_sync=true;
         }
     }
