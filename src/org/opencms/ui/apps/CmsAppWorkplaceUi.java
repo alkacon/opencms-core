@@ -66,7 +66,6 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
@@ -363,6 +362,18 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * @see com.vaadin.ui.UI#setLastHeartbeatTimestamp(long)
+     */
+    @Override
+    public void setLastHeartbeatTimestamp(long lastHeartbeat) {
+
+        super.setLastHeartbeatTimestamp(lastHeartbeat);
+
+        // check for new broadcasts on every heart beat
+        checkBroadcasts();
+    }
+
+    /**
      * Navigates to the given app.<p>
      *
      * @param appConfig the app configuration
@@ -397,7 +408,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         } else if (view instanceof Component) {
             component = (Component)view;
         }
-        initializeClientPolling(component);
         if (component != null) {
             setContent(component);
         }
@@ -408,9 +418,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
     */
     @Override
-    protected void init(VaadinRequest request) {
+    protected void init(VaadinRequest req) {
 
-        VaadinSession.getCurrent().setErrorHandler(new CmsVaadinErrorHandler());
+        getSession().setErrorHandler(new CmsVaadinErrorHandler());
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
