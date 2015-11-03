@@ -179,6 +179,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_CREATE_IN_PATH_1 = "GUI_NEW_CREATE_IN_PATH_1";
+
     /**
      * Hides the public constructor for this utility class.<p>
      */

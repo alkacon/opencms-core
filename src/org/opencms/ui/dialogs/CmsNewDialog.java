@@ -45,6 +45,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceInfo;
@@ -294,11 +295,16 @@ public class CmsNewDialog extends CmsBasicDialog {
      */
     protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
 
-        String subtitle = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0);
+        String subtitle = "";
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getType());
+        if ((explorerType != null) && (explorerType.getInfo() != null)) {
+            subtitle = CmsVaadinUtils.getMessageText(explorerType.getInfo());
+        }
         if (useDefault && (type.getOrigin() == Origin.config) && (type.getCreatePath() != null)) {
-            subtitle = type.getCreatePath();
+            String path = type.getCreatePath();
             CmsObject cms = A_CmsUI.getCmsObject();
-            subtitle = cms.getRequestContext().removeSiteRoot(subtitle);
+            path = cms.getRequestContext().removeSiteRoot(path);
+            subtitle = CmsVaadinUtils.getMessageText(Messages.GUI_NEW_CREATE_IN_PATH_1, path);
         }
         return subtitle;
     }
