@@ -37,9 +37,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CmsResourceStatusBean.
+ * Information used to display the resource info dialog.
  */
 public class CmsResourceStatusBean implements IsSerializable {
 
@@ -105,6 +104,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Last modifier. */
     private String m_userLastModified;
+
+    /** The start tab id. */
+    private CmsResourceStatusTabId m_startTab;
 
     /**
      * Gets the date created.
@@ -254,6 +256,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public int getSize() {
 
         return m_size;
+    }
+
+    /**
+     * Gets the start tab.<p>
+     *
+     * @return the start tab
+     */
+    public CmsResourceStatusTabId getStartTab() {
+
+        return m_startTab;
     }
 
     /**
@@ -434,6 +446,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public void setSize(int size) {
 
         m_size = size;
+    }
+
+    /**
+     * Sets the start tab.<p>
+     *
+     * @param startTab the start tab id
+     */
+    public void setStartTab(CmsResourceStatusTabId startTab) {
+
+        m_startTab = startTab;
     }
 
     /**

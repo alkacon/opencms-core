@@ -62,13 +62,6 @@ public final class CmsResourceStatusConstants {
     /** Tab configuration for other resources. */
     public static final Map<CmsResourceStatusTabId, CmsMessageContainer> STATUS_TABS_OTHER;
 
-    /**
-     * Hidden default constructor.<p>
-     */
-    private CmsResourceStatusConstants() {
-
-    }
-
     static {
         LinkedHashMap<CmsResourceStatusTabId, CmsMessageContainer> pageTabs = Maps.newLinkedHashMap();
         pageTabs.put(tabRelationsFrom, get().container(GUI_STATUS_TAB_FROM_CP_0));
@@ -83,10 +76,17 @@ public final class CmsResourceStatusConstants {
         STATUS_TABS_CONTENT = Collections.unmodifiableMap(contentTabs);
 
         LinkedHashMap<CmsResourceStatusTabId, CmsMessageContainer> otherTabs = Maps.newLinkedHashMap();
-        otherTabs.put(tabStatus, get().container(GUI_STATUS_TAB_STATUS_0));
         otherTabs.put(tabRelationsTo, get().container(GUI_STATUS_TAB_TO_OTHER_0));
+        otherTabs.put(tabStatus, get().container(GUI_STATUS_TAB_STATUS_0));
         otherTabs.put(tabRelationsFrom, get().container(GUI_STATUS_TAB_FROM_OTHER_0));
         STATUS_TABS_OTHER = Collections.unmodifiableMap(otherTabs);
+    }
+
+    /**
+     * Hidden default constructor.<p>
+     */
+    private CmsResourceStatusConstants() {
+
     }
 
 }
