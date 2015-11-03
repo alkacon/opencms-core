@@ -302,7 +302,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         private static final long serialVersionUID = 5392136127699472654L;
 
         /** The copy move action. */
-        final I_CmsWorkplaceAction COPY_MOVE_ACTION = new CmsCopyMoveDialogAction();
+        final I_CmsWorkplaceAction m_copyMoveAction = new CmsCopyMoveDialogAction();
 
         /**
          * @see com.vaadin.event.dd.DropHandler#drop(com.vaadin.event.dd.DragAndDropEvent)
@@ -311,10 +311,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             try {
                 CmsExplorerDialogContext context = getContext(dragEvent);
-                if (COPY_MOVE_ACTION.isActive(context)) {
+                if (m_copyMoveAction.isActive(context)) {
                     CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
                     dialog.setTargetFolder(getTargetId(dragEvent));
-                    context.start(COPY_MOVE_ACTION.getTitle(), dialog);
+                    context.start(m_copyMoveAction.getTitle(), dialog);
                 }
             } catch (Exception e) {
                 LOG.error("Moving resource failed", e);
@@ -334,7 +334,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 public boolean accept(DragAndDropEvent dragEvent) {
 
                     try {
-                        if (!COPY_MOVE_ACTION.isActive(getContext(dragEvent))) {
+                        if (!m_copyMoveAction.isActive(getContext(dragEvent))) {
                             return false;
                         }
                     } catch (CmsException e) {
@@ -1191,6 +1191,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         try {
             CmsResource folder = cms.readResource(folderId, FOLDERS);
             m_currentFolder = folderId;
+            A_CmsUI.get().storeCurrentFolder(folder);
             setPathInfo(cms.getSitePath(folder));
             List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, childResources);

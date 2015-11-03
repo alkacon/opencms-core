@@ -31,6 +31,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.ui.actions.CmsAboutDialogAction;
 import org.opencms.ui.actions.CmsAvailabilityDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
+import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
 import org.opencms.ui.actions.CmsCopyMoveDialogAction;
 import org.opencms.ui.actions.CmsCopyToProjectDialogAction;
@@ -137,7 +138,8 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 500, 0),
-            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0)
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0),
+            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 1000, 0)
 
         );
 

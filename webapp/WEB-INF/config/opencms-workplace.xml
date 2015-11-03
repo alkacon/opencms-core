@@ -1131,6 +1131,9 @@
 						<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 							rule="editprovider" />
+						<entry key="GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsShowClassicWorkplace"
+							rule="editprovider" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
 							rule="editprovider" />
 							

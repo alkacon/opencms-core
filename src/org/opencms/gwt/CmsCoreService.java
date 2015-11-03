@@ -805,28 +805,34 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID, boolean)
      */
-    public String getWorkplaceLink(CmsUUID structureId) throws CmsRpcException {
+    public String getWorkplaceLink(CmsUUID structureId, boolean classic) throws CmsRpcException {
 
         String result = null;
+
         try {
             String resourceRootFolder = structureId != null
             ? CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath())
             : getCmsObject().getRequestContext().getSiteRoot();
-            CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
-            String siteRoot = site != null
-            ? site.getSiteRoot()
-            : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
-            ? OpenCms.getSiteManager().getSharedFolder()
-            : "";
-            CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
-            String link = CmsVaadinUtils.getWorkplaceLink()
-                + "#explorer/"
-                + siteRoot
-                + "!"
-                + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
-            result = link;
+            if (classic) {
+                result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+            } else {
+
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
+                String siteRoot = site != null
+                ? site.getSiteRoot()
+                : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
+                ? OpenCms.getSiteManager().getSharedFolder()
+                : "";
+                CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
+                String link = CmsVaadinUtils.getWorkplaceLink()
+                    + "#explorer/"
+                    + siteRoot
+                    + "!"
+                    + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
+                result = link;
+            }
         } catch (Throwable e) {
             error(e);
         }

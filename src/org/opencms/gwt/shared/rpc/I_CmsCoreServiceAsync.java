@@ -164,9 +164,10 @@ public interface I_CmsCoreServiceAsync {
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      *
      * @param structureId the structure id of the resource for which to open the workplace
+     * @param classic if true, gets the link for the old workplace; if false, for the Vaadin based workplace
      * @param callback the callback which receives the result
      */
-    void getWorkplaceLink(CmsUUID structureId, AsyncCallback<String> callback);
+    void getWorkplaceLink(CmsUUID structureId, boolean classic, AsyncCallback<String> callback);
 
     /**
      * Loads the user settings for the current user.<p>

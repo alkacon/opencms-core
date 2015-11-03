@@ -61,7 +61,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                openWorkplace(structureId);
+                openWorkplace(structureId, false);
             }
 
             public A_CmsContextMenuItem getItemWidget(
@@ -83,8 +83,9 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      * Opens the workplace.<p>
      *
      * @param structureId the structure id of the resource for which the workplace should be opened
+     * @param classic if true, opens the old workplace, else the new workplace
      */
-    protected static void openWorkplace(final CmsUUID structureId) {
+    public static void openWorkplace(final CmsUUID structureId, final boolean classic) {
 
         CmsRpcAction<String> callback = new CmsRpcAction<String>() {
 
@@ -95,7 +96,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             public void execute() {
 
                 start(0, true);
-                CmsCoreProvider.getService().getWorkplaceLink(structureId, this);
+                CmsCoreProvider.getService().getWorkplaceLink(structureId, classic, this);
             }
 
             /**
@@ -131,7 +132,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
         int winHeight,
         int winLeft,
         int winTop) /*-{
-
+                    
                     if ($wnd.opener && $wnd.opener != self) {
                     $wnd.opener.location.href = path;
                     $wnd.opener.focus();

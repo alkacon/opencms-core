@@ -28,6 +28,7 @@
 package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsUIServlet;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -79,6 +80,16 @@ public abstract class A_CmsUI extends UI {
     public static CmsObject getCmsObject() {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+    }
+
+    /**
+     * Gets the stored folder.<p>
+     *
+     * @return the stored folder
+     */
+    public CmsResource getStoredFolder() {
+
+        return (CmsResource)(getSession().getAttribute("WP_FOLDER"));
     }
 
     /**
@@ -150,4 +161,15 @@ public abstract class A_CmsUI extends UI {
 
         setContentToDialog("Error", new Label(error));
     }
+
+    /**
+     * Stores the current folder.<p>
+     *
+     * @param folder the current folder
+     */
+    public void storeCurrentFolder(CmsResource folder) {
+
+        getSession().setAttribute("WP_FOLDER", folder);
+    }
+
 }
