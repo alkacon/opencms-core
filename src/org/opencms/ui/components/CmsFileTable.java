@@ -527,6 +527,14 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Updates the file table sorting.<p>
+     */
+    public void updateSorting() {
+
+        m_fileTable.sort();
+    }
+
+    /**
      * Cancels the current edit process.<p>
      */
     void cancelEdit() {
@@ -569,7 +577,7 @@ public class CmsFileTable extends CmsResourceTable {
         m_editItemId = null;
         m_editProperty = null;
         m_editHandler = null;
-
+        updateSorting();
     }
 
     /**

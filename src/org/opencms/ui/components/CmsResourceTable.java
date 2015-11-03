@@ -223,8 +223,24 @@ public class CmsResourceTable extends A_CmsCustomComponent {
 
     }
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    /**
+     * Extending the indexed container to make the number of un-filtered items available.<p>
+     */
+    protected static class ItemContainer extends IndexedContainer {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -2033722658471550506L;
+
+        /**
+         * Returns the number of items in the container, not considering any filters.<p>
+         *
+         * @return the number of items
+         */
+        protected int getItemCount() {
+
+            return getAllItemIds().size();
+        }
+    }
 
     /** Flag to mark columns as initially collapsed.*/
     public static final int COLLAPSED = 1;
@@ -232,8 +248,11 @@ public class CmsResourceTable extends A_CmsCustomComponent {
     /** Flag to mark columns as invisible. */
     public static final int INVISIBLE = 2;
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
     /** The resource data container. */
-    protected IndexedContainer m_container = new IndexedContainer();
+    protected ItemContainer m_container = new ItemContainer();
 
     /** The table used to display the resource data. */
     protected Table m_fileTable = new Table();
@@ -374,7 +393,7 @@ public class CmsResourceTable extends A_CmsCustomComponent {
      */
     public int getItemCount() {
 
-        return m_container.size();
+        return m_container.getItemCount();
     }
 
     /**

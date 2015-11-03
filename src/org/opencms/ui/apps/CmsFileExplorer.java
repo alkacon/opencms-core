@@ -84,8 +84,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -1041,26 +1043,34 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         try {
             CmsResource currentFolderRes = A_CmsUI.getCmsObject().readResource(m_currentFolder, CmsResourceFilter.ALL);
             boolean updateFolder = m_fileTable.getItemCount() < UPDATE_FOLDER_THRESHOLD;
+            Set<CmsUUID> removeIds = new HashSet<CmsUUID>();
+            for (CmsUUID id : ids) {
+                boolean remove = false;
+                try {
+                    CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
+
+                    remove = !CmsResource.getParentFolder(resource.getRootPath()).equals(
+                        currentFolderRes.getRootPath());
+
+                } catch (CmsVfsResourceNotFoundException e) {
+                    remove = true;
+                    LOG.debug("Could not read update resource " + id, e);
+                }
+                if (remove) {
+                    removeIds.add(id);
+                }
+
+            }
             for (CmsUUID id : ids) {
                 if (!updateFolder) {
-                    boolean remove = false;
-                    try {
-                        CmsResource resource = A_CmsUI.getCmsObject().readResource(id, CmsResourceFilter.ALL);
-
-                        remove = !CmsResource.getParentFolder(resource.getRootPath()).equals(
-                            currentFolderRes.getRootPath());
-
-                    } catch (CmsVfsResourceNotFoundException e) {
-                        remove = true;
-                        LOG.debug("Could not read update resource " + id, e);
-                    }
-                    m_fileTable.update(id, remove);
+                    m_fileTable.update(id, removeIds.contains(id));
                 }
                 updateTree(id);
             }
             if (updateFolder) {
-                readFolder(m_currentFolder);
+                updateCurrentFolder(removeIds);
             }
+            m_fileTable.updateSorting();
             m_fileTable.clearSelection();
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
@@ -1252,6 +1262,30 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
                 addTreeItem(cms, resource, parentId, m_treeContainer);
             }
             m_fileTree.markAsDirtyRecursive();
+        } catch (CmsException e) {
+            CmsErrorDialog.showErrorDialog(e);
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Updates the current folder and removes the given resource items.<p>
+     *
+     * @param removeIds the resource item ids to remove
+     */
+    protected void updateCurrentFolder(Collection<CmsUUID> removeIds) {
+
+        for (CmsUUID removeId : removeIds) {
+            m_fileTable.update(removeId, true);
+        }
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            CmsResource folder = cms.readResource(m_currentFolder, FOLDERS);
+            List<CmsResource> childResources = cms.readResources(cms.getSitePath(folder), FILES_N_FOLDERS, false);
+            for (CmsResource child : childResources) {
+                m_fileTable.update(child.getStructureId(), false);
+            }
+
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
             LOG.error(e.getLocalizedMessage(), e);
