@@ -471,7 +471,7 @@ public class CmsNewDialog extends CmsBasicDialog {
 
                 CmsElementView selectedView = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(
                     event.getProperty().getValue());
-                init(selectedView, true);
+                init(selectedView, m_defaultLocationCheckbox.getValue().booleanValue());
                 VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
                     SETTING_STANDARD_VIEW,
                     (event.getProperty().getValue()));
