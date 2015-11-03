@@ -124,20 +124,20 @@
 		background: $v-app-background-color;
 	}
   
-	.o-state-deleted, [class*="-o-state-deleted"] {
+	.o-state-deleted {
 		text-decoration: line-through;
 	}
   
-	.o-state-changed, [class*="-o-state-changed"]{
-		color: $red;
+	.o-state-changed {
+		color: $o-state-changed-color;
 	}
   
-	.o-state-new, [class*="-o-state-new"]{
-		color: $o-button-blue;
+	.o-state-new {
+		color: $o-state-new-color;
 	}
   
-	.o-project-other, [class*="-o-project-other"]{
-		color: $gray;
+	.o-project-other {
+		color: $o-state-other-project-color;
 	}
   
 	.v-formlayout.o-form-less-margin{

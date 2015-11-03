@@ -40,6 +40,27 @@
   [class*="v-tree-node-caption-o-state-"] > div:before{
   	color: $v-font-color;
   }
+  
+  div.v-tree-node-selected {
+  	$font-color: valo-font-color($v-selection-color, 0.9);
+  	color: $font-color;
+  }
+  
+  .v-tree-node-caption-o-state-deleted {
+		text-decoration: line-through;
+	}
+  
+	.v-tree-node-caption-o-state-changed {
+		color: $o-state-changed-color;
+	}
+  
+	.v-tree-node-caption-o-state-new {
+		color: $o-state-new-color;
+	}
+  
+	.v-tree-node-caption-o-project-other {
+		color: $o-state-other-project-color;
+	}
 }
 
 @mixin o-table {
@@ -72,6 +93,10 @@
   	$bg: mix($v-focus-color, $background-color, 20%);
   	background-color: $bg;
   } 
+  
+   .v-selected.v-table-row:hover > .v-table-cell-content, .v-selected.v-table-row-odd:hover > .v-table-cell-content {
+   	background: $v-selection-color;
+   }
   
     .v-table-cell-wrapper > .v-widget.o-resource-icon {
   	margin-top: 0;
@@ -108,4 +133,20 @@
   .v-table .v-selected .o-hover-column:hover div:before{
   	background: lighten($v-selection-color,10%);
   }
+  
+  .v-table-row-o-state-deleted {
+		text-decoration: line-through;
+	}
+  
+	.v-table-row-o-state-changed {
+		color: $o-state-changed-color;
+	}
+  
+	.v-table-row-o-state-new {
+		color: $o-state-new-color;
+	}
+  
+	.v-table-row-o-project-other {
+		color: $o-state-other-project-color;
+	}
 }
