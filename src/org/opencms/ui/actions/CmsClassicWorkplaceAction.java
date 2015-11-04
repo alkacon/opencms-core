@@ -34,6 +34,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -54,7 +55,13 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
 
         CmsObject cms = context.getCms();
         CmsResource storedFolder = A_CmsUI.get().getStoredFolder();
-        String link = CmsExplorer.getWorkplaceExplorerLink(cms, storedFolder.getRootPath());
+        String initPath;
+        if (storedFolder != null) {
+            initPath = storedFolder.getRootPath();
+        } else {
+            initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
+        }
+        String link = CmsExplorer.getWorkplaceExplorerLink(cms, initPath);
         A_CmsUI.get().getPage().setLocation(link);
     }
 
