@@ -4,12 +4,11 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui"
 	xmlns:cmi="urn:import:org.opencms.gwt.client.ui.input">
 	
-	<ui:with field="galleryResources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
 	<g:FlowPanel ui:field="m_tab" styleName="{resources.tabbedPanelCss.tabPanel}">
-		<g:FlowPanel ui:field="m_options" addStyleNames="{galleryResources.categoryDialogCss.tabOptions}" />
-		<cms:CmsScrollPanel ui:field="m_list" addStyleNames="{galleryResources.categoryDialogCss.criteriaList} {resources.generalCss.cornerAll}">
+		<g:FlowPanel ui:field="m_options" addStyleNames="{resources.categoryDialogCss.tabOptions}" />
+		<cms:CmsScrollPanel ui:field="m_list" addStyleNames="{resources.categoryDialogCss.criteriaList} {resources.generalCss.cornerAll}">
 		</cms:CmsScrollPanel>			
 	</g:FlowPanel> 
 </ui:UiBinder> 

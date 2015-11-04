@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.category;
 
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsList;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
@@ -545,11 +546,14 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     public void showIsEmptyLabel() {
 
         CmsSimpleListItem item = new CmsSimpleListItem();
-        Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_TAB_CATEGORIES_IS_EMPTY_0));
+        Label isEmptyLabel = new Label(Messages.get().key(Messages.GUI_CATEGORIES_IS_EMPTY_0));
         item.add(isEmptyLabel);
         m_scrollList.add(item);
     }
 
+    /**
+     * @see org.opencms.gwt.client.ui.I_CmsTruncable#truncate(java.lang.String, int)
+     */
     public void truncate(String textMetricsKey, int clientWidth) {
 
         m_scrollList.truncate(textMetricsKey, clientWidth);
@@ -672,7 +676,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 quickSearch();
             }
         });
-        m_searchButton.setTitle(Messages.get().key(Messages.GUI_TAB_SEARCH_SEARCH_EXISTING_0));
     }
 
     /**

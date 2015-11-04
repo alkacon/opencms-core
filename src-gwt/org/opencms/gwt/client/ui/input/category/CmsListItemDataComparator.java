@@ -72,7 +72,7 @@ public class CmsListItemDataComparator implements Comparator<CmsListItem> {
                 val1 = d1.getParameter(m_paramIndex);
                 val2 = d2.getParameter(m_paramIndex);
             }
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             // ignore class cast exceptions
         }
 

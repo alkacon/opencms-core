@@ -37,6 +37,27 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_ASC_0 = "GUI_SORT_LABEL_TITLE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_DECS_0 = "GUI_SORT_LABEL_TITLE_DECS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_IS_EMPTY_0 = "GUI_CATEGORIES_IS_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
