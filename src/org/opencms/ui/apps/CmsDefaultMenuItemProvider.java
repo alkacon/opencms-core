@@ -46,6 +46,7 @@ import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
+import org.opencms.ui.actions.CmsPublishScheduledDialogAction;
 import org.opencms.ui.actions.CmsResourceInfoAction;
 import org.opencms.ui.actions.CmsSecureExportDialogAction;
 import org.opencms.ui.actions.CmsStealLockAction;
@@ -94,7 +95,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsLockedResourcesAction(), null, 120, 0),
             new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
-            // TODO: add publish scheduled entry here
+            new CmsContextMenuActionItem(new CmsPublishScheduledDialogAction(), null, 400, 0),
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 700, 0),
             new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 900, 0),
             new CmsContextMenuActionItem(
@@ -126,7 +127,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
 
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
             new CmsContextMenuActionItem(new CmsAvailabilityDialogAction(), advanced.getId(), 300, 0),
-            // TODO: add publish scheduled entry here
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
