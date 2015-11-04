@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.actions.CmsAboutDialogAction;
 import org.opencms.ui.actions.CmsAvailabilityDialogAction;
+import org.opencms.ui.actions.CmsCategoriesDialogAction;
 import org.opencms.ui.actions.CmsChangeTypeDialogAction;
 import org.opencms.ui.actions.CmsClassicWorkplaceAction;
 import org.opencms.ui.actions.CmsContextMenuActionItem;
@@ -84,7 +85,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
      */
     public List<I_CmsContextMenuItem> getMenuItems() {
 
-        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2200, 0);
+        CmsSubmenu advanced = new CmsSubmenu("advanced", null, "%(key.GUI_EXPLORER_CONTEXT_ADVANCED_0)", 2400, 0);
 
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
@@ -121,7 +122,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsUndoDialogAction(), null, 1900, 0),
             new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
             new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
-            // TODO: add relations entry here
+            new CmsContextMenuActionItem(new CmsCategoriesDialogAction(), null, 2300, 0),
             // TODO: add permissions entry here
             advanced,
 

@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.input.category.CmsCategoryDialog;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -162,6 +163,22 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     }
 
     /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openCategoriesDialog(java.lang.String)
+     */
+    public void openCategoriesDialog(final String structureId) {
+
+        CmsCategoryDialog dialog = new CmsCategoryDialog(new CmsUUID(structureId), new Command() {
+
+            public void execute() {
+
+                m_changed.add(structureId);
+                close(0);
+            }
+        });
+        dialog.center();
+    }
+
+    /**
      * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openInfoDialog(java.lang.String)
      */
     public void openInfoDialog(String string) {
@@ -185,7 +202,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
             public void execute() {
 
-                m_changed.add("" + structureId);
+                m_changed.add(structureId);
             }
         }, new Command() {
 

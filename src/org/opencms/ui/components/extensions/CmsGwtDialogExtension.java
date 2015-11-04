@@ -113,12 +113,22 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (@SuppressWarnings("unused") InterruptedException e) {
                 // ignore
             }
         }
         m_updateListener.onUpdate(changedStructureIds);
 
+    }
+
+    /**
+     * Opens the categories dialog for the given resource.<p>
+     *
+     * @param resource the resource
+     */
+    public void openCategories(CmsResource resource) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openCategoriesDialog(resource.getStructureId().toString());
     }
 
     /**
