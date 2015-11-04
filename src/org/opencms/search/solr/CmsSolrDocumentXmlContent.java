@@ -80,14 +80,124 @@ import com.google.common.collect.Sets;
  */
 public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentXmlContent.class);
+    /**
+     * The gallery name is determined by resolving the macros in a string which can either come from a field mapped
+     * to the gallery name, or the title, or from default values for those fields. This class is used to select the
+     * value to use and performs the macro substitution.
+     */
+    private static class GalleryNameChooser {
+
+        /** CMS context for this instance. */
+        private CmsObject m_cms;
+
+        /** Current XML content. */
+        private A_CmsXmlDocument m_content;
+
+        /** Default value of field mapped to gallery name. */
+        private String m_defaultGalleryNameValue;
+
+        /** Default value of field mapped to title. */
+        private String m_defaultTitleValue;
+
+        /** Current locale. */
+        private Locale m_locale;
+
+        /** Content value mapped to gallery name. */
+        private String m_mappedGalleryNameValue;
+
+        /** Content value mapped to title. */
+        private String m_mappedTitleValue;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param cms the CMS context
+         * @param content the XML content
+         * @param locale the locale in the XML content
+         */
+        public GalleryNameChooser(CmsObject cms, A_CmsXmlDocument content, Locale locale) {
+            m_cms = cms;
+            m_content = content;
+            m_locale = locale;
+        }
+
+        /**
+         * Selects the gallery name.<p>
+         *
+         * This method assumes that all the available values have been set via the setters of this class.
+         *
+         * @return the gallery name
+         *
+         * @throws CmsException of something goes wrong
+         */
+        public String getGalleryName() throws CmsException {
+
+            String result = null;
+            for (String resultCandidateWithMacros : new String[] {
+                // Prioritize gallery name over title, and actual content values over defaults
+                m_mappedGalleryNameValue, m_defaultGalleryNameValue, m_mappedTitleValue, m_defaultTitleValue}) {
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(resultCandidateWithMacros)) {
+                    CmsGalleryNameMacroResolver resolver = new CmsGalleryNameMacroResolver(m_cms, m_content, m_locale);
+                    result = resolver.resolveMacros(resultCandidateWithMacros);
+                    return result;
+                }
+            }
+            result = m_cms.readPropertyObject(
+                m_content.getFile(),
+                CmsPropertyDefinition.PROPERTY_TITLE,
+                false).getValue();
+            return result;
+        }
+
+        /**
+         * Sets the defaultGalleryNameValue.<p>
+         *
+         * @param defaultGalleryNameValue the defaultGalleryNameValue to set
+         */
+        public void setDefaultGalleryNameValue(String defaultGalleryNameValue) {
+
+            m_defaultGalleryNameValue = defaultGalleryNameValue;
+        }
+
+        /**
+         * Sets the defaultTitleValue.<p>
+         *
+         * @param defaultTitleValue the defaultTitleValue to set
+         */
+        public void setDefaultTitleValue(String defaultTitleValue) {
+
+            m_defaultTitleValue = defaultTitleValue;
+        }
+
+        /**
+         * Sets the mappedGalleryNameValue.<p>
+         *
+         * @param mappedGalleryNameValue the mappedGalleryNameValue to set
+         */
+        public void setMappedGalleryNameValue(String mappedGalleryNameValue) {
+
+            m_mappedGalleryNameValue = mappedGalleryNameValue;
+        }
+
+        /**
+         * Sets the mappedTitleValue.<p>
+         *
+         * @param mappedTitleValue the mappedTitleValue to set
+         */
+        public void setMappedTitleValue(String mappedTitleValue) {
+
+            m_mappedTitleValue = mappedTitleValue;
+        }
+    }
+
+    /** Mapping name used to indicate that the value should be used for the gallery name. */
+    public static final String MAPPING_GALLERY_NAME = "galleryName";
 
     /** The solr document type name for xml-contents. */
     public static final String TYPE_XMLCONTENT_SOLR = "xmlcontent-solr";
 
-    /** Mapping name used to indicate that the value should be used for the gallery name. */
-    public static final String MAPPING_GALLERY_NAME = "galleryName";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSolrDocumentXmlContent.class);
 
     /**
      * Public constructor.<p>
@@ -155,15 +265,12 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
 
         // loop over the locales of the content
         for (Locale locale : xmlContent.getLocales()) {
+            GalleryNameChooser galleryNameChooser = new GalleryNameChooser(cms, xmlContent, locale);
             Map<String, String> localeItems = new HashMap<String, String>();
             StringBuffer textContent = new StringBuffer();
             // store the locales of the content as space separated field
             locales.append(locale.toString());
             locales.append(' ');
-
-            boolean hasTitleMapping = false;
-            String galleryNameTemplate = null;
-
             // loop over the available element paths of the current content locale
             List<String> paths = xmlContent.getNames(locale);
             for (String xpath : paths) {
@@ -210,89 +317,55 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
                                     // search index field names and property names are different ["Title" vs. "title"]
                                     String fieldName = null;
                                     if (CmsPropertyDefinition.PROPERTY_TITLE.equals(propertyName)) {
-                                        // field is title
-                                        hasTitleMapping = true;
-                                        fieldName = CmsSearchField.FIELD_TITLE_UNSTORED;
+                                        galleryNameChooser.setMappedTitleValue(extracted);
                                     } else {
                                         // if field is not title, it must be description
                                         fieldName = CmsSearchField.FIELD_DESCRIPTION;
+                                        fieldMappings.put(
+                                            CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale) + "_s",
+                                            extracted);
                                     }
-                                    fieldMappings.put(
-                                        CmsSearchFieldConfiguration.getLocaleExtendedName(fieldName, locale) + "_s",
-                                        extracted);
                                 }
-                            } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
-                                galleryNameTemplate = value.getPlainText(cms);
-                                LOG.info(
-                                    "Found gallery name template for "
-                                        + resource.getRootPath()
-                                        + ":"
-                                        + galleryNameTemplate);
-
                             }
+                        } else if (mapping.equals(MAPPING_GALLERY_NAME)) {
+                            galleryNameChooser.setMappedGalleryNameValue(value.getPlainText(cms));
                         }
                     }
                 }
             }
-            if (galleryNameTemplate == null) {
-                // In the loop above, we only looked at mappings for values which are actually there.
-                // But the galleryName mapping should use the configured default value if the value is not
-                // present in the content. So we need to find the xpath for which the galleryName mapping is defined,
-                // if any.
 
-                Set<String> xpaths = Sets.newHashSet();
-                collectSchemaXpathsForSimpleValues(cms, xmlContent.getContentDefinition(), "", xpaths);
-                for (String xpath : xpaths) {
-                    // mappings always are stored with indexes, so we add them to the xpath
-                    List<String> mappings = xmlContent.getHandler().getMappings(CmsXmlUtils.createXpath(xpath, 1));
-                    for (String mapping : mappings) {
+            Set<String> xpaths = Sets.newHashSet();
+            collectSchemaXpathsForSimpleValues(cms, xmlContent.getContentDefinition(), "", xpaths);
+            for (String xpath : xpaths) {
+                // mappings always are stored with indexes, so we add them to the xpath
+                List<String> mappings = xmlContent.getHandler().getMappings(CmsXmlUtils.createXpath(xpath, 1));
+                for (String mapping : mappings) {
+
+                    if (mapping.equals(MAPPING_GALLERY_NAME)
+                        || mapping.equals(
+                            I_CmsXmlContentHandler.MAPTO_PROPERTY + CmsPropertyDefinition.PROPERTY_TITLE)) {
+                        String defaultValue = xmlContent.getHandler().getDefault(
+                            cms,
+                            xmlContent.getFile(),
+                            null,
+                            xpath,
+                            locale);
                         if (mapping.equals(MAPPING_GALLERY_NAME)) {
-                            galleryNameTemplate = xmlContent.getHandler().getDefault(
-                                cms,
-                                xmlContent.getFile(),
-                                null,
-                                xpath,
-                                locale);
-                            LOG.info(
-                                "Using default value for gallery name template in "
-                                    + resource.getRootPath()
-                                    + ": "
-                                    + galleryNameTemplate);
-                            break;
+                            galleryNameChooser.setDefaultGalleryNameValue(defaultValue);
+                        } else {
+                            galleryNameChooser.setDefaultTitleValue(defaultValue);
                         }
                     }
                 }
             }
 
-            if (!hasTitleMapping) {
-                // in case no title mapping present, use the title property for all locales
-                String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
-                fieldMappings.put(
-                    CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale)
-                        + "_s",
-                    title);
-            }
+            final String galleryTitleFieldKey = CmsSearchFieldConfiguration.getLocaleExtendedName(
+                CmsSearchField.FIELD_TITLE_UNSTORED,
+                locale) + "_s";
+            final String galleryNameValue = galleryNameChooser.getGalleryName();
+            fieldMappings.put(galleryTitleFieldKey, galleryNameValue);
 
             /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-            if (galleryNameTemplate != null) {
-                CmsGalleryNameMacroResolver macroResolver = new CmsGalleryNameMacroResolver(cms, xmlContent, locale);
-                String galleryName = macroResolver.resolveMacros(galleryNameTemplate);
-                LOG.info(
-                    "Using gallery name mapping '"
-                        + galleryNameTemplate
-                        + "' for '"
-                        + resource.getRootPath()
-                        + "' in locale "
-                        + locale
-                        + ", resulting in gallery name '"
-                        + galleryName
-                        + "'");
-                fieldMappings.put(
-                    CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_TITLE_UNSTORED, locale)
-                        + "_s",
-                    galleryName);
-            }
 
             // handle the textual content
             if (textContent.length() > 0) {
@@ -308,6 +381,7 @@ public class CmsSolrDocumentXmlContent extends A_CmsVfsDocument {
         // add the locales that have been indexed for this document as item and return the extraction result
         // fieldMappings.put(CmsSearchField.FIELD_RESOURCE_LOCALES, locales.toString().trim());
         return new CmsExtractionResult(resourceLocale, items, fieldMappings);
+
     }
 
     /**
