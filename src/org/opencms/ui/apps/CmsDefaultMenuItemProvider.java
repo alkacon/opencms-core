@@ -49,6 +49,7 @@ import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.actions.CmsPublishQueueDialogAction;
 import org.opencms.ui.actions.CmsPublishScheduledDialogAction;
 import org.opencms.ui.actions.CmsResourceInfoAction;
+import org.opencms.ui.actions.CmsRestoreDeletedAction;
 import org.opencms.ui.actions.CmsSecureExportDialogAction;
 import org.opencms.ui.actions.CmsStealLockAction;
 import org.opencms.ui.actions.CmsTouchDialogAction;
@@ -131,6 +132,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsSecureExportDialogAction(), advanced.getId(), 500, 0),
             new CmsContextMenuActionItem(new CmsChangeTypeDialogAction(), advanced.getId(), 700, 0),
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
+            new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 
             // TODO: add history entry here
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),

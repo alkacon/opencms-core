@@ -415,6 +415,9 @@
 	
 	.o-resource-info-title {
 		margin-top: -1px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		word-break: keep-all; 
 	}
 		
 }

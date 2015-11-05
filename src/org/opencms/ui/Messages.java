@@ -72,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOGIN_OPTIONS_SHOW_0 = "GUI_LOGIN_OPTIONS_SHOW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_CREATE_IN_PATH_1 = "GUI_NEW_CREATE_IN_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0 = "GUI_NEWRESOURCEDIALOG_CURRENT_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -138,6 +141,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_RESOURCEINFO_LIST_TITLE_0 = "GUI_RESOURCEINFO_LIST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTOREDELETED_DATE_VERSION_2 = "GUI_RESTOREDELETED_DATE_VERSION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTOREDELETED_INCLUDE_SUBFOLDERS_0 = "GUI_RESTOREDELETED_INCLUDE_SUBFOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESTOREDELETED_SELECT_ALL_0 = "GUI_RESTOREDELETED_SELECT_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEDULER_ADD_PARAMETER_0 = "GUI_SCHEDULER_ADD_PARAMETER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -178,9 +190,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEW_CREATE_IN_PATH_1 = "GUI_NEW_CREATE_IN_PATH_1";
 
     /**
      * Hides the public constructor for this utility class.<p>
