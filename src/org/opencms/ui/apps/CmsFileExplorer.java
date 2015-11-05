@@ -96,6 +96,7 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 
+import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -1083,6 +1084,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     public void updateAll() {
 
         readFolder(m_currentFolder);
+        Set<Object> ids = Sets.newHashSet();
+        ids.addAll(m_fileTree.getItemIds());
+        for (Object id : ids) {
+            updateTree((CmsUUID)id);
+        }
     }
 
     /**
@@ -1495,6 +1501,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         if (parentId != null) {
+            container.setChildrenAllowed(parentId, true);
             container.setParent(resource.getStructureId(), parentId);
         }
     }
