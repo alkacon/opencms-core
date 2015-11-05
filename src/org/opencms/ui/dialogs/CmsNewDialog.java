@@ -389,7 +389,9 @@ public class CmsNewDialog extends CmsBasicDialog {
                     OpenCms.getResourceManager().getResourceType(m_selectedType.getType()),
                     null,
                     Lists.<CmsProperty> newArrayList());
-                cms.unlockResource(createdResource);
+                if (!cms.getLock(createdResource).isInherited()) {
+                    cms.unlockResource(createdResource);
+                }
                 m_createdResource = createdResource;
                 CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
                     UI.getCurrent(),
