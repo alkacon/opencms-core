@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,7 +64,6 @@ import com.vaadin.ui.UI;
 /**
  * Servlet for workplace UI requests.<p>
  */
-@WebServlet(value = {"/workplace/*", "/opencms-login/*", "/VAADIN/*"}, asyncSupported = true)
 public class CmsUIServlet extends VaadinServlet {
 
     /** The static log object for this class. */

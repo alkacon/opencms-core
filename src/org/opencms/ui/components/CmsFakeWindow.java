@@ -50,6 +50,9 @@ public class CmsFakeWindow extends CustomLayout {
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFakeWindow.class);
 
+    /** The content location. */
+    public static final String LOCATION_CONTENT = "content";
+
     /** The window title. */
     private String m_windowTitle;
 

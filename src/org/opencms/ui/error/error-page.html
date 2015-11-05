@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="X-UA-Compatible"
+        content="IE=edge">
+  <meta http-equiv="Content-Type"
+        content="text/html; charset=UTF-8">
+
+  <title>%(title)</title>
+</head>
+
+<body class="opencms">
+  <!-- Loads the Vaadin widget set, etc. -->
+  <script type="text/javascript"
+          src="%(vaadinBootstrap)"></script>
+   
+
+  <!-- GWT requires an invisible history frame. It is   -->
+  <!-- needed for page/fragment history in the browser. -->
+ <!--  <iframe tabindex="-1" id="__gwt_historyFrame"
+          style="position: absolute; width: 0; height: 0;
+                 border: 0; overflow: hidden"
+          src="javascript:false"></iframe>  -->  
+  
+  <div id="error-page" class="v-app" style="position: absolute; left: 0; right: 0; top:0; bottom: 0;">
+	    <!-- Optional placeholder for the loading indicator -->
+	    <div class=" v-app-loading">%(loadingHtml)</div>
+	    <!-- Alternative fallback text -->
+	    <noscript>You have to enable javascript in your browser to
+	              use an application built with Vaadin.</noscript>
+	  </div>
+
+  
+  <script type="text/javascript">//<![CDATA[
+    if (!window.vaadin)
+        alert("Failed to load the bootstrap JavaScript: "+
+              "VAADIN/vaadinBootstrap.js");
+	
+    /* The UI Configuration */
+	vaadin.initApplication("error-page", {
+	    "browserDetailsUrl": "%(vaadinServlet)",
+	    "serviceUrl": "%(vaadinServlet)",
+	    "widgetset": "org.opencms.ui.WidgetSet",
+	    "theme": "opencms",
+	    "versionInfo": {"vaadinVersion": "%(vaadinVersion)"},
+	    "vaadinDir": "%(vaadinDir)",
+	    "heartbeatInterval": 300,
+	    "debug": false,
+	    "standalone": false,
+	    "authErrMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Authentication problem"
+	    },
+	    "comErrMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Communication problem"
+	    },
+	    "sessExpMsg": {
+	        "message": "Take note of any unsaved data, "+
+	                   "and <u>click here<\/u> to continue.",
+	        "caption": "Session Expired"
+	    }
+	});//]] >
+  </script>
+</body>
+</html>

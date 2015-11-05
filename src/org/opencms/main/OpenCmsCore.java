@@ -65,7 +65,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsVfsBundleManager;
 import org.opencms.importexport.CmsImportExportManager;
-import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.CmsTemplateContextManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
@@ -96,6 +95,7 @@ import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.ui.apps.CmsWorkplaceAppManager;
+import org.opencms.ui.error.CmsErrorUI;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -187,9 +187,7 @@ public final class OpenCmsCore {
     /** The object used for resolving database user credentials. */
     private I_CmsCredentialsResolver m_credentialsResolver;
 
-    private CmsWorkplaceAppManager m_workplaceAppManager;
-
-   /** List of configured directory default file names. */
+    /** List of configured directory default file names. */
     private List<String> m_defaultFiles;
 
     /** The default user and group names. */
@@ -236,9 +234,6 @@ public final class OpenCmsCore {
 
     /** The publish manager instance. */
     private CmsPublishManager m_publishManager;
-
-    /** The VFS bundle manager. */
-    private CmsVfsBundleManager m_vfsBundleManager;
 
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
@@ -294,8 +289,14 @@ public final class OpenCmsCore {
     /** The runtime validation handler. */
     private I_CmsValidationHandler m_validationHandler;
 
+    /** The VFS bundle manager. */
+    private CmsVfsBundleManager m_vfsBundleManager;
+
     /** The workflow manager instance. */
     private I_CmsWorkflowManager m_workflowManager;
+
+    /** The workplace app manager. */
+    private CmsWorkplaceAppManager m_workplaceAppManager;
 
     /** The workplace manager contains information about the global workplace settings. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -339,6 +340,7 @@ public final class OpenCmsCore {
                 m_instance = new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this is all we need
+                LOG.debug(e.getMessage(), e);
             }
         }
         return m_instance;
@@ -1112,7 +1114,7 @@ public final class OpenCmsCore {
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
-        } catch (SecurityException se) {
+        } catch (@SuppressWarnings("unused") SecurityException se) {
             // security manager is active, but we will try other options before giving up
         }
         Security.addProvider(new CryptixCrypto());
@@ -2122,33 +2124,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Generates a formated exception output.<p>
-     *
-     * Because the exception could be thrown while accessing the system files,
-     * the complete HTML code must be added here!<p>
-     *
-     * @param t the caught Exception
-     * @param request the servlet request
-     * @param cms the CmsObject
-     * @return String containing the HTML code of the error message
-     */
-    private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
-
-        String errorUri = CmsFlexController.getThrowableResourceUri(request);
-        if (errorUri == null) {
-            errorUri = cms.getRequestContext().getUri();
-        }
-        // try to get the exception root cause
-        Throwable cause = CmsFlexController.getThrowable(request);
-        if (cause == null) {
-            cause = t;
-        }
-        CmsErrorBean errorBean = new CmsErrorBean(cms, cause);
-        errorBean.setParamAction(errorUri);
-        return errorBean.toHtml();
-    }
-
-    /**
      * This method performs the error handling for OpenCms.<p>
      *
      * @param cms the current cms context, might be null !
@@ -2177,7 +2152,7 @@ public final class OpenCmsCore {
             if (canWrite) {
                 try {
                     m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
-                } catch (IOException ioe) {
+                } catch (@SuppressWarnings("unused") IOException ioe) {
                     // there is nothing we can do about this
                 }
                 return;
@@ -2225,10 +2200,13 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (!isGuest && (cms != null) && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
+            if ((status != 404)
+                && !isGuest
+                && (cms != null)
+                && !cms.getRequestContext().getCurrentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
-                    res.getWriter().print(createErrorBox(t, req, cms));
+                    res.getWriter().print(CmsErrorUI.getBootstrapPage(cms, t, req));
                 } catch (IOException e) {
                     // can be ignored
                     LOG.error(e.getLocalizedMessage(), e);
@@ -2292,7 +2270,8 @@ public final class OpenCmsCore {
                 Messages.get().getBundle().key(
                     Messages.ERR_INVALID_INIT_USER_2,
                     OpenCms.getDefaultUsers().getUserAdmin(),
-                    null));
+                    null),
+                e);
         }
         // get the requested resource
         String path = adminCms.getRequestContext().getUri();
