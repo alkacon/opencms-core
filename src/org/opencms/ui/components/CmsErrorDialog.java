@@ -92,6 +92,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_icon.addStyleName(ValoTheme.LABEL_HUGE);
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
+        m_errorLabel.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_errorMessage.setValue(message);
         m_okButton.addClickListener(new ClickListener() {
 
@@ -136,7 +137,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
      */
     public static void showErrorDialog(String message, Throwable t, Runnable onClose) {
 
-        Window window = prepareWindow(DialogWidth.wide);
+        Window window = prepareWindow(DialogWidth.max);
         window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
         window.setContent(new CmsErrorDialog(message, t, onClose, window));
         A_CmsUI.get().addWindow(window);
