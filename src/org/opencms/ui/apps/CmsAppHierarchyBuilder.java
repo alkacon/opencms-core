@@ -49,6 +49,9 @@ import com.google.common.collect.Sets;
  */
 public class CmsAppHierarchyBuilder {
 
+    /** The logger instance for this tree. */
+    private static final Log LOG = CmsLog.getLog(CmsAppHierarchyBuilder.class);
+
     /** The list of available categories. */
     private List<CmsAppCategory> m_appCategoryList = Lists.newArrayList();
 
@@ -60,9 +63,6 @@ public class CmsAppHierarchyBuilder {
 
     /** The root tree node. */
     private CmsAppCategoryNode m_rootNode = new CmsAppCategoryNode();
-
-    /** The logger instance for this tree. */
-    private static final Log LOG = CmsLog.getLog(CmsAppHierarchyBuilder.class);
 
     /**
      * Adds an app configuration.<p>
@@ -171,7 +171,7 @@ public class CmsAppHierarchyBuilder {
 
         CmsAppCategoryNode node = m_nodes.get(appConfig.getAppCategory());
         if (node == null) {
-            LOG.error(
+            LOG.info(
                 "Missing parent ["
                     + appConfig.getAppCategory()
                     + "] for "
