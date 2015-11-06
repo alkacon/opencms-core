@@ -182,8 +182,13 @@ div.itemIcon{
     display: inline;
 }
 div.titleRow{
-	margin-left: 32px;
+	margin-left: 38px;
 }
+
+.itemContainer .itemSubtitle {
+	margin-left: 6px; 
+}
+
 
 .cmsHovering .buttonPanel{
 	display: block;

@@ -21,7 +21,7 @@
 		    	  	<cmsInput:CmsLabel ui:field="m_title" addStyleNames="{resources.listItemWidgetCss.itemTitle}"/>
 		    	  </g:FlowPanel>
 		    	  <g:Label /><!-- Abuse label to force a newline. -->
-		    	  <cmsInput:CmsLabel ui:field="m_subtitle" addStyleNames="{resources.generalCss.inlineBlock}" />
+		    	  <cmsInput:CmsLabel ui:field="m_subtitle" addStyleNames="{resources.generalCss.inlineBlock}{resources.listItemWidgetCss.itemSubtitle}" />
 		    	</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel styleName="{resources.listItemWidgetCss.itemAdditional}" ui:field="m_additionalInfo"></g:FlowPanel>

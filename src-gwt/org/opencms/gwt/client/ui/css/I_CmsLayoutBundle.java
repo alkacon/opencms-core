@@ -1365,6 +1365,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
         String stateIcon();
 
         /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String itemSubtitle();
+
+        /**
          * CSS class accessor.<p>
          *
          * @return a CSS class

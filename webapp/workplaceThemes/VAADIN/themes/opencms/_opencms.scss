@@ -396,6 +396,12 @@
 			width: 80% !important;   
 		}
 	}
+	
+	.o-resource-info-horizontal {
+		& > .v-spacing, & > .v-expand > .v-spacing { 
+			width: 6px;
+		}
+	}
 		
 	.o-workplace-maxwidth {
 		max-width: 1200px; 
@@ -418,6 +424,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		word-break: keep-all; 
+	}
+	
+	.o-resource-info-subtitle {
+		margin-top: -1px;
 	}
 		
 }
