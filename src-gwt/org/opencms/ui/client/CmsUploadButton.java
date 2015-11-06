@@ -91,7 +91,9 @@ public class CmsUploadButton extends VButton implements I_CmsUploadButton {
         m_buttonHandler.initializeFileInput(m_fileInput);
         getElement().appendChild(m_fileInput.getElement());
         m_fileInput.sinkEvents(Event.ONCHANGE);
-        m_fileInput.onAttach();
+        if (isAttached()) {
+            m_fileInput.onAttach();
+        }
         return previous;
     }
 
@@ -125,7 +127,7 @@ public class CmsUploadButton extends VButton implements I_CmsUploadButton {
     protected void doAttachChildren() {
 
         super.doAttachChildren();
-        if (m_fileInput != null) {
+        if ((m_fileInput != null) && !m_fileInput.isAttached()) {
             m_fileInput.onAttach();
         }
     }
