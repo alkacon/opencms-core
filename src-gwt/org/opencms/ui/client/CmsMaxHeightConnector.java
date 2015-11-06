@@ -27,13 +27,13 @@
 
 package org.opencms.ui.client;
 
-import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 import org.opencms.ui.shared.components.CmsMaxHeightState;
 import org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ServerConnector;
@@ -60,6 +60,9 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
 
     /** The currently set height. */
     private int m_currentHeight;
+
+    /** Flag indicating the required height is currently being evaluated. */
+    private boolean m_evaluating;
 
     /**
      * Constructor.<p>
@@ -95,10 +98,18 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     protected void handleMutation() {
 
         int maxHeight = getState().getMaxHeight();
-        if ((m_currentHeight > 0)
-            && ((CmsPositionBean.getInnerDimensions(m_widget.getElement()).getHeight() + 10) < m_currentHeight)) {
-            m_currentHeight = -1;
-            m_rpc.fixHeight(m_currentHeight);
+        if (m_currentHeight > 0) {
+            removeObserver();
+            // clear height
+            m_widget.getElement().getStyle().clearHeight();
+            if ((m_widget.getOffsetHeight() + 10) < m_currentHeight) {
+                m_currentHeight = -1;
+                m_rpc.fixHeight(m_currentHeight);
+            } else {
+                m_widget.getElement().getStyle().setHeight(m_currentHeight, Unit.PX);
+            }
+
+            addMutationObserver(m_widget.getElement());
         } else if ((maxHeight > 0) && (m_widget.getOffsetHeight() > maxHeight)) {
             m_currentHeight = maxHeight;
             m_rpc.fixHeight(m_currentHeight);
@@ -121,7 +132,8 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
         var config = {
             attributes : true,
             childList : true,
-            characterData : true
+            characterData : true,
+            subtree : true
         };
 
         // pass in the target node, as well as the observer options
