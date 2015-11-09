@@ -101,12 +101,6 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
     /** Additional info item HTML. */
     public static class AdditionalInfoItem extends Composite implements I_CmsTruncable {
 
-        /** Text metrics key. */
-        private static final String TMA_TITLE = "AddInfoTitle";
-
-        /** Text metrics key. */
-        private static final String TMA_VALUE = "AddInfoValue";
-
         /** The title element. */
         private CmsLabel m_titleLabel;
 
@@ -135,7 +129,9 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
             super();
             FlowPanel panel = new FlowPanel();
             initWidget(panel);
+
             I_CmsListItemWidgetCss style = I_CmsLayoutBundle.INSTANCE.listItemWidgetCss();
+            panel.addStyleName(style.itemInfoRow());
             // create title
             m_titleLabel = new CmsLabel(CmsStringUtil.isEmptyOrWhitespaceOnly(title) ? "" : title + ":");
             m_titleLabel.addStyleName(style.itemAdditionalTitle());
@@ -180,9 +176,7 @@ HasClickHandlers, HasDoubleClickHandlers, HasMouseOverHandlers, I_CmsTruncable {
         public void truncate(String textMetricsPrefix, int widgetWidth) {
 
             int titleWidth = widgetWidth / 4;
-            m_titleLabel.truncate(textMetricsPrefix + TMA_TITLE, titleWidth);
-            // the rest
-            m_valueLabel.truncate(textMetricsPrefix + TMA_VALUE, widgetWidth - titleWidth - 15);
+            m_titleLabel.setWidth(titleWidth + "px");
         }
     }
 

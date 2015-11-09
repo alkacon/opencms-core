@@ -219,8 +219,14 @@ div.itemAdditional{
 	padding: 5px 0px 0px 4px;
 }
 
+.itemInfoRow {
+	display: -ms-flex;
+	display: flex;
+}
+
+
+
 div.itemAdditionalTitle{
-	float:left;
 	height:16px;
 	margin-right:5px;
 	overflow:hidden;
@@ -229,7 +235,8 @@ div.itemAdditionalTitle{
 }
 
 div.itemAdditionalValue{
-	margin-left:95px;
+	-ms-flex: 1; 
+	flex: 1;
 	vertical-align:top;
 	height:16px;
 }

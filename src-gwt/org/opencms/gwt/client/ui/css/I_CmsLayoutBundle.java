@@ -1271,7 +1271,21 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String itemInfoRow();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String itemRed();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String itemSubtitle();
 
         /**
          * Access method.<p>
@@ -1363,13 +1377,6 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return a CSS class
          **/
         String stateIcon();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String itemSubtitle();
 
         /**
          * CSS class accessor.<p>
