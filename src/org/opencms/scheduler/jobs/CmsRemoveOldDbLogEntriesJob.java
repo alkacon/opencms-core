@@ -63,9 +63,9 @@ public class CmsRemoveOldDbLogEntriesJob implements I_CmsScheduledJob {
     public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         String maxAgeStr = parameters.get(PARAM_MAX_AGE);
-        int maxAgeHours = parseMaxAge(maxAgeStr);
+        long maxAgeHours = parseMaxAge(maxAgeStr);
         if (maxAgeHours > 0) {
-            long maxAgeMillis = maxAgeHours * 3600 * 1000;
+            long maxAgeMillis = maxAgeHours * 3600L * 1000L;
             long now = System.currentTimeMillis();
             CmsLogFilter filter = CmsLogFilter.ALL.filterTo(now - maxAgeMillis);
             LOG.info("Removing all entries from CMS_LOG older than " + maxAgeHours + " hours...");
