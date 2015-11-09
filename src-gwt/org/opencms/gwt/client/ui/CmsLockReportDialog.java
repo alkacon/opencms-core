@@ -109,13 +109,18 @@ public final class CmsLockReportDialog extends CmsPopup {
     /**
      * Constructor.<p>
      *
+     * @param title the title for the dialog (a default value will be used if this is null)
      * @param structureId the structure id of the resource to unlock
      * @param onUnlock command to execute after unlocking
      * @param optionalOnCloseCommand optional action to execute when the dialog is closed
      */
-    private CmsLockReportDialog(CmsUUID structureId, Command onUnlock, final Command optionalOnCloseCommand) {
+    private CmsLockReportDialog(
+        String title,
+        CmsUUID structureId,
+        Command onUnlock,
+        final Command optionalOnCloseCommand) {
 
-        super(Messages.get().key(Messages.GUI_LOCK_REPORT_TITLE_0));
+        super(title != null ? title : Messages.get().key(Messages.GUI_LOCK_REPORT_TITLE_0));
         m_structureId = structureId;
         m_onUnlock = onUnlock;
         m_closeButton = new CmsPushButton();
@@ -166,16 +171,22 @@ public final class CmsLockReportDialog extends CmsPopup {
     /**
      * Opens the lock report dialog for the given resource.<p>
      *
+     * @param title the dialog title (will use a default value if null)
      * @param structureId the structure id of the resource
      * @param onUnlock the command to execute after the has been unlocked
      * @param optionalOnCloseCommand the optional command to execute when the lock report dialog is closed
      */
     public static void openDialogForResource(
+        String title,
         final CmsUUID structureId,
         Command onUnlock,
         Command optionalOnCloseCommand) {
 
-        final CmsLockReportDialog dialog = new CmsLockReportDialog(structureId, onUnlock, optionalOnCloseCommand);
+        final CmsLockReportDialog dialog = new CmsLockReportDialog(
+            title,
+            structureId,
+            onUnlock,
+            optionalOnCloseCommand);
         CmsRpcAction<CmsLockReportInfo> action = new CmsRpcAction<CmsLockReportInfo>() {
 
             @Override

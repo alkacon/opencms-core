@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsPrefetchSerializationPolicy;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
@@ -113,7 +114,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }
@@ -148,7 +149,8 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
      */
     public void openLockReport(CmsResource resource) {
 
-        getRpcProxy(I_CmsGwtDialogClientRpc.class).openLockReport(resource.getStructureId().toString());
+        String dialogTitle = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_LOCKREPORT_0);
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openLockReport(dialogTitle, resource.getStructureId().toString());
     }
 
     /**

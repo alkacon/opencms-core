@@ -33,7 +33,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
-import org.opencms.workplace.explorer.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
@@ -72,7 +71,7 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_COPY_MOVE_0);
+        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0);
     }
 
     /**

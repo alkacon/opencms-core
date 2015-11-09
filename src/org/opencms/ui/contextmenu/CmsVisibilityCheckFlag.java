@@ -37,6 +37,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check that the resource is a file. */
     file,
 
+    /** Check that the resource is a folder. */
+    folder,
+
     /** Checks if an editor is available. */
     haseditor,
 

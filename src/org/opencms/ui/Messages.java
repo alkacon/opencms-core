@@ -51,6 +51,21 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHANGE_PW_FIELD2_0 = "GUI_CHANGE_PW_FIELD2_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_DELETE_0 = "GUI_DIALOGTITLE_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_LOCKREPORT_0 = "GUI_DIALOGTITLE_LOCKREPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_SECUREEXPORT_0 = "GUI_DIALOGTITLE_SECUREEXPORT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOGTITLE_TOUCH_0 = "GUI_DIALOGTITLE_TOUCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
 
     /** Message constant for key in the resource bundle. */

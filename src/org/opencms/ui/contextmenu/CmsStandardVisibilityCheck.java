@@ -29,6 +29,7 @@ package org.opencms.ui.contextmenu;
 
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.folder;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mainmenu;
@@ -136,7 +137,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         inproject);
 
     /** Default check for 'locked resources' action. */
-    public static final CmsStandardVisibilityCheck SHOW_LOCKS = new CmsStandardVisibilityCheck(notonline, inproject);
+    public static final CmsStandardVisibilityCheck SHOW_LOCKS = new CmsStandardVisibilityCheck(
+        notonline,
+        inproject,
+        folder);
 
     /** Permission check for stealing locks. */
     public static final I_CmsHasMenuItemVisibility STEAL_LOCK = new CmsStandardVisibilityCheck(
@@ -231,6 +235,10 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
             if (flag(file) && !resource.isFile()) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(folder) && resource.isFile()) {
                 return VISIBILITY_INVISIBLE;
             }
 

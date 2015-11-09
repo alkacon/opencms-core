@@ -59,9 +59,10 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     /**
      * Opens the lock report dialog.<p>
      *
+     * @param dialogTitle the dialog title
      * @param structureId the structure id of the resource to open the dialog for
      */
-    void openLockReport(String structureId);
+    void openLockReport(String dialogTitle, String structureId);
 
     /**
      * Opens the publish dialog with the given publish data.<p>

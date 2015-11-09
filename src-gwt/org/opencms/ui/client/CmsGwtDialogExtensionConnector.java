@@ -194,11 +194,11 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     }
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openLockReport(java.lang.String)
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openLockReport(java.lang.String, java.lang.String)
      */
-    public void openLockReport(final String structureId) {
+    public void openLockReport(String dialogTitle, final String structureId) {
 
-        CmsLockReportDialog.openDialogForResource(new CmsUUID(structureId), new Command() {
+        CmsLockReportDialog.openDialogForResource(dialogTitle, new CmsUUID(structureId), new Command() {
 
             public void execute() {
 

@@ -726,7 +726,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void openLockReportForElement(final CmsContainerPageElementPanel element) {
 
-        CmsLockReportDialog.openDialogForResource(element.getStructureId(), new Command() {
+        CmsLockReportDialog.openDialogForResource(null, element.getStructureId(), new Command() {
 
             public void execute() {
 

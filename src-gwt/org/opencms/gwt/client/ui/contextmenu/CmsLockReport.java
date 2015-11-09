@@ -68,7 +68,7 @@ public class CmsLockReport implements I_CmsHasContextMenuCommand, I_CmsContextMe
         if (m_menuHandler instanceof I_CmsToolbarHandler) {
             ((I_CmsToolbarHandler)m_menuHandler).deactivateCurrentButton();
         }
-        CmsLockReportDialog.openDialogForResource(structureId, new Command() {
+        CmsLockReportDialog.openDialogForResource(null, structureId, new Command() {
 
             public void execute() {
 

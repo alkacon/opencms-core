@@ -29,6 +29,7 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -57,6 +58,15 @@ public class CmsDeleteDialogAction extends A_CmsWorkplaceAction {
         if (!hasBlockingLocks(context)) {
             openDialog(new CmsDeleteDialog(context), context);
         }
+    }
+
+    /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
+     */
+    @Override
+    public String getDialogTitle() {
+
+        return CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_DIALOGTITLE_DELETE_0);
     }
 
     /**

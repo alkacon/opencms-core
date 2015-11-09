@@ -58,6 +58,17 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
     private static final Log LOG = CmsLog.getLog(A_CmsWorkplaceAction.class);
 
     /**
+     * Gets the title to use for the dialog.<p>
+     *
+     * @return the title to use for the dialog
+     */
+    public String getDialogTitle() {
+
+        return getTitle();
+
+    }
+
+    /**
      * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.ui.I_CmsDialogContext)
      */
     public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
@@ -139,6 +150,6 @@ public abstract class A_CmsWorkplaceAction implements I_CmsWorkplaceAction {
      */
     protected void openDialog(CmsBasicDialog dialog, I_CmsDialogContext context) {
 
-        context.start(getTitle(), dialog);
+        context.start(getDialogTitle(), dialog);
     }
 }
