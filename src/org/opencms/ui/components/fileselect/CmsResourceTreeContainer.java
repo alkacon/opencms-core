@@ -27,6 +27,8 @@
 
 package org.opencms.ui.components.fileselect;
 
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
+
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -41,6 +43,7 @@ import org.opencms.ui.components.CmsResourceTableProperty;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +78,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         addContainerProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME, String.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
         addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
     }
 
@@ -93,10 +97,11 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
     /**
      * Adds an item to the folder tree.<p>
      *
+     * @param cms the CMS context
      * @param resource the folder resource
      * @param parentId the parent folder id
      */
-    public void addTreeItem(CmsResource resource, CmsUUID parentId) {
+    public void addTreeItem(CmsObject cms, CmsResource resource, CmsUUID parentId) {
 
         Item resourceItem = getItem(resource.getStructureId());
         if (resourceItem == null) {
@@ -111,6 +116,8 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON).setValue(
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         if (resource.isFile()) {
             setChildrenAllowed(resource.getStructureId(), false);
         }
@@ -128,7 +135,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
      */
     public void initRoot(CmsObject cms, CmsResource root, CmsResourceFilter filter) {
 
-        addTreeItem(root, null);
+        addTreeItem(cms, root, null);
         readTreeLevel(cms, root.getStructureId(), filter);
     }
 
@@ -148,7 +155,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             setChildrenAllowed(parentId, !children.isEmpty());
 
             for (CmsResource resource : children) {
-                addTreeItem(resource, parentId);
+                addTreeItem(cms, resource, parentId);
             }
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
@@ -200,7 +207,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
                     setParent(resource.getStructureId(), parentId);
                 }
             } else {
-                addTreeItem(resource, parentId);
+                addTreeItem(cms, resource, parentId);
             }
         } catch (CmsVfsResourceNotFoundException e) {
             removeItemRecursively(id);
