@@ -80,10 +80,9 @@ public class CmsResourceInfo extends Panel {
         m_topText.setValue(resUtil.getGalleryTitle(locale));
         m_bottomText.setValue(resUtil.getPath());
         m_icon.initContent(
+            resUtil,
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
-            resUtil.getLockState(),
-            resource.getState(),
-            resUtil.getLinkType() == 1);
+            resource.getState());
         m_buttonLabel.setVisible(false);
     }
 
@@ -99,7 +98,7 @@ public class CmsResourceInfo extends Panel {
         this();
         m_topText.setValue(top);
         m_bottomText.setValue(bottom);
-        m_icon.initContent(iconPath, 0, null, false);
+        m_icon.initContent(null, iconPath, null);
 
     }
 

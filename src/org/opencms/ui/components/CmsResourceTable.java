@@ -290,10 +290,9 @@ public class CmsResourceTable extends A_CmsCustomComponent {
 
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
             new CmsResourceIcon(
+                resUtil,
                 CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
-                resUtil.getLockState(),
-                resource.getState(),
-                resUtil.getLinkType() == 1));
+                resource.getState()));
 
         Image projectFlag = null;
         switch (resUtil.getProjectState().getMode()) {

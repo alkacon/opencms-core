@@ -28,6 +28,9 @@
 package org.opencms.ui.components;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.workplace.list.Messages;
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Label;
@@ -53,54 +56,65 @@ public class CmsResourceIcon extends Label {
     /**
      * Constructor.<p>
      *
+     * @param resUtil the resource util
      * @param iconPath the resource icon
-     * @param lockState the lock state
      * @param state the resource state
-     * @param sibling the sibling flag
      */
-    public CmsResourceIcon(String iconPath, int lockState, CmsResourceState state, boolean sibling) {
+    public CmsResourceIcon(CmsResourceUtil resUtil, String iconPath, CmsResourceState state) {
         this();
-        initContent(iconPath, lockState, state, sibling);
+        initContent(resUtil, iconPath, state);
     }
 
     /**
      * Initializes the content.<p>
      *
+     * @param resUtil the resource util
      * @param iconPath the resource icon
-     * @param lockState the lock state
      * @param state the resource state
-     * @param sibling the sibling flag
      */
     @SuppressWarnings("incomplete-switch")
-    public void initContent(String iconPath, int lockState, CmsResourceState state, boolean sibling) {
+    public void initContent(CmsResourceUtil resUtil, String iconPath, CmsResourceState state) {
 
         String content = "<img src=\"" + iconPath + "\" />";
 
-        String lockIcon = null;
-        switch (lockState) {
-            case 1:
-                lockIcon = OpenCmsTheme.LOCK_OTHER;
-                break;
+        if (resUtil != null) {
+            String lockIcon = null;
+            switch (resUtil.getLockState()) {
+                case 1:
+                    lockIcon = OpenCmsTheme.LOCK_OTHER;
+                    break;
 
-            case 2:
-                lockIcon = OpenCmsTheme.LOCK_SHARED;
-                break;
-            case 3:
-                lockIcon = OpenCmsTheme.LOCK_USER;
-                break;
-        }
-        if (lockIcon != null) {
-            content += getOverlaySpan(lockIcon);
-        }
-        if (state != null) {
-            if (state.isChanged()) {
-                content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED);
-            } else if (state.isNew()) {
-                content += getOverlaySpan(OpenCmsTheme.STATE_NEW);
+                case 2:
+                    lockIcon = OpenCmsTheme.LOCK_SHARED;
+                    break;
+                case 3:
+                    lockIcon = OpenCmsTheme.LOCK_USER;
+                    break;
+            }
+            if (lockIcon != null) {
+                content += getOverlaySpan(
+                    lockIcon,
+                    CmsVaadinUtils.getMessageText(
+                        Messages.GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2,
+                        resUtil.getLockedByName(),
+                        resUtil.getLockedInProjectName()));
             }
         }
-        if (sibling) {
-            content += getOverlaySpan(OpenCmsTheme.SIBLING);
+        if (state != null) {
+
+            String title = resUtil != null
+            ? CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_USER_LAST_MODIFIED_0)
+                + " "
+                + resUtil.getUserLastModified()
+            : null;
+            if (state.isChanged()) {
+                content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED, title);
+            } else if (state.isNew()) {
+                content += getOverlaySpan(OpenCmsTheme.STATE_NEW, title);
+            }
+        }
+        if ((resUtil != null) && (resUtil.getLinkType() == 1)) {
+            content += getOverlaySpan(OpenCmsTheme.SIBLING, null);
         }
         setValue(content);
     }
@@ -108,12 +122,19 @@ public class CmsResourceIcon extends Label {
     /**
      * Generates an overlay icon span.<p>
      *
+     * @param title the span title
      * @param cssClass the CSS class
      *
      * @return the span element string
      */
-    private String getOverlaySpan(String cssClass) {
+    private String getOverlaySpan(String cssClass, String title) {
 
-        return "<span class=\"" + cssClass + "\"></span>";
+        StringBuffer result = new StringBuffer();
+        result.append("<span class=\"").append(cssClass).append("\"");
+        if (title != null) {
+            result.append(" title=\"").append(title).append("\"");
+        }
+        result.append("></span>");
+        return result.toString();
     }
 }
