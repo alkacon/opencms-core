@@ -62,6 +62,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -195,6 +196,11 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                     m_responsiblesContainer.addComponent(infoWidget);
 
                 }
+            } else {
+                m_responsiblesPanel.setVisible(true);
+                String message = CmsVaadinUtils.getMessageText(
+                    org.opencms.workplace.commons.Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
+                m_responsiblesContainer.addComponent(new Label(message));
             }
         }
         m_notificationEnabledField.setValue(m_initialNotificationEnabled);
