@@ -69,12 +69,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     public static enum Action {
 
         /** Copy resources as new. */
-        copy_all,
-        /** Create siblings. */
-        copy_sibling_all,
-        /** Copy and preserve siblings. */
-        copy_sibling_mixed,
-        /** Move resources. */
+        copy_all, /** Create siblings. */
+        copy_sibling_all, /** Copy and preserve siblings. */
+        copy_sibling_mixed, /** Move resources. */
         move;
     }
 
@@ -358,6 +355,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         m_targetFolder.setWidth("100%");
         form.addComponent(m_targetFolder);
         m_actionRadio = new OptionGroup();
+        m_actionRadio.setWidth("100%");
         if (m_context.getResources().size() == 1) {
             if (m_context.getResources().get(0).isFile()) {
                 m_actionRadio.addItem(Action.copy_all);
