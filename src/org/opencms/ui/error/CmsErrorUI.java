@@ -73,6 +73,7 @@ public class CmsErrorUI extends A_CmsUI {
     public static final String ERROR_PAGE_PATH_FRAQUMENT = "errorpage/";
 
     /** The path to the requested page. */
+    @SuppressWarnings("unused")
     private String m_requestedPage;
 
     /** The displayed exception. */
@@ -163,15 +164,13 @@ public class CmsErrorUI extends A_CmsUI {
 
         StringBuffer result = new StringBuffer(512);
 
-        String reason = CmsVaadinUtils.getMessageText(Messages.GUI_REASON_0);
+        result.append(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_MESSAGE_0)).append(
+                "<br />");
 
         // if a localized message is already set as a parameter, append it.
         result.append(getMessage(throwable));
-        // recursively append all error reasons to the message
-        for (Throwable cause = throwable.getCause(); cause != null; cause = cause.getCause()) {
-            result.append("\n").append(reason).append(": ");
-            result.append(getMessage(cause));
-        }
+
         return result.toString();
     }
 
@@ -193,7 +192,7 @@ public class CmsErrorUI extends A_CmsUI {
                 String message = exc.getMessage(getLocale());
                 if (CmsStringUtil.isNotEmpty(message)) {
                     result.append(message);
-                    result.append('\n');
+                    result.append("<br />");
                 }
 
             }

@@ -397,12 +397,38 @@
 		}
 	}
 	
+	.o-error-dialog{
+		.o-error-icon{
+			padding-left: 12px;
+			color: $orange-light;
+			font-size: 36px;
+		}
+		.o-error-message {
+			white-space: normal;
+		}
+		.o-error-details{
+			position: relative;
+			
+			.v-button{
+				position: absolute;
+				right: 4px;
+				top: 4px;
+				height: 24px;
+				padding: 0 8px;
+			}
+			
+			pre {
+				white-space: pre-wrap;
+			}
+		}
+	}
+	
 	.o-resource-info-horizontal {
 		& > .v-spacing, & > .v-expand > .v-spacing { 
 			width: 6px;
 		}
 	}
-		
+
 	.o-workplace-maxwidth {
 		max-width: 1200px; 
 	}

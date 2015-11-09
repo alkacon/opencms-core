@@ -31,6 +31,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
+import org.opencms.ui.components.extensions.CmsSelectTextExtension;
+import org.opencms.util.CmsUUID;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 
@@ -39,11 +41,11 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog used to display error stack traces in the workplace.<p>
@@ -71,6 +73,15 @@ public class CmsErrorDialog extends CmsBasicDialog {
     /** The dialog window. */
     private Window m_window;
 
+    /** The details component. */
+    private CssLayout m_details;
+
+    /** The select text button. */
+    private Button m_selectText;
+
+    /** The toggle details button. */
+    private Button m_detailsButton;
+
     /**
      * Creates a new instance.<p>
      *
@@ -88,12 +99,17 @@ public class CmsErrorDialog extends CmsBasicDialog {
             null);
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontAwesome.WARNING.getHtml());
-        m_icon.addStyleName(ValoTheme.LABEL_COLORED);
-        m_icon.addStyleName(ValoTheme.LABEL_HUGE);
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
         m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
         m_errorLabel.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
+        final String labelId = "label" + new CmsUUID().toString();
+        m_errorLabel.setId(labelId);
+        m_errorMessage.setContentMode(ContentMode.HTML);
         m_errorMessage.setValue(message);
+        CmsSelectTextExtension.extend(m_selectText, "#" + labelId + " > pre");
+
+        m_details.setVisible(false);
+
         m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -101,6 +117,15 @@ public class CmsErrorDialog extends CmsBasicDialog {
             public void buttonClick(ClickEvent event) {
 
                 onClose();
+            }
+        });
+        m_detailsButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                toggleDetails();
             }
         });
         if (m_window != null) {
@@ -137,7 +162,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
      */
     public static void showErrorDialog(String message, Throwable t, Runnable onClose) {
 
-        Window window = prepareWindow(DialogWidth.max);
+        Window window = prepareWindow(DialogWidth.wide);
         window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
         window.setContent(new CmsErrorDialog(message, t, onClose, window));
         A_CmsUI.get().addWindow(window);
@@ -174,6 +199,17 @@ public class CmsErrorDialog extends CmsBasicDialog {
         }
         if (m_window != null) {
             m_window.close();
+        }
+    }
+
+    /**
+     * Toggles the details visibility.<p>
+     */
+    void toggleDetails() {
+
+        m_details.setVisible(!m_details.isVisible());
+        if (m_window != null) {
+            m_window.center();
         }
     }
 

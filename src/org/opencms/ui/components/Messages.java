@@ -36,6 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_DIALOG_MESSAGE_0 = "GUI_ERROR_DIALOG_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_DIALOG_SELECT_TEXT_0 = "GUI_ERROR_DIALOG_SELECT_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_INFO_ONLINE_SINCE_1 = "GUI_USER_INFO_ONLINE_SINCE_1";
 
     /** Name of the used resource bundle. */

@@ -6,18 +6,22 @@
 	<body>
 		<o-cms-basic-dialog>
   			<content>
-  				<v-vertical-layout size-full>
-  					<v-horizontal-layout height="60px">
-						<v-label width="32px" _id="m_icon" />
-						<v-label _id="m_errorMessage" :expand />
+  				<v-vertical-layout width="100%" _id="m_main" style-name="o-error-dialog">
+  					<v-horizontal-layout height="70px" width="100%">
+						<v-label width="60px" _id="m_icon" style-name="o-error-icon" />
+						<v-label _id="m_errorMessage" :expand style-name="o-error-message"/>
 					</v-horizontal-layout>
-					<v-panel _id="m_panel" scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)" :expand>
-		  				<v-label _id="m_errorLabel" width="-1px" />
-		  			</v-panel>
+					<v-css-layout _id="m_details" size-full :expand style-name="o-error-details">
+						<v-button _id="m_selectText" style-name="borderless">%(key.GUI_ERROR_DIALOG_SELECT_TEXT_0)</v-button>
+						<v-panel scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)">
+							<v-label _id="m_errorLabel" width="-1px" size-full />
+		  				</v-panel>
+		  			</v-css-layout>
 		  		</v-vertical-layout>
 			</content>
 			<buttons>
-  				<v-button _id="m_okButton" width="150px">%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
+			<v-button _id="m_detailsButton" width="150px">%(key.GUI_DETAILS_0)</v-button>
+  				<v-button _id="m_okButton" width="150px">%(key.GUI_CLOSE_0)</v-button>
   			</buttons>
   		</o-cms-basic-dialog>
 	</body>
