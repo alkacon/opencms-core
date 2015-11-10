@@ -17,6 +17,8 @@
 	<replace-with class="org.opencms.ui.client.CmsLoadingIndicator">
     	<when-type-is class="com.vaadin.client.VLoadingIndicator"/>
     </replace-with>
-	
-	
+    
+    <replace-with class="org.opencms.ui.client.CmsVNotification">
+    	<when-type-is class="com.vaadin.client.ui.VNotification" />
+    </replace-with>
 </module>
