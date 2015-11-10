@@ -91,6 +91,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
         // the entries in this list will be sorted by there order property
         // for better readability please place additional entries  according to this sort order
         return Arrays.<I_CmsContextMenuItem> asList(
+            new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsStealLockAction(), null, 100, 0),
@@ -98,7 +99,6 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsCopyToProjectDialogAction(), null, 150, 0),
             new CmsContextMenuActionItem(new CmsDirectPublishDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishScheduledDialogAction(), null, 400, 0),
-            new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 700, 0),
             new CmsContextMenuActionItem(new CmsCopyMoveDialogAction(), null, 900, 0),
             new CmsContextMenuActionItem(
                 new CmsEditPropertyAction(
