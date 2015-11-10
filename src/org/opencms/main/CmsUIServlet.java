@@ -100,10 +100,9 @@ public class CmsUIServlet extends VaadinServlet {
 
             if (shouldShowLogin()) {
 
-                String link = OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString()
-                    + OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                        ((CmsUIServlet)getCurrent()).getCmsObject(),
-                        "/system/login/index.html");
+                String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    ((CmsUIServlet)getCurrent()).getCmsObject(),
+                    "/system/login/index.html");
                 link += "?"
                     + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
                     + URLEncoder.encode(((HttpServletRequest)request).getRequestURI(), "UTF-8");
