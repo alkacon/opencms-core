@@ -38,7 +38,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.Arrays;
 
@@ -67,6 +69,7 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     public CmsChangeTypeDialog(I_CmsDialogContext context)
     throws CmsException {
         super(A_CmsUI.getCmsObject().readParentFolder(context.getResources().get(0).getStructureId()), context);
+        displayResourceInfo(context.getResources());
         m_defaultLocationCheckbox.setVisible(false);
     }
 
@@ -134,13 +137,30 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
     }
 
     /**
+     * @see org.opencms.ui.dialogs.CmsNewDialog#getLabelClass()
+     */
+    @Override
+    protected String getLabelClass() {
+
+        return "o-checkIcon";
+    }
+
+    /**
      *
      * @see org.opencms.ui.dialogs.CmsNewDialog#getSubtitle(org.opencms.ade.galleries.shared.CmsResourceTypeBean, boolean)
      */
     @Override
     protected String getSubtitle(CmsResourceTypeBean type, boolean useDefault) {
 
+        CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getType());
+        if (explorerType != null) {
+            String explorerInfo = explorerType.getInfo();
+            if (explorerInfo != null) {
+                return CmsVaadinUtils.getMessageText(explorerInfo);
+            }
+        }
         return "";
+
     }
 
 }

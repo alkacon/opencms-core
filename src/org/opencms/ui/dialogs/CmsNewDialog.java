@@ -236,7 +236,8 @@ public class CmsNewDialog extends CmsBasicDialog {
                 CmsWorkplace.getResourceUri("filetypes/" + iconUri));
             m_typeContainer.addComponent(info);
             info.getButtonLabel().setContentMode(ContentMode.HTML);
-            info.getButtonLabel().setValue("<span class='o-addIcon'>");
+            String labelClass = getLabelClass();
+            info.getButtonLabel().setValue("<span class='" + labelClass + "'>");
             info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
             final CmsResourceTypeBean typeFinal = type;
             info.addClickListener(new MouseEvents.ClickListener() {
@@ -283,6 +284,16 @@ public class CmsNewDialog extends CmsBasicDialog {
     protected String getActionIconHtml() {
 
         return FontAwesome.PLUS.getHtml();
+    }
+
+    /**
+     * Returns the class for the button label.<p>
+     *
+     * @return the CSS class for the button label
+     */
+    protected String getLabelClass() {
+
+        return "o-addIcon";
     }
 
     /**
