@@ -215,6 +215,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     @Override
     public CmsMenuItemVisibilityMode getSingleVisibility(CmsObject cms, CmsResource resource) {
 
+        String inActiveKey = null;
         if (flag(roleeditor) && !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
             return VISIBILITY_INVISIBLE;
         }
@@ -286,12 +287,11 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
 
             if (flag(notunchangedfile) && resource.isFile() && resUtil.getResource().getState().isUnchanged()) {
-                return VISIBILITY_INVISIBLE;
+                inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_UNCHANGED_0;
             }
 
-            if (flag(notnew) && resource.getState().isNew()) {
-                CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                    Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+            if (flag(notnew) && (inActiveKey == null) && resource.getState().isNew()) {
+                inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0;
             }
 
             if (flag(haseditor)
@@ -326,14 +326,17 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             if (flag(writepermisssion)) {
                 try {
+                    if (!resUtil.getLock().isLockableBy(cms.getRequestContext().getCurrentUser())) {
+                        // set invisible if not lockable
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                    }
                     if (!resUtil.isEditable()
                         || !cms.hasPermissions(
                             resUtil.getResource(),
                             CmsPermissionSet.ACCESS_WRITE,
                             false,
                             CmsResourceFilter.ALL)) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                            Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+                        inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0;
                     }
                 } catch (CmsException e) {
                     LOG.debug("Error checking context menu entry permissions.", e);
@@ -341,9 +344,8 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 }
             }
 
-            if (flag(notdeleted) && resUtil.getResource().getState().isDeleted()) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
-                    Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
+            if (flag(notdeleted) && (inActiveKey == null) && resUtil.getResource().getState().isDeleted()) {
+                inActiveKey = Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0;
             }
 
             if (flag(deleted) && !resource.getState().isDeleted()) {
@@ -354,6 +356,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             if (!flag(mainmenu)) {
                 return VISIBILITY_INVISIBLE;
             }
+        }
+        if (inActiveKey != null) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(inActiveKey);
         }
         return VISIBILITY_ACTIVE;
     }
