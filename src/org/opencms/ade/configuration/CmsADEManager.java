@@ -28,6 +28,7 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.CmsADEConfigData.DetailInfo;
+import org.opencms.ade.configuration.CmsElementView.ElementViewComparator;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCacheState;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
@@ -98,6 +99,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -456,11 +458,15 @@ public class CmsADEManager {
     public Map<CmsUUID, CmsElementView> getElementViews(CmsObject cms) {
 
         CmsConfigurationCache cache = getCache(isOnline(cms));
-        Map<CmsUUID, CmsElementView> result = Maps.newHashMap();
-        result.putAll(OpenCms.getWorkplaceManager().getExplorerTypeViews());
-        result.putAll(cache.getState().getElementViews());
+        List<CmsElementView> viewList = Lists.newArrayList();
+        viewList.addAll(cache.getState().getElementViews().values());
+        viewList.addAll(OpenCms.getWorkplaceManager().getExplorerTypeViews().values());
+        Collections.sort(viewList, new ElementViewComparator());
+        Map<CmsUUID, CmsElementView> result = Maps.newLinkedHashMap();
+        for (CmsElementView viewValue : viewList) {
+            result.put(viewValue.getId(), viewValue);
+        }
         return result;
-
     }
 
     /**
