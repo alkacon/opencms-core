@@ -186,7 +186,7 @@ public class CmsToolbarNewButton extends A_CmsToolbarListMenuButton {
         info.setTitle(typeInfo.getTitle());
         info.setSubTitle(typeInfo.getSubTitle());
         CmsListItemWidget widget = new CmsListItemWidget(info);
-        widget.setIcon("cms_type_icon " + I_CmsSitemapLayoutBundle.INSTANCE.sitemapItemCss().navigationLevelIcon());
+        widget.setIcon(CmsIconUtil.getResourceIconClasses(CmsGwtConstants.TYPE_NAVLEVEL, false));
         CmsCreatableListItem listItem = new CmsCreatableListItem(widget, typeInfo, NewEntryType.regular);
         listItem.initMoveHandle(CmsSitemapView.getInstance().getTree().getDnDHandler());
         return listItem;
