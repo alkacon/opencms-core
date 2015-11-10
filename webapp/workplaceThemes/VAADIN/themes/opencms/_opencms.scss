@@ -91,6 +91,11 @@
 			padding: $o-layout-window-margin;
 		}
 	}
+	
+	/* In case the window height is set explicitly, force dialog content height to 100% */
+	.v-window[style~="height:"] .o-dialog{
+		height: 100% !important;
+	}
   
 	div.o-full-width-padding {
 		display: block;
