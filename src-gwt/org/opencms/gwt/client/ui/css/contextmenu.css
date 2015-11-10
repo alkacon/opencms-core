@@ -94,10 +94,6 @@ div.menuInfoLabel {
 	cursor: default;
 }
 
-.cmsMenuBar, .menuPanel{
-	border-radius: value("constants.css.borderRadius");
-}
-
 
 
 

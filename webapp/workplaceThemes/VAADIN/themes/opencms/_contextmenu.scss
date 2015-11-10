@@ -8,6 +8,9 @@
 		border: 4px solid $v-window-background-color;
 	}
 	
+	.v-context-menu-item-basic, .v-context-menu-item-basic-submenu, .v-menubar-menuitem {
+		color: $v-font-color;
+	}
 	
 	.v-context-menu, div.v-menubar-submenu {
 		float: left;
