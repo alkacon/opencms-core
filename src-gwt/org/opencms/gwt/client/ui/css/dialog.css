@@ -185,11 +185,11 @@ div.menuArrowBottom:after {
 }
 
 .popupButtonPanel{
-    margin-top: value("constants.css.defaultSpace");
+    margin-top: 5px;
     text-align: right;
 }
 .popupButtonPanel>div{
-	margin-left: value("constants.css.defaultSpace");
+	margin-left: 10px;
 }
 
 .popupOverlay{

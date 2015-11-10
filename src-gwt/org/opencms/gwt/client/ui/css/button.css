@@ -166,7 +166,7 @@ div.cmsTextButton {
 }
 
 div.cmsTextButton.cmsButtonMedium {
-	min-width: 90px;
+	min-width: 100px;
 	height: 30px;
 	padding: 0 10px;
 }
@@ -187,7 +187,7 @@ div.cmsTextButton:before {
 }
 
 div.cmsTextButton > div {
-	vertical-align: middle;
+	vertical-align: baseline;
 	display: inline-block;
 }
 
