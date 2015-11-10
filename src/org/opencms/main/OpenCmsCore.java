@@ -160,11 +160,11 @@ import cryptix.jce.provider.CryptixCrypto;
  */
 public final class OpenCmsCore {
 
+    /** The static log object for this class. */
+    static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
+
     /** Lock object for synchronization. */
     private static final Object LOCK = new Object();
-
-    /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
 
     /** Indicates if the configuration was successfully finished or not. */
     private static CmsMessageContainer m_errorCondition;
@@ -372,11 +372,6 @@ public final class OpenCmsCore {
                     new Integer(m_instance.getRunLevel()),
                     errorCondition.key()));
         }
-    }
-
-    public CmsWorkplaceAppManager getWorkplaceAppManager() {
-
-        return m_workplaceAppManager;
     }
 
     /**
@@ -848,6 +843,16 @@ public final class OpenCmsCore {
     protected I_CmsWorkflowManager getWorkflowManager() {
 
         return m_workflowManager;
+    }
+
+    /**
+     * Returns the workplace app manager.<p>
+     *
+     * @return the workplace app manager
+     */
+    protected CmsWorkplaceAppManager getWorkplaceAppManager() {
+
+        return m_workplaceAppManager;
     }
 
     /**
@@ -2429,6 +2434,7 @@ public final class OpenCmsCore {
                             }
                         } catch (Exception e) {
                             // ignore, but should never happen
+                            LOG.error("Error sending secure resource redirect.", e);
                         }
                     }
                 }
@@ -2507,6 +2513,7 @@ public final class OpenCmsCore {
         } catch (CmsDbEntryNotFoundException e) {
             // project not found, switch to online project
             project = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
+            LOG.debug("Project '" + projectId + "' was not found, switch to online project.", e);
         }
 
         // get requested resource uri and remote IP address, as well as time for "time warp" browsing
@@ -2673,6 +2680,7 @@ public final class OpenCmsCore {
                             }
                         } catch (CmsException e) {
                             // unable to set the startup project, bad but not critical
+                            LOG.error("Unable to set the startup project '" + settings.getStartProject() + "'.", e);
                         }
                     }
                     // fire the login user event
