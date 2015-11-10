@@ -140,6 +140,15 @@ public class CmsElementView {
     }
 
     /**
+     * Creates a new view with the given id, but initializes no other fields.<p>
+     *
+     * @param id the id
+     */
+    public CmsElementView(CmsUUID id) {
+        m_id = id;
+    }
+
+    /**
      * Constructor for the default element view.<p>
      */
     private CmsElementView() {

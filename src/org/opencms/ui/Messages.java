@@ -200,6 +200,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
 

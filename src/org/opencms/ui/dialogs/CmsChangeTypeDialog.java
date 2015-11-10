@@ -113,6 +113,13 @@ public class CmsChangeTypeDialog extends CmsNewDialog {
             @Override
             protected boolean exclude(CmsResourceTypeBean type) {
 
+                boolean sameType = OpenCms.getResourceManager().matchResourceType(
+                    type.getType(),
+                    m_dialogContext.getResources().get(0).getTypeId());
+                if (sameType) {
+                    return true;
+                }
+
                 String typeName = type.getType();
                 try {
                     boolean isFolder = m_dialogContext.getResources().get(0).isFolder();

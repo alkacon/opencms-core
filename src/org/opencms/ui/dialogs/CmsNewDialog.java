@@ -59,6 +59,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -69,6 +70,7 @@ import org.apache.commons.logging.Log;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -98,6 +100,12 @@ public class CmsNewDialog extends CmsBasicDialog {
 
     /** Setting name for the standard view. */
     public static final String SETTING_STANDARD_VIEW = "newDialogStandardView";
+
+    /** Id for the 'All' pseudo-view. */
+    public static final CmsUUID ID_VIEW_ALL = CmsUUID.getConstantUUID("view-all");
+
+    /** The 'All' pseudo-view. */
+    public static final CmsElementView VIEW_ALL = new CmsElementView(ID_VIEW_ALL);
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewDialog.class);
@@ -134,6 +142,9 @@ public class CmsNewDialog extends CmsBasicDialog {
 
     /** Element view selector. */
     protected ComboBox m_viewSelector;
+
+    /** List of all types. */
+    private List<CmsResourceTypeBean> m_allTypes;
 
     /**
      * Creates a new instance.<p>
@@ -218,8 +229,14 @@ public class CmsNewDialog extends CmsBasicDialog {
             m_viewSelector.setValue(view.getId());
         }
         m_typeContainer.removeAllComponents();
+
         List<CmsResourceTypeBean> typeBeans = m_typeHelper.getPrecomputedTypes(view);
+        if (view.getId().equals(ID_VIEW_ALL)) {
+            typeBeans = m_allTypes;
+        }
+
         if (typeBeans == null) {
+
             LOG.warn("precomputed type list is null: " + view.getTitle(A_CmsUI.getCmsObject(), Locale.ENGLISH));
             return;
         }
@@ -459,12 +476,21 @@ public class CmsNewDialog extends CmsBasicDialog {
             A_CmsUI.getCmsObject().getRequestContext().removeSiteRoot(m_folderResource.getRootPath()),
             viewList,
             null);
+
+        // also collect types in LinkedHashMap to preserve order and ensure uniqueness
+        LinkedHashMap<String, CmsResourceTypeBean> allTypes = Maps.newLinkedHashMap();
+
         for (CmsElementView view : viewList) {
 
             if (view.hasPermission(A_CmsUI.getCmsObject(), m_folderResource)) {
+
                 List<CmsResourceTypeBean> typeBeans = m_typeHelper.getPrecomputedTypes(view);
+
                 if (typeBeans.isEmpty()) {
                     continue;
+                }
+                for (CmsResourceTypeBean typeBean : typeBeans) {
+                    allTypes.put(typeBean.getType(), typeBean);
                 }
                 m_viewSelector.addItem(view.getId());
                 m_viewSelector.setItemCaption(
@@ -473,6 +499,9 @@ public class CmsNewDialog extends CmsBasicDialog {
             }
 
         }
+        m_viewSelector.addItem(VIEW_ALL.getId());
+        m_viewSelector.setItemCaption(VIEW_ALL.getId(), CmsVaadinUtils.getMessageText(Messages.GUI_VIEW_ALL_0));
+        m_allTypes = Lists.newArrayList(allTypes.values());
         if (m_viewSelector.getItem(startId) == null) {
             startId = (CmsUUID)(m_viewSelector.getItemIds().iterator().next());
         }
@@ -482,12 +511,20 @@ public class CmsNewDialog extends CmsBasicDialog {
 
             public void valueChange(ValueChangeEvent event) {
 
-                CmsElementView selectedView = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(
-                    event.getProperty().getValue());
+                CmsUUID viewId = (CmsUUID)(event.getProperty().getValue());
+                CmsElementView selectedView;
+                if (viewId.equals(ID_VIEW_ALL)) {
+                    selectedView = VIEW_ALL;
+                } else {
+                    selectedView = OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(
+                        event.getProperty().getValue());
+                }
                 init(selectedView, m_defaultLocationCheckbox.getValue().booleanValue());
-                VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                    SETTING_STANDARD_VIEW,
-                    (event.getProperty().getValue()));
+                if (selectedView != VIEW_ALL) {
+                    VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                        SETTING_STANDARD_VIEW,
+                        (event.getProperty().getValue()));
+                }
             }
         });
         return OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(startId);
