@@ -497,14 +497,17 @@ public class CmsNewDialog extends CmsBasicDialog {
                     view.getId(),
                     view.getTitle(A_CmsUI.getCmsObject(), A_CmsUI.get().getLocale()));
             }
-
         }
         m_viewSelector.addItem(VIEW_ALL.getId());
         m_viewSelector.setItemCaption(VIEW_ALL.getId(), CmsVaadinUtils.getMessageText(Messages.GUI_VIEW_ALL_0));
         m_allTypes = Lists.newArrayList(allTypes.values());
+        if (allTypes.size() <= 8) {
+            startId = ID_VIEW_ALL;
+        }
         if (m_viewSelector.getItem(startId) == null) {
             startId = (CmsUUID)(m_viewSelector.getItemIds().iterator().next());
         }
+
         m_viewSelector.addValueChangeListener(new ValueChangeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -527,7 +530,11 @@ public class CmsNewDialog extends CmsBasicDialog {
                 }
             }
         });
-        return OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(startId);
+        if (startId.equals(ID_VIEW_ALL)) {
+            return VIEW_ALL;
+        } else {
+            return OpenCms.getADEManager().getElementViews(A_CmsUI.getCmsObject()).get(startId);
+        }
     }
 
     /**
