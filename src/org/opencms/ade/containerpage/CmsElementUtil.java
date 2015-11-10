@@ -462,7 +462,8 @@ public class CmsElementUtil {
                     }
                     String label = formatter.getNiceName();
                     if (formatterEntry.getKey().equals(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
-                        label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0);
+                        label = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
+                            Messages.GUI_SCHEMA_FORMATTER_LABEL_0);
                     }
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
                         label = id;
@@ -561,7 +562,7 @@ public class CmsElementUtil {
                 }
             } else {
                 permissionInfo.setNoEditReason(
-                    Messages.get().getBundle().key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
+                    Messages.get().getBundle(wpLocale).key(Messages.GUI_ELEMENT_RESOURCE_CAN_NOT_BE_EDITED_0));
             }
             CmsGallerySearchResult searchResult = CmsGallerySearch.searchById(
                 m_cms,
@@ -597,7 +598,7 @@ public class CmsElementUtil {
                 || !typeConfig.checkCreatable(m_cms, CmsResource.getParentFolder(m_page.getRootPath())))) {
             String niceName = CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName);
             permissionInfo.setNoEditReason(
-                Messages.get().getBundle().key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName));
+                Messages.get().getBundle(wpLocale).key(Messages.GUI_CONTAINERPAGE_TYPE_NOT_CREATABLE_1, niceName));
         }
         result.setHasSettings(hasSettings(m_cms, elementBean.getResource()));
         result.setPermissionInfo(permissionInfo);

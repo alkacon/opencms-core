@@ -163,7 +163,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
     public static void showErrorDialog(String message, Throwable t, Runnable onClose) {
 
         Window window = prepareWindow(DialogWidth.wide);
-        window.setCaption(Messages.get().getBundle().key(Messages.GUI_ERROR_0));
+        window.setCaption(Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_ERROR_0));
         window.setContent(new CmsErrorDialog(message, t, onClose, window));
         A_CmsUI.get().addWindow(window);
     }

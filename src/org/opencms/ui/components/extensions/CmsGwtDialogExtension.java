@@ -103,6 +103,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (reinitUI) {
             CmsAppWorkplaceUi.get().reload();
         }
+        m_updateListener.onUpdate(new ArrayList<String>());
     }
 
     /**

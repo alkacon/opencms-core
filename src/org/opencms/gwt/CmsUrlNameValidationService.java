@@ -33,6 +33,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.gwt.shared.CmsValidationResult;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -66,7 +67,7 @@ public class CmsUrlNameValidationService implements I_CmsValidationService {
             } else {
                 // it's a different resource, so we fail
                 return new CmsValidationResult(
-                    org.opencms.gwt.Messages.get().getBundle().key(
+                    org.opencms.gwt.Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
                         org.opencms.gwt.Messages.ERR_URL_NAME_ALREADY_EXISTS_1,
                         name));
             }

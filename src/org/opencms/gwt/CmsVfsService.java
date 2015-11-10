@@ -172,6 +172,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public static CmsListInfoBean addLockInfo(CmsObject cms, CmsResource resource, CmsListInfoBean resourceInfo)
     throws CmsException {
 
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsResourceUtil resourceUtil = new CmsResourceUtil(cms, resource);
         CmsLock lock = resourceUtil.getLock();
         LockIcon icon = LockIcon.NONE;
@@ -196,9 +197,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         if ((lock.getUserId() != null) && !lock.getUserId().isNullUUID()) {
             CmsUser lockOwner = cms.readUser(lock.getUserId());
-            iconTitle = Messages.get().getBundle().key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
+            iconTitle = Messages.get().getBundle(locale).key(Messages.GUI_LOCKED_BY_1, lockOwner.getFullName());
             resourceInfo.addAdditionalInfo(
-                Messages.get().getBundle().key(Messages.GUI_LOCKED_OWNER_0),
+                Messages.get().getBundle(locale).key(Messages.GUI_LOCKED_OWNER_0),
                 lockOwner.getFullName());
         }
         resourceInfo.setLockIcon(icon);
@@ -280,20 +281,21 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
      */
     public static String getNoPreviewReason(CmsObject cms, CmsResource resource) {
 
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         String noPreviewReason = null;
         if (resource.getState().isDeleted() && !(resource instanceof I_CmsHistoryResource)) {
-            noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_DELETED_0);
+            noPreviewReason = Messages.get().getBundle(locale).key(Messages.GUI_NO_PREVIEW_DELETED_0);
         } else if (resource.isFolder()) {
-            noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_FOLDER_0);
+            noPreviewReason = Messages.get().getBundle(locale).key(Messages.GUI_NO_PREVIEW_FOLDER_0);
         } else {
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
             // previewing only resources that are in the same site or don't have a site root at all
             if ((siteRoot != null) && !siteRoot.equals(cms.getRequestContext().getSiteRoot())) {
-                noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_OTHER_SITE_0);
+                noPreviewReason = Messages.get().getBundle(locale).key(Messages.GUI_NO_PREVIEW_OTHER_SITE_0);
             } else if (resource.getTypeId() == CmsResourceTypeBinary.getStaticTypeId()) {
                 String mimeType = OpenCms.getResourceManager().getMimeType(resource.getName(), null, "empty");
                 if (!m_previewMimeTypes.contains(mimeType)) {
-                    noPreviewReason = Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_WRONG_MIME_TYPE_0);
+                    noPreviewReason = Messages.get().getBundle(locale).key(Messages.GUI_NO_PREVIEW_WRONG_MIME_TYPE_0);
                 }
             }
         }
@@ -504,7 +506,7 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
         }
         String resTypeName = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         String key = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName).getKey();
-        Locale currentLocale = cms.getRequestContext().getLocale();
+        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(currentLocale);
         String resTypeNiceName = messages.key(key);
         listInfo.addAdditionalInfo(
@@ -1962,7 +1964,8 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 previewContent = "<div>"
-                    + Messages.get().getBundle().key(Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
+                    + Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)).key(
+                        Messages.GUI_NO_PREVIEW_CAN_T_READ_CONTENT_0)
                     + "</div>";
             }
         }

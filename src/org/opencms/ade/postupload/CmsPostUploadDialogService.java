@@ -142,7 +142,8 @@ public class CmsPostUploadDialogService extends CmsGwtService implements I_CmsPo
                 "",
                 "",
                 "",
-                Messages.get().getBundle().key(Messages.GUI_UPLOAD_FILE_NAME_0),
+                Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject())).key(
+                    Messages.GUI_UPLOAD_FILE_NAME_0),
                 "",
                 "",
                 "false");
