@@ -509,12 +509,15 @@ public class CmsLogin extends CmsJspLoginBean {
         if ((OpenCms.getSiteManager().getSites().size() > 1)
             && !OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {
 
-            // this is a multi site-configuration, but not a request to the configured Workplace site
-            StringBuffer loginLink = new StringBuffer(256);
-            loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
-            loginLink.append(getFormLink());
-            // send a redirect to the workplace site
-            getResponse().sendRedirect(loginLink.toString());
+            //            // this is a multi site-configuration, but not a request to the configured Workplace site
+            //            StringBuffer loginLink = new StringBuffer(256);
+            //            loginLink.append(OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString());
+            //            loginLink.append(getFormLink());
+            //            // send a redirect to the workplace site
+            //            getResponse().sendRedirect(loginLink.toString());
+
+            // do not send any redirects to the workplace site for security reasons
+            getResponse().sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
@@ -619,8 +622,7 @@ public class CmsLogin extends CmsJspLoginBean {
                     if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == loginException.getMessageContainer().getKey()) {
                         // the user account is disabled
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                    } else
-                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == loginException.getMessageContainer().getKey()) {
+                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == loginException.getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == loginException.getMessageContainer().getKey()) {

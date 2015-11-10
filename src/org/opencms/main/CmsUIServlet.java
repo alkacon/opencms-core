@@ -34,8 +34,10 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -53,12 +55,16 @@ import org.jsoup.select.Elements;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.RequestHandler;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.UIClassSelectionEvent;
 import com.vaadin.server.UIProvider;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinResponse;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 /**
@@ -81,6 +87,30 @@ public class CmsUIServlet extends VaadinServlet {
                 return CmsLoginUI.class;
             }
             return null;
+        }
+    };
+
+    /** The login redirect handler. */
+    static final RequestHandler loginRedirectHandler = new RequestHandler() {
+
+        private static final long serialVersionUID = 1L;
+
+        public boolean handleRequest(VaadinSession session, VaadinRequest request, VaadinResponse response)
+        throws IOException {
+
+            if (shouldShowLogin()) {
+
+                String link = OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString()
+                    + OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                        ((CmsUIServlet)getCurrent()).getCmsObject(),
+                        "/system/login/index.html");
+                link += "?"
+                    + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
+                    + URLEncoder.encode(((HttpServletRequest)request).getRequestURI(), "UTF-8");
+                ((HttpServletResponse)response).sendRedirect(link);
+                return true;
+            }
+            return false;
         }
     };
 
@@ -150,11 +180,18 @@ public class CmsUIServlet extends VaadinServlet {
             }
         }
 
+        // check if the given request matches the workplace site
+        if ((OpenCms.getSiteManager().getSites().size() > 1) && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+
+            // do not send any redirects to the workplace site for security reasons
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         try {
             OpenCmsCore.getInstance().initCmsContextForUI(request, response, this);
             super.service(request, response);
             OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), request);
-
         } catch (CmsRoleViolationException rv) {
             // don't log these into the error channel
             LOG.debug(rv.getLocalizedMessage(), rv);
@@ -201,6 +238,7 @@ public class CmsUIServlet extends VaadinServlet {
                 final Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
                     ((CmsUIServlet)getCurrent()).getCmsObject());
                 event.getSession().setLocale(wpLocale);
+                event.getSession().addRequestHandler(loginRedirectHandler);
                 event.getSession().addUIProvider(loginUiProvider);
                 event.getSession().addBootstrapListener(new BootstrapListener() {
 
@@ -253,5 +291,4 @@ public class CmsUIServlet extends VaadinServlet {
             }
         });
     }
-
 }
