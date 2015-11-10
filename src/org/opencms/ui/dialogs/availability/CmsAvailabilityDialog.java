@@ -40,6 +40,7 @@ import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
@@ -62,7 +63,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -144,7 +144,6 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
         List<CmsResource> resources = dialogContext.getResources();
-        m_notificationPanel.setVisible(true);
         m_notificationIntervalField.addValidator(new Validator() {
 
             /** Serial version id. */
@@ -183,6 +182,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
             Map<CmsPrincipalBean, String> responsibles = m_availabilityInfo.getResponsibles();
             if (!responsibles.isEmpty()) {
                 m_responsiblesPanel.setVisible(true);
+                m_notificationPanel.setVisible(true);
                 for (Map.Entry<CmsPrincipalBean, String> entry : responsibles.entrySet()) {
                     CmsPrincipalBean principal = entry.getKey();
                     String icon = principal.isGroup()
@@ -196,12 +196,23 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                     m_responsiblesContainer.addComponent(infoWidget);
 
                 }
-            } else {
-                m_responsiblesPanel.setVisible(true);
-                String message = CmsVaadinUtils.getMessageText(
-                    org.opencms.workplace.commons.Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
-                m_responsiblesContainer.addComponent(new Label(message));
             }
+        } else {
+            boolean showNotification = false;
+            resourceLoop: for (CmsResource resource : resources) {
+                try {
+                    List<CmsAccessControlEntry> aces = cms.getAccessControlEntries(cms.getSitePath(resource));
+                    for (CmsAccessControlEntry ace : aces) {
+                        if (ace.isResponsible()) {
+                            showNotification = true;
+                            break resourceLoop;
+                        }
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            m_notificationPanel.setVisible(showNotification);
         }
         m_notificationEnabledField.setValue(m_initialNotificationEnabled);
         m_notificationIntervalField.setValue(m_initialNotificationInterval);
@@ -259,11 +270,9 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
                 m_initialNotificationInterval = "" + m_availabilityInfo.getNotificationInterval();
                 m_initialNotificationEnabled = Boolean.valueOf(m_availabilityInfo.isNotificationEnabled());
             } catch (CmsLoaderException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage(), e);
             } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage(), e);
             }
 
         }
