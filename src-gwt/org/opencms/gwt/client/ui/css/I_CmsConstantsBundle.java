@@ -256,14 +256,7 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
-        String boxShadowColorIE();
-
-        /**
-         * Access method.<p>
-         *
-         * @return the CSS constant value
-         */
-        String boxShadowColorOther();
+        String boxShadow();
 
         /**
          * Access method.<p>

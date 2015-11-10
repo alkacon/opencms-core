@@ -32,7 +32,7 @@
 
 .closePopup{
     position: absolute;
-    right: 2px;
+    right: 1px;
     top: 0px;
     cursor: pointer;
     height: 31px;
@@ -102,7 +102,7 @@ div.frameDialog div.popupButtonPanel {
 }
 
 .popupContent{
-	box-shadow: 6px 6px 12px value("constants.css.boxShadowColorOther");
+	box-shadow: value("constants.css.boxShadow");
 	border-radius: value("constants.css.borderRadius");
 }
 .popupMainContent, .caption{
@@ -171,13 +171,13 @@ div.menuArrowBottom:after {
     font-size: value("constants.css.fontSizeBig");
     font-weight: bold;
     cursor: move;
-    padding: 0px 5px 5px 5px;
+    padding: 0px 4px 5px 4px;
     height: auto; 
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 30px;
-    line-height: 20px;
+    height: 28px;
+    line-height: 18px;
 }
 
 .hideButtonPanel{
