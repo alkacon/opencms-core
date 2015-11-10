@@ -4,6 +4,10 @@
 		@include valo-selection-overlay-style;
 	}
 	
+	div.v-menubar-popup{
+		margin-top: 14px !important;
+	}
+	
 	.v-context-menu-container, div.v-menubar-popup{
 		border: 4px solid $v-window-background-color;
 	}
