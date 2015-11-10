@@ -59,6 +59,15 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
     }
 
     /**
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getDialogTitle()
+     */
+    @Override
+    public String getDialogTitle() {
+
+        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0);
+    }
+
+    /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
      */
     public String getId() {
@@ -71,7 +80,7 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
      */
     public String getTitle() {
 
-        return getWorkplaceMessage(org.opencms.ui.Messages.GUI_DIALOGTITLE_COPYMOVE_0);
+        return getWorkplaceMessage(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_CONTEXT_COPY_MOVE_0);
     }
 
     /**
