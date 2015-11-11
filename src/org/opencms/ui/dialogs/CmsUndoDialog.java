@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
@@ -43,6 +44,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -81,6 +83,9 @@ public class CmsUndoDialog extends CmsBasicDialog {
     /** Label with info text. */
     private Label m_infoText;
 
+    /** Label for displaying last modification date / user. */
+    private Label m_modifiedText;
+
     /** The date selection field. */
     private CheckBox m_undoMoveField;
 
@@ -99,6 +104,17 @@ public class CmsUndoDialog extends CmsBasicDialog {
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_UNDO_CONFIRMATION_0));
         boolean hasFolders = false;
         boolean hasMoved = false;
+        if (context.getResources().size() == 1) {
+            CmsResource singleRes = context.getResources().get(0);
+            CmsResourceUtil resUtil = new CmsResourceUtil(context.getCms(), singleRes);
+            String fileName = CmsResource.getName(singleRes.getRootPath());
+            String date = CmsVfsService.formatDateTime(context.getCms(), singleRes.getDateLastModified());
+            String user = resUtil.getUserLastModified();
+            String key = org.opencms.workplace.commons.Messages.GUI_UNDO_LASTMODIFIED_INFO_3;
+            String message = CmsVaadinUtils.getMessageText(key, fileName, date, user);
+            m_modifiedText.setVisible(true);
+            m_modifiedText.setValue(message);
+        }
         for (CmsResource resource : context.getResources()) {
             if (resource.isFolder()) {
                 hasFolders = true;
