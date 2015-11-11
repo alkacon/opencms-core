@@ -37,6 +37,7 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
+import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 
@@ -61,10 +62,12 @@ public final class CmsGalleryFactory {
     /**
      * Returns a gallery dialog object.<p>
      *
+     * @param popup the parent popup widget
+     *
      * @return gallery dialog
      */
     @SuppressWarnings("unused")
-    public static CmsGalleryDialog createDialog() {
+    public static CmsGalleryDialog createDialog(final CmsPopup popup) {
 
         CmsGalleryDialog galleryDialog = new CmsGalleryDialog(new I_CmsGalleryHandler() {
 
@@ -81,7 +84,7 @@ public final class CmsGalleryFactory {
 
             public I_CmsAutoHider getAutoHideParent() {
 
-                return null;
+                return popup;
             }
 
             public CmsDNDHandler getDndHandler() {

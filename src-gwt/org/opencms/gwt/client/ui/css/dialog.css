@@ -37,6 +37,7 @@
     cursor: pointer;
     height: 31px;
     width: 28px;
+    z-index: value("constants.css.zIndexInline");
 }
 span.closePopupImage:after{
 	content: "\00d7";
@@ -46,8 +47,12 @@ span.closePopupImage:after{
 	color: value("constants.css.textColorCaption");
 	line-height: 29px;
 }
-.cmsState-up-hovering span.closePopupImage:after, .cmsState-down-hovering span.closePopupImage:after{
+div.cmsState-up-hovering span.closePopupImage:after, div.cmsState-down-hovering span.closePopupImage:after{
 	color: #2197DB;
+}
+
+.invertClose span.closePopupImage:after{
+	color: value("constants.css.textColor");
 }
 
 .dragOverlay{

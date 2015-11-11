@@ -47,12 +47,12 @@ public class CmsGallery extends A_CmsEntryPoint {
      */
     static native void closeDialog()/*-{
 
-                                    if (typeof $wnd.closeDialog === 'function'){
-                                    $wnd.closeDialog();
-                                    }else if ($wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK]){
-                                    $wnd.location.href=$wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
-                                    }
-                                    }-*/;
+        if (typeof $wnd.closeDialog === 'function') {
+            $wnd.closeDialog();
+        } else if ($wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK]) {
+            $wnd.location.href = $wnd[@org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants::ATTR_CLOSE_LINK];
+        }
+    }-*/;
 
     /**
      * @see org.opencms.gwt.client.A_CmsEntryPoint#onModuleLoad()
@@ -78,7 +78,7 @@ public class CmsGallery extends A_CmsEntryPoint {
         });
         popup.center();
         popup.catchNotifications();
-        CmsGalleryDialog dialog = CmsGalleryFactory.createDialog();
+        CmsGalleryDialog dialog = CmsGalleryFactory.createDialog(popup);
         container.setWidget(dialog);
         dialog.setDialogSize(dialogWidth, dialogHeight);
         popup.center();
