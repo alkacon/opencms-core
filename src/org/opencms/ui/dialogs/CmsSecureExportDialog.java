@@ -57,9 +57,10 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -79,7 +80,7 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
     protected I_CmsDialogContext m_context;
 
     /** Field for the export setting. */
-    protected ComboBox m_exportField;
+    protected OptionGroup m_exportField;
 
     /** Field for the export name. */
     protected TextField m_exportNameField;
@@ -94,7 +95,10 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
     protected CmsResource m_resource;
 
     /** Field for the secure setting. */
-    protected ComboBox m_secureField;
+    protected OptionGroup m_secureField;
+
+    /** Label to inform user that server has no secure server. */
+    protected Label m_noSecureServerLabel;
 
     /** The label to display the online link. */
     private Label m_linkField;
@@ -113,15 +117,16 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
         m_resource = m_context.getResources().get(0);
-
-        initComboBox(m_exportField);
-        initComboBox(m_secureField);
+        initOptionGroup(m_secureField);
+        initOptionGroup(m_exportField);
         m_linkField.setValue(OpenCms.getLinkManager().getOnlineLink(cms, cms.getSitePath(m_resource)));
 
         loadData();
         CmsSite site = OpenCms.getSiteManager().getCurrentSite(context.getCms());
         if ((site != null) && !site.hasSecureServer()) {
             m_secureField.setEnabled(false);
+            m_secureField.setVisible(false);
+            m_noSecureServerLabel.setVisible(true);
         }
 
         m_internalField.addValueChangeListener(new ValueChangeListener() {
@@ -249,20 +254,21 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
     }
 
     /**
-     * Fills the combo box with the options 'True', 'False' and 'Not set'.<p>
+     * Fills the selection widget with the options 'True', 'False' and 'Not set'.<p>
      *
-     * @param combo the combo box to fill
+     * @param optGroup the option group to initialize
      */
-    private void initComboBox(ComboBox combo) {
+    private void initOptionGroup(OptionGroup optGroup) {
 
-        combo.setNullSelectionAllowed(false);
-        combo.setTextInputAllowed(false);
-        combo.addItem("true");
-        combo.addItem("false");
-        combo.addItem("");
+        optGroup.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+        optGroup.setNullSelectionAllowed(false);
+        optGroup.addItem("true");
+        optGroup.addItem("false");
+        optGroup.addItem("");
         CmsWorkplaceMessages wpMessages = OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale());
-        combo.setItemCaption("true", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TRUE_0));
-        combo.setItemCaption("false", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_FALSE_0));
-        combo.setItemCaption("", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_SECURE_NOT_SET_0));
+        optGroup.setItemCaption("true", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TRUE_0));
+        optGroup.setItemCaption("false", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_FALSE_0));
+        optGroup.setItemCaption("", wpMessages.key(org.opencms.workplace.commons.Messages.GUI_SECURE_NOT_SET_0));
     }
+
 }

@@ -8,13 +8,26 @@
 
   		<o-cms-basic-dialog>
 	  		<content>
-	  			<v-form-layout>
-	  				<v-label caption="Online link" _id="m_linkField"/>
-	  				<v-combo-box caption="%(key.GUI_SECURE_0)"  _id="m_secureField" />
-	  				<v-check-box caption="%(key.GUI_PERMISSION_INTERNAL_0)" _id="m_internalField" />
-	  				<v-combo-box caption="%(key.GUI_SECURE_EXPORT_0)" _id="m_exportField" />
-	  				<v-text-field caption="%(key.GUI_SECURE_EXPORTNAME_0)" _id="m_exportNameField" />
-	  			</v-form-layout>
+	  			<v-vertical-layout spacing>
+	  				<v-panel caption="%(key.GUI_SECURE_ONLINE_ADDRESS_0)">
+	  					<v-vertical-layout margin>
+	  						<v-label _id="m_linkField"/>
+	  					</v-vertical-layout>
+	  				</v-panel>
+	  				<v-panel caption="%(key.GUI_SECURE_INTERN_SETTINGS_0)">
+	  					<v-form-layout margin>
+		  					<v-option-group caption="%(key.GUI_SECURE_0)"  _id="m_secureField" />
+		  					<v-label _id="m_noSecureServerLabel">%(key.GUI_SECURE_NO_SERVER_0)</v-label>
+			  				<v-check-box caption="%(key.GUI_PERMISSION_INTERNAL_0)" _id="m_internalField" />
+		  				</v-form-layout>
+		  			</v-panel>
+		  			<v-panel caption="%(key.GUI_SECURE_EXPORT_SETTINGS_0)">
+		  				<v-form-layout margin>
+			  				<v-option-group caption="%(key.GUI_SECURE_EXPORT_0)" _id="m_exportField" />
+			  				<v-text-field caption="%(key.GUI_SECURE_EXPORTNAME_0)" _id="m_exportNameField" />
+			  			</v-form-layout>
+		  			</v-panel>
+	  			</v-vertical-layout>
 		  	</content>
 		  	<buttons>
 				<v-button _id="m_okButton" >%(key.GUI_DIALOG_BUTTON_OK_0)</v-button>
