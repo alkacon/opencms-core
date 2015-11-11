@@ -56,6 +56,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 
 /**
  * Dialog used to change resource modification times.<p>
@@ -75,7 +76,7 @@ public class CmsUndoDialog extends CmsBasicDialog {
     private Button m_cancelButton;
 
     /** Check box to enable/disable modification of children. */
-    private CheckBox m_modifySubresourcesField;
+    private OptionGroup m_modifySubresourcesField;
 
     /** The OK  button. */
     private Button m_okButton;
@@ -130,7 +131,17 @@ public class CmsUndoDialog extends CmsBasicDialog {
                 }
             }
         }
+
+        boolean multi = context.getResources().size() > 1;
+        String undoMessage = getUndoMessage(multi, hasFolders);
+        m_infoText.setValue(undoMessage);
         m_modifySubresourcesField.setVisible(hasFolders);
+        m_modifySubresourcesField.addItem("false");
+        m_modifySubresourcesField.setItemCaption("false", getNonRecursiveMessage(multi, hasFolders));
+        m_modifySubresourcesField.addItem("true");
+        m_modifySubresourcesField.setItemCaption("true", getRecursiveMessage(multi, hasFolders));
+        m_modifySubresourcesField.setValue("false");
+
         m_undoMoveField.setVisible(hasFolders || hasMoved);
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -162,7 +173,7 @@ public class CmsUndoDialog extends CmsBasicDialog {
     protected void undo() {
 
         try {
-            boolean recursive = m_modifySubresourcesField.getValue().booleanValue();
+            boolean recursive = Boolean.parseBoolean(m_modifySubresourcesField.getValue().toString());
             boolean undoMove = m_undoMoveField.getValue().booleanValue();
             CmsObject cms = m_context.getCms();
             Set<CmsUUID> updateResources = new HashSet<CmsUUID>();
@@ -198,6 +209,61 @@ public class CmsUndoDialog extends CmsBasicDialog {
             m_context.error(e);
         }
 
+    }
+
+    /**
+     * Gets the message for the non-recursive modification option.<p>
+     *
+     * @param multi true if selection contains multiple resources
+     * @param hasFolder true if selection contains a folder
+     *
+     * @return the message text
+     */
+    String getNonRecursiveMessage(boolean multi, boolean hasFolder) {
+
+        return CmsVaadinUtils.getMessageText(key("GUI_UNDO_NONRECURSIVE_", multi, hasFolder));
+
+    }
+
+    /**
+     * Gets the message for the recursive modification option.<p>
+     *
+     * @param multi true if selection contains multiple resources
+     * @param hasFolder true if selection contains a folder
+     *
+     * @return the message text
+     */
+    String getRecursiveMessage(boolean multi, boolean hasFolder) {
+
+        return CmsVaadinUtils.getMessageText(key("GUI_UNDO_RECURSIVE_", multi, hasFolder));
+
+    }
+
+    /**
+     * Gets the undo message.<p>
+     *
+     * @param multi true if selection contains multiple resources
+     * @param hasFolder true if selection contains a folder
+     *
+     * @return the message text
+     */
+    String getUndoMessage(boolean multi, boolean hasFolder) {
+
+        return CmsVaadinUtils.getMessageText(key("GUI_UNDO_", multi, hasFolder));
+    }
+
+    /**
+     * Generates message key for a given combination of prefix, multi/single file , and folder/ no folder.<p>
+     *
+     * @param prefix the key prefix
+     * @param multi true if we have a multi-resource selection case
+     * @param hasFolder true if the selection contains a foldr
+     *
+     * @return the message key for the given input parameters
+     */
+    private String key(String prefix, boolean multi, boolean hasFolder) {
+
+        return prefix + (multi ? "MULTI" : "SINGLE") + "_" + (hasFolder ? "FOLDER" : "FILE") + "_0";
     }
 
 }
