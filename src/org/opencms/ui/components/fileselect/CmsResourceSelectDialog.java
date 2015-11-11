@@ -155,6 +155,7 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
         m_fileTree[0] = fileTree;
         m_treeData = fileTree.getTreeContainer();
         m_treeContainer.addComponent(fileTree);
+        fileTree.setSizeFull();
     }
 
     /**

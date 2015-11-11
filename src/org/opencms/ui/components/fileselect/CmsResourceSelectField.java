@@ -32,6 +32,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.util.I_CmsHasField;
 import org.opencms.workplace.CmsWorkplace;
@@ -150,12 +152,8 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
      */
     protected void openFileSelector() {
 
-        Window window = new Window("Select file");
-        window.setModal(true);
-        CmsResourceSelectDialog fileSelect;
-
         try {
-            fileSelect = new CmsResourceSelectDialog(m_filter);
+            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
             fileSelect.addPathSelectionHandler(true, new I_CmsSelectionHandler<String>() {
 
                 public void onSelection(String selected) {
@@ -163,12 +161,13 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
                     getTextField().setValue(selected);
                 }
             });
+            Window window = CmsBasicDialog.prepareWindow();
+            window.setCaption("Select file");
             window.setContent(fileSelect);
             A_CmsUI.get().addWindow(window);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            // ignore
+            CmsErrorDialog.showErrorDialog(e);
         }
     }
-
 }
