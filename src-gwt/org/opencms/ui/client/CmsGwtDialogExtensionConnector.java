@@ -27,6 +27,8 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.ade.galleries.client.CmsGalleryConfigurationJSO;
+import org.opencms.ade.galleries.client.ui.CmsGalleryPopup;
 import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
@@ -176,6 +178,24 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
             }
         });
         dialog.center();
+    }
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openGalleryDialog(java.lang.String)
+     */
+    public void openGalleryDialog(String galleryConfiguration) {
+
+        CmsGalleryPopup popup = new CmsGalleryPopup(
+            null,
+            CmsGalleryConfigurationJSO.parseConfiguration(galleryConfiguration));
+        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                close(0);
+            }
+        });
+        popup.center();
     }
 
     /**

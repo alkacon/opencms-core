@@ -210,8 +210,8 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
     public CmsGalleryController(CmsGalleryControllerHandler handler, final I_CmsGalleryConfiguration conf) {
 
         m_configuration = conf;
-        m_resultsSelectable = conf.hasResultsSelectable();
-        m_galleriesSelectable = conf.hasGalleriesSelectable();
+        m_resultsSelectable = conf.isResultsSelectable();
+        m_galleriesSelectable = conf.isGalleriesSelectable();
         m_handler = handler;
         m_handler.m_galleryDialog.setUseFormats(m_configuration.isUseFormats());
         m_handler.m_galleryDialog.setImageFormats(m_configuration.getImageFormats());

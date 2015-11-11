@@ -135,8 +135,8 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
         m_useFormats = configuration.isUseFormats();
         m_treeToken = configuration.getTreeToken();
         m_galleryStoragePrefix = configuration.getGalleryStoragePrefix();
-        m_galleriesSelectable = configuration.hasGalleriesSelectable();
-        m_resultsSelectable = configuration.hasResultsSelectable();
+        m_galleriesSelectable = configuration.isGalleriesSelectable();
+        m_resultsSelectable = configuration.isResultsSelectable();
     }
 
     /**
@@ -289,19 +289,11 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasGalleriesSelectable()
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isGalleriesSelectable()
      */
-    public boolean hasGalleriesSelectable() {
+    public boolean isGalleriesSelectable() {
 
         return m_galleriesSelectable;
-    }
-
-    /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasResultsSelectable()
-     */
-    public boolean hasResultsSelectable() {
-
-        return m_resultsSelectable;
     }
 
     /**
@@ -310,6 +302,14 @@ public class CmsGalleryConfiguration implements I_CmsGalleryConfiguration, IsSer
     public boolean isIncludeFiles() {
 
         return getTabConfiguration().getTabs().contains(GalleryTabId.cms_tab_results);
+    }
+
+    /**
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isResultsSelectable()
+     */
+    public boolean isResultsSelectable() {
+
+        return m_resultsSelectable;
     }
 
     /**

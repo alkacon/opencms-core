@@ -223,17 +223,17 @@ public final class CmsGalleryConfigurationJSO extends JavaScriptObject implement
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasGalleriesSelectable()
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isGalleriesSelectable()
      */
-    public boolean hasGalleriesSelectable() {
+    public boolean isGalleriesSelectable() {
 
         return Boolean.valueOf(getString(I_CmsGalleryProviderConstants.CONFIG_GALLERIES_SELECTABLE)).booleanValue();
     }
 
     /**
-     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#hasResultsSelectable()
+     * @see org.opencms.ade.galleries.shared.I_CmsGalleryConfiguration#isResultsSelectable()
      */
-    public boolean hasResultsSelectable() {
+    public boolean isResultsSelectable() {
 
         String resultsSelectable = getString(I_CmsGalleryProviderConstants.CONFIG_RESULTS_SELECTABLE);
         if (resultsSelectable == null) {

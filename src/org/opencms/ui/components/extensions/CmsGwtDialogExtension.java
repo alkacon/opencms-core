@@ -27,6 +27,9 @@
 
 package org.opencms.ui.components.extensions;
 
+import org.opencms.ade.galleries.shared.CmsGalleryTabConfiguration;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.publish.CmsPublishService;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
@@ -34,11 +37,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsPrefetchSerializationPolicy;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
@@ -115,7 +121,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (@SuppressWarnings("unused") InterruptedException e) {
                 // ignore
             }
         }
@@ -131,6 +137,26 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     public void openCategories(CmsResource resource) {
 
         getRpcProxy(I_CmsGwtDialogClientRpc.class).openCategoriesDialog(resource.getStructureId().toString());
+    }
+
+    /**
+     * Opens the gallery dialog for the given gallery folder.<p>
+     *
+     * @param resource the gallery folder resource
+     */
+    public void openGalleryDialog(CmsResource resource) {
+
+        try {
+            CmsObject cms = A_CmsUI.getCmsObject();
+            JSONObject conf = new JSONObject();
+            conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE, GalleryMode.view.name());
+            conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_PATH, cms.getSitePath(resource));
+            conf.put(I_CmsGalleryProviderConstants.CONFIG_GALLERY_STORAGE_PREFIX, "");
+            conf.put(I_CmsGalleryProviderConstants.CONFIG_TAB_CONFIG, CmsGalleryTabConfiguration.TC_SELECT_ALL);
+            getRpcProxy(I_CmsGwtDialogClientRpc.class).openGalleryDialog(conf.toString());
+        } catch (JSONException e) {
+            CmsErrorDialog.showErrorDialog(e);
+        }
     }
 
     /**

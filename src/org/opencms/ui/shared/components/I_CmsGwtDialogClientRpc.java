@@ -50,6 +50,13 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     void openCategoriesDialog(String structureId);
 
     /**
+     * Opens the gallery dialog with the given JSON configuration.<p>
+     *
+     * @param galleryConfiguration the gallery configuration
+     */
+    void openGalleryDialog(String galleryConfiguration);
+
+    /**
      * Opens the resource info dialog for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource, as a string

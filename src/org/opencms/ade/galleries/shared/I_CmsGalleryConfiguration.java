@@ -164,14 +164,14 @@ public interface I_CmsGalleryConfiguration {
      *
      * @return true if the galleries should be selectable
      */
-    boolean hasGalleriesSelectable();
+    boolean isGalleriesSelectable();
 
     /**
      * Returns false if the results should not be selectable.<p>
      *
      * @return false if the results should not be selectable
      */
-    boolean hasResultsSelectable();
+    boolean isResultsSelectable();
 
     /**
      * Returns if files are selectable.<p>

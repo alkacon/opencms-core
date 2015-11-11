@@ -282,6 +282,7 @@ public class CmsUIServlet extends VaadinServlet {
                             doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
                             doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(wpLocale, true));
                             doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(wpLocale, true));
+                            doc.head().append(org.opencms.ade.galleries.ClientMessages.get().export(wpLocale, true));
                         } catch (Exception e) {
                             LOG.error(e.getLocalizedMessage(), e);
                         }
