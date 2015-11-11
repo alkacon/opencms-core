@@ -87,7 +87,7 @@ public class CmsMessages {
             m_resourceBundle = null;
         } catch (Exception e) {
             m_resourceBundle = null;
-            LOG.error(Messages.get().getBundle().key(Messages.ERR_CREATING_MESSAGES_2, bundleName, m_locale), e);
+            LOG.error("Error creating messages for bundle " + bundleName + " for locale " + m_locale);
         }
     }
 
