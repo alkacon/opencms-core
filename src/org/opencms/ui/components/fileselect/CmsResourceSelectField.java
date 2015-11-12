@@ -32,6 +32,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
@@ -65,7 +66,10 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
     private TextField m_textField = new TextField();
 
     /** The filter used for reading resources. */
-    private CmsResourceFilter m_filter = CmsResourceFilter.DEFAULT;
+    private CmsResourceFilter m_filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
+
+    /** The file select dialog caption. */
+    private String m_fileSelectCaption;
 
     /**
      * Creates a new instance.<p>
@@ -127,6 +131,16 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
     }
 
     /**
+     * Sets the caption of the file select dialog.<p>
+     *
+     * @param caption the caption
+     */
+    public void setFileSelectCaption(String caption) {
+
+        m_fileSelectCaption = caption;
+    }
+
+    /**
      * Sets the filter to use for reading resources.<p>
      *
      * @param filter the new filter
@@ -154,16 +168,21 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
 
         try {
             CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
+            final Window window = CmsBasicDialog.prepareWindow();
+            window.setCaption(
+                m_fileSelectCaption != null
+                ? m_fileSelectCaption
+                : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
+            window.setContent(fileSelect);
             fileSelect.addPathSelectionHandler(true, new I_CmsSelectionHandler<String>() {
 
                 public void onSelection(String selected) {
 
                     getTextField().setValue(selected);
+                    window.close();
                 }
             });
-            Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption("Select file");
-            window.setContent(fileSelect);
+
             A_CmsUI.get().addWindow(window);
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);

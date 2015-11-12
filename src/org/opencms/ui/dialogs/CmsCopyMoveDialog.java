@@ -30,6 +30,7 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockUtil;
@@ -43,7 +44,6 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.commons.Messages;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,9 +69,12 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     public static enum Action {
 
         /** Copy resources as new. */
-        copy_all, /** Create siblings. */
-        copy_sibling_all, /** Copy and preserve siblings. */
-        copy_sibling_mixed, /** Move resources. */
+        copy_all,
+        /** Create siblings. */
+        copy_sibling_all,
+        /** Copy and preserve siblings. */
+        copy_sibling_mixed,
+        /** Move resources. */
         move;
     }
 
@@ -160,7 +163,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_targetFolder.setValue(cms.getSitePath(res));
         } else {
             throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, cms.getSitePath(res)));
+                Messages.get().container(
+                    org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
+                    cms.getSitePath(res)));
         }
     }
 
@@ -193,7 +198,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         // calculate the target name
         String finalTarget = target.getRootPath();
         if (finalTarget.equals(source.getRootPath()) || finalTarget.startsWith(source.getRootPath())) {
-            throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_ONTO_ITSELF_1, finalTarget));
+            throw new CmsVfsException(
+                Messages.get().container(org.opencms.workplace.commons.Messages.ERR_COPY_ONTO_ITSELF_1, finalTarget));
         }
 
         if (!finalTarget.endsWith("/")) {
@@ -261,7 +267,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             CmsResource targetFolder = getTargetFolder();
             if (targetFolder.isFile()) {
                 throw new CmsVfsException(
-                    Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, m_targetFolder.getValue()));
+                    Messages.get().container(
+                        org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
+                        m_targetFolder.getValue()));
             }
             boolean overwrite = isOverwriteExisting();
             Map<CmsResource, CmsException> errors = new HashMap<CmsResource, CmsException>();
@@ -280,8 +288,8 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             }
 
             if (!errors.isEmpty()) {
-                //TODO: handle errors
                 m_context.finish(m_updateResources);
+                m_context.error(errors.values().iterator().next());
             } else {
                 m_context.finish(m_updateResources);
             }
@@ -352,6 +360,9 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         m_targetFolder = new CmsResourceSelectField();
         m_targetFolder.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_COPY_MOVE_TARGET_FOLDER_0));
+        m_targetFolder.setFileSelectCaption(
+            CmsVaadinUtils.getMessageText(Messages.GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0));
+        m_targetFolder.setResourceFilter(CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFolder());
         m_targetFolder.setWidth("100%");
         form.addComponent(m_targetFolder);
         m_actionRadio = new OptionGroup();

@@ -47,6 +47,8 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -62,14 +64,26 @@ import com.vaadin.server.Resource;
  */
 public class CmsResourceTreeContainer extends HierarchicalContainer {
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+    /** Property which is used to store the CmsResource. */
+    public static final String PROPERTY_RESOURCE = "resource";
+
+    /** The resource comparator. */
+    private static final Comparator<CmsResource> FILE_COMPARATOR = new Comparator<CmsResource>() {
+
+        public int compare(CmsResource o1, CmsResource o2) {
+
+            if (o1.isFolder() != o2.isFolder()) {
+                return o1.isFolder() ? -1 : 1;
+            }
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTreeContainer.class);
 
-    /** Property which is used to store the CmsResource. */
-    public static final String PROPERTY_RESOURCE = "resource";
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Create a new instance.<p>
@@ -79,6 +93,7 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         addContainerProperty(CmsResourceTableProperty.PROPERTY_STATE, CmsResourceState.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON, Resource.class, null);
         addContainerProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT, Boolean.class, Boolean.TRUE);
+        addContainerProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER, Boolean.class, Boolean.TRUE);
         addContainerProperty(PROPERTY_RESOURCE, CmsResource.class, null);
     }
 
@@ -118,6 +133,8 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
             new ExternalResource(CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon())));
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_IS_FOLDER).setValue(
+            Boolean.valueOf(resource.isFolder()));
         if (resource.isFile()) {
             setChildrenAllowed(resource.getStructureId(), false);
         }
@@ -150,6 +167,10 @@ public class CmsResourceTreeContainer extends HierarchicalContainer {
         try {
             CmsResource parent = cms.readResource(parentId, filter);
             List<CmsResource> children = cms.readResources(parent, filter, false);
+
+            // sort the resources before adding them to the container
+            // we are not using the container sort mechanism to avoid losing the scroll position after sort
+            Collections.sort(children, FILE_COMPARATOR);
 
             // sets the parent to leaf mode, in case no child folders are present
             setChildrenAllowed(parentId, !children.isEmpty());

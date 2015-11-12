@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components;
+package org.opencms.ui.dialogs;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
@@ -36,19 +36,10 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_ERROR_DIALOG_MESSAGE_0 = "GUI_ERROR_DIALOG_MESSAGE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ERROR_DIALOG_SELECT_TEXT_0 = "GUI_ERROR_DIALOG_SELECT_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_FILE_SELECT_CAPTION_0 = "GUI_FILE_SELECT_CAPTION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USER_INFO_ONLINE_SINCE_1 = "GUI_USER_INFO_ONLINE_SINCE_1";
+    public static final String GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0 = "GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.ui.components.messages";
+    private static final String BUNDLE_NAME = "org.opencms.ui.dialogs.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

@@ -171,7 +171,7 @@ public final class CmsFileUtil {
                 if (resource.isFolder() && !resourcePath.endsWith("/")) {
                     it.set(resourcePath + "/");
                 }
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 result.append(resourcePath);
                 result.append('\n');
             }
@@ -559,6 +559,7 @@ public final class CmsFileUtil {
      *
      * @throws IOException in case of file access errors
      */
+    @SuppressWarnings("resource")
     public static byte[] readFile(File file) throws IOException {
 
         // create input and output stream
@@ -576,6 +577,7 @@ public final class CmsFileUtil {
      *
      * @throws IOException in case of file access errors
      */
+    @SuppressWarnings("resource")
     public static byte[] readFile(String filename) throws IOException {
 
         // create input and output stream
