@@ -83,7 +83,7 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
         ExternalResource folderRes = new ExternalResource(
             CmsWorkplace.getResourceUri(
                 CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getBigIcon()));
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getBigIconIfAvailable()));
         fileSelectButton.setIcon(folderRes);
 
         addComponent(fileSelectButton);

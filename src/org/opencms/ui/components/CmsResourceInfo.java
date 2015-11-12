@@ -81,7 +81,7 @@ public class CmsResourceInfo extends Panel {
         m_bottomText.setValue(resUtil.getPath());
         m_icon.initContent(
             resUtil,
-            CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIcon()),
+            CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
             resource.getState());
         m_buttonLabel.setVisible(false);
     }
