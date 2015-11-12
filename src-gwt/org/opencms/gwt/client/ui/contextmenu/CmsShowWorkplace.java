@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
 
 import com.google.gwt.user.client.Window;
@@ -96,7 +97,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             public void execute() {
 
                 start(0, true);
-                CmsCoreProvider.getService().getWorkplaceLink(structureId, classic, this);
+                CmsCoreProvider.getService().getWorkplaceLink(structureId, CmsWorkplaceLinkMode.auto, this);
             }
 
             /**
@@ -132,12 +133,12 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
         int winHeight,
         int winLeft,
         int winTop) /*-{
-                    
-                    if ($wnd.opener && $wnd.opener != self) {
-                    $wnd.opener.location.href = path;
-                    $wnd.opener.focus();
-                    } else {
-                    var openerStr = 'width='
+
+        if ($wnd.opener && $wnd.opener != self) {
+            $wnd.opener.location.href = path;
+            $wnd.opener.focus();
+        } else {
+            var openerStr = 'width='
                     + winWidth
                     + ',height='
                     + winHeight
@@ -146,12 +147,12 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
                     + ',top='
                     + winTop
                     + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
-                    var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-                    if (deWindow) {
-                    deWindow.focus();
-                    } else {
-                    @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-                    }
-                    }
-                    }-*/;
+            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
+            if (deWindow) {
+                deWindow.focus();
+            } else {
+                @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+            }
+        }
+    }-*/;
 }

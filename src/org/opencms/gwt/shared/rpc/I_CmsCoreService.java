@@ -41,6 +41,7 @@ import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
 
 import java.util.List;
@@ -178,14 +179,14 @@ public interface I_CmsCoreService extends RemoteService {
      * site of the given explorerRootPath and show the folder given in the explorerRootPath.<p>
      *
      * @param structureId the structure id of the resource for which to open the workplace
-     * @param classic if true, gets the link for the old workplace, else for the new workplace
+     * @param linkMode the workplace link mode
      *
      * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
      *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
      *
      * @throws CmsRpcException if something goes wrong
      */
-    String getWorkplaceLink(CmsUUID structureId, boolean classic) throws CmsRpcException;
+    String getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode) throws CmsRpcException;
 
     /**
      * Loads the user settings for the current user.<p>

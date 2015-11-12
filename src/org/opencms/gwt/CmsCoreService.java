@@ -52,6 +52,7 @@ import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 import org.opencms.gwt.shared.CmsValidationQuery;
 import org.opencms.gwt.shared.CmsValidationResult;
+import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.gwt.shared.rpc.I_CmsCoreService;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
@@ -805,9 +806,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsWorkplaceLinkMode)
      */
-    public String getWorkplaceLink(CmsUUID structureId, boolean classic) throws CmsRpcException {
+    public String getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode) throws CmsRpcException {
 
         String result = null;
 
@@ -815,23 +816,35 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             String resourceRootFolder = structureId != null
             ? CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath())
             : getCmsObject().getRequestContext().getSiteRoot();
-            if (classic) {
-                result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
-            } else {
 
-                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
-                String siteRoot = site != null
-                ? site.getSiteRoot()
-                : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
-                ? OpenCms.getSiteManager().getSharedFolder()
-                : "";
-                CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
-                String link = CmsVaadinUtils.getWorkplaceLink()
-                    + "#explorer/"
-                    + siteRoot
-                    + "!"
-                    + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
-                result = link;
+            switch (linkMode) {
+                case oldWorkplace:
+                    result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+                    break;
+                case newWorkplace:
+                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
+                    String siteRoot = site != null
+                    ? site.getSiteRoot()
+                    : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
+                    ? OpenCms.getSiteManager().getSharedFolder()
+                    : "";
+                    CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
+                    String link = CmsVaadinUtils.getWorkplaceLink()
+                        + "#explorer/"
+                        + siteRoot
+                        + "!"
+                        + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
+                    result = link;
+                    break;
+                case auto:
+                default:
+                    boolean newWp = CmsWorkplace.getWorkplaceSettings(
+                        getCmsObject(),
+                        getRequest()).getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2);
+                    result = getWorkplaceLink(
+                        structureId,
+                        newWp ? CmsWorkplaceLinkMode.newWorkplace : CmsWorkplaceLinkMode.oldWorkplace);
+                    break;
             }
         } catch (Throwable e) {
             error(e);
