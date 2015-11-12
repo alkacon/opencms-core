@@ -11,10 +11,9 @@
 							<v-check-box _id="m_includeSubfoldersField" caption="%(key.GUI_RESTOREDELETED_INCLUDE_SUBFOLDERS_0)" />
 							<v-check-box _id="m_selectAllField" caption="%(key.GUI_RESTOREDELETED_SELECT_ALL_0)" :right />
 						</v-horizontal-layout>
-						<v-panel height="500px">					
-							<v-vertical-layout _id="m_deletedResourceContainer" width="100%" margin spacing style-name="o-reduced-spacing" >
+						<v-panel size-full :expand scrollable="true">					
+							<v-vertical-layout _id="m_deletedResourceContainer" width="100%" margin spacing style-name="o-reduced-spacing" />
 						</v-panel>
-						</v-vertical-layout>
 					</v-vertical-layout>
 			</content>
 			<buttons>
