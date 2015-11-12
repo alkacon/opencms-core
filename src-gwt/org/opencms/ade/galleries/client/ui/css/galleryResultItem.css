@@ -20,6 +20,10 @@
 	display: inline-block;
 }
 
+.tilingList .tilingItem .itemContent{
+	height: auto;	
+}
+
 .tilingList .tilingItem .itemContainer{
 	padding: 2px;
 	line-height: 1px;
