@@ -58,6 +58,11 @@ div.cmsMenuBar .cmsMenuItem.selected * {
 	margin: 0px 0px 0px 20px;
 	font-size: value("constants.css.fontSizeBig");
 	text-align: left;
+	line-height: value("constants.css.lineHeight");
+}
+
+.cmsMenuBar .cmsMenuItem > div{
+	display: block;
 }
 
 .cmsMenuItem .iconBox { 

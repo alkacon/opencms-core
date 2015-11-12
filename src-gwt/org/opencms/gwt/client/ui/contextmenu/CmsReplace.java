@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * The replace resource context menu entry.<p>
@@ -69,9 +70,12 @@ public class CmsReplace extends A_CmsContextMenuItem implements I_CmsHasContextM
         });
         CmsUploadButton button = new CmsUploadButton(m_replaceHandler);
         button.setText(getText());
-        initWidget(button);
+        button.setStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().uploadButton());
+        SimplePanel panel = new SimplePanel();
+        panel.setWidget(button);
+        initWidget(panel);
         setStyleName(I_CmsLayoutBundle.INSTANCE.contextmenuCss().cmsMenuItem());
-        addStyleName(I_CmsLayoutBundle.INSTANCE.uploadButton().uploadButton());
+
     }
 
     /**
