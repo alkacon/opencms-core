@@ -331,6 +331,7 @@ public class CmsResourceTableProperty {
     public static List<CmsResourceTableProperty> defaultProperties() {
 
         return Arrays.asList(
+            PROPERTY_PROJECT,
             PROPERTY_DATE_CREATED,
             PROPERTY_DATE_EXPIRED,
             PROPERTY_DATE_MODIFIED,

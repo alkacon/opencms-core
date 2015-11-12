@@ -240,7 +240,7 @@ public class CmsFileTable extends CmsResourceTable {
 
             {
                 column(PROPERTY_TYPE_ICON);
-                column(PROPERTY_PROJECT);
+                column(PROPERTY_PROJECT, COLLAPSED);
                 column(PROPERTY_RESOURCE_NAME);
                 column(PROPERTY_TITLE);
                 column(PROPERTY_NAVIGATION_TEXT, COLLAPSED);
