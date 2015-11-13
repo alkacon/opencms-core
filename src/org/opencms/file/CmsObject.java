@@ -35,6 +35,7 @@ import org.opencms.db.log.CmsLogEntry;
 import org.opencms.db.log.CmsLogFilter;
 import org.opencms.db.urlname.CmsUrlNameMappingEntry;
 import org.opencms.db.urlname.CmsUrlNameMappingFilter;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -1017,6 +1018,27 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         m_securityManager.deleteRelationsForResource(m_context, resource, filter);
+    }
+
+    /**
+     * Deletes a resource.<p>
+     *
+     * The <code>siblingMode</code> parameter controls how to handle siblings
+     * during the delete operation.<br>
+     * Possible values for this parameter are: <br>
+     * <ul>
+     * <li><code>{@link CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
+     * </ul><p>
+     *
+     * @param res the resource to delete
+     * @param deletePreserveSiblings indicates how to handle siblings of the deleted resource
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteResource(CmsResource res, CmsResourceDeleteMode deletePreserveSiblings) throws CmsException {
+
+        getResourceType(res).deleteResource(this, m_securityManager, res, deletePreserveSiblings);
     }
 
     /**
@@ -3895,7 +3917,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-    
+
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {

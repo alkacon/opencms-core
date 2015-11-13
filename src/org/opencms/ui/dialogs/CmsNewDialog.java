@@ -551,7 +551,7 @@ public class CmsNewDialog extends CmsBasicDialog {
                     if (lock.isUnlocked()) {
                         cms.lockResource(res);
                     }
-                    cms.deleteResource(cms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    cms.deleteResource(res, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 }
 
             }
