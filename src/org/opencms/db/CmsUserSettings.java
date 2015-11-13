@@ -60,6 +60,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Maps;
+
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
@@ -1715,6 +1717,16 @@ public class CmsUserSettings {
         } else {
             m_additionalPreferences.put(name, value);
         }
+    }
+
+    /**
+     * Sets this settings object's additional preferences to that of another one.<p>
+     *
+     * @param userSettings the user settings
+     */
+    public void setAdditionalPreferencesFrom(CmsUserSettings userSettings) {
+
+        m_additionalPreferences = Maps.newLinkedHashMap(userSettings.m_additionalPreferences);
     }
 
     /**

@@ -613,6 +613,8 @@ public class CmsPreferences extends CmsTabDialog {
 
         // set the current user in the settings object
         m_userSettings.setUser(getSettings().getUser());
+        m_userSettings.setAdditionalPreferencesFrom(userSettings);
+
         try {
             // write the user settings to the db
             m_userSettings.save(getCms());
