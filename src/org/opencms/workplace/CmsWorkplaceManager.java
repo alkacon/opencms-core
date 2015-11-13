@@ -2164,7 +2164,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (result == null) {
             result = "view_other";
             try {
-                if (OpenCms.getResourceManager().getResourceType(typeName).isFolder()) {
+                if (OpenCms.getResourceManager().hasResourceType(typeName)
+                    && OpenCms.getResourceManager().getResourceType(typeName).isFolder()) {
                     result = "view_folders";
                 }
             } catch (CmsLoaderException e) {
