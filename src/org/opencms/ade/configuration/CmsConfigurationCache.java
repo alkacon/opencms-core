@@ -292,6 +292,13 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
                 List<CmsResource> configFileCandidates = m_cms.readResources(
                     "/",
                     CmsResourceFilter.DEFAULT.addRequireType(m_configType.getTypeId()));
+                if (OpenCms.getResourceManager().hasResourceType(SITEMAP_MASTER_CONFIG)) {
+                    List<CmsResource> masterCandidates = m_cms.readResources(
+                        "/",
+                        CmsResourceFilter.DEFAULT.addRequireType(
+                            OpenCms.getResourceManager().getResourceType(SITEMAP_MASTER_CONFIG)));
+                    configFileCandidates.addAll(masterCandidates);
+                }
                 for (CmsResource candidate : configFileCandidates) {
                     if (isSitemapConfiguration(candidate.getRootPath(), candidate.getTypeId())) {
                         try {
