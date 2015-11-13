@@ -46,7 +46,6 @@ import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsLoginUserAgreement;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -451,7 +450,7 @@ public class CmsLoginController {
             boolean workplace2 = false;
 
             if (CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
-                && settings.getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2)) {
+                && settings.getUserSettings().startWithNewWorkplace()) {
                 workplace2 = true;
                 checkRole = true;
             } else if ((m_params.getRequestedResource() != null)

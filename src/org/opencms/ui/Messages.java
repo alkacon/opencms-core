@@ -105,6 +105,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_POPUP_BLOCKED_0 = "GUI_POPUP_BLOCKED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_WORKPLACE_MODE_0 = "GUI_PREF_WORKPLACE_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_WORKPLACE_MODE_NEW_0 = "GUI_PREF_WORKPLACE_MODE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_WORKPLACE_MODE_OLD_0 = "GUI_PREF_WORKPLACE_MODE_OLD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0 = "GUI_PWCHANGE_DIFFERENT_PASSWORD_REQUIRED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -189,7 +198,43 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_MULTI_FOLDER_0 = "GUI_UNDO_MULTI_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_NONRECURSIVE_MULTI_FILE_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_NONRECURSIVE_SINGLE_FILE_0 = "GUI_UNDO_NONRECURSIVE_SINGLE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_NONRECURSIVE_SINGLE_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_SINGLE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_RECURSIVE_0 = "GUI_UNDO_RECURSIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_RECURSIVE_MULTI_FILE_0 = "GUI_UNDO_RECURSIVE_MULTI_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_RECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_RECURSIVE_MULTI_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_RECURSIVE_SINGLE_FILE_0 = "GUI_UNDO_RECURSIVE_SINGLE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_RECURSIVE_SINGLE_FOLDER_0 = "GUI_UNDO_RECURSIVE_SINGLE_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_SINGLE_FILE_0 = "GUI_UNDO_SINGLE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_SINGLE_FOLDER_0 = "GUI_UNDO_SINGLE_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
@@ -202,42 +247,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_SINGLE_FOLDER_0 = "GUI_UNDO_SINGLE_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_SINGLE_FILE_0 = "GUI_UNDO_SINGLE_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_MULTI_FOLDER_0 = "GUI_UNDO_MULTI_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_NONRECURSIVE_SINGLE_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_SINGLE_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_NONRECURSIVE_SINGLE_FILE_0 = "GUI_UNDO_NONRECURSIVE_SINGLE_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_NONRECURSIVE_MULTI_FILE_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_RECURSIVE_SINGLE_FOLDER_0 = "GUI_UNDO_RECURSIVE_SINGLE_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_RECURSIVE_SINGLE_FILE_0 = "GUI_UNDO_RECURSIVE_SINGLE_FILE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_RECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_RECURSIVE_MULTI_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_RECURSIVE_MULTI_FILE_0 = "GUI_UNDO_RECURSIVE_MULTI_FILE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";

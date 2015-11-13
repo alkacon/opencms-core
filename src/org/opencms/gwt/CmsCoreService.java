@@ -840,7 +840,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 default:
                     boolean newWp = CmsWorkplace.getWorkplaceSettings(
                         getCmsObject(),
-                        getRequest()).getUserSettings().getStartView().equals(CmsWorkplace.VIEW_WORKPLACE_2);
+                        getRequest()).getUserSettings().usesNewWorkplace();
                     result = getWorkplaceLink(
                         structureId,
                         newWp ? CmsWorkplaceLinkMode.newWorkplace : CmsWorkplaceLinkMode.oldWorkplace);

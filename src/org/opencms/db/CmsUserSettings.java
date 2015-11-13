@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsPreferences;
 
 import java.util.ArrayList;
@@ -227,6 +228,9 @@ public class CmsUserSettings {
     /** Identifier for the login user agreement accepted information. */
     public static final String LOGIN_USERAGREEMENT_ACCEPTED = "LOGIN_UA_ACCEPTED";
 
+    /** Preference for setting which workplace to open on startup. */
+    public static final String PREF_WORKPLACE_MODE = "workplaceMode";
+
     /** Identifier prefix for all keys in the user additional info table. */
     public static final String PREFERENCES = "USERPREFERENCES_";
 
@@ -244,6 +248,9 @@ public class CmsUserSettings {
 
     /** Identifier for the synchronize setting key. */
     public static final String SYNC_VFS_LIST = "VFS_LIST";
+
+    /** Preference value for new workplace. */
+    public static final String WORKPLACE_MODE_NEW = "new";
 
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
@@ -2445,6 +2452,27 @@ public class CmsUserSettings {
     public boolean showExplorerFileUserLastModified() {
 
         return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
+    }
+
+    /**
+     * Return true if user should start with new workplace.<p>
+     *
+     * @return true if user should start with new workplace
+     */
+    public boolean startWithNewWorkplace() {
+
+        return getStartView().equals(CmsWorkplace.VIEW_WORKPLACE) && usesNewWorkplace();
+    }
+
+    /**
+     * Return true if user uses new workplace.<p>
+     *
+     * @return true if the user users the new workplace
+     */
+    public boolean usesNewWorkplace() {
+
+        return WORKPLACE_MODE_NEW.equals(getAdditionalPreference(PREF_WORKPLACE_MODE, true));
+
     }
 
     /**

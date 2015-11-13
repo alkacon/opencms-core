@@ -91,11 +91,47 @@ public abstract class CmsWorkplace {
     /** The debug flag. */
     public static final boolean DEBUG = false;
 
+    /** Path to system folder. */
+    public static final String VFS_PATH_SYSTEM = "/system/";
+
+    /** Path to the workplace. */
+    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
+
+    /** Constant for the JSP dialogs path. */
+    public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
+
     /** Parameter for the default locale. */
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     /** Parameter for the default language. */
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+
+    /** Constant for the JSP common files (e.g. error page) path. */
+    public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
+
+    /** Constant for the JSP common close dialog page. */
+    public static final String FILE_DIALOG_CLOSE = DIALOG_PATH_COMMON + "closedialog.jsp";
+
+    /** Constant for the JSP common confirmation dialog. */
+    public static final String FILE_DIALOG_SCREEN_CONFIRM = DIALOG_PATH_COMMON + "confirmation.jsp";
+
+    /** Constant for the JSP common error dialog. */
+    public static final String FILE_DIALOG_SCREEN_ERROR = DIALOG_PATH_COMMON + "error.jsp";
+
+    /** Constant for the JSP common error dialog. */
+    public static final String FILE_DIALOG_SCREEN_ERRORPAGE = DIALOG_PATH_COMMON + "errorpage.jsp";
+
+    /** Constant for the JSP common wait screen. */
+    public static final String FILE_DIALOG_SCREEN_WAIT = DIALOG_PATH_COMMON + "wait.jsp";
+
+    /** Path to workplace views. */
+    public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
+
+    /** Constant for the JSP explorer filelist file. */
+    public static final String FILE_EXPLORER_FILELIST = VFS_PATH_VIEWS + "explorer/explorer_files.jsp";
+
+    /** Constant for the JSP common report page. */
+    public static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
 
     /** Helper variable to deliver the html end part. */
     public static final int HTML_END = 1;
@@ -112,20 +148,11 @@ public abstract class CmsWorkplace {
     /** The request parameter for the workplace site selection. */
     public static final String PARAM_WP_SITE = "wpSite";
 
-    /** Path for file type icons relative to the resources folder. */
-    public static final String RES_PATH_FILETYPES = "filetypes/";
-
-    /** Path to system folder. */
-    public static final String VFS_PATH_SYSTEM = "/system/";
-
-    /** Path to the workplace. */
-    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
-
-    /** Constant for the JSP dialogs path. */
-    public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
-
     /** Constant for the JSP workplace path. */
     public static final String PATH_WORKPLACE = VFS_PATH_WORKPLACE;
+
+    /** Path for file type icons relative to the resources folder. */
+    public static final String RES_PATH_FILETYPES = "filetypes/";
 
     /** Path to exported system image folder. */
     public static final String RFS_PATH_RESOURCES = "/resources/";
@@ -154,41 +181,11 @@ public abstract class CmsWorkplace {
     /** Path to system image folder. */
     public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
 
-    /** Path to workplace views. */
-    public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
-
-    /** Constant for the JSP explorer filelist file. */
-    public static final String FILE_EXPLORER_FILELIST = VFS_PATH_VIEWS + "explorer/explorer_files.jsp";
-
-    /** Constant for the JSP common files (e.g. error page) path. */
-    public static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
-
-    /** Constant for the JSP common close dialog page. */
-    public static final String FILE_DIALOG_CLOSE = DIALOG_PATH_COMMON + "closedialog.jsp";
-
-    /** Constant for the JSP common confirmation dialog. */
-    public static final String FILE_DIALOG_SCREEN_CONFIRM = DIALOG_PATH_COMMON + "confirmation.jsp";
-
-    /** Constant for the JSP common error dialog. */
-    public static final String FILE_DIALOG_SCREEN_ERROR = DIALOG_PATH_COMMON + "error.jsp";
-
-    /** Constant for the JSP common error dialog. */
-    public static final String FILE_DIALOG_SCREEN_ERRORPAGE = DIALOG_PATH_COMMON + "errorpage.jsp";
-
-    /** Constant for the JSP common wait screen. */
-    public static final String FILE_DIALOG_SCREEN_WAIT = DIALOG_PATH_COMMON + "wait.jsp";
-
-    /** Constant for the JSP common report page. */
-    public static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
-
     /** Constant for the direct edit view JSP. */
     public static final String VIEW_DIRECT_EDIT = VFS_PATH_VIEWS + "explorer/directEdit.jsp";
 
     /** Constant for the direct edit view JSP. */
     public static final String VIEW_WORKPLACE = VFS_PATH_VIEWS + "explorer/explorer_fs.jsp";
-
-    /** Constant for second workplace version. */
-    public static final String VIEW_WORKPLACE_2 = VFS_PATH_VIEWS + "explorer/workplace2.jsp";
 
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";

@@ -1081,12 +1081,6 @@ public class CmsPreferences extends CmsTabDialog {
             Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
             CmsWorkplace.VIEW_DIRECT_EDIT,
             Float.valueOf(100));
-
-        CmsWorkplaceView workplace2View = new CmsWorkplaceView(
-            Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_WORKPLACE_2_VIEW_0),
-            CmsWorkplace.VIEW_WORKPLACE_2,
-            Float.valueOf(50));
-        list.add(workplace2View);
         list.add(directEditView);
 
         Iterator<CmsWorkplaceView> i = list.iterator();
