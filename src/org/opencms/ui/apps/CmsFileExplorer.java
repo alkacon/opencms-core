@@ -800,8 +800,15 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         if (m_openedPaths == null) {
             m_openedPaths = new HashMap<String, String>();
 
-            //TODO: start folder
+            // add the configured start folder for the start site
+            String startSite = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartSite();
+            // remove trailing slashes
+            while (startSite.endsWith("/")) {
+                startSite = startSite.substring(0, startSite.length() - 1);
+            }
 
+            String startFolder = CmsAppWorkplaceUi.get().getWorkplaceSettings().getUserSettings().getStartFolder();
+            m_openedPaths.put(startSite, startFolder);
         }
     }
 
