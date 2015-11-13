@@ -29,11 +29,14 @@ package org.opencms.ade.sitemap;
 
 import org.opencms.ade.galleries.CmsGalleryActionElement;
 import org.opencms.ade.publish.CmsPublishActionElement;
+import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
 import org.opencms.ade.upload.CmsUploadActionElement;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
+import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
@@ -117,7 +120,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
                 m_sitemapData = CmsVfsSitemapService.prefetch(
                     getRequest(),
                     getCmsObject().getRequestContext().getUri());
-            } catch (CmsRpcException e) {
+            } catch (@SuppressWarnings("unused") CmsRpcException e) {
                 // ignore, should never happen, and it is already logged
             }
         }
@@ -131,6 +134,16 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
      */
     public String getTitle() {
 
-        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, getCoreData().getUri());
+        String folderTitle = getSitemapData().getOpenPath();
+        CmsClientSitemapEntry root = getSitemapData().getRoot();
+        if (root != null) {
+            CmsClientProperty titleProp = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE);
+            if ((titleProp != null) && !titleProp.isEmpty()) {
+                folderTitle = root.getOwnProperties().get(CmsPropertyDefinition.PROPERTY_TITLE).getEffectiveValue();
+            } else {
+                folderTitle = root.getName();
+            }
+        }
+        return Messages.get().getBundle(getWorkplaceLocale()).key(Messages.GUI_EDITOR_TITLE_1, folderTitle);
     }
 }

@@ -738,10 +738,11 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
             Locale locale = getLocaleForNewResourceInfos(cms, configData);
 
             try {
-                String basePath = configData.getBasePath();
                 CmsObject rootCms = OpenCms.initCmsObject(cms);
                 rootCms.getRequestContext().setSiteRoot("");
-                CmsResource baseDir = rootCms.readResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                CmsResource baseDir = rootCms.readResource(
+                    configData.getBasePath(),
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
                 CmsProperty galleryFolderProp = cms.readPropertyObject(
                     baseDir,
                     CmsPropertyDefinition.PROPERTY_GALLERIES_FOLDER,
@@ -812,6 +813,13 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 editorMode = EditorMode.navigation;
             }
 
+            String basePath = configData.getBasePath();
+
+            if (!cms.existsResource(
+                cms.getRequestContext().removeSiteRoot(basePath),
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                basePath = cms.getRequestContext().getSiteRoot();
+            }
             result = new CmsSitemapData(
                 (new CmsTemplateFinder(cms)).getTemplates(),
                 propertyConfig,
@@ -830,9 +838,9 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
                 newResourceInfos,
                 createResourceTypeInfo(OpenCms.getResourceManager().getResourceType(RECOURCE_TYPE_NAME_REDIRECT), null),
                 createNavigationLevelTypeInfo(),
-                getSitemapInfo(configData.getBasePath()),
+                getSitemapInfo(basePath),
                 parentSitemap,
-                getRootEntry(configData.getBasePath(), CmsResource.getFolderPath(openPath)),
+                getRootEntry(basePath, CmsResource.getFolderPath(openPath)),
                 openPath,
                 30,
                 detailPages,
@@ -1370,7 +1378,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
         try {
             checkResource = cms.readResource(checkPath);
         } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
+            LOG.warn(e.getLocalizedMessage(), e);
         }
 
         for (Integer typeId : sitemapTypeIds) {
@@ -2349,7 +2357,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     throws CmsSecurityException, CmsException {
 
         String sitePath = "/";
-        if (rootPath != null) {
+        if ((rootPath != null) && getCmsObject().existsResource(rootPath, null)) {
             sitePath = getCmsObject().getRequestContext().removeSiteRoot(rootPath);
         }
         CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(
@@ -2377,7 +2385,8 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         CmsResource baseFolder = null;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)
+            && cms.existsResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
             baseFolder = cms.readResource(
                 cms.getRequestContext().removeSiteRoot(basePath),
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
