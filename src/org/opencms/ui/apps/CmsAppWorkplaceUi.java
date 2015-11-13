@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
@@ -124,14 +125,14 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The current view in case it implements view change listener. */
     private View m_currentView;
 
+    /** The history extension. */
+    private CmsHistoryExtension m_history;
+
     /** Cache for workplace locale. */
     private CmsExpiringValue<Locale> m_localeCache = new CmsExpiringValue<Locale>(1000);
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
-
-    /** The history extension. */
-    private CmsHistoryExtension m_history;
 
     /**
      * Gets the current UI instance.<p>
@@ -189,6 +190,34 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         }
         m_navigationStateManager.setState(newCompleteState);
 
+    }
+
+    /**
+     * Changes to the given project. Will update session and workplace settings.<p>
+     *
+     * @param project the project to change to
+     */
+    public void changeProject(CmsProject project) {
+
+        if (!getCmsObject().getRequestContext().getCurrentProject().equals(project)) {
+            getCmsObject().getRequestContext().setCurrentProject(project);
+            getWorkplaceSettings().setProject(project.getUuid());
+            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+        }
+    }
+
+    /**
+     * Changes to the given site. Will update session and workplace settings.<p>
+     *
+     * @param siteRoot the site to change to
+     */
+    public void changeSite(String siteRoot) {
+
+        if (!getCmsObject().getRequestContext().getSiteRoot().equals(siteRoot)) {
+            getCmsObject().getRequestContext().setSiteRoot(siteRoot);
+            getWorkplaceSettings().setSite(siteRoot);
+            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+        }
     }
 
     /**

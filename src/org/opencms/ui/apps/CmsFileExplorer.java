@@ -799,6 +799,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         m_openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(OPENED_PATHS);
         if (m_openedPaths == null) {
             m_openedPaths = new HashMap<String, String>();
+
+            //TODO: start folder
+
         }
     }
 
@@ -847,7 +850,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         CmsObject cms = A_CmsUI.getCmsObject();
         if (force || !cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-            cms.getRequestContext().setSiteRoot(siteRoot);
+            CmsAppWorkplaceUi.get().changeSite(siteRoot);
             populateFolderTree();
             openPath(path);
             m_siteSelector.select(siteRoot);
@@ -964,6 +967,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             CmsObject cms = A_CmsUI.getCmsObject();
             String siteRoot = getSiteRootFromState();
             String path = getPathFromState();
+
             CmsUUID projectId = getProjectIdFromState();
             if ((projectId != null) && !cms.getRequestContext().getCurrentProject().getUuid().equals(projectId)) {
                 try {

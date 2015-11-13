@@ -536,6 +536,57 @@ public class CmsSessionManager {
     }
 
     /**
+     * Updates the the OpenCms session data used for quick authentication of users.<p>
+     *
+     * This is required if the user data (current group or project) was changed in
+     * the requested document.<p>
+     *
+     * The user data is only updated if the user was authenticated to the system.
+     *
+     * @param cms the current OpenCms user context
+     * @param session the current session
+     */
+    public void updateSessionInfo(CmsObject cms, HttpSession session) {
+
+        if (session == null) {
+            return;
+        }
+
+        if (!cms.getRequestContext().isUpdateSessionEnabled()) {
+            // this request must not update the user session info
+            // this is true for long running "thread" requests, e.g. during project publish
+            return;
+        }
+
+        if (cms.getRequestContext().getUri().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION)) {
+            // this request must not update the user session info
+            // if not the switch user feature would not work
+            return;
+        }
+
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            // Guest user requests don't need to update the OpenCms user session information
+
+            // get the session info object for the user
+            CmsSessionInfo sessionInfo = getSessionInfo(session);
+            if (sessionInfo != null) {
+                // update the users session information
+                sessionInfo.update(cms.getRequestContext());
+                addSessionInfo(sessionInfo);
+            } else {
+                sessionInfo = new CmsSessionInfo(
+                    cms.getRequestContext(),
+                    new CmsUUID(),
+                    session.getMaxInactiveInterval());
+                // append the session info to the http session
+                session.setAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID, sessionInfo.getSessionId().clone());
+                // update the session info user data
+                addSessionInfo(sessionInfo);
+            }
+        }
+    }
+
+    /**
      * Updates all session info objects, so that invalid projects
      * are replaced by the Online project.<p>
      *

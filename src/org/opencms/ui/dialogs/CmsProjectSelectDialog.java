@@ -128,14 +128,13 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         try {
             CmsProject project = m_context.getCms().readProject((CmsUUID)m_projectComboBox.getValue());
             if (!m_context.getCms().getRequestContext().getCurrentProject().equals(project)) {
-                m_context.getCms().getRequestContext().setCurrentProject(project);
-                CmsAppWorkplaceUi.get().getWorkplaceSettings().setProject(project.getUuid());
+                CmsAppWorkplaceUi.get().changeProject(project);
             } else {
                 project = null;
             }
             String siteRoot = (String)m_siteComboBox.getValue();
             if (!m_context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                m_context.getCms().getRequestContext().setSiteRoot(siteRoot);
+                CmsAppWorkplaceUi.get().changeSite(siteRoot);
             } else {
                 siteRoot = null;
             }
