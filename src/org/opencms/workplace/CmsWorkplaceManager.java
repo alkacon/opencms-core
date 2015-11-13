@@ -51,6 +51,7 @@ import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.I_CmsLocaleHandler;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -161,6 +162,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
     }
 
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
+
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
@@ -176,9 +180,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
         "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config:view_configs",
         "xmlcontent,pointer:view_other");
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
 
     /** Value of the acacia-unlock configuration option (may be null if not set). */
     private String m_acaciaUnlock;
@@ -2162,6 +2163,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         String result = m_defaultViewRules.getViewForType(typeName);
         if (result == null) {
             result = "view_other";
+            try {
+                if (OpenCms.getResourceManager().getResourceType(typeName).isFolder()) {
+                    result = "view_folders";
+                }
+            } catch (CmsLoaderException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
         return result;
     }
