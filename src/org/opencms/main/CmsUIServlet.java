@@ -277,12 +277,14 @@ public class CmsUIServlet extends VaadinServlet {
                                 LOG.error(e.getLocalizedMessage(), e);
                             }
                         }
+                        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
                         // Inject CmsCoreData etc. for GWT dialogs
                         try {
                             doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
-                            doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(wpLocale, true));
-                            doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(wpLocale, true));
-                            doc.head().append(org.opencms.ade.galleries.ClientMessages.get().export(wpLocale, true));
+                            doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(currentLocale, true));
+                            doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(currentLocale, true));
+                            doc.head().append(
+                                org.opencms.ade.galleries.ClientMessages.get().export(currentLocale, true));
                         } catch (Exception e) {
                             LOG.error(e.getLocalizedMessage(), e);
                         }
