@@ -407,14 +407,18 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         format.setTrimText(false);
         format.setEncoding(CmsEncoder.ENCODING_UTF_8);
 
+        OutputStream out = null;
         try {
-            OutputStream out = new FileOutputStream(file);
+            out = new FileOutputStream(file);
             writer = new XMLWriter(out, format);
             writer.write(config);
             writer.flush();
         } finally {
             if (writer != null) {
                 writer.close();
+            }
+            if (out != null) {
+                out.close();
             }
         }
 
@@ -450,6 +454,11 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         String transformationPath = getTransformationPath();
         boolean result = (transformationPath != null) && new File(transformationPath).exists();
+        if (result) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_XSLT_CONFIG_ENABLED_1, transformationPath));
+        } else {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_XSLT_CONFIG_DISABLED_0));
+        }
         return result;
     }
 

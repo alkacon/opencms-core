@@ -83,9 +83,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EXPORT_USER_1 = "INIT_EXPORT_USER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_REPOSITORY_FOLDER_1 = "INIT_REPOSITORY_FOLDER_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_GUEST_USER_1 = "INIT_GUEST_USER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -135,6 +132,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_RELATION_DELETION_ENABLED_0 = "INIT_RELATION_DELETION_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_REPOSITORY_FOLDER_1 = "INIT_REPOSITORY_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_REQUEST_HANDLER_INVALID_1 = "INIT_REQUEST_HANDLER_INVALID_1";
@@ -240,6 +240,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WORKPLACE_INIT_FINISHED_0 = "INIT_WORKPLACE_INIT_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_XSLT_CONFIG_DISABLED_0 = "INIT_XSLT_CONFIG_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_XSLT_CONFIG_ENABLED_1 = "INIT_XSLT_CONFIG_ENABLED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_CONFIG_1 = "LOG_ADD_CONFIG_1";
