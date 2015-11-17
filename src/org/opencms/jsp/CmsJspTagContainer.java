@@ -359,7 +359,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
         List<CmsContainerElementBean> subElements;
         CmsXmlGroupContainer xmlGroupContainer = CmsXmlGroupContainerFactory.unmarshal(cms, element.getResource(), req);
         CmsGroupContainerBean groupContainer = xmlGroupContainer.getGroupContainer(cms);
-        if (!CmsElementUtil.checkGroupAllowed(containerType, groupContainer.getTypes())) {
+        if (!CmsElementUtil.checkGroupAllowed(containerType, groupContainer)) {
             LOG.warn(
                 new CmsIllegalStateException(
                     Messages.get().container(

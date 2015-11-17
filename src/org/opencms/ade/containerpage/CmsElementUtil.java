@@ -112,14 +112,6 @@ public class CmsElementUtil {
     /** The maximum number of nested container levels. */
     public static final int MAX_NESTING_LEVEL = 5;
 
-    /** Container types for element groups. */
-    private static final Set<String> ELEMENT_GROUP_TYPES = Collections.unmodifiableSet(
-        Sets.newHashSet("elementgroup", "group"));
-
-    /** Container types for inheritance groups. */
-    private static final Set<String> INHERITANCE_GROUP_TYPES = Collections.unmodifiableSet(
-        Sets.newHashSet("inheritancegroup", "group"));
-
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
 
@@ -261,35 +253,13 @@ public class CmsElementUtil {
      * Checks if a group element is allowed in a container with a given type.<p>
      *
      * @param containerType the container type spec (comma separated)
-     * @param storedContainerTypes the group's stored types
+     * @param groupContainer the group
      *
      * @return true if the group is allowed in the container
      */
-    public static boolean checkGroupAllowed(String containerType, Set<String> storedContainerTypes) {
+    public static boolean checkGroupAllowed(String containerType, CmsGroupContainerBean groupContainer) {
 
-        for (String storedType : storedContainerTypes) {
-            if (checkGroupAllowed(containerType, storedType)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks if a group is allowed in a container with the given type.<p>
-     *
-     * @param containerType the container type (comma separated)
-     * @param storedType the stored group type
-     *
-     * @return true if the group is allowed in the container
-     */
-    public static boolean checkGroupAllowed(String containerType, String storedType) {
-
-        Set<String> storedTypeParts = CmsContainer.splitType(storedType);
-        Set<String> containerTypeParts = CmsContainer.splitType(containerType);
-        // check if storedTypeParts is a subset of containerTypeParts
-        boolean result = Sets.intersection(containerTypeParts, storedTypeParts).size() == storedTypeParts.size();
-        return result;
+        return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
     }
 
     /**
@@ -377,9 +347,9 @@ public class CmsElementUtil {
             if (groupContainer.getTypes().isEmpty()) {
                 if (groupContainer.getElements().isEmpty()) {
                     String emptySub = "<div>NEW AND EMPTY</div>";
-                    for (String name : containersByName.keySet()) {
-                        if (checkGroupAllowed(containersByName.get(name).getType(), ELEMENT_GROUP_TYPES)) {
-                            contents.put(name, emptySub);
+                    for (CmsContainer cont : containersByName.values()) {
+                        if (formatterConfiguraton.hasFormatter(cont.getType(), cont.getWidth(), false)) {
+                            contents.put(cont.getName(), emptySub);
                         }
                     }
                 } else {
@@ -392,7 +362,7 @@ public class CmsElementUtil {
                 for (CmsContainer cnt : containersByName.values()) {
 
                     String type = cnt.getType();
-                    if (checkGroupAllowed(type, groupContainer.getTypes())) {
+                    if (checkGroupAllowed(type, groupContainer)) {
                         contents.put(cnt.getName(), "<div>should not be used</div>");
                     }
                 }
@@ -417,7 +387,7 @@ public class CmsElementUtil {
                 elementData.setTitle(ref.getTitle());
             }
             for (CmsContainer container : containers) {
-                if (checkGroupAllowed(container.getType(), INHERITANCE_GROUP_TYPES)) {
+                if (formatterConfiguraton.hasFormatter(container.getType(), container.getWidth(), false)) {
                     contents.put(container.getName(), "<div>should not be used</div>");
                 }
             }

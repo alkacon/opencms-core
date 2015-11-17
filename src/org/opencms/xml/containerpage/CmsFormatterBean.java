@@ -550,7 +550,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     @Override
     public boolean isMatchAll() {
 
-        return m_matchAll;
+        return m_matchAll || m_containerTypes.contains(WILDCARD_TYPE);
     }
 
     /**
