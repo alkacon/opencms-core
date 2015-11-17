@@ -588,9 +588,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         // generate the file URL for the XML input
         URL fileUrl = new URL(url, configuration.getXmlFileName());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOAD_CONFIG_XMLFILE_1, fileUrl));
-        }
+        CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LOAD_CONFIG_XMLFILE_1, fileUrl));
+        // Check transformation rule here so we have the XML file / XSLT file log output together
+        boolean hasTransformation = hasTransformation();
 
         // create a backup of the configuration
         backupXmlConfiguration(configuration);
@@ -610,7 +610,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         configuration.addXmlDigesterRules(m_digester);
 
         InputSource inputSource = null;
-        if (hasTransformation()) {
+        if (hasTransformation) {
             try {
                 inputSource = transformConfiguration(url, configuration);
             } catch (Exception e) {

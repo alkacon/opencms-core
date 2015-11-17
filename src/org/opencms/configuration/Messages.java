@@ -101,6 +101,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_IMPORT_MANAGER_0 = "INIT_IMPORT_MANAGER_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_LOAD_CONFIG_XMLFILE_1 = "INIT_LOAD_CONFIG_XMLFILE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_LOGINMANAGER_3 = "INIT_LOGINMANAGER_3";
 
     /** Message constant for key in the resource bundle. */
@@ -297,9 +300,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_CONFIG_BASE_FOLDER_1 = "LOG_INVALID_CONFIG_BASE_FOLDER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_LOAD_CONFIG_XMLFILE_1 = "LOG_LOAD_CONFIG_XMLFILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MAIL_SETTINGS_1 = "LOG_MAIL_SETTINGS_1";

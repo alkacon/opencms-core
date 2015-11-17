@@ -356,14 +356,11 @@ public class CmsAutoSetup {
                 // System.out will be redirected by the setup bean, so keep a reference for the progress indicator
                 PrintStream out = System.out;
                 int timecount = 0;
-                int linecount = 0;
+                StringBuffer points = new StringBuffer(100);
                 while (m_bean.isImportRunning()) {
-                    if ((++timecount % 4) == 0) {
-                        out.print(".");
-                        ++linecount;
-                    }
-                    if ((linecount % 5) == 0) {
-                        out.println();
+                    if ((++timecount % 10) == 0) {
+                        points.append('.');
+                        out.println(points);
                     }
                     Thread.sleep(500);
                 }
