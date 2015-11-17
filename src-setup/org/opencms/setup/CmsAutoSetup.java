@@ -57,14 +57,14 @@ public class CmsAutoSetup {
     /** A constant fpr the path, where the "setup.properties" files is placed on the local file system. */
     private static final String PARAM_CONFIG_PATH = "-path";
 
+    /** Horizontal ruler - ASCII style. */
+    private static final String HR = "-----------------------------------------------------------";
+
     /** The setup bean. */
     private CmsSetupBean m_bean;
 
     /** The setup properties to use. */
     private CmsAutoSetupProperties m_props;
-
-    /** Horizontal ruler - ASCII style. */
-    private static final String HR = "-----------------------------------------------------------";
 
     /**
      * A bean for a automatically performed setup of OpenCms.<p>
@@ -352,17 +352,21 @@ public class CmsAutoSetup {
             if (m_props.isShowProgress()) {
                 // show a simple progress indicator
                 // this is only needed in case you do an automated installation and watch the console
-                System.out.print("Importing modules.");
+                System.out.println("\nImporting modules:");
                 // System.out will be redirected by the setup bean, so keep a reference for the progress indicator
                 PrintStream out = System.out;
-                int count = 0;
+                int timecount = 0;
+                int linecount = 0;
                 while (m_bean.isImportRunning()) {
-                    if ((++count % 4) == 0) {
+                    if ((++timecount % 4) == 0) {
                         out.print(".");
+                    }
+                    if ((++linecount % 10) == 0) {
+                        out.println();
                     }
                     Thread.sleep(500);
                 }
-                System.out.println("[finished].");
+                System.out.println("\nModule import is finished!");
             } else {
                 // no progress indicator
                 System.out.println("Importing modules.");
