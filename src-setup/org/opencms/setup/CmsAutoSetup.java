@@ -360,8 +360,9 @@ public class CmsAutoSetup {
                 while (m_bean.isImportRunning()) {
                     if ((++timecount % 4) == 0) {
                         out.print(".");
+                        ++linecount;
                     }
-                    if ((++linecount % 10) == 0) {
+                    if ((linecount % 5) == 0) {
                         out.println();
                     }
                     Thread.sleep(500);
