@@ -210,6 +210,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             html.append(name);
             html.append("'");
         }
+
         html.append(">");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
             html.append("<img src='");
@@ -230,12 +231,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append(iconPath);
             }
             html.append("'");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
                 html.append(" alt='");
-                html.append(name);
+                html.append(helpText);
                 html.append("'");
                 html.append(" title='");
-                html.append(name);
+                html.append(helpText);
                 html.append("'");
             }
             html.append(">");

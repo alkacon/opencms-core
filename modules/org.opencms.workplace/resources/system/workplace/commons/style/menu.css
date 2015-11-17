@@ -1451,6 +1451,10 @@ a.searchcategory:hover, a.searchcategory:active {
     font-size: 8pt; 
 } 
 
+.legacy-app .help {
+	display: none;
+}
+
 <% } // close !ONLINEHELP
 	if (style != NEW_ADMIN && style != ONLINEHELP) { %>
 
