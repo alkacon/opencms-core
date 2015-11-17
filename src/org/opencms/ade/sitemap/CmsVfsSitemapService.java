@@ -2357,7 +2357,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     throws CmsSecurityException, CmsException {
 
         String sitePath = "/";
-        if ((rootPath != null) && getCmsObject().existsResource(rootPath, null)) {
+        if ((rootPath != null)) {
             sitePath = getCmsObject().getRequestContext().removeSiteRoot(rootPath);
         }
         CmsJspNavElement navElement = getNavBuilder().getNavigationForResource(
@@ -2385,8 +2385,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
 
         CmsObject cms = getCmsObject();
         CmsResource baseFolder = null;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)
-            && cms.existsResource(basePath, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(basePath)) {
             baseFolder = cms.readResource(
                 cms.getRequestContext().removeSiteRoot(basePath),
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
