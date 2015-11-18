@@ -34,12 +34,10 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.Size;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsToolbarButtonLayoutBundle;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Tag;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -86,9 +84,6 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /** The dierect edit buttons. */
     private Map<String, CmsDirectEditButtons> m_directEditButtons = Maps.newHashMap();
-
-    /** The selection button.<p>*/
-    private CmsToolbarSelectionButton m_selection;
 
     /**
      * Initializes the direct edit buttons.<p>
@@ -194,36 +189,14 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         RootPanel root = RootPanel.get();
         m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
         root.add(m_toolbar);
-        CmsPushButton toggleToolbarButton = new CmsPushButton();
         boolean initiallyVisible = CmsCoreProvider.get().isToolbarVisible();
-        toggleToolbarButton.setButtonStyle(ButtonStyle.TEXT, null);
-        toggleToolbarButton.setSize(Size.small);
-        toggleToolbarButton.setImageClass(I_CmsImageBundle.INSTANCE.style().opencmsSymbol());
-        toggleToolbarButton.removeStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().buttonCornerAll());
-        toggleToolbarButton.addStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.generalCss().cornerAll());
-        root.add(toggleToolbarButton);
-        toggleToolbarButton.addClickHandler(new ClickHandler() {
-
-            /**
-             * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-             */
-            public void onClick(ClickEvent event) {
-
-                toggleToolbar();
-            }
-
-        });
         if (initiallyVisible) {
             m_toolbarVisibility.setValue(I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
         } else {
             m_toolbarVisibility.setValue(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
         }
 
-        toggleToolbarButton.addStyleName(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarToggle());
-        CmsDirectEditToolbarHandler handler = new CmsDirectEditToolbarHandler();
+        CmsDirectEditToolbarHandler handler = new CmsDirectEditToolbarHandler(this);
 
         CmsToolbarPublishButton publish = new CmsToolbarPublishButton(handler);
         publish.addClickHandler(clickHandler);
@@ -233,7 +206,6 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
         selection.setActive(initiallyVisible);
         selection.addClickHandler(clickHandler);
         m_toolbar.addLeft(selection);
-        m_selection = selection;
         CmsToolbarContextButton contextMenuButton = new CmsToolbarContextButton(handler);
         contextMenuButton.setMenuContext(AdeContext.editprovider);
         contextMenuButton.addClickHandler(clickHandler);
@@ -249,8 +221,7 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
      */
     protected boolean isToolbarVisible() {
 
-        return m_toolbarVisibility.getValue().equals(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
+        return m_toolbarVisibility.getValue().equals(I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
     }
 
     /**
@@ -294,24 +265,27 @@ public class CmsDirectEditEntryPoint extends A_CmsEntryPoint {
 
     /**
      * Toggles the visibility of the toolbar.<p>
+     *
+     * @param show <code>true</code> to show the toolbar
      */
-    protected void toggleToolbar() {
+    protected void toggleToolbar(boolean show) {
 
-        if (isToolbarVisible()) {
-            CmsToolbar.showToolbar(
-                m_toolbar,
-                false,
-                m_toolbarVisibility,
-                I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
-            saveToolbarVisibility(false);
-        } else {
+        if (show) {
+            CmsDebugLog.consoleLog("Showing toolbar");
             CmsToolbar.showToolbar(
                 m_toolbar,
                 true,
                 m_toolbarVisibility,
                 I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
             saveToolbarVisibility(true);
-            m_selection.setActive(true);
+        } else {
+            CmsDebugLog.consoleLog("Hiding toolbar");
+            CmsToolbar.showToolbar(
+                m_toolbar,
+                false,
+                m_toolbarVisibility,
+                I_CmsLayoutBundle.INSTANCE.toolbarCss().simpleToolbarShow());
+            saveToolbarVisibility(false);
         }
 
     }

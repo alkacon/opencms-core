@@ -70,11 +70,17 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
     /** The editor handler. */
     private I_CmsContentEditorHandler m_editorHandler;
 
+    /** The entry point. */
+    private CmsDirectEditEntryPoint m_entryPoint;
+
     /**
      * Constructor.<p>
+     *
+     * @param entryPoint the entry point
      */
-    public CmsDirectEditToolbarHandler() {
+    public CmsDirectEditToolbarHandler(CmsDirectEditEntryPoint entryPoint) {
 
+        m_entryPoint = entryPoint;
         m_editorHandler = new I_CmsContentEditorHandler() {
 
             /**
@@ -243,6 +249,16 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
             }
 
         }, null);
+    }
+
+    /**
+     * Toggles the visibility of the toolbar.<p>
+     *
+     * @param show <code>true</code> to show the toolbar
+     */
+    public void showToolbar(boolean show) {
+
+        m_entryPoint.toggleToolbar(show);
     }
 
     /**

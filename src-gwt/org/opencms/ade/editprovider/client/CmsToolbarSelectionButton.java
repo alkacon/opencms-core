@@ -52,6 +52,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
     public CmsToolbarSelectionButton(CmsDirectEditToolbarHandler handler) {
 
         super(I_CmsButton.ButtonData.SELECTION, handler);
+        addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarShow());
         m_editButtonsVisibility = new CmsStyleVariable(RootPanel.get());
     }
 
@@ -105,6 +106,7 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarButton<CmsDirectEditT
             visible
             ? I_CmsLayoutBundle.INSTANCE.directEditCss().showButtons()
             : I_CmsLayoutBundle.INSTANCE.directEditCss().hideButtons());
+        getHandler().showToolbar(visible);
     }
 
     /**

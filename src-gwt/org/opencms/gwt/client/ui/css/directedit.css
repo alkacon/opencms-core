@@ -1,4 +1,4 @@
-@external cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
+@external opencms-icon-edit-point, opencms-icon-clipboard, opencms-icon-pen, opencms-icon-info, cmsState, cmsState-up, cmsState-up-hovering, cmsState-up-disabled, cmsState-down, cmsState-down-hovering, cmsState-down-disabled;
 
 .directEditButtons{
 	position: absolute;
@@ -88,6 +88,7 @@ div.expiredListElementOverlay {
 	display: none !important;
 }
 
+.toolbarSelection .optionBar .opencms-icon-edit-point, 
 .toolbarRemove .optionBar .toolbarRemove, 
 .toolbarEdit .optionBar .toolbarEdit, 
 .toolbarEdit .directEditButtons .toolbarNew,
@@ -97,6 +98,39 @@ div.expiredListElementOverlay {
 .toolbarSelection .optionBar .toolbarSelection,
 .toolbarSelection .optionBar.cmsHovering .cmsState{
 	display: inline-block;
+}
+
+@sprite .optionBar .cmsState-up-hovering .opencms-icon-info, .optionBar .cmsState-down-hovering .opencms-icon-info, .optionBar .cmsState-down .opencms-icon-info {
+    gwt-image: "coreImages.icons.infoIconActive";
+}
+
+@sprite .optionBar .cmsState-up .opencms-icon-info, .optionBar .cmsState-up-disabled .opencms-icon-info, .optionBar .cmsState-down-disabled .opencms-icon-info {
+    gwt-image: "coreImages.icons.infoIconDeactivated";
+}
+
+@sprite .optionBar .cmsState-up-hovering .opencms-icon-edit-point, .optionBar .cmsState-down-hovering .opencms-icon-edit-point, .optionBar .cmsState-down .opencms-icon-edit-point {
+    gwt-image: "coreImages.icons.selectionIconActive";
+}
+@sprite .optionBar .cmsState-up .opencms-icon-edit-point, .optionBar .cmsState-up-disabled .opencms-icon-edit-point, .optionBar .cmsState-down-disabled .opencms-icon-edit-point {
+    gwt-image: "coreImages.icons.selectionIconDeactivated";
+}
+@sprite .optionBar .opencms-icon-pen.cmsState-up-hovering .opencms-icon-edit-point, .optionBar .opencms-icon-pen.cmsState-down-hovering .opencms-icon-edit-point, .optionBar .opencms-icon-pen.cmsState-down .opencms-icon-edit-point {
+    gwt-image: "coreImages.icons.editIconActive";
+}
+@sprite .cmsHovering.optionBar .opencms-icon-pen.cmsState-up .opencms-icon-edit-point,  .optionBar .cmsState-up .opencms-icon-pen{
+    gwt-image: "coreImages.icons.editIconDeactivated";
+}
+
+/** show lock icon for deactivated edit button **/
+@sprite .optionBar .cmsState-up-disabled .opencms-icon-pen, .optionBar .cmsState-down-disabled .opencms-icon-pen {
+	gwt-image: "coreImages.icons.lockIconDeactivated";
+}
+
+@sprite .optionBar .cmsState-up-hovering .opencms-icon-clipboard, .optionBar .cmsState-down-hovering .opencms-icon-clipboard, .optionBar .cmsState-down .opencms-icon-clipboard {
+    gwt-image: "coreImages.icons.favoriteIconActive";
+}
+@sprite .optionBar .cmsState-up .opencms-icon-clipboard, .optionBar .cmsState-up-disabled .opencms-icon-clipboard, .optionBar .cmsState-down-disabled .opencms-icon-clipboard {
+    gwt-image: "coreImages.icons.favoriteIconDeactivated";
 }
 
 @sprite .optionBar .cmsState-up-hovering .toolbarClipboard, .optionBar .cmsState-down-hovering .toolbarClipboard, .optionBar .cmsState-down .toolbarClipboard {
