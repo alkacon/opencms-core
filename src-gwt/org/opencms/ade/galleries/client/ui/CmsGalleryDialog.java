@@ -83,7 +83,7 @@ implements BeforeSelectionHandler<Integer>, SelectionHandler<Integer>, I_CmsTrun
     public static final int DEFAULT_DIALOG_HEIGHT = 486;
 
     /** The initial dialog width. */
-    public static final int DEFAULT_DIALOG_WIDTH = 650;
+    public static final int DEFAULT_DIALOG_WIDTH = 800;
 
     /** Text metrics key. */
     private static final String TM_GALLERY_DIALOG = "GalleryDialog";

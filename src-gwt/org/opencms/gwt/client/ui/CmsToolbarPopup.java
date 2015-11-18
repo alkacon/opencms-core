@@ -100,7 +100,7 @@ public class CmsToolbarPopup extends CmsPopup {
 
         int width = CmsGalleryDialog.DEFAULT_DIALOG_WIDTH;
         if (Window.getClientWidth() > 1100) {
-            width = 860;
+            width = 1000;
         }
         return width;
     }
