@@ -138,15 +138,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             $wnd.opener.location.href = path;
             $wnd.opener.focus();
         } else {
-            var openerStr = 'width='
-                    + winWidth
-                    + ',height='
-                    + winHeight
-                    + ',left='
-                    + winLeft
-                    + ',top='
-                    + winTop
-                    + ',scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes';
+            var openerStr = '';
             var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
             if (deWindow) {
                 deWindow.focus();
