@@ -897,8 +897,13 @@ public final class OpenCmsCore {
     throws IOException, CmsException {
 
         // instantiate CMS context
+        String originalEncoding = req.getCharacterEncoding();
         CmsObject cms = initCmsObject(req, res);
         servlet.setCms(cms);
+        if (originalEncoding != null) {
+            // getI18NInfo sets wrong encoding
+            req.setCharacterEncoding(originalEncoding);
+        }
     }
 
     /**
