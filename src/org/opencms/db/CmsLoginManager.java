@@ -138,7 +138,7 @@ public class CmsLoginManager {
     }
 
     /** Default token lifetime. */
-    public static final long DEFAULT_TOKEN_LIFETIME = 3600 * 24;
+    public static final long DEFAULT_TOKEN_LIFETIME = 3600 * 24 * 1000;
 
     /** Default lock time if treshold for bad login attempts is reached. */
     public static final int DISABLE_MINUTES_DEFAULT = 15;
