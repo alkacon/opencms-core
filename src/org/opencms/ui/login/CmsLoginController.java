@@ -268,7 +268,7 @@ public class CmsLoginController {
         CmsMessageContainer message = CmsLoginHelper.validateUserAndPasswordNotEmpty(user, password);
         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
         String storedMessage = null;
-        if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isEnabled()) {
+        if ((loginMessage != null) && !loginMessage.isLoginCurrentlyForbidden() && loginMessage.isActive()) {
             storedMessage = loginMessage.getMessage();
             // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
         }
