@@ -699,7 +699,17 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             public void nodeExpand(ExpandEvent event) {
 
+                selectTreeItem((CmsUUID)event.getItemId());
                 readTreeLevel((CmsUUID)event.getItemId());
+            }
+        });
+        m_fileTree.addCollapseListener(new CollapseListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void nodeCollapse(CollapseEvent event) {
+
+                selectTreeItem((CmsUUID)event.getItemId());
             }
         });
         m_fileTree.addCollapseListener(new CollapseListener() {
@@ -1447,6 +1457,16 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             children = m_treeContainer.getChildren(folderId);
         }
         readFolder(folderId);
+    }
+
+    /**
+     * Selects the item with the given id.<p>
+     *
+     * @param itemId the item id
+     */
+    void selectTreeItem(CmsUUID itemId) {
+
+        m_fileTree.select(itemId);
     }
 
     /**
