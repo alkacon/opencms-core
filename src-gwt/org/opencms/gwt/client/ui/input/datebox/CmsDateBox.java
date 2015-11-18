@@ -286,7 +286,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         initWidget(uiBinder.createAndBindUi(this));
         m_box.colorWhite();
 
-        m_popup = new CmsPopup();
+        m_popup = new CmsPopup(Messages.get().key(Messages.GUI_DATEBOX_TITLE_0));
         m_ampmGroup = new CmsRadioButtonGroup();
 
         m_am.setText(Messages.get().key(Messages.GUI_DATE_AM_0));

@@ -2,6 +2,7 @@
 
 table.gwt-DatePicker {
 	border-bottom: value("constants.css.borderColor") 1px solid;
+	min-width: 200px;
 }
 table.gwt-DatePicker table.datePickerMonthSelector td, table.gwt-DatePicker table.datePickerDays td div{
 	text-align: center;
@@ -26,7 +27,9 @@ table.gwt-DatePicker table.datePickerMonthSelector td.datePickerMonth { /*the mo
 .datePickerPreviousButton-up-hovering .html-face, .datePickerPreviousButton-down-hovering .html-face, .datePickerNextButton-up-hovering .html-face, .datePickerNextButton-down-hovering .html-face{
 	font-weight: bold;
 }
-.datePickerDays { /*the portion of the picker that shows the days*/}
+table.gwt-DatePicker table.datePickerDays { 
+	width: 100%;
+}
 table.gwt-DatePicker table.datePickerDays td div, table.gwt-DatePicker table.datePickerDays td.datePickerWeekendLabel, table.gwt-DatePicker table.datePickerDays td.datePickerWeekdayLabel{ /* the cell for a day */
 	padding: 4px;
 	font-size: value("constants.css.dateboxDayFontSize");
