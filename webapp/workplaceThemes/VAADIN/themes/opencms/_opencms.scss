@@ -52,6 +52,17 @@
 	.v-Notification.error {
 		@include valo-notification-error-style(v-Notification);
 		@include valo-notification-closable-style(v-Notification);
+		&:after{
+			top: 20px;
+		}
+	}
+	
+	div.v-Notification {
+		max-width: 600px;
+		
+		.v-Notification-caption{
+			white-space: normal;
+		}
 	}
   
 	/* Overrides to the valo theme */
