@@ -49,6 +49,8 @@ import org.opencms.workplace.CmsLoginUserAgreement;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
@@ -316,6 +318,13 @@ public class CmsLoginController {
             OpenCms.getSessionManager().updateSessionInfo(
                 currentCms,
                 (HttpServletRequest)VaadinService.getCurrentRequest());
+            if ((loginMessage != null) && loginMessage.isLoginCurrentlyForbidden()) {
+                // we are an administrator
+                storedMessage = org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_SUCCESS_WITH_MESSAGE_2,
+                    loginMessage.getMessage(),
+                    new Date(loginMessage.getTimeEnd())).key(A_CmsUI.get().getLocale());
+            }
 
             if (storedMessage != null) {
                 OpenCms.getSessionManager().sendBroadcast(
