@@ -30,11 +30,8 @@ package org.opencms.ade.contenteditor;
 import org.opencms.ade.contenteditor.shared.CmsContentDefinition;
 import org.opencms.ade.contenteditor.shared.CmsExternalWidgetConfiguration;
 import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
-import org.opencms.ade.galleries.CmsGalleryActionElement;
-import org.opencms.ade.publish.CmsPublishActionElement;
-import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
-import org.opencms.main.OpenCms;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.editors.CmsEditor;
@@ -55,7 +52,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.contenteditor";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "contenteditor";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.contenteditor.name();
 
     /**
      * Constructor.<p>
@@ -75,7 +72,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        return ClientMessages.get().export(getRequest());
+        return "";
     }
 
     /**
@@ -86,14 +83,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
-        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
-        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(export());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
-        sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
-
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         sb.append(getPrefetch());
         return sb.toString();
     }

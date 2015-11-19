@@ -27,17 +27,13 @@
 
 package org.opencms.ade.sitemap;
 
-import org.opencms.ade.galleries.CmsGalleryActionElement;
-import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.ade.sitemap.shared.CmsClientSitemapEntry;
 import org.opencms.ade.sitemap.shared.CmsSitemapData;
 import org.opencms.ade.sitemap.shared.rpc.I_CmsSitemapService;
-import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.property.CmsClientProperty;
-import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -79,15 +75,7 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        StringBuffer sb = new StringBuffer();
-        String prefetchedData = exportDictionary(
-            CmsSitemapData.DICT_NAME,
-            I_CmsSitemapService.class.getMethod("prefetch", String.class),
-            getSitemapData());
-        sb.append(prefetchedData);
-        sb.append(ClientMessages.get().export(getRequest()));
-        sb.append(org.opencms.gwt.seo.ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -98,13 +86,12 @@ public class CmsSitemapActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(super.export(".vfsMode"));
-        sb.append(export());
-        sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(new CmsGalleryActionElement(getJspContext(), getRequest(), getResponse()).exportWidget());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(
+            exportDictionary(
+                CmsSitemapData.DICT_NAME,
+                I_CmsSitemapService.class.getMethod("prefetch", String.class),
+                getSitemapData()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 

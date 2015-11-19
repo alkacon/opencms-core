@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="publish">
-	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
-	<entry-point class="org.opencms.ade.publish.client.CmsPublishEntryPoint" />
+<module>
+	<inherits name="org.opencms.GwtBase" />
+	<source path="client"/>
+	<source path="shared" />
 </module>

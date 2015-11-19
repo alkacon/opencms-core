@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to="opencms">
+	<inherits name="org.opencms.ade.containerpage.ContainerpageEditor" />
+	<inherits name="org.opencms.ade.sitemap.SitemapEditor" />
+	<inherits name="org.opencms.ade.editprovider.EditProvider" />
+	<inherits name="org.opencms.ade.properties.Properties" />
+	<inherits name="org.opencms.ade.postupload.PostUpload" />
+	<source path="client" />
+	<entry-point class="org.opencms.ade.client.OpenCmsEntryPoint" />
+</module>

@@ -30,7 +30,7 @@ package org.opencms.ade.publish;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.gwt.CmsGwtActionElement;
-import org.opencms.main.OpenCms;
+import org.opencms.gwt.shared.CmsCoreData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +45,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.publish";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "publish";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.publish.name();
 
     /**
      * Constructor.<p>
@@ -65,9 +65,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        StringBuffer sb = new StringBuffer();
-        sb.append(ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -85,10 +83,7 @@ public class CmsPublishActionElement extends CmsGwtActionElement {
             initData);
         sb.append(prefetchedData);
         sb.append(super.export());
-        sb.append(export());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 

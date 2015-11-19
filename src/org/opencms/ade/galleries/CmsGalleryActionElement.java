@@ -35,11 +35,11 @@ import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
-import org.opencms.ade.upload.CmsUploadActionElement;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -68,7 +68,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.galleries";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "galleries";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.galleries.name();
 
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryActionElement.class);
@@ -92,6 +92,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
                 getRequest().getParameter(I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE).trim());
         } catch (Exception e) {
             m_galleryMode = GalleryMode.view;
+            LOG.debug("Could not parse gallery mode parameter.", e);
         }
     }
 
@@ -101,7 +102,7 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        return export(m_galleryMode);
+        return "";
     }
 
     /**
@@ -112,12 +113,9 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
-        sb.append(export());
+        sb.append(export(m_galleryMode));
         sb.append(exportCloseLink());
-        sb.append(new CmsUploadActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 
@@ -260,11 +258,11 @@ public class CmsGalleryActionElement extends CmsGwtActionElement {
         }
 
         StringBuffer sb = new StringBuffer();
-        sb.append(ClientMessages.get().export(getRequest()));
-        sb.append(exportDictionary(
-            CmsGalleryDataBean.DICT_NAME,
-            I_CmsGalleryService.class.getMethod("getInitialSettings", CmsGalleryConfiguration.class),
-            data));
+        sb.append(
+            exportDictionary(
+                CmsGalleryDataBean.DICT_NAME,
+                I_CmsGalleryService.class.getMethod("getInitialSettings", CmsGalleryConfiguration.class),
+                data));
         sb.append(
             exportDictionary(
                 CmsGallerySearchBean.DICT_NAME,

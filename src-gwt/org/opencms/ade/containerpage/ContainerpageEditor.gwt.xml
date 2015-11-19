@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="containerpage">
-	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
-	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
-	<inherits name="org.opencms.ade.contenteditor.ContentEditorHeadless" />
+	<inherits name="org.opencms.ade.publish.PublishDialog" />
+	<inherits name="org.opencms.ade.galleries.Gallery" />
+	<inherits name="org.opencms.ade.contenteditor.ContentEditor" />
 	<source path="client" />
 	<source path="shared" />
 	<replace-with class="org.opencms.ade.containerpage.client.impl.CmsDummyZIndexManager">
         <when-type-assignable class="org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager"/>
     </replace-with>
-    <replace-with class="org.opencms.ade.containerpage.client.impl.CmsContainerZIndexManager">
-        <when-type-assignable class="org.opencms.ade.containerpage.client.I_CmsContainerZIndexManager"/>
-      	<when-property-is name="user.agent" value="ie6"/>
-    </replace-with>
-	<entry-point class="org.opencms.ade.containerpage.client.CmsContainerpageEditor" />
 </module>

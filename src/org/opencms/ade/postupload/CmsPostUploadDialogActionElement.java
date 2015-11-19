@@ -32,7 +32,7 @@ import org.opencms.ade.postupload.shared.I_CmsDialogConstants;
 import org.opencms.ade.postupload.shared.rpc.I_CmsPostUploadDialogService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
-import org.opencms.main.OpenCms;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -49,7 +49,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.postupload";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "postupload";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.postupload.name();
 
     /** The dialog data. */
     private CmsPostUploadDialogBean m_dialogData;
@@ -81,14 +81,7 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        StringBuffer sb = new StringBuffer();
-        String prefetchedData = exportDictionary(
-            CmsPostUploadDialogBean.DICT_NAME,
-            I_CmsPostUploadDialogService.class.getMethod("prefetch"),
-            getDialogData());
-        sb.append(prefetchedData);
-        sb.append(ClientMessages.get().export(getRequest()));
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -100,10 +93,11 @@ public class CmsPostUploadDialogActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
         sb.append(exportCloseLink());
-        sb.append(export());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(exportDictionary(
+            CmsPostUploadDialogBean.DICT_NAME,
+            I_CmsPostUploadDialogService.class.getMethod("prefetch"),
+            getDialogData()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 

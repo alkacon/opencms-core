@@ -53,6 +53,37 @@ public class CmsCoreData implements IsSerializable {
         sitemap
     }
 
+    /** The available client modules. */
+    public enum ModuleKey {
+
+        /** Container page editor. */
+        containerpage,
+
+        /** Content editor. */
+        contenteditor,
+
+        /** Direct edit provider. */
+        editprovider,
+
+        /** Galleries. */
+        galleries,
+
+        /** Post upload dialog. */
+        postupload,
+
+        /** Properties dialog. */
+        properties,
+
+        /** Publish dialog. */
+        publish,
+
+        /** Sitemap editor. */
+        sitemap,
+
+        /** Upload dialog. */
+        upload
+    }
+
     /**
      * Bean class containing info about the current user.<p>
      */
@@ -155,6 +186,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The key for the GWT build id property. */
     public static final String KEY_GWT_BUILDID = "gwt.buildid";
+
+    /** The meta element name to the requested module key. */
+    public static final String META_PARAM_MODULE_KEY = "opencms-module";
 
     /** The parameter name for path. */
     public static final String PARAM_PATH = "path";

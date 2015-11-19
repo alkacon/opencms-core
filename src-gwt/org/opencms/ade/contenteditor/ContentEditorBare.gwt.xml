@@ -3,7 +3,7 @@
 <!-- Content editor module combining all required sources, but without any references to external CSS and JavaScripts.
 	 This module does not have an entry point.
 	 Inherit this module for external custom widgets. --> 
-	<inherits name="org.opencms.ade.galleries.GalleryHeadless" />
+	<inherits name="org.opencms.ade.galleries.Gallery" />
 	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
 	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
 	

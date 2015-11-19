@@ -28,9 +28,9 @@
 package org.opencms.ade.upload;
 
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.I_CmsUploadConstants;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -76,7 +76,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.upload";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "upload";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.upload.name();
 
     /**
      * Constructor.<p>
@@ -96,7 +96,7 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
     @Override
     public String export() throws Exception {
 
-        return ClientMessages.get().export(getRequest());
+        return "";
     }
 
     /**
@@ -107,12 +107,9 @@ public class CmsUploadActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
-        sb.append(export());
         sb.append(exportTargetFolder());
         sb.append(exportCloseLink());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 

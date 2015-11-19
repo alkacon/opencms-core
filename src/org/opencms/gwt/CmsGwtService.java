@@ -193,11 +193,11 @@ public class CmsGwtService extends RemoteServiceServlet {
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     @Override
-    public void service(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
+    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 
         try {
-            arg1.setCharacterEncoding(arg0.getCharacterEncoding());
-            super.service(arg0, arg1);
+            response.setCharacterEncoding(request.getCharacterEncoding());
+            super.service(request, response);
         } finally {
             clearThreadStorage();
         }

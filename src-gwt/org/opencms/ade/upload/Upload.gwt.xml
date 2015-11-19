@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="upload">
-	<inherits name="org.opencms.ade.upload.UploadHeadless" />
-	<entry-point class="org.opencms.ade.upload.client.CmsUpload"></entry-point>
+<module>
+	<inherits name="org.opencms.GwtBase" />
+	<source path="client" />
 </module>

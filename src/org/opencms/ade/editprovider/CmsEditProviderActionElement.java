@@ -27,10 +27,8 @@
 
 package org.opencms.ade.editprovider;
 
-import org.opencms.ade.galleries.CmsGalleryActionElement;
-import org.opencms.ade.publish.CmsPublishActionElement;
 import org.opencms.gwt.CmsGwtActionElement;
-import org.opencms.main.OpenCms;
+import org.opencms.gwt.shared.CmsCoreData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +45,7 @@ public class CmsEditProviderActionElement extends CmsGwtActionElement {
     public static final String CMS_MODULE_NAME = "org.opencms.ade.editprovider";
 
     /** The GWT module name. */
-    public static final String GWT_MODULE_NAME = "editprovider";
+    public static final String GWT_MODULE_NAME = CmsCoreData.ModuleKey.editprovider.name();
 
     /**
      * Constructor.<p>
@@ -79,12 +77,7 @@ public class CmsEditProviderActionElement extends CmsGwtActionElement {
 
         StringBuffer sb = new StringBuffer();
         sb.append(super.export());
-        sb.append(new CmsPublishActionElement(getJspContext(), getRequest(), getResponse()).export());
-        sb.append(new CmsGalleryActionElement(null, getRequest(), null).exportWidget());
-        sb.append(export());
-        sb.append(createNoCacheScript(
-            GWT_MODULE_NAME,
-            OpenCms.getModuleManager().getModule(CMS_MODULE_NAME).getVersion().toString()));
+        sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
         return sb.toString();
     }
 
