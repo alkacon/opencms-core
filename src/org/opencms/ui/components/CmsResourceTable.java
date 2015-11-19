@@ -284,10 +284,13 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         CmsMessages messages,
         Locale locale) {
 
+        assert resourceItem != null : "The resource item should not be null";
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-
+        assert settings != null : "The explorer type settings for the resource '"
+            + resource.getRootPath()
+            + "' should not be null";
         resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
             new CmsResourceIcon(
                 resUtil,

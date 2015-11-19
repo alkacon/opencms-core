@@ -72,13 +72,12 @@ public class CmsResourceIcon extends Label {
      * @param iconPath the resource icon
      * @param state the resource state
      */
-    @SuppressWarnings("incomplete-switch")
     public void initContent(CmsResourceUtil resUtil, String iconPath, CmsResourceState state) {
 
         String content = "<img src=\"" + iconPath + "\" />";
 
         if (resUtil != null) {
-            String lockIcon = null;
+            String lockIcon;
             switch (resUtil.getLockState()) {
                 case 1:
                     lockIcon = OpenCmsTheme.LOCK_OTHER;
@@ -90,6 +89,8 @@ public class CmsResourceIcon extends Label {
                 case 3:
                     lockIcon = OpenCmsTheme.LOCK_USER;
                     break;
+                default:
+                    lockIcon = null;
             }
             if (lockIcon != null) {
                 content += getOverlaySpan(
