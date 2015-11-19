@@ -70,7 +70,7 @@ public class CmsDocumentMsOfficeOLE2 extends A_CmsVfsDocument {
         CmsFile file = readFile(cms, resource);
         try {
             return CmsExtractorMsOfficeOLE2.getExtractor().extractText(file.getContents());
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),
                 e);

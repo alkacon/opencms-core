@@ -146,6 +146,9 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 // extraction result has not been attached to the resource
                 try {
                     content = extractContent(cms, resource, index);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Extracting content for '" + resource.getRootPath() + "' successful.");
+                    }
                     if ((cache != null) && (resource.getSiblingCount() > 1)) {
                         // save extracted content to the cache
                         cache.saveCacheObject(cacheName, content);
@@ -156,7 +159,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                         Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath())
                             + " "
                             + e.getMessage());
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     // text extraction failed for document - continue indexing meta information only
                     LOG.error(
                         Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()),

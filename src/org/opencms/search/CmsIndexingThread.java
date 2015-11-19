@@ -128,7 +128,7 @@ public class CmsIndexingThread extends Thread {
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
                 I_CmsReport.FORMAT_OK);
-        } catch (Exception exc) {
+        } catch (Throwable exc) {
             if (m_report != null) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
