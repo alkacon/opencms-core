@@ -29,13 +29,13 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsAppView;
 import org.opencms.ui.apps.CmsWorkplaceAppManager.NavigationState;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
@@ -228,23 +228,24 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         CmsSessionInfo info = OpenCms.getSessionManager().getSessionInfo(getHttpSession());
         Buffer queue = info.getBroadcastQueue();
         if (!queue.isEmpty()) {
-            CmsMessages messages = org.opencms.workplace.Messages.get().getBundle(
-                OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
             StringBuffer broadcasts = new StringBuffer();
             while (!queue.isEmpty()) {
                 CmsBroadcast broadcastMessage = (CmsBroadcast)queue.remove();
                 String from = broadcastMessage.getUser() != null
                 ? broadcastMessage.getUser().getName()
-                : messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
-                String date = messages.getDateTime(broadcastMessage.getSendTime());
+                : CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_BROADCAST_FROM_SYSTEM_0);
+                String date = CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(
+                    broadcastMessage.getSendTime());
                 String content = broadcastMessage.getMessage();
                 broadcasts.append("<p><em>").append(date).append("</em><br />");
-                broadcasts.append(messages.key(org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(
-                    " <b>").append(from).append("</b>:<br />");
+                broadcasts.append(
+                    CmsVaadinUtils.getMessageText(
+                        org.opencms.workplace.Messages.GUI_LABEL_BROADCASTMESSAGEFROM_0)).append(" <b>").append(
+                            from).append("</b>:<br />");
                 broadcasts.append(content).append("<br /></p>");
             }
             Notification notification = new Notification(
-                messages.key(Messages.GUI_BROADCAST_TITLE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
                 broadcasts.toString(),
                 Type.ERROR_MESSAGE,
                 true);
