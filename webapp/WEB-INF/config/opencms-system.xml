@@ -35,6 +35,7 @@
 			<resourceinithandler class="org.opencms.pdftools.CmsPdfResourceHandler" />
 		</resourceinit>
 		<requesthandlers>
+			<requesthandler class="org.opencms.main.CmsStaticResourceHandler"/>
 			<requesthandler class="org.opencms.main.OpenCmsSolrHandler" />
 			<requesthandler class="org.opencms.main.OpenCmsSpellcheckHandler" />
 		</requesthandlers>

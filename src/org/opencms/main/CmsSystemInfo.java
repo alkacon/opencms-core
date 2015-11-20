@@ -118,6 +118,9 @@ public class CmsSystemInfo {
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
+    public static final String STATIC_RESOURCE_PREFIX = OpenCmsServlet.HANDLE_PATH
+        + CmsStaticResourceHandler.HANDLER_NAME;
+
     /** Relative path to persistence.xml file. */
     public static final String FILE_PERSISTENCE = "classes"
         + File.separatorChar
@@ -564,6 +567,16 @@ public class CmsSystemInfo {
     public long getStartupTime() {
 
         return m_startupTime;
+    }
+
+    /**
+     * Returns the context for static resources served from the class path, e.g. "/opencms/opencms/handleStatic".<p>
+     *
+     * @return the static resource context
+     */
+    public String getStaticResourceContext() {
+
+        return getOpenCmsContext() + STATIC_RESOURCE_PREFIX;
     }
 
     /**

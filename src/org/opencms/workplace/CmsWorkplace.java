@@ -422,6 +422,18 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Returns the URI to static resources served from the class path.<p>
+     *
+     * @param resourceName the resource name
+     *
+     * @return the URI
+     */
+    public static String getStaticResourceUri(String resourceName) {
+
+        return CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getStaticResourceContext(), resourceName);
+    }
+
+    /**
      * Returns the path to the cascading stylesheets.<p>
      *
      * @param jsp the JSP context

@@ -192,7 +192,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         int errorCode;
         try {
             errorCode = Integer.valueOf(name).intValue();
-        } catch (NumberFormatException nf) {
+        } catch (@SuppressWarnings("unused") NumberFormatException nf) {
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -280,6 +280,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
         String name = OpenCmsCore.getInstance().getPathInfo(req).substring(HANDLE_PATH.length());
         I_CmsRequestHandler handler = OpenCmsCore.getInstance().getRequestHandler(name);
+        if ((handler == null) && name.contains("/")) {
+            // if the name contains a '/', also check for handlers matching the first path fragment only
+            name = name.substring(0, name.indexOf("/"));
+            handler = OpenCmsCore.getInstance().getRequestHandler(name);
+        }
         if (handler != null) {
             handler.handle(req, res, name);
         } else {
