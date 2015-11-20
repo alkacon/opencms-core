@@ -33,6 +33,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsSimpleEditor;
 
@@ -79,7 +80,9 @@ public class CmsCodeMirror extends CmsSimpleEditor {
     protected static final String SUBPATH_CODEMIRROR = "editors/codemirror/";
 
     /** Path to the editor resources. */
-    protected static final String VFS_PATH_EDITOR = VFS_PATH_RESOURCES + SUBPATH_CODEMIRROR;
+    protected static final String VFS_PATH_EDITOR = CmsStringUtil.joinPaths(
+        OpenCms.getSystemInfo().getStaticResourceContext(),
+        SUBPATH_CODEMIRROR);
 
     /** Path to the editor distribution resources. */
     protected static final String VFS_PATH_EDITOR_DIST = VFS_PATH_EDITOR + "dist/";
@@ -117,7 +120,7 @@ public class CmsCodeMirror extends CmsSimpleEditor {
     @Override
     public String getEditorResourceUri() {
 
-        return getSkinUri() + SUBPATH_CODEMIRROR;
+        return CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getStaticResourceContext(), SUBPATH_CODEMIRROR);
     }
 
     /**

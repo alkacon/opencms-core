@@ -304,7 +304,7 @@ if (modeName.equals("text/html")) {
 		</span>
 	</a>
 </td>
-<%= wp.button("javascript:editorCodeMirror.setOption('lineWrapping', !editorCodeMirror.getOption('lineWrapping'));", null, "../editors/codemirror/images/word_wrap.gif", "GUI_EDITOR_BUTTON_WORDWRAP_0", buttonStyle) %>
+<%= wp.button("javascript:editorCodeMirror.setOption('lineWrapping', !editorCodeMirror.getOption('lineWrapping'));", null, wp.getEditorResourceUri() +"images/word_wrap.gif", "GUI_EDITOR_BUTTON_WORDWRAP_0", buttonStyle, "") %>
 <%
 if (wp.isHelpEnabled()) {%>
 	<%= wp.buttonBarSeparator(5, 5) %>

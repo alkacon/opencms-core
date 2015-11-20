@@ -24,9 +24,7 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.link/lib/" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
             <resource uri="/system/workplace/admin/linkvalidation/internallinks-list.jsp"/>
             <resource uri="/system/workplace/admin/linkvalidation/internallinks.jsp"/>
@@ -93,34 +91,6 @@
 			<destination>system/modules/org.opencms.workplace.tools.link</destination>
 			<type>folder</type>
 			<uuidstructure>da39a628-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.link/lib</destination>
-			<type>folder</type>
-			<uuidstructure>da3c172a-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.link/lib/org.opencms.workplace.tools.link.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.link/lib/org.opencms.workplace.tools.link.jar</destination>
-			<type>binary</type>
-			<uuidstructure>da3c172b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>ae288570-3b29-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>

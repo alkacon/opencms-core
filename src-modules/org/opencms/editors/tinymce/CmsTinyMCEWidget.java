@@ -82,7 +82,8 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
 
         StringBuilder result = new StringBuilder(128);
         // general TinyMCE JS
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "editors/tinymce/jscripts/tinymce/tinymce.min.js"));
+        result.append(
+            getJSIncludeFile(CmsWorkplace.getStaticResourceUri("editors/tinymce/jscripts/tinymce/tinymce.min.js")));
         result.append("\n");
         result.append(
             getJSIncludeFile(
@@ -91,12 +92,12 @@ public class CmsTinyMCEWidget extends A_CmsHtmlWidget {
                     "/system/workplace/editors/tinymce/opencms_plugin.js")));
         result.append("\n");
         // special TinyMCE widget functions
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/tinymce.js"));
+        result.append(getJSIncludeFile(CmsWorkplace.getStaticResourceUri("components/widgets/tinymce.js")));
         String pluginCssUri = OpenCms.getLinkManager().substituteLinkForRootPath(
             cms,
             "/system/workplace/editors/tinymce/opencms_plugin.css");
         result.append("<link type='text/css' rel='stylesheet' href='" + pluginCssUri + "'>");
-        String cssUri = CmsWorkplace.getSkinUri() + "components/widgets/tinymce.css";
+        String cssUri = CmsWorkplace.getStaticResourceUri("components/widgets/tinymce.css");
         result.append("<link type='text/css' rel='stylesheet' href='" + cssUri + "'>");
         return result.toString();
     }

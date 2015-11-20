@@ -25,7 +25,6 @@
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
 		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/lib/" destination="WEB-INF/lib/"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/available-macros.txt" destination="WEB-INF/server-scripts/available-macros.txt"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/cron.sh" destination="WEB-INF/server-scripts/cron.sh"/>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.sites/webserver-templates/script.bat" destination="WEB-INF/server-scripts/script.bat"/>
@@ -105,34 +104,6 @@
 			<datelastmodified>Wed, 20 Feb 2013 10:04:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 20 Feb 2013 10:04:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.sites/lib</destination>
-			<type>folder</type>
-			<uuidstructure>2f291f73-7b45-11e2-8bad-13f7e154c8f7</uuidstructure>
-			<datelastmodified>Wed, 20 Feb 2013 10:06:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 10:06:24 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.sites/lib/org.opencms.workplace.tools.sites.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.sites/lib/org.opencms.workplace.tools.sites.jar</destination>
-			<type>binary</type>
-			<uuidstructure>4812d6ca-7b45-11e2-8bad-13f7e154c8f7</uuidstructure>
-			<uuidresource>4812d6cb-7b45-11e2-8bad-13f7e154c8f7</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2013 10:07:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 20 Feb 2013 10:07:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

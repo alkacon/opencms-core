@@ -24,9 +24,7 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.cache/lib" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
             <resource uri="/system/workplace/admin/cache/corecache_flush.jsp"/>
             <resource uri="/system/workplace/admin/cache/flexcache.jsp"/>
@@ -44,7 +42,6 @@
             <resource uri="/system/workplace/resources/tools/cache/icons/big/images_flush.png"/>
             <resource uri="/system/workplace/resources/tools/cache/icons/big/jsp_repository.png"/>
             <resource uri="/system/workplace/resources/tools/cache/icons/small/cache.png"/>
-			<resource uri="/system/modules/org.opencms.workplace.tools.cache/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -56,60 +53,6 @@
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 02 Apr 2008 09:37:38 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<uuidstructure>6f3d4cdd-0098-11dd-a08b-111d34530985</uuidstructure>
-			<datelastmodified>Wed, 02 Apr 2008 09:37:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 02 Apr 2008 09:37:39 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.cache</destination>
-			<type>folder</type>
-			<uuidstructure>e743824c-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.cache/lib</destination>
-			<type>folder</type>
-			<uuidstructure>e748644e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.cache/lib/org.opencms.workplace.tools.cache.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.cache/lib/org.opencms.workplace.tools.cache.jar</destination>
-			<type>binary</type>
-			<uuidstructure>e74aae3f-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>a57aad0d-3b25-11da-8883-df763b25cc68</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

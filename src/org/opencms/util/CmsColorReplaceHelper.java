@@ -50,7 +50,7 @@ public final class CmsColorReplaceHelper {
 
     /** The list of files to process. */
     public static final String[] FILE_LIST = {
-        "modules/org.opencms.editors.codemirror/resources/system/workplace/resources/editors/codemirror/codemirror-ocms.css",
+        "modules/org.opencms.editors.codemirror/static/editors/codemirror/codemirror-ocms.css",
         "modules/org.opencms.editors/resources/system/workplace/editors/dialogs/property.jsp",
         "modules/org.opencms.editors/resources/system/workplace/editors/dialogs/table_new.jsp",
         "modules/org.opencms.editors/resources/system/workplace/editors/direct_edit_include.txt",

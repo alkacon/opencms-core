@@ -24,9 +24,7 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.scheduler/lib" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
             <resource uri="/system/workplace/admin/scheduler/edit.jsp"/>
             <resource uri="/system/workplace/admin/scheduler/index.jsp"/>
@@ -36,7 +34,6 @@
             <resource uri="/system/workplace/resources/tools/scheduler/icons/big/scheduler.png"/>
             <resource uri="/system/workplace/resources/tools/scheduler/icons/big/scheduler_new.png"/>
             <resource uri="/system/workplace/resources/tools/scheduler/icons/small/scheduler.png"/>
-			<resource uri="/system/modules/org.opencms.workplace.tools.scheduler/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -48,60 +45,6 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.scheduler</destination>
-			<type>folder</type>
-			<uuidstructure>d228fbe6-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.scheduler/lib</destination>
-			<type>folder</type>
-			<uuidstructure>d22b6ce8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.scheduler/lib/org.opencms.workplace.tools.scheduler.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.scheduler/lib/org.opencms.workplace.tools.scheduler.jar</destination>
-			<type>binary</type>
-			<uuidstructure>d23027d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>33273195-3b2b-11da-8883-df763b25cc68</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

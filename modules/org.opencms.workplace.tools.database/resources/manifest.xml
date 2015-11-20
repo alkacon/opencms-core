@@ -25,9 +25,7 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.database/lib/" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
 			<resource uri="/system/workplace/admin/database/htmlimport/"/>
             <resource uri="/system/workplace/admin/database/reports/"/>
@@ -50,7 +48,6 @@
 			<resource uri="/system/workplace/resources/tools/database/icons/big/staticexport.png"/>
 			<resource uri="/system/workplace/resources/tools/database/icons/small/database_manage.png"/>
 			<resource uri="/system/workplace/resources/tools/database/icons/small/staticexport.png"/>
-			<resource uri="/system/modules/org.opencms.workplace.tools.database/"/>
 			<resource uri="/system/workplace/commons/newresource_uploadHtml.jsp"/>
 			<resource uri="/system/workplace/resources/filetypes/htmlimport.png"/>
 			<resource uri="/system/workplace/explorer/uploadhtml/uploadHtml.jsp"/>
@@ -70,60 +67,6 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.database</destination>
-			<type>folder</type>
-			<uuidstructure>e116d961-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.database/lib</destination>
-			<type>folder</type>
-			<uuidstructure>e116d963-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.database/lib/org.opencms.workplace.tools.database.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.database/lib/org.opencms.workplace.tools.database.jar</destination>
-			<type>binary</type>
-			<uuidstructure>e1194a64-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>7323cbbb-3b27-11da-8883-df763b25cc68</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

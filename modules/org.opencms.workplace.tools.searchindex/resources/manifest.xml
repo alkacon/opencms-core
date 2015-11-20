@@ -25,9 +25,7 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="10.0.0"/>
 		</dependencies>
-		<exportpoints>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.searchindex/lib/" destination="WEB-INF/lib/"/>
-		</exportpoints>
+		<exportpoints />
 		<resources>
             <resource uri="/system/workplace/admin/searchindex/fieldconfiguration-delete.jsp"/>
             <resource uri="/system/workplace/admin/searchindex/fieldconfiguration-deletefield.jsp"/>
@@ -90,7 +88,6 @@
             <resource uri="/system/workplace/resources/tools/searchindex/icons/small/multi-rebuild.png"/>
             <resource uri="/system/workplace/resources/tools/searchindex/icons/small/rebuild.png"/>
             <resource uri="/system/workplace/resources/tools/searchindex/icons/small/searchindex.png"/>
-			<resource uri="/system/modules/org.opencms.workplace.tools.searchindex/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -105,65 +102,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.searchindex</destination>
-			<type>folder</type>
-			<uuidstructure>ce6a9385-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.searchindex/lib</destination>
-			<type>folder</type>
-			<uuidstructure>ce6d0487-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</destination>
-			<type>binary</type>
-			<uuidstructure>ce71bf78-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>924cf38c-3b2b-11da-8883-df763b25cc68</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[org.opencms.workplace.tools.searchindex]]></value>
-				</property>
-			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>

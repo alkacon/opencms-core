@@ -28,7 +28,6 @@ The module allows you to check in the latest version of your modules by simply p
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.git/git-scripts/" destination="WEB-INF/git-scripts/"/>
-			<exportpoint uri="/system/modules/org.opencms.workplace.tools.git/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/git/"/>
@@ -146,34 +145,6 @@ The module allows you to check in the latest version of your modules by simply p
 					<value><![CDATA[Module check in script]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.tools.git/lib</destination>
-			<type>folder</type>
-			<uuidstructure>5dc06f56-463d-11e5-a603-a3f182483be7</uuidstructure>
-			<datelastmodified>Wed, 19 Aug 2015 06:41:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 19 Aug 2015 06:41:48 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.tools.git/lib/org.opencms.workplace.tools.git.jar</source>
-			<destination>system/modules/org.opencms.workplace.tools.git/lib/org.opencms.workplace.tools.git.jar</destination>
-			<type>binary</type>
-			<uuidstructure>6f3c2499-463d-11e5-a603-a3f182483be7</uuidstructure>
-			<uuidresource>6f3c249a-463d-11e5-a603-a3f182483be7</uuidresource>
-			<datelastmodified>Wed, 19 Aug 2015 06:42:25 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 19 Aug 2015 06:42:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
