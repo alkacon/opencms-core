@@ -594,7 +594,6 @@ task sourcesJarSetup(type: Jar) {
 allModuleNames.split(',').each{ moduleName ->
     def modulePackages = moduleName
     def gwtModule = null
-    def moduleScripts = null
     def moduleFolder = file("${projectDir}/modules/${moduleName}")
     def srcGwtDir = "${projectDir}/src-gwt/"
     def moduleSrcFolder = file("${projectDir}/src-modules")
@@ -621,9 +620,6 @@ allModuleNames.split(',').each{ moduleName ->
                 gwtRename=gwtModule
             }
         }
-        if (moduleProperties['module.scripts']!=null){
-            moduleScripts=moduleProperties['module.scripts']
-        }
     }
     def manifestFile = file("${moduleFolder}/resources/manifest.xml")
     def moduleDependencies=[]
@@ -635,79 +631,42 @@ allModuleNames.split(',').each{ moduleName ->
         }
         moduleVersion = parsedManifest.module[0].version[0].text()
     }
-
-    def requiresJar = false
-    // check if there are any java packages to include into the module's jar
-    modulePackages.split(',').each{ pack ->
-        def packageFolder
-        if (isExternal.toBoolean()){
-            packageFolder= file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/'))
-        }else{
-            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
-        }
-        if (packageFolder.exists()&&packageFolder.isDirectory()){
-            packageFolder.listFiles().each{ file ->
-                if (file.isFile()){
-                    requiresJar = true
-                }
-            }
-        }
+	def staticFolder=file("${moduleFolder}/static")
+    def requiresJar = gwtModule!=null || staticFolder.exists()
+    if (!requiresJar){
+	    // check if there are any java packages to include into the module's jar
+	    modulePackages.split(',').each{ pack ->
+	        def packageFolder
+	        if (isExternal.toBoolean()){
+	            packageFolder= file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/'))
+	        }else{
+	            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
+	        }
+	        if (packageFolder.exists()&&packageFolder.isDirectory()){
+	            packageFolder.listFiles().each{ file ->
+	                if (file.isFile()){
+	                    requiresJar = true
+	                }
+	            }
+	        }
+	    }
     }
 
     task "dist_$moduleName" (dependsOn: componentsJar, type: Zip){
         ext.moduleName = moduleName
-        ext.modulePackages = modulePackages
-        ext.gwtModule = gwtModule
-        ext.moduleScripts = moduleScripts
         ext.moduleFolder = moduleFolder
-        ext.srcGwtDir = srcGwtDir
         ext.isExternal = isExternal
         ext.requiresJar = requiresJar
         ext.dependencies = moduleDependencies
-        ext.gwtRenameTo = gwtRename
+        
         if (project.hasProperty('noVersion')) {
         	version ""
         } else {
          	version moduleVersion
         }
         destinationDir modulesDistsDir
-        // include the jar file if necessary
-        if (requiresJar.toBoolean()){
-            from( "${project.buildDir}/libs") {
-                include "${moduleName}.jar"
-                into "/system/modules/${moduleName}/lib/"
-            }
+        from "${moduleFolder}/resources"
 
-        }
-        // include the GWT resources if necessary
-        if (gwtModule == null){
-            from "${moduleFolder}/resources"
-        }else{
-            // exclude the manifest for now, use the synced manifest later
-            from ("${moduleFolder}/resources") {
-                exclude 'manifest.xml'
-                exclude "system/modules/${moduleName}/resources/${gwtRenameTo}/**"
-            }
-            from( "${project.buildDir}/gwt/${moduleName}") {
-                exclude '**/WEB-INF/**'
-                into "/system/modules/${moduleName}/resources/"
-            }
-            def syncedManifest="${project.buildDir}/extra/${moduleName}/manifest.xml"
-            from syncedManifest
-            doFirst{
-                ant.taskdef(resource: 'org/opencms/util/ant/taskdefs.properties', classpath: componentsRuntimeClassPath.asPath)
-                ant.syncmanifest(
-                        srcmanifestfile: "${moduleFolder}/resources/manifest.xml",
-                        dstmanifestfile: syncedManifest,
-                        base: "${moduleFolder}/resources/",
-                        prefix: "system/modules/${moduleName}/resources/${gwtRenameTo}",
-                        directory: "${project.buildDir}/gwt/${moduleName}/${gwtRenameTo}"
-                        )
-            }
-        }
-        if (moduleScripts != null){
-            from( "${project.buildDir}/scripts/${moduleName}") { into "/system/modules/${moduleName}/resources/" }
-        }
         // TODO: set the module version to match the manifest.xml
         baseName moduleName
         doFirst {
@@ -740,11 +699,20 @@ allModuleNames.split(',').each{ moduleName ->
         sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
 
         task "jar_$moduleName" (type: Jar) {
-            manifest {
+        	ext.gwtModule = gwtModule
+        	ext.moduleName = moduleName
+        	manifest {
                 attributes 'Implementation-Title': 'Alkacon OpenCms', 'Implementation-Version': version
             }
             from sourceSets[moduleName].output
             from ("$moduleFolder") { include "META-INF/**" }
+            from ("$staticFolder") { into "OPENCMS" }
+            if (gwtModule != null){
+	            from( "${project.buildDir}/gwt/${moduleName}") {
+	                exclude '**/WEB-INF/**'
+	                into "OPENCMS/gwt"
+	            }
+            }
             archiveName moduleName+'.jar'
             baseName moduleName
             exclude '**/.gitignore'
@@ -785,7 +753,7 @@ allModuleNames.split(',').each{ moduleName ->
             baseName moduleName
         }
 
-        tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
+      //  tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
     }
 
     if (gwtModule != null){
@@ -862,36 +830,7 @@ allModuleNames.split(',').each{ moduleName ->
             maxHeapSize = max_heap_size
         }
 
-        tasks["dist_$moduleName"].dependsOn("gwt_$moduleName")
-    }
-    if (moduleScripts != null){
-        task "scripts_$moduleName" {
-            ext.srcDir = file("${moduleFolder}/scripts")
-            ext.destDir = new File("${project.buildDir}/scripts/$moduleName")
-            inputs.dir srcDir
-            outputs.dir destDir
-            doFirst{
-                // to clean the output directory, delete it first
-                if (destDir.exists()){
-                    delete(destDir)
-                }
-                destDir.mkdirs()
-            }
-            doLast {
-
-                def text=''
-                moduleScripts.split(',').each{ script ->
-                    def scriptFile = file("${srcDir}/$script")
-
-                    if (scriptFile.exists()){
-                        text += scriptFile.text
-                    }
-                }
-                def destFile = new File(destDir, moduleName+'.scripts.js')
-                destFile.write(text)
-            }
-        }
-        tasks["dist_$moduleName"].dependsOn("scripts_$moduleName")
+        tasks["jar_$moduleName"].dependsOn("gwt_$moduleName")
     }
 }
 
@@ -914,7 +853,7 @@ tasks.findAll{ task -> task.name.startsWith('dist_')}.each{ dist_task ->
     }
 }
 
-task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')}) << {
+task allModules(dependsOn: tasks.matching{ Task task -> task.name.startsWith('dist_')||task.name.startsWith('jar_')}) << {
     println '======================================================'
     println 'Done building modules'
     println '======================================================'

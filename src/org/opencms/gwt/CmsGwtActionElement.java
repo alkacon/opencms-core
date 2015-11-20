@@ -375,7 +375,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
             + "\" content=\""
             + moduleName
             + "\" >\n<script type=\"text/javascript\" src=\""
-            + CmsWorkplace.getResourceUri("ade/opencms/opencms.nocache.js");
+            + CmsWorkplace.getStaticResourceUri("gwt/opencms/opencms.nocache.js");
         CmsModule module = OpenCms.getModuleManager().getModule("org.opencms.gwt");
         if (module != null) {
             result += "?version="
