@@ -2,6 +2,7 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
+	Bean.setPreserveLibModules("@PRESERVE_LIB_MODULES@");
 	Bean.prepareUpdateStep5();	
 
 %>

@@ -473,8 +473,12 @@ public class CmsModuleManager {
      * @throws CmsConfigurationException if a module with this name is not available for deleting
      * @throws CmsLockException if the module resources can not be locked
      */
-    public synchronized void deleteModule(CmsObject cms, String moduleName, boolean replace, I_CmsReport report)
-    throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
+    public synchronized void deleteModule(
+        CmsObject cms,
+        String moduleName,
+        boolean replace,
+        boolean preserveLibs,
+        I_CmsReport report) throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
 
         // check for module manager role permissions
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
@@ -607,6 +611,21 @@ public class CmsModuleManager {
         // now remove the module
         module = m_modules.remove(moduleName);
 
+        if (preserveLibs) {
+            // to preserve the module libs, remove the responsible export points, before deleting module resources
+            Set<CmsExportPoint> exportPoints = new HashSet<CmsExportPoint>(m_moduleExportPoints);
+            Iterator<CmsExportPoint> it = exportPoints.iterator();
+            while (it.hasNext()) {
+                CmsExportPoint point = it.next();
+                if (point.getUri().endsWith(module.getName() + "/lib/")
+                    && point.getConfiguredDestination().equals("WEB-INF/lib/")) {
+                    it.remove();
+                }
+            }
+
+            m_moduleExportPoints = Collections.unmodifiableSet(exportPoints);
+        }
+
         try {
             cms.getRequestContext().setCurrentProject(deleteProject);
 
@@ -695,6 +714,24 @@ public class CmsModuleManager {
         if (removeResourceTypes) {
             OpenCms.getResourceManager().initialize(cms);
         }
+    }
+
+    /**
+     * Deletes a module from the configuration.<p>
+     *
+     * @param cms must be initialized with "Admin" permissions
+     * @param moduleName the name of the module to delete
+     * @param replace indicates if the module is replaced (true) or finally deleted (false)
+     * @param report the report to print progress messages to
+     *
+     * @throws CmsRoleViolationException if the required module manager role permissions are not available
+     * @throws CmsConfigurationException if a module with this name is not available for deleting
+     * @throws CmsLockException if the module resources can not be locked
+     */
+    public synchronized void deleteModule(CmsObject cms, String moduleName, boolean replace, I_CmsReport report)
+    throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
+
+        deleteModule(cms, moduleName, replace, false, report);
     }
 
     /**

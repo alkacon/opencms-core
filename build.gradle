@@ -91,16 +91,6 @@ configurations {
 
     testRuntime{ transitive = false }
 
-    componentsCompile {
-        description = 'needed to compile the opencms components'
-        transitive = false
-    }
-
-    componentsRuntime {
-        transitive = false
-        extendsFrom componentsCompile
-    }
-
     gwtCompile {
         description = 'needed to generate the GWT JavaScript resources'
         transitive = false
@@ -128,10 +118,6 @@ sourceSets{
     main {
         java.srcDir 'src'
         resources.srcDir 'src'
-    }
-    components {
-        java.srcDir 'src-components'
-        resources.srcDir 'src-components'
     }
     modules {
         java.srcDir 'src-modules'
@@ -173,12 +159,6 @@ sourceSets.test.compileClasspath += files("$buildDir/classes/gwt") { builtBy 'gw
 sourceSets.testGwt.compileClasspath += files("$buildDir/classes/main") { builtBy 'compileJava' }
 sourceSets.testGwt.compileClasspath += files("$buildDir/classes/modules") { builtBy 'modulesClasses' }
 
-
-
-
-project.ext.componentsRuntimeClassPath=configurations.componentsRuntime
-componentsRuntimeClassPath += files("${project.buildDir}/libs/opencms-components.jar") { builtBy 'componentsJar' }
-
 task copyDeps(type: Copy) {
     from configurations.distribution
     into "${buildDir}/deps"
@@ -187,32 +167,6 @@ task copyDeps(type: Copy) {
 task copyCompileDeps(type: Copy) {
 	from configurations.compile
 	into "${buildDir}/deps"
-}
-
-task componentsJar(type: Jar) {
-    from sourceSets.components.output
-    baseName 'opencms-components'
-    archiveName 'opencms-components.jar'
-    include 'org/opencms/**'
-    exclude '**/.gitignore'
-}
-
-task sourcesJarComponents(type: Jar) {
-    from sourceSets.components.allSource
-    classifier = 'sources'
-    baseName 'opencms-components'
-}
-
-task javadocComponents(type: Javadoc, dependsOn: componentsJar) {
-    source = sourceSets.components.allJava
-    classpath = project.sourceSets.components.compileClasspath
-    destinationDir = file("${buildDir}/docs/javadocComponents")
-}
-
-task javadocJarComponents(type: Jar, dependsOn: javadocComponents) {
-    classifier = 'javadoc'
-    from "${buildDir}/docs/javadocComponents"
-    baseName 'opencms-components'
 }
 
 task enhance << {
@@ -590,6 +544,8 @@ task sourcesJarSetup(type: Jar) {
     baseName 'opencms-setup'
 }
 
+def preserveLibModules = ''
+
 // iterate all available modules and create the required tasks
 allModuleNames.split(',').each{ moduleName ->
     def modulePackages = moduleName
@@ -652,7 +608,11 @@ allModuleNames.split(',').each{ moduleName ->
 	    }
     }
 
-    task "dist_$moduleName" (dependsOn: componentsJar, type: Zip){
+	if (requiresJar){
+		preserveLibModules += "${moduleName},"
+	}
+
+    task "dist_$moduleName" (type: Zip){
         ext.moduleName = moduleName
         ext.moduleFolder = moduleFolder
         ext.isExternal = isExternal
@@ -910,7 +870,6 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     
     from ("${project.buildDir}/libs") {
         include '*.jar'
-        exclude 'opencms-components*.jar'
         exclude 'opencms-gwt*.jar'
         exclude 'opencms-test*.jar'
         exclude '*-sources.jar'
@@ -932,6 +891,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
 
 task updater (dependsOn: setupJar, type: Zip){
     baseName 'opencms-upgrade-to'
+    ext.preserveLibModules = preserveLibModules
     
     // only process the text files with the ReplaceTokens filter, copy everything else in a second from clause 
     from ("${projectDir}/webapp"){
@@ -944,7 +904,8 @@ task updater (dependsOn: setupJar, type: Zip){
         exclude 'update/empty.jar'
         filter(ReplaceTokens, tokens: [
             OPENCMS_VERSION_NUMBER: version,
-            OPENCMS_VERSION: product_name+' '+version
+            OPENCMS_VERSION: product_name+' '+version,
+            PRESERVE_LIB_MODULES: preserveLibModules
         ])
     }
     
@@ -1140,9 +1101,6 @@ artifacts {
     archives gwtJar
     archives javadocJarGwt
     archives sourcesJarGwt
-    archives componentsJar
-    archives javadocJarComponents
-    archives sourcesJarComponents
     archives testJar
     archives javadocJarTest
     archives sourcesJarTest
@@ -1259,7 +1217,7 @@ if (project.hasProperty('publish_repository')){
                         }
                     }
                 }
-                'setup,gwt,components,test'.split(",").each { groupName ->
+                'setup,gwt,test'.split(",").each { groupName ->
                     addFilter(groupName){artifact, file ->
                         artifact.name.startsWith("opencms-$groupName")
                     }
@@ -1450,7 +1408,7 @@ install {
                     }
                 }
             }
-            'setup,gwt,components,test'.split(",").each { groupName ->
+            'setup,gwt,test'.split(",").each { groupName ->
                 addFilter(groupName){artifact, file ->
                     artifact.name.startsWith("opencms-$groupName")
                 }

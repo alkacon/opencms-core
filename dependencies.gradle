@@ -26,13 +26,6 @@ dependencies {
     compile group: 'org.ow2.asm', name: 'asm-tree', version: '5.0.3'
     compile group: 'org.timepedia.exporter', name: 'gwtexporter', version: '2.5.1'
 
-    componentsCompile group: 'org.apache.ant', name: 'ant', version: '1.8.4'
-    componentsCompile group: 'ant-contrib', name: 'ant-contrib', version: '1.0b3'
-    componentsCompile group: 'commons-digester', name: 'commons-digester', version: '1.8'
-    componentsCompile group: 'dom4j', name: 'dom4j', version: '1.6.1'
-    componentsCompile group: 'jaxen', name: 'jaxen', version: '1.1.6'
-    componentsCompile group: 'org.safehaus.jug', name: 'jug', version: '2.0.0', classifier: 'lgpl'
-
     testCompile group: 'dumbster', name: 'dumbster', version: '1.6'
     testCompile group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'

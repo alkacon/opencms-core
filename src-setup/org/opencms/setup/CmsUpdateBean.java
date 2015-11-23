@@ -57,6 +57,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -144,15 +146,18 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The workplace import thread. */
     private CmsUpdateThread m_workplaceUpdateThread;
 
+    /** The list of modules that should keep their libs. */
+    private List<String> m_preserveLibModules;
+
     /**
      * Default constructor.<p>
      */
     public CmsUpdateBean() {
 
         super();
+        m_preserveLibModules = Collections.emptyList();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
         m_logFile = CmsSystemInfo.FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
-
     }
 
     /**
@@ -182,7 +187,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             Class<?> manager = Class.forName("org.opencms.ocee.base.CmsOceeManager");
             Method checkVersion = manager.getMethod("checkOceeVersion", String.class);
             return (Boolean)checkVersion.invoke(manager, version);
-        } catch (ClassNotFoundException e) {
+        } catch (@SuppressWarnings("unused") ClassNotFoundException e) {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -323,7 +328,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     ver = getXmlHelper().getValue(
                         file,
                         CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + CmsModuleXmlHandler.N_VERSION);
-                } catch (CmsXmlException e) {
+                } catch (@SuppressWarnings("unused") CmsXmlException e) {
                     // ignore
                 }
                 modules.put(name, new CmsModuleVersion(ver));
@@ -332,7 +337,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                 name = getXmlHelper().getValue(
                     file,
                     CmsStringUtil.substitute(basePath, "?", "" + i) + CmsModuleXmlHandler.N_NAME);
-            } catch (CmsXmlException e) {
+            } catch (@SuppressWarnings("unused") CmsXmlException e) {
                 // ignore
             }
         }
@@ -796,6 +801,22 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Sets the list of modules where the included libs should be preserved during update.<p>
+     * Called from step_5_update_modules.jsp.<p>
+     *
+     * @param preserveLibModules the comma separated list of module names
+     */
+    public void setPreserveLibModules(String preserveLibModules) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(preserveLibModules)) {
+            String[] modules = preserveLibModules.split(",");
+            m_preserveLibModules = Arrays.asList(modules);
+        } else {
+            m_preserveLibModules = Collections.emptyList();
+        }
+    }
+
+    /**
      * Sets the update Project.<p>
      *
      * @param updateProject the update Project to set
@@ -922,7 +943,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             try {
                 // try to read a (leftover) unlock project
                 project = m_cms.readProject(projectName);
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 // create a Project to unlock the resources
                 project = m_cms.createProject(
                     projectName,
@@ -1058,7 +1079,12 @@ public class CmsUpdateBean extends CmsSetupBean {
     protected void removeModule(String moduleName, I_CmsReport report) throws CmsException {
 
         if (OpenCms.getModuleManager().getModule(moduleName) != null) {
-            OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
+            OpenCms.getModuleManager().deleteModule(
+                m_cms,
+                moduleName,
+                true,
+                m_preserveLibModules.contains(moduleName),
+                report);
         }
     }
 
