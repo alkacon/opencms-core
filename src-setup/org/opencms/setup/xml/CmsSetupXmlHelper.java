@@ -397,7 +397,14 @@ public class CmsSetupXmlHelper {
                     new InputSource(new FileReader(getFile(xmlFilename))),
                     NO_ENTITY_RESOLVER);
             } catch (FileNotFoundException e) {
+                LOG.error("Could not read file " + xmlFilename, e);
                 throw new CmsXmlException(new CmsMessageContainer(null, e.toString()));
+
+            } catch (Exception e) {
+                LOG.error("Could not parse file " + xmlFilename, e);
+                throw new CmsXmlException(
+                    Messages.get().container(Messages.ERR_XML_COULD_NOT_PARSE_FILE_1, xmlFilename),
+                    e);
             }
             // cache the doc
             m_cache.put(xmlFilename, document);

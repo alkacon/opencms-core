@@ -38,6 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_XML_COULD_NOT_PARSE_FILE_1 = "ERR_XML_COULD_NOT_PARSE_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_SET_VALUE_2 = "ERR_XML_SET_VALUE_2";
 
     /** Name of the used resource bundle. */
