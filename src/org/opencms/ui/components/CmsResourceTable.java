@@ -52,8 +52,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsCustomComponent;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -66,6 +68,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -251,6 +255,9 @@ public class CmsResourceTable extends A_CmsCustomComponent {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceTable.class);
+
     /** The resource data container. */
     protected ItemContainer m_container = new ItemContainer();
 
@@ -284,61 +291,169 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         CmsMessages messages,
         Locale locale) {
 
-        assert resourceItem != null : "The resource item should not be null";
+        if (resource == null) {
+            LOG.error("Error rendering item for 'null' resource");
+            return;
+        }
+
+        if (resourceItem == null) {
+            LOG.error("Error rendering 'null' item for resource " + resource.getRootPath());
+            return;
+        }
+        if (cms == null) {
+            cms = A_CmsUI.getCmsObject();
+            LOG.warn("CmsObject was 'null', using thread local CmsObject");
+        }
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        assert settings != null : "The explorer type settings for the resource '"
-            + resource.getRootPath()
-            + "' should not be null";
-        resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-            new CmsResourceIcon(
-                resUtil,
-                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
-                resource.getState()));
-
-        Image projectFlag = null;
-        switch (resUtil.getProjectState().getMode()) {
-            case 1:
-                projectFlag = new Image(
-                    resUtil.getLockedInProjectName(),
-                    new ThemeResource(OpenCmsTheme.PROJECT_CURRENT_PATH));
-                break;
-            case 2:
-                projectFlag = new Image(
-                    resUtil.getLockedInProjectName(),
-                    new ThemeResource(OpenCmsTheme.PROJECT_OTHER_PATH));
-                break;
-            case 5:
-                projectFlag = new Image(
-                    resUtil.getLockedInProjectName(),
-                    new ThemeResource(OpenCmsTheme.PROJECT_PUBLISH_PATH));
-                break;
-            default:
+        if (settings == null) {
+            LOG.error("Could not read explorer type settings for resource type " + type.getTypeName());
+            return;
         }
-        resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
-        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
 
-        resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
-        resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
-        resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
-        resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
-            CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
-        resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
-        if (resource.isFile()) {
-            resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
+        if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
+            resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
+                new CmsResourceIcon(
+                    resUtil,
+                    CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
+                    resource.getState()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_TYPE_ICON.getId() + " is null");
         }
-        resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
-        resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
-            messages.getDateTime(resource.getDateLastModified()));
-        resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
-        resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(messages.getDateTime(resource.getDateCreated()));
-        resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
-        resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
-        resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
-        resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
-        resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
-        resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
+
+        if (resourceItem.getItemProperty(PROPERTY_PROJECT) != null) {
+            Image projectFlag = null;
+            switch (resUtil.getProjectState().getMode()) {
+                case 1:
+                    projectFlag = new Image(
+                        resUtil.getLockedInProjectName(),
+                        new ThemeResource(OpenCmsTheme.PROJECT_CURRENT_PATH));
+                    break;
+                case 2:
+                    projectFlag = new Image(
+                        resUtil.getLockedInProjectName(),
+                        new ThemeResource(OpenCmsTheme.PROJECT_OTHER_PATH));
+                    break;
+                case 5:
+                    projectFlag = new Image(
+                        resUtil.getLockedInProjectName(),
+                        new ThemeResource(OpenCmsTheme.PROJECT_PUBLISH_PATH));
+                    break;
+                default:
+            }
+            resourceItem.getItemProperty(PROPERTY_PROJECT).setValue(projectFlag);
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_PROJECT.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT) != null) {
+            resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_INSIDE_PROJECT.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME) != null) {
+            resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME).setValue(resource.getName());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_RESOURCE_NAME.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_TITLE) != null) {
+            resourceItem.getItemProperty(PROPERTY_TITLE).setValue(resUtil.getTitle());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_TITLE.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT) != null) {
+            resourceItem.getItemProperty(PROPERTY_NAVIGATION_TEXT).setValue(resUtil.getNavText());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_NAVIGATION_TEXT.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE) != null) {
+            resourceItem.getItemProperty(PROPERTY_RESOURCE_TYPE).setValue(
+                CmsWorkplaceMessages.getResourceTypeName(locale, type.getTypeName()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_RESOURCE_TYPE.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_IS_FOLDER) != null) {
+            resourceItem.getItemProperty(PROPERTY_IS_FOLDER).setValue(Boolean.valueOf(resource.isFolder()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_IS_FOLDER.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_SIZE) != null) {
+            if (resource.isFile()) {
+                resourceItem.getItemProperty(PROPERTY_SIZE).setValue(Integer.valueOf(resource.getLength()));
+            }
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_SIZE.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_PERMISSIONS) != null) {
+            resourceItem.getItemProperty(PROPERTY_PERMISSIONS).setValue(resUtil.getPermissionString());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_PERMISSIONS.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED) != null) {
+            resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
+                messages.getDateTime(resource.getDateLastModified()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_DATE_MODIFIED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_USER_MODIFIED) != null) {
+            resourceItem.getItemProperty(PROPERTY_USER_MODIFIED).setValue(resUtil.getUserLastModified());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_USER_MODIFIED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_DATE_CREATED) != null) {
+            resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(
+                messages.getDateTime(resource.getDateCreated()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_DATE_CREATED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_USER_CREATED) != null) {
+            resourceItem.getItemProperty(PROPERTY_USER_CREATED).setValue(resUtil.getUserCreated());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_USER_CREATED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_DATE_RELEASED) != null) {
+            resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_DATE_RELEASED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED) != null) {
+            resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_DATE_EXPIRED.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_STATE_NAME) != null) {
+            resourceItem.getItemProperty(PROPERTY_STATE_NAME).setValue(resUtil.getStateName());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_STATE_NAME.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_STATE) != null) {
+            resourceItem.getItemProperty(PROPERTY_STATE).setValue(resource.getState());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_STATE.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_USER_LOCKED) != null) {
+            resourceItem.getItemProperty(PROPERTY_USER_LOCKED).setValue(resUtil.getLockedByName());
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_USER_LOCKED.getId() + " is null");
+        }
+
     }
 
     /**
