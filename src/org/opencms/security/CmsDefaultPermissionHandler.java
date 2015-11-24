@@ -117,8 +117,17 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
 
         // if the resource type is jsp
         // write is only allowed for administrators
-        if (writeRequired && !canIgnorePermissions && (CmsResourceTypeJsp.isJsp(resource))) {
-            if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
+        if (writeRequired && !canIgnorePermissions) {
+            if (CmsResourceTypeJsp.isJsp(resource)) {
+                if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
+                    denied |= CmsPermissionSet.PERMISSION_WRITE;
+                    denied |= CmsPermissionSet.PERMISSION_CONTROL;
+                }
+            } else if (!m_securityManager.hasRoleForResource(
+                dbc,
+                dbc.currentUser(),
+                CmsRole.ELEMENT_AUTHOR,
+                resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
                 denied |= CmsPermissionSet.PERMISSION_CONTROL;
             }
