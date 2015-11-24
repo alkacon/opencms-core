@@ -3,7 +3,6 @@ echo on
 
 # Login the Admin user
 login "Admin" "admin"
-setStartView "Admin" "/system/workplace/views/explorer/workplace2.jsp"
 
 # Create the setup project
 createTempfileProject
