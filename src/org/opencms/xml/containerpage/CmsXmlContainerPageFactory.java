@@ -341,7 +341,7 @@ public final class CmsXmlContainerPageFactory {
         if (!CmsResourceTypeXmlContainerPage.isContainerPage(resource)) {
             // sanity check: resource must be of type XML content
             throw new CmsXmlException(
-                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_TYPE_1, cms.getSitePath(resource)));
+                Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_TYPE_1, resource.getRootPath()));
         }
 
         // try to get the requested content from the current request attribute
