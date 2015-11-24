@@ -24,7 +24,6 @@
 		<dependencies />
 		<exportpoints />
 		<resources>
-			<resource uri="/system/modules/org.opencms.editors.tinymce/" />
 			<resource uri="/system/workplace/editors/tinymce/" />
 		</resources>
 		<parameters />
