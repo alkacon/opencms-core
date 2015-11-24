@@ -31,11 +31,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleLog.Action;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsFileUtil;
@@ -77,6 +79,9 @@ public class CmsModuleImportExportRepository {
     /** The log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportRepository.class);
 
+    /** Module log. */
+    private CmsModuleLog m_moduleLog = new CmsModuleLog();
+
     /** The admin CMS context. */
     private CmsObject m_adminCms;
 
@@ -105,13 +110,32 @@ public class CmsModuleImportExportRepository {
      */
     public synchronized boolean deleteModule(String fileName) throws CmsException {
 
-        CmsModule module = getModuleForFileName(fileName);
-        if (module == null) {
-            LOG.error("Deletion request for invalid module file name: " + fileName);
-            return false;
+        String moduleName = null;
+        boolean ok = true;
+        try {
+            CmsModule module = getModuleForFileName(fileName);
+            if (module == null) {
+                LOG.error("Deletion request for invalid module file name: " + fileName);
+                ok = false;
+                return false;
+            }
+            I_CmsReport report = createReport();
+            moduleName = module.getName();
+            OpenCms.getModuleManager().deleteModule(m_adminCms, module.getName(), false, report);
+            ok = !(report.hasWarning() || report.hasError());
+            return true;
+        } catch (Exception e) {
+            ok = false;
+            if (e instanceof CmsException) {
+                throw (CmsException)e;
+            }
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }
+            return true;
+        } finally {
+            m_moduleLog.log(moduleName, Action.deleteModule, ok);
         }
-        OpenCms.getModuleManager().deleteModule(m_adminCms, module.getName(), false, createReport());
-        return true;
 
     }
 
@@ -156,13 +180,17 @@ public class CmsModuleImportExportRepository {
                 handler.setFileName(tempFilePath);
                 handler.setModuleName(moduleName);
                 CmsException exportException = null;
+                I_CmsReport report = createReport();
                 try {
                     CmsObject exportCms = OpenCms.initCmsObject(m_adminCms);
                     exportCms.getRequestContext().setCurrentProject(project);
-                    handler.exportData(exportCms, createReport());
+                    handler.exportData(exportCms, report);
                 } catch (CmsException e) {
                     exportException = e;
                 }
+                boolean failed = ((exportException != null) || report.hasWarning() || report.hasError());
+                m_moduleLog.log(moduleName, Action.exportModule, !failed);
+
                 if (exportException != null) {
                     new File(tempFilePath).delete();
                     throw exportException;
@@ -193,6 +221,16 @@ public class CmsModuleImportExportRepository {
     }
 
     /**
+     * Gets the object used to access the module log.<p>
+     *
+     * @return the module log
+     */
+    public CmsModuleLog getModuleLog() {
+
+        return m_moduleLog;
+    }
+
+    /**
      * Imports module data.<p>
      *
      * @param name the module file name
@@ -201,30 +239,46 @@ public class CmsModuleImportExportRepository {
      */
     public synchronized void importModule(String name, byte[] content) throws CmsException {
 
-        if (content.length == 0) {
-            // Happens when using CmsResourceWrapperModules with JLAN and createResource is called
-            LOG.debug("Zero-length module import content, ignoring it...");
-        } else {
-            ensureFoldersExist();
-            String targetFilePath = createImportZipPath(name);
-            try {
-                FileOutputStream out = new FileOutputStream(new File(targetFilePath));
-                out.write(content);
-                out.close();
-            } catch (IOException e) {
-                throw new CmsImportExportException(Messages.get().container(Messages.ERR_FILE_IO_1, targetFilePath));
+        String moduleName = null;
+        boolean ok = true;
+        try {
+            if (content.length == 0) {
+                // Happens when using CmsResourceWrapperModules with JLAN and createResource is called
+                LOG.debug("Zero-length module import content, ignoring it...");
+            } else {
+                ensureFoldersExist();
+                String targetFilePath = createImportZipPath(name);
+                try {
+                    FileOutputStream out = new FileOutputStream(new File(targetFilePath));
+                    out.write(content);
+                    out.close();
+                } catch (IOException e) {
+                    throw new CmsImportExportException(
+                        Messages.get().container(Messages.ERR_FILE_IO_1, targetFilePath));
+                }
+                CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
+                CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(targetFilePath);
+                moduleName = module.getName();
+                I_CmsReport report = createReport();
+                if (OpenCms.getModuleManager().hasModule(moduleName)) {
+                    OpenCms.getModuleManager().deleteModule(m_adminCms, moduleName, true /*replace module*/, report);
+                }
+                CmsImportParameters params = new CmsImportParameters(targetFilePath, "/", false);
+                importHandler.setImportParameters(params);
+                importHandler.importData(m_adminCms, report);
+                new File(targetFilePath).delete();
+                if (report.hasError() || report.hasWarning()) {
+                    ok = false;
+                }
             }
-            CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
-            CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(targetFilePath);
-            String moduleName = module.getName();
-            I_CmsReport report = createReport();
-            if (OpenCms.getModuleManager().hasModule(moduleName)) {
-                OpenCms.getModuleManager().deleteModule(m_adminCms, moduleName, true /*replace module*/, report);
-            }
-            CmsImportParameters params = new CmsImportParameters(targetFilePath, "/", false);
-            importHandler.setImportParameters(params);
-            importHandler.importData(m_adminCms, report);
-            new File(targetFilePath).delete();
+        } catch (CmsException e) {
+            ok = false;
+            throw e;
+        } catch (RuntimeException e) {
+            ok = false;
+            throw e;
+        } finally {
+            m_moduleLog.log(moduleName, Action.importModule, ok);
         }
     }
 
@@ -269,9 +323,13 @@ public class CmsModuleImportExportRepository {
         // We compute a hash code from the paths of all resources belonging to the module and their respective modification dates.
         List<String> entries = Lists.newArrayList();
         for (String path : module.getResources()) {
-            List<CmsResource> resources = cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true);
-            for (CmsResource res : resources) {
-                entries.add(res.getRootPath() + ":" + res.getDateLastModified());
+            try {
+                List<CmsResource> resources = cms.readResources(path, CmsResourceFilter.IGNORE_EXPIRATION, true);
+                for (CmsResource res : resources) {
+                    entries.add(res.getRootPath() + ":" + res.getDateLastModified());
+                }
+            } catch (CmsVfsResourceNotFoundException e) {
+                entries.add(path + ":null");
             }
         }
         Collections.sort(entries);
@@ -364,6 +422,14 @@ public class CmsModuleImportExportRepository {
 
         if (!moduleFile.exists()) {
             LOG.info("Module export file doesn't exist, export is needed.");
+            try {
+                String moduleSignature = computeModuleHash(module, project);
+                if (moduleSignature != null) {
+                    m_moduleHashCache.put(module, moduleSignature);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             return true;
         } else {
             if (moduleFile.lastModified() < module.getObjectCreateTime()) {

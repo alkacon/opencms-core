@@ -34,6 +34,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.jlan.CmsJlanDiskInterface;
@@ -43,10 +44,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,13 +71,21 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     /** The base folder under which the virtual resources from this resource wrapper are available. */
     public static final String BASE_PATH = "/modules";
 
-    private Map<String, CmsFile> m_importDataCache = new ConcurrentHashMap<String, CmsFile>();
-
     /** The virtual folder which can be used to import modules. */
     public static final String IMPORT_PATH = BASE_PATH + "/import";
 
     /** The virtual folder which can be used to export modules. */
     public static final String EXPORT_PATH = BASE_PATH + "/export";
+
+    /** The virtual folder which can be used to provide logs for module operations. */
+    public static final String LOG_PATH = BASE_PATH + "/log";
+
+    /** List of virtual folders made available by this resource wrapper. */
+    public static final List<String> FOLDERS = Collections.unmodifiableList(
+        Arrays.asList(BASE_PATH, IMPORT_PATH, EXPORT_PATH, LOG_PATH));
+
+    /** Cache for imported module files. */
+    private Map<String, CmsFile> m_importDataCache = new ConcurrentHashMap<String, CmsFile>();
 
     /**
      * Map containing the last update time for a given import folder path.<p>
@@ -85,10 +96,6 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
      * so we have to pretend that the file actually exists after creating it.
      **/
     ConcurrentHashMap<String, Long> m_importFileUpdateCache = new ConcurrentHashMap<String, Long>();
-
-    /** List of virtual folders made available by this resource wrapper. */
-    public static final List<String> FOLDERS = Collections.unmodifiableList(
-        Arrays.asList(BASE_PATH, IMPORT_PATH, EXPORT_PATH));
 
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
@@ -106,7 +113,11 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
             return getVirtualResourcesForExport(cms);
         } else if (matchPath(IMPORT_PATH, resourceNameWithTrailingSlash)) {
             return getVirtualResourcesForImport(cms);
+        } else if (matchPath(LOG_PATH, resourceNameWithTrailingSlash)) {
+            return getVirtualLogResources(cms);
+
         }
+
         return Collections.emptyList();
     }
 
@@ -233,6 +244,22 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
             }
             return resultFile;
         }
+
+        if (matchParentPath(LOG_PATH, resourcepath)) {
+            CmsFile resultFile = new CmsFile(createFakeBinaryFile(resourcepath));
+            // if (cms.getRequestContext().getAttribute(CmsJlanDiskInterface.NO_FILESIZE_REQUIRED) == null) {
+            String moduleName = CmsResource.getName(resourcepath).replaceFirst("\\.log$", "");
+            try {
+                byte[] data = OpenCms.getModuleManager().getImportExportRepository().getModuleLog().readLog(moduleName);
+                resultFile.setContents(data);
+                return resultFile;
+            } catch (IOException e) {
+                throw new CmsVfsResourceNotFoundException(
+                    org.opencms.db.Messages.get().container(org.opencms.db.Messages.ERR_READ_RESOURCE_1, resourcepath),
+                    e);
+            }
+
+        }
         return super.readResource(cms, resourcepath, filter);
     }
 
@@ -291,6 +318,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
         CmsUUID structureId = CmsUUID.getConstantUUID("s-" + rootPath);
         CmsUUID resourceId = CmsUUID.getConstantUUID("r-" + rootPath);
+        @SuppressWarnings("deprecation")
         int type = OpenCms.getResourceManager().getResourceType(CmsResourceTypeBinary.getStaticTypeName()).getTypeId();
         boolean isFolder = false;
         int flags = 0;
@@ -346,6 +374,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
 
         CmsUUID structureId = CmsUUID.getConstantUUID("s-" + rootPath);
         CmsUUID resourceId = CmsUUID.getConstantUUID("r-" + rootPath);
+        @SuppressWarnings("deprecation")
         int type = OpenCms.getResourceManager().getResourceType(CmsResourceTypeFolder.getStaticTypeName()).getTypeId();
         boolean isFolder = true;
         int flags = 0;
@@ -384,6 +413,25 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
     }
 
     /**
+     * Gets the virtual resources in the log folder.<p>
+     *
+     * @param cms the CMS context
+     * @return the list of virtual log resources
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private List<CmsResource> getVirtualLogResources(CmsObject cms) throws CmsException {
+
+        List<CmsResource> virtualResources = Lists.newArrayList();
+        for (CmsModule module : OpenCms.getModuleManager().getAllInstalledModules()) {
+            String path = CmsStringUtil.joinPaths(LOG_PATH, module.getName() + ".log");
+            CmsResource res = createFakeBinaryFile(path);
+            virtualResources.add(res);
+        }
+        return virtualResources;
+    }
+
+    /**
      * Gets the virtual resources for the base folder.<p>
      *
      * @param cms the current CMS context
@@ -393,7 +441,7 @@ public class CmsResourceWrapperModules extends A_CmsResourceWrapper {
      */
     private List<CmsResource> getVirtualResourcesForBasePath(CmsObject cms) throws CmsException {
 
-        return Arrays.asList(createFakeFolder(IMPORT_PATH), createFakeFolder(EXPORT_PATH));
+        return Arrays.asList(createFakeFolder(IMPORT_PATH), createFakeFolder(EXPORT_PATH), createFakeFolder(LOG_PATH));
     }
 
     /**
