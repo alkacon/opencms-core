@@ -92,6 +92,10 @@
 		}
 		.v-window-outerheader{
 			@include  linear-gradient(to bottom, opencms-color-stops($v-window-background-color), $v-window-background-color);
+			
+			&:after{
+				border: none;
+			}
 		}
  	 
 		.o-dialog > .v-spacing, .o-dialog > .v-expand> .v-spacing {
