@@ -264,7 +264,7 @@ public class CmsToolDialog extends CmsWorkplace {
      *
      * @param segment the HTML segment (START / END)
      * @param headline the headline String for the block
-
+    
      * @return block area start / end segment
      *
      * @see CmsDialog#dialogBlock(int, String, boolean)
@@ -451,7 +451,7 @@ public class CmsToolDialog extends CmsWorkplace {
 
         // add a special CSS class in case we are in the new vaadin based workplace
 
-        html.append("\tif (this.name != \"admin_content\") {\n");
+        html.append("\tif (this.name != \"admin_content\" && this.name != \"explorer_files\") {\n");
         html.append("\t\tvar cssClass=document.body.getAttribute(\"class\");\n");
         html.append("\t\tcssClass+=\" legacy-app\";\n");
         html.append("\t\tdocument.body.setAttribute(\"class\",cssClass);\n");
