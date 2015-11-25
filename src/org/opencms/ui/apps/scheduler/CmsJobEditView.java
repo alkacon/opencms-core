@@ -30,6 +30,7 @@ package org.opencms.ui.apps.scheduler;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.relations.CmsExternalLinksValidator;
@@ -47,8 +48,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.components.fileselect.CmsResourceSelectField;
-import org.opencms.ui.util.I_CmsHasField;
+import org.opencms.ui.components.fileselect.CmsPathSelectField;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
@@ -65,14 +65,13 @@ import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.combobox.FilteringMode;
-import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -96,15 +95,14 @@ public class CmsJobEditView extends VerticalLayout {
         /**
          * @see com.vaadin.data.Validator#validate(java.lang.Object)
          */
-        @SuppressWarnings("synthetic-access")
         public void validate(Object value) throws InvalidValueException {
 
             CmsScheduledJobInfo info = new CmsScheduledJobInfo();
             // Job name may be needed in exception
             try {
                 info.setJobName(m_fieldJobName.getValue());
-            } catch (Exception e) {
-                // ignore
+            } catch (CmsRuntimeException e) {
+                throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
             }
             String stringValue = (String)value;
             try {
@@ -113,7 +111,6 @@ public class CmsJobEditView extends VerticalLayout {
                 throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
             }
         }
-
     }
 
     /**
@@ -127,7 +124,6 @@ public class CmsJobEditView extends VerticalLayout {
         /**
          * @see com.vaadin.data.Validator#validate(java.lang.Object)
          */
-        @SuppressWarnings("synthetic-access")
         public void validate(Object value) throws InvalidValueException {
 
             CmsScheduledJobInfo info = new CmsScheduledJobInfo();
@@ -136,8 +132,8 @@ public class CmsJobEditView extends VerticalLayout {
             // Job name may be needed in exception
             try {
                 info.setJobName(m_fieldJobName.getValue());
-            } catch (Exception e) {
-                // ignore
+            } catch (CmsRuntimeException e) {
+                throw new InvalidValueException(e.getLocalizedMessage(A_CmsUI.get().getLocale()));
             }
             try {
                 info.setClassName(stringValue);
@@ -326,10 +322,17 @@ public class CmsJobEditView extends VerticalLayout {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    private HorizontalLayout m_buttonBar;
+    /** Field for the job name. */
+    TextField m_fieldJobName;
+
+    /** Form containing the job parameters. */
+    FormLayout m_paramContainer;
 
     /** Button to add a new parameter. */
     private Button m_buttonAddParam;
+
+    /** The button bar. */
+    private HorizontalLayout m_buttonBar;
 
     /** Field to activate / deactivate the job. */
     private CheckBox m_fieldActive;
@@ -342,9 +345,6 @@ public class CmsJobEditView extends VerticalLayout {
 
     /** Field for the class name. */
     private ComboBox m_fieldJobClass;
-
-    /** Field for the job name. */
-    private TextField m_fieldJobName;
 
     /** Field for the locale. */
     private TextField m_fieldLocale;
@@ -359,23 +359,21 @@ public class CmsJobEditView extends VerticalLayout {
     private CheckBox m_fieldReuseInstance;
 
     /** Field for the site root. */
-    private CmsResourceSelectField m_fieldSiteRoot;
+    private CmsPathSelectField m_fieldSiteRoot;
 
     /** Field for the URI. */
-    private CmsResourceSelectField m_fieldUri;
+    private CmsPathSelectField m_fieldUri;
 
     /** Field for the user name. */
     private TextField m_fieldUser;
 
-    /** Form containing the job parameters. */
-    FormLayout m_paramContainer;
+    /** Field group. */
+    private BeanFieldGroup<CmsScheduledJobInfo> m_group;
 
     /** Edited job. */
     private CmsScheduledJobInfo m_job = new CmsScheduledJobInfo();
 
-    /** Field group. */
-    private BeanFieldGroup<CmsScheduledJobInfo> m_group;
-
+    /** The title label. */
     private Label m_titleLabel;
 
     /**
@@ -392,7 +390,7 @@ public class CmsJobEditView extends VerticalLayout {
         m_group = group;
         m_titleLabel.addStyleName(ValoTheme.LABEL_H2);
 
-        bindField(m_fieldJobName, "jobName");/**/
+        bindField(m_fieldJobName, "jobName");
         bindField(m_fieldJobClass, "className");
         bindField(m_fieldCron, "cronExpression");
         bindField(m_fieldReuseInstance, "reuseInstance");
@@ -489,9 +487,14 @@ public class CmsJobEditView extends VerticalLayout {
         }
     }
 
-    public void setTitle(String caption) {
+    /**
+     * Sets the title.<p>
+     *
+     * @param title the title
+     */
+    public void setTitle(String title) {
 
-        m_titleLabel.setValue(caption);
+        m_titleLabel.setValue(title);
     }
 
     /**
@@ -527,15 +530,9 @@ public class CmsJobEditView extends VerticalLayout {
      * @param field the component
      * @param property the bean property
      */
-    void bindField(AbstractComponent field, String property) {
+    void bindField(AbstractField<?> field, String property) {
 
-        Field<?> realField = null;
-        if (field instanceof Field) {
-            realField = (Field<?>)field;
-        } else if (field instanceof I_CmsHasField) {
-            realField = ((I_CmsHasField<?>)field).getField();
-        }
-        m_group.bind(realField, property);
+        m_group.bind(field, property);
 
         field.setCaption(CmsVaadinUtils.getMessageText("label." + property));
         field.setDescription(CmsVaadinUtils.getMessageText("label." + property + ".help"));
