@@ -1125,6 +1125,11 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             if (resource.isFile()) {
                 return;
             }
+            // ensuring to only add items belonging to the current site
+            if (!resource.getRootPath().startsWith(cms.getRequestContext().getSiteRoot())) {
+                m_treeContainer.removeItemRecursively(id);
+                return;
+            }
 
             CmsResource parent = cms.readParentFolder(id);
             CmsUUID parentId = parent.getStructureId();
