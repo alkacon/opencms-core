@@ -147,6 +147,31 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
     }
 
     /**
+     * Property editor handler which uses a text box for the template selection.<p>
+     */
+    protected static class PropertyEditorHandler extends CmsSimplePropertyEditorHandler {
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param handler the handler
+         */
+        public PropertyEditorHandler(I_CmsContextMenuHandler handler) {
+            super(handler);
+        }
+
+        /**
+         * @see org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler#useAdeTemplates()
+         */
+        @Override
+        public boolean useAdeTemplates() {
+
+            return false;
+        }
+
+    }
+
+    /**
      * Hidden utility class constructor.<p>
      */
     private CmsEditProperties() {
@@ -182,7 +207,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             @Override
             protected void onResponse(CmsPropertiesBean result) {
 
-                CmsSimplePropertyEditorHandler handler = new CmsSimplePropertyEditorHandler(contextMenuHandler);
+                PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
                 editContext.setCancelHandler(cancelHandler);
 
                 handler.setPropertiesBean(result);
