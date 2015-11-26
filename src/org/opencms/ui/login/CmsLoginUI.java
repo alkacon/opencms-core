@@ -65,8 +65,6 @@ import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -298,15 +296,6 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public static void setAdminCmsObject(CmsObject cms) {
 
         m_adminCms = cms;
-    }
-
-    /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#displayError(java.lang.String)
-     */
-    public void displayError(String message) {
-
-        Notification.show(message, Type.ERROR_MESSAGE);
-
     }
 
     /**

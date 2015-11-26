@@ -239,6 +239,18 @@ public class CmsLoginController {
     }
 
     /**
+     * Returns the reset password link.<p>
+     *
+     * @return the reset password link
+     */
+    public String getResetPasswordLink() {
+
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(CmsLoginUI.m_adminCms, "/system/login", false)
+            + "?"
+            + CmsLoginHelper.PARAM_RESET_PASSWORD;
+    }
+
+    /**
      * Returns true if the security option should be displayed in the login dialog.<p>
      *
      * @return true if the security option should be displayed in the login dialog
@@ -253,17 +265,15 @@ public class CmsLoginController {
      */
     public void onClickForgotPassword() {
 
-        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-            CmsLoginUI.m_adminCms,
-            "/system/login", //$NON-NLS-1$
-            false) + "?" + CmsLoginHelper.PARAM_RESET_PASSWORD;
-        A_CmsUI.get().getPage().setLocation(link);
+        A_CmsUI.get().getPage().setLocation(getResetPasswordLink());
     }
 
     /**
      * Called when the user clicks on the login button.<p>
+     *
+     * @return the error message, in case the login failed otherwise <code>null</code>
      */
-    public void onClickLogin() {
+    public String onClickLogin() {
 
         String user = m_ui.getUser();
         String password = m_ui.getPassword();
@@ -275,9 +285,9 @@ public class CmsLoginController {
             // If login is forbidden, we will get an error message anyway, so we don't need to store the message here
         }
         if (message != null) {
-            String errorMesssage = message.key(m_params.getLocale());
-            m_ui.displayError(errorMesssage);
-            return;
+            String errorMessage = message.key(m_params.getLocale());
+            //  m_ui.displayError(errorMessage);
+            return errorMessage;
         }
 
         String ou = m_ui.getOrgUnit();
@@ -293,14 +303,14 @@ public class CmsLoginController {
                 LOG.warn(e.getLocalizedMessage(), e);
                 message = org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
-                m_ui.displayError(message.key(m_params.getLocale()));
-                return;
+                //m_ui.displayError(message.key(m_params.getLocale()));
+                return message.key(m_params.getLocale());
             }
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
-                    A_CmsUI.get().setError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()));
-                    return;
+                    //   A_CmsUI.get().setError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()));
+                    return CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale());
                 }
             }
             if (OpenCms.getLoginManager().requiresPasswordChange(currentCms, userObj)) {
@@ -312,7 +322,7 @@ public class CmsLoginController {
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName(),
                     passwordDialog);
-                return;
+                return null;
             }
             currentCms.loginUser(realUser, password);
             OpenCms.getSessionManager().updateSessionInfo(
@@ -358,8 +368,7 @@ public class CmsLoginController {
                     // the user account is disabled
                     message = org.opencms.workplace.Messages.get().container(
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                } else
-                    if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
+                } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == exceptionMessage.getKey()) {
                     // the user account is temporarily disabled because of too many login failures
                     message = org.opencms.workplace.Messages.get().container(
                         org.opencms.workplace.Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
@@ -383,15 +392,16 @@ public class CmsLoginController {
                 }
             }
 
-            m_ui.displayError(message.key(m_params.getLocale()));
+            //   m_ui.displayError(message.key(m_params.getLocale()));
+
             if (e instanceof CmsException) {
                 CmsJspLoginBean.logLoginException(currentCms.getRequestContext(), user, (CmsException)e);
             } else {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-
+            return message.key(m_params.getLocale());
         }
-
+        return null;
     }
 
     /**

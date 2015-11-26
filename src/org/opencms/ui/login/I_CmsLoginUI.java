@@ -38,13 +38,6 @@ import java.util.List;
 public interface I_CmsLoginUI {
 
     /**
-     * Displays an error message.<p>
-     *
-     * @param message the message to display
-     */
-    void displayError(String message);
-
-    /**
      * Gets the selected org unit.<p>
      *
      * @return the selected org unit

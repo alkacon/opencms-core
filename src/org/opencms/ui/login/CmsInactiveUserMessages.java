@@ -73,7 +73,7 @@ public class CmsInactiveUserMessages {
             bundle = CmsResourceBundleLoader.getBundle("org.opencms.inactiveusers.custom", locale);
             return bundle.getString(key);
         } catch (MissingResourceException e) {
-            LOG.info("Customization bundle not found: org.opencms.inactiveusers.custom");
+            LOG.info("Customization bundle not found: org.opencms.inactiveusers.custom", e);
             bundle = CmsResourceBundleLoader.getBundle("org.opencms.ui.messages", locale);
             return bundle.getString(key);
         }
