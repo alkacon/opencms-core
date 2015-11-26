@@ -225,7 +225,7 @@ public class CmsSitemapTreeItem extends CmsLazyTreeItem {
                     final List<CmsPropertyModification> propChanges = new ArrayList<CmsPropertyModification>();
                     propChanges.add(propMod);
                     CmsSitemapController controller = CmsSitemapView.getInstance().getController();
-                    if (editEntry.isNew() && !editEntry.isRoot()) {
+                    if (editEntry.isNew() && !editEntry.isRoot() && !oldTitle.equalsIgnoreCase(newTitle)) {
                         String urlName = controller.ensureUniqueName(
                             CmsResource.getParentFolder(editEntry.getSitePath()),
                             newTitle);
