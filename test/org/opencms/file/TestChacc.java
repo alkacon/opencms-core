@@ -30,6 +30,7 @@ package org.opencms.file;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -292,6 +293,7 @@ public class TestChacc extends OpenCmsTestCase {
         CmsGroup testGroup = cms.readGroup("Testgroup");
         cms.createUser("testuser", "test", "A test user", null);
         cms.addUserToGroup("testuser", "Testgroup");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ELEMENT_AUTHOR, "testuser");
         CmsUser testUser = cms.readUser("testuser");
 
         CmsProject offline = cms.readProject("Offline");

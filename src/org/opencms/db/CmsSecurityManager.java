@@ -3053,7 +3053,7 @@ public final class CmsSecurityManager {
                     "",
                     true,
                     true,
-                    true,
+                    false,
                     dbc.getRequestContext().getRemoteAddress()));
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {

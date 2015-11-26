@@ -490,6 +490,7 @@ public class TestDeletion extends OpenCmsTestCase {
         CmsGroup testGroup = cms.readGroup("Testgroup");
         cms.createUser("testuser1", "test1", "A test user 1", null);
         cms.addUserToGroup("testuser1", "Testgroup");
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.ELEMENT_AUTHOR, "testuser1");
         CmsUser testUser1 = cms.readUser("testuser1");
 
         cms.lockResource("/");

@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -210,6 +211,7 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
         // create a test user and a test group
         cms.createUser("testuser", "test", "A test user", null);
+
         CmsUser testUser = cms.readUser("testuser");
 
         // login as user "test"
@@ -223,6 +225,10 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         adminCms.lockResource(file);
         adminCms.chacc("/xmlcontent/article_0003.html", I_CmsPrincipal.PRINCIPAL_USER, testUser.getName(), "+r+w+v");
         adminCms.unlockResource(file);
+
+        // add user to required role
+        OpenCms.getRoleManager().addUserToRole(adminCms, CmsRole.ELEMENT_AUTHOR, "testuser");
+
         assertTrue("Failed editable check for test user in offline project", bean.getIsEditable());
 
         // lock the file with the admin user
