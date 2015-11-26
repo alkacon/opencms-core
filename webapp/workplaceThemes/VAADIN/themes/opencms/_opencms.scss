@@ -64,6 +64,20 @@
 			white-space: normal;
 		}
 	}
+	
+	div.v-label-success, div.v-label-failure{
+		font-size: $v-font-size;
+		padding-left: 10px;
+		padding-right: 40px;
+		
+		&:before{
+			position: absolute;
+			top: 6px;
+			right: 15px;
+			font-size: 32px;
+			margin: 0;
+		}
+	}
   
 	/* Overrides to the valo theme */
 	div.v-panel-caption {
