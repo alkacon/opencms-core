@@ -270,10 +270,8 @@ public class CmsLoginController {
 
     /**
      * Called when the user clicks on the login button.<p>
-     *
-     * @return the error message, in case the login failed otherwise <code>null</code>
      */
-    public String onClickLogin() {
+    public void onClickLogin() {
 
         String user = m_ui.getUser();
         String password = m_ui.getPassword();
@@ -287,7 +285,8 @@ public class CmsLoginController {
         if (message != null) {
             String errorMessage = message.key(m_params.getLocale());
             //  m_ui.displayError(errorMessage);
-            return errorMessage;
+            displayError(errorMessage, true);
+            return;
         }
 
         String ou = m_ui.getOrgUnit();
@@ -303,14 +302,14 @@ public class CmsLoginController {
                 LOG.warn(e.getLocalizedMessage(), e);
                 message = org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_0);
-                //m_ui.displayError(message.key(m_params.getLocale()));
-                return message.key(m_params.getLocale());
+                displayError(message.key(m_params.getLocale()), true);
+                return;
             }
             if (OpenCms.getLoginManager().canLockBecauseOfInactivity(currentCms, userObj)) {
                 boolean locked = null != userObj.getAdditionalInfo().get(KEY_ACCOUNT_LOCKED);
                 if (locked) {
-                    //   A_CmsUI.get().setError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()));
-                    return CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale());
+                    displayError(CmsInactiveUserMessages.getLockoutText(A_CmsUI.get().getLocale()), false);
+                    return;
                 }
             }
             if (OpenCms.getLoginManager().requiresPasswordChange(currentCms, userObj)) {
@@ -322,7 +321,6 @@ public class CmsLoginController {
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
                         + userObj.getSimpleName(),
                     passwordDialog);
-                return null;
             }
             currentCms.loginUser(realUser, password);
             OpenCms.getSessionManager().updateSessionInfo(
@@ -399,9 +397,9 @@ public class CmsLoginController {
             } else {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            return message.key(m_params.getLocale());
+            displayError(message.key(m_params.getLocale()), false);
+            return;
         }
-        return null;
     }
 
     /**
@@ -513,5 +511,24 @@ public class CmsLoginController {
     CmsObject getCms() {
 
         return m_adminCms;
+    }
+
+    /**
+     * Displays the given error message.<p>
+     *
+     * @param message the message
+     * @param showForgotPassword in case the forgot password link should be shown
+     */
+    private void displayError(String message, boolean showForgotPassword) {
+
+        message = message.replace("\n", "<br />");
+        if (showForgotPassword) {
+            message += "<br /><br /><a href=\""
+                + getResetPasswordLink()
+                + "\">"
+                + CmsVaadinUtils.getMessageText(Messages.GUI_FORGOT_PASSWORD_0)
+                + "</a>";
+        }
+        m_ui.showLoginError(message);
     }
 }

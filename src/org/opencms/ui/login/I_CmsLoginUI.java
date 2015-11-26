@@ -92,6 +92,13 @@ public interface I_CmsLoginUI {
     void showForgotPasswordView(String authToken);
 
     /**
+     * Shows the given login error message.<p>
+     *
+     * @param messageHtml the message HTML
+     */
+    void showLoginError(String messageHtml);
+
+    /**
      * Initializes the login view.<p>
      *
      * @param preselectedOu a potential preselected OU

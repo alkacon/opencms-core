@@ -138,12 +138,8 @@ public class CmsLoginForm extends VerticalLayout {
 
             public void buttonClick(ClickEvent event) {
 
-                String errorMessage = m_controller.onClickLogin();
-                if (errorMessage != null) {
-                    displayError(errorMessage);
-                }
+                m_controller.onClickLogin();
             }
-
         });
         addAttachListener(new AttachListener() {
 
@@ -267,17 +263,11 @@ public class CmsLoginForm extends VerticalLayout {
     /**
      * Displays the given login error.<p>
      *
-     * @param message the error message
+     * @param messageHTML the error message
      */
-    void displayError(String message) {
+    void displayError(String messageHTML) {
 
-        m_error.setValue(
-            message
-                + "<br /><br /><a href=\""
-                + m_controller.getResetPasswordLink()
-                + "\">"
-                + CmsVaadinUtils.getMessageText(Messages.GUI_FORGOT_PASSWORD_0)
-                + "</a>");
+        m_error.setValue(messageHTML);
         m_error.setVisible(true);
     }
 

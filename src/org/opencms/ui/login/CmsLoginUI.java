@@ -394,6 +394,14 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
+     * @see org.opencms.ui.login.I_CmsLoginUI#showLoginError(java.lang.String)
+     */
+    public void showLoginError(String messageHtml) {
+
+        m_loginForm.displayError(messageHtml);
+    }
+
+    /**
      * @see org.opencms.ui.login.I_CmsLoginUI#showLoginView(java.lang.String)
      */
     public void showLoginView(String preselectedOu) {
