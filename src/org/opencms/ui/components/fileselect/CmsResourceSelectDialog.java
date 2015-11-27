@@ -159,15 +159,13 @@ public class CmsResourceSelectDialog extends CmsBasicDialog {
     }
 
     /**
-     * Adds a new path selection handler.<p>
+     * Adds a resource selection handler.<p>
      *
-     * @param useSitePaths true if we want changes as site paths, false for root paths
-     *
-     * @param rootPathHandler the selection handler to call when the user selects a file
+     * @param handler the handler
      */
-    public void addPathSelectionHandler(boolean useSitePaths, I_CmsSelectionHandler<String> rootPathHandler) {
+    public void addSelectionHandler(I_CmsSelectionHandler<CmsResource> handler) {
 
-        m_fileTree[0].addResourceSelectionHandler(new PathSelectionAdapter(rootPathHandler, useSitePaths));
+        m_fileTree[0].addResourceSelectionHandler(handler);
     }
 
     /**

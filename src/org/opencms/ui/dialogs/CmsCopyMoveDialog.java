@@ -160,23 +160,13 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsResource res = cms.readResource(structureId);
         if (res.isFolder()) {
-            m_targetFolder.setValue(cms.getSitePath(res));
+            m_targetFolder.setValue(res);
         } else {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(
                     org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
                     cms.getSitePath(res)));
         }
-    }
-
-    /**
-     * Preselects the target folder.<p>
-     *
-     * @param sitePath the folder site path
-     */
-    public void setTargetFolder(String sitePath) {
-
-        m_targetFolder.setValue(sitePath);
     }
 
     /**
@@ -264,7 +254,7 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
     void submit() {
 
         try {
-            CmsResource targetFolder = getTargetFolder();
+            CmsResource targetFolder = m_targetFolder.getValue();
             if (targetFolder.isFile()) {
                 throw new CmsVfsException(
                     Messages.get().container(
@@ -325,27 +315,6 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             m_rootCms.getRequestContext().setSiteRoot("/");
         }
         return m_rootCms;
-    }
-
-    /**
-     * Returns the target folder resource.<p>
-     *
-     * @return the target folder resource
-     *
-     * @throws CmsException in case reading the folder fails
-     */
-    private CmsResource getTargetFolder() throws CmsException {
-
-        String target = m_targetFolder.getValue();
-        CmsResource targetFolder = null;
-        // check if a site root was added to the target name
-        if (OpenCms.getSiteManager().getSiteRoot(target) != null) {
-            targetFolder = getRootCms().readResource(target);
-        } else {
-            targetFolder = getCms().readResource(target);
-        }
-
-        return targetFolder;
     }
 
     /**

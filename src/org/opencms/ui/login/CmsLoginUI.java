@@ -65,8 +65,6 @@ import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -301,15 +299,6 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     }
 
     /**
-     * @see org.opencms.ui.login.I_CmsLoginUI#displayError(java.lang.String)
-     */
-    public void displayError(String message) {
-
-        Notification.show(message, Type.ERROR_MESSAGE);
-
-    }
-
-    /**
      * @see org.opencms.ui.login.I_CmsLoginUI#getOrgUnit()
      */
     public String getOrgUnit() {
@@ -402,6 +391,14 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
         } catch (Exception e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
+    }
+
+    /**
+     * @see org.opencms.ui.login.I_CmsLoginUI#showLoginError(java.lang.String)
+     */
+    public void showLoginError(String messageHtml) {
+
+        m_loginForm.displayError(messageHtml);
     }
 
     /**

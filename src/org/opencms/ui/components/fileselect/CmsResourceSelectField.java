@@ -27,97 +27,57 @@
 
 package org.opencms.ui.components.fileselect;
 
-import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.util.I_CmsHasField;
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
 
-import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Field;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.server.UserError;
 
 /**
- * File select field.<p>
+ * Resource select field. Uses {@link CmsResource} as value type. Will allow existing VFS resources only.<p>
  */
-public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHasField<String> {
-
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
+public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceSelectField.class);
 
-    /** The text field containing the selected path. */
-    private TextField m_textField = new TextField();
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
-    /** The filter used for reading resources. */
-    private CmsResourceFilter m_filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED;
-
-    /** The file select dialog caption. */
-    private String m_fileSelectCaption;
+    /** The resource value. */
+    private CmsResource m_value;
 
     /**
      * Creates a new instance.<p>
      */
     public CmsResourceSelectField() {
-        setSpacing(true);
-        addComponent(m_textField);
-        Button fileSelectButton = new Button("");
-        fileSelectButton.addStyleName(OpenCmsTheme.BUTTON_UNPADDED);
-        fileSelectButton.addStyleName(ValoTheme.BUTTON_LINK);
-        ExternalResource folderRes = new ExternalResource(
-            CmsWorkplace.getResourceUri(
-                CmsWorkplace.RES_PATH_FILETYPES
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting("folder").getBigIconIfAvailable()));
-        fileSelectButton.setIcon(folderRes);
+        m_textField.addTextChangeListener(new TextChangeListener() {
 
-        addComponent(fileSelectButton);
-        setExpandRatio(m_textField, 1f);
-        m_textField.setWidth("100%");
-        fileSelectButton.addClickListener(new ClickListener() {
-
-            /** Serial version id. */
             private static final long serialVersionUID = 1L;
 
-            public void buttonClick(ClickEvent event) {
+            public void textChange(TextChangeEvent event) {
 
-                openFileSelector();
+                updateValueFromInput(event.getText());
             }
         });
-
     }
 
     /**
-     * @see org.opencms.ui.util.I_CmsHasField#getField()
+     * @see com.vaadin.ui.AbstractField#getType()
      */
-    public Field<String> getField() {
+    @Override
+    public Class<? extends CmsResource> getType() {
 
-        return getTextField();
-    }
-
-    /**
-     * Gets the text field component.<p>
-     *
-     * @return the text field component
-     */
-    public TextField getTextField() {
-
-        return m_textField;
+        return CmsResource.class;
     }
 
     /**
@@ -125,30 +85,10 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
      *
      * @return the value
      */
-    public String getValue() {
+    @Override
+    public CmsResource getValue() {
 
-        return m_textField.getValue();
-    }
-
-    /**
-     * Sets the caption of the file select dialog.<p>
-     *
-     * @param caption the caption
-     */
-    public void setFileSelectCaption(String caption) {
-
-        m_fileSelectCaption = caption;
-    }
-
-    /**
-     * Sets the filter to use for reading resources.<p>
-     *
-     * @param filter the new filter
-     */
-    public void setResourceFilter(CmsResourceFilter filter) {
-
-        m_filter = filter;
-
+        return m_value;
     }
 
     /**
@@ -156,37 +96,59 @@ public class CmsResourceSelectField extends HorizontalLayout implements I_CmsHas
      *
      * @param value the new value
      */
-    public void setValue(String value) {
+    @Override
+    public void setValue(CmsResource value) {
 
-        m_textField.setValue(value);
+        m_value = value;
+
+        m_textField.setComponentError(null);
+        String path;
+        if (m_value == null) {
+            path = "";
+        } else if (m_value.getRootPath().startsWith(A_CmsUI.getCmsObject().getRequestContext().getSiteRoot())) {
+            path = A_CmsUI.getCmsObject().getSitePath(m_value);
+        } else {
+            path = m_value.getRootPath();
+        }
+
+        m_textField.setValue(path);
     }
 
     /**
-     * Opens the file selector dialog.<p>
+     * @see org.opencms.ui.components.fileselect.A_CmsFileSelectField#setResourceValue(org.opencms.file.CmsResource)
      */
-    protected void openFileSelector() {
+    @Override
+    protected void setResourceValue(CmsResource resource) {
 
-        try {
-            CmsResourceSelectDialog fileSelect = new CmsResourceSelectDialog(m_filter);
-            final Window window = CmsBasicDialog.prepareWindow();
-            window.setCaption(
-                m_fileSelectCaption != null
-                ? m_fileSelectCaption
-                : CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_FILE_SELECT_CAPTION_0));
-            window.setContent(fileSelect);
-            fileSelect.addPathSelectionHandler(true, new I_CmsSelectionHandler<String>() {
+        setValue(resource);
+    }
 
-                public void onSelection(String selected) {
+    /**
+     * Updates the resource value from the input field.<p>
+     *
+     * @param inputValue the input value
+     */
+    void updateValueFromInput(String inputValue) {
 
-                    getTextField().setValue(selected);
-                    window.close();
+        m_textField.setComponentError(null);
+        m_value = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inputValue)) {
+            try {
+                CmsObject cms = A_CmsUI.getCmsObject();
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(inputValue);
+
+                if (site != null) {
+                    CmsObject rootCms = OpenCms.initCmsObject(cms);
+                    rootCms.getRequestContext().setSiteRoot("/");
+                    m_value = rootCms.readResource(inputValue, m_filter);
+                } else {
+                    m_value = cms.readResource(inputValue, m_filter);
                 }
-            });
 
-            A_CmsUI.get().addWindow(window);
-        } catch (CmsException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-            CmsErrorDialog.showErrorDialog(e);
+            } catch (CmsException e) {
+                LOG.trace("Could not read resource from input", e);
+                m_textField.setComponentError(new UserError("The resource path is not valid"));
+            }
         }
     }
 }

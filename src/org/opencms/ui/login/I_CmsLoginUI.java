@@ -38,13 +38,6 @@ import java.util.List;
 public interface I_CmsLoginUI {
 
     /**
-     * Displays an error message.<p>
-     *
-     * @param message the message to display
-     */
-    void displayError(String message);
-
-    /**
      * Gets the selected org unit.<p>
      *
      * @return the selected org unit
@@ -97,6 +90,13 @@ public interface I_CmsLoginUI {
      * @param authToken the authorization token given as a request parameter
      */
     void showForgotPasswordView(String authToken);
+
+    /**
+     * Shows the given login error message.<p>
+     *
+     * @param messageHtml the message HTML
+     */
+    void showLoginError(String messageHtml);
 
     /**
      * Initializes the login view.<p>

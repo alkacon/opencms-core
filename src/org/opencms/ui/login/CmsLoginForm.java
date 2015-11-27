@@ -63,29 +63,32 @@ public class CmsLoginForm extends VerticalLayout {
     /** Version id. */
     private static final long serialVersionUID = 1L;
 
-    /** Boolean which indicated whether the advanced options are currently visible. */
-    private boolean m_optionsVisible;
-
     /** The login controller. */
     protected CmsLoginController m_controller;
 
     /** The label showing the copyright information. */
     private Label m_copyright;
 
+    /** The error label. */
+    private Label m_error;
+
     /** Button for opening the "forgot password" dialog. */
     private Button m_forgotPasswordButton;
-
-    /** Button to show / hide advanced options. */
-    private Button m_optionsButton;
 
     /** Login button. */
     private Button m_loginButton;
 
+    /** OpenCms logo. */
+    private Image m_logo;
+
     /** Container for the logo. */
     private VerticalLayout m_logoContainer;
 
-    /** OpenCms logo. */
-    private Image m_logo;
+    /** Button to show / hide advanced options. */
+    private Button m_optionsButton;
+
+    /** Boolean which indicated whether the advanced options are currently visible. */
+    private boolean m_optionsVisible;
 
     /** Widget for OU selection. */
     private CmsLoginOuSelector m_ouSelect;
@@ -137,7 +140,6 @@ public class CmsLoginForm extends VerticalLayout {
 
                 m_controller.onClickLogin();
             }
-
         });
         addAttachListener(new AttachListener() {
 
@@ -148,13 +150,15 @@ public class CmsLoginForm extends VerticalLayout {
             }
         });
 
-        m_forgotPasswordButton.addClickListener(new ClickListener() {
+        ClickListener forgotPasswordListener = new ClickListener() {
 
             public void buttonClick(ClickEvent event) {
 
                 m_controller.onClickForgotPassword();
             }
-        });
+        };
+
+        m_forgotPasswordButton.addClickListener(forgotPasswordListener);
 
         m_optionsButton.addClickListener(
 
@@ -167,7 +171,7 @@ public class CmsLoginForm extends VerticalLayout {
 
             });
         setOptionsVisible(false);
-
+        m_error.setContentMode(ContentMode.HTML);
     }
 
     /**
@@ -254,6 +258,17 @@ public class CmsLoginForm extends VerticalLayout {
     public void toggleOptionsVisible() {
 
         setOptionsVisible(!m_optionsVisible);
+    }
+
+    /**
+     * Displays the given login error.<p>
+     *
+     * @param messageHTML the error message
+     */
+    void displayError(String messageHTML) {
+
+        m_error.setValue(messageHTML);
+        m_error.setVisible(true);
     }
 
 }

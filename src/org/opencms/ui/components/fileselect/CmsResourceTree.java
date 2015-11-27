@@ -111,13 +111,10 @@ public class CmsResourceTree extends Tree {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void itemClick(ItemClickEvent event) {
 
                 CmsResource resource = CmsResourceTreeContainer.getResource(event.getItem());
-                for (I_CmsSelectionHandler<CmsResource> handler : m_resourceSelectionHandlers) {
-                    handler.onSelection(resource);
-                }
+                handleSelection(resource);
             }
         });
 
@@ -172,5 +169,17 @@ public class CmsResourceTree extends Tree {
     public void removeResourceSelectionHandler(I_CmsSelectionHandler<CmsResource> handler) {
 
         m_resourceSelectionHandlers.remove(handler);
+    }
+
+    /**
+     * Handles resource selection.<p>
+     *
+     * @param resource the selected resource
+     */
+    void handleSelection(CmsResource resource) {
+
+        for (I_CmsSelectionHandler<CmsResource> handler : m_resourceSelectionHandlers) {
+            handler.onSelection(resource);
+        }
     }
 }

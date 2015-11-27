@@ -203,6 +203,8 @@ public class CmsBasicDialog extends VerticalLayout {
         for (Element child : design.children()) {
             boolean contentRead = false;
             boolean buttonsRead = false;
+            boolean aboveRead = false;
+            boolean belowRead = false;
             if ("content".equals(child.tagName()) && !contentRead) {
                 Component content = designContext.readDesign(child.child(0));
                 setContent(content);
@@ -213,7 +215,44 @@ public class CmsBasicDialog extends VerticalLayout {
                     addButton(button);
                 }
                 buttonsRead = true;
+            } else if ("above".equals(child.tagName()) && !aboveRead) {
+                Component aboveContent = designContext.readDesign(child.child(0));
+                setAbove(aboveContent);
+                aboveRead = true;
+            } else if ("below".equals(child.tagName()) && !belowRead) {
+                Component belowContent = designContext.readDesign(child.child(0));
+                setBelow(belowContent);
+                belowRead = true;
             }
+        }
+    }
+
+    /**
+     * Sets the content to be displayed above the main content.<p>
+     *
+     * @param aboveContent the above content
+     */
+    public void setAbove(Component aboveContent) {
+
+        if (m_mainPanel.getComponentIndex(m_contentPanel) == 0) {
+            m_mainPanel.addComponent(aboveContent, 0);
+        } else {
+            m_mainPanel.replaceComponent(m_mainPanel.getComponent(0), aboveContent);
+        }
+    }
+
+    /**
+     * Sets the content to be displayed below the main content.<p>
+     * @param belowContent the below content
+     */
+    public void setBelow(Component belowContent) {
+
+        int i = m_mainPanel.getComponentIndex(m_mainPanel);
+        Component oldBelow = m_mainPanel.getComponent(i + 1);
+        if (oldBelow == null) {
+            m_mainPanel.addComponent(belowContent);
+        } else {
+            m_mainPanel.replaceComponent(oldBelow, belowContent);
         }
     }
 
