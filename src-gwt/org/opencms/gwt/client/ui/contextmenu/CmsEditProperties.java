@@ -36,6 +36,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.input.form.CmsDialogFormHandler;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.I_CmsFormSubmitHandler;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.util.CmsUUID;
@@ -151,6 +152,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
      */
     protected static class PropertyEditorHandler extends CmsSimplePropertyEditorHandler {
 
+        /** Enables the ADE template select box for pages. */
+        private boolean m_enableAdeTemplateSelect;
+
         /**
          * Creates a new instance.<p>
          *
@@ -161,12 +165,22 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         }
 
         /**
+         * Enables or disables the ADE template select box for pages.<p>
+         *
+         * @param enableAdeTemplateSelect true if ADE template select box for pages should be enabled
+         */
+        public void setEnableAdeTemplateSelect(boolean enableAdeTemplateSelect) {
+
+            m_enableAdeTemplateSelect = enableAdeTemplateSelect;
+        }
+
+        /**
          * @see org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler#useAdeTemplates()
          */
         @Override
         public boolean useAdeTemplates() {
 
-            return false;
+            return m_enableAdeTemplateSelect;
         }
 
     }
@@ -193,7 +207,10 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         final I_CmsContextMenuHandler contextMenuHandler,
         final boolean editName,
         final Runnable cancelHandler,
+        final boolean enableAdeTemplateSelect,
         final PropertyEditingContext editContext) {
+
+        CmsDebugLog.consoleLog("enableAdeTemplateSelect = " + enableAdeTemplateSelect);
 
         CmsRpcAction<CmsPropertiesBean> action = new CmsRpcAction<CmsPropertiesBean>() {
 
@@ -208,6 +225,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             protected void onResponse(CmsPropertiesBean result) {
 
                 PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
+                handler.setEnableAdeTemplateSelect(enableAdeTemplateSelect);
                 editContext.setCancelHandler(cancelHandler);
 
                 handler.setPropertiesBean(result);
@@ -252,7 +270,7 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
             public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-                editProperties(structureId, handler, false, null, new PropertyEditingContext());
+                editProperties(structureId, handler, false, null, true, new PropertyEditingContext());
             }
 
             public A_CmsContextMenuItem getItemWidget(
