@@ -30,6 +30,9 @@ package org.opencms.ui.components.extensions;
 import org.opencms.ui.shared.components.CmsMaxHeightState;
 import org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.AbstractComponent;
@@ -45,6 +48,9 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     /** The extended component. */
     private AbstractComponent m_component;
 
+    /** The list of height change handlers. */
+    private List<Runnable> m_heightChangeHandlers = Lists.newArrayList();
+
     /**
      * Constructor.<p>
      *
@@ -59,6 +65,16 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
     }
 
     /**
+     * Adds an action to execute when the height is changed.<p>
+     *
+     * @param action the action
+     */
+    public void addHeightChangeHandler(Runnable action) {
+
+        m_heightChangeHandlers.add(action);
+    }
+
+    /**
      * @see org.opencms.ui.shared.rpc.I_CmsMaxHeightServerRpc#fixHeight(int)
      */
     public void fixHeight(int height) {
@@ -68,6 +84,19 @@ public class CmsMaxHeightExtension extends AbstractExtension implements I_CmsMax
         } else {
             m_component.setHeight(height, Unit.PIXELS);
         }
+        for (Runnable handler : m_heightChangeHandlers) {
+            handler.run();
+        }
+    }
+
+    /**
+     * Removes a height change handler.<p>
+     *
+     * @param action the handler to remove
+     */
+    public void removeHeightChangeHandler(Runnable action) {
+
+        m_heightChangeHandlers.remove(action);
     }
 
     /**

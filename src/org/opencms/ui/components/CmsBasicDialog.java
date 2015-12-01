@@ -78,6 +78,9 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The main panel. */
     private VerticalLayout m_mainPanel;
+     
+    /** Extension used to regulate max height. */ 
+    private CmsMaxHeightExtension m_maxHeightExtension;
 
     /**
      * Creates new instance.<p>
@@ -317,11 +320,21 @@ public class CmsBasicDialog extends VerticalLayout {
     /**
      * Adds the max height extension to the dialog panel.<p>
      */
-    @SuppressWarnings("unused")
     private void enableMaxHeight() {
 
         // use the window height minus an offset for the window header and some spacing
         int maxHeight = (int)((0.95 * A_CmsUI.get().getPage().getBrowserWindowHeight()) - 40);
-        new CmsMaxHeightExtension(this, maxHeight);
+        m_maxHeightExtension = new CmsMaxHeightExtension(this, maxHeight);
+        m_maxHeightExtension.addHeightChangeHandler(new Runnable() {
+
+            public void run() {
+
+                Window wnd = CmsVaadinUtils.getWindow(CmsBasicDialog.this);
+                if (wnd != null) {
+                    wnd.center();
+                }
+
+            }
+        });
     }
 }

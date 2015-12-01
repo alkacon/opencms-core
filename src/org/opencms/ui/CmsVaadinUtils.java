@@ -230,6 +230,24 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Gets the window which contains a given component.<p>
+     *
+     * @param component the component
+     * @return the window containing the component, or null if no component is found
+     */
+    public static Window getWindow(Component component) {
+
+        if (component == null) {
+            return null;
+        } else if (component instanceof Window) {
+            return (Window)component;
+        } else {
+            return getWindow(component.getParent());
+        }
+
+    }
+
+    /**
      * Gets the link to the (new) workplace.<p>
      *
      * @return the link to the workplace
@@ -433,7 +451,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
