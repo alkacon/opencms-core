@@ -790,6 +790,16 @@ public class CmsImageScaler {
      * <li>best fit into target width / height _OR_ width / maxHeight _OR_ maxWidth / height
      * <li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
      *
+     * <dt>6: Crop around point: Use exact pixels</dt><dd><ul>
+     * <li>This type only applies for image crop operations (full crop parameters must be provided).
+     * <li>In this case the crop coordinates <code>x, y</code> are treated as a point in the middle of <code>width, height</code>.
+     * <li>With this type, the pixels from the source image are used 1:1 for the target image.</ul></dd>
+     *
+     * <dt>7: Crop around point: Use pixels for target size, get maximum out of image</dt><dd><ul>
+     * <li>This type only applies for image crop operations (full crop parameters must be provided).
+     * <li>In this case the crop coordinates <code>x, y</code> are treated as a point in the middle of <code>width, height</code>.
+     * <li>With this type, as much as possible from the source image is fitted in the target image size.</ul></dd>
+     *
      * @return the type
      */
     public int getType() {
@@ -1098,7 +1108,10 @@ public class CmsImageScaler {
 
             if (isCropping()) {
 
-                if (getType() == 0) {
+                if ((getType() == 6) || (getType() == 7)) {
+                    // image crop operation around point
+                    image = scaler.cropPointToSize(image, m_cropX, m_cropY, getType() == 6, m_cropWidth, m_cropHeight);
+                } else {
                     // image crop operation
                     image = scaler.cropToSize(
                         image,
@@ -1109,9 +1122,6 @@ public class CmsImageScaler {
                         getWidth(),
                         getHeight(),
                         color);
-                } else {
-                    // image crop operation around point
-                    image = scaler.cropPointToSize(image, m_cropX, m_cropY, getType() == 1, m_cropWidth, m_cropHeight);
                 }
 
                 imageProcessed = true;
@@ -1376,7 +1386,7 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        if ((type < 0) || (type > 5)) {
+        if ((type < 0) || (type > 7)) {
             // invalid type, use 0
             m_type = 0;
         } else {
@@ -1548,6 +1558,8 @@ public class CmsImageScaler {
      * Only if all 4 required parameters have been set, the crop area is set accordingly.
      * Moreover, it is not required to specify the target image width and height when using crop,
      * because these parameters can be calculated from the crop area.<p>
+     *
+     * Scale type 6 and 7 are used for a 'crop around point' operation, see {@link #getType()} for a description.<p>
      */
     private void initCropArea() {
 
@@ -1560,11 +1572,9 @@ public class CmsImageScaler {
             if (m_height < 0) {
                 m_height = m_cropHeight;
             }
-
-            if ((getType() < 1) || (getType() > 2)) {
-                // type 0: standard cropping
-                // type 1: point cropping - no downscale
-                // type 2: point cropping - with downscale
+            if ((getType() != 6) && (getType() != 7)) {
+                // cropping type can only be 6 or 7 (point cropping)
+                // all other values with cropping coordinates are invalid
                 setType(0);
             }
         }
