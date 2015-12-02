@@ -99,7 +99,7 @@ public class CmsWrapperPreference implements I_CmsPreference {
             firstNotNull(configProp.getWidgetConfiguration(), wrappedProp.getWidgetConfiguration()), //widgetconfig
             firstNotNull(configProp.getRuleRegex(), wrappedProp.getRuleRegex()), //regex
             firstNotNull(configProp.getRuleType(), wrappedProp.getRuleType()), //ruletype
-            null, //default
+            firstNotNull(configProp.getDefault(), wrappedProp.getDefault()),
             firstNotNull(configProp.getNiceName(), wrappedProp.getNiceName()), //nicename
             firstNotNull(configProp.getDescription(), wrappedProp.getDescription()), //description
             firstNotNull(configProp.getError(), wrappedProp.getError()), //error
