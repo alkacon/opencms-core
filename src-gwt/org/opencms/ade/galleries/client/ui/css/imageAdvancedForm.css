@@ -14,6 +14,11 @@ div.input{
 	margin-right: 10px;
 	vertical-align: middle;
 }
+
+div.linkWidget > * { 
+	vertical-align: middle; 
+}
+
 div.selectBox{
 	width: 150px;
 	vertical-align: middle;
@@ -24,4 +29,8 @@ div.selectBox *{
 }
 div.input, div.selectBox{
 	display: inline-block;
+}
+
+div.selectBox .input-selectBoxOpener {
+	line-height: 28px; 
 }

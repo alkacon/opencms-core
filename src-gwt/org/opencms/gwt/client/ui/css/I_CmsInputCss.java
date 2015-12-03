@@ -29,11 +29,14 @@ package org.opencms.gwt.client.ui.css;
 
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsGlobalWidgetCss;
 
+import com.google.gwt.resources.client.CssResource.ImportedWithPrefix;
+
 /**
  * Css resource.<p>
  *
  * @since 8.0.0
  */
+@ImportedWithPrefix("input")
 public interface I_CmsInputCss extends I_CmsGlobalWidgetCss {
 
     /**

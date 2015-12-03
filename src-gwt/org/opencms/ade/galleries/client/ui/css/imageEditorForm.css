@@ -28,3 +28,7 @@ div.selectBox *{
 	font-size: value("constants.css.fontSizeSmall");
 	line-height: 12px;
 }
+
+div.selectBox .input-selectBoxOpener {
+	line-height: 28px; 
+}

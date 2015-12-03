@@ -132,7 +132,8 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
 
         m_dialogHeight = dialogHeight;
         m_dialogWidth = dialogWidth;
-        int detailsHeight = m_dialogHeight > 650 ? 160 : 135;
+        //int detailsHeight = m_dialogHeight > 650 ? 160 : 135;
+        int detailsHeight = 200;
         m_previewHeight = m_dialogHeight - 4 - detailsHeight;
         m_previewHolder.getElement().getStyle().setHeight(m_previewHeight, Unit.PX);
         m_tabsHolder.getElement().getStyle().setHeight(detailsHeight, Unit.PX);
@@ -148,7 +149,7 @@ public abstract class A_CmsPreviewDialog<T extends CmsResourceInfoBean> extends 
             case editor:
                 m_selectButton.setVisible(CmsPreviewUtil.shouldShowSelectButton() && !disableSelection);
                 m_closePreview.setText(Messages.get().key(Messages.GUI_PREVIEW_CLOSE_GALLERY_BUTTON_0));
-                m_buttonBar.getElement().getStyle().setBottom(94, Unit.PX);
+                m_buttonBar.getElement().getStyle().setBottom(1, Unit.PX);
                 m_buttonBar.getElement().getStyle().setRight(1, Unit.PX);
                 break;
             case widget:

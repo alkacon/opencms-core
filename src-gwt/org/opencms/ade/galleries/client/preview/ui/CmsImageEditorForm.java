@@ -41,11 +41,13 @@ import org.opencms.gwt.client.util.CmsJSONMap;
 import org.opencms.gwt.shared.property.CmsClientProperty;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -175,6 +177,12 @@ public class CmsImageEditorForm extends Composite {
         m_buttonResetTitle.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_TITLE_0));
         m_buttonResetCopyright.setSize(Size.small);
         m_buttonResetCopyright.setText(Messages.get().key(Messages.GUI_IMAGE_RESET_COPYRIGHT_0));
+        for (CmsCheckBox checkBox : Arrays.asList(
+            m_checkboxInsertCopyright,
+            m_checkboxInsertLinkOrig,
+            m_checkboxInsertSubtitle)) {
+            checkBox.getElement().getStyle().setVerticalAlign(VerticalAlign.MIDDLE);
+        }
 
         m_labelAlign.setText(Messages.get().key(Messages.GUI_IMAGE_ALIGN_0));
         m_selectAlign.addOption("", Messages.get().key(Messages.GUI_IMAGE_ALIGN_NOT_SET_0));
