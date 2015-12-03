@@ -38,7 +38,9 @@ div.notificationOverlay {
 	opacity: 0.5; 
 }
 .popup div.notificationContainer{
-	top: 50px;
+	top: 0px;
+	height: 100%;
+	padding-top: 50px;
 	z-index: value("constants.css.zIndexPopup");
 }
 div.notificationContainer {
@@ -49,6 +51,12 @@ div.notificationContainer {
 	left: 0;
 	height: 16px;
 }
+.popup .notificationContainer .loadingAnimation{
+	position: absolute;
+	margin-left: -32px;
+    margin-top: -32px;
+}
+
 .notificationContainer .loadingAnimation{
 	display: none;
 }
