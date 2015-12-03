@@ -33,6 +33,8 @@ import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.CmsAddDialogTypeHelper;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean;
 import org.opencms.ade.galleries.shared.CmsResourceTypeBean.Origin;
+import org.opencms.configuration.preferences.CmsElementViewPreference;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -165,12 +167,25 @@ public class CmsNewDialog extends CmsBasicDialog {
                 return true;
             }
         });
-        CmsUUID sessionView = (CmsUUID)VaadinService.getCurrentRequest().getWrappedSession().getAttribute(
+        CmsUUID initViewId = (CmsUUID)VaadinService.getCurrentRequest().getWrappedSession().getAttribute(
             SETTING_STANDARD_VIEW);
-        if (sessionView == null) {
-            sessionView = CmsUUID.getNullUUID();
+        if (initViewId == null) {
+            try {
+                CmsUserSettings settings = new CmsUserSettings(A_CmsUI.getCmsObject());
+                String viewSettingStr = settings.getAdditionalPreference(
+                    CmsElementViewPreference.EXPLORER_PREFERENCE_NAME,
+                    true);
+                if ((viewSettingStr != null) && CmsUUID.isValidUUID(viewSettingStr)) {
+                    initViewId = new CmsUUID(viewSettingStr);
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
-        CmsElementView initView = initViews(sessionView);
+        if (initViewId == null) {
+            initViewId = CmsUUID.getNullUUID();
+        }
+        CmsElementView initView = initViews(initViewId);
 
         m_cancelButton.addClickListener(new ClickListener() {
 

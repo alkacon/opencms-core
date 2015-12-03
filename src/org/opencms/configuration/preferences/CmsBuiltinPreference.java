@@ -39,14 +39,14 @@ import org.apache.commons.logging.Log;
  */
 public class CmsBuiltinPreference extends A_CmsPreference {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsBuiltinPreference.class);
+
     /** True if this is a basic preference. */
     protected boolean m_basic;
 
     /** True if this is a hidden preference. */
     protected boolean m_hidden;
-
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsBuiltinPreference.class);
 
     /** The name of the bean property used to access this preference. */
     private String m_propName;
@@ -97,7 +97,7 @@ public class CmsBuiltinPreference extends A_CmsPreference {
             null, //widgetconfig
             null, //regex
             null, //ruletype
-            null, //default
+            getDefaultValue(), //default
             null, //nicename
             null, //description
             null, //error

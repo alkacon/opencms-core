@@ -48,6 +48,9 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
         + org.opencms.workplace.commons.Messages.GUI_PREF_ELEMENT_VIEW_0
         + ")";
 
+    /** Preference name for the explorer. */
+    public static final String EXPLORER_PREFERENCE_NAME = "explorerElementView";
+
     /**
      * Constructor.<p>
      *
@@ -57,6 +60,16 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
 
         super(propName);
         m_basic = false;
+    }
+
+    /**
+     * Gets the nice name key.<p>
+     *
+     * @return the nice name key
+     */
+    public String getNiceName() {
+
+        return NICE_NAME;
     }
 
     /**
@@ -72,8 +85,8 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
             null, //widgetconfig
             null, //regex
             null, //ruletype
-            null, //default
-            NICE_NAME, //nicename
+            getDefaultValue(), //default
+            getNiceName(), //nicename
             null, //description
             null, //error
             null //preferfolder
@@ -109,8 +122,8 @@ public class CmsElementViewPreference extends CmsBuiltinPreference {
             resultBuffer.toString(), //widgetconfig
             null, //regex
             null, //ruletype
-            null, //default
-            NICE_NAME, //nicename
+            getDefaultValue(), //default
+            getNiceName(), //nicename
             null, //description
             null, //error
             null //preferfolder

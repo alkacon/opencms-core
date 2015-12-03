@@ -209,6 +209,17 @@ public class CmsUserSettingsStringPropertyWrapper {
     }
 
     /**
+     * Gets the default element view for the explorer.<p>
+     *
+     * @return the default element view for the explorer
+     */
+    @PrefMetadata(type = CmsExplorerElementViewPreference.class)
+    public String getExplorerElementView() {
+
+        return m_settings.getAdditionalPreference(CmsElementViewPreference.EXPLORER_PREFERENCE_NAME, false);
+    }
+
+    /**
      * Gets the explorer file entries.
      *
      * @return the explorer file entries
@@ -771,6 +782,16 @@ public class CmsUserSettingsStringPropertyWrapper {
     public void setExplorerButtonStyle(String s) {
 
         m_settings.setExplorerButtonStyle(s);
+    }
+
+    /**
+     * Sets the explorer start element view.<p>
+     *
+     * @param view the start element view.
+     */
+    public void setExplorerElementView(String view) {
+
+        m_settings.setAdditionalPreference(CmsElementViewPreference.EXPLORER_PREFERENCE_NAME, view);
     }
 
     /**

@@ -104,7 +104,12 @@ public class CmsUserSettingsDialog extends CmsFormDialog implements I_CmsFormSub
             if (userSettings.isBasic(settingDef.getName())) {
                 field.getLayoutData().put("basic", "true");
             }
-            getForm().addField(field, userSettings.getValue(key));
+            String initialValue = userSettings.getValue(key);
+            if (initialValue == null) {
+                initialValue = settingDef.getDefault();
+            }
+
+            getForm().addField(field, initialValue);
         }
         CmsDialogFormHandler handler = new CmsDialogFormHandler();
         handler.setDialog(this);

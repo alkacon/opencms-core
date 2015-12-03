@@ -59,6 +59,7 @@ public class CmsLoginOuSelector extends CustomComponent {
         m_ouSelect.setWidth("100%");
         setCompositionRoot(m_ouSelect);
         m_ouSelect.setFilteringMode(FilteringMode.CONTAINS);
+        m_ouSelect.setNullSelectionAllowed(false);
     }
 
     /**

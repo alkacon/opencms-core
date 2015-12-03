@@ -401,7 +401,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
                     pcType = PCTYPE_PRIVATE;
                 }
             }
-            if (oufqn != null) {
+            if (oufqn == null) {
                 // get the organizational unit cookie
                 Cookie ouFqnCookie = getCookie(request, COOKIE_OUFQN);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqnCookie.getValue())
