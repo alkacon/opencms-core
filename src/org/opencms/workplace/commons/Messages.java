@@ -383,10 +383,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COPY_MOVE_MOVE_FOLDER_0 = "GUI_COPY_MOVE_MOVE_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_TARGET_FOLDER_0 = "GUI_COPY_MOVE_TARGET_FOLDER_0";
+    public static final String GUI_COPY_MOVE_MOVE_RESOURCES_0 = "GUI_COPY_MOVE_MOVE_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COPY_MOVE_MOVE_RESOURCES_0 = "GUI_COPY_MOVE_MOVE_RESOURCES_0";
+    public static final String GUI_COPY_MOVE_TARGET_FOLDER_0 = "GUI_COPY_MOVE_TARGET_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MULTI_2 = "GUI_COPY_MULTI_2";
@@ -1058,6 +1058,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_ELEMENT_VIEW_0 = "GUI_PREF_ELEMENT_VIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_EXPLORER_ELEMENT_VIEW_0 = "GUI_PREF_EXPLORER_ELEMENT_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1677,9 +1680,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_EXPLORER_ELEMENT_VIEW = "GUI_PREF_EXPLORER_ELEMENT_VIEW";
 
     /**
      * Hides the public constructor for this utility class.<p>

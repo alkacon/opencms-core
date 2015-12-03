@@ -47,7 +47,7 @@ public class CmsExplorerElementViewPreference extends CmsElementViewPreference {
     @Override
     public String getNiceName() {
 
-        return "%(key." + org.opencms.workplace.commons.Messages.GUI_PREF_EXPLORER_ELEMENT_VIEW + ")";
+        return "%(key." + org.opencms.workplace.commons.Messages.GUI_PREF_EXPLORER_ELEMENT_VIEW_0 + ")";
     }
 
 }

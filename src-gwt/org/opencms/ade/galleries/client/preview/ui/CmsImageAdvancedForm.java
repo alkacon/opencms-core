@@ -169,6 +169,7 @@ public class CmsImageAdvancedForm extends Composite {
         m_selectTextDirection.addOption("rtl", Messages.get().key(Messages.GUI_ADVANCED_TAB_VALUE_RIGHT_TO_LEFT_0));
         m_inputUrl.setButtonSize(Size.small);
         m_inputUrl.addInputStyleName(I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().input());
+        m_inputUrl.addStyleName(I_CmsLayoutBundle.INSTANCE.imageAdvancedFormCss().linkWidget());
         m_fields = new HashMap<Attribute, I_CmsFormWidget>();
         m_fields.put(Attribute.linkTarget, m_selectTarget);
         m_fields.put(Attribute.dir, m_selectTextDirection);

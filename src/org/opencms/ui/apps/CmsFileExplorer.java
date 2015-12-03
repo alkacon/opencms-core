@@ -1132,7 +1132,12 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             }
 
             CmsResource parent = cms.readParentFolder(id);
-            CmsUUID parentId = parent.getStructureId();
+            CmsUUID parentId = null;
+            if (parent != null) {
+                parentId = parent.getStructureId();
+            } else {
+                LOG.debug("Parent for resource '" + resource.getRootPath() + "' is null");
+            }
             Item resourceItem = m_treeContainer.getItem(id);
             if (resourceItem != null) {
                 // use the root path as name in case of the root item

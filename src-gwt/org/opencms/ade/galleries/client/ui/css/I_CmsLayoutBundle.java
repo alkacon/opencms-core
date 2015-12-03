@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.client.ui.css;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.CssResource.Import;
 import com.google.gwt.resources.client.CssResource.Shared;
 
 /**
@@ -442,6 +443,12 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
         String input();
 
         /** Access method.<p>
+        *
+        * @return the CSS class name
+        */
+        String linkWidget();
+
+        /** Access method.<p>
          *
          * @return the CSS class name
          */
@@ -683,6 +690,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the image advanced form CSS
      */
+    @Import(value = {org.opencms.gwt.client.ui.css.I_CmsInputCss.class})
     @Source("imageAdvancedForm.css")
     I_CmsImageAdvancedFormCss imageAdvancedFormCss();
 
@@ -691,6 +699,7 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
      *
      * @return the image editor form CSS
      */
+    @Import(value = {org.opencms.gwt.client.ui.css.I_CmsInputCss.class})
     @Source("imageEditorForm.css")
     I_CmsImageEditorFormCss imageEditorFormCss();
 
