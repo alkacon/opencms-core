@@ -1,0 +1,5 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <rewriteURI
+      uriStartString="http://www.w3.org/TR/xhtml1/DTD/"
+      rewritePrefix="" />
+</catalog>

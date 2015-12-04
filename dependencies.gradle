@@ -166,6 +166,5 @@ dependencies {
     distribution group: 'com.lowagie', name: 'itext', version: '2.1.7'
     distribution group: 'org.vaadin.addons', name: 'contextmenu', version: '4.5'
     
-    distribution files("lib/runtime/xhtml-dtds-1.0.jar")
     distribution files("lib/runtime/jpedal_lgpl.jar")
 }

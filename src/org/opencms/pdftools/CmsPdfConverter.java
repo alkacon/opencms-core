@@ -28,6 +28,8 @@
 package org.opencms.pdftools;
 
 import org.opencms.file.CmsObject;
+import org.opencms.pdftools.dtds.FailingEntityResolver;
+import org.opencms.pdftools.dtds.XhtmlEntityResolver;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,13 +45,17 @@ import org.xhtmlrenderer.util.XRLog;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 
-import com.habitsoft.xhtml.dtds.FailingEntityResolver;
-import com.habitsoft.xhtml.dtds.XhtmlEntityResolver;
-
 /**
  * This class uses the flying-saucer library to convert an XHTML document to a PDF document.<p>
  */
 public class CmsPdfConverter {
+
+    static {
+        // send logging from flyingsaucer to opencms log
+        System.getProperties().setProperty("xr.util-logging.loggingEnabled", "true");
+        XRLog.setLoggingEnabled(true);
+        XRLog.setLoggerImpl(new CmsXRLogAdapter());
+    }
 
     /** Entity resolver which loads cached DTDs instead of fetching DTDs from the web. */
     private EntityResolver m_entityResolver = new XhtmlEntityResolver(new FailingEntityResolver());
@@ -60,13 +66,6 @@ public class CmsPdfConverter {
     public CmsPdfConverter() {
 
         // do nothing
-    }
-
-    static {
-        // send logging from flyingsaucer to opencms log
-        System.getProperties().setProperty("xr.util-logging.loggingEnabled", "true");
-        XRLog.setLoggingEnabled(true);
-        XRLog.setLoggerImpl(new CmsXRLogAdapter());
     }
 
     /**
