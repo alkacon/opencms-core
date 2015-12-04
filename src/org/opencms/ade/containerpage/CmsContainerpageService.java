@@ -62,6 +62,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
@@ -2328,18 +2329,23 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         String clientId,
         List<CmsContainerElementBean> list) throws CmsException {
 
-        CmsContainerElementBean element = getCachedElement(clientId, containerPage.getRootPath());
-        Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
-        settings.put(SOURCE_CONTAINERPAGE_ID_SETTING, containerPage.getStructureId().toString());
-        element = CmsContainerElementBean.cloneWithSettings(element, settings);
-        Iterator<CmsContainerElementBean> listIt = list.iterator();
-        while (listIt.hasNext()) {
-            CmsContainerElementBean listElem = listIt.next();
-            if (element.getInstanceId().equals(listElem.getInstanceId())) {
-                listIt.remove();
+        try {
+            CmsContainerElementBean element = getCachedElement(clientId, containerPage.getRootPath());
+            Map<String, String> settings = new HashMap<String, String>(element.getIndividualSettings());
+            settings.put(SOURCE_CONTAINERPAGE_ID_SETTING, containerPage.getStructureId().toString());
+            element = CmsContainerElementBean.cloneWithSettings(element, settings);
+            Iterator<CmsContainerElementBean> listIt = list.iterator();
+            while (listIt.hasNext()) {
+                CmsContainerElementBean listElem = listIt.next();
+                if (element.getInstanceId().equals(listElem.getInstanceId())) {
+                    listIt.remove();
+                }
             }
+            list.add(0, element);
+            return list;
+        } catch (CmsVfsResourceNotFoundException e) {
+            LOG.warn(e.getLocalizedMessage(), e);
+            return list;
         }
-        list.add(0, element);
-        return list;
     }
 }
