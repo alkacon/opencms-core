@@ -18,16 +18,16 @@
       </VfsLink>
       <Html>
         <links>
-          <link name="link2" internal="true" type="A">
-            <target><![CDATA[/sites/default/noexist/folder1/index.html]]></target>
-            <anchor><![CDATA[anchor]]></anchor>
-            <query><![CDATA[a=b&c=d]]></query>
-          </link>
           <link name="link0" internal="false" type="A">
             <target><![CDATA[http://www.alkacon.com]]></target>
           </link>
           <link name="link1" internal="true" type="A">
             <target><![CDATA[/sites/default/noexist/index.html]]></target>
+          </link>
+          <link name="link2" internal="true" type="A">
+            <target><![CDATA[/sites/default/noexist/folder1/index.html]]></target>
+            <anchor><![CDATA[anchor]]></anchor>
+            <query><![CDATA[a=b&c=d]]></query>
           </link>
         </links>
         <content><![CDATA[

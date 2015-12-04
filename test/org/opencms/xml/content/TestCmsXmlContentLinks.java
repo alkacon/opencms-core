@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.staticexport.CmsLinkTable.LinkKeyComparator;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
@@ -47,7 +48,9 @@ import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -166,6 +169,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentLinks("testRemoveParent"));
         suite.addTest(new TestCmsXmlContentLinks("testRelationType"));
         suite.addTest(new TestCmsXmlContentLinks("testInvalidateFalse"));
+        suite.addTest(new TestCmsXmlContentLinks("testLinkComparator"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -317,6 +321,28 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
         expectedHtmlLink = getExpected(cms, true);
         htmlLink = getHtmlLink(cms, xmlcontent, "Html", "link0");
         assertLink(expectedHtmlLink, htmlLink, true);
+    }
+
+    /**
+     * Tests the link comparator which is used to deterministically order link tables.<p>
+     *
+     * @throws Exception if something goes wrong
+     */
+    public void testLinkComparator() throws Exception {
+
+        LinkKeyComparator comparator = new LinkKeyComparator();
+        List<String> ascendingKeys = Arrays.asList("a1", "a2", "a11", "b1", "b2", "b11", "c", "c0", "c00", "c1");
+        for (int i = 0; i < ascendingKeys.size(); i++) {
+            for (int j = 0; j < ascendingKeys.size(); j++) {
+                String firstKey = ascendingKeys.get(i);
+                String secondKey = ascendingKeys.get(j);
+                assertEquals(
+                    "Wrong comparator result for values " + firstKey + ", " + secondKey,
+                    Integer.compare(i, j),
+                    comparator.compare(firstKey, secondKey));
+            }
+        }
+
     }
 
     /**

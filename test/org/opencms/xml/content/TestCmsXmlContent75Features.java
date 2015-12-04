@@ -146,7 +146,7 @@ public class TestCmsXmlContent75Features extends OpenCmsTestCase {
 
         CmsJspContentAccessValueWrapper html = cascade.getValue().get("Html");
         assertEquals("a=b&c=d", html.getXmlText().get("links/link/query"));
-        assertEquals("/sites/default/noexist/index.html", html.getXmlText().get("links/link[3]/target"));
+        assertEquals("/sites/default/noexist/index.html", html.getXmlText().get("links/link[@name='link1']/target"));
 
         assertEquals("/sites/default/index.html", cascade.getXmlText().get("VfsLink[1]/link/target"));
         assertEquals("a=b&c=d", cascade.getXmlText().get("Html/links/link/query"));
