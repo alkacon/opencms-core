@@ -556,7 +556,7 @@ allModuleNames.split(',').each{ moduleName ->
     def isExternal = allExternalModuleNames.contains(moduleName)
 
     if (isExternal.toBoolean()){
-        moduleFolder = file("${external_directories}/modules/${moduleName}")
+    	moduleFolder = file("${external_directories}/modules/${moduleName}")
         srcGwtDir = file("${external_directories}/src-gwt/")
         moduleSrcFolder = file("${external_directories}/src-modules")
     }
@@ -594,12 +594,12 @@ allModuleNames.split(',').each{ moduleName ->
 	    modulePackages.split(',').each{ pack ->
 	        def packageFolder
 	        if (isExternal.toBoolean()){
-	            packageFolder= file("${external_directories}/src-modules/"+ pack.replaceAll('\\.','/'))
+	        	packageFolder= file("${external_directories}/src/"+ pack.replaceAll('\\.','/'))
 	        }else{
 	            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
 	        }
 	        if (packageFolder.exists()&&packageFolder.isDirectory()){
-	            packageFolder.listFiles().each{ file ->
+	        	packageFolder.listFiles().each{ file ->
 	                if (file.isFile()){
 	                    requiresJar = true
 	                }
@@ -625,6 +625,13 @@ allModuleNames.split(',').each{ moduleName ->
          	version moduleVersion
         }
         destinationDir modulesDistsDir
+        // include the jar file if necessary
+        if (requiresJar.toBoolean()&&isExternal.toBoolean()){
+        	from( "${project.buildDir}/libs") {
+                include "${moduleName}.jar"
+                into "/system/modules/${moduleName}/lib/"
+            }
+        }
         from "${moduleFolder}/resources"
 
         // TODO: set the module version to match the manifest.xml
@@ -713,7 +720,9 @@ allModuleNames.split(',').each{ moduleName ->
             baseName moduleName
         }
 
-      //  tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
+      	if (isExternal.toBoolean()){
+      		tasks["dist_$moduleName"].dependsOn("jar_$moduleName")
+      	}
     }
 
     if (gwtModule != null){
