@@ -193,33 +193,6 @@
 			</analyzer>
 		</analyzers>
 		<indexes>
-			<index>
-				<name>Online project EN (VFS)</name>
-				<rebuild>auto</rebuild>
-				<project>Online</project>
-				<locale>en</locale>
-				<sources>
-					<source>source1</source>
-				</sources>
-			</index>
-			<index>
-				<name>Online project DE (VFS)</name>
-				<rebuild>auto</rebuild>
-				<project>Online</project>
-				<locale>de</locale>
-				<sources>
-					<source>source1</source>
-				</sources>
-			</index>
-			<index>
-				<name>Offline project EN (VFS)</name>
-				<rebuild>offline</rebuild>
-				<project>Offline</project>
-				<locale>en</locale>
-				<sources>
-					<source>source1</source>
-				</sources>
-			</index>
 			<index class="org.opencms.search.solr.CmsSolrIndex">
 				<name>Solr Online</name>
 				<rebuild>auto</rebuild>
@@ -242,48 +215,8 @@
 				</sources>
 				<param name="search.solr.postProcessor">org.opencms.search.solr.CmsSolrLinkProcessor</param>
 			</index>
-			<index>
-				<name>German online help</name>
-				<rebuild>auto</rebuild>
-				<project>Online</project>
-				<locale>de</locale>
-				<sources>
-					<source>source2</source>
-				</sources>
-			</index>
 		</indexes>
 		<indexsources>
-			<indexsource>
-				<name>source1</name>
-				<indexer class="org.opencms.search.CmsVfsIndexer" />
-				<resources>
-					<resource>/sites/</resource>
-				</resources>
-				<documenttypes-indexed>
-					<name>xmlpage</name>
-					<name>xmlcontent</name>
-					<name>containerpage</name>
-					<name>text</name>
-					<name>pdf</name>
-					<name>rtf</name>
-					<name>html</name>
-					<name>image</name>
-					<name>generic</name>
-					<name>msoffice-ole2</name>
-					<name>msoffice-ooxml</name>
-					<name>openoffice</name>
-				</documenttypes-indexed>
-			</indexsource>
-			<indexsource>
-				<name>source2</name>
-				<indexer class="org.opencms.search.CmsVfsIndexer" />
-				<resources>
-					<resource>/system/workplace/locales/</resource>
-				</resources>
-				<documenttypes-indexed>
-					<name>xmlpage</name>
-				</documenttypes-indexed>
-			</indexsource>
 			<indexsource>
 				<name>solr_source</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
@@ -308,32 +241,6 @@
 			</indexsource>
 		</indexsources>
 		<fieldconfigurations>
-			<fieldconfiguration>
-				<name>standard</name>
-				<description>The standard OpenCms search index field configuration.</description>
-				<fields>
-					<field name="content" display="%(key.field.content)" store="compress" index="true" excerpt="true">
-						<mapping type="content" />
-					</field>
-					<field name="title-key" display="-" store="true" index="untokenized" boost="0.0">
-						<mapping type="property">Title</mapping>
-					</field>
-					<field name="title" display="%(key.field.title)" store="false" index="true">
-						<mapping type="property">Title</mapping>
-					</field>
-					<field name="keywords" display="%(key.field.keywords)" store="true" index="true">
-						<mapping type="property">Keywords</mapping>
-					</field>
-					<field name="description" display="%(key.field.description)" store="true" index="true">
-						<mapping type="property">Description</mapping>
-					</field>
-					<field name="meta" display="%(key.field.meta)" store="false" index="true">
-						<mapping type="property">Title</mapping>
-						<mapping type="property">Keywords</mapping>
-						<mapping type="property">Description</mapping>
-					</field>
-				</fields>
-			</fieldconfiguration>
 			<fieldconfiguration class="org.opencms.search.solr.CmsSolrFieldConfiguration">
 				<name>solr_fields</name>
 				<description>The Solr search index field configuration.</description>
