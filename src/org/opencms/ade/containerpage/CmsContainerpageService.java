@@ -151,6 +151,92 @@ import com.google.common.collect.Sets;
  */
 public class CmsContainerpageService extends CmsGwtService implements I_CmsContainerpageService {
 
+    /**
+     * Helper class used to determine both the available views and the active start view when loading a container page.<p>
+     */
+    private class InitialElementViewProvider {
+
+        /** Map of available views. */
+        private Map<CmsUUID, CmsElementViewInfo> m_viewMap;
+
+        /** Start view id. */
+        private CmsUUID m_defaultView;
+
+        /**
+         * Empty default constructor.<p>
+         */
+        public InitialElementViewProvider() {
+            // do nothing
+        }
+
+        /**
+         * Gets the start view id.<p>
+         *
+         * @return the start view id
+         */
+        public CmsUUID getDefaultViewId() {
+
+            return m_defaultView;
+        }
+
+        /**
+         * Gets the map of available views.<p>
+         *
+         * @return the map of available views
+         */
+        public Map<CmsUUID, CmsElementViewInfo> getViewMap() {
+
+            return m_viewMap;
+        }
+
+        /**
+         * Initializes this object.<p>
+         *
+         * @param defaultValue the default view id from the session cache
+         * @param checkRes the resource used to check permissions
+         */
+        @SuppressWarnings("synthetic-access")
+        public void init(CmsUUID defaultValue, CmsResource checkRes) {
+
+            Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
+            CmsObject cms = getCmsObject();
+
+            // collect the actually used element view ids
+            CmsADEConfigData config = getConfigData(
+                cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
+            Set<CmsUUID> usedIds = new HashSet<CmsUUID>();
+            for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
+                usedIds.add(typeConfig.getElementView());
+            }
+
+            Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
+                // add only element view that are used within the type configuration and the user has sufficient permissions for
+                if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes) && !view.isOther()) {
+                    result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
+                }
+            }
+            m_viewMap = result;
+            if (m_viewMap.containsKey(defaultValue)) {
+                m_defaultView = defaultValue;
+            } else if (m_viewMap.containsKey(CmsElementView.DEFAULT_ELEMENT_VIEW.getId())) {
+                m_defaultView = CmsElementView.DEFAULT_ELEMENT_VIEW.getId();
+            } else if (!m_viewMap.isEmpty()) {
+                m_defaultView = m_viewMap.values().iterator().next().getElementViewId();
+            } else {
+                m_defaultView = defaultValue;
+                LOG.error(
+                    "Initial view not available and no suitable replacement view found: user="
+                        + getCmsObject().getRequestContext().getCurrentUser().getName()
+                        + " view="
+                        + defaultValue
+                        + " path="
+                        + checkRes.getRootPath());
+            }
+
+        }
+    }
+
     /** Additional info key for storing the "edit small elements" setting on the user. */
     public static final String ADDINFO_EDIT_SMALL_ELEMENTS = "EDIT_SMALL_ELEMENTS";
 
@@ -930,7 +1016,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             } catch (Exception e) {
                 LOG.info("Invalid reuse mode : " + reuseModeString, e);
             }
-
+            InitialElementViewProvider viewHelper = new InitialElementViewProvider();
+            viewHelper.init(getSessionCache().getElementView(), containerPage);
             data = new CmsCntPageData(
                 noEditReason,
                 CmsRequestUtil.encodeParams(request),
@@ -944,8 +1031,8 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 useClassicEditor,
                 info,
                 isEditSmallElements(request, cms),
-                Lists.newArrayList(getElementViews(containerPage).values()),
-                getSessionCache().getElementView(),
+                Lists.newArrayList(viewHelper.getViewMap().values()),
+                viewHelper.getDefaultViewId(),
                 reuseMode,
                 isModelPage,
                 isEditingModelGroups(cms, containerPage));
@@ -1767,35 +1854,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 }
             }
             ids.add(element.editorHash());
-        }
-        return result;
-    }
-
-    /**
-     * Returns the available element views.<p>
-     *
-     * @param checkRes resource for checking view permissions
-     *
-     * @return the element views
-     */
-    private Map<CmsUUID, CmsElementViewInfo> getElementViews(CmsResource checkRes) {
-
-        Map<CmsUUID, CmsElementViewInfo> result = new LinkedHashMap<CmsUUID, CmsElementViewInfo>();
-        CmsObject cms = getCmsObject();
-
-        // collect the actually used element view ids
-        CmsADEConfigData config = getConfigData(cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
-        Set<CmsUUID> usedIds = new HashSet<CmsUUID>();
-        for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
-            usedIds.add(typeConfig.getElementView());
-        }
-
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
-            // add only element view that are used within the type configuration and the user has sufficient permissions for
-            if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes) && !view.isOther()) {
-                result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
-            }
         }
         return result;
     }
