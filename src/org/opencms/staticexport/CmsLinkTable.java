@@ -30,9 +30,14 @@ package org.opencms.staticexport;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.common.collect.ComparisonChain;
 
 /**
  * Maintains a table of links for an element of a CmsXmlPage.<p>
@@ -41,8 +46,35 @@ import java.util.Map;
  */
 public class CmsLinkTable {
 
+    /**
+     * Comparator used to deterministically order the link table.<p>
+     */
+    public static class LinkKeyComparator implements Comparator<String> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(String a, String b) {
+
+            Matcher matcherA = LINK_PATTERN.matcher(a);
+            Matcher matcherB = LINK_PATTERN.matcher(b);
+            matcherA.find();
+            matcherB.find();
+            String nameA = matcherA.group(1);
+            int indexA = Integer.parseInt("0" + matcherA.group(2));
+            String nameB = matcherB.group(1);
+            int indexB = Integer.parseInt("0" + matcherB.group(2));
+            int result = ComparisonChain.start().compare(nameA, nameB).compare(indexA, indexB).compare(a, b).result();
+            return result;
+
+        }
+    }
+
     /** Prefix to identify a link in the content. */
     private static final String LINK_PREFIX = "link";
+
+    /** Pattern used to extract the index and the part before the index from a link id. */
+    public static final Pattern LINK_PATTERN = Pattern.compile("^(.*?)([0-9]*)$");
 
     /** The map to store the link table in. */
     private Map<String, CmsLink> m_linkTable;
@@ -52,7 +84,7 @@ public class CmsLinkTable {
      */
     public CmsLinkTable() {
 
-        m_linkTable = new HashMap<String, CmsLink>();
+        m_linkTable = new TreeMap<String, CmsLink>(new LinkKeyComparator());
     }
 
     /**
