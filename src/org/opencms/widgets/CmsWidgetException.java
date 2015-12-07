@@ -29,7 +29,6 @@ package org.opencms.widgets;
 
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.CmsWidgetDialogParameter;
 
 /**
  * Describes errors that occur in the context of the OpenCms widgets.<p>
@@ -42,7 +41,7 @@ public class CmsWidgetException extends CmsException {
     private static final long serialVersionUID = -7003923645953106868L;
 
     /** The widget that caused the error. */
-    private transient CmsWidgetDialogParameter m_widget;
+    private transient Object m_widget;
 
     /**
      * Creates a new localized Exception.<p>
@@ -51,7 +50,7 @@ public class CmsWidgetException extends CmsException {
      */
     public CmsWidgetException(CmsMessageContainer container) {
 
-        this(container, (CmsWidgetDialogParameter)null);
+        this(container, null, null);
     }
 
     /**
@@ -60,7 +59,7 @@ public class CmsWidgetException extends CmsException {
      * @param container the localized message container to use
      * @param widget the widget that caused the error
      */
-    public CmsWidgetException(CmsMessageContainer container, CmsWidgetDialogParameter widget) {
+    public CmsWidgetException(CmsMessageContainer container, Object widget) {
 
         super(container);
         m_widget = widget;
@@ -84,7 +83,7 @@ public class CmsWidgetException extends CmsException {
      * @param cause the Exception root cause
      * @param widget the widget that caused the error
      */
-    public CmsWidgetException(CmsMessageContainer container, Throwable cause, CmsWidgetDialogParameter widget) {
+    public CmsWidgetException(CmsMessageContainer container, Throwable cause, Object widget) {
 
         super(container, cause);
         m_widget = widget;
@@ -109,7 +108,7 @@ public class CmsWidgetException extends CmsException {
      *
      * @return the widget that caused the error
      */
-    public CmsWidgetDialogParameter getWidget() {
+    public Object getWidget() {
 
         return m_widget;
     }

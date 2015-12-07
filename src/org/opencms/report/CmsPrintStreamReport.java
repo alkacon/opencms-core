@@ -29,7 +29,7 @@ package org.opencms.report;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsReport;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.PrintStream;
 import java.util.Locale;
@@ -83,7 +83,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     public void finish() {
 
         if (m_writeHtml) {
-            m_printStream.println(CmsReport.generatePageEndExtended());
+            m_printStream.println(CmsWorkplace.generatePageEndExtended());
         }
         close();
     }
@@ -183,7 +183,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
         if (m_writeHtml) {
             try {
                 m_printStream.println(
-                    CmsReport.generatePageStartExtended(
+                    CmsWorkplace.generatePageStartExtended(
                         OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()),
                         OpenCms.getSystemInfo().getDefaultEncoding()));
             } catch (CmsException e) {

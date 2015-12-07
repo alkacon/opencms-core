@@ -93,7 +93,6 @@ import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsPreferences;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsADESessionCache;
 import org.opencms.xml.content.CmsXmlContent;
@@ -1979,7 +1978,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                             startGallery = getWorkplaceSettings().getUserSettings().getStartGallery(
                                 galleryTypeName,
                                 getCmsObject());
-                            if (CmsPreferences.INPUT_DEFAULT.equals(startGallery)) {
+                            if (CmsWorkplace.INPUT_DEFAULT.equals(startGallery)) {
                                 startGallery = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGallery(
                                     galleryTypeName);
                             }

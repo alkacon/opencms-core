@@ -27,7 +27,10 @@
 
 package org.opencms.ui.dialogs;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
@@ -40,9 +43,9 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
-import org.opencms.workplace.commons.CmsTouch;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 
@@ -147,8 +150,7 @@ public class CmsTouchDialog extends CmsBasicDialog {
             CmsLockActionRecord actionRecord = null;
             try {
                 actionRecord = CmsLockUtil.ensureLock(m_context.getCms(), resource);
-                CmsTouch.touchSingleResource(
-                    m_context.getCms(),
+                touchSingleResource(
                     m_context.getCms().getSitePath(resource),
                     touchTime,
                     recursive,
@@ -169,4 +171,58 @@ public class CmsTouchDialog extends CmsBasicDialog {
 
     }
 
+    /**
+     * Rewrites the content of the given file.<p>
+     *
+     * @param resource the resource to rewrite the content for
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void hardTouch(CmsResource resource) throws CmsException {
+
+        CmsFile file = m_context.getCms().readFile(resource);
+        file.setContents(file.getContents());
+        m_context.getCms().writeFile(file);
+    }
+
+    /**
+     * Performs a touch operation for a single resource.<p>
+     *
+     * @param resourceName the resource name of the resource to touch
+     * @param timeStamp the new time stamp
+     * @param recursive the flag if the touch operation is recursive
+     * @param correctDate the flag if the new time stamp is a correct date
+     * @param touchContent if the content has to be rewritten
+     *
+     * @throws CmsException if touching the resource fails
+     */
+    private void touchSingleResource(
+        String resourceName,
+        long timeStamp,
+        boolean recursive,
+        boolean correctDate,
+        boolean touchContent) throws CmsException {
+
+        CmsObject cms = m_context.getCms();
+        CmsResource sourceRes = cms.readResource(resourceName, CmsResourceFilter.ALL);
+        if (!correctDate) {
+            // no date value entered, use current resource modification date
+            timeStamp = sourceRes.getDateLastModified();
+        }
+        cms.setDateLastModified(resourceName, timeStamp, recursive);
+
+        if (touchContent) {
+            if (sourceRes.isFile()) {
+                hardTouch(sourceRes);
+            } else if (recursive) {
+                Iterator<CmsResource> it = cms.readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                while (it.hasNext()) {
+                    CmsResource subRes = it.next();
+                    if (subRes.isFile()) {
+                        hardTouch(subRes);
+                    }
+                }
+            }
+        }
+    }
 }

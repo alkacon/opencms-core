@@ -65,9 +65,9 @@ import org.opencms.search.galleries.CmsGallerySearchResult;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.CmsXmlContentEditor;
-import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -491,7 +491,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                             locale = OpenCms.getLocaleManager().getDefaultLocale(cms, paramResource);
                         }
                         CmsUUID modelFileId = null;
-                        String paramModelFile = getRequest().getParameter(CmsNewResourceXmlContent.PARAM_MODELFILE);
+                        String paramModelFile = getRequest().getParameter(CmsWorkplace.PARAM_MODELFILE);
 
                         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramModelFile)) {
                             modelFileId = cms.readResource(paramModelFile).getStructureId();
@@ -1020,7 +1020,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert(choiceAttributes.size() == 1)
+                    assert (choiceAttributes.size() == 1)
                         && choiceAttributes.get(
                             0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
@@ -1519,7 +1519,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         String resourceType = OpenCms.getResourceManager().getResourceType(referenceResource.getTypeId()).getTypeName();
         String modelFile = null;
         if (modelFileId == null) {
-            List<CmsResource> modelResources = CmsNewResourceXmlContent.getModelFiles(
+            List<CmsResource> modelResources = CmsResourceTypeXmlContent.getModelFiles(
                 getCmsObject(),
                 CmsResource.getFolderPath(sitePath),
                 resourceType);

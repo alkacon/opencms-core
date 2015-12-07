@@ -596,7 +596,7 @@ public class CmsLogin extends CmsJspLoginBean {
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
         if (m_requestedResource == null) {
             // no resource was requested, use default workplace URI
-            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
+            m_requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
         }
 
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
@@ -667,20 +667,20 @@ public class CmsLogin extends CmsJspLoginBean {
             String resource = splitter.getPrefix();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
-                resource = CmsFrameset.JSP_WORKPLACE_URI;
+                resource = CmsWorkplace.JSP_WORKPLACE_URI;
             }
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_directEditPath)
                 && !getCmsObject().existsResource(resource, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                 // requested resource does either not exist or is not readable by user
-                if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
+                if (CmsWorkplace.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
                     // probably this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
                     m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0);
                     m_action = ACTION_DISPLAY;
-                } else if (getCmsObject().existsResource(CmsFrameset.JSP_WORKPLACE_URI)) {
+                } else if (getCmsObject().existsResource(CmsWorkplace.JSP_WORKPLACE_URI)) {
                     // resource does either not exist or is not readable, but general workplace permissions are granted
                     m_message = Messages.get().container(Messages.GUI_LOGIN_UNKNOWN_RESOURCE_1, m_requestedResource);
-                    m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
+                    m_requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
                 } else {
                     // resource does not exist and no general workplace permissions granted
                     m_message = Messages.get().container(

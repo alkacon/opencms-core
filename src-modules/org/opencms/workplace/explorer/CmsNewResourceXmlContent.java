@@ -27,25 +27,18 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
-import org.opencms.xml.CmsXmlContentDefinition;
-import org.opencms.xml.content.CmsDefaultXmlContentHandler;
-import org.opencms.xml.content.I_CmsXmlContentHandler;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +79,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlContent.class);
 
     /** Request parameter name for the model file. */
-    public static final String PARAM_MODELFILE = "modelfile";
+    public static final String PARAM_MODELFILE = CmsWorkplace.PARAM_MODELFILE;
 
     /** Value for the option to use no model file. */
     public static final String VALUE_NONE = "none";
@@ -114,62 +107,6 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     public CmsNewResourceXmlContent(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns the possible model files for the new resource.<p>
-     *
-     * @param cms the current users context to work with
-     * @param currentFolder the folder
-     * @param newResourceTypeName the resource type name for the new resource to create
-     * @return the possible model files for the new resource
-     */
-    public static List<CmsResource> getModelFiles(CmsObject cms, String currentFolder, String newResourceTypeName) {
-
-        try {
-
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(newResourceTypeName);
-            I_CmsPreEditorActionDefinition preEditorAction = OpenCms.getWorkplaceManager().getPreEditorConditionDefinition(
-                resType);
-            // get the global master folder if configured
-            String masterFolder = preEditorAction.getConfiguration().getString(
-                CmsDefaultXmlContentHandler.APPINFO_MODELFOLDER,
-                null);
-            // get the schema for the resource type to create
-            String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
-            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
-            // get the content handler for the resource type to create
-            I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
-            String individualModelFolder = handler.getModelFolder();
-            if (CmsStringUtil.isNotEmpty(individualModelFolder)) {
-                masterFolder = individualModelFolder;
-            }
-
-            if (CmsStringUtil.isNotEmpty(masterFolder)) {
-                // store the original URI
-                String uri = cms.getRequestContext().getUri();
-                try {
-                    // set URI to current folder
-                    cms.getRequestContext().setUri(currentFolder);
-                    CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
-                    // resolve eventual macros
-                    masterFolder = resolver.resolveMacros(masterFolder);
-                } finally {
-                    // switch back to stored URI
-                    cms.getRequestContext().setUri(uri);
-                }
-
-                if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
-                    // folder for master files exists, get all files of the same resource type
-                    CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
-                        resType.getTypeId());
-                    return cms.readResources(masterFolder, filter, false);
-                }
-            }
-        } catch (Throwable t) {
-            // error determining resource type, should never happen
-        }
-        return Collections.emptyList();
     }
 
     /**
@@ -224,16 +161,6 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     }
 
     /**
-     * Returns the possible model files for the new resource.<p>
-     *
-     * @return the possible model files for the new resource
-     */
-    protected List<CmsResource> getModelFiles() {
-
-        return getModelFiles(getCms(), getSettings().getExplorerResource(), getParamNewResourceType());
-    }
-
-    /**
      * Returns the parameter that specifies the model file name.<p>
      *
      * @return the parameter that specifies the model file name
@@ -251,6 +178,29 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     public boolean hasModelFiles() {
 
         return getModelFiles().size() > 0;
+    }
+
+    /**
+     * Sets the parameter that specifies the model file name.<p>
+     *
+     * @param paramMasterFile the parameter that specifies the model file name
+     */
+    public void setParamModelFile(String paramMasterFile) {
+
+        m_paramModelFile = paramMasterFile;
+    }
+
+    /**
+     * Returns the possible model files for the new resource.<p>
+     *
+     * @return the possible model files for the new resource
+     */
+    protected List<CmsResource> getModelFiles() {
+
+        return CmsResourceTypeXmlContent.getModelFiles(
+            getCms(),
+            getSettings().getExplorerResource(),
+            getParamNewResourceType());
     }
 
     /**
@@ -317,15 +267,5 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLCONTENT_0));
             setInitialResourceName();
         }
-    }
-
-    /**
-     * Sets the parameter that specifies the model file name.<p>
-     *
-     * @param paramMasterFile the parameter that specifies the model file name
-     */
-    public void setParamModelFile(String paramMasterFile) {
-
-        m_paramModelFile = paramMasterFile;
     }
 }

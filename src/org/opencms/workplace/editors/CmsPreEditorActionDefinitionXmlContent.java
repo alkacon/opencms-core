@@ -28,13 +28,12 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.explorer.CmsNewResource;
-import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
-import org.opencms.workplace.explorer.CmsNewResourceXmlContentModel;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,19 +71,19 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
                 // get the folder path from the currently edited resource
                 folderPath = CmsResource.getFolderPath(resName);
             }
-            if (CmsNewResourceXmlContent.getModelFiles(dialog.getCms(), folderPath, type.getTypeName()).size() > 0) {
+            if (CmsResourceTypeXmlContent.getModelFiles(dialog.getCms(), folderPath, type.getTypeName()).size() > 0) {
                 // model files present, display model file selection dialog before opening editor
                 Map<String, String[]> params = new HashMap<String, String[]>(4);
                 // put the original request parameters to a new parameter value
                 params.put(CmsDialog.PARAM_ORIGINALPARAMS, new String[] {originalParams});
                 // set action for dialog to open
-                params.put(CmsDialog.PARAM_ACTION, new String[] {CmsNewResourceXmlContent.DIALOG_CHOOSEMODEL});
+                params.put(CmsDialog.PARAM_ACTION, new String[] {CmsResourceTypeXmlContent.DIALOG_CHOOSEMODEL});
                 // set the title for the dialog
                 params.put(
                     CmsDialog.PARAM_TITLE,
                     new String[] {dialog.getJsp().getRequest().getParameter("editortitle")});
                 // set the resource type to create for the dialog
-                params.put(CmsNewResource.PARAM_NEWRESOURCETYPE, new String[] {type.getTypeName()});
+                params.put(CmsWorkplace.PARAM_NEWRESOURCETYPE, new String[] {type.getTypeName()});
                 // set the back link URL to return to if pressing the cancel button
                 String paramBackLink = dialog.getJsp().getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
                 if (CmsStringUtil.isNotEmpty(paramBackLink)) {
@@ -95,7 +94,7 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
                     params.put(CmsDialog.PARAM_RESOURCE, new String[] {resName});
                 }
                 // forward to model file selection dialog
-                dialog.sendForward(CmsNewResourceXmlContentModel.VFS_PATH_MODELDIALOG, params);
+                dialog.sendForward(CmsWorkplace.VFS_PATH_MODELDIALOG, params);
                 return true;
             }
         }

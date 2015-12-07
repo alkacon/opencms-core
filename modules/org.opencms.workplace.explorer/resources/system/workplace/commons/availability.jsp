@@ -219,7 +219,7 @@ if (wp.isMultiOperation()) { //%>
 case CmsDialog.ACTION_DEFAULT:
 default:
     %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>

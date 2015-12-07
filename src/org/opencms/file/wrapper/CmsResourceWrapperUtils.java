@@ -38,7 +38,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -186,8 +185,7 @@ public final class CmsResourceWrapperUtils {
         content.append("# ${property_name}.s :     shared property\n\n");
 
         List<CmsPropertyDefinition> propertyDef = cms.readAllPropertyDefinitions();
-        Map<String, CmsProperty> activeProperties = CmsPropertyAdvanced.getPropertyMap(
-            cms.readPropertyObjects(res, false));
+        Map<String, CmsProperty> activeProperties = CmsProperty.getPropertyMap(cms.readPropertyObjects(res, false));
 
         String resourceType = OpenCms.getResourceManager().getResourceType(res).getTypeName();
         content.append("resourceType=");

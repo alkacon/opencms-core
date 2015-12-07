@@ -29,7 +29,6 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.search.CmsSearchDialog;
 
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +106,7 @@ public class CmsSelectOnChangeReloadWidget extends CmsSelectWidget {
             " onChange=\"document.getElementsByName('"
                 + CmsDialog.PARAM_ACTION
                 + "')[0].value='"
-                + CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX
+                + CmsDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX
                 + "';this.form.submit()\"");
         result.append(">");
 

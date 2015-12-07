@@ -39,16 +39,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.explorer.CmsExplorer;
-import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.tools.CmsToolUserData;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-
-import com.google.common.collect.Maps;
 
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
@@ -138,9 +134,6 @@ public class CmsWorkplaceSettings {
 
     /** The view URI. */
     private String m_viewUri;
-
-    /** Cache for workplace list metadata. */
-    private Map<String, CmsListMetadata> m_listMetadataCache = Maps.newHashMap();
 
     /**
      * Constructor, only package visible.<p>
@@ -259,9 +252,9 @@ public class CmsWorkplaceSettings {
         // get the current explorer mode
         String mode = getExplorerMode();
         if (mode == null) {
-            mode = CmsExplorer.VIEW_EXPLORER;
+            mode = CmsWorkplace.VIEW_EXPLORER;
         }
-        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
+        if (CmsWorkplace.VIEW_EXPLORER.equals(mode)) {
             // append the current site to the key when in explorer view mode
             mode += "_" + getSite() + "/";
         }
@@ -317,16 +310,6 @@ public class CmsWorkplaceSettings {
         String result = m_lastUsedGalleries.get(galleryKey);
         LOG.info("user=" + m_user.getName() + ": getLastUsedGallery " + galleryKey + " : returning " + result);
         return result;
-    }
-
-    /**
-     * Gets the cache for workplace list metadata.<p>
-     *
-     * @return the cache for workplace list metadata
-     */
-    public Map<String, CmsListMetadata> getListMetadataCache() {
-
-        return m_listMetadataCache;
     }
 
     /**
@@ -601,9 +584,9 @@ public class CmsWorkplaceSettings {
         // get the current explorer mode
         String mode = getExplorerMode();
         if (mode == null) {
-            mode = CmsExplorer.VIEW_EXPLORER;
+            mode = CmsWorkplace.VIEW_EXPLORER;
         }
-        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
+        if (CmsWorkplace.VIEW_EXPLORER.equals(mode)) {
             // append the current site to the key when in explorer view mode
             mode += "_" + getSite() + "/";
         }
@@ -611,7 +594,7 @@ public class CmsWorkplaceSettings {
         // set the resource for the given mode
         if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
             && (!value.startsWith(m_currentSite))
-            && (!CmsExplorer.VIEW_GALLERY.equals(getExplorerMode()))) {
+            && (!CmsWorkplace.VIEW_GALLERY.equals(getExplorerMode()))) {
             // restrict access to /system/
             m_explorerResource.put(mode, "/");
         } else {

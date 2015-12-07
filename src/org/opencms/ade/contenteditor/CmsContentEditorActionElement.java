@@ -33,7 +33,7 @@ import org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsFrameset;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 
 import java.util.HashSet;
@@ -133,7 +133,7 @@ public class CmsContentEditorActionElement extends CmsGwtActionElement {
         StringBuffer sb = new StringBuffer();
         String backlink = getRequest().getParameter(CmsEditor.PARAM_BACKLINK);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(backlink)) {
-            backlink = link(CmsFrameset.JSP_WORKPLACE_URI);
+            backlink = link(CmsWorkplace.JSP_WORKPLACE_URI);
         } else {
             backlink = link(backlink);
         }

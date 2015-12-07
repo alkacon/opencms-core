@@ -196,10 +196,10 @@ public class CmsPreferences extends CmsTabDialog {
     public static final String DIALOG_TYPE = "preferences";
 
     /** Request parameter name prefix for the preferred editors. */
-    public static final String INPUT_DEFAULT = "default";
+    public static final String INPUT_DEFAULT = CmsWorkplace.INPUT_DEFAULT;
 
     /** Request parameter name for no settings in start galleries. */
-    public static final String INPUT_NONE = "none";
+    public static final String INPUT_NONE = CmsWorkplace.INPUT_NONE;
 
     /** Request parameter name for global gallery settings. */
     public static final String INPUT_PRESELECT = "preselect";

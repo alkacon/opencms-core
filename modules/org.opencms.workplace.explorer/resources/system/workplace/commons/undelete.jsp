@@ -1,6 +1,6 @@
 <%@ page import="
     org.opencms.workplace.CmsDialog,
-	org.opencms.workplace.commons.CmsUndelete
+	org.opencms.workplace.commons.*
 " %><%	
 
 	// initialize the workplace class
@@ -63,7 +63,7 @@ if (wp.isMultiOperation()) { %>
 case CmsDialog.ACTION_DEFAULT:
 default:
 %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>

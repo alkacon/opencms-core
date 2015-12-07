@@ -44,7 +44,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -351,7 +350,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             }
         } else {
             // in workplace mode, show explorer view
-            target = OpenCms.getLinkManager().substituteLink(getCms(), CmsFrameset.JSP_WORKPLACE_URI);
+            target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplace.JSP_WORKPLACE_URI);
         }
         return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
     }
@@ -759,7 +758,7 @@ public abstract class CmsEditor extends CmsEditorBase {
                     getJsp().include(FILE_DIALOG_CLOSE);
                 } else {
                     // forward to the workplace explorer view
-                    sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap<String, String[]>());
+                    sendForward(CmsWorkplace.JSP_WORKPLACE_URI, new HashMap<String, String[]>());
                 }
             }
         } finally {

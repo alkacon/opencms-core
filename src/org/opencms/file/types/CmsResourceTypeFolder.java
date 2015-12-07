@@ -31,7 +31,6 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.CmsNewResourceFolder;
 
 /**
  * Resource type descriptor for the type "folder".<p>
@@ -41,7 +40,7 @@ import org.opencms.workplace.explorer.CmsNewResourceFolder;
 public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
 
     /** Configuration key for the optional list of resource types to show as available index page types. */
-    public static final String CONFIGURATION_INDEX_PAGE_TYPE = CmsNewResourceFolder.PROPERTY_RESTYPES_INDEXPAGE;
+    public static final String CONFIGURATION_INDEX_PAGE_TYPE = "restypes.indexpage";
 
     /** The type id of this resource. */
     public static final int RESOURCE_TYPE_ID = 0;

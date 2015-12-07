@@ -156,8 +156,10 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsListDialog.class);
 
+    public static String KEY_META_DATA_CACHE = "key_meta_data_cache";
+
     /** metadata map for all used list metadata objects. */
-    private Map<String, CmsListMetadata> m_metadatas = new HashMap<String, CmsListMetadata>();
+    private Map<String, CmsListMetadata> m_metadatas;
 
     /** A flag which indicates whether the list should use database paging (only supported for some lists) .**/
     protected boolean m_lazy;
@@ -227,6 +229,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * @param searchableColId the column to search into
      * @param lazy if this parameter is true, the list should load only load the list items of the current page, if possible
      */
+    @SuppressWarnings("unchecked")
     protected A_CmsListDialog(
         CmsJspActionElement jsp,
         String listId,
@@ -238,6 +241,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
         super(jsp);
         m_lazy = lazy;
+        m_metadatas = (Map<String, CmsListMetadata>)jsp.getRequest().getSession().getAttribute(KEY_META_DATA_CACHE);
+        if (m_metadatas == null) {
+            m_metadatas = new HashMap<String, CmsListMetadata>();
+            jsp.getRequest().getSession().setAttribute(KEY_META_DATA_CACHE, m_metadatas);
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_INIT_LIST_1, listId));
         }
@@ -978,10 +986,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected Map<String, CmsListMetadata> getMetadataCache() {
 
-        CmsWorkplaceSettings settings = getSettings();
-        if (settings != null) {
-            return settings.getListMetadataCache();
-        }
         return m_metadatas;
     }
 

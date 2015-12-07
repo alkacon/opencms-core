@@ -45,7 +45,6 @@ import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.commons.CmsPreferences;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -139,7 +138,8 @@ public class CmsUserSettings {
     /** A enum for the different upload variants. */
     public enum UploadVariant {
         /** The default html upload. */
-        basic, /** The gwt upload. */
+        basic,
+        /** The gwt upload. */
         gwt
     }
 
@@ -804,16 +804,16 @@ public class CmsUserSettings {
         String startGallerySetting = getStartGallery(galleryType);
         String pathSetting = null;
         // if a custom path to the gallery is selected
-        if ((startGallerySetting != null) && !startGallerySetting.equals(CmsPreferences.INPUT_NONE)) {
+        if ((startGallerySetting != null) && !startGallerySetting.equals(CmsWorkplace.INPUT_NONE)) {
             String sitePath = cms.getRequestContext().removeSiteRoot(startGallerySetting);
             if (cms.existsResource(sitePath)) {
                 pathSetting = startGallerySetting;
             } else {
-                pathSetting = CmsPreferences.INPUT_DEFAULT;
+                pathSetting = CmsWorkplace.INPUT_DEFAULT;
             }
             // global default settings
         } else if (startGallerySetting == null) {
-            pathSetting = CmsPreferences.INPUT_DEFAULT;
+            pathSetting = CmsWorkplace.INPUT_DEFAULT;
         }
         return pathSetting;
 
@@ -1626,7 +1626,7 @@ public class CmsUserSettings {
             Iterator<Map.Entry<String, String>> itEntries = m_startGalleriesSettings.entrySet().iterator();
             while (itEntries.hasNext()) {
                 Map.Entry<String, String> entry = itEntries.next();
-                if ((entry.getValue() != null) && !entry.getValue().equals(CmsPreferences.INPUT_DEFAULT)) {
+                if ((entry.getValue() != null) && !entry.getValue().equals(CmsWorkplace.INPUT_DEFAULT)) {
                     m_user.setAdditionalInfo(
                         PREFERENCES + CmsWorkplaceConfiguration.N_STARTGALLERIES + entry.getKey(),
                         entry.getValue());

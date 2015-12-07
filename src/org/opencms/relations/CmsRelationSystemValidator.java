@@ -41,7 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.commons.CmsProgressThread;
+import org.opencms.workplace.threads.A_CmsProgressThread;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,9 +109,9 @@ public class CmsRelationSystemValidator {
         I_CmsReport report) throws Exception {
 
         // check if progress should be set in the thread
-        CmsProgressThread thread = null;
-        if (Thread.currentThread() instanceof CmsProgressThread) {
-            thread = (CmsProgressThread)Thread.currentThread();
+        A_CmsProgressThread thread = null;
+        if (Thread.currentThread() instanceof A_CmsProgressThread) {
+            thread = (A_CmsProgressThread)Thread.currentThread();
         }
 
         Map<String, List<CmsRelation>> invalidResources = new HashMap<String, List<CmsRelation>>();

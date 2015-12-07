@@ -53,7 +53,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.commons.CmsPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -794,7 +793,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 getCms());
             if (startGallerySetting != null) {
                 // handle the case, "global settings" are selected
-                if (startGallerySetting.equals(CmsPreferences.INPUT_DEFAULT)) {
+                if (startGallerySetting.equals(CmsWorkplace.INPUT_DEFAULT)) {
                     // get selected value from workplace xml settings
                     String preselectedValue = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGallery(
                         getGalleryTypeName());

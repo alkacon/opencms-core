@@ -31,6 +31,7 @@ import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -230,7 +231,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
                     folderPath = CmsResource.getFolderPath(getParamResource());
                 }
             }
-            List<CmsResource> realModelFiles = CmsNewResourceXmlContent.getModelFiles(
+            List<CmsResource> realModelFiles = CmsResourceTypeXmlContent.getModelFiles(
                 getCms(),
                 folderPath,
                 getParamNewResourceType());

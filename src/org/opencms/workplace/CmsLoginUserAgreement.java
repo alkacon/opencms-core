@@ -281,7 +281,7 @@ public class CmsLoginUserAgreement extends CmsDialog {
     public String getParamWpres() {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_paramWpres) || "null".equals(m_paramWpres)) {
-            return CmsFrameset.JSP_WORKPLACE_URI;
+            return CmsWorkplace.JSP_WORKPLACE_URI;
         }
         return m_paramWpres;
     }

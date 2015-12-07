@@ -29,10 +29,11 @@ package org.opencms.configuration.preferences;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.commons.CmsPreferences;
-import org.opencms.workplace.commons.CmsPreferences.SelectOptions;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -85,12 +86,12 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        SelectOptions options = CmsPreferences.getOptionsForLanguageStatic(locale, Locale.ENGLISH);
+        String options = getOptionsForLanguage(locale);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             getName(), //name
             "string", //type
             "select_notnull", //widget
-            options.toClientSelectWidgetConfiguration(), //widgetconfig
+            options, //widgetconfig
             null, //regex
             null, //ruletype
             null, //default
@@ -100,6 +101,39 @@ public class CmsLanguagePreference extends CmsBuiltinPreference {
             null//preferfolder
         );
         return prop;
+    }
+
+    /**
+     * Gets the options for the language selector.<p>
+     *
+     * @param setLocale the locale for the select options
+     *
+     * @return the options for the language selector
+     */
+    private String getOptionsForLanguage(Locale setLocale) {
+
+        // get available locales from the workplace manager
+        List<Locale> locales = OpenCms.getWorkplaceManager().getLocales();
+        StringBuffer resultBuffer = new StringBuffer();
+        int counter = 0;
+        Iterator<Locale> i = locales.iterator();
+        while (i.hasNext()) {
+            Locale currentLocale = i.next();
+            // add all locales to the select box
+            String language = currentLocale.getDisplayLanguage(setLocale);
+            if (CmsStringUtil.isNotEmpty(currentLocale.getCountry())) {
+                language = language + " (" + currentLocale.getDisplayCountry(setLocale) + ")";
+            }
+            if (CmsStringUtil.isNotEmpty(currentLocale.getVariant())) {
+                language = language + " (" + currentLocale.getDisplayVariant(setLocale) + ")";
+            }
+            if (counter != 0) {
+                resultBuffer.append("|");
+            }
+            resultBuffer.append(currentLocale.toString()).append(":").append(language);
+            counter++;
+        }
+        return resultBuffer.toString();
     }
 
 }

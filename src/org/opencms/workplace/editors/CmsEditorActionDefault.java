@@ -34,9 +34,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.commons.CmsPublishProject;
 
 import java.io.IOException;
 
@@ -72,15 +70,15 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         StringBuffer params = new StringBuffer(256);
         params.append("?").append(CmsDialog.PARAM_RESOURCE).append("=").append(editor.getParamResource());
         params.append("&").append(CmsDialog.PARAM_ACTION).append("=").append(CmsDialog.DIALOG_CONFIRMED);
-        params.append("&").append(CmsPublishProject.PARAM_DIRECTPUBLISH).append("=").append(CmsStringUtil.TRUE);
-        params.append("&").append(CmsPublishProject.PARAM_PUBLISHSIBLINGS).append("=").append(
+        params.append("&").append(CmsWorkplace.PARAM_DIRECTPUBLISH).append("=").append(CmsStringUtil.TRUE);
+        params.append("&").append(CmsWorkplace.PARAM_PUBLISHSIBLINGS).append("=").append(
             editor.getSettings().getUserSettings().getDialogPublishSiblings());
         // set the related resources option
         String pubRelated = CmsStringUtil.TRUE;
         if (OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishRelatedResources() == CmsDefaultUserSettings.PUBLISH_RELATED_RESOURCES_MODE_FALSE) {
             pubRelated = CmsStringUtil.FALSE;
         }
-        params.append("&").append(CmsPublishProject.PARAM_RELATEDRESOURCES).append("=").append(pubRelated);
+        params.append("&").append(CmsWorkplace.PARAM_RELATEDRESOURCES).append("=").append(pubRelated);
         params.append("&").append(CmsDialog.PARAM_TITLE).append("=");
         params.append(
             CmsEncoder.escapeWBlanks(
@@ -100,7 +98,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         } else {
             // append the parameters and the report "ok" button action to the link
             publishLink += params.toString()
-                + CmsEncoder.escapeWBlanks(jsp.link(CmsFrameset.JSP_WORKPLACE_URI), CmsEncoder.ENCODING_UTF_8);
+                + CmsEncoder.escapeWBlanks(jsp.link(CmsWorkplace.JSP_WORKPLACE_URI), CmsEncoder.ENCODING_UTF_8);
 
         }
         // redirect to the publish dialog with all necessary parameters

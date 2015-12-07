@@ -29,10 +29,12 @@ package org.opencms.configuration.preferences;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.commons.CmsPreferences;
-import org.opencms.workplace.commons.CmsPreferences.SelectOptions;
+import org.opencms.site.CmsSite;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -54,6 +56,55 @@ public class CmsSitePreference extends CmsBuiltinPreference {
 
         super(name);
         m_basic = true;
+    }
+
+    /**
+     * Gets the options for the site selector.<p>
+     *
+     * @param cms the CMS context
+     * @param locale the locale for the select options
+     *
+     * @return the options for the site selector
+     */
+    public static String getSiteSelectOptionsStatic(CmsObject cms, Locale locale) {
+
+        List<CmsSite> sites = OpenCms.getSiteManager().getAvailableSites(
+            cms,
+            true,
+            false,
+            cms.getRequestContext().getOuFqn());
+
+        StringBuffer resultBuffer = new StringBuffer();
+        Iterator<CmsSite> i = sites.iterator();
+        int counter = 0;
+        while (i.hasNext()) {
+            CmsSite site = i.next();
+            String siteRoot = site.getSiteRoot();
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            if (counter != 0) {
+                resultBuffer.append("|");
+            }
+            resultBuffer.append(siteRoot).append(":").append(
+                CmsWorkplace.substituteSiteTitleStatic(site.getTitle(), locale));
+            counter++;
+        }
+
+        if (sites.size() < 1) {
+            // no site found, assure that at least the current site is shown in the selector
+            String siteRoot = cms.getRequestContext().getSiteRoot();
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            String title = "";
+            if (site != null) {
+                title = site.getTitle();
+            }
+            resultBuffer.append(siteRoot).append(":").append(title);
+        }
+        return resultBuffer.toString();
     }
 
     /**
@@ -85,12 +136,12 @@ public class CmsSitePreference extends CmsBuiltinPreference {
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        SelectOptions options = CmsPreferences.getSiteSelectOptionsStatic(cms, "DUMMY SITE VALUE", locale);
+        String options = getSiteSelectOptionsStatic(cms, locale);
         CmsXmlContentProperty prop = new CmsXmlContentProperty(
             getName(), //name
             "string", //type
             "select_notnull", //widget
-            options.toClientSelectWidgetConfiguration(), //widgetconfig
+            options, //widgetconfig
             null, //regex
             null, //ruletype
             null, //default

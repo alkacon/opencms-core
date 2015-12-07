@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
 public class CmsFrameset extends CmsWorkplace {
 
     /** Path to the JSP workplace frame loader file. */
-    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
+    public static final String JSP_WORKPLACE_URI = CmsWorkplace.JSP_WORKPLACE_URI;
 
     /** The request parameter for the selection of the frame. */
     public static final String PARAM_WP_FRAME = "wpFrame";

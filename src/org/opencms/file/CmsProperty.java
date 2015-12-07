@@ -145,6 +145,15 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     private static final long serialVersionUID = 93613508924212782L;
 
     /**
+     * Static initializer required for freezing the <code>{@link #NULL_PROPERTY}</code>.<p>
+     */
+    static {
+
+        NULL_PROPERTY.m_frozen = true;
+        NULL_PROPERTY.m_name = "";
+    }
+
+    /**
      * Boolean flag to decide if the property definition for this property should be created
      * implicitly on any write operation if doesn't exist already.<p>
      */
@@ -224,15 +233,6 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     }
 
     /**
-     * Static initializer required for freezing the <code>{@link #NULL_PROPERTY}</code>.<p>
-     */
-    static {
-
-        NULL_PROPERTY.m_frozen = true;
-        NULL_PROPERTY.m_name = "";
-    }
-
-    /**
      * Searches in a list for the first occurrence of a {@link CmsProperty} object with the given name.<p>
      *
      * To check if the "null property" has been returned if a property was
@@ -276,6 +276,44 @@ public class CmsProperty implements Serializable, Cloneable, Comparable<CmsPrope
     public static final CmsProperty getNullProperty() {
 
         return NULL_PROPERTY;
+    }
+
+    /**
+     * Transforms a list of CmsProperty objects with structure and resource values into a map with
+     * CmsProperty object values keyed by property keys.<p>
+     *
+     * @param list a list of CmsProperty objects
+     * @return a map with CmsPropery object values keyed by property keys
+     */
+    public static Map<String, CmsProperty> getPropertyMap(List<CmsProperty> list) {
+
+        Map<String, CmsProperty> result = null;
+        String key = null;
+        CmsProperty property = null;
+
+        if ((list == null) || (list.size() == 0)) {
+            return Collections.emptyMap();
+        }
+
+        result = new HashMap<String, CmsProperty>();
+
+        // choose the fastest method to iterate the list
+        if (list instanceof RandomAccess) {
+            for (int i = 0, n = list.size(); i < n; i++) {
+                property = list.get(i);
+                key = property.getName();
+                result.put(key, property);
+            }
+        } else {
+            Iterator<CmsProperty> i = list.iterator();
+            while (i.hasNext()) {
+                property = i.next();
+                key = property.getName();
+                result.put(key, property);
+            }
+        }
+
+        return result;
     }
 
     /**

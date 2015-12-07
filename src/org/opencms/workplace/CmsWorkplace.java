@@ -52,11 +52,11 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -69,6 +69,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +91,21 @@ public abstract class CmsWorkplace {
 
     /** The debug flag. */
     public static final boolean DEBUG = false;
+
+    /** Path to the JSP workplace frame loader file. */
+    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_VIEWS + "workplace.jsp";
+
+    /** Request parameter name for the model file. */
+    public static final String PARAM_MODELFILE = "modelfile";
+
+    /** Request parameter name prefix for the preferred editors. */
+    public static final String INPUT_DEFAULT = "default";
+
+    /** Request parameter name for the resource list. */
+    public static final String PARAM_RESOURCELIST = "resourcelist";
+
+    /** Request parameter name for no settings in start galleries. */
+    public static final String INPUT_NONE = "none";
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
@@ -196,6 +212,41 @@ public abstract class CmsWorkplace {
     /** Key name for the session workplace class. */
     protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
 
+    /** The "explorerview" view selection. */
+    public static final String VIEW_EXPLORER = "explorerview";
+
+    /** The "galleryview" view selection. */
+    public static final String VIEW_GALLERY = "galleryview";
+
+    /** The "list" view selection. */
+    public static final String VIEW_LIST = "listview";
+
+    /** Request parameter name for the directpublish parameter. */
+    public static final String PARAM_DIRECTPUBLISH = "directpublish";
+
+    /** Request parameter name for the publishsiblings parameter. */
+    public static final String PARAM_PUBLISHSIBLINGS = "publishsiblings";
+
+    /** Request parameter name for the relatedresources parameter. */
+    public static final String PARAM_RELATEDRESOURCES = "relatedresources";
+
+    /** Request parameter name for the subresources parameter. */
+    public static final String PARAM_SUBRESOURCES = "subresources";
+
+    /** Default value for date last modified, the release and expire date. */
+    public static final String DEFAULT_DATE_STRING = "-";
+
+    /** Absolute path to the model file dialog. */
+    public static final String VFS_PATH_MODELDIALOG = CmsWorkplace.VFS_PATH_COMMONS
+        + "newresource_xmlcontent_modelfile.jsp";
+
+    /** Absolute path to thenew resource dialog. */
+    public static final String VFS_PATH_NEWRESOURCEDIALOG = CmsWorkplace.VFS_PATH_COMMONS
+        + "newresource_xmlcontent.jsp";
+
+    /** Request parameter name for the new resource type. */
+    public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplace.class);
 
@@ -207,6 +258,12 @@ public abstract class CmsWorkplace {
 
     /** The URI to the stylesheet resources (cached for performance reasons). */
     private static String m_styleUri;
+
+    /** The request parameter for the workplace view selection. */
+    public static final String PARAM_WP_VIEW = "wpView";
+
+    /** The request parameter for the workplace start selection. */
+    public static final String PARAM_WP_START = "wpStart";
 
     /** The current users OpenCms context. */
     private CmsObject m_cms;
@@ -346,6 +403,125 @@ public abstract class CmsWorkplace {
         if (useLineFeed) {
             result.append("\n");
         }
+        return result.toString();
+    }
+
+    /**
+     * Returns the style sheets for the report.<p>
+     *
+     * @param cms the current users context
+     * @return the style sheets for the report
+     */
+    public static String generateCssStyle(CmsObject cms) {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<style type='text/css'>\n");
+        String contents = "";
+        try {
+            contents = new String(
+                cms.readFile(VFS_PATH_COMMONS + "style/report.css").getContents(),
+                OpenCms.getSystemInfo().getDefaultEncoding());
+        } catch (Exception e) {
+            // ignore
+        }
+        if (CmsStringUtil.isEmpty(contents)) {
+            // css file not found, create default styles
+            result.append(
+                "body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: /*begin-color WindowText*/#000000/*end-color*/; background-color: /*begin-color Window*/#ffffff/*end-color*/; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
+            result.append(
+                "div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: /*begin-color WindowText*/#000000/*end-color*/; white-space: nowrap; }\n");
+            result.append("span.head  { color: #000099; font-weight: bold; }\n");
+            result.append("span.note  { color: #666666; }\n");
+            result.append("span.ok    { color: #009900; }\n");
+            result.append("span.warn  { color: #990000; padding-left: 40px; }\n");
+            result.append("span.err   { color: #990000; font-weight: bold; padding-left: 40px; }\n");
+            result.append("span.throw { color: #990000; font-weight: bold; }\n");
+            result.append("span.link1 { color: #666666; }\n");
+            result.append("span.link2 { color: #666666; padding-left: 40px; }\n");
+            result.append("span.link2 { color: #990000; }\n");
+        } else {
+            result.append(contents);
+        }
+        result.append("</style>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the footer for the extended report view.<p>
+     *
+     * @return html code
+     */
+    public static String generatePageEndExtended() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("</div>\n");
+        result.append("</body>\n");
+        result.append("</html>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the footer for the simple report view.<p>
+     *
+     * @return html code
+     */
+    public static String generatePageEndSimple() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("</td></tr>\n");
+        result.append("</table></div>\n");
+        result.append("</body>\n</html>");
+        return result.toString();
+    }
+
+    /**
+     * Generates the header for the extended report view.<p>
+     *
+     * @param cms the current users context
+     * @param encoding the encoding string
+     *
+     * @return html code
+     */
+    public static String generatePageStartExtended(CmsObject cms, String encoding) {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<html>\n<head>\n");
+        result.append("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=");
+        result.append(encoding);
+        result.append("'>\n");
+        result.append(generateCssStyle(cms));
+        result.append("</head>\n");
+        result.append("<body style='overflow: auto;'>\n");
+        result.append("<div class='main'>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the header for the simple report view.<p>
+     *
+     * @param wp the workplace instance
+     *
+     * @return html code
+     */
+    public static String generatePageStartSimple(CmsWorkplace wp) {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("<html>\n<head>\n");
+        result.append("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=");
+        result.append(wp.getEncoding());
+        result.append("'>\n");
+        result.append("<link rel='stylesheet' type='text/css' href='");
+        result.append(wp.getStyleUri("workplace.css"));
+        result.append("'>\n");
+        result.append(generateCssStyle(wp.getCms()));
+        result.append("</head>\n");
+        result.append("<body style='background-color:/*begin-color Menu*/#f0f0f0/*end-color*/;'>\n");
+        result.append("<div style='vertical-align:middle; height: 100%;'>\n");
+        result.append("<table border='0' style='vertical-align:middle; height: 100%;'>\n");
+        result.append("<tr><td width='40' align='center' valign='middle'><img name='report_img' src='");
+        result.append(getSkinUri());
+        result.append("commons/wait.gif' width='32' height='32' alt=''></td>\n");
+        result.append("<td valign='middle'>");
         return result.toString();
     }
 
@@ -506,6 +682,85 @@ public abstract class CmsWorkplace {
         result.append(CmsResource.TEMP_FILE_PREFIX);
         result.append(CmsResource.getName(resourceName));
         return result.toString();
+    }
+
+    /**
+     * Creates a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     * site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     * <p>
+     *
+     * @param jsp
+     *            needed for link functionality.
+     *
+     * @param explorerRootPath
+     *            a root relative folder link (has to end with '/').
+     *
+     * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     */
+    public static String getWorkplaceExplorerLink(final CmsJspActionElement jsp, final String explorerRootPath) {
+
+        return getWorkplaceExplorerLink(jsp.getCmsObject(), explorerRootPath);
+
+    }
+
+    /**
+     * Creates a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     * site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     * <p>
+     *
+     * @param cms
+     *            the cms object
+     *
+     * @param explorerRootPath
+     *            a root relative folder link (has to end with '/').
+     *
+     * @return a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the
+     *         site of the given explorerRootPath and show the folder given in the explorerRootPath.
+     */
+    public static String getWorkplaceExplorerLink(final CmsObject cms, final String explorerRootPath) {
+
+        // split the root site:
+        StringBuffer siteRoot = new StringBuffer();
+        StringBuffer path = new StringBuffer('/');
+        Scanner scanner = new Scanner(explorerRootPath);
+        scanner.useDelimiter("/");
+        int count = 0;
+        while (scanner.hasNext()) {
+            if (count < 2) {
+                siteRoot.append('/').append(scanner.next());
+            } else {
+                if (count == 2) {
+                    path.append('/');
+                }
+                path.append(scanner.next());
+                path.append('/');
+            }
+            count++;
+        }
+        String targetSiteRoot = siteRoot.toString();
+        String targetVfsFolder = path.toString();
+        // build the link
+        StringBuilder link2Source = new StringBuilder();
+        link2Source.append("/system/workplace/views/workplace.jsp?");
+        link2Source.append(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE);
+        link2Source.append("=");
+        link2Source.append(targetVfsFolder);
+        link2Source.append("&");
+        link2Source.append(PARAM_WP_VIEW);
+        link2Source.append("=");
+        link2Source.append(
+            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                cms,
+                "/system/workplace/views/explorer/explorer_fs.jsp"));
+        link2Source.append("&");
+        link2Source.append(PARAM_WP_SITE);
+        link2Source.append("=");
+        link2Source.append(targetSiteRoot);
+
+        String result = link2Source.toString();
+        result = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, result);
+        return result;
     }
 
     /**
@@ -673,6 +928,29 @@ public abstract class CmsWorkplace {
         }
         return title;
 
+    }
+
+    /**
+     * Updates the user preferences after changes have been made.<p>
+     *
+     * @param cms the current cms context
+     * @param req the current http request
+     */
+    public static void updateUserPreferences(CmsObject cms, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            return;
+        }
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            return;
+        }
+        // keep old synchronize settings
+        CmsSynchronizeSettings synchronizeSettings = settings.getUserSettings().getSynchronizeSettings();
+        settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
+        settings.getUserSettings().setSynchronizeSettings(synchronizeSettings);
     }
 
     /**
@@ -1517,9 +1795,7 @@ public abstract class CmsWorkplace {
      */
     public boolean isHelpEnabled() {
 
-        return getCms().existsResource(
-            resolveMacros(CmsHelpTemplateBean.PATH_HELP),
-            CmsResourceFilter.IGNORE_EXPIRATION);
+        return false;
     }
 
     /**

@@ -56,7 +56,7 @@ import org.opencms.workflow.CmsWorkflowResources;
 import org.opencms.workflow.I_CmsPublishResourceFormatter;
 import org.opencms.workflow.I_CmsWorkflowManager;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsMultiDialog;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +176,7 @@ public class CmsPublishService extends CmsGwtService implements I_CmsPublishServ
         boolean confirm = Boolean.parseBoolean(confirmStr);
         String workflowId = getRequest().getParameter(PARAM_WORKFLOW_ID);
         String projectParam = getRequest().getParameter(PARAM_PUBLISH_PROJECT_ID);
-        String filesParam = getRequest().getParameter(CmsMultiDialog.PARAM_RESOURCELIST);
+        String filesParam = getRequest().getParameter(CmsWorkplace.PARAM_RESOURCELIST);
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(filesParam)) {
             filesParam = getRequest().getParameter(CmsDialog.PARAM_RESOURCE);
         }

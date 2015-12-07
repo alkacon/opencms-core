@@ -196,6 +196,77 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * Returns the html code to build the lock dialog.<p>
+     *
+     * @return html code
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static String buildLockDialog(CmsDialog dialog) throws CmsException {
+
+        return buildLockDialog(dialog, null, null, 2000, false);
+    }
+
+    /**
+     * Returns the html code to build the lock dialog.<p>
+     *
+     * @param nonBlockingFilter the filter to get all non blocking locks
+     * @param blockingFilter the filter to get all blocking locks
+     * @param hiddenTimeout the maximal number of milliseconds the dialog will be hidden
+     * @param includeRelated indicates if the report should include related resources
+     *
+     * @return html code
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static String buildLockDialog(
+        CmsDialog dialog,
+        CmsLockFilter nonBlockingFilter,
+        CmsLockFilter blockingFilter,
+        int hiddenTimeout,
+        boolean includeRelated) throws CmsException {
+
+        dialog.setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
+        CmsLock lockwp = new CmsLock(dialog.getJsp());
+        lockwp.setBlockingFilter(blockingFilter);
+        lockwp.setNonBlockingFilter(nonBlockingFilter);
+
+        StringBuffer html = new StringBuffer(512);
+        html.append(dialog.htmlStart("help.explorer.contextmenu.lock"));
+        html.append(lockwp.buildIncludeJs());
+        html.append(dialog.buildLockConfirmationMessageJS());
+        html.append(dialog.bodyStart("dialog"));
+        html.append("<div id='lock-body-id' class='hide'>\n");
+        html.append(dialog.dialogStart());
+        html.append(dialog.dialogContentStart(dialog.getParamTitle()));
+        html.append(dialog.buildLockHeaderBox());
+        html.append(dialog.dialogSpacer());
+        html.append("<form name='main' action='");
+        html.append(dialog.getDialogUri());
+        html.append("' method='post' class='nomargin' onsubmit=\"return submitAction('");
+        html.append(CmsDialog.DIALOG_OK);
+        html.append("', null, 'main');\">\n");
+        html.append(dialog.paramsAsHidden());
+        html.append("<input type='hidden' name='");
+        html.append(CmsDialog.PARAM_FRAMENAME);
+        html.append("' value=''>\n");
+        html.append(
+            dialog.buildAjaxResultContainer(
+                dialog.key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
+        html.append("<div id='conf-msg'></div>\n");
+        html.append(dialog.buildLockAdditionalOptions());
+        html.append(dialog.dialogContentEnd());
+        html.append(dialog.dialogLockButtons());
+        html.append("</form>\n");
+        html.append(dialog.dialogEnd());
+        html.append("</div>\n");
+        html.append(dialog.bodyEnd());
+        html.append(lockwp.buildLockRequest(hiddenTimeout, includeRelated));
+        html.append(dialog.htmlEnd());
+        return html.toString();
+    }
+
+    /**
      * Determines if the resource should be locked, unlocked or if the lock should be stolen.<p>
      *
      * @param cms the CmsObject
@@ -413,7 +484,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
         html.append("makeRequest('");
         html.append(getJsp().link("/system/workplace/commons/report-locks.jsp"));
         html.append("', '");
-        html.append(CmsMultiDialog.PARAM_RESOURCELIST);
+        html.append(CmsWorkplace.PARAM_RESOURCELIST);
         html.append("=");
         html.append(getParamResourcelist());
         html.append("&");

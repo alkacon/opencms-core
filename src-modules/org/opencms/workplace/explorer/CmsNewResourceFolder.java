@@ -98,7 +98,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     public static final String PARAM_INDEX_PAGE_TYPE = "indexpagetype";
 
     /** The name of the property where to find possible restypes for the index page. */
-    public static final String PROPERTY_RESTYPES_INDEXPAGE = "restypes.indexpage";
+    public static final String PROPERTY_RESTYPES_INDEXPAGE = CmsResourceTypeFolder.CONFIGURATION_INDEX_PAGE_TYPE;
 
     /** Item comparator to ensure that special types go first. */
     private static final I_CmsListItemComparator LIST_ITEM_COMPARATOR = new I_CmsListItemComparator() {

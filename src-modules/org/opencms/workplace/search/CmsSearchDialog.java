@@ -73,9 +73,6 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /** Localization key label infix for fields. */
     public static final String LABEL_FIELD_INFIX = "field.";
 
-    /** Request parameter name for the action. */
-    public static final String PARAM_ACTION_VALUE_FOR_CHANGED_INDEX = "index";
-
     /** the dialog type. */
     private static final String DIALOG_TYPE = "search";
 
@@ -406,7 +403,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         // return false in case the form was submitted already or the submit button was pressed or the index was changed
         return !(((getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION) != null)
             && (getJsp().getRequest().getParameter(CmsDialog.PARAM_ACTION).equals(
-                CmsSearchDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX)))
+                CmsDialog.PARAM_ACTION_VALUE_FOR_CHANGED_INDEX)))
             || ((getJsp().getRequest().getParameter("indexName.0")) != null));
     }
 }

@@ -65,6 +65,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsDefaultResourceStatusProvider;
@@ -102,7 +103,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
-import org.opencms.workplace.explorer.CmsNewResourceXmlContent;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.containerpage.CmsADESessionCache;
@@ -461,7 +461,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         try {
             CmsResource currentPage = cms.readResource(pageStructureId);
 
-            List<CmsResource> modelResources = CmsNewResourceXmlContent.getModelFiles(
+            List<CmsResource> modelResources = CmsResourceTypeXmlContent.getModelFiles(
                 getCmsObject(),
                 CmsResource.getFolderPath(cms.getSitePath(currentPage)),
                 resourceType);

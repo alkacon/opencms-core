@@ -44,11 +44,16 @@ import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.containerpage.CmsFormatterConfiguration;
+import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.CmsXmlVfsFileValue;
@@ -71,6 +76,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
+    /** The name for the choose model file form action. */
+    public static final String DIALOG_CHOOSEMODEL = "choosemodel";
+
     /** Configuration key for the (optional) schema. */
     public static final String CONFIGURATION_SCHEMA = "schema";
 
@@ -79,6 +87,62 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** The (optional) schema of this resource. */
     private String m_schema;
+
+    /**
+     * Returns the possible model files for the new resource.<p>
+     *
+     * @param cms the current users context to work with
+     * @param currentFolder the folder
+     * @param newResourceTypeName the resource type name for the new resource to create
+     * @return the possible model files for the new resource
+     */
+    public static List<CmsResource> getModelFiles(CmsObject cms, String currentFolder, String newResourceTypeName) {
+
+        try {
+
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(newResourceTypeName);
+            I_CmsPreEditorActionDefinition preEditorAction = OpenCms.getWorkplaceManager().getPreEditorConditionDefinition(
+                resType);
+            // get the global master folder if configured
+            String masterFolder = preEditorAction.getConfiguration().getString(
+                CmsDefaultXmlContentHandler.APPINFO_MODELFOLDER,
+                null);
+            // get the schema for the resource type to create
+            String schema = resType.getConfiguration().get(CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA);
+            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, schema);
+            // get the content handler for the resource type to create
+            I_CmsXmlContentHandler handler = contentDefinition.getContentHandler();
+            String individualModelFolder = handler.getModelFolder();
+            if (CmsStringUtil.isNotEmpty(individualModelFolder)) {
+                masterFolder = individualModelFolder;
+            }
+
+            if (CmsStringUtil.isNotEmpty(masterFolder)) {
+                // store the original URI
+                String uri = cms.getRequestContext().getUri();
+                try {
+                    // set URI to current folder
+                    cms.getRequestContext().setUri(currentFolder);
+                    CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+                    // resolve eventual macros
+                    masterFolder = resolver.resolveMacros(masterFolder);
+                } finally {
+                    // switch back to stored URI
+                    cms.getRequestContext().setUri(uri);
+                }
+
+                if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
+                    // folder for master files exists, get all files of the same resource type
+                    CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(
+                        resType.getTypeId());
+                    return cms.readResources(masterFolder, filter, false);
+                }
+            }
+        } catch (Throwable t) {
+            // error determining resource type, should never happen
+        }
+        return Collections.emptyList();
+    }
 
     /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>

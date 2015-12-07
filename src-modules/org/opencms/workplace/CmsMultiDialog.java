@@ -66,9 +66,6 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /** The delimiter that is used in the resource list request parameter. */
     public static final String DELIMITER_RESOURCES = "|";
 
-    /** Request parameter name for the resource list. */
-    public static final String PARAM_RESOURCELIST = "resourcelist";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMultiDialog.class);
 
@@ -115,6 +112,23 @@ public abstract class CmsMultiDialog extends CmsDialog {
     public void addMultiOperationException(CmsException exc) {
 
         m_multiOperationException.addException(exc);
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
+     */
+    @Override
+    public String buildLockHeaderBox() throws CmsException {
+
+        if (!isMultiOperation()) {
+            return super.buildLockHeaderBox();
+        }
+        StringBuffer html = new StringBuffer(1024);
+        // include multi resource list
+        html.append(dialogBlockStart(key(org.opencms.workplace.commons.Messages.GUI_MULTI_RESOURCELIST_TITLE_0)));
+        html.append(buildResourceList());
+        html.append(dialogBlockEnd());
+        return html.toString();
     }
 
     /**
@@ -166,23 +180,6 @@ public abstract class CmsMultiDialog extends CmsDialog {
         }
         result.append(dialogWhiteBoxEnd());
         return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
-     */
-    @Override
-    public String buildLockHeaderBox() throws CmsException {
-
-        if (!isMultiOperation()) {
-            return super.buildLockHeaderBox();
-        }
-        StringBuffer html = new StringBuffer(1024);
-        // include multi resource list
-        html.append(dialogBlockStart(key(org.opencms.workplace.commons.Messages.GUI_MULTI_RESOURCELIST_TITLE_0)));
-        html.append(buildResourceList());
-        html.append(dialogBlockEnd());
-        return html.toString();
     }
 
     /**
@@ -293,6 +290,16 @@ public abstract class CmsMultiDialog extends CmsDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
+     */
+    @Override
+    public void setParamResource(String value) {
+
+        super.setParamResource(value);
+        m_resourceList = null;
+    }
+
+    /**
      * Sets the value of the resourcelist parameter.<p>
      *
      * @param paramResourcelist the value of the resourcelist parameter
@@ -300,16 +307,6 @@ public abstract class CmsMultiDialog extends CmsDialog {
     public void setParamResourcelist(String paramResourcelist) {
 
         m_paramResourcelist = paramResourcelist;
-        m_resourceList = null;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
-     */
-    @Override
-    public void setParamResource(String value) {
-
-        super.setParamResource(value);
         m_resourceList = null;
     }
 

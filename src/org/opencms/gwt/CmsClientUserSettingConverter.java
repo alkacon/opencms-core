@@ -39,7 +39,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
-import org.opencms.workplace.commons.CmsPreferences;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentPropertyHelper;
 
@@ -104,9 +104,6 @@ public class CmsClientUserSettingConverter {
     /** The CMS context to use. */
     private CmsObject m_cms;
 
-    /** The workplace preferences dialog instance used for loading/saving user settings. */
-    private CmsPreferences m_preferences;
-
     /** The current request. */
     private HttpServletRequest m_request;
 
@@ -127,10 +124,8 @@ public class CmsClientUserSettingConverter {
 
         m_cms = cms;
         m_request = request;
-        m_preferences = new CmsPreferences(new NoJspActionElement(cms, request, response));
         m_currentPreferences = new CmsDefaultUserSettings();
         m_currentPreferences.init(cms.getRequestContext().getCurrentUser());
-        m_preferences.setUserSettings(m_currentPreferences);
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         CmsMultiMessages messages = new CmsMultiMessages(locale);
         messages.addMessages(OpenCms.getWorkplaceManager().getMessages(locale));
@@ -148,7 +143,7 @@ public class CmsClientUserSettingConverter {
 
         CmsUserSettingsBean result = new CmsUserSettingsBean();
         CmsDefaultUserSettings currentSettings = new CmsDefaultUserSettings();
-        currentSettings.init(m_preferences.getUserSettings().getUser());
+        currentSettings.init(m_currentPreferences.getUser());
         for (I_CmsPreference pref : OpenCms.getWorkplaceManager().getDefaultUserSettings().getPreferences().values()) {
             String tab = pref.getTab();
             if (CmsGwtConstants.TAB_HIDDEN.equals(tab)) {
@@ -179,8 +174,8 @@ public class CmsClientUserSettingConverter {
             String value = entry.getValue();
             saveSetting(key, value);
         }
-        m_preferences.getUserSettings().save(m_cms);
-        m_preferences.updatePreferences(m_cms, m_request);
+        m_currentPreferences.save(m_cms);
+        CmsWorkplace.updateUserPreferences(m_cms, m_request);
     }
 
     /**

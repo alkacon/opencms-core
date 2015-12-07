@@ -85,7 +85,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -819,7 +818,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
             switch (linkMode) {
                 case oldWorkplace:
-                    result = CmsExplorer.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+                    result = CmsWorkplace.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
                     break;
                 case newWorkplace:
                     CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
@@ -1078,7 +1077,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         } catch (CmsException e) {
             log(e.getLocalizedMessage(), e);
         }
-        String defaultWorkplaceLink = CmsExplorer.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
+        String defaultWorkplaceLink = CmsWorkplace.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
         CmsRoleManager roleManager = OpenCms.getRoleManager();
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);

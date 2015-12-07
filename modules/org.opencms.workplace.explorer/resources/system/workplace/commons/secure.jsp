@@ -2,8 +2,7 @@
     org.opencms.file.CmsPropertyDefinition,
     org.opencms.main.OpenCms,
 	org.opencms.workplace.CmsDialog,
-	org.opencms.workplace.commons.CmsSecure,
-    org.opencms.workplace.commons.Messages
+	org.opencms.workplace.commons.*
 " %><%
         
         // initialize the workplace class
@@ -204,7 +203,7 @@ wp.setParamAction("secure");
 case CmsDialog.ACTION_DEFAULT:
 default:
 %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>

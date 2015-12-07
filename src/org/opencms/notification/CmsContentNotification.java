@@ -43,7 +43,6 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
@@ -86,7 +85,7 @@ public class CmsContentNotification extends A_CmsNotification {
     private String m_uriWorkplace = m_serverAndContext + CmsWorkplace.VFS_PATH_WORKPLACE;
 
     /** Uri of the workplace jsp. */
-    private String m_uriWorkplaceJsp = m_serverAndContext + CmsFrameset.JSP_WORKPLACE_URI;
+    private String m_uriWorkplaceJsp = m_serverAndContext + CmsWorkplace.JSP_WORKPLACE_URI;
 
     /**
      * Creates a new CmsContentNotification.<p>
@@ -237,7 +236,7 @@ public class CmsContentNotification extends A_CmsNotification {
             wpStartUri.append(notificationCause.getCause());
             wpStartUri.append("&resource=");
             wpStartUri.append(resourcePath);
-            params.put(CmsFrameset.PARAM_WP_START, new String[] {wpStartUri.toString()});
+            params.put(CmsWorkplace.PARAM_WP_START, new String[] {wpStartUri.toString()});
             params.put(
                 CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
                 new String[] {CmsResource.getParentFolder(resourcePath)});
@@ -314,7 +313,7 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(
                 CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE,
                 new String[] {CmsResource.getParentFolder(resourcePath)});
-            params.put(CmsFrameset.PARAM_WP_START, new String[] {wpStartUri.toString()});
+            params.put(CmsWorkplace.PARAM_WP_START, new String[] {wpStartUri.toString()});
             params.put(CmsWorkplace.PARAM_WP_SITE, new String[] {siteRoot});
             CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, new String[] {String.valueOf(projectId)});

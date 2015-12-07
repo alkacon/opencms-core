@@ -31,6 +31,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListExplorerColumn;
+import org.opencms.workplace.threads.A_CmsProgressThread;
 
 import java.util.Locale;
 
@@ -45,7 +46,7 @@ import org.apache.commons.logging.Log;
  *
  * @since 7.0.0
  */
-public class CmsProgressThread extends Thread {
+public class CmsProgressThread extends A_CmsProgressThread {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsProgressThread.class);

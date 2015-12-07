@@ -24,6 +24,7 @@ The module allows you to check in the latest version of your modules by simply p
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
+			<dependency name="org.opencms.workplace" version="10.0.0"/>
 			<dependency name="org.opencms.workplace.tools.modules" version="10.0.0"/>
 		</dependencies>
 		<exportpoints>

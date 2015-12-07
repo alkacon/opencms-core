@@ -28,7 +28,10 @@
 package org.opencms.ui.dialogs.availability;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsVfsService;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsPrincipalBean;
@@ -46,10 +49,12 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.commons.CmsAvailability;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -308,7 +313,7 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
         CmsObject cms = A_CmsUI.getCmsObject();
         if (!notificationSettingsUnchanged) {
             for (CmsResource resource : m_dialogContext.getResources()) {
-                CmsAvailability.performSingleResourceNotification(
+                performSingleResourceNotification(
                     A_CmsUI.getCmsObject(),
                     cms.getSitePath(resource),
                     notificationEnabled.booleanValue(),
@@ -391,6 +396,58 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     }
 
     /**
+     * Performs the notification operations on a single resource.<p>
+     *
+     * @param cms the CMS context
+     * @param resName the VFS path of the resource
+     * @param enableNotification if the notification is activated
+     * @param notificationInterval the notification interval in days
+     * @param modifySiblings flag indicating to include resource siblings
+     *
+     * @throws CmsException if the availability and notification operations fail
+     */
+    private void performSingleResourceNotification(
+        CmsObject cms,
+        String resName,
+        boolean enableNotification,
+        int notificationInterval,
+        boolean modifySiblings) throws CmsException {
+
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        if (modifySiblings) {
+            // modify all siblings of a resource
+            resources = cms.readSiblings(resName, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            // modify only resource without siblings
+            resources.add(cms.readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION));
+        }
+        Iterator<CmsResource> i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource resource = i.next();
+            String resourcePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            // lock resource if auto lock is enabled
+            CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
+            try {
+                // write notification settings
+                writeProperty(
+                    cms,
+                    resourcePath,
+                    CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                    String.valueOf(notificationInterval));
+                writeProperty(
+                    cms,
+                    resourcePath,
+                    CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                    String.valueOf(enableNotification));
+            } finally {
+                if (lockRecord.getChange() == LockChange.locked) {
+                    cms.unlockResource(resource);
+                }
+            }
+        }
+    }
+
+    /**
      * Validates release / expiration.<p>
      *
      * @return true if the fields are valid.
@@ -398,5 +455,67 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
     private boolean validate() {
 
         return m_releasedField.isValid() && m_expiredField.isValid();
+    }
+
+    /**
+     * Writes a property value for a resource.<p>
+     *
+     * @param cms the cms context
+     * @param resourcePath the path of the resource
+     * @param propertyName the name of the property
+     * @param propertyValue the new value of the property
+     *
+     * @throws CmsException if something goes wrong
+     */
+    private void writeProperty(CmsObject cms, String resourcePath, String propertyName, String propertyValue)
+    throws CmsException {
+
+        if (CmsStringUtil.isEmpty(propertyValue)) {
+            propertyValue = CmsProperty.DELETE_VALUE;
+        }
+
+        CmsProperty newProp = new CmsProperty();
+        newProp.setName(propertyName);
+        CmsProperty oldProp = cms.readPropertyObject(resourcePath, propertyName, false);
+        if (oldProp.isNullProperty()) {
+            // property value was not already set
+            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                newProp.setStructureValue(propertyValue);
+            } else {
+                newProp.setResourceValue(propertyValue);
+            }
+        } else {
+            if (oldProp.getStructureValue() != null) {
+                newProp.setStructureValue(propertyValue);
+                newProp.setResourceValue(oldProp.getResourceValue());
+            } else {
+                newProp.setResourceValue(propertyValue);
+            }
+        }
+
+        newProp.setAutoCreatePropertyDefinition(true);
+
+        String oldStructureValue = oldProp.getStructureValue();
+        String newStructureValue = newProp.getStructureValue();
+        if (CmsStringUtil.isEmpty(oldStructureValue)) {
+            oldStructureValue = CmsProperty.DELETE_VALUE;
+        }
+        if (CmsStringUtil.isEmpty(newStructureValue)) {
+            newStructureValue = CmsProperty.DELETE_VALUE;
+        }
+
+        String oldResourceValue = oldProp.getResourceValue();
+        String newResourceValue = newProp.getResourceValue();
+        if (CmsStringUtil.isEmpty(oldResourceValue)) {
+            oldResourceValue = CmsProperty.DELETE_VALUE;
+        }
+        if (CmsStringUtil.isEmpty(newResourceValue)) {
+            newResourceValue = CmsProperty.DELETE_VALUE;
+        }
+
+        // change property only if it has been changed
+        if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
+            cms.writePropertyObject(resourcePath, newProp);
+        }
     }
 }

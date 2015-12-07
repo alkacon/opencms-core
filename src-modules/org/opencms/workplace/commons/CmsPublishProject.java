@@ -144,6 +144,21 @@ public class CmsPublishProject extends CmsMultiDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
+     */
+    @Override
+    public void actionCloseDialog() throws JspException {
+
+        CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
+        if (thread != null) {
+            thread.interrupt();
+            CmsProgressWidget.removeProgressThread(thread.getKey());
+        }
+
+        super.actionCloseDialog();
+    }
+
+    /**
      * Performs the publish action, will be called by the JSP page.<p>
      *
      * @throws JspException if problems including sub-elements occur
@@ -260,7 +275,6 @@ public class CmsPublishProject extends CmsMultiDialog {
      *
      * @throws CmsException if something goes wrong
      */
-    @Override
     public String buildLockDialog() throws CmsException {
 
         CmsLockFilter nonBlockingFilter = CmsLockFilter.FILTER_ALL;
@@ -269,7 +283,12 @@ public class CmsPublishProject extends CmsMultiDialog {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
             nonBlockingFilter = nonBlockingFilter.filterProject(new CmsUUID(getParamProjectid()));
         }
-        return buildLockDialog(nonBlockingFilter, getBlockingFilter(), 0, true);
+        return org.opencms.workplace.commons.CmsLock.buildLockDialog(
+            this,
+            nonBlockingFilter,
+            getBlockingFilter(),
+            0,
+            true);
     }
 
     /**
@@ -703,21 +722,6 @@ public class CmsPublishProject extends CmsMultiDialog {
     public void setParamSubresources(String paramSubresources) {
 
         m_paramSubresources = paramSubresources;
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
-     */
-    @Override
-    public void actionCloseDialog() throws JspException {
-
-        CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
-        if (thread != null) {
-            thread.interrupt();
-            CmsProgressWidget.removeProgressThread(thread.getKey());
-        }
-
-        super.actionCloseDialog();
     }
 
     /**

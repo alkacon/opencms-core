@@ -35,7 +35,7 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsFileUtil;
-import org.opencms.workplace.explorer.CmsExplorer;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
@@ -61,7 +61,7 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
         } else {
             initPath = CmsFileUtil.addTrailingSeparator(cms.getRequestContext().getSiteRoot());
         }
-        String link = CmsExplorer.getWorkplaceExplorerLink(cms, initPath);
+        String link = CmsWorkplace.getWorkplaceExplorerLink(cms, initPath);
         A_CmsUI.get().getPage().open(link, "_blank");
     }
 

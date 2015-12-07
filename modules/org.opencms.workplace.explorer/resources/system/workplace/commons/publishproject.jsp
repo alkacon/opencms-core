@@ -2,10 +2,7 @@
 		org.opencms.workplace.CmsDialog,
 		org.opencms.workplace.CmsMultiDialog,
 		org.opencms.workplace.CmsWorkplace,
-		org.opencms.workplace.commons.CmsPublishProject,
-		org.opencms.workplace.commons.CmsProgressWidget,
-		org.opencms.workplace.commons.CmsPublishResourcesList,
-		org.opencms.workplace.commons.Messages,
+		org.opencms.workplace.commons.*,
 		java.util.List,
 		java.util.ArrayList,
 		org.opencms.util.*
@@ -370,7 +367,7 @@ case CmsDialog.ACTION_WAIT:
 case CmsDialog.ACTION_DEFAULT:
 default:
 %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>

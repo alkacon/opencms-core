@@ -32,7 +32,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -40,7 +39,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.commons.CmsLock;
 import org.opencms.workplace.editors.CmsPreEditorAction;
 import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
@@ -166,6 +164,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter name for the action. */
     public static final String PARAM_ACTION = "action";
+
+    /** Request parameter name for the action. */
+    public static final String PARAM_ACTION_VALUE_FOR_CHANGED_INDEX = "index";
 
     /** Request parameter name for the closelink. */
     public static final String PARAM_CLOSELINK = "closelink";
@@ -460,74 +461,6 @@ public class CmsDialog extends CmsToolDialog {
         html.append("}\n");
         html.append("// -->\n");
         html.append("</script>\n");
-        return html.toString();
-    }
-
-    /**
-     * Returns the html code to build the lock dialog.<p>
-     *
-     * @return html code
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public String buildLockDialog() throws CmsException {
-
-        return buildLockDialog(null, null, 2000, false);
-    }
-
-    /**
-     * Returns the html code to build the lock dialog.<p>
-     *
-     * @param nonBlockingFilter the filter to get all non blocking locks
-     * @param blockingFilter the filter to get all blocking locks
-     * @param hiddenTimeout the maximal number of milliseconds the dialog will be hidden
-     * @param includeRelated indicates if the report should include related resources
-     *
-     * @return html code
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public String buildLockDialog(
-        CmsLockFilter nonBlockingFilter,
-        CmsLockFilter blockingFilter,
-        int hiddenTimeout,
-        boolean includeRelated) throws CmsException {
-
-        setParamAction(CmsDialog.DIALOG_LOCKS_CONFIRMED);
-        CmsLock lockwp = new CmsLock(getJsp());
-        lockwp.setBlockingFilter(blockingFilter);
-        lockwp.setNonBlockingFilter(nonBlockingFilter);
-
-        StringBuffer html = new StringBuffer(512);
-        html.append(htmlStart("help.explorer.contextmenu.lock"));
-        html.append(lockwp.buildIncludeJs());
-        html.append(buildLockConfirmationMessageJS());
-        html.append(bodyStart("dialog"));
-        html.append("<div id='lock-body-id' class='hide'>\n");
-        html.append(dialogStart());
-        html.append(dialogContentStart(getParamTitle()));
-        html.append(buildLockHeaderBox());
-        html.append(dialogSpacer());
-        html.append("<form name='main' action='");
-        html.append(getDialogUri());
-        html.append("' method='post' class='nomargin' onsubmit=\"return submitAction('");
-        html.append(CmsDialog.DIALOG_OK);
-        html.append("', null, 'main');\">\n");
-        html.append(paramsAsHidden());
-        html.append("<input type='hidden' name='");
-        html.append(CmsDialog.PARAM_FRAMENAME);
-        html.append("' value=''>\n");
-        html.append(buildAjaxResultContainer(key(org.opencms.workplace.commons.Messages.GUI_LOCK_RESOURCES_TITLE_0)));
-        html.append("<div id='conf-msg'></div>\n");
-        html.append(buildLockAdditionalOptions());
-        html.append(dialogContentEnd());
-        html.append(dialogLockButtons());
-        html.append("</form>\n");
-        html.append(dialogEnd());
-        html.append("</div>\n");
-        html.append(bodyEnd());
-        html.append(lockwp.buildLockRequest(hiddenTimeout, includeRelated));
-        html.append(htmlEnd());
         return html.toString();
     }
 

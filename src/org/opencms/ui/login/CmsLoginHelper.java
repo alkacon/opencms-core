@@ -40,7 +40,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -418,7 +417,7 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             requestedWorkplaceApp = request.getRequestURL().toString();
         } else if (requestedResource == null) {
             // no resource was requested, use default workplace URI
-            requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
+            requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
         }
         Locale locale = getLocaleForRequest(request);
         String resetStr = request.getParameter(PARAM_RESET_PASSWORD);

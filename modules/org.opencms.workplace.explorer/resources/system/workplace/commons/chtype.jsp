@@ -1,7 +1,6 @@
 <%@ page import="
 	org.opencms.workplace.CmsDialog,
-	org.opencms.workplace.commons.CmsChtype,
-	org.opencms.workplace.commons.Messages" %>
+	org.opencms.workplace.commons.*" %>
 <%	
 
 	// initialize the workplace class
@@ -35,7 +34,7 @@ default:
 case CmsDialog.ACTION_DEFAULT:
 
     %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>

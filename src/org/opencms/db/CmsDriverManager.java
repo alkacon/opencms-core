@@ -113,7 +113,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
-import org.opencms.workplace.commons.CmsProgressThread;
+import org.opencms.workplace.threads.A_CmsProgressThread;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -4369,9 +4369,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Map<String, CmsResource> relations = new HashMap<String, CmsResource>();
 
         // check if progress should be set in the thread
-        CmsProgressThread thread = null;
-        if (Thread.currentThread() instanceof CmsProgressThread) {
-            thread = (CmsProgressThread)Thread.currentThread();
+        A_CmsProgressThread thread = null;
+        if (Thread.currentThread() instanceof A_CmsProgressThread) {
+            thread = (A_CmsProgressThread)Thread.currentThread();
         }
 
         // get all resources to publish

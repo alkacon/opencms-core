@@ -44,8 +44,8 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsLoginUserAgreement;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -466,17 +466,17 @@ public class CmsLoginController {
         } else {
             boolean workplace2 = false;
 
-            if (CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
+            if (CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
                 && settings.getUserSettings().startWithNewWorkplace()) {
                 workplace2 = true;
                 checkRole = true;
             } else if ((m_params.getRequestedResource() != null)
-                && !CmsFrameset.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
+                && !CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
                 target = m_params.getRequestedResource();
             } else if (directEditPath != null) {
                 target = directEditPath;
             } else {
-                target = CmsFrameset.JSP_WORKPLACE_URI;
+                target = CmsWorkplace.JSP_WORKPLACE_URI;
                 checkRole = true;
             }
 

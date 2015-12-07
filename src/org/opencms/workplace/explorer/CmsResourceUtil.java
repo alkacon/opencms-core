@@ -53,7 +53,6 @@ import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.commons.CmsTouch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,7 +313,7 @@ public final class CmsResourceUtil {
         if (release != CmsResource.DATE_EXPIRED_DEFAULT) {
             return getMessages().getDateTime(release);
         } else {
-            return CmsTouch.DEFAULT_DATE_STRING;
+            return CmsWorkplace.DEFAULT_DATE_STRING;
         }
     }
 
@@ -329,7 +328,7 @@ public final class CmsResourceUtil {
         if (release != CmsResource.DATE_RELEASED_DEFAULT) {
             return getMessages().getDateTime(release);
         } else {
-            return CmsTouch.DEFAULT_DATE_STRING;
+            return CmsWorkplace.DEFAULT_DATE_STRING;
         }
     }
 

@@ -2,8 +2,7 @@
 		org.opencms.workplace.CmsDialog,
 		org.opencms.workplace.CmsMultiDialog,
 		org.opencms.workplace.CmsWorkplace,
-		org.opencms.workplace.commons.CmsDelete,
-		org.opencms.workplace.commons.Messages,
+		org.opencms.workplace.commons.*,
 		java.util.Collections
 " %><%	
 
@@ -179,7 +178,7 @@ makeRequest('<%= wp.getJsp().link("/system/workplace/commons/report-brokenrelati
 case CmsDialog.ACTION_DEFAULT:
 default:
 %>
-<%= wp.buildLockDialog() %>
+<%= CmsLock.buildLockDialog(wp) %>
 <% } 
 //////////////////// end of switch statement 
 %>
