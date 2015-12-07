@@ -225,7 +225,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsResource createFolder(String targetFolder, String folderName) throws Exception {
 
-        return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.getStaticTypeId());
     }
 
     /**
@@ -1167,6 +1167,20 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsProject setCurrentProject(String name) throws Exception {
 
         return m_cms.getRequestContext().setCurrentProject(m_cms.readProject(name));
+    }
+
+    /**
+     * Sets the rebuild mode for the requested index. Allowing to disable indexing during module import.<p>
+     * This setting will not be written to the XML configuration file and will only take effect within the current shell instance.<p>
+     *
+     * @param searchIndex the search index
+     * @param mode the rebuild mode to set
+     */
+    public void setIndexRebuildMode(String searchIndex, String mode) {
+
+        OpenCms.getSearchManager().getIndex(searchIndex).setRebuildMode(mode);
+        // required for this setting to take effect
+        OpenCms.getSearchManager().initOfflineIndexes();
     }
 
     /**
