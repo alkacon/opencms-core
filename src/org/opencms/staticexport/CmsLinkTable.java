@@ -37,6 +37,8 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.BooleanUtils;
+
 import com.google.common.collect.ComparisonChain;
 
 /**
@@ -56,11 +58,16 @@ public class CmsLinkTable {
          */
         public int compare(String a, String b) {
 
+            if ((a == null) || (b == null)) {
+                // null is "less" than any other string
+                return BooleanUtils.toInteger(b == null) - BooleanUtils.toInteger(a == null);
+            }
             Matcher matcherA = LINK_PATTERN.matcher(a);
             Matcher matcherB = LINK_PATTERN.matcher(b);
             matcherA.find();
             matcherB.find();
             String nameA = matcherA.group(1);
+            // prepend "0" so we don't get an exception for the empty string
             int indexA = Integer.parseInt("0" + matcherA.group(2));
             String nameB = matcherB.group(1);
             int indexB = Integer.parseInt("0" + matcherB.group(2));

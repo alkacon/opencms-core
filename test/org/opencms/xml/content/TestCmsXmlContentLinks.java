@@ -331,7 +331,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
     public void testLinkComparator() throws Exception {
 
         LinkKeyComparator comparator = new LinkKeyComparator();
-        List<String> ascendingKeys = Arrays.asList("a1", "a2", "a11", "b1", "b2", "b11", "c", "c0", "c00", "c1");
+        List<String> ascendingKeys = Arrays.asList(null, "a1", "a2", "a11", "b1", "b2", "b11", "c", "c0", "c00", "c1");
         for (int i = 0; i < ascendingKeys.size(); i++) {
             for (int j = 0; j < ascendingKeys.size(); j++) {
                 String firstKey = ascendingKeys.get(i);
