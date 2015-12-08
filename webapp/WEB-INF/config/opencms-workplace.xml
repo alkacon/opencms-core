@@ -1639,7 +1639,7 @@
                 <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
 			</preference-tab>
 			<preference-tab name="extended">
-			    <preference name="workplaceMode" value="old" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)" 
+			    <preference name="workplaceMode" value="new" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)" 
                 	widget="select" widget-config="old:%(key.GUI_PREF_WORKPLACE_MODE_OLD_0)|new:%(key.GUI_PREF_WORKPLACE_MODE_NEW_0)" /> 
 			
                 <preference name="startProject" value="Offline"
@@ -1724,7 +1724,7 @@
 				<preference name="showUploadTypeDialog" value="true"
 					widget="checkbox" />
 				<preference name="startView"
-					value="/system/workplace/views/explorer/directEdit.jsp" />
+					value="/system/workplace/views/workplace.jsp" />
 				<preference name="uploadVariant" value="gwt" widget="select"
 					widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
 				<preference name="workplaceReportType" value="extended" />
