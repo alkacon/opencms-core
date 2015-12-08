@@ -86,16 +86,26 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     public enum XmlNode {
 
         /** Container attribute node name. */
-        Attribute, /** Main node name. */
-        Containers, /** The create new element node name. */
-        CreateNew, /** Container elements node name. */
-        Elements, /** Element formatter node name. */
-        Formatter, /** Container attribute key node name. */
-        Key, /** Container name node name. */
-        Name, /** Parent element instance id node name. */
-        ParentInstanceId, /** Container type node name. */
-        Type, /** Element URI node name. */
-        Uri, /** Container attribute value node name. */
+        Attribute,
+        /** Main node name. */
+        Containers,
+        /** The create new element node name. */
+        CreateNew,
+        /** Container elements node name. */
+        Elements,
+        /** Element formatter node name. */
+        Formatter,
+        /** Container attribute key node name. */
+        Key,
+        /** Container name node name. */
+        Name,
+        /** Parent element instance id node name. */
+        ParentInstanceId,
+        /** Container type node name. */
+        Type,
+        /** Element URI node name. */
+        Uri,
+        /** Container attribute value node name. */
         Value;
     }
 
@@ -169,6 +179,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                 addLocale(cms, locale);
             } catch (CmsXmlException e) {
                 // this can not happen since the locale does not exist
+                LOG.error(e.getMessage(), e);
             }
         }
     }
@@ -279,7 +290,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
 
         // keep unused containers
         CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
-
+        savePage = removeEmptyContainers(cntPage);
         // Replace existing locales with master locale
         for (Locale locale : getLocales()) {
             removeLocale(locale);
@@ -524,6 +535,24 @@ public class CmsXmlContainerPage extends CmsXmlContent {
                     e);
             }
         }
+    }
+
+    /**
+     * Removes all empty containers to clean up container page XML.<p>
+     *
+     * @param cntPage the container page bean
+     *
+     * @return the newly generated result
+     */
+    protected CmsContainerPageBean removeEmptyContainers(CmsContainerPageBean cntPage) {
+
+        List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
+        for (CmsContainerBean container : cntPage.getContainers().values()) {
+            if (container.getElements().size() > 0) {
+                containers.add(container);
+            }
+        }
+        return new CmsContainerPageBean(containers);
     }
 
     /**
