@@ -89,6 +89,20 @@ public class CmsDetailPageInfo implements Serializable {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        boolean result = false;
+        if (obj instanceof CmsDetailPageInfo) {
+            CmsDetailPageInfo info = (CmsDetailPageInfo)obj;
+            result = toString().equals(info.toString());
+        }
+        return result;
+    }
+
+    /**
      * Gets the type name to display to the user.<p>
      *
      * @return the type name to display
@@ -140,5 +154,23 @@ public class CmsDetailPageInfo implements Serializable {
     public String getUri() {
 
         return m_uri;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+
+        return toString().hashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return "" + m_type + ":" + m_id + m_uri;
     }
 }

@@ -48,8 +48,8 @@ import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -186,7 +186,8 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
      */
     public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
 
-        Set<CmsLink> links = new HashSet<CmsLink>();
+        // use a linked set to keep the link order
+        Set<CmsLink> links = new LinkedHashSet<CmsLink>();
         try {
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
             List<Locale> locales = xmlPage.getLocales();
