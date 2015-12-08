@@ -178,6 +178,10 @@
 	.o-project-other {
 		color: $o-state-other-project-color;
 	}
+	
+	.o-expired {
+		font-style: italic;
+	}
   
 	.v-formlayout.o-form-less-margin{
 		@include valo-formlayout-margin(14px);

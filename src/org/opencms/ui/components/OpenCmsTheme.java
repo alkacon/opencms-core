@@ -162,6 +162,9 @@ public class OpenCmsTheme {
     public static final String RESPONSIVE = "o-responsive";
 
     /** CSS style name. */
+    public static final String EXPIRED = "o-expired";
+
+    /** CSS style name. */
     public static final String SIBLING = "o-sibling";
 
     /** CSS style name. */

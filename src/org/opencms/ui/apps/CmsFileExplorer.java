@@ -27,8 +27,6 @@
 
 package org.opencms.ui.apps;
 
-import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -685,7 +683,8 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             CmsResourceTableProperty.PROPERTY_RESOURCE_NAME,
             CmsResourceTableProperty.PROPERTY_STATE,
             CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE,
-            CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT);
+            CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT,
+            CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED);
         m_fileTree = new Tree();
         m_fileTree.addStyleName(OpenCmsTheme.SIMPLE_DRAG);
         m_fileTree.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
@@ -1537,7 +1536,10 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
-        resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT).setValue(
+            Boolean.valueOf(resUtil.isInsideProject()));
+        resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
+            Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
             new ExternalResource(

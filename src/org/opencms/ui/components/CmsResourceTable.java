@@ -36,6 +36,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOL
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
@@ -351,6 +352,13 @@ public class CmsResourceTable extends A_CmsCustomComponent {
             resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).setValue(Boolean.valueOf(resUtil.isInsideProject()));
         } else {
             LOG.error("Error redering item, property " + PROPERTY_INSIDE_PROJECT.getId() + " is null");
+        }
+
+        if (resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED) != null) {
+            resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).setValue(
+                Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
+        } else {
+            LOG.error("Error redering item, property " + PROPERTY_RELEASED_NOT_EXPIRED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_RESOURCE_NAME) != null) {

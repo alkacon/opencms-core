@@ -82,6 +82,16 @@ public class CmsResourceTableProperty {
         150);
 
     /** Resoure table property. */
+    public static final CmsResourceTableProperty PROPERTY_RELEASED_NOT_EXPIRED = new CmsResourceTableProperty(
+        "PROPERTY_RELEASED_NOT_EXPIRED",
+        Boolean.class,
+        Boolean.TRUE,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resoure table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_DATE_MODIFIED",
         String.class,

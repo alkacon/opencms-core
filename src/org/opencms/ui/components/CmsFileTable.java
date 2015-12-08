@@ -36,6 +36,7 @@ import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_IS_FOL
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PERMISSIONS;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_PROJECT;
+import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_NAME;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_RESOURCE_TYPE;
 import static org.opencms.ui.components.CmsResourceTableProperty.PROPERTY_SIZE;
@@ -258,6 +259,7 @@ public class CmsFileTable extends CmsResourceTable {
                 column(PROPERTY_IS_FOLDER, INVISIBLE);
                 column(PROPERTY_STATE, INVISIBLE);
                 column(PROPERTY_INSIDE_PROJECT, INVISIBLE);
+                column(PROPERTY_RELEASED_NOT_EXPIRED, INVISIBLE);
             }
 
         }.buildColumns();
@@ -319,13 +321,18 @@ public class CmsFileTable extends CmsResourceTable {
 
         String result = "";
         if (resourceItem != null) {
-            if (((Boolean)resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue()).booleanValue()) {
+            if ((resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue() == null)
+                || ((Boolean)resourceItem.getItemProperty(PROPERTY_INSIDE_PROJECT).getValue()).booleanValue()) {
 
                 CmsResourceState state = (CmsResourceState)resourceItem.getItemProperty(
                     CmsResourceTableProperty.PROPERTY_STATE).getValue();
                 result = getStateStyle(state);
             } else {
                 result = OpenCmsTheme.PROJECT_OTHER;
+            }
+            if ((resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue() != null)
+                && !((Boolean)resourceItem.getItemProperty(PROPERTY_RELEASED_NOT_EXPIRED).getValue()).booleanValue()) {
+                result += " " + OpenCmsTheme.EXPIRED;
             }
         }
         return result;
