@@ -2481,11 +2481,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         CmsObject searchCms = getSearchCms(searchObj);
         searchBean.init(searchCms);
 
-        //         Lucene Search
-        //        searchBean.setIndex(CmsGallerySearchIndex.GALLERY_INDEX_NAME);
-        //        CmsGallerySearchResultList lucenesearchResults = searchBean.getResult(params);
-
-        // TODO
         CmsGallerySearchResultList searchResults = OpenCms.getSearchManager().getIndexSolr(
             "Solr Offline").gallerySearch(searchCms, params);
         searchResults.calculatePages(params.getResultPage(), params.getMatchesPerPage());

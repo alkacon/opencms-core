@@ -36,6 +36,7 @@ import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
@@ -258,30 +259,36 @@ public class CmsSolrIndex extends CmsSearchIndex {
     }
 
     /**
-     * TODO: This method should be avoided, adjust the Gallery search to use
-     * {@link #search(CmsObject, CmsSolrQuery, boolean, ServletResponse)}
-     * instead.<p>
+     * Performs a search with according to the gallery search parameters.<p>
+     *
+     * @param cms the cms context
+     * @param params the search parameters
+     *
+     * @return the search result
      */
     public CmsGallerySearchResultList gallerySearch(CmsObject cms, CmsGallerySearchParameters params) {
 
-        final CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
+        CmsGallerySearchResultList resultList = new CmsGallerySearchResultList();
 
         try {
-            final CmsSolrResultList list = search(cms, params.getQuery(cms), false, null, true);
+            CmsSolrResultList list = search(
+                cms,
+                params.getQuery(cms),
+                false,
+                null,
+                true,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
 
             if (null == list) {
                 return null;
             }
 
             resultList.setHitCount(Long.valueOf(list.getNumFound()).intValue());
-            for (final CmsSearchResource resource : list) {
-                //                final int score = resource.getScore(100f);
-                final I_CmsSearchDocument document = resource.getDocument();
-                // TODO
-                //                final String excerpt = "";
-                final Locale locale = CmsLocaleManager.getLocale(params.getLocale());
+            for (CmsSearchResource resource : list) {
+                I_CmsSearchDocument document = resource.getDocument();
+                Locale locale = CmsLocaleManager.getLocale(params.getLocale());
 
-                final CmsGallerySearchResult result = new CmsGallerySearchResult(
+                CmsGallerySearchResult result = new CmsGallerySearchResult(
                     document,
                     cms,
                     (int)document.getScore(),
@@ -497,7 +504,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public CmsSolrResultList search(CmsObject cms, final CmsSolrQuery query, boolean ignoreMaxRows)
     throws CmsSearchException {
 
-        return search(cms, query, ignoreMaxRows, null, false);
+        return search(cms, query, ignoreMaxRows, null, false, null);
     }
 
     /**
@@ -549,7 +556,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public void select(ServletResponse response, CmsObject cms, CmsSolrQuery query, boolean ignoreMaxRows)
     throws Exception {
 
-        search(cms, query, ignoreMaxRows, response, false);
+        search(cms, query, ignoreMaxRows, response, false, null);
     }
 
     /**
@@ -788,6 +795,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      * @param query the OpenCms Solr query
      * @param response the servlet response to write the query result to, may also be <code>null</code>
      * @param ignoreSearchExclude if set to false, only contents with search_exclude unset or "false" will be found - typical for the the non-gallery case
+     * @param filter the resource filter to use
      *
      * @return the found documents
      *
@@ -801,7 +809,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
         final CmsSolrQuery query,
         boolean ignoreMaxRows,
         ServletResponse response,
-        boolean ignoreSearchExclude) throws CmsSearchException {
+        boolean ignoreSearchExclude,
+        CmsResourceFilter filter) throws CmsSearchException {
 
         // check if the user is allowed to access this index
         checkOfflineAccess(cms);
@@ -884,7 +893,9 @@ public class CmsSolrIndex extends CmsSearchIndex {
                     CmsSolrDocument searchDoc = new CmsSolrDocument(doc);
                     if (needsPermissionCheck(searchDoc)) {
                         // only if the document is an OpenCms internal resource perform the permission check
-                        CmsResource resource = getResource(searchCms, searchDoc);
+                        CmsResource resource = filter == null
+                        ? getResource(searchCms, searchDoc)
+                        : getResource(searchCms, searchDoc, filter);
                         if (resource != null) {
                             // permission check performed successfully: the user has read permissions!
                             if (cnt >= start) {
@@ -1081,7 +1092,8 @@ public class CmsSolrIndex extends CmsSearchIndex {
             throw new CmsSearchException(
                 Messages.get().container(
                     Messages.LOG_SOLR_ERR_SEARCH_EXECUTION_FAILD_1,
-                    CmsEncoder.decode(query.toString())),
+                    CmsEncoder.decode(query.toString()),
+                    e),
                 e);
         } finally {
 

@@ -2162,6 +2162,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             filter = CmsResourceFilter.IGNORE_EXPIRATION;
         }
 
+        return getResource(cms, doc, filter);
+    }
+
+    /**
+     * Checks if the OpenCms resource referenced by the result document can be read
+     * by the user of the given OpenCms context.
+     *
+     * Returns the referenced <code>CmsResource</code> or <code>null</code> if
+     * the user is not permitted to read the resource.<p>
+     *
+     * @param cms the OpenCms user context to use for permission testing
+     * @param doc the search result document to check
+     * @param filter the resource filter to apply
+     *
+     * @return the referenced <code>CmsResource</code> or <code>null</code> if the user is not permitted
+     */
+    protected CmsResource getResource(CmsObject cms, I_CmsSearchDocument doc, CmsResourceFilter filter) {
+
         try {
             CmsObject clone = OpenCms.initCmsObject(cms);
             clone.getRequestContext().setSiteRoot("");
