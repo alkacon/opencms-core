@@ -61,8 +61,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -373,8 +373,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         } finally {
             cms.getRequestContext().setRequestTime(requestTime);
         }
-
-        Set<CmsLink> links = new HashSet<CmsLink>();
+        // using linked set to keep the link order
+        Set<CmsLink> links = new LinkedHashSet<CmsLink>();
 
         // add XSD link
         CmsLink xsdLink = getXsdLink(cms, xmlContent);

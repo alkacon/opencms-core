@@ -483,13 +483,9 @@ public class TestLiveConfig extends OpenCmsTestCase {
             waitForUpdate(false);
             CmsADEConfigData configData = manager.lookupConfiguration(cms, "/sites/default/today/");
             List<CmsDetailPageInfo> detailPages = configData.getAllDetailPages();
-            assertEquals("/sites/default/today/", detailPages.get(0).getUri());
-            assertEquals("foo", detailPages.get(0).getType());
-            assertEquals(page1.getStructureId(), detailPages.get(0).getId());
+            assertTrue(detailPages.contains(info1));
 
-            assertEquals("/sites/default/today/events/", detailPages.get(1).getUri());
-            assertEquals("bar", detailPages.get(1).getType());
-            assertEquals(page2.getStructureId(), detailPages.get(1).getId());
+            assertTrue(detailPages.contains(info2));
         } finally {
             restoreFiles();
         }

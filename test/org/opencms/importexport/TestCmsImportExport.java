@@ -586,8 +586,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             CmsFile newRes2 = cms.readFile(filename2);
             List links2 = validatable.parseLinks(cms, newRes2);
             assertEquals(links2.size(), 3);
-            assertEquals(links2.get(0).toString(), cms.getRequestContext().addSiteRoot(filename1));
-            // second one is the XSD
+            // first one is the XSD
+            assertEquals(links2.get(1).toString(), cms.getRequestContext().addSiteRoot(filename1));
             assertEquals(links2.get(2).toString(), cms.getRequestContext().addSiteRoot(filename1));
         } finally {
             try {
