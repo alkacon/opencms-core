@@ -1639,7 +1639,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     private void initToolbarButtons(I_CmsAppUIContext context) {
 
-        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
+        Button publishButton = CmsToolBar.createButton(
+            FontOpenCms.PUBLISH,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
         publishButton.addClickListener(new ClickListener() {
 
             /** Serial version id. */
@@ -1651,7 +1653,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
             }
         });
         context.addToolbarButton(publishButton);
-        Button newButton = CmsToolBar.createButton(FontOpenCms.WAND);
+        Button newButton = CmsToolBar.createButton(
+            FontOpenCms.WAND,
+            CmsVaadinUtils.getMessageText(Messages.GUI_NEW_RESOURCE_TITLE_0));
         newButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -1665,6 +1669,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         context.addToolbarButton(newButton);
 
         m_uploadButton = new CmsUploadButton(FontOpenCms.UPLOAD, "/");
+        m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
         m_uploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         m_uploadButton.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         m_uploadButton.addUploadListener(new I_UploadListener() {

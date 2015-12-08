@@ -39,6 +39,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CLICK_TO_EDIT_0 = "GUI_EXPLORER_CLICK_TO_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -66,16 +69,31 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_LAUNCHPAD_TITLE_0 = "GUI_LAUNCHPAD_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MENU_TITLE_0 = "GUI_MENU_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PAGEEDITOR_HELP_0 = "GUI_PAGEEDITOR_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PAGEEDITOR_TITLE_0 = "GUI_PAGEEDITOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_BUTTON_TITLE_0 = "GUI_PUBLISH_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_TITLE_0 = "GUI_QUICK_LAUNCH_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_HELP_0 = "GUI_SITEMAP_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TITLE_0 = "GUI_SITEMAP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_INFO_TITLE_0 = "GUI_USER_INFO_TITLE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.apps.messages";

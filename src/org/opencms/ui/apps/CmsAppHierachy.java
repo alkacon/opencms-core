@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.CmsToolBar;
@@ -77,7 +78,9 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
         context.showInfoArea(false);
         // some dummy buttons
 
-        Button publishButton = CmsToolBar.createButton(FontOpenCms.PUBLISH);
+        Button publishButton = CmsToolBar.createButton(
+            FontOpenCms.PUBLISH,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
         publishButton.addClickListener(new ClickListener() {
 
             /** Serial version id. */

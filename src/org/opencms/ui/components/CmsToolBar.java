@@ -33,12 +33,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsStringUtil;
@@ -126,12 +128,14 @@ public class CmsToolBar extends CssLayout {
      * Creates a properly styled toolbar button.<p>
      *
      * @param icon the button icon
+     * @param title the button title, will be used for the tooltip
      *
      * @return the button
      */
-    public static Button createButton(Resource icon) {
+    public static Button createButton(Resource icon, String title) {
 
         Button button = new Button(icon);
+        button.setDescription(title);
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(OpenCmsTheme.TOOLBAR_BUTTON);
         return button;
@@ -142,10 +146,11 @@ public class CmsToolBar extends CssLayout {
      *
      * @param icon the button icon
      * @param content the drop down content
+     * @param title the button title
      *
      * @return the component
      */
-    public static Component createDropDown(ExternalResource icon, Component content) {
+    public static Component createDropDown(ExternalResource icon, Component content, String title) {
 
         String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
             + OpenCmsTheme.TOOLBAR_BUTTON
@@ -155,6 +160,7 @@ public class CmsToolBar extends CssLayout {
             + icon.getURL()
             + "\" /></span></div>";
         PopupView pv = new PopupView(html, content);
+        pv.setDescription(title);
         pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         pv.setHideOnMouseOut(false);
         return pv;
@@ -166,10 +172,11 @@ public class CmsToolBar extends CssLayout {
      *
      * @param icon the button icon
      * @param content the drop down content
+     * @param title the drop down title
      *
      * @return the component
      */
-    public static Component createDropDown(FontIcon icon, Component content) {
+    public static Component createDropDown(FontIcon icon, Component content, String title) {
 
         String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
             + OpenCmsTheme.TOOLBAR_BUTTON
@@ -179,6 +186,7 @@ public class CmsToolBar extends CssLayout {
             + icon.getHtml()
             + "</span></div>";
         PopupView pv = new PopupView(html, content);
+        pv.setDescription(title);
         pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         pv.setHideOnMouseOut(false);
         return pv;
@@ -330,7 +338,10 @@ public class CmsToolBar extends CssLayout {
                 }
             }
         }
-        return createDropDown(FontOpenCms.APPS, layout);
+        return createDropDown(
+            FontOpenCms.APPS,
+            layout,
+            CmsVaadinUtils.getMessageText(Messages.GUI_QUICK_LAUNCH_TITLE_0));
     }
 
     /**
@@ -344,7 +355,8 @@ public class CmsToolBar extends CssLayout {
         Component userDropdown = createDropDown(
             new ExternalResource(
                 CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser())),
-            new CmsUserInfo());
+            new CmsUserInfo(),
+            "User info");
         userDropdown.addStyleName(OpenCmsTheme.USER_INFO);
         return userDropdown;
     }
@@ -357,6 +369,7 @@ public class CmsToolBar extends CssLayout {
         m_contextMenu.removeItems();
         MenuItem main = m_contextMenu.addItem("", null);
         main.setIcon(FontOpenCms.CONTEXT_MENU);
+        main.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MENU_TITLE_0));
         CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(getDialogContext());
         CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
             CmsAppWorkplaceUi.get().getMenuItemProvider().getMenuItems());
