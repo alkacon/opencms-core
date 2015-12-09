@@ -558,7 +558,7 @@ allModuleNames.split(',').each{ moduleName ->
     if (isExternal.toBoolean()){
     	moduleFolder = file("${external_directories}/modules/${moduleName}")
         srcGwtDir = file("${external_directories}/src-gwt/")
-        moduleSrcFolder = file("${external_directories}/src-modules")
+        moduleSrcFolder = file("${external_directories}/src")
     }
     def propertyFile = file("${moduleFolder}/module.properties")
     def gwtRename = null
