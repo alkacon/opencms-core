@@ -17,10 +17,11 @@ Legend:
 
 
 OpenCms 10.0.x Alpha 2 - December 9, 2015
-! Added file explorer keyboard shortcuts.
-! Added drag and drop copy move function.
-! Added new implementation of new resource dialog.
-! Added new implementation of change type dialog.
+! Copy or move resources with drag and drop in the new explorer.
+! Upload files with drag and drop from the local desktop to the new explorer.
+! Quick navigation with keyboard shortcuts in the new explorer.
+! Added create resource dialog to new explorer.
+! Added change resource type dialog to new explorer.
 ! Added lock/unlock/steal lock dialog to new explorer.
 ! Added copy to project dialog to new explorer.
 ! Added publish scheduled dialog to new explorer.
@@ -29,14 +30,13 @@ OpenCms 10.0.x Alpha 2 - December 9, 2015
 ! Added resource info dialog to new explorer.
 ! Added assign categories dialog to new explorer.
 ! Added gallery dialog to new explorer.
-! Added drag and drop upload dialog to new explorer.
-! Added project select dialog.
-! New default error page used for 404 and 500 server errors.
+! Added project select dialog to new explorer.
+! Nicer default error page used for 404 and 500 server errors.
 ! Separated several old workplace dialog classes from the core.
 ! Support for static resource loading from classpath.
 ! Merged all GWT based modules into a single one to improve page load time.
 - Improved workplace error dialog.
-* Fixed security issue advisory ID SYSS-2015-063 with XSS in displayresource.jsp
+* Fixed security issue advisory ID SYSS-2015-063 with XSS in displayresource.jsp.
 * Fixed security issue related to commons collections library.
 
 OpenCms 10.0.0 Alpha 1 - September 28, 2015
