@@ -33,6 +33,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.ui.login.CmsLoginHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -99,7 +100,7 @@ public class CmsWorkplaceLoginHandler implements I_CmsResourceInit {
         if (!ou.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
             ou += CmsOrganizationalUnit.SEPARATOR;
         }
-        req.setAttribute(CmsLogin.PARAM_PREDEF_OUFQN, ou);
+        req.setAttribute(CmsLoginHelper.PARAM_PREDEF_OUFQN, ou);
         return resource;
     }
 }

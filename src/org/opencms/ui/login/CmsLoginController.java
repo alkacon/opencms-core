@@ -49,9 +49,12 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -209,6 +212,18 @@ public class CmsLoginController {
     }
 
     /**
+     * Returns the link to the login form.<p>
+     *
+     * @param cms the current cms context
+     *
+     * @return the login form link
+     */
+    public static String getFormLink(CmsObject cms) {
+
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
+    }
+
+    /**
      * Logs the current user out by invalidating the session an reloading the current URI.<p>
      * Important:  This works only within vaadin apps.<p>
      */
@@ -222,6 +237,37 @@ public class CmsLoginController {
         String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
         Page.getCurrent().setLocation(loginLink);
+    }
+
+    /**
+     * Logs out the current user redirecting to the login form afterwards.<p>
+     *
+     * @param cms the cms context
+     * @param request the servlet request
+     * @param response the servlet response
+     *
+     * @throws IOException if writing to the response fails
+     */
+    public static void logout(CmsObject cms, HttpServletRequest request, HttpServletResponse response)
+    throws IOException {
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+            /* we need this because a new session might be created after this method,
+             but before the session info is updated in OpenCmsCore.showResource. */
+            cms.getRequestContext().setUpdateSessionEnabled(false);
+        }
+        // logout was successful
+        if (LOG.isInfoEnabled()) {
+            LOG.info(
+                org.opencms.jsp.Messages.get().getBundle().key(
+                    org.opencms.jsp.Messages.LOG_LOGOUT_SUCCESFUL_3,
+                    cms.getRequestContext().getCurrentUser().getName(),
+                    cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()),
+                    cms.getRequestContext().getRemoteAddress()));
+        }
+        response.sendRedirect(getFormLink(cms));
     }
 
     /**

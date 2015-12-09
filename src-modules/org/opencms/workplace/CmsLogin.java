@@ -527,7 +527,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 getResponse().sendRedirect(OpenCms.getLinkManager().substituteLink(cms, "/system/login"));
                 return "";
             } else {
-                return CmsLoginUI.displayVaadinLoginDialog(cms, getRequest());
+                return CmsLoginUI.displayVaadinLoginDialog(getRequest(), getResponse());
             }
         }
 

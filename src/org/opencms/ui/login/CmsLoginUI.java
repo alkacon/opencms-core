@@ -29,8 +29,10 @@ package org.opencms.ui.login;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.A_CmsUI;
@@ -54,6 +56,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
@@ -203,10 +206,34 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
      *
      * @param cms the current cms context
      * @param request the request
+     * @param response the response
      *
      * @return the initial page HTML for the Vaadin login dialog
+     *
+     * @throws IOException in case writing to the response fails
      */
-    public static String displayVaadinLoginDialog(CmsObject cms, HttpServletRequest request) {
+    public static String displayVaadinLoginDialog(HttpServletRequest request, HttpServletResponse response)
+    throws IOException {
+
+        CmsFlexController controller = CmsFlexController.getController(request);
+        if (controller == null) {
+            // controller not found - this request was not initialized properly
+            throw new CmsRuntimeException(
+                org.opencms.jsp.Messages.get().container(
+                    org.opencms.jsp.Messages.ERR_MISSING_CMS_CONTROLLER_1,
+                    CmsLoginUI.class.getName()));
+        }
+        CmsObject cms = controller.getCmsObject();
+        if ((OpenCms.getSiteManager().getSites().size() > 1) && !OpenCms.getSiteManager().isWorkplaceRequest(request)) {
+            // do not send any redirects to the workplace site for security reasons
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+        String logout = request.getParameter(CmsLoginHelper.PARAM_ACTION_LOGOUT);
+        if (Boolean.valueOf(logout).booleanValue()) {
+            CmsLoginController.logout(cms, request, response);
+            return null;
+        }
 
         CmsLoginHelper.LoginParameters params = CmsLoginHelper.getLoginParameters(cms, request, false);
         request.getSession().setAttribute(CmsLoginUI.INIT_DATA_SESSION_ATTR, params);
