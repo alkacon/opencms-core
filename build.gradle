@@ -1465,8 +1465,6 @@ install {
                 def filterName=arch.name
                 if (filterName.startsWith("org.opencms")){
                     filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
-                    println "adding filter $filterName"
-                    
                     addFilter(filterName){artifact, file ->
                     	artifact.name == filterName || artifact.name.startsWith(filterName + '-')
                     }
