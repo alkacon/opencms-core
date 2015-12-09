@@ -1115,7 +1115,7 @@ artifacts {
     archives sourcesJarTest
     tasks.each{ task ->
         if (task.name.startsWith("jar_org.opencms.")){
-            def moduleName=task.baseName
+        	def moduleName=task.baseName
             archives task
             archives tasks["javadocJar_$moduleName"]
             archives tasks["sourcesJar_$moduleName"]
@@ -1276,7 +1276,7 @@ if (project.hasProperty('publish_repository')){
                     if (filterName.startsWith("org.opencms")){
                         filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
                         addFilter(filterName){artifact, file ->
-                            artifact.name.startsWith(filterName)
+                            artifact.name == filterName || artifact.name.startsWith(filterName + '-')
                         }
                         pom(filterName).project {
                             name product_name
@@ -1465,11 +1465,14 @@ install {
                 def filterName=arch.name
                 if (filterName.startsWith("org.opencms")){
                     filterName=filterName.substring(0, filterName.lastIndexOf(".jar"))
+                    println "adding filter $filterName"
+                    
                     addFilter(filterName){artifact, file ->
-                        artifact.name.startsWith(filterName)
+                    	artifact.name == filterName || artifact.name.startsWith(filterName + '-')
                     }
+                    
                     pom(filterName).project {
-                        name product_name
+                    	name product_name
                         description product_description
                         packaging 'jar'
                         groupId 'org.opencms'
