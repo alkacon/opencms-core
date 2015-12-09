@@ -15,8 +15,30 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 10.0.0_alpha_2 - December 9, 2015
+! Started to separate old workplace dialog classes from the core.
+! Added static resource loading from classpath.
+! Merged all GWT based modules into a single one to reduce number of JS resources loaded by clients.
+! Added file explorer keyboard shortcuts.
+! Added drag and drop copy move function.
+! Added new implementation of new resource dialog.
+! Added new implementation of change type dialog.
+! Added project select dialog.
+! Added lock/unlock/steal lock dialog to new explorer.
+! Added copy to project dialog to new explorer.
+! Added publish scheduled dialog to new explorer.
+! Added restore deleted dialog to new explorer.
+! Added secure/export dialog to new explorer.
+! Added resource info dialog to new explorer.
+! Added assign categories dialog to new explorer.
+! Added gallery dialog to new explorer.
+! Added drag and drop upload dialog to new explorer.
+- Improved error page template.
+- Improved error dialog.
+* Fixed security issue related to commons collections library.
+
 OpenCms 10.0.0_alpha_1 - September 28, 2015
-! Modernized the look & feel of the overall user interface .
+! Modernized the look & feel of the overall user interface.
 ! Introduced the Launchpad as the central starting place for the user.
 ! New file explorer with support for column sorting, filtering and large folders.
 ! Developers can now export and import modules through a SMB network share.
