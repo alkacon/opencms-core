@@ -367,10 +367,8 @@ public class CmsFormatterBeanParser {
      * Parses the head includes.<p>
      *
      * @param formatterLoc the parent value location
-     *
-     * @throws CmsException if something goes wrong
      */
-    private void parseHeadIncludes(I_CmsXmlContentLocation formatterLoc) throws CmsException {
+    private void parseHeadIncludes(I_CmsXmlContentLocation formatterLoc) {
 
         I_CmsXmlContentValueLocation headIncludeCss = formatterLoc.getSubValue(N_HEAD_INCLUDE_CSS);
         if (headIncludeCss != null) {
@@ -381,10 +379,11 @@ public class CmsFormatterBeanParser {
 
             for (I_CmsXmlContentValueLocation cssLinkLoc : headIncludeCss.getSubValues(N_CSS_LINK)) {
                 CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)cssLinkLoc.getValue();
-                CmsUUID structureId = fileValue.getLink(m_cms).getStructureId();
-                CmsResource resource = m_cms.readResource(structureId);
-                String cssPath = resource.getRootPath();
-                m_cssPaths.add(cssPath);
+                CmsLink link = fileValue.getLink(m_cms);
+                if (link != null) {
+                    String cssPath = link.getTarget();
+                    m_cssPaths.add(cssPath);
+                }
             }
         }
         I_CmsXmlContentValueLocation headIncludeJs = formatterLoc.getSubValue(N_HEAD_INCLUDE_JS);
@@ -395,10 +394,11 @@ public class CmsFormatterBeanParser {
             }
             for (I_CmsXmlContentValueLocation jsLinkLoc : headIncludeJs.getSubValues(N_JAVASCRIPT_LINK)) {
                 CmsXmlVfsFileValue fileValue = (CmsXmlVfsFileValue)jsLinkLoc.getValue();
-                CmsUUID structureId = fileValue.getLink(m_cms).getStructureId();
-                CmsResource resource = m_cms.readResource(structureId);
-                String jsPath = resource.getRootPath();
-                m_jsPaths.add(jsPath);
+                CmsLink link = fileValue.getLink(m_cms);
+                if (link != null) {
+                    String jsPath = link.getTarget();
+                    m_jsPaths.add(jsPath);
+                }
             }
         }
     }
