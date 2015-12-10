@@ -129,6 +129,9 @@ public class CmsResourceTable extends A_CmsCustomComponent {
                 if (visibleProp.getExpandRatio() > 0) {
                     m_fileTable.setColumnExpandRatio(visibleProp, visibleProp.getExpandRatio());
                 }
+                if (visibleProp.getConverter() != null) {
+                    m_fileTable.setConverter(visibleProp, visibleProp.getConverter());
+                }
             }
 
         }
@@ -274,7 +277,6 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         m_fileTable.setContainerDataSource(m_container);
         setCompositionRoot(m_fileTable);
         m_fileTable.setRowHeaderMode(RowHeaderMode.HIDDEN);
-
     }
 
     /**
@@ -407,8 +409,7 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED) != null) {
-            resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(
-                messages.getDateTime(resource.getDateLastModified()));
+            resourceItem.getItemProperty(PROPERTY_DATE_MODIFIED).setValue(Long.valueOf(resource.getDateLastModified()));
         } else {
             LOG.error("Error redering item, property " + PROPERTY_DATE_MODIFIED.getId() + " is null");
         }
@@ -420,8 +421,7 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_CREATED) != null) {
-            resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(
-                messages.getDateTime(resource.getDateCreated()));
+            resourceItem.getItemProperty(PROPERTY_DATE_CREATED).setValue(Long.valueOf(resource.getDateCreated()));
         } else {
             LOG.error("Error redering item, property " + PROPERTY_DATE_CREATED.getId() + " is null");
         }
@@ -433,13 +433,19 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_RELEASED) != null) {
-            resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(resUtil.getDateReleased());
+            long release = resource.getDateReleased();
+            if (release != CmsResource.DATE_RELEASED_DEFAULT) {
+                resourceItem.getItemProperty(PROPERTY_DATE_RELEASED).setValue(Long.valueOf(release));
+            }
         } else {
             LOG.error("Error redering item, property " + PROPERTY_DATE_RELEASED.getId() + " is null");
         }
 
         if (resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED) != null) {
-            resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(resUtil.getDateExpired());
+            long expire = resource.getDateExpired();
+            if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
+                resourceItem.getItemProperty(PROPERTY_DATE_EXPIRED).setValue(Long.valueOf(expire));
+            }
         } else {
             LOG.error("Error redering item, property " + PROPERTY_DATE_EXPIRED.getId() + " is null");
         }

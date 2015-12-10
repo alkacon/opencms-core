@@ -44,15 +44,19 @@ import static org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0;
 import static org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.google.common.collect.Maps;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Component;
 
@@ -61,97 +65,96 @@ import com.vaadin.ui.Component;
  */
 public class CmsResourceTableProperty {
 
-    /** Resoure table property. */
+    /**
+     * Converter for dates represented by their time stamp.<p>
+     */
+    public static class DateConverter implements Converter<String, Long> {
+
+        /** The serial version id. */
+        private static final long serialVersionUID = -54133335743460680L;
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public Long convertToModel(String value, Class<? extends Long> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
+         */
+        public String convertToPresentation(Long value, Class<? extends String> targetType, Locale locale)
+        throws com.vaadin.data.util.converter.Converter.ConversionException {
+
+            return value != null
+            ? CmsVaadinUtils.getWpMessagesForCurrentLocale().getDateTime(value.longValue())
+            : CmsWorkplace.DEFAULT_DATE_STRING;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getModelType()
+         */
+        public Class<Long> getModelType() {
+
+            return Long.class;
+        }
+
+        /**
+         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
+         */
+        public Class<String> getPresentationType() {
+
+            return String.class;
+        }
+    }
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_CREATED = new CmsResourceTableProperty(
         "PROPERTY_DATE_CREATED",
-        String.class,
+        Long.class,
         null,
         GUI_INPUT_DATECREATED_0,
         true,
         0,
-        150);
+        150,
+        new DateConverter());
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_EXPIRED = new CmsResourceTableProperty(
         "PROPERTY_DATE_EXPIRED",
-        String.class,
-        "-",
+        Long.class,
+        null,
         GUI_INPUT_DATEEXPIRED_0,
         true,
         0,
-        150);
+        150,
+        new DateConverter());
 
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_RELEASED_NOT_EXPIRED = new CmsResourceTableProperty(
-        "PROPERTY_RELEASED_NOT_EXPIRED",
-        Boolean.class,
-        Boolean.TRUE,
-        null,
-        true,
-        0,
-        0);
-
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_DATE_MODIFIED",
-        String.class,
+        Long.class,
         null,
         GUI_INPUT_DATELASTMODIFIED_0,
         true,
         0,
-        150);
+        150,
+        new DateConverter());
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_DATE_RELEASED = new CmsResourceTableProperty(
         "PROPERTY_DATE_RELEASED",
-        String.class,
-        "-",
+        Long.class,
+        null,
         GUI_INPUT_DATERELEASED_0,
         true,
         0,
-        150);
+        150,
+        new DateConverter());
 
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_IS_FOLDER = new CmsResourceTableProperty(
-        "PROPERTY_IS_FOLDER",
-        Boolean.class,
-        null,
-        null,
-        true,
-        0,
-        0);
-
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_NAVIGATION_TEXT = new CmsResourceTableProperty(
-        "PROPERTY_NAVIGATION_TEXT",
-        String.class,
-        null,
-        GUI_INPUT_NAVTEXT_0,
-        true,
-        2,
-        0);
-
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_PERMISSIONS = new CmsResourceTableProperty(
-        "PROPERTY_PERMISSIONS",
-        String.class,
-        null,
-        GUI_INPUT_PERMISSIONS_0,
-        true,
-        0,
-        100);
-
-    /** Resoure table property. */
-    public static final CmsResourceTableProperty PROPERTY_PROJECT = new CmsResourceTableProperty(
-        "PROPERTY_PROJECT",
-        Component.class,
-        null,
-        GUI_LABEL_PROJECT_0,
-        true,
-        0,
-        32);
-
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_INSIDE_PROJECT = new CmsResourceTableProperty(
         "PROPERTY_INSIDE_PROJECT",
         Boolean.class,
@@ -161,7 +164,57 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_IS_FOLDER = new CmsResourceTableProperty(
+        "PROPERTY_IS_FOLDER",
+        Boolean.class,
+        null,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_NAVIGATION_TEXT = new CmsResourceTableProperty(
+        "PROPERTY_NAVIGATION_TEXT",
+        String.class,
+        null,
+        GUI_INPUT_NAVTEXT_0,
+        true,
+        2,
+        0);
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_PERMISSIONS = new CmsResourceTableProperty(
+        "PROPERTY_PERMISSIONS",
+        String.class,
+        null,
+        GUI_INPUT_PERMISSIONS_0,
+        true,
+        0,
+        100);
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_PROJECT = new CmsResourceTableProperty(
+        "PROPERTY_PROJECT",
+        Component.class,
+        null,
+        GUI_LABEL_PROJECT_0,
+        true,
+        0,
+        32);
+
+    /** Resource table property. */
+    public static final CmsResourceTableProperty PROPERTY_RELEASED_NOT_EXPIRED = new CmsResourceTableProperty(
+        "PROPERTY_RELEASED_NOT_EXPIRED",
+        Boolean.class,
+        Boolean.TRUE,
+        null,
+        true,
+        0,
+        0);
+
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_RESOURCE_NAME = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_NAME",
         String.class,
@@ -171,7 +224,7 @@ public class CmsResourceTableProperty {
         2,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_RESOURCE_TYPE = new CmsResourceTableProperty(
         "PROPERTY_RESOURCE_TYPE",
         String.class,
@@ -181,7 +234,7 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
         "PROPERTY_SITE_PATH",
         String.class,
@@ -191,7 +244,7 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_SIZE = new CmsResourceTableProperty(
         "PROPERTY_SIZE",
         Integer.class,
@@ -201,7 +254,7 @@ public class CmsResourceTableProperty {
         0,
         100);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_STATE = new CmsResourceTableProperty(
         "PROPERTY_STATE",
         CmsResourceState.class,
@@ -211,7 +264,7 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_STATE_NAME = new CmsResourceTableProperty(
         "PROPERTY_STATE_NAME",
         String.class,
@@ -221,7 +274,7 @@ public class CmsResourceTableProperty {
         0,
         100);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_TITLE = new CmsResourceTableProperty(
         "PROPERTY_TITLE",
         String.class,
@@ -241,7 +294,7 @@ public class CmsResourceTableProperty {
         0,
         40);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_TYPE_ICON_RESOURCE = new CmsResourceTableProperty(
         "PROPERTY_TYPE_ICON_RESOURCE",
         Resource.class,
@@ -251,7 +304,7 @@ public class CmsResourceTableProperty {
         0,
         40);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_CREATED = new CmsResourceTableProperty(
         "PROPERTY_USER_CREATED",
         String.class,
@@ -261,7 +314,7 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_LOCKED = new CmsResourceTableProperty(
         "PROPERTY_USER_LOCKED",
         String.class,
@@ -271,7 +324,7 @@ public class CmsResourceTableProperty {
         0,
         0);
 
-    /** Resoure table property. */
+    /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_MODIFIED = new CmsResourceTableProperty(
         "PROPERTY_USER_MODIFIED",
         String.class,
@@ -292,6 +345,9 @@ public class CmsResourceTableProperty {
 
     /** The column width. */
     private int m_columnWidth;
+
+    /** The property to presentation string converter. */
+    private Converter<String, ?> m_converter;
 
     /** Default value for the column. */
     private Object m_defaultValue;
@@ -324,6 +380,30 @@ public class CmsResourceTableProperty {
         boolean collapsible,
         float expandRation,
         int columnWidth) {
+        this(id, columnType, defaultValue, headerKey, collapsible, expandRation, columnWidth, null);
+    }
+
+    /**
+     * Creates a new instance.<p>
+     *
+     * @param id the id (should be unique)
+     * @param columnType the column type
+     * @param defaultValue the default value
+     * @param headerKey the message key for the header
+     * @param collapsible the column collapsible flag
+     * @param expandRation the column expand ratio
+     * @param columnWidth the column width
+     * @param converter the property converter
+     */
+    public CmsResourceTableProperty(
+        String id,
+        Class<?> columnType,
+        Object defaultValue,
+        String headerKey,
+        boolean collapsible,
+        float expandRation,
+        int columnWidth,
+        Converter<String, ?> converter) {
         m_id = id;
         m_columnType = columnType;
         m_defaultValue = defaultValue;
@@ -331,6 +411,7 @@ public class CmsResourceTableProperty {
         m_collapsible = collapsible;
         m_expandRatio = expandRation;
         m_columnWidth = columnWidth;
+        m_converter = converter;
     }
 
     /**
@@ -405,6 +486,16 @@ public class CmsResourceTableProperty {
     public int getColumnWidth() {
 
         return m_columnWidth;
+    }
+
+    /**
+     * Returns the property converter.<p>
+     *
+     * @return the converter
+     */
+    public Converter<String, ?> getConverter() {
+
+        return m_converter;
     }
 
     /**
