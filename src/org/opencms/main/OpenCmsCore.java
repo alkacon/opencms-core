@@ -1431,19 +1431,19 @@ public final class OpenCmsCore {
             // initialize ade manager
             // initialize the formatter configuration
             CmsFormatterConfiguration.initialize(adminCms);
-            CmsPersistentLoginTokenHandler.setAdminCms(adminCms);
-            CmsLoginUI.setAdminCmsObject(adminCms);
+            CmsPersistentLoginTokenHandler.setAdminCms(initCmsObject(adminCms));
+            CmsLoginUI.setAdminCmsObject(initCmsObject(adminCms));
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_adeManager = new CmsADEManager(adminCms, m_memoryMonitor, systemConfiguration);
+            m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_workplaceAppManager = new CmsWorkplaceAppManager();
             m_workplaceAppManager.loadApps();
-            m_templateContextManager = new CmsTemplateContextManager(adminCms);
+            m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));
             m_workflowManager = systemConfiguration.getWorkflowManager();
             if (m_workflowManager == null) {
                 m_workflowManager = new CmsDefaultWorkflowManager();
                 m_workflowManager.setParameters(new HashMap<String, String>());
             }
-            m_workflowManager.initialize(adminCms);
+            m_workflowManager.initialize(initCmsObject(adminCms));
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
