@@ -10,7 +10,7 @@
 	CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getSiteRoot());
 	if (site != null && site.getErrorPage() != null) {
 		forwarded = cms.forwardToErrorPage(site.getErrorPage());
-	} else if (!cms.getRequestResourceName().startsWith("/system/")) {
+	} else if (cms.getRequestResourceName()==null || !cms.getRequestResourceName().startsWith("/system/")) {
 		// check for site specific error page only in case of non system resources
 	
 		// use the root path as the site root will not be set in the current request context
