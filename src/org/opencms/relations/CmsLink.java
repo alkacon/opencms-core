@@ -35,6 +35,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.util.CmsRequestUtil;
@@ -219,6 +220,13 @@ public class CmsLink {
         if (!m_internal || (cms == null)) {
             return;
         }
+
+        // in case of static resource links use the null UUID
+        if (m_target.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
+            m_structureId = CmsUUID.getNullUUID();
+            return;
+        }
+
         try {
             if (m_structureId == null) {
                 // try by path
@@ -247,7 +255,8 @@ public class CmsLink {
                 throw new CmsVfsResourceNotFoundException(
                     org.opencms.db.generic.Messages.get().container(
                         org.opencms.db.generic.Messages.ERR_READ_RESOURCE_1,
-                        m_target));
+                        m_target),
+                    e);
             }
             if ((rootPath != null) && !rootPath.equals(m_target)) {
                 // set the new target

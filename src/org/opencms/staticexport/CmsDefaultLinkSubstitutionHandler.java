@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteMatcher;
@@ -115,6 +116,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
             // not a valid link parameter, return an empty String
             return "";
         }
+
+        if (link.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
+            return CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), link);
+        }
+
         // make sure we have an absolute link
         String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
         String overrideSiteRoot = null;
@@ -431,6 +437,11 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         // in case the target is the workplace UI
         if (CmsLinkManager.isWorkplaceUri(uri)) {
             return null;
+        }
+
+        // in case the target is a static resource served from the class path
+        if (CmsLinkManager.isStaticResourceUri(uri) || path.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
+            return path.substring(path.indexOf(CmsSystemInfo.STATIC_RESOURCE_PREFIX));
         }
 
         CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();

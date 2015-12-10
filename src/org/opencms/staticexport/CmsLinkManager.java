@@ -228,6 +228,18 @@ public class CmsLinkManager {
     }
 
     /**
+     * Returns if the given URI points to a static resource.<p>
+     *
+     * @param uri the URI to test
+     *
+     * @return <code>true</code> in case the given URI points to a static resource
+     */
+    public static boolean isStaticResourceUri(URI uri) {
+
+        return (uri != null) && uri.getPath().startsWith(OpenCms.getSystemInfo().getStaticResourceContext());
+    }
+
+    /**
      * Returns if the given URI is pointing to the OpenCms workplace UI.<p>
      *
      * @param uri the URI

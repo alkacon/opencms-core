@@ -26,9 +26,6 @@
 			<exportpoint
 				uri="/system/modules/org.opencms.ugc/classes/"
 				destination="WEB-INF/classes/" />
-			<exportpoint
-				uri="/system/modules/org.opencms.ugc/resources/"
-				destination="resources/" />
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.ugc/" />
@@ -258,40 +255,6 @@
 			<properties />
 			<relations />
 			<accesscontrol />
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.ugc/resources/ugc
-			</destination>
-			<type>folder</type>
-			<uuidstructure>36b2183f-f615-41e4-8402-17e5a62a4c2a</uuidstructure>
-			<datelastmodified>Thu, 03 Apr 2014 09:31:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 03 Apr 2014 09:31:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties />
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ugc/resources/ugc/ugc.nocache.js</source>
-			<destination>system/modules/org.opencms.ugc/resources/ugc/ugc.nocache.js</destination>
-			<type>binary</type>
-			<uuidstructure>ba98180e-dfae-11e3-bf3d-aff008c81c84</uuidstructure>
-			<uuidresource>ba983f1f-dfae-11e3-bf3d-aff008c81c84</uuidresource>
-			<datelastmodified>Tue, 20 May 2014 11:05:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 19 May 2014 23:38:49 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[UGC API main JavaScript]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.ugc/resources/js</destination>

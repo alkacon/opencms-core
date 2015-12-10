@@ -50,6 +50,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
@@ -3030,6 +3031,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
+            
+            // check for links to static resources
+            if (sitePath.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
+                return false;
+            }
             // validate the link for error
             CmsResource res = null;
             CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(link.getTarget());
