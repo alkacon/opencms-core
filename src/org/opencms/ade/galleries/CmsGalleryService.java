@@ -287,6 +287,9 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
 
+    /** Limit to the number results loaded on initial search. */
+    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
+
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
 
@@ -298,9 +301,6 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     /** The workplace locale from the current user's settings. */
     private Locale m_wpLocale;
-
-    /** Limit to the number results loaded on initial search. */
-    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
     /**
      * Returns the initial gallery settings.<p>
@@ -1802,7 +1802,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             }
         } catch (Exception e) {
-            LOG.error("Could not read system galleries: " + e.getLocalizedMessage(), e);
+            LOG.info("Could not read system galleries: " + e.getLocalizedMessage(), e);
         }
 
         try {
@@ -1816,7 +1816,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             }
         } catch (Exception e) {
-            LOG.error("Could not read shared galleries: " + e.getLocalizedMessage(), e);
+            LOG.info("Could not read shared galleries: " + e.getLocalizedMessage(), e);
         }
         return galleries;
     }
