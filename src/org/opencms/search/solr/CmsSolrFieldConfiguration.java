@@ -41,6 +41,7 @@ import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -63,6 +64,7 @@ import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -443,8 +445,24 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
         // append the resource locales
         Collection<Locale> resourceLocales = new ArrayList<Locale>();
         if ((extraction != null) && (!extraction.getLocales().isEmpty())) {
+
+            CmsResourceManager resMan = OpenCms.getResourceManager();
             resourceLocales = extraction.getLocales();
-            m_contentLocales = resourceLocales;
+            boolean isGroup = false;
+            for (String groupType : Arrays.asList(
+                CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME,
+                CmsResourceTypeXmlContainerPage.INHERIT_CONTAINER_TYPE_NAME)) {
+                if (resMan.matchResourceType(groupType, resource.getTypeId())) {
+                    isGroup = true;
+                    break;
+                }
+            }
+            if (isGroup) {
+                // groups are locale independent, so they have to have *all* locales so they are found for each one
+                m_contentLocales = OpenCms.getLocaleManager().getAvailableLocales();
+            } else {
+                m_contentLocales = resourceLocales;
+            }
         } else {
             // For all other resources add all default locales
             resourceLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
