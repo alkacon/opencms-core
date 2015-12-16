@@ -199,10 +199,22 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         createCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
         String oldSiteRoot = cms.getRequestContext().getSiteRoot();
         cms.getRequestContext().setSiteRoot("");
-        tryToUnlock(cms, folderPath);
-        createFolder(createCms, folderPath);
+        //tryToUnlock(cms, folderPath);
+        CmsResource permissionCheckFolder = null;
+        for (String currentPath = folderPath; currentPath != null; currentPath = CmsResource.getParentFolder(
+            currentPath)) {
+            try {
+                permissionCheckFolder = cms.readResource(currentPath);
+                break;
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore
+            }
+        }
         try {
-            CmsResource permissionCheckFolder = cms.readResource(folderPath);
+            if (permissionCheckFolder == null) {
+                return false;
+            }
+            LOG.info("Using " + permissionCheckFolder + " as a permission check folder for " + folderPath);
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_typeName);
             if (settings == null) {
                 return false;
