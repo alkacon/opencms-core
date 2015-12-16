@@ -72,6 +72,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0 = "GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0 = "GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_0 = "GUI_FORGOT_PASSWORD_0";
 
     /** Message constant for key in the resource bundle. */
