@@ -41,7 +41,9 @@ import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
 import org.opencms.gwt.client.ui.input.category.CmsCategoryDialog;
+import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
+import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
@@ -274,6 +276,23 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
             throw new RuntimeException(e);
 
         }
+    }
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#openReplaceDialog(java.lang.String)
+     */
+    public void openReplaceDialog(String structureId) {
+
+        CmsReplaceHandler handler = new CmsReplaceHandler(new CmsUUID(structureId));
+        handler.setCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                close(0);
+            }
+        });
+        handler.onChange(new CmsFileInput());
+
     }
 
     /**

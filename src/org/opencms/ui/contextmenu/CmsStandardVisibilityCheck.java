@@ -43,6 +43,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.otherlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
@@ -54,9 +55,11 @@ import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISI
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.loader.CmsDumpLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -134,6 +137,15 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notunchangedfile,
         publishpermission,
         notonline,
+        inproject);
+
+    /** Check for the 'replace' operation. */
+    public static final CmsStandardVisibilityCheck REPLACE = new CmsStandardVisibilityCheck(
+        replacable,
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
         inproject);
 
     /** Default check for 'locked resources' action. */
@@ -243,6 +255,15 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 return VISIBILITY_INVISIBLE;
             }
 
+            if (flag(replacable)) {
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+                boolean usesDumpLoader = type.getLoaderId() == CmsDumpLoader.RESOURCE_LOADER_ID;
+                if (!usesDumpLoader && !(type instanceof CmsResourceTypeImage)) {
+                    return VISIBILITY_INVISIBLE;
+                }
+
+            }
+
             if (flag(xml)) {
                 I_CmsResourceType type = resUtil.getResourceType();
                 boolean isXml = (type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage);
@@ -319,9 +340,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                     }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
-
                 }
-
             }
 
             if (flag(writepermisssion)) {

@@ -79,6 +79,13 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     void openPublishDialog(String serializedPublishData);
 
     /**
+     * Opens the 'replace' dialog for the resource with the given structure id.<p>
+     *
+     * @param structureId the structure id of a resource
+     */
+    void openReplaceDialog(String structureId);
+
+    /**
      * Shows the OpenCms about dialog.<p>
      */
     void showAbout();

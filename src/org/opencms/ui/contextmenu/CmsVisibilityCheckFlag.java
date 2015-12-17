@@ -79,6 +79,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if user has publish permissions. */
     publishpermission,
 
+    /** Checks that replace operations are valid for the type. */
+    replacable,
+
     /** Check editor rule. */
     roleeditor,
 

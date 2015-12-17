@@ -121,7 +121,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }
@@ -201,6 +201,16 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
 
         String data = getSerializedPublishData(getPublishData(resources));
         getRpcProxy(I_CmsGwtDialogClientRpc.class).openPublishDialog(data);
+    }
+
+    /**
+     * Opens the 'Replace' dialog for the resource with the given structure id.<p>
+     *
+     * @param structureId the structure id
+     */
+    public void openReplaceDialog(CmsUUID structureId) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).openReplaceDialog("" + structureId);
     }
 
     /**
