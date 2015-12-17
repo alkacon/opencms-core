@@ -523,7 +523,7 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
                 CmsReplaceDialog.this.hide();
             }
         };
-        closeTimer.schedule(5500);
+        closeTimer.schedule(1000);
     }
 
     /**
