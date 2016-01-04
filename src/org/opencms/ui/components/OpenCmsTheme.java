@@ -93,14 +93,26 @@ public class OpenCmsTheme {
     public static final String DIALOG_FORM = "o-dialog-form";
 
     /** CSS style name. */
-    public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
+    public static final String DIFF_TYPE_ADDED = "diffTypeAdded";
 
+    /** CSS style name. */
+    public static final String DIFF_TYPE_CHANGED = "diffTypeChanged";
+
+    /** CSS style name. */
+    public static final String DIFF_TYPE_DELETED = "diffTypeDeleted";
+
+    /** CSS style name. */
+    public static final String DIFF_TYPE_UNCHANGED = "diffTypeUnchanged";
+
+    /** CSS style name. */
+    public static final String EXPIRED = "o-expired";
+
+    /** CSS style name. */
+    public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
     /** CSS style name. */
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
-
     /** CSS style name. */
     public static final String HIDDEN = "hidden";
-
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
 
@@ -162,9 +174,6 @@ public class OpenCmsTheme {
     public static final String RESPONSIVE = "o-responsive";
 
     /** CSS style name. */
-    public static final String EXPIRED = "o-expired";
-
-    /** CSS style name. */
     public static final String SIBLING = "o-sibling";
 
     /** CSS style name. */
@@ -208,6 +217,13 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";
+
+    /**
+     * Hidden default constructor.
+     */
+    private OpenCmsTheme() {
+        // hidden default constructor, do nothing
+    }
 
     /**
      * Gets the link to an image below the img-extra folder.<p>

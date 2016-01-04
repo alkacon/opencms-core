@@ -42,6 +42,7 @@ import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
 import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
+import org.opencms.ui.actions.CmsHistoryDialogAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
 import org.opencms.ui.actions.CmsPermissionDialogAction;
@@ -130,6 +131,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
             new CmsContextMenuActionItem(new CmsCategoriesDialogAction(), null, 2300, 0),
             new CmsContextMenuActionItem(new CmsPermissionDialogAction(), null, 2400, 0),
+
             advanced,
 
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),
@@ -139,7 +141,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsEditCodeDialogAction(), advanced.getId(), 900, 0),
             new CmsContextMenuActionItem(new CmsRestoreDeletedAction(), advanced.getId(), 1000, 0),
 
-            // TODO: add history entry here
+            new CmsContextMenuActionItem(new CmsHistoryDialogAction(), null, 2450, 0),
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
 
             // toolbar menu entries

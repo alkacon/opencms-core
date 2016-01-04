@@ -210,7 +210,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      *
      * @throws CmsException if something goes wrong
      */
-    protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
+    public static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
 
         if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
             // offline
@@ -378,17 +378,13 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 return;
             }
 
-            String path1 = propertyDiff.getResource1().getRootPath();
-            String path2 = propertyDiff.getResource2().getRootPath();
+            CmsResource resource1 = propertyDiff.getResource1();
+            CmsResource resource2 = propertyDiff.getResource2();
+            String path1 = resource1.getRootPath();
+            String path2 = resource2.getRootPath();
 
-            byte[] content1 = readFile(
-                getCms(),
-                propertyDiff.getResource1().getStructureId(),
-                getParamVersion1()).getContents();
-            byte[] content2 = readFile(
-                getCms(),
-                propertyDiff.getResource2().getStructureId(),
-                getParamVersion2()).getContents();
+            byte[] content1 = readFile(getCms(), resource1.getStructureId(), getParamVersion1()).getContents();
+            byte[] content2 = readFile(getCms(), resource2.getStructureId(), getParamVersion2()).getContents();
 
             String originalSource = null;
             String copySource = null;

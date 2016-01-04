@@ -374,10 +374,10 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
             Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+            CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
         return ret;
     }
 
@@ -515,7 +515,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         version1Col.setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -526,7 +526,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         version2Col.setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);

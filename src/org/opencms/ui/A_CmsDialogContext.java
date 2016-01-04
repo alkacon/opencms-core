@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsUUID;
 
@@ -48,14 +49,14 @@ import com.vaadin.ui.Window;
  */
 public abstract class A_CmsDialogContext implements I_CmsDialogContext {
 
+    /** The window used to display the dialog. */
+    protected Window m_window;
+
     /** The app context. */
     private I_CmsAppUIContext m_appContext;
 
     /** The list of resources. */
     private List<CmsResource> m_resources;
-
-    /** The window used to display the dialog. */
-    protected Window m_window;
 
     /**
      * Constructor.<p>
@@ -152,9 +153,17 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
      */
     public void start(String title, Component dialog) {
 
+        start(title, dialog, DialogWidth.narrow);
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#start(java.lang.String, com.vaadin.ui.Component)
+     */
+    public void start(String title, Component dialog, DialogWidth style) {
+
         if (dialog != null) {
             CmsAppWorkplaceUi.get().disableGlobalShortcuts();
-            m_window = CmsBasicDialog.prepareWindow();
+            m_window = CmsBasicDialog.prepareWindow(style);
             m_window.setCaption(title);
             m_window.setContent(dialog);
             A_CmsUI.get().addWindow(m_window);

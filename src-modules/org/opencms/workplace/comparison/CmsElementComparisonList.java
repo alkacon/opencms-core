@@ -28,6 +28,7 @@
 package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -173,6 +174,32 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             LIST_COLUMN_LOCALE,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
+    }
+
+    public static String formatContentValueForDiffTable(
+        CmsObject cms,
+        CmsElementComparison comparison,
+        String origValue) {
+
+        String result = CmsStringUtil.escapeHtml(
+            CmsStringUtil.substitute(
+                CmsStringUtil.trimToSize(origValue, CmsPropertyComparisonList.TRIM_AT_LENGTH),
+                "\n",
+                ""));
+
+        // formatting DateTime
+        if (comparison instanceof CmsXmlContentElementComparison) {
+            if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
+                if (CmsStringUtil.isNotEmpty(result)) {
+
+                    result = CmsDateUtil.getDateTime(
+                        new Date(Long.parseLong(result)),
+                        DateFormat.SHORT,
+                        cms.getRequestContext().getLocale());
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -384,24 +411,8 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             }
             item.set(LIST_COLUMN_VERSION_1, value1);
 
-            String value2 = CmsStringUtil.escapeHtml(
-                CmsStringUtil.substitute(
-                    CmsStringUtil.trimToSize(comparison.getVersion2(), CmsPropertyComparisonList.TRIM_AT_LENGTH),
-                    "\n",
-                    ""));
-
-            // formatting DateTime
-            if (comparison instanceof CmsXmlContentElementComparison) {
-                if (((CmsXmlContentElementComparison)comparison).getType().equals(CmsXmlDateTimeValue.TYPE_NAME)) {
-                    if (CmsStringUtil.isNotEmpty(value2)) {
-
-                        value2 = CmsDateUtil.getDateTime(
-                            new Date(Long.parseLong(value2)),
-                            DateFormat.SHORT,
-                            getCms().getRequestContext().getLocale());
-                    }
-                }
-            }
+            String origValue = comparison.getVersion2();
+            String value2 = formatContentValueForDiffTable(getCms(), comparison, origValue);
             item.set(LIST_COLUMN_VERSION_2, value2);
             result.add(item);
         }
@@ -409,10 +420,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
             Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+            CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
         return result;
     }
 
@@ -530,7 +541,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         version1Col.setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
         version1Col.setWidth("35%");
         version1Col.setSorteable(false);
         metadata.addColumn(version1Col);
@@ -541,7 +552,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         version2Col.setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
         version2Col.setWidth("35%");
         version2Col.setSorteable(false);
         metadata.addColumn(version2Col);

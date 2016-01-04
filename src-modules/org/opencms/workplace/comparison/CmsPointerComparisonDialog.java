@@ -31,7 +31,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.commons.CmsHistoryList;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -91,12 +90,12 @@ public class CmsPointerComparisonDialog extends CmsDialog {
         out.println(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion1, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion1, getLocale())}));
         out.println("</th><th>");
         out.println(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion2, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion2, getLocale())}));
         out.println("</th></tr>");
         out.print("<tr><td><a href=\"");
         out.print(linkTarget1);

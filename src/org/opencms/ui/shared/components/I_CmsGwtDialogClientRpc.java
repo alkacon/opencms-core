@@ -91,6 +91,16 @@ public interface I_CmsGwtDialogClientRpc extends ClientRpc {
     void showAbout();
 
     /**
+     * Shows the preview dialog for resource with the given structure id and version string.<p>
+     *
+     * The version string format is defined by the toString() method of org.opencms.gwt.shared.CmsHistoryVersion.
+     *
+     * @param uuid the UUID
+     * @param historyVersion the history version string
+     */
+    void showPreview(String uuid, String historyVersion);
+
+    /**
      * Shows the user preferences.<p>
      */
     void showUserPreferences();

@@ -51,6 +51,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHANGE_PW_FIELD2_0 = "GUI_CHANGE_PW_FIELD2_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHILD_DIALOG_GO_BACK_0 = "GUI_CHILD_DIALOG_GO_BACK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOGTITLE_COPYMOVE_0 = "GUI_DIALOGTITLE_COPYMOVE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -79,6 +82,87 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FORGOT_PASSWORD_TEXT_0 = "GUI_FORGOT_PASSWORD_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_ATTRIBUTES_CAPTION_0 = "GUI_HISTORY_DIALOG_ATTRIBUTES_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_BUTTON_PREVIEW_0 = "GUI_HISTORY_DIALOG_BUTTON_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_BUTTON_RESTORE_0 = "GUI_HISTORY_DIALOG_BUTTON_RESTORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_CHANGETYPE_0 = "GUI_HISTORY_DIALOG_COL_CHANGETYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_DATE_LASTMODIFIED_0 = "GUI_HISTORY_DIALOG_COL_DATE_LASTMODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_DATE_PUBLISHED_0 = "GUI_HISTORY_DIALOG_COL_DATE_PUBLISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_LOCALE_0 = "GUI_HISTORY_DIALOG_COL_LOCALE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_PATH_0 = "GUI_HISTORY_DIALOG_COL_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_PROPERTY_0 = "GUI_HISTORY_DIALOG_COL_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COL_XPATH_0 = "GUI_HISTORY_DIALOG_COL_XPATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_0 = "GUI_HISTORY_DIALOG_COMPARE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_MODE_0 = "GUI_HISTORY_DIALOG_COMPARE_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_MODE_HTML_0 = "GUI_HISTORY_DIALOG_COMPARE_MODE_HTML_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_MODE_TEXT_0 = "GUI_HISTORY_DIALOG_COMPARE_MODE_TEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_SOURCE_0 = "GUI_HISTORY_DIALOG_COMPARE_SOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_TEXT_CAPTION_0 = "GUI_HISTORY_DIALOG_COMPARE_TEXT_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_VALUE_1 = "GUI_HISTORY_DIALOG_COMPARE_VALUE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_COMPARE_WHOLE_FILE_0 = "GUI_HISTORY_DIALOG_COMPARE_WHOLE_FILE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_CONFIRM_RESTORE_0 = "GUI_HISTORY_DIALOG_CONFIRM_RESTORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_CONFIRM_RESTORE_TITLE_0 = "GUI_HISTORY_DIALOG_CONFIRM_RESTORE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_CONTENT_VALUE_TABLE_CAPTION_0 = "GUI_HISTORY_DIALOG_CONTENT_VALUE_TABLE_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_DIFF_MODE_0 = "GUI_HISTORY_DIALOG_DIFF_MODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_DIFF_MODE_ALL_0 = "GUI_HISTORY_DIALOG_DIFF_MODE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_DIFF_MODE_CHANGED_0 = "GUI_HISTORY_DIALOG_DIFF_MODE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_PROPERTIES_CAPTION_0 = "GUI_HISTORY_DIALOG_PROPERTIES_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_SELECT_TWO_DIFFERENT_VERSIONS_0 = "GUI_HISTORY_DIALOG_SELECT_TWO_DIFFERENT_VERSIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_TEXT_COMPARISON_CAPTION_0 = "GUI_HISTORY_DIALOG_TEXT_COMPARISON_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INVALID_DATE_FORMAT_0 = "GUI_INVALID_DATE_FORMAT_0";
@@ -199,19 +283,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FOLDER_0 = "GUI_UNDO_MULTI_FOLDER_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_NONRECURSIVE_MULTI_FILE_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FILE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0";
 
@@ -247,16 +327,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
-
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
-
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 

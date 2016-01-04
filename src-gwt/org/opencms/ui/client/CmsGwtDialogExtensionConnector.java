@@ -33,8 +33,12 @@ import org.opencms.ade.publish.client.CmsPublishDialog;
 import org.opencms.ade.publish.shared.CmsPublishData;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishService;
 import org.opencms.ade.publish.shared.rpc.I_CmsPublishServiceAsync;
+import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.CmsLockReportDialog;
+import org.opencms.gwt.client.ui.CmsPreviewDialog;
+import org.opencms.gwt.client.ui.CmsPreviewDialog.I_PreviewInfoProvider;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
@@ -45,6 +49,8 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
+import org.opencms.gwt.shared.CmsHistoryVersion;
+import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
@@ -61,6 +67,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.vaadin.client.ServerConnector;
@@ -301,6 +308,46 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     public void showAbout() {
 
         CmsAbout.showAbout();
+    }
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#showPreview(java.lang.String, java.lang.String)
+     */
+    public void showPreview(String uuid, String versionAsString) {
+
+        final CmsUUID id = new CmsUUID(uuid);
+        final CmsHistoryVersion version = CmsHistoryVersion.fromString(versionAsString);
+
+        CmsRpcAction<CmsPreviewInfo> previewAction = new CmsRpcAction<CmsPreviewInfo>() {
+
+            @Override
+            public void execute() {
+
+                start(0, true);
+                CmsCoreProvider.getVfsService().getHistoryPreviewInfo(
+                    id,
+                    CmsCoreProvider.get().getLocale(),
+                    version,
+                    this);
+            }
+
+            @Override
+            protected void onResponse(CmsPreviewInfo result) {
+
+                stop(false);
+                CmsPreviewDialog dialog = CmsPreviewDialog.createPreviewDialog(result);
+                dialog.setPreviewInfoProvider(new I_PreviewInfoProvider() {
+
+                    public void loadPreviewForLocale(String locale, AsyncCallback<CmsPreviewInfo> resultCallback) {
+
+                        CmsCoreProvider.getVfsService().getHistoryPreviewInfo(id, locale, version, resultCallback);
+                    }
+                });
+
+                dialog.center();
+            }
+        };
+        previewAction.execute();
     }
 
     /**

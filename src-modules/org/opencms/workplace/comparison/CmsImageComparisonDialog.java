@@ -30,7 +30,6 @@ package org.opencms.workplace.comparison;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.commons.CmsHistoryList;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -73,8 +72,8 @@ public class CmsImageComparisonDialog extends CmsDialog {
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
-        String link1 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId1), m_paramVersion1);
-        String link2 = CmsHistoryList.getHistoryLink(getCms(), new CmsUUID(m_paramId2), m_paramVersion2);
+        String link1 = CmsHistoryListUtil.getHistoryLink(getCms(), new CmsUUID(m_paramId1), m_paramVersion1);
+        String link2 = CmsHistoryListUtil.getHistoryLink(getCms(), new CmsUUID(m_paramId2), m_paramVersion2);
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
@@ -82,12 +81,12 @@ public class CmsImageComparisonDialog extends CmsDialog {
         out.println(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion1, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion1, getLocale())}));
         out.println("</th><th>");
         out.println(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion2, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion2, getLocale())}));
         out.println("</th></tr>");
         out.println("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");
         out.println("\t<tr align='center'>\n");
@@ -97,7 +96,7 @@ public class CmsImageComparisonDialog extends CmsDialog {
         out.print(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion1, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion1, getLocale())}));
         out.print("'/></td>\n");
         out.println("\t\t<td width='50%'><img src='");
         out.print(getJsp().link(link2));
@@ -105,7 +104,7 @@ public class CmsImageComparisonDialog extends CmsDialog {
         out.print(
             key(
                 Messages.GUI_COMPARE_VERSION_1,
-                new String[] {CmsHistoryList.getDisplayVersion(m_paramVersion2, getLocale())}));
+                new String[] {CmsHistoryListUtil.getDisplayVersion(m_paramVersion2, getLocale())}));
         out.print("'/></td>\n");
         out.println("\t</tr>");
         out.println("</table>");

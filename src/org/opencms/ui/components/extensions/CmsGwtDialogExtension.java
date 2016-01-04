@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsPrefetchSerializationPolicy;
+import org.opencms.gwt.shared.CmsHistoryVersion.OfflineOnline;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.main.CmsLog;
@@ -219,6 +220,11 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     public void showAbout() {
 
         getRpcProxy(I_CmsGwtDialogClientRpc.class).showAbout();
+    }
+
+    public void showPreview(CmsUUID id, Integer version, OfflineOnline offlineOnline) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).showPreview("" + id, version + ":" + offlineOnline);
     }
 
     /**

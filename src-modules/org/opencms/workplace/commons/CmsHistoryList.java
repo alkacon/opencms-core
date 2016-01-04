@@ -45,6 +45,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -284,71 +285,6 @@ public class CmsHistoryList extends A_CmsListDialog {
     public CmsHistoryList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns the version number from a version parameter.<p>
-     *
-     * @param version might be negative for the online version
-     * @param locale if the result is for display purposes, the locale has to be <code>!= null</code>
-     *
-     * @return the display name
-     */
-    public static String getDisplayVersion(String version, Locale locale) {
-
-        int ver = Integer.parseInt(version);
-        if (ver == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
-            return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_OFFLINE_0);
-        }
-        if (ver < 0) {
-            ver *= -1;
-            if (locale != null) {
-                return Messages.get().getBundle(locale).key(Messages.GUI_PROJECT_ONLINE_1, new Integer(ver));
-            }
-        }
-        return "" + ver;
-    }
-
-    /**
-     * Returns the link to an historical file.<p>
-     *
-     * @param cms the cms context
-     * @param structureId the structure id of the file
-     * @param version the version number of the file
-     *
-     * @return the link to an historical file
-     */
-    public static String getHistoryLink(CmsObject cms, CmsUUID structureId, String version) {
-
-        String resourcePath;
-        CmsResource resource;
-        try {
-            resource = cms.readResource(structureId, CmsResourceFilter.ALL);
-            resourcePath = resource.getRootPath();
-        } catch (CmsException e) {
-            throw new CmsRuntimeException(e.getMessageContainer(), e);
-        }
-        StringBuffer link = new StringBuffer();
-        link.append(CmsHistoryResourceHandler.HISTORY_HANDLER);
-        link.append(resourcePath);
-        link.append('?');
-        link.append(CmsHistoryResourceHandler.PARAM_VERSION);
-        link.append('=');
-        link.append(getVersion("" + version));
-        return link.toString();
-    }
-
-    /**
-     * Returns the version number from a version parameter.<p>
-     *
-     * @param version might be negative for the online version
-     *
-     * @return the positive value
-     */
-    public static int getVersion(String version) {
-
-        int ver = Integer.parseInt(version);
-        return Math.abs(ver);
     }
 
     /**
@@ -732,7 +668,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                 jsCode.append(
                     OpenCms.getLinkManager().substituteLink(
                         cms,
-                        getHistoryLink(
+                        CmsHistoryListUtil.getHistoryLink(
                             cms,
                             new CmsUUID(getItem().get(LIST_COLUMN_STRUCTURE_ID).toString()),
                             version.toString())));
@@ -799,7 +735,7 @@ public class CmsHistoryList extends A_CmsListDialog {
                     return "";
                 }
                 CmsVersionWrapper version = (CmsVersionWrapper)data;
-                return CmsHistoryList.getDisplayVersion(version.toString(), locale);
+                return CmsHistoryListUtil.getDisplayVersion(version.toString(), locale);
             }
 
         });

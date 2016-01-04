@@ -27,6 +27,10 @@
 
 package org.opencms.gwt.shared;
 
+import org.opencms.util.CmsStringUtil;
+
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -43,7 +47,8 @@ public class CmsHistoryVersion implements IsSerializable {
      */
     public enum OfflineOnline {
         /** Offline project. */
-        offline, /** Online project. */
+        offline,
+        /** Online project. */
         online;
     }
 
@@ -75,7 +80,34 @@ public class CmsHistoryVersion implements IsSerializable {
     }
 
     /**
-     * Gets the version number, or null if no version number was set
+     * Converts a string to a CmsHistoryVersion.<p>
+     *
+     * This is the inverse of toString().
+     *
+     * @param s the string from which to read the history version
+     *
+     * @return the history version
+     */
+    public static CmsHistoryVersion fromString(String s) {
+
+        List<String> l = CmsStringUtil.splitAsList(s, ":");
+        if (l.size() == 2) {
+
+            Integer ver = null;
+            try {
+                ver = Integer.valueOf(l.get(0));
+            } catch (Exception e) {
+                //
+            }
+            OfflineOnline onlineStatus = "null".equals("" + l.get(1)) ? null : OfflineOnline.valueOf(l.get(1));
+            return new CmsHistoryVersion(ver, onlineStatus);
+        }
+        return null;
+
+    }
+
+    /**
+     * Gets the version number, or null if no version number was set.<p>
      *
      * @return the version number
      */
@@ -102,6 +134,15 @@ public class CmsHistoryVersion implements IsSerializable {
     public boolean isOnline() {
 
         return OfflineOnline.online.equals(m_offlineOnline);
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+
+        return m_versionNumber + ":" + m_offlineOnline;
     }
 
 }

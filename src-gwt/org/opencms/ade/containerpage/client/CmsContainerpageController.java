@@ -2062,10 +2062,14 @@ public final class CmsContainerpageController {
      */
     public boolean isInlineEditable(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
 
+        CmsUUID elemView = element.getElementView();
+        if (elemView == null) {
+            elemView = CmsUUID.getNullUUID();
+        }
         return !getData().isUseClassicEditor()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())
             && hasActiveSelection()
-            && m_elementView.equals(element.getElementView())
+            && m_elementView.equals(elemView)
             && isContainerEditable(dragParent)
             && (getData().isModelGroup() || !element.hasModelGroupParent())
             && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());

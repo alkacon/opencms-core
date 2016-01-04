@@ -41,6 +41,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsConfirmationDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.util.table.CmsTableUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +54,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Table used to display scheduled jobs, together with buttons for modifying the jobs.<p>
@@ -75,6 +75,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         delete(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_DELETE_NAME_0),
 
         /** Edits the job. */
+        /** Message constant for key in the resource bundle. */
         edit(org.opencms.workplace.tools.scheduler.Messages.GUI_JOBS_LIST_ACTION_EDIT_NAME_0),
 
         /** Executes the job immediately. */
@@ -103,11 +104,11 @@ public class CmsJobTable extends Table implements ColumnGenerator {
         }
     }
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJobTable.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** Bean container for the table. */
     private BeanItemContainer<CmsJobBean> m_beanContainer = new BeanItemContainer<CmsJobBean>(CmsJobBean.class);
@@ -201,7 +202,7 @@ public class CmsJobTable extends Table implements ColumnGenerator {
             resource = new ExternalResource(resPath);
         }
 
-        Button button = createIconButton(resource, CmsVaadinUtils.getMessageText(action.getMessageKey()));
+        Button button = CmsTableUtil.createIconButton(resource, CmsVaadinUtils.getMessageText(action.getMessageKey()));
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -314,26 +315,6 @@ public class CmsJobTable extends Table implements ColumnGenerator {
     public void setJobEditHandler(I_CmsJobEditHandler handler) {
 
         m_jobEditHandler = handler;
-    }
-
-    /**
-     * Creates an icon button.<p>
-     *
-     * @param icon the resource for the icon
-     * @param caption the caption
-     *
-     * @return the created button
-     */
-    Button createIconButton(Resource icon, String caption) {
-
-        Button button = new Button();
-
-        button.addStyleName(OpenCmsTheme.BUTTON_TABLE_ICON);
-        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        button.addStyleName(OpenCmsTheme.BUTTON_ICON_SMALL);
-        button.setIcon(icon);
-        button.setDescription(caption);
-        return button;
     }
 
     /**

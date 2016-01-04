@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -111,5 +112,14 @@ public interface I_CmsDialogContext {
      * @param dialog the dialog main widget
      */
     void start(String title, Component dialog);
+
+    /**
+     * Called to start up the dialog with the given main widget and title string.<p>
+     *
+     * @param title the title to display
+     * @param dialog the dialog main widget
+     * @param width the preferred width for the dialog
+     */
+    void start(String title, Component dialog, DialogWidth width);
 
 }

@@ -97,8 +97,10 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -986,52 +988,64 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     public CmsHistoryResourceCollection getResourceHistory(CmsUUID structureId) throws CmsRpcException {
 
         try {
-            CmsHistoryResourceCollection result = new CmsHistoryResourceCollection();
-            CmsObject cms = getCmsObject();
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
-            List<I_CmsHistoryResource> versions = cms.readAllAvailableVersions(resource);
-            if (!resource.getState().isUnchanged()) {
-                result.add(createHistoryResourceBean(cms, resource, true, -1));
-            }
-            int maxVersion = 0;
-
-            if (versions.isEmpty()) {
-                try {
-                    CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
-                    CmsObject onlineCms = OpenCms.initCmsObject(cms);
-                    onlineCms.getRequestContext().setCurrentProject(online);
-                    CmsResource onlineResource = onlineCms.readResource(structureId, CmsResourceFilter.ALL);
-                    CmsHistoryResourceBean onlineResBean = createHistoryResourceBean(
-                        onlineCms,
-                        onlineResource,
-                        false,
-                        0);
-                    result.add(onlineResBean);
-                } catch (CmsVfsResourceNotFoundException e) {
-                    LOG.info(e.getLocalizedMessage(), e);
-                } catch (Exception e) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            } else {
-                for (I_CmsHistoryResource historyRes : versions) {
-                    maxVersion = Math.max(maxVersion, historyRes.getVersion());
-                }
-                for (I_CmsHistoryResource historyRes : versions) {
-                    CmsHistoryResourceBean historyBean = createHistoryResourceBean(
-                        cms,
-                        (CmsResource)historyRes,
-                        false,
-                        maxVersion);
-                    result.add(historyBean);
-                }
-            }
+            CmsHistoryResourceCollection result = getResourceHistoryInternal(structureId);
             CmsListInfoBean info = getPageInfo(structureId);
             result.setContentInfo(info);
             return result;
+
         } catch (Exception e) {
             error(e);
             return null; // return statement will  never be reached
         }
+    }
+
+    /**
+     * Internal version of getResourceHistory.<p>
+     *
+     * @param structureId the structure id of the resource
+     *
+     * @return the resource history
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public CmsHistoryResourceCollection getResourceHistoryInternal(CmsUUID structureId) throws CmsException {
+
+        CmsHistoryResourceCollection result = new CmsHistoryResourceCollection();
+        CmsObject cms = getCmsObject();
+        CmsResource resource = cms.readResource(structureId, CmsResourceFilter.ALL);
+        List<I_CmsHistoryResource> versions = cms.readAllAvailableVersions(resource);
+        if (!resource.getState().isUnchanged()) {
+            result.add(createHistoryResourceBean(cms, resource, true, -1));
+        }
+        int maxVersion = 0;
+
+        if (versions.isEmpty()) {
+            try {
+                CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+                CmsObject onlineCms = OpenCms.initCmsObject(cms);
+                onlineCms.getRequestContext().setCurrentProject(online);
+                CmsResource onlineResource = onlineCms.readResource(structureId, CmsResourceFilter.ALL);
+                CmsHistoryResourceBean onlineResBean = createHistoryResourceBean(onlineCms, onlineResource, false, 0);
+                result.add(onlineResBean);
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.info(e.getLocalizedMessage(), e);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        } else {
+            for (I_CmsHistoryResource historyRes : versions) {
+                maxVersion = Math.max(maxVersion, historyRes.getVersion());
+            }
+            for (I_CmsHistoryResource historyRes : versions) {
+                CmsHistoryResourceBean historyBean = createHistoryResourceBean(
+                    cms,
+                    (CmsResource)historyRes,
+                    false,
+                    maxVersion);
+                result.add(historyBean);
+            }
+        }
+        return result;
     }
 
     /**
@@ -1943,13 +1957,21 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 title,
                 cms.getSitePath(resource),
                 locale.toString());
-        } else if (CmsResourceTypeImage.getStaticTypeId() == resource.getTypeId()) {
+        } else if (OpenCms.getResourceManager().matchResourceType(
+            CmsResourceTypeImage.getStaticTypeName(),
+            resource.getTypeId())) {
             CmsImageScaler scaler = new CmsImageScaler(cms, resource);
-            previewContent = "<img src=\""
-                + OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath())
-                + "\" title=\""
-                + title
-                + "\" style=\"display:block\" />";
+            String imageLink = null;
+            if (resource instanceof I_CmsHistoryResource) {
+                int version = ((I_CmsHistoryResource)resource).getVersion();
+                imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                    cms,
+                    CmsHistoryListUtil.getHistoryLink(cms, resource.getStructureId(), "" + version));
+            } else {
+                imageLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, resource.getRootPath());
+            }
+            imageLink = CmsRequestUtil.appendParameter(imageLink, "random", "" + Math.random());
+            previewContent = "<img src=\"" + imageLink + "\" title=\"" + title + "\" style=\"display:block\" />";
             height = scaler.getHeight();
             width = scaler.getWidth();
         } else if (CmsResourceTypeXmlContent.isXmlContent(resource)) {

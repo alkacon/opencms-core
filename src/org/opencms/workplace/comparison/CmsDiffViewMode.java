@@ -60,14 +60,14 @@ public final class CmsDiffViewMode implements Serializable {
         "diff_only",
         Messages.get().container(Messages.GUI_DIFF_MODE_ALL_NAME_0));
 
+    /** uid for serialization. */
+    private static final long serialVersionUID = -9107946096096683776L;
+
     /** Array constant for all available align types. */
     private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
 
     /** List of mode constants. */
     public static final List<CmsDiffViewMode> VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
-
-    /** uid for serialization. */
-    private static final long serialVersionUID = -9107946096096683776L;
 
     /** Internal representation. */
     private final String m_mode;

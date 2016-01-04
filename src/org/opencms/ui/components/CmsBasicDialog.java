@@ -37,6 +37,7 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 
+import com.google.common.collect.Lists;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -76,10 +77,13 @@ public class CmsBasicDialog extends VerticalLayout {
     /** The resource info component. */
     private Component m_infoComponent;
 
+    /** The resources for which the resource info boxes should be displayed. */
+    private List<CmsResource> m_infoResources = Lists.newArrayList();
+
     /** The main panel. */
     private VerticalLayout m_mainPanel;
-     
-    /** Extension used to regulate max height. */ 
+
+    /** Extension used to regulate max height. */
     private CmsMaxHeightExtension m_maxHeightExtension;
 
     /**
@@ -173,6 +177,7 @@ public class CmsBasicDialog extends VerticalLayout {
      */
     public void displayResourceInfo(List<CmsResource> resources) {
 
+        m_infoResources = Lists.newArrayList(resources);
         if (m_infoComponent != null) {
             m_mainPanel.removeComponent(m_infoComponent);
             m_infoComponent = null;
@@ -195,6 +200,16 @@ public class CmsBasicDialog extends VerticalLayout {
             }
 
         }
+    }
+
+    /**
+     * Gets the resources for which the resource info boxes should be displayed.<p>
+     *
+     * @return the resource info resources
+     */
+    public List<CmsResource> getInfoResources() {
+
+        return m_infoResources;
     }
 
     /**

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  </head>
+  <body>
+  		<v-vertical-layout size-full>
+  			<v-form-layout>
+  				<v-option-group caption="%(key.GUI_HISTORY_DIALOG_COMPARE_MODE_0)" _id="m_textOrHtmlSelect">
+  					<option item-id="text">%(key.GUI_HISTORY_DIALOG_COMPARE_MODE_TEXT_0)</option>
+  					<option item-id="html">%(key.GUI_HISTORY_DIALOG_COMPARE_MODE_HTML_0)</option>
+  				</v-option-group>
+  				<v-option-group caption="%(key.GUI_HISTORY_DIALOG_DIFF_MODE_0)" _id="m_diffModeSelect">
+  					<option item-id="all">%(key.GUI_HISTORY_DIALOG_DIFF_MODE_ALL_0)</option>
+  					<option item-id="diff">%(key.GUI_HISTORY_DIALOG_DIFF_MODE_CHANGED_0)</option>
+  				</v-option-group> 
+  			</v-form-layout>
+  			<v-panel size-full :expand=1>
+  				<v-vertical-layout margin width="-1px" height="-1px">
+  			  		<v-label _id="m_diffHtml"  />
+  			  	</v-vertical-layout>
+  			</v-panel>
+		</v-vertical-layout>
+  </body>
+</html>

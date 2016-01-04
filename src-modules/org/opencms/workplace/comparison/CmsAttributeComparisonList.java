@@ -111,6 +111,41 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     }
 
     /**
+     * Returns either the historical file or the offline file, depending on the version number.<p>
+     *
+     * @param cms the CmsObject to use
+     * @param structureId the structure id of the file
+     * @param version the historical version number
+     *
+     * @return either the historical file or the offline file, depending on the version number
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
+
+        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
+            // offline
+            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+            return cms.readFile(resource);
+        } else {
+            int ver = Integer.parseInt(version);
+            if (ver < 0) {
+                // online
+                CmsProject project = cms.getRequestContext().getCurrentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
+                    return cms.readFile(resource);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(project);
+                }
+            }
+            // backup
+            return cms.readFile((CmsHistoryFile)cms.readResource(structureId, ver));
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
     @Override
@@ -169,10 +204,10 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
             Messages.get().container(
                 Messages.GUI_COMPARE_VERSION_1,
-                CmsHistoryList.getDisplayVersion(getParamVersion1(), getLocale())));
+                CmsHistoryListUtil.getDisplayVersion(getParamVersion1(), getLocale())));
         getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(Messages.get().container(
             Messages.GUI_COMPARE_VERSION_1,
-            CmsHistoryList.getDisplayVersion(getParamVersion2(), getLocale())));
+            CmsHistoryListUtil.getDisplayVersion(getParamVersion2(), getLocale())));
 
         return ret;
     }
@@ -212,7 +247,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         if (active) {
             String label = Messages.get().container(
                 Messages.GUI_COMPARE_VIEW_VERSION_1,
-                CmsHistoryList.getDisplayVersion(version, getLocale())).key(getLocale());
+                CmsHistoryListUtil.getDisplayVersion(version, getLocale())).key(getLocale());
             String iconPath = null;
             try {
                 String typeName = OpenCms.getResourceManager().getResourceType(
@@ -227,7 +262,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             StringBuffer result = new StringBuffer(1024);
             result.append("<span class='link' onClick=\"");
             result.append("window.open('");
-            result.append(getJsp().link(CmsHistoryList.getHistoryLink(getCms(), structureId, version)));
+            result.append(getJsp().link(CmsHistoryListUtil.getHistoryLink(getCms(), structureId, version)));
             result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
             result.append("<img style='width: 16px; height: 16px;' src='");
             result.append(CmsWorkplace.getSkinUri());
@@ -243,41 +278,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             return result.toString();
         }
         return "";
-    }
-
-    /**
-     * Returns either the historical file or the offline file, depending on the version number.<p>
-     *
-     * @param cms the CmsObject to use
-     * @param structureId the structure id of the file
-     * @param version the historical version number
-     *
-     * @return either the historical file or the offline file, depending on the version number
-     *
-     * @throws CmsException if something goes wrong
-     */
-    protected static CmsFile readFile(CmsObject cms, CmsUUID structureId, String version) throws CmsException {
-
-        if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
-            // offline
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            return cms.readFile(resource);
-        } else {
-            int ver = Integer.parseInt(version);
-            if (ver < 0) {
-                // online
-                CmsProject project = cms.getRequestContext().getCurrentProject();
-                try {
-                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                    CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-                    return cms.readFile(resource);
-                } finally {
-                    cms.getRequestContext().setCurrentProject(project);
-                }
-            }
-            // backup
-            return cms.readFile((CmsHistoryFile)cms.readResource(structureId, ver));
-        }
     }
 
     /**

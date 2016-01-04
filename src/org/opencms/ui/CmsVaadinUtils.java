@@ -70,10 +70,12 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Vaadin utility functions.<p>
@@ -81,11 +83,56 @@ import com.vaadin.ui.declarative.Design;
  */
 public final class CmsVaadinUtils {
 
-    /** The combo box value item property id. */
-    public static final String PROPERTY_VALUE = "value";
+    /**
+     * Helper class for building option groups.<p>
+     */
+    public static class OptionGroupBuilder {
+
+        /** The option group being built. */
+        private OptionGroup m_optionGroup = new OptionGroup();
+
+        /**
+         * Adds an option.<p>
+         *
+         * @param key the option key
+         * @param text the option text
+         *
+         * @return this instance
+         */
+        public OptionGroupBuilder add(String key, String text) {
+
+            m_optionGroup.addItem(key);
+            m_optionGroup.setItemCaption(key, text);
+            return this;
+        }
+
+        /**
+         * Returns the option group.<p>
+         *
+         * @return the option group
+         */
+        public OptionGroup build() {
+
+            return m_optionGroup;
+        }
+
+        /**
+         * Adds horizontal style to option group.<p>
+         *
+         * @return this instance
+         */
+        public OptionGroupBuilder horizontal() {
+
+            m_optionGroup.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
+            return this;
+        }
+    }
 
     /** The combo box label item property id. */
     public static final String PROPERTY_LABEL = "label";
+
+    /** The combo box value item property id. */
+    public static final String PROPERTY_VALUE = "value";
 
     /** The logger of this class. */
     private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
@@ -451,6 +498,16 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Creates a new option group builder.<p>
+     *
+     * @return a new option group builder
+     */
+    public static OptionGroupBuilder startOptionGroup() {
+
+        return new OptionGroupBuilder();
+    }
+
+    /**
      * Visits all descendants of a given component (including the component itself) and applies a predicate
      * to each.<p>
      *
@@ -479,7 +536,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-    
+
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)
