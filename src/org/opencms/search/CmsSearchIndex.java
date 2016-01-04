@@ -177,7 +177,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static final int MAX_HITS_DEFAULT = 5000;
 
     /** Constant for years max range span in document search. */
-    public static final int MAX_YEAR_RANGE = 12;
+    public static final int MAX_YEAR_RANGE = 25;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = A_PARAM_PREFIX + ".checkPermissions";
