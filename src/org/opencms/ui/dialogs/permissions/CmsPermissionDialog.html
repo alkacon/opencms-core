@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	  	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	  	<meta name="package-mapping" content="o:org.opencms.ui.dialogs.permissions" />
+  </head>
+  <body>
+  		<o-cms-basic-dialog>
+  			<content>
+  				<v-vertical-layout _id="m_main" width="100%" >
+  					<v-accordion _id="m_accordion" width="100%">
+  						<tab visible="false" caption="Responsible">
+  							<v-vertical-layout _id="m_responsible" width="100%" />
+  						</tab>
+  						<tab caption="User permissions">
+  							<v-vertical-layout _id="m_userPermissions" width="100%" />
+  						</tab>
+  						<tab caption="Inherited permissions">
+  							<v-vertical-layout _id="m_inheritedPermissions" width="100%" />
+  						</tab>
+  						<tab caption="Resource permissions">
+  							<v-vertical-layout width="100%">
+  								<o-cms-principal-select _id="m_principalSelect" width="100%" />
+  								<v-vertical-layout _id="m_resourcePermissions" width="100%"></v-vertical-layout>
+  							</v-vertical-layout>
+  						</tab>
+  					</v-accordion>
+  				</v-vertical-layout>
+  			</content>
+  			<buttons>
+  				<v-button _id="m_closeButton" >%(key.GUI_DIALOG_BUTTON_CLOSE_0)</v-button>
+  			</buttons>
+  		</o-cms-basic-dialog>
+  	</body>
+</html>

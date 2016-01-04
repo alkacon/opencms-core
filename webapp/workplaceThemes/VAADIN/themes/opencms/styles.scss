@@ -6,6 +6,7 @@
 @import "toolbar";
 @import "buttons";
 @import "loading-spinner";
+@import "permissions";
 
 @include opencmsfont;
 
@@ -17,6 +18,7 @@
    @include o-toolbar;
    @include o-buttons;
    @include o-loading-spinner;
+   @include o-permissions;
 }
 
 html {

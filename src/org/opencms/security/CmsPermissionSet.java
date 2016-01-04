@@ -27,7 +27,8 @@
 
 package org.opencms.security;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -148,21 +149,22 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Initializes and returns the hashtable of all permissions known in the system.<p>
+     * Initializes and returns the linked hash map of all permissions known in the system.<p>
      *
-     * @return hastable with permission keys and values
+     * @return a linked hash map with permission keys and values
      */
     private static Map<String, Integer> permissions() {
 
         if (m_permissions == null) {
-            m_permissions = new HashMap<String, Integer>();
-            m_permissions.put("GUI_PERMISSION_TYPE_READ_0", new Integer(CmsPermissionSet.PERMISSION_READ));
-            m_permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
-            m_permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
-            m_permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
-            m_permissions.put(
+            LinkedHashMap<String, Integer> permissions = new LinkedHashMap<String, Integer>();
+            permissions.put("GUI_PERMISSION_TYPE_READ_0", new Integer(CmsPermissionSet.PERMISSION_READ));
+            permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
+            permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
+            permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
+            permissions.put(
                 "GUI_PERMISSION_TYPE_DIRECT_PUBLISH_0",
                 new Integer(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
+            m_permissions = Collections.unmodifiableMap(permissions);
         }
         return m_permissions;
     }

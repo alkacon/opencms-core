@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
@@ -65,6 +66,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.Label;
@@ -78,6 +80,12 @@ import com.vaadin.ui.declarative.Design;
  *
  */
 public final class CmsVaadinUtils {
+
+    /** The combo box value item property id. */
+    public static final String PROPERTY_VALUE = "value";
+
+    /** The combo box label item property id. */
+    public static final String PROPERTY_LABEL = "label";
 
     /** The logger of this class. */
     private static final Logger LOG = Logger.getLogger(CmsVaadinUtils.class);
@@ -320,6 +328,26 @@ public final class CmsVaadinUtils {
     }
 
     /**
+     * Generates the options items for the combo box using the map entry keys as values and the values as labels.<p>
+     *
+     * @param box the combo box to prepare
+     * @param options the box options
+     */
+    public static void prepareComboBox(ComboBox box, Map<?, String> options) {
+
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty(PROPERTY_VALUE, Object.class, null);
+        container.addContainerProperty(PROPERTY_LABEL, String.class, "");
+        for (Entry<?, String> entry : options.entrySet()) {
+            Item item = container.addItem(entry.getKey());
+            item.getItemProperty(PROPERTY_VALUE).setValue(entry.getKey());
+            item.getItemProperty(PROPERTY_LABEL).setValue(entry.getValue());
+        }
+        box.setContainerDataSource(container);
+        box.setItemCaptionPropertyId(PROPERTY_LABEL);
+    }
+
+    /**
      * Reads the declarative design for a component and localizes it using a messages object.<p>
      *
      * The design will need to be located in the same directory as the component's class and have '.html' as a file extension.
@@ -451,7 +479,7 @@ public final class CmsVaadinUtils {
 
     /**
      * Reads the given design and resolves the given macros and localizations.<p>
-
+    
      * @param component the component whose design to read
      * @param designStream stream to read the design from
      * @param messages the message bundle to use for localization in the design (may be null)

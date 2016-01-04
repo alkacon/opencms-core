@@ -1,0 +1,19 @@
+@mixin o-permissions{
+	.o-permissions {
+		.v-button.v-button-borderless:focus:after{
+			border-color: transparent;
+			box-shadow: none;
+		}
+		.o-permissions-heading {
+			line-height: $v-unit-size;
+			
+			&:first-child{
+				padding-left: round($v-unit-size/2);
+			}
+		}
+		
+		.o-permissions-info {
+			margin-left: 38px;
+		}
+	}
+}

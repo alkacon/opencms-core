@@ -95,6 +95,11 @@ public interface I_CmsDialogContext {
     List<CmsResource> getResources();
 
     /**
+     * Call when the dialog view has changed to re-center the dialog window.<p>
+     */
+    void onViewChange();
+
+    /**
      * Reloads the UI.<p>
      */
     void reload();

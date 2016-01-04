@@ -44,6 +44,7 @@ import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
 import org.opencms.ui.actions.CmsLockAction;
 import org.opencms.ui.actions.CmsLockedResourcesAction;
+import org.opencms.ui.actions.CmsPermissionDialogAction;
 import org.opencms.ui.actions.CmsPreferencesDialogAction;
 import org.opencms.ui.actions.CmsProjectDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
@@ -128,7 +129,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsUndeleteDialogAction(), null, 2100, 0),
             new CmsContextMenuActionItem(new CmsResourceInfoAction(), null, 2200, 0),
             new CmsContextMenuActionItem(new CmsCategoriesDialogAction(), null, 2300, 0),
-            // TODO: add permissions entry here
+            new CmsContextMenuActionItem(new CmsPermissionDialogAction(), null, 2400, 0),
             advanced,
 
             new CmsContextMenuActionItem(new CmsTouchDialogAction(), advanced.getId(), 170, 0),

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	</head>
+	<body>
+		<v-css-layout width="100%" style-name="o-permissions">
+			<v-button _id="m_details" style-name="borderless"></v-button>
+			<v-label _id="m_label" style-name="o-permissions-heading" />
+			<v-label _id="m_inheritedFrom" style-name="o-permissions-info"/>
+			<v-table _id="m_permissions" width="100%" visible="false" />
+			<v-vertical-layout _id="m_buttonBar" width="100%" visible="false" spacing margin>
+				<v-horizontal-layout spacing>
+					<v-check-box _id="m_responsibleCheckbox" caption="Responsible" />
+					<v-check-box _id="m_overwriteCheckbox" caption="Overwrite inherited" />
+					<v-check-box _id="m_inheritCheckbox" caption="Inherit on sub-folders" />
+				</v-horizontal-layout >
+				<v-horizontal-layout spacing :right>
+					<v-button _id="m_setButton">Set</v-button>
+					<v-button _id="m_deleteButton">Delete</v-button>
+				</v-horizontal-layout>
+			</v-vertical-layout>
+		</v-css-layout>
+	</body>
+</html>

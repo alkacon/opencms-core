@@ -129,6 +129,16 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#onViewChange()
+     */
+    public void onViewChange() {
+
+        if (m_window != null) {
+            m_window.center();
+        }
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#reload()
      */
     public void reload() {
