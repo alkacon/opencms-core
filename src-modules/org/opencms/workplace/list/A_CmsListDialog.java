@@ -528,6 +528,41 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Should generate the metadata definition for the list, and return the
+     * corresponding <code>{@link CmsListMetadata}</code> object.<p>
+     *
+     * @param listDialogName the name of the class generating the list
+     * @param listId the id of the list
+     *
+     * @return The metadata for the given list
+     */
+    public synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
+
+        getSettings();
+        String metaDataKey = listDialogName + listId;
+
+        if ((getMetadataCache().get(metaDataKey) == null) || getMetadataCache().get(metaDataKey).isVolatile()) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
+            }
+            CmsListMetadata metadata = new CmsListMetadata(listId);
+
+            setColumns(metadata);
+            // always check the search action
+            setSearchAction(metadata, m_searchColId);
+            setIndependentActions(metadata);
+            metadata.addIndependentAction(new CmsListPrintIAction());
+            setMultiActions(metadata);
+            metadata.checkIds();
+            getMetadataCache().put(metaDataKey, metadata);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
+            }
+        }
+        return getMetadata(metaDataKey);
+    }
+
+    /**
      * Returns the form name.<p>
      *
      * @return the form name
@@ -943,40 +978,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
             return m_listState;
         }
         return getList().getState();
-    }
-
-    /**
-     * Should generate the metadata definition for the list, and return the
-     * corresponding <code>{@link CmsListMetadata}</code> object.<p>
-     *
-     * @param listDialogName the name of the class generating the list
-     * @param listId the id of the list
-     *
-     * @return The metadata for the given list
-     */
-    protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
-
-        getSettings();
-
-        if ((getMetadataCache().get(listDialogName) == null) || getMetadataCache().get(listDialogName).isVolatile()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_START_METADATA_LIST_1, getListId()));
-            }
-            CmsListMetadata metadata = new CmsListMetadata(listId);
-
-            setColumns(metadata);
-            // always check the search action
-            setSearchAction(metadata, m_searchColId);
-            setIndependentActions(metadata);
-            metadata.addIndependentAction(new CmsListPrintIAction());
-            setMultiActions(metadata);
-            metadata.checkIds();
-            getMetadataCache().put(listDialogName, metadata);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_END_METADATA_LIST_1, getListId()));
-            }
-        }
-        return getMetadata(listDialogName);
     }
 
     /**
