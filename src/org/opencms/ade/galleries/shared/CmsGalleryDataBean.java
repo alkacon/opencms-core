@@ -29,6 +29,7 @@ package org.opencms.ade.galleries.shared;
 
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 
 import java.util.List;
@@ -61,6 +62,9 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** The prefix for the key used to store the last selected gallery. */
     private String m_galleryStoragePrefix;
 
+    /** The default value for the 'include expired' option. */
+    private boolean m_includeExpiredDefault;
+
     /** The content locale. */
     private String m_locale;
 
@@ -81,6 +85,9 @@ public class CmsGalleryDataBean implements IsSerializable {
 
     /** The site selector options for the sitemap tab. */
     private List<CmsSiteSelectorOption> m_sitemapSiteSelectorOptions;
+
+    /** The result sort order. */
+    private SortParams m_sortOrder;
 
     /** The start folder. */
     private String m_startFolder;
@@ -109,15 +116,11 @@ public class CmsGalleryDataBean implements IsSerializable {
     /** List of site selector options. */
     private List<CmsSiteSelectorOption> m_vfsSiteSelectorOptions;
 
-    /** The default value for the 'include expired' option. */
-    private boolean m_includeExpiredDefault;
-
     /**
      * Default constructor.<p>
      */
     public CmsGalleryDataBean() {
 
-        // do nothing
     }
 
     /**
@@ -240,6 +243,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public List<CmsSiteSelectorOption> getSitemapSiteSelectorOptions() {
 
         return m_sitemapSiteSelectorOptions;
+    }
+
+    /**
+     * Gets the result sort order.<p>
+     *
+     * @return the result sort order
+     */
+    public SortParams getSortOrder() {
+
+        return m_sortOrder;
     }
 
     /**
@@ -451,6 +464,16 @@ public class CmsGalleryDataBean implements IsSerializable {
     public void setSitemapSiteSelectorOptions(List<CmsSiteSelectorOption> options) {
 
         m_sitemapSiteSelectorOptions = options;
+    }
+
+    /**
+     * Sets the result sort order.<p>
+     *
+     * @param sortOrder the result sort order
+     */
+    public void setSortOrder(SortParams sortOrder) {
+
+        m_sortOrder = sortOrder;
     }
 
     /**

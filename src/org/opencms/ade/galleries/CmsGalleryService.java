@@ -42,6 +42,7 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -275,20 +276,20 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
 
     }
 
-    /** Name for the 'galleryShowInvalidDefault' preference. */
-    public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
+    /** Limit to the number results loaded on initial search. */
+    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
     /** The key used for storing the last used gallery in adeview mode. */
     public static final String KEY_LAST_USED_GALLERY_ADEVIEW = "__adeView";
+
+    /** Name for the 'galleryShowInvalidDefault' preference. */
+    public static final String PREF_GALLERY_SHOW_INVALID_DEFAULT = "galleryShowInvalidDefault";
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGalleryService.class);
 
     /** Serialization uid. */
     private static final long serialVersionUID = 1673026761080584889L;
-
-    /** Limit to the number results loaded on initial search. */
-    public static final int INITIAL_SEARCH_MAX_RESULTS = 200;
 
     /** The instance of the resource manager. */
     CmsResourceManager m_resourceManager;
@@ -580,6 +581,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setVfsRootFolders(getRootEntries());
 
             data.setScope(getWorkplaceSettings().getLastSearchScope());
+            data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
+
             data.setTabIds(GalleryMode.ade.getTabs());
             data.setReferenceSitePath(uri);
             List<CmsResourceTypeBean> types = buildTypesList(resourceTypes, creatableTypes, deactivatedTypes, null);
@@ -724,6 +727,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         if (scope == null) {
                             scope = OpenCms.getWorkplaceManager().getGalleryDefaultScope();
                         }
+                        result.setSortOrder(data.getSortOrder().name());
                         result.setScope(scope);
                         result.setIncludeExpired(data.getIncludeExpiredDefault());
                         result = search(result);
@@ -758,6 +762,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             gSearchObj = search(searchObj);
             getWorkplaceSettings().setLastSearchScope(searchObj.getScope());
+            getWorkplaceSettings().setLastGalleryResultOrder(SortParams.valueOf(searchObj.getSortOrder()));
             setLastOpenedGallery(searchObj);
         } catch (Throwable e) {
             error(e);
@@ -1847,6 +1852,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
+        data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
 
         List<CmsResourceTypeBean> types = null;
         data.setTabIds(conf.getGalleryMode().getTabs());
