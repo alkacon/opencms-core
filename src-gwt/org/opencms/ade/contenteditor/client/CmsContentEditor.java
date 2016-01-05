@@ -92,7 +92,9 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -113,6 +115,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The content editor.<p>
@@ -473,18 +476,18 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeScope the change scope
      */
     static native void addNativeListsner(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
-                                                                                                              var instance = changeListener;
-                                                                                                              var nat = {
-                                                                                                              onChange : function(entity) {
-                                                                                                              var cmsEntity=@org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
-                                                                                                              instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
-                                                                                                              }
-                                                                                                              }
-                                                                                                              var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-                                                                                                              if (typeof method == 'function') {
-                                                                                                              method(nat, changeScope);
-                                                                                                              }
-                                                                                                              }-*/;
+        var instance = changeListener;
+        var nat = {
+            onChange : function(entity) {
+                var cmsEntity = @org.opencms.acacia.client.entity.CmsEntityBackend::createFromNativeWrapper(Lcom/google/gwt/core/client/JavaScriptObject;)(entity);
+                instance.@org.opencms.ade.contenteditor.client.I_CmsEntityChangeListener::onEntityChange(Lorg/opencms/acacia/shared/CmsEntity;)(cmsEntity);
+            }
+        }
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            method(nat, changeScope);
+        }
+    }-*/;
 
     /**
      * Checks whether the add entity change listener method has been exported.<p>
@@ -492,13 +495,13 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return <code>true</code> if the add entity change listener method has been exported
      */
     private static native boolean isObserverExported()/*-{
-                                                      var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
-                                                      if (typeof method == 'function') {
-                                                      return true;
-                                                      } else {
-                                                      return false;
-                                                      }
-                                                      }-*/;
+        var method = $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD];
+        if (typeof method == 'function') {
+            return true;
+        } else {
+            return false;
+        }
+    }-*/;
 
     /**
      * Returns the current entity.<p>
@@ -506,9 +509,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-                                                            return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                                                            ();
-                                                            }-*/;
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
+    }-*/;
 
     /**
      * Closes the editor.<p>
@@ -538,6 +541,25 @@ public final class CmsContentEditor extends CmsEditorBase {
                 cancelEdit();
             }
         }
+    }
+
+    /**
+     * Bypasses a focus bug in IE which can happen if the user opens the HTML code editor from the WYSIWYG editor.<p>
+     *
+     * The next time they open the editor form from the same container page, the user may be unable to focus on any input
+     * fields. To prevent this, we create a dummy input field outside the visible screen region and focus it when opening
+     * the editor.
+     */
+    public void fixFocus() {
+
+        TextBox invisibleTextBox = new TextBox();
+        Style style = invisibleTextBox.getElement().getStyle();
+        style.setPosition(Position.FIXED);
+        style.setLeft(-99999, Unit.PX);
+        style.setTop(-99999, Unit.PX);
+        m_basePanel.add(invisibleTextBox);
+        // base panel is already attached at this point, so we can just set the focus
+        invisibleTextBox.setFocus(true);
     }
 
     /**
@@ -1333,6 +1355,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         } else {
             initFormPanel();
             renderFormContent();
+            fixFocus();
         }
         if (contentDefinition.isPerformedAutocorrection()) {
             CmsNotification.get().send(
@@ -1459,6 +1482,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             initEditorChangeHandlers(m_definitions.get(m_locale).getEditorChangeScopes());
         }
         renderEntityForm(m_entityId, m_tabInfos, content, m_basePanel.getElement());
+
     }
 
     /**
@@ -1780,15 +1804,15 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Closes the editor.<p>
      */
     private native void closeEditorWidow() /*-{
-                                           if ($wnd.top.cms_ade_closeEditorDialog) {
-                                           $wnd.top.cms_ade_closeEditorDialog();
-                                           } else {
-                                           var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
-                                           if (backlink) {
-                                           $wnd.top.location.href = backlink;
-                                           }
-                                           }
-                                           }-*/;
+        if ($wnd.top.cms_ade_closeEditorDialog) {
+            $wnd.top.cms_ade_closeEditorDialog();
+        } else {
+            var backlink = $wnd[@org.opencms.ade.contenteditor.shared.rpc.I_CmsContentService::PARAM_BACKLINK];
+            if (backlink) {
+                $wnd.top.location.href = backlink;
+            }
+        }
+    }-*/;
 
     /**
      * Creates a push button for the edit tool-bar.<p>
@@ -1821,18 +1845,19 @@ public final class CmsContentEditor extends CmsEditorBase {
      * Exports the add entity change listener method.<p>
      */
     private native void exportObserver()/*-{
-                                        var self = this;
-                                        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                                        listener, scope) {
-                                        var wrapper = {
-                                        onChange : listener.onChange
-                                        }
-                                        self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
-                                        }
-                                        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
-                                        return new $wnd.acacia.CmsEntityWrapper(self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
-                                        }
-                                        }-*/;
+        var self = this;
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
+            var wrapper = {
+                onChange : listener.onChange
+            }
+            self.@org.opencms.ade.contenteditor.client.CmsContentEditor::addChangeListener(Lcom/google/gwt/core/client/JavaScriptObject;Ljava/lang/String;)(wrapper, scope);
+        }
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD] = function() {
+            return new $wnd.acacia.CmsEntityWrapper(
+                    self.@org.opencms.ade.contenteditor.client.CmsContentEditor::getCurrentEntity()());
+        }
+    }-*/;
 
     /**
      * Returns the attribute handler for the given attribute.<p>
@@ -2123,9 +2148,9 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param locale the content locale
      */
     private native void setNativeResourceInfo(String sitePath, String locale)/*-{
-                                                                             $wnd._editResource = sitePath;
-                                                                             $wnd._editLanguage = locale;
-                                                                             }-*/;
+        $wnd._editResource = sitePath;
+        $wnd._editLanguage = locale;
+    }-*/;
 
     /**
      * Shows the locked resource error message.<p>
