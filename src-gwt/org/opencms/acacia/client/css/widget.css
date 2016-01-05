@@ -377,9 +377,7 @@ div.inputField>div{
 /**  Copied from skin.min.css in the TinyMCE editor and increased specificity. */ 
 .mce-panel.mce-panel { 
 	
-    background-color: #F0F0F0;
-    background-image: linear-gradient(to bottom, #FDFDFD, #DDDDDD) ;
-    background-repeat: repeat-x;
+    background: #F0F0F0;
     border: 0 solid #9E9E9E;
 }
 
