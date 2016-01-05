@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="test-bin" path="src"/>
 	<classpathentry kind="src" path="src-components"/>
 	<classpathentry excluding="org/opencms/gwt/client/super_src/" kind="src" path="src-gwt"/>
 	<classpathentry kind="src" path="src-modules"/>
