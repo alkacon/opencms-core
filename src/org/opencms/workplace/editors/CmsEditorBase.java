@@ -28,13 +28,21 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.workplace.CmsDialog;
 
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Base class for all editors that turns of time warp deletion inherited from
@@ -44,6 +52,9 @@ import javax.servlet.http.HttpSession;
  */
 public class CmsEditorBase extends CmsDialog {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditorBase.class);
+
     /**
      * Public constructor.<p>
      *
@@ -52,6 +63,46 @@ public class CmsEditorBase extends CmsDialog {
     public CmsEditorBase(CmsJspActionElement jsp) {
 
         super(jsp);
+    }
+
+    /**
+     * In addition to the permission check, this will also check if the current user has at least the ELEMENT_AUTHOR role.<p>
+     *
+     * @see org.opencms.workplace.CmsDialog#checkResourcePermissions(org.opencms.security.CmsPermissionSet, boolean, org.opencms.i18n.CmsMessageContainer)
+     */
+    @Override
+    protected boolean checkResourcePermissions(
+        CmsPermissionSet required,
+        boolean neededForFolder,
+        CmsMessageContainer errorMessage) {
+
+        boolean hasPermissions = false;
+        try {
+            CmsResource res;
+            if (neededForFolder) {
+                // check permissions for the folder the resource is in
+                res = getCms().readResource(CmsResource.getParentFolder(getParamResource()), CmsResourceFilter.ALL);
+            } else {
+                res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            }
+            hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.ALL)
+                && OpenCms.getRoleManager().hasRoleForResource(
+                    getCms(),
+                    CmsRole.ELEMENT_AUTHOR,
+                    getCms().getSitePath(res));
+        } catch (CmsException e) {
+            // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e);
+            }
+        }
+
+        if (!hasPermissions) {
+            // store the error message in the users session
+            getSettings().setErrorMessage(errorMessage);
+        }
+
+        return hasPermissions;
     }
 
     /**
