@@ -57,6 +57,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
+
 /**
  * Manages all configured sites in OpenCms.<p>
  *
@@ -98,6 +100,9 @@ public final class CmsSiteManagerImpl {
     /** The shared folder name. */
     private String m_sharedFolder;
 
+    /** Contains all configured site matchers in a list for direct access. */
+    private List<CmsSiteMatcher> m_siteMatchers;
+
     /** Maps site matchers to sites. */
     private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
@@ -109,9 +114,6 @@ public final class CmsSiteManagerImpl {
 
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
-
-    /** Contains all configured site matchers in a list for direct access. */
-    private List<CmsSiteMatcher> m_siteMatchers;
 
     /**
      * Creates a new CmsSiteManager.<p>
@@ -564,6 +566,18 @@ public final class CmsSiteManagerImpl {
             }
         }
         return result;
+    }
+
+    /**
+     * Gets the site which is mapped to the default uri, or the 'absent' value of no such site exists.<p>
+     *
+     * @return the optional site mapped to the default uri
+     */
+    public Optional<CmsSite> getSiteForDefaultUri() {
+
+        String defaultUri = getDefaultUri();
+        CmsSite candidate = m_siteRootSites.get(CmsFileUtil.removeTrailingSeparator(defaultUri));
+        return Optional.fromNullable(candidate);
     }
 
     /**
