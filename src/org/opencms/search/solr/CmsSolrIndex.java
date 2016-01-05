@@ -500,6 +500,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
      */
     @Override
     public void shutDown() {
+
         if (null != m_solr) {
             m_solr.shutdown();
         }
@@ -879,6 +880,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
                         resourceDocumentList.add(new CmsSearchResource(PSEUDO_RES, searchDoc));
                         solrDocumentList.add(doc);
                         maxScore = maxScore < searchDoc.getScore() ? searchDoc.getScore() : maxScore;
+                        cnt++;
                     }
                 } catch (Exception e) {
                     // should not happen, but if it does we want to go on with the next result nevertheless
