@@ -10,12 +10,12 @@
 	</info>
 	<module>
 		<name>org.opencms.editors.tinymce</name>
-		<nicename><![CDATA[OpenCms 9 TinyMCE WYSIWYG editor plugin]]></nicename>
+		<nicename><![CDATA[OpenCms TinyMCE WYSIWYG editor plugin]]></nicename>
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
-                              <p>The version of TinyMCE is 4.1.3</p>]]></description>
-		<version>9.5.2</version>
+                              <p>The version of TinyMCE is 4.3.2.</p>]]></description>
+		<version>9.5.3</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>
 		<datecreated />
@@ -2714,6 +2714,197 @@
 			<relations />
 			<accesscontrol />
 		</file>
+        <file>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror</destination>
+            <type>folder</type>
+            <uuidstructure>3095a96e-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/plugin.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/plugin.js</destination>
+            <type>plain</type>
+            <uuidstructure>310a8b5a-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>310a8b5b-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/plugin.min.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/plugin.min.js</destination>
+            <type>plain</type>
+            <uuidstructure>3120ab6c-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>3120ab6d-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:22 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:22 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/source.html</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/source.html</destination>
+            <type>plain</type>
+            <uuidstructure>3134336e-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>3134336f-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:22 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:22 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs</destination>
+            <type>folder</type>
+            <uuidstructure>30a70e90-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/cs.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/cs.js</destination>
+            <type>plain</type>
+            <uuidstructure>b2a3cfe6-b39f-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>b2a3cfe7-b39f-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:32:49 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:30:18 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/de.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/de.js</destination>
+            <type>plain</type>
+            <uuidstructure>30b873b2-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>30b873b3-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/en.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/en.js</destination>
+            <type>plain</type>
+            <uuidstructure>30d28b64-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>30d28b65-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/es.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/es.js</destination>
+            <type>plain</type>
+            <uuidstructure>7415ef80-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>7415ef81-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:19:34 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:14:14 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/fr.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/fr.js</destination>
+            <type>plain</type>
+            <uuidstructure>30e59e36-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>30e59e37-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/it.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/it.js</destination>
+            <type>plain</type>
+            <uuidstructure>3977df92-b39e-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>3977df93-b39e-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:22:34 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:19:45 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/nl.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/nl.js</destination>
+            <type>plain</type>
+            <uuidstructure>30f814c8-b39d-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>30f814c9-b39d-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:12:21 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:12:21 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
+        <file>
+            <source>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/ru.js</source>
+            <destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/codemirror/langs/ru.js</destination>
+            <type>plain</type>
+            <uuidstructure>2058a3e4-b39f-11e5-a2a4-000c2943a707</uuidstructure>
+            <uuidresource>2058a3e5-b39f-11e5-a2a4-000c2943a707</uuidresource>
+            <datelastmodified>Tue, 05 Jan 2016 11:29:39 GMT</datelastmodified>
+            <userlastmodified>Admin</userlastmodified>
+            <datecreated>Tue, 05 Jan 2016 11:26:12 GMT</datecreated>
+            <usercreated>Admin</usercreated>
+            <flags>0</flags>
+            <properties/>
+            <relations/>
+            <accesscontrol/>
+        </file>
 		<file>
 			<destination>system/workplace/resources/editors/tinymce/jscripts/tinymce/plugins/colorpicker
 			</destination>
