@@ -378,7 +378,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void enableToolbarButtons() {
 
-        m_editor.enableToolbarButtons(m_controller.hasPageChanged());
+        m_editor.enableToolbarButtons(m_controller.hasPageChanged(), m_controller.getData().getNoEditReason());
     }
 
     /**
