@@ -145,7 +145,6 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
                 while (it.hasNext()) {
                     categories.add(it.next());
                 }
-                m_event = event;
                 SortParams sort = SortParams.valueOf(event.getValue());
                 sort(categories, sort);
             }
@@ -285,9 +284,6 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
     /** Map of categories. */
     protected Map<String, CmsTreeItem> m_categories;
 
-    /** The event at the moment. */
-    protected ValueChangeEvent<String> m_event;
-
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
@@ -354,7 +350,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
      * @param selectedCategories A list of all selected categories
      * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
-     * @param resultList
+     * @param resultList the result list
      * */
     public CmsCategoryTree(
         List<String> selectedCategories,
@@ -841,7 +837,7 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
         List<CmsTreeItem> categories = new ArrayList<CmsTreeItem>();
         if ((m_quickSearch != null)) {
             categories = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
-            sort(categories, SortParams.valueOf(m_event.getValue()));
+            sort(categories, SortParams.valueOf(m_sortSelectBox.getFormValueAsString()));
         }
     }
 
@@ -870,8 +866,10 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Select a singel value and all parents.<p>
-     * @param item
+     *
+     * @param item the item
      * @param path The path of the Item that should be selected
+     *
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path) {
@@ -921,9 +919,11 @@ public class CmsCategoryTree extends Composite implements HasValueChangeHandlers
 
     /**
      * Select a singel value and all parents.<p>
-     * @param item
+     *
+     * @param item the item
      * @param path The path of the Item that should be selected
-     * @param result
+     * @param result the result list
+     *
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {
