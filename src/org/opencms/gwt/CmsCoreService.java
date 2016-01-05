@@ -236,7 +236,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     }
                 }
             }
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             // ignore, the user probably has not enough permissions to read the resource
         }
         return result;
@@ -468,7 +468,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         try {
             return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             return false;
         }
     }
@@ -779,7 +779,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             try {
                 CmsResource res = cms.readResource(structureId);
                 result = res.getState();
-            } catch (CmsVfsResourceNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                 result = CmsResourceState.STATE_DELETED;
             }
         } catch (CmsException e) {
@@ -834,7 +834,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 return new CmsReturnLinkInfo(
                     CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), cms.getSitePath(pageRes)),
                     CmsReturnLinkInfo.Status.ok);
-            } catch (CmsVfsResourceNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                 return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
             }
         } else {
@@ -858,7 +858,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                         return new CmsReturnLinkInfo(
                             CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getOpenCmsContext(), uri),
                             CmsReturnLinkInfo.Status.ok);
-                    } catch (CmsVfsResourceNotFoundException e) {
+                    } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                         return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
 
                     }
@@ -881,48 +881,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
             return null;
         }
-        //        CmsUserSettingsBean result = new CmsUserSettingsBean();
-        //        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-        //        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(wpLocale);
-        //
-        //        CmsWorkplaceSettings workplaceSettings = CmsWorkplace.initAndStoreSettings(cms, getRequest().getSession());
-        //        SelectOptions options = CmsPreferences.getOptionsForLanguage(
-        //            workplaceSettings,
-        //            workplaceSettings.getUserSettings());
-        //
-        //        CmsXmlContentProperty languageProp = new CmsXmlContentProperty("language",//name
-        //            "string",//type
-        //            "select_notnull",//widget
-        //            options.toClientSelectWidgetConfiguration(),//widgetconfig
-        //            null,//regex
-        //            null,//ruletype
-        //            null,//default
-        //            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_LANGUAGE_0),//nicename
-        //            null,//description
-        //            null,//error
-        //            null//preferfolder
-        //        );
-        //        result.addSetting(wpLocale.toString(), languageProp);
-        //
-        //        for (int i = 0; i < 30; i++) {
-        //            String propName = "User setting " + i;
-        //            CmsXmlContentProperty prop = new CmsXmlContentProperty(propName,//name
-        //                "string",//type
-        //                "string",//widget
-        //                "",//widgetconfig
-        //                null,//regex
-        //                null,//ruletype
-        //                null,//default
-        //                null,//nicename
-        //                null,//description
-        //                null,//error
-        //                null//preferfolder
-        //            );
-        //
-        //            result.addSetting("cow" + i, prop);
-        //        }
-        //        return result;
-
     }
 
     /**
@@ -1060,6 +1018,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             EDITOR_DELETE_URI,
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
+            CmsWorkplace.getSkinUri(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),

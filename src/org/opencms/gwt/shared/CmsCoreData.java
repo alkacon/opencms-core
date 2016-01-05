@@ -210,6 +210,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** The workplaces resources path prefix. */
+    private String m_workplaceResourcesPrefix;
+
     /**
      * Constructor.<p>
      */
@@ -231,6 +234,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getContentEditorDeleteLinkUrl(),
             clone.getLoginURL(),
             clone.getVfsPrefix(),
+            clone.getWorkplaceResourcesPrefix(),
             clone.getSiteRoot(),
             clone.getLocale(),
             clone.getWpLocale(),
@@ -257,6 +261,7 @@ public class CmsCoreData implements IsSerializable {
      * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
      * @param loginUrl the login JSP URL
      * @param vfsPrefix the OpenCms VFS prefix
+     * @param workplaceResourcesPrefix the workplace resources path prefix
      * @param siteRoot the current site root
      * @param locale the current request locale
      * @param wpLocale the workplace locale
@@ -280,6 +285,7 @@ public class CmsCoreData implements IsSerializable {
         String contentEditorDeleteLinkUrl,
         String loginUrl,
         String vfsPrefix,
+        String workplaceResourcesPrefix,
         String siteRoot,
         String locale,
         String wpLocale,
@@ -302,6 +308,7 @@ public class CmsCoreData implements IsSerializable {
         m_contentEditorDeleteLinkUrl = contentEditorDeleteLinkUrl;
         m_loginURL = loginUrl;
         m_vfsPrefix = vfsPrefix;
+        m_workplaceResourcesPrefix = workplaceResourcesPrefix;
         m_siteRoot = siteRoot;
         m_locale = locale;
         m_wpLocale = wpLocale;
@@ -488,6 +495,16 @@ public class CmsCoreData implements IsSerializable {
     public String getVfsPrefix() {
 
         return m_vfsPrefix;
+    }
+
+    /**
+     * Returns the workplace resources path prefix.<p>
+     *
+     * @return the workplace resources path prefix
+     */
+    public String getWorkplaceResourcesPrefix() {
+
+        return m_workplaceResourcesPrefix;
     }
 
     /**

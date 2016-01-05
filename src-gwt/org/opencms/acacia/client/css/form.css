@@ -1,4 +1,4 @@
-@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
+@external mce-tinymce, mce-widget, mce-tooltip, mce-fullscreen, mce-toolbar-grp, mce-edit-area, mce-statusbar, mce-wordcount, mce-path, mce-container-body, mce-panel, mce-tinymce-inline, mce-flow-layout, mce-window, mce-window-body, gwt-TabLayoutPanelTabBar, gwt-TabLayoutPanel, gwt-TabLayoutPanelTab, html-face, cmsState, cmsState-down, cmsState-up, cmsState-up-hovering, cmsState-down-hovering;
 
 @def PARENT_GRADIENT literal("left, #FFFFFF 0%, #F4F7F9 80%, #E1E4E8 100%");  
 @def PARENT_GRADIENT_IE9 literal("url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2Y0ZjdmOSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMWU0ZTgiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+)");
@@ -343,6 +343,10 @@ div.attributeValue div.mce-tinymce.mce-fullscreen > div.mce-container-body{
 	border-top: none;
 	background: transparent;
 }
+
+.mce-window .mce-window-body{
+	background: #ffffff;
+} 
 
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce > .mce-container-body > .mce-panel:first-child, 
 .attributeValue.focused > .widgetHolder > div > div.widget .mce-tinymce .mce-statusbar{
