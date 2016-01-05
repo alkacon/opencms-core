@@ -32,6 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.I_CmsMacroResolver;
@@ -239,6 +240,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         Set<String> extensionlessNames = new HashSet<String>();
         for (String name : fileNames) {
+            if (name.length() > 1) {
+                name = CmsFileUtil.removeTrailingSeparator(name);
+            }
             extensionlessNames.add(removeExtension(name));
         }
 
