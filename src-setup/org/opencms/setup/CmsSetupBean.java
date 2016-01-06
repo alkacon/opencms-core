@@ -2057,6 +2057,17 @@ public class CmsSetupBean implements I_CmsShellCommands {
             || provider.equals(DB2_PROVIDER)) {
             isFormSubmitted = (isFormSubmitted && (database != null));
         }
+        if (!(JPA_PROVIDER.equals(provider)
+            || MAXDB_PROVIDER.equals(provider)
+            || MSSQL_PROVIDER.equals(provider)
+            || MYSQL_PROVIDER.equals(provider)
+            || ORACLE_PROVIDER.equals(provider)
+            || DB2_PROVIDER.equals(provider)
+            || AS400_PROVIDER.equals(provider)
+            || HSQLDB_PROVIDER.equals(provider)
+            || POSTGRESQL_PROVIDER.equals(provider))) {
+            throw new RuntimeException("Database provider '" + provider + "' not supported!");
+        }
 
         if (isInitialized()) {
             String createDb = getReqValue(request, "createDb");
