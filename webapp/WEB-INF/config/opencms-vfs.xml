@@ -71,7 +71,7 @@
 						<mapping suffix=".tif" />
 						<mapping suffix=".tiff" />
 					</mappings>
-					<param name="gallery.type.names">imagegallery</param>
+					<param name="gallery.type.names">imagegallery|downloadgallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp"
 					id="4">
