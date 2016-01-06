@@ -622,7 +622,11 @@ public class CmsGallerySearchParameters {
         // for saving performance and sorting case-insensitive
         // the un-stored title field should be used
         String titleName = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_SORT_TITLE, locale);
-        return new Sort(new SortField[] {new SortField(titleName, SortField.Type.STRING, desc), SortField.FIELD_SCORE});
+        return new Sort(
+            new SortField[] {
+                new SortField(titleName, SortField.Type.STRING, desc),
+                new SortField(CmsSearchField.FIELD_SORT_TITLE, SortField.Type.STRING, desc),
+                SortField.FIELD_SCORE});
     }
 
     /**
