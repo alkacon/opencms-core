@@ -27,13 +27,6 @@
 
 package org.opencms.notification;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.mail.MessagingException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.mail.EmailException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
@@ -47,6 +40,14 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.List;
+import java.util.Locale;
+
+import javax.mail.MessagingException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
+
 /**
  * Abstract class to create a notfication which will be send as a html mail to
  * a user in OpenCms.
@@ -58,6 +59,9 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsNotification.class);
 
+    /** The xml-content to read subject, header and footer of the notification. */
+    protected CmsXmlContent m_mailContent;
+
     /** The CmsObject. */
     private CmsObject m_cms;
 
@@ -66,9 +70,6 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
 
     /** The macro resolver used. */
     private CmsMacroResolver m_macroResolver;
-
-    /** The xml-content to read subject, header and footer of the notification. */
-    protected CmsXmlContent m_mailContent;
 
     /** The receiver of the notification. */
     private CmsUser m_receiver;
@@ -164,10 +165,10 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
                 // use any localization
                 m_locale = locales.get(0);
             }
-            
+
             String mailCharset = Messages.get().getBundle(m_locale).key(Messages.GUI_MAIL_CHARSET_0);
-    		if(CmsMessages.isUnknownKey(mailCharset) == false) {
-            	setCharset(mailCharset);
+            if (!CmsMessages.isUnknownKey(mailCharset)) {
+                setCharset(mailCharset);
             }
 
             // define macro resolver
