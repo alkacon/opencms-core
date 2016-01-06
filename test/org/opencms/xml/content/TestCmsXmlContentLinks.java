@@ -338,7 +338,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
                 String secondKey = ascendingKeys.get(j);
                 assertEquals(
                     "Wrong comparator result for values " + firstKey + ", " + secondKey,
-                    Integer.compare(i, j),
+                    Integer.valueOf(i).compareTo(Integer.valueOf(j)),
                     comparator.compare(firstKey, secondKey));
             }
         }
