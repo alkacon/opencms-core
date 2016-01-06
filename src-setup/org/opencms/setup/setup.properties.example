@@ -3,7 +3,7 @@ setup.default.webapp=ROOT
 setup.install.components=workplace,bootstrap
 
 db.product=mysql
-db.provider=sql
+db.provider=mysql
 db.create.user=root
 db.create.pwd=
 db.worker.user=root
