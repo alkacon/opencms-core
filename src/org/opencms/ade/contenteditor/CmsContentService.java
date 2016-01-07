@@ -287,7 +287,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
-                CmsXmlContent content = getContentDocument(file, true).clone();
+                CmsXmlContent content = getContentDocument(file, true);
                 checkAutoCorrection(cms, content);
                 synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
                 for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
