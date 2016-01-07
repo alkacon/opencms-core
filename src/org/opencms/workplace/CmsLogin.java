@@ -373,8 +373,7 @@ public class CmsLogin extends CmsJspLoginBean {
                     if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is disabled
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_DISABLED_0);
-                    } else
-                        if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
+                    } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4 == getLoginException().getMessageContainer().getKey()) {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {
@@ -418,6 +417,16 @@ public class CmsLogin extends CmsJspLoginBean {
             // login is successful, check if the requested resource can be read
             CmsUriSplitter splitter = new CmsUriSplitter(m_requestedResource, true);
             String resource = splitter.getPrefix();
+            if (!splitter.isErrorFree()) {
+                // the requested resource URI is not well formed, don't use it to avoid XSS
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resource) && CmsUriSplitter.isValidUri(resource)) {
+                    // the URI prefix is well formed, use it instead, we only loose the query part
+                    m_requestedResource = resource;
+                } else {
+                    m_requestedResource = null;
+                }
+            }
+
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;

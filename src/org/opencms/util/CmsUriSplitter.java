@@ -178,6 +178,26 @@ public class CmsUriSplitter {
     }
 
     /**
+     * Checks if the given URI is well formed.<p>
+     *
+     * @param uri the URI to check
+     *
+     * @return <code>true</code> if the given URI is well formed
+     */
+    @SuppressWarnings("unused")
+    public static boolean isValidUri(String uri) {
+
+        boolean result = false;
+        try {
+            new URI(uri);
+            result = true;
+        } catch (Exception e) {
+            // nothing to do
+        }
+        return result;
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -217,16 +237,6 @@ public class CmsUriSplitter {
     }
 
     /**
-     * Returns the URI protocol, for example <code>http</code> or <code>https</code>.<p>
-     *
-     * @return the URI protocol
-     */
-    public String getProtocol() {
-
-        return m_protocol;
-    }
-
-    /**
      * Returns the prefix part of the uri, for example <code>http://www.opencms.org/some/path/</code>,
      * or <code>null</code> if no prefix is available.<p>
      *
@@ -235,6 +245,16 @@ public class CmsUriSplitter {
     public String getPrefix() {
 
         return m_prefix;
+    }
+
+    /**
+     * Returns the URI protocol, for example <code>http</code> or <code>https</code>.<p>
+     *
+     * @return the URI protocol
+     */
+    public String getProtocol() {
+
+        return m_protocol;
     }
 
     /**
