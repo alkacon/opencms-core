@@ -351,6 +351,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
     }
 
     /**
+     * @see org.opencms.gwt.CmsGwtService#getCmsObject()
+     */
+    @Override
+    public CmsObject getCmsObject() {
+
+        CmsObject result = super.getCmsObject();
+        // disable link invalidation in the editor
+        result.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        return result;
+    }
+
+    /**
      * @see org.opencms.acacia.shared.rpc.I_CmsContentService#loadContentDefinition(java.lang.String)
      */
     public CmsContentDefinition loadContentDefinition(String entityId) throws CmsRpcException {
@@ -983,7 +995,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 for (int i = 0; i < choiceEntities.size(); i++) {
                     List<CmsEntityAttribute> choiceAttributes = choiceEntities.get(i).getAttributes();
                     // each choice entity may only have a single attribute with a single value
-                    assert(choiceAttributes.size() == 1)
+                    assert (choiceAttributes.size() == 1)
                         && choiceAttributes.get(
                             0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
                     CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
