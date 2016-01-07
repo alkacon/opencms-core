@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>9.5.2</opencms_version>
+		<opencms_version>9.5.3</opencms_version>
 		<createdate>Wed, 01 Jul 2015 05:14:34 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -14,7 +14,7 @@
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[OpenCms Localization]]></description>
-		<version>9.5.2</version>
+		<version>9.5.3</version>
 		<authorname><![CDATA[ITDT Ltd.]]></authorname>
 		<authoremail><![CDATA[support@itdt.ru]]></authoremail>
 		<datecreated/>

@@ -3,7 +3,7 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>9.5.3</opencms_version>
     <createdate>Fri, 02 Nov 2012 11:33:14 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
@@ -15,7 +15,7 @@
     <class/>
     <description><![CDATA[This module provides the properties dialog for the workplace.<br>
 <i>&copy; 2015  by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.2</version>
+    <version>9.5.3</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[sales@alkacon.com]]></authoremail>
     <datecreated/>

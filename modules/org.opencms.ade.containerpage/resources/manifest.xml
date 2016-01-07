@@ -3,7 +3,7 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>9.5.3</opencms_version>
     <createdate>Thu, 11 Mar 2010 08:48:38 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
@@ -15,7 +15,7 @@
     <class/>
     <description><![CDATA[The containerpage editor.<br>
 		<i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.2</version>
+    <version>9.5.3</version>
     <authorname><![CDATA[Alkacon Software GmbH]]></authorname>
     <authoremail><![CDATA[info@alkacon.com]]></authoremail>
     <datecreated/>

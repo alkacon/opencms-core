@@ -2,7 +2,7 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>9.5.3</opencms_version>
     <createdate>Thu, 08 Dec 2011 08:18:34 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
@@ -15,7 +15,7 @@
     <description><![CDATA[<p>Gwt based publish dialog for OpenCms 8<p>
 
 <p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-    <version>9.5.2</version>
+    <version>9.5.3</version>
     <authorname/>
     <authoremail/>
     <datecreated/>

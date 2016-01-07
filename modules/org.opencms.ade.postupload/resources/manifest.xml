@@ -3,7 +3,7 @@
 <export>
   <info>
     <creator>Admin</creator>
-    <opencms_version>9.0.0</opencms_version>
+    <opencms_version>9.5.3</opencms_version>
     <createdate>Mon, 09 Jul 2012 08:33:01 GMT</createdate>
     <infoproject>Offline</infoproject>
     <export_version>7</export_version>
@@ -15,7 +15,7 @@
     <class/>
     <description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-    <version>9.5.2</version>
+    <version>9.5.3</version>
     <authorname/>
     <authoremail/>
     <datecreated/>
