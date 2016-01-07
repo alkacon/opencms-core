@@ -30,8 +30,10 @@ package org.opencms.main;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -922,6 +924,28 @@ public class CmsShell {
     }
 
     /**
+     * Validates the given user and password and checks if the user has the requested role.<p>
+     *
+     * @param userName the user name
+     * @param password the password
+     * @param requiredRole the required role
+     *
+     * @return <code>true</code> if the user is valid
+     */
+    public boolean validateUser(String userName, String password, CmsRole requiredRole) {
+
+        boolean result = false;
+
+        try {
+            CmsUser user = m_cms.readUser(userName, password);
+            result = OpenCms.getRoleManager().hasRole(m_cms, user.getName(), requiredRole);
+        } catch (@SuppressWarnings("unused") CmsException e) {
+            // nothing to do
+        }
+        return result;
+    }
+
+    /**
      * Shows the signature of all methods containing the given search String.<p>
      *
      * @param searchString the String to search for in the methods, if null all methods are shown
@@ -977,6 +1001,12 @@ public class CmsShell {
     }
 
     /**
+     * Executes all commands read from the given reader.<p>
+     *
+     * @param reader a Reader from which the commands are read
+     */
+
+    /**
      * Sets the current shell prompt.<p>
      *
      * To set the prompt, the following variables are available:<p>
@@ -991,12 +1021,6 @@ public class CmsShell {
 
         m_prompt = prompt;
     }
-
-    /**
-     * Executes all commands read from the given reader.<p>
-     *
-     * @param reader a Reader from which the commands are read
-     */
 
     /**
      * Executes a shell command with a list of parameters.<p>

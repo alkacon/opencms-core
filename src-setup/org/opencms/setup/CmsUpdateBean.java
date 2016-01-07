@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -45,6 +46,7 @@ import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.setup.db.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
@@ -519,6 +521,24 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Checks whether the selected user and password are valid and the user has the ROOT_ADMIN role.<p>
+     *
+     * @return <code>true</code> if the selected user and password are valid and the user has the ROOT_ADMIN role
+     */
+    public boolean isValidUser() {
+
+        CmsShell shell = new CmsShell(
+            getWebAppRfsPath() + "WEB-INF" + File.separator,
+            getServletMapping(),
+            getDefaultWebApplication(),
+            "${user}@${project}>",
+            null);
+        boolean validUser = shell.validateUser(getAdminUser(), getAdminPwd(), CmsRole.ROOT_ADMIN);
+        shell.exit();
+        return validUser;
+    }
+
+    /**
      * Try to preload necessary classes, to avoid ugly class loader issues caused by JARs being deleted during the update.
      */
     public void preload() {
@@ -647,6 +667,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         if (isInitialized()) {
             preload();
+
             try {
                 String fileName = getWebAppRfsPath() + FOLDER_UPDATE + "cmsupdate";
                 // read the file
