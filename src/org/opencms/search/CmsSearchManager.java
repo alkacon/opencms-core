@@ -781,7 +781,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // try to get the index
         index = indexName != null ? OpenCms.getSearchManager().getIndexSolr(indexName) : null;
         if (index == null) {
-            // index not found -> try to get the first configured Solr index from the config
+            // if there is exactly one index, a missing core / index parameter doesn't matter, since there is no choice.
             List<CmsSolrIndex> solrs = OpenCms.getSearchManager().getAllSolrIndexes();
             if ((solrs != null) && !solrs.isEmpty() && (solrs.size() == 1)) {
                 index = solrs.get(0);
@@ -2334,8 +2334,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                     addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                 }
-                            } else
-                                if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                            } else if (OpenCms.getResourceManager().getResourceType(
+                                res.getTypeId()).getTypeName().equals(
                                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
                                 elementGroups.add(res);
                             }
