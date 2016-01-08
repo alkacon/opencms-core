@@ -148,8 +148,7 @@ public class CmsOrgUnitWidget extends A_CmsWidget implements I_CmsADEWidget {
                 }
                 first = false;
                 String value = "/" + unit.getName();
-                result += "/"
-                    + value
+                result += value
                     + ":"
                     + (CmsStringUtil.isNotEmptyOrWhitespaceOnly(unit.getDescription(messages.getLocale()))
                     ? (unit.getDescription(messages.getLocale()) + ": ")

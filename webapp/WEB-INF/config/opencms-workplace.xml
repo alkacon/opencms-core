@@ -1614,13 +1614,11 @@
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
 					<menuitemrule
-						class="org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive" />
+						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />				
+				</menurule>
+				<menurule name="containerpage-basic">
 					<menuitemrule
-						class="org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl" />
-					<menuitemrule
-						class="org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW" />
-					<menuitemrule
-						class="org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible" />
+						class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirContainerPageActive" />				
 				</menurule>

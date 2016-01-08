@@ -277,7 +277,9 @@ public class CmsDefaultFileNameGenerator implements I_CmsFileNameGenerator {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         Set<String> extensionlessNames = new HashSet<String>();
         for (String name : fileNames) {
-            name = CmsFileUtil.removeTrailingSeparator(name);
+            if (name.length() > 1) {
+                name = CmsFileUtil.removeTrailingSeparator(name);
+            }
             extensionlessNames.add(removeExtension(name));
         }
 

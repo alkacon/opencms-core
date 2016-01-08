@@ -147,7 +147,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
                 while (it.hasNext()) {
                     categories.add(it.next());
                 }
-                m_event = event;
                 SortParams sort = SortParams.valueOf(event.getValue());
                 sort(categories, sort);
             }
@@ -287,9 +286,6 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
     /** Map of categories. */
     protected Map<String, CmsTreeItem> m_categories;
 
-    /** The event at the moment. */
-    protected ValueChangeEvent<String> m_event;
-
     /** A label for displaying additional information about the tab. */
     protected HasText m_infoLabel;
 
@@ -358,7 +354,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param height The height of this widget
      * @param isSingleValue Sets the modes of this widget
      * @param categories the categories
-     * */
+     **/
     public CmsCategoryTree(
         List<String> selectedCategories,
         int height,
@@ -850,7 +846,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
         List<CmsTreeItem> categories = new ArrayList<CmsTreeItem>();
         if ((m_quickSearch != null)) {
             categories = getFilteredCategories(hasQuickFilter() ? m_quickSearch.getFormValueAsString() : null);
-            sort(categories, SortParams.valueOf(m_event.getValue()));
+            sort(categories, SortParams.valueOf(m_sortSelectBox.getFormValueAsString()));
         }
     }
 
@@ -882,6 +878,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      *
      * @param item the tree item
      * @param path The path of the Item that should be selected
+     *
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path) {
@@ -935,6 +932,7 @@ public class CmsCategoryTree extends Composite implements I_CmsTruncable, HasVal
      * @param item the tree item
      * @param path The path of the Item that should be selected
      * @param result the resulting categories
+     * 
      * @return true if this CmsTreeItem is selected or one of its children
      */
     protected boolean selectAllParents(CmsTreeItem item, String path, List<String> result) {

@@ -529,31 +529,6 @@ public class CmsGallerySearchParameters {
     }
 
     /**
-     * Returns a sort for a localized title.<p>
-     *
-     * @param locale the locale to sort with
-     * @param desc indicates if the sort should be descending
-     *
-     * @return a sort for a localized title
-     */
-    public CmsPair<String, org.apache.solr.client.solrj.SolrQuery.ORDER> getTitleSort(String locale, boolean desc) {
-
-        // for saving performance and sorting case-insensitive
-        // the un-stored title field should be used
-        //        String titleName = CmsSearchFieldConfiguration.getLocaleExtendedName(CmsSearchField.FIELD_SORT_TITLE, locale);
-
-        final String sortTitle = CmsSearchFieldConfiguration.getLocaleExtendedName(
-            CmsSearchField.FIELD_TITLE_UNSTORED,
-            getLocale()) + "_s";
-
-        if (desc) {
-            return CmsPair.create(sortTitle, ORDER.desc);
-        } else {
-            return CmsPair.create(sortTitle, ORDER.asc);
-        }
-    }
-
-    /**
      * Returns the search exclude property ignore flag.<p>
      *
      * @return the search exclude property ignore flag

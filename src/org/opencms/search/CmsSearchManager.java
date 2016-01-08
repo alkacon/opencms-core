@@ -389,6 +389,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 // offline update frequency change - clear interrupt status
                                 offlineUpdateFrequency = getOfflineUpdateFrequency();
                             }
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
                     if (m_isAlive) {
@@ -471,6 +472,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         Thread.sleep(waitTime);
                     } catch (InterruptedException e) {
                         // continue
+                        LOG.info(e.getLocalizedMessage(), e);
                     }
                     waitSteps++;
                     // wait 5 times then stop waiting
@@ -505,6 +507,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     thread.join(waitTime);
                 } catch (InterruptedException e) {
                     // continue
+                    LOG.info(e.getLocalizedMessage(), e);
                 }
                 if (thread.isAlive()) {
                     LOG.warn(
@@ -1104,6 +1107,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName();
         } catch (CmsLoaderException e) {
             // ignore, unknown resource type, resource can not be indexed
+            LOG.info(e.getLocalizedMessage(), e);
         }
         return getDocumentFactory(resourceType, mimeType);
     }
@@ -1462,6 +1466,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             m_adminCms = OpenCms.initCmsObject(cms);
         } catch (CmsException e) {
             // this should never happen
+            LOG.error(e.getLocalizedMessage(), e);
         }
         // make sure the site root is the root site
         m_adminCms.getRequestContext().setSiteRoot("/");
@@ -2028,8 +2033,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         try {
             m_highlighter = (I_CmsTermHighlighter)Class.forName(highlighter).newInstance();
-        } catch (Exception exc) {
+        } catch (Exception e) {
             m_highlighter = null;
+            LOG.error(e.getLocalizedMessage(), e);
         }
     }
 
@@ -2271,8 +2277,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                     addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                 }
-                            } else
-                                if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
+                            } else if (OpenCms.getResourceManager().getResourceType(
+                                res.getTypeId()).getTypeName().equals(
                                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
                                 elementGroups.add(res);
                             }
@@ -2350,6 +2356,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             } catch (Exception e) {
                 // may be a missconfigured index, ignore
+                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         return result;
@@ -2461,7 +2468,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 } catch (Exception e) {
                     if (CmsLog.INIT.isWarnEnabled()) {
                         // in this case the index will be disabled
-                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index));
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_SEARCH_INIT_FAILED_1, index), e);
                     }
                 }
             }
@@ -2471,7 +2478,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     CmsLog.INIT.info(
                         Messages.get().getBundle().key(Messages.INIT_INDEX_CONFIGURED_2, index, index.getProject()));
                 } else {
-                    CmsLog.INIT.info(
+                    CmsLog.INIT.warn(
                         Messages.get().getBundle().key(
                             Messages.INIT_INDEX_NOT_CONFIGURED_2,
                             index,
@@ -2681,6 +2688,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
 
@@ -2840,6 +2848,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
+                            LOG.info(e.getLocalizedMessage(), e);
                         }
                     }
                 }
@@ -2882,8 +2891,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             cms = OpenCms.initCmsObject(m_adminCms);
             // set site root and project for this index
             cms.getRequestContext().setSiteRoot("/");
-        } catch (CmsException e1) {
-            // NOOP, should never happen
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage(), e);
         }
 
         Iterator<CmsSearchIndex> j = m_offlineIndexes.iterator();
@@ -2952,6 +2961,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 e);
         }
         return container;
+
     }
 
     /**
@@ -3009,7 +3019,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (core.getOpenCount() > 1) {
                     LOG.error(
                         "There are still " + core.getOpenCount() + " open Solr cores left, potetial resource leak!");
-                    for (int i = 0; i <= core.getOpenCount(); i++) {
+                    while (core.getOpenCount() >= 0) {
                         core.close();
                     }
                 } else {

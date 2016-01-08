@@ -65,6 +65,9 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     /** The folder path to create the "create link" for. */
     private static final String PARAM_CREATE_PATH = "createPath";
 
+    /** Option, specifying if the Solr Query is URL-encoded or not */
+    private static final String PARAM_DECODE_URL = "decodeUrl";
+
     /** A constant for a key. */
     private static final String SOLR_PART = "solrPart";
 
@@ -86,7 +89,12 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
             case 0: // byQuery
             case 1: // byContext
                 Map<String, String> paramsAsMap = getParamsAsMap(param);
-                CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART)));
+                CmsSolrQuery q = new CmsSolrQuery(
+                    null,
+                    CmsRequestUtil.createParameterMap(
+                        paramsAsMap.get(SOLR_PART),
+                        Boolean.valueOf(paramsAsMap.get(PARAM_DECODE_URL)).booleanValue(),
+                        cms.getRequestContext().getEncoding()));
                 String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
                 String path = paramsAsMap.get(PARAM_CREATE_PATH);
                 if ((type != null) && (path != null)) {
@@ -110,7 +118,12 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
             case 1: // byContext
                 // check if the param supports resource creation
                 Map<String, String> paramsAsMap = getParamsAsMap(param);
-                CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART)));
+                CmsSolrQuery q = new CmsSolrQuery(
+                    null,
+                    CmsRequestUtil.createParameterMap(
+                        paramsAsMap.get(SOLR_PART),
+                        Boolean.valueOf(paramsAsMap.get(PARAM_DECODE_URL)).booleanValue(),
+                        cms.getRequestContext().getEncoding()));
                 String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
                 String path = paramsAsMap.get(PARAM_CREATE_PATH);
                 if ((type != null) && (path != null)) {
@@ -130,9 +143,15 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
     public int getCreateTypeId(CmsObject cms, String collectorName, String param) throws CmsException {
 
         int result = -1;
-        if (param.indexOf('|') > 0) {
-            String solrParams = param.substring(0, param.indexOf('|'));
-            CmsSolrQuery q = new CmsSolrQuery(null, CmsRequestUtil.createParameterMap(solrParams));
+        Map<String, String> paramsAsMap = getParamsAsMap(param);
+        if (paramsAsMap.get(PARAM_CREATE_PATH) != null) {
+            String solrParams = paramsAsMap.get(SOLR_PART);
+            CmsSolrQuery q = new CmsSolrQuery(
+                null,
+                CmsRequestUtil.createParameterMap(
+                    solrParams,
+                    Boolean.valueOf(paramsAsMap.get(PARAM_DECODE_URL)).booleanValue(),
+                    cms.getRequestContext().getEncoding()));
             String type = CmsSolrQuery.getResourceType(q.getFilterQueries());
             if (type != null) {
                 result = OpenCms.getResourceManager().getResourceType(type).getTypeId();
@@ -157,7 +176,10 @@ public class CmsSolrCollector extends A_CmsResourceCollector {
 
         name = name == null ? COLLECTORS[1] : name;
         Map<String, String> paramsAsMap = getParamsAsMap(param);
-        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(paramsAsMap.get(SOLR_PART));
+        Map<String, String[]> pm = CmsRequestUtil.createParameterMap(
+            paramsAsMap.get(SOLR_PART),
+            Boolean.valueOf(paramsAsMap.get(PARAM_DECODE_URL)).booleanValue(),
+            cms.getRequestContext().getEncoding());
         CmsSolrQuery q = COLLECTORS_LIST.indexOf(name) == 0 ? new CmsSolrQuery(null, pm) : new CmsSolrQuery(cms, pm);
         boolean excludeTimerange = Boolean.valueOf(
             paramsAsMap.get(CmsCollectorData.PARAM_EXCLUDETIMERANGE)).booleanValue();

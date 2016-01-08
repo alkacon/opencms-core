@@ -288,7 +288,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
-                CmsXmlContent content = getContentDocument(file, true).clone();
+                CmsXmlContent content = getContentDocument(file, true);
                 checkAutoCorrection(cms, content);
                 synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
                 for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {
@@ -349,6 +349,18 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
         } catch (Throwable t) {
             error(t);
         }
+    }
+
+    /**
+     * @see org.opencms.gwt.CmsGwtService#getCmsObject()
+     */
+    @Override
+    public CmsObject getCmsObject() {
+
+        CmsObject result = super.getCmsObject();
+        // disable link invalidation in the editor
+        result.getRequestContext().setRequestTime(CmsResource.DATE_RELEASED_EXPIRED_IGNORE);
+        return result;
     }
 
     /**

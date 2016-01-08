@@ -90,7 +90,9 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -112,6 +114,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * The content editor.<p>
@@ -537,6 +540,25 @@ public final class CmsContentEditor extends CmsEditorBase {
                 cancelEdit();
             }
         }
+    }
+
+    /**
+     * Bypasses a focus bug in IE which can happen if the user opens the HTML code editor from the WYSIWYG editor.<p>
+     *
+     * The next time they open the editor form from the same container page, the user may be unable to focus on any input
+     * fields. To prevent this, we create a dummy input field outside the visible screen region and focus it when opening
+     * the editor.
+     */
+    public void fixFocus() {
+
+        TextBox invisibleTextBox = new TextBox();
+        Style style = invisibleTextBox.getElement().getStyle();
+        style.setPosition(Position.FIXED);
+        style.setLeft(-99999, Unit.PX);
+        style.setTop(-99999, Unit.PX);
+        m_basePanel.add(invisibleTextBox);
+        // base panel is already attached at this point, so we can just set the focus
+        invisibleTextBox.setFocus(true);
     }
 
     /**
@@ -1368,6 +1390,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         } else {
             initFormPanel();
             renderFormContent();
+            fixFocus();
         }
         if (contentDefinition.isPerformedAutocorrection()) {
             CmsNotification.get().send(
@@ -1494,6 +1517,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             initEditorChangeHandlers(m_definitions.get(m_locale).getEditorChangeScopes());
         }
         renderEntityForm(m_entityId, m_tabInfos, content, m_basePanel.getElement());
+
     }
 
     /**

@@ -28,6 +28,7 @@
 package org.opencms.workplace;
 
 import org.opencms.ade.galleries.shared.CmsGallerySearchScope;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
@@ -92,6 +93,9 @@ public class CmsWorkplaceSettings {
 
     /** The gallery type. */
     private String m_galleryType;
+
+    /** The last sort order used for the gallery search results. */
+    private SortParams m_lastGalleryResultOrder;
 
     /** The last used galleries. */
     private Map<String, String> m_lastUsedGalleries;
@@ -284,6 +288,19 @@ public class CmsWorkplaceSettings {
     public String getGalleryType() {
 
         return m_galleryType;
+    }
+
+    /**
+     * Gets the last result sort order for the gallery dialog.<p>
+     *
+     * @return the last sort order
+     */
+    public SortParams getLastGalleryResultOrder() {
+
+        if (m_lastGalleryResultOrder == null) {
+            return SortParams.dateLastModified_desc;
+        }
+        return m_lastGalleryResultOrder;
     }
 
     /**
@@ -621,6 +638,16 @@ public class CmsWorkplaceSettings {
     public void setGalleryType(String currentGallery) {
 
         m_galleryType = currentGallery;
+    }
+
+    /**
+     * Sets the last sort order used for the gallery results.<p>
+     *
+     * @param order the last sort order
+     */
+    public void setLastGalleryResultOrder(SortParams order) {
+
+        m_lastGalleryResultOrder = order;
     }
 
     /**

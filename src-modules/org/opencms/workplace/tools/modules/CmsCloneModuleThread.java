@@ -574,18 +574,18 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                 m_cloneInfo.getTargetNamePrefix());
             iconPaths.put(expSetting.getIcon(), newIcon);
             iconPaths.put(expSetting.getBigIconIfAvailable(), newBigIcon);
-            expSetting.setName(
-                alterPrefix(
-                    expSetting.getName(),
-                    m_cloneInfo.getSourceNamePrefix(),
-                    m_cloneInfo.getTargetNamePrefix()));
+            String oldExpTypeName = expSetting.getName();
+            String newExpTypeName = alterPrefix(
+                oldExpTypeName,
+                m_cloneInfo.getSourceNamePrefix(),
+                m_cloneInfo.getTargetNamePrefix());
+            expSetting.setName(newExpTypeName);
             String newResourcePage = expSetting.getNewResourcePage();
             if (newResourcePage != null) {
                 expSetting.setNewResourcePage(
                     alterPrefix(newResourcePage, m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
             }
-            expSetting.setKey(
-                alterPrefix(expSetting.getKey(), m_cloneInfo.getSourceNamePrefix(), m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setKey(expSetting.getKey().replaceFirst(oldExpTypeName, newExpTypeName));
             expSetting.setIcon(
                 alterPrefix(
                     expSetting.getIcon(),
@@ -596,16 +596,8 @@ public class CmsCloneModuleThread extends A_CmsReportThread {
                     expSetting.getBigIconIfAvailable(),
                     m_cloneInfo.getSourceNamePrefix(),
                     m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setNewResourceUri(
-                alterPrefix(
-                    expSetting.getNewResourceUri(),
-                    m_cloneInfo.getSourceNamePrefix(),
-                    m_cloneInfo.getTargetNamePrefix()));
-            expSetting.setInfo(
-                alterPrefix(
-                    expSetting.getInfo(),
-                    m_cloneInfo.getSourceNamePrefix(),
-                    m_cloneInfo.getTargetNamePrefix()));
+            expSetting.setNewResourceUri(expSetting.getNewResourceUri().replaceFirst(oldExpTypeName, newExpTypeName));
+            expSetting.setInfo(expSetting.getInfo().replaceFirst(oldExpTypeName, newExpTypeName));
         }
     }
 

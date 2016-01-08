@@ -187,7 +187,8 @@ public class CmsJspTagContainer extends BodyTagSupport {
         if (formatterBean != null) {
             String formatterConfigId = formatterBean.getId();
             if (formatterConfigId == null) {
-                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
+                    + formatterBean.getJspStructureId().toString();
             }
             element.getSettings().put(settingsKey, formatterConfigId);
             element.setFormatterId(formatterBean.getJspStructureId());
@@ -289,14 +290,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
         String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(containerName);
         if ((element.getFormatterId() != null) && !element.getFormatterId().isNullUUID()) {
 
-            if (!element.getSettings().containsKey(settingsKey)) {
+            if (!element.getSettings().containsKey(settingsKey)
+                || element.getSettings().get(settingsKey).startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
                 for (I_CmsFormatterBean formatter : adeConfig.getFormatters(
                     cms,
                     element.getResource()).getAllMatchingFormatters(containerType, containerWidth, allowNested)) {
                     if (element.getFormatterId().equals(formatter.getJspStructureId())) {
                         String formatterConfigId = formatter.getId();
                         if (formatterConfigId == null) {
-                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID;
+                            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID
+                                + element.getFormatterId().toString();
                         }
                         formatterBean = formatter;
                         break;
@@ -308,15 +311,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     formatterBean = OpenCms.getADEManager().getCachedFormatters(
                         cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                             new CmsUUID(formatterConfigId));
-                } else if (CmsFormatterConfig.SCHEMA_FORMATTER_ID.equals(formatterConfigId)) {
-                    try {
-                        formatterBean = OpenCms.getResourceManager().getResourceType(
-                            element.getResource().getTypeId()).getFormattersForResource(
-                                cms,
-                                element.getResource()).getDefaultFormatter(containerType, containerWidth, allowNested);
-                    } catch (CmsLoaderException e) {
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
                 }
             }
         } else {

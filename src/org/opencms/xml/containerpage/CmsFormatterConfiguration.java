@@ -348,15 +348,15 @@ public final class CmsFormatterConfiguration {
         boolean allowNested) {
 
         Map<String, I_CmsFormatterBean> result = new LinkedHashMap<String, I_CmsFormatterBean>();
-        boolean hasSchemaFormatter = false;
         for (I_CmsFormatterBean formatter : Collections2.filter(
             m_allFormatters,
             new MatchesTypeOrWidth(containerTypes, containerWidth, allowNested))) {
             if (formatter.isFromFormatterConfigFile()) {
                 result.put(formatter.getId(), formatter);
-            } else if (!hasSchemaFormatter) {
-                hasSchemaFormatter = true;
-                result.put(CmsFormatterConfig.SCHEMA_FORMATTER_ID, formatter);
+            } else {
+                result.put(
+                    CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatter.getJspStructureId().toString(),
+                    formatter);
             }
         }
         return result;

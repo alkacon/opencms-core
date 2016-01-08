@@ -526,6 +526,40 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE_TYPES),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
+        byte[] appinfoSchema;
+        try {
+            // now read the default base schema
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(
+                Messages.get().container(
+                    org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                    APPINFO_SCHEMA_FILE),
+                e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
+    }
+
     /** The set of allowed templates. */
     protected CmsDefaultSet<String> m_allowedTemplates = new CmsDefaultSet<String>();
 
@@ -1855,25 +1889,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
     }
 
     /**
-     * Returns the default locale in the content of the given resource.<p>
+     * Returns the configured default locales for the content of the given resource.<p>
      *
      * @param cms the cms context
-     * @param resource the resource path to get the default locale for
+     * @param resource the resource path to get the default locales for
      *
-     * @return the default locale of the resource
+     * @return the default locales of the resource
      */
-    protected Locale getLocaleForResource(CmsObject cms, String resource) {
+    protected List<Locale> getLocalesForResource(CmsObject cms, String resource) {
 
-        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
-        if (locale == null) {
-            List<Locale> locales = OpenCms.getLocaleManager().getAvailableLocales();
-            if (locales.size() > 0) {
-                locale = locales.get(0);
-            } else {
-                locale = Locale.ENGLISH;
-            }
+        List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
+        if ((locales == null) || locales.isEmpty()) {
+            locales = OpenCms.getLocaleManager().getAvailableLocales();
         }
-        return locale;
+        return locales;
     }
 
     /**
@@ -1900,9 +1929,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             for (int i = 0; i < listsib.size(); i++) {
                 CmsResource resource = listsib.get(i);
                 // get the default locale of the resource and set the categories
-                Locale locale = getLocaleForResource(cms, cms.getSitePath(resource));
-                if (value.getLocale().equals(locale)) {
-                    return cms.getSitePath(resource);
+                List<Locale> locales = getLocalesForResource(cms, cms.getSitePath(resource));
+                for (Locale l : locales) {
+                    if (value.getLocale().equals(l)) {
+                        return cms.getSitePath(resource);
+                    }
                 }
             }
         } catch (CmsVfsResourceNotFoundException e) {
@@ -3243,7 +3274,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
             for (int i = 0; i < listsib.size(); i++) {
                 CmsResource resource = listsib.get(i);
                 // get the default locale of the sibling
-                Locale locale = getLocaleForResource(tmpCms, resource.getRootPath());
+                List<Locale> locales = getLocalesForResource(tmpCms, resource.getRootPath());
+                Locale locale = locales.get(0);
+                for (Locale l : locales) {
+                    if (content.hasLocale(l)) {
+                        locale = l;
+                        break;
+                    }
+                }
                 // remove all previously set categories
                 CmsCategoryService.getInstance().clearCategoriesForResource(tmpCms, resource.getRootPath());
                 // iterate over all values checking for the category widget

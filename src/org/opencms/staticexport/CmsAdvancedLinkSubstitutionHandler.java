@@ -65,6 +65,18 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
     private static final String XPATH_LINK = "link";
 
     /**
+     * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
+     */
+    @Override
+    public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
+
+        if (isExcluded(cms, link)) {
+            return link;
+        }
+        return super.getLink(cms, link, siteRoot, forceSecure);
+    }
+
+    /**
      * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getRootPath(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
     @Override
@@ -97,6 +109,41 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
         if (CmsLinkManager.isWorkplaceUri(uri)) {
             return null;
         }
+        if (isExcluded(cms, path)) {
+            return null;
+        }
+
+        return super.getRootPath(cms, targetUri, basePath);
+    }
+
+    /**
+     * Returns if the given path starts with an exclude prefix.<p>
+     *
+     * @param cms the cms context
+     * @param path the path to check
+     *
+     * @return <code>true</code> if the given path starts with an exclude prefix
+     */
+    protected boolean isExcluded(CmsObject cms, String path) {
+
+        List<String> excludes = getExcludes(cms);
+        // now check if the current link start with one of the exclude links
+        for (int i = 0; i < excludes.size(); i++) {
+            if (path.startsWith(excludes.get(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the exclude prefix list.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the exclude prefix list
+     */
+    private List<String> getExcludes(CmsObject cms) {
 
         // get the list of link excludes form the cache if possible
         CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
@@ -107,13 +154,7 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
             excludes = readLinkExcludes(cms);
             cache.putCachedObject(cms, LINK_EXCLUDE_DEFINIFITON_FILE, excludes);
         }
-        // now check if the current link start with one of the exclude links
-        for (int i = 0; i < excludes.size(); i++) {
-            if (path.startsWith(excludes.get(i))) {
-                return null;
-            }
-        }
-        return super.getRootPath(cms, targetUri, basePath);
+        return excludes;
     }
 
     /**

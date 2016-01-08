@@ -183,7 +183,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
     }
 
-    /** Attribute for signalling to the user driver that a specific OU should be initialized by fillDefaults. */
+    /** Attribute for signaling to the user driver that a specific OU should be initialized by fillDefaults. */
     public static final String ATTR_INIT_OU = "INIT_OU";
 
     /** Attribute login. */
@@ -642,9 +642,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, groupname));
         }
         if (group.isVirtual() && !readRoles) {
-            // if adding a user from a virtual role treat it as removing the user from the role
-            addUserToGroup(dbc, username, CmsRole.valueOf(group).getGroupName(), true);
-            return;
+            String roleName = CmsRole.valueOf(group).getGroupName();
+            if (!userInGroup(dbc, username, roleName, true)) {
+                addUserToGroup(dbc, username, roleName, true);
+                return;
+            }
         }
         if (group.isVirtual()) {
             // this is an hack to prevent unlimited recursive calls

@@ -431,9 +431,11 @@ public class CmsElementUtil {
                         missesFormatterSetting = false;
                     }
                     String label = formatter.getNiceName();
-                    if (formatterEntry.getKey().equals(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
-                        label = Messages.get().getBundle(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms)).key(
-                            Messages.GUI_SCHEMA_FORMATTER_LABEL_0);
+                    if (formatterEntry.getKey().startsWith(CmsFormatterConfig.SCHEMA_FORMATTER_ID)) {
+                        label = Messages.get().getBundle().key(Messages.GUI_SCHEMA_FORMATTER_LABEL_0)
+                            + " ["
+                            + CmsResource.getName(formatter.getJspRootPath())
+                            + "]";
                     }
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
                         label = id;

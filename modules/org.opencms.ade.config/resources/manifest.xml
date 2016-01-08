@@ -488,12 +488,12 @@
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
-							rule="containerpage" />
+							rule="containerpage-basic" />
 						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
-							rule="containerpage" />
+							rule="containerpage-basic" />
 
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
-							rule="containerpage" />
+							rule="containerpage-basic" />
 					</contextmenu>
 				</editoptions>
 			</explorertype>

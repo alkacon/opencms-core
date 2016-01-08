@@ -14,7 +14,7 @@
 		<group>OpenCms Editors</group>
 		<class />
 		<description><![CDATA[<p>This module contains TinyMCE editor for HTML pages and XML content.</p>
-                              <p>The version of TinyMCE is 4.1.3</p>]]></description>
+                              <p>The version of TinyMCE is 4.3.2</p>]]></description>
 		<version>10.0.0</version>
 		<authorname><![CDATA[OpenCms community]]></authorname>
 		<authoremail><![CDATA[opencms-dev@opencms.org]]></authoremail>

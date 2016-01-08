@@ -43,6 +43,7 @@ import org.opencms.ade.galleries.shared.CmsVfsEntryBean;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode;
 import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryTabId;
+import org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.SortParams;
 import org.opencms.ade.galleries.shared.rpc.I_CmsGalleryService;
 import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
@@ -643,6 +644,8 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
             data.setVfsRootFolders(getRootEntries());
 
             data.setScope(getWorkplaceSettings().getLastSearchScope());
+            data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
+
             data.setTabIds(GalleryMode.ade.getTabs());
             data.setReferenceSitePath(uri);
             data.setTypes(types);
@@ -782,6 +785,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                         if (scope == null) {
                             scope = OpenCms.getWorkplaceManager().getGalleryDefaultScope();
                         }
+                        result.setSortOrder(data.getSortOrder().name());
                         result.setScope(scope);
                         result.setIncludeExpired(data.getIncludeExpiredDefault());
                         result = search(result);
@@ -816,6 +820,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         try {
             gSearchObj = search(searchObj);
             getWorkplaceSettings().setLastSearchScope(searchObj.getScope());
+            getWorkplaceSettings().setLastGalleryResultOrder(SortParams.valueOf(searchObj.getSortOrder()));
             setLastOpenedGallery(searchObj);
         } catch (Throwable e) {
             error(e);
@@ -1848,7 +1853,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             }
         } catch (Exception e) {
-            LOG.error("Could not read system galleries: " + e.getLocalizedMessage(), e);
+            LOG.info("Could not read system galleries: " + e.getLocalizedMessage(), e);
         }
 
         try {
@@ -1862,7 +1867,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
                 }
             }
         } catch (Exception e) {
-            LOG.error("Could not read shared galleries: " + e.getLocalizedMessage(), e);
+            LOG.info("Could not read shared galleries: " + e.getLocalizedMessage(), e);
         }
         return galleries;
     }
@@ -1893,6 +1898,7 @@ public class CmsGalleryService extends CmsGwtService implements I_CmsGalleryServ
         }
         data.setVfsRootFolders(getRootEntries());
         data.setScope(getWorkplaceSettings().getLastSearchScope());
+        data.setSortOrder(getWorkplaceSettings().getLastGalleryResultOrder());
 
         List<CmsResourceTypeBean> types = null;
         data.setTabIds(conf.getGalleryMode().getTabs());

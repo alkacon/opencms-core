@@ -72,10 +72,10 @@ public class CmsCloneModuleInfo {
     private String m_sourceModuleName = "com.alkacon.bootstrap.formatters";
 
     /** The prefix that is used by the source module. */
-    private String m_sourceNamePrefix = "bs";
+    private String m_sourceNamePrefix = "bs-";
 
     /** The prefix that is used by the target module. */
-    private String m_targetNamePrefix = "my";
+    private String m_targetNamePrefix = "my-";
 
     /**
      * Returns the action class.<p>

@@ -719,6 +719,13 @@ public class CmsHtmlWidgetOption {
                                 // skip unlink button because no link buttons are defined as additional buttons
                                 continue;
                             }
+                        } else if (OPTION_STYLE.equals(barItem)) {
+                            boolean showStyles = getAdditionalButtons().contains(barItem)
+                                || (getStylesFormatPath() != null)
+                                || (getStylesXmlPath() != null);
+                            if (!showStyles) {
+                                continue;
+                            }
                         } else if (!getAdditionalButtons().contains(barItem)) {
                             // skip all optional buttons that are not defined
                             continue;

@@ -193,6 +193,7 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
             m_searchObject.setIgnoreSearchExclude(m_dialogMode != GalleryMode.ade);
             m_searchObject.setLocale(m_dialogBean.getLocale());
             m_searchObject.setScope(m_dialogBean.getScope());
+            m_searchObject.setSortOrder(m_dialogBean.getSortOrder().name());
             m_searchObject.setGalleryStoragePrefix(m_dialogBean.getGalleryStoragePrefix());
         }
         if (m_dialogBean != null) {

@@ -692,12 +692,19 @@ if (toolbarButtons.indexOf("OcmsImageGallery")>0)
 if (toolbarButtons.indexOf("table")>0)
     contextmenu+=" inserttable | cell row column deletetable"
 
-var plugins = "anchor,charmap,code,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,code,-opencms";
+var plugins = "anchor,charmap,codemirror,importcss,textcolor,autolink,lists,pagebreak,layer,table,save,hr,image,link,emoticons,insertdatetime,preview,media,searchreplace,print,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,template,wordcount,advlist,-opencms";
 if (contextmenu!="")
     plugins+=",contextmenu"
 
 tinyMCE.init({
     // General options
+    codemirror: {
+      indentOnInit: true, // whether or not to indent code on init.
+      path: "<%= CmsWorkplace.getSkinUri() + "editors/codemirror/dist/" %>", // path to CodeMirror distribution
+      config: {           // CodeMirror config object
+         lineNumbers: true
+      }
+    },
     toolbar_items_size: 'small',
     mode : "exact",
     elements : "tinymce_content",

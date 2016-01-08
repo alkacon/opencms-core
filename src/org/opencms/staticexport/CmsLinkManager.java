@@ -49,6 +49,8 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.base.Optional;
+
 /**
  * Does the link replacement for the &lg;link&gt; tags.<p>
  *
@@ -371,7 +373,19 @@ public class CmsLinkManager {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ext)) {
                 permalink += ext;
             }
-            String serverPrefix = OpenCms.getSiteManager().getCurrentSite(cms).getServerPrefix(cms, resourceName);
+            CmsSite currentSite = OpenCms.getSiteManager().getCurrentSite(cms);
+            String serverPrefix = null;
+            if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
+                Optional<CmsSite> siteForDefaultUri = OpenCms.getSiteManager().getSiteForDefaultUri();
+                if (siteForDefaultUri.isPresent()) {
+                    serverPrefix = siteForDefaultUri.get().getServerPrefix(cms, resourceName);
+                } else {
+                    serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
+                }
+            } else {
+                serverPrefix = currentSite.getServerPrefix(cms, resourceName);
+            }
+
             if (!permalink.startsWith(serverPrefix)) {
                 permalink = serverPrefix + permalink;
             }

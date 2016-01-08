@@ -1,12 +1,27 @@
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+"use strict";
+
 CodeMirror.multiplexingMode = function(outer /*, others */) {
   // Others should be {open, close, mode [, delimStyle] [, innerStyle]} objects
   var others = Array.prototype.slice.call(arguments, 1);
-  var n_others = others.length;
 
-  function indexOf(string, pattern, from) {
-    if (typeof pattern == "string") return string.indexOf(pattern, from);
+  function indexOf(string, pattern, from, returnEnd) {
+    if (typeof pattern == "string") {
+      var found = string.indexOf(pattern, from);
+      return returnEnd && found > -1 ? found + pattern.length : found;
+    }
     var m = pattern.exec(from ? string.slice(from) : string);
-    return m ? m.index + from : -1;
+    return m ? m.index + from + (returnEnd ? m[0].length : 0) : -1;
   }
 
   return {
@@ -29,14 +44,14 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
     token: function(stream, state) {
       if (!state.innerActive) {
         var cutOff = Infinity, oldContent = stream.string;
-        for (var i = 0; i < n_others; ++i) {
+        for (var i = 0; i < others.length; ++i) {
           var other = others[i];
           var found = indexOf(oldContent, other.open, stream.pos);
           if (found == stream.pos) {
-            stream.match(other.open);
+            if (!other.parseDelimiters) stream.match(other.open);
             state.innerActive = other;
             state.inner = CodeMirror.startState(other.mode, outer.indent ? outer.indent(state.outer, "") : 0);
-            return other.delimStyle;
+            return other.delimStyle && (other.delimStyle + " " + other.delimStyle + "-open");
           } else if (found != -1 && found < cutOff) {
             cutOff = found;
           }
@@ -47,20 +62,25 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
         return outerToken;
       } else {
         var curInner = state.innerActive, oldContent = stream.string;
-        var found = indexOf(oldContent, curInner.close, stream.pos);
-        if (found == stream.pos) {
+        if (!curInner.close && stream.sol()) {
+          state.innerActive = state.inner = null;
+          return this.token(stream, state);
+        }
+        var found = curInner.close ? indexOf(oldContent, curInner.close, stream.pos, curInner.parseDelimiters) : -1;
+        if (found == stream.pos && !curInner.parseDelimiters) {
           stream.match(curInner.close);
           state.innerActive = state.inner = null;
-          return curInner.delimStyle;
+          return curInner.delimStyle && (curInner.delimStyle + " " + curInner.delimStyle + "-close");
         }
         if (found > -1) stream.string = oldContent.slice(0, found);
         var innerToken = curInner.mode.token(stream, state.inner);
         if (found > -1) stream.string = oldContent;
-        var cur = stream.current(), found = cur.indexOf(curInner.close);
-        if (found > -1) stream.backUp(cur.length - found);
+
+        if (found == stream.pos && curInner.parseDelimiters)
+          state.innerActive = state.inner = null;
 
         if (curInner.innerStyle) {
-          if (innerToken) innerToken = innerToken + ' ' + curInner.innerStyle;
+          if (innerToken) innerToken = innerToken + " " + curInner.innerStyle;
           else innerToken = curInner.innerStyle;
         }
 
@@ -80,7 +100,7 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
         mode.blankLine(state.innerActive ? state.inner : state.outer);
       }
       if (!state.innerActive) {
-        for (var i = 0; i < n_others; ++i) {
+        for (var i = 0; i < others.length; ++i) {
           var other = others[i];
           if (other.open === "\n") {
             state.innerActive = other;
@@ -99,3 +119,5 @@ CodeMirror.multiplexingMode = function(outer /*, others */) {
     }
   };
 };
+
+});

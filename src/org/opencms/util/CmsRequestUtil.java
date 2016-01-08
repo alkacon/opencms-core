@@ -302,6 +302,25 @@ public final class CmsRequestUtil {
      */
     public static Map<String, String[]> createParameterMap(String query) {
 
+        return createParameterMap(query, false, null);
+    }
+
+    /**
+     * Parses the parameters of the given request query part, optionally decodes them, and creates a parameter map out of them.<p>
+     *
+     * Please note: This does not parse a full request URI/URL, only the query part that
+     * starts after the "?". For example, in the URI <code>/system/index.html?a=b&amp;c=d</code>,
+     * the query part is <code>a=b&amp;c=d</code>.<p>
+     *
+     * If the given String is empty, an empty map is returned.<p>
+     *
+     * @param query the query to parse
+     * @param decodeParameters a flag, indicating if the parameters should be decoded.
+     * @param encoding the character encoding used while decoding. If <code>null</code>, the default character encoding is used.
+     * @return the parameter map created from the query
+     */
+    public static Map<String, String[]> createParameterMap(String query, boolean decodeParameters, String encoding) {
+
         if (CmsStringUtil.isEmpty(query)) {
             // empty query
             return new HashMap<String, String[]>();
@@ -332,6 +351,10 @@ public final class CmsRequestUtil {
             }
             // now make sure the values are of type String[]
             if (key != null) {
+                if (decodeParameters) {
+                    key = CmsEncoder.decode(key, encoding);
+                    value = CmsEncoder.decode(value, encoding);
+                }
                 String[] values = parameters.get(key);
                 if (values == null) {
                     // this is the first value, create new array

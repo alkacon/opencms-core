@@ -33,9 +33,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
@@ -59,11 +61,11 @@ public class CmsPersistentLoginTokenHandler {
         /** Separator to use for the encoded token string. */
         public static final String SEPARATOR = "|";
 
-        /** The name. */
-        private String m_name;
-
         /** The key. */
         private String m_key;
+
+        /** The name. */
+        private String m_name;
 
         /**
          * Creates a new token object from the encoded representation.<p>
@@ -75,7 +77,7 @@ public class CmsPersistentLoginTokenHandler {
             if (token != null) {
                 List<String> parts = CmsStringUtil.splitAsList(token, SEPARATOR);
                 if (parts.size() == 2) {
-                    m_name = parts.get(0);
+                    m_name = decodeName(parts.get(0));
                     m_key = parts.get(1);
                 }
             }
@@ -101,7 +103,7 @@ public class CmsPersistentLoginTokenHandler {
          */
         public String encode() {
 
-            return m_name + SEPARATOR + m_key;
+            return encodeName(m_name) + SEPARATOR + m_key;
         }
 
         /**
@@ -144,7 +146,47 @@ public class CmsPersistentLoginTokenHandler {
 
             return (m_name != null) && (m_key != null);
         }
+
+        /**
+         * Decodes the user name from a hexadecimal string, and returns null if this is not possible.<p>
+         *
+         * @param nameHex the encoded name
+         * @return the decoded name
+         */
+        @SuppressWarnings("synthetic-access")
+        private String decodeName(String nameHex) {
+
+            try {
+                return new String(Hex.decodeHex(nameHex.toCharArray()), "UTF-8");
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+                return null;
+            }
+        }
+
+        /**
+         * Encodes a user name as a hex string for storing in the cookie.<p>
+         *
+         * @param name the user name
+         *
+         * @return the encoded name
+         */
+        private String encodeName(String name) {
+
+            try {
+                return Hex.encodeHexString(name.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                // shouldn't happen
+                throw new IllegalStateException("UTF8 not supported");
+            }
+        }
     }
+
+    /** Default token lifetime. */
+    public static final long DEFAULT_LIFETIME = 1000 * 60 * 60 * 8;
+
+    /** Prefix used for the keys for the additional infos this class creates. */
+    public static final String KEY_PREFIX = "logintoken_";
 
     /** The logger for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPersistentLoginTokenHandler.class);
@@ -152,14 +194,8 @@ public class CmsPersistentLoginTokenHandler {
     /** Admin CMS context. */
     private static CmsObject m_adminCms;
 
-    /** Default token lifetime. */
-    public static final long DEFAULT_LIFETIME = 1000 * 60 * 60 * 8;
-
     /** The lifetime for created tokens. */
     private long m_lifetime = DEFAULT_LIFETIME;
-
-    /** Prefix used for the keys for the additional infos this class creates. */
-    public static final String KEY_PREFIX = "logintoken_";
 
     /**
      * Creates a new instance.<p>

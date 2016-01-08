@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -45,6 +46,7 @@ import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsRole;
 import org.opencms.setup.db.CmsUpdateDBThread;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.threads.CmsXmlContentRepairSettings;
@@ -52,6 +54,7 @@ import org.opencms.workplace.threads.CmsXmlContentRepairThread;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,6 +68,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -78,6 +86,9 @@ import com.google.common.collect.Lists;
  * @since 6.0.0
  */
 public class CmsUpdateBean extends CmsSetupBean {
+
+    /** The empty jar marker attribute key. */
+    public static final String EMPTY_JAR_ATTRIBUTE_KEY = "OpenCms-empty-jar";
 
     /** name of the update folder. */
     public static final String FOLDER_UPDATE = "update" + File.separatorChar;
@@ -98,7 +109,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     private static final String C_UPDATE_SITE = "@UPDATE_SITE@";
 
     /** The static log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
+    static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
     /** Static flag to indicate if all modules should be updated regardless of their version number. */
     private static final boolean UPDATE_ALL_MODULES = false;
@@ -513,6 +524,24 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Checks whether the selected user and password are valid and the user has the ROOT_ADMIN role.<p>
+     *
+     * @return <code>true</code> if the selected user and password are valid and the user has the ROOT_ADMIN role
+     */
+    public boolean isValidUser() {
+
+        CmsShell shell = new CmsShell(
+            getWebAppRfsPath() + "WEB-INF" + File.separator,
+            getServletMapping(),
+            getDefaultWebApplication(),
+            "${user}@${project}>",
+            null);
+        boolean validUser = shell.validateUser(getAdminUser(), getAdminPwd(), CmsRole.ROOT_ADMIN);
+        shell.exit();
+        return validUser;
+    }
+
+    /**
      * Prepares step 1 of the update wizard.<p>
      */
     public void prepareUpdateStep1() {
@@ -700,6 +729,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             lockWizard();
             // save Properties to file "opencms.properties"
             saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false, forced);
+            deleteEmptyJars();
         }
     }
 
@@ -1071,6 +1101,57 @@ public class CmsUpdateBean extends CmsSetupBean {
         OpenCms.getPublishManager().stopPublishing();
         OpenCms.getPublishManager().startPublishing();
         OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Marks all empty jars for deletion on VM exit.<p>
+     */
+    private void deleteEmptyJars() {
+
+        File libFolder = new File(getLibFolder());
+        if (libFolder.exists()) {
+            File[] emptyJars = libFolder.listFiles(new FileFilter() {
+
+                public boolean accept(File pathname) {
+
+                    if (pathname.getName().endsWith(".jar")) {
+                        FileInputStream fileInput = null;
+                        JarInputStream jarStream = null;
+                        try {
+                            fileInput = new FileInputStream(pathname);
+                            jarStream = new JarInputStream(fileInput);
+                            // check the manifest for the empty jar marker attribute
+                            Manifest mf = jarStream.getManifest();
+                            Attributes att = mf.getMainAttributes();
+                            if ((att != null) && "true".equals(att.getValue(EMPTY_JAR_ATTRIBUTE_KEY))) {
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            LOG.warn(e.getMessage(), e);
+                        } finally {
+                            if (jarStream != null) {
+                                try {
+                                    jarStream.close();
+                                } catch (IOException e) {
+                                    LOG.warn(e.getMessage(), e);
+                                }
+                            }
+                            if (fileInput != null) {
+                                try {
+                                    fileInput.close();
+                                } catch (IOException e) {
+                                    LOG.warn(e.getMessage(), e);
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+            for (int i = 0; i < emptyJars.length; i++) {
+                emptyJars[i].deleteOnExit();
+            }
+        }
     }
 
     /**

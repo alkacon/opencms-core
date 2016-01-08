@@ -401,18 +401,33 @@ public class CmsXmlUpdateMenuRules extends A_CmsXmlWorkplace {
                     String[] classNames = new String[] {
                         CmsMirRequireWorkplaceUserRole.class.getName(),
                         CmsMirNonContainerpageInvisible.class.getName(),
-                        org.opencms.workplace.explorer.menu.CmsMirOtherSiteInactive.class.getName(),
-                        org.opencms.workplace.explorer.menu.CmsMirPrSameUnlockedInactiveNoAl.class.getName(),
-                        org.opencms.workplace.explorer.menu.CmsMirPrSameLockedActiveNotDeletedAlPermW.class.getName(),
-                        org.opencms.workplace.explorer.menu.CmsMirPrSameOtherlockInvisible.class.getName(),
+                        org.opencms.workplace.explorer.menu.CmsMirContainerPageActive.class.getName()};
+
+                    if (elem != null) {
+                        // remove the already existing rule insert an updated list of item-rules
+                        elem.getParent().remove(elem);
+                    }
+                    for (String classname : classNames) {
+                        CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("containerpage-wpuser", classname), "");
+                    }
+                    return true;
+                }
+
+            });
+
+            m_updateActions.put(xpathForMenuRule("containerpage-basic"), new CmsXmlUpdateAction() {
+
+                @Override
+                public boolean executeUpdate(Document doc, String xpath, boolean forReal) {
+
+                    Element elem = (Element)doc.selectSingleNode(xpath);
+                    String[] classNames = new String[] {
+                        org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible.class.getName(),
                         org.opencms.workplace.explorer.menu.CmsMirContainerPageActive.class.getName()};
 
                     if (elem == null) {
                         for (String classname : classNames) {
-                            CmsSetupXmlHelper.setValue(
-                                doc,
-                                xpathForMenuItemRule("containerpage-wpuser", classname),
-                                "");
+                            CmsSetupXmlHelper.setValue(doc, xpathForMenuItemRule("containerpage-basic", classname), "");
                         }
                         return true;
                     }

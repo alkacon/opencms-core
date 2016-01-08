@@ -48,7 +48,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.SpellCheckResponse;
@@ -189,7 +188,7 @@ public final class CmsSolrSpellchecker {
             String requestBody = getRequestBody(servletRequest);
             final JSONObject jsonRequest = new JSONObject(requestBody);
             cmsSpellcheckingRequest = parseJsonRequest(jsonRequest);
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             cmsSpellcheckingRequest = parseHttpRequest(servletRequest, cms);
         }
 
@@ -260,7 +259,7 @@ public final class CmsSolrSpellchecker {
                     final List<String> l = solrSuggestions.get(key).getAlternatives();
                     suggestions.put(key, l);
                 } catch (JSONException e) {
-                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ");
+                    LOG.debug("Exception while converting Solr spellcheckresponse to JSON. ", e);
                 }
             }
         }
@@ -288,8 +287,9 @@ public final class CmsSolrSpellchecker {
         } catch (Exception e) {
             try {
                 response.put(JSON_ERROR, true);
+                LOG.debug("Error while assembling spellcheck response in JSON format.", e);
             } catch (JSONException ex) {
-                LOG.debug("Error while assembling spellcheck response in JSON format. ");
+                LOG.debug("Error while assembling spellcheck response in JSON format.", ex);
             }
         }
 
@@ -452,8 +452,8 @@ public final class CmsSolrSpellchecker {
         try {
             QueryResponse qres = m_solrClient.query(query);
             return qres.getSpellCheckResponse();
-        } catch (SolrServerException | IOException e) {
-            LOG.debug("Exception while performing spellcheck query...");
+        } catch (Exception e) {
+            LOG.debug("Exception while performing spellcheck query...", e);
         }
 
         return null;
