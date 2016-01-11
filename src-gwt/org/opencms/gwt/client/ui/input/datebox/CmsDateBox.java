@@ -195,6 +195,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         // GWT interface, nothing to do here
     }
 
+    /** Dummy value used for invalid dates. */
+    public static final Date INVALID_DATE = new Date(Integer.MIN_VALUE + 37); // can't use Long.MIN_VALUE since this leads to an invalid Date object in GWT
+
     /** The widget type identifier for this widget. */
     public static final String WIDGET_TYPE = "datebox";
 
@@ -237,6 +240,9 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
     /** The panel for the time selection. */
     @UiField
     protected FlowPanel m_timeField;
+
+    /** True if invalid values should be allowed. */
+    private boolean m_allowInvalidValue;
 
     /** The value for show date only. */
     private boolean m_dateOnly;
@@ -364,6 +370,18 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
     }
 
     /**
+     * Returns true if invalid values should be allowed.<p>
+     *
+     * If invalid values are allowed, methods returning a Date will return a special dummy date in case the date is invalid.
+     *
+     * @return true if invalid values should be allowed
+     */
+    public boolean allowInvalidValue() {
+
+        return m_allowInvalidValue;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getApparentValue()
      */
     public String getApparentValue() {
@@ -397,6 +415,8 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
         Date value = getValue();
         if (value == null) {
             return "";
+        } else if (allowInvalidValue() && value.equals(INVALID_DATE)) {
+            return "INVALID_DATE";
         }
         return String.valueOf(getValue().getTime());
     }
@@ -427,8 +447,13 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
                 setErrorMessage(null);
             } catch (Exception e) {
                 setErrorMessage(Messages.get().key(Messages.ERR_DATEBOX_INVALID_DATE_FORMAT_0));
+                if (allowInvalidValue()) {
+                    // empty is actually a valid value for date fields, so we have to return a different value to distinguish between the cases
+                    return INVALID_DATE;
+                }
             }
         }
+
         return date;
     }
 
@@ -492,6 +517,18 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
     public void reset() {
 
         setValue(null);
+    }
+
+    /**
+     * Enables or disables whether invalid values are allowed.<p>
+     *
+     * If invalid values are allowed, they will be returned as a special dummy date (INVALID_DATE).
+     *
+     * @param allowInvalidValue true if invalid values should be allowed
+     */
+    public void setAllowInvalidValue(boolean allowInvalidValue) {
+
+        m_allowInvalidValue = allowInvalidValue;
     }
 
     /**
@@ -715,7 +752,7 @@ implements HasValue<Date>, I_CmsFormWidget, I_CmsHasInit, HasKeyPressHandlers {
                     public void execute() {
 
                         updateCloseBehavior();
-                        if (isValideDateBox()) {
+                        if (isValideDateBox() || allowInvalidValue()) {
                             setErrorMessage(null);
                             fireChange(getValue());
                         }

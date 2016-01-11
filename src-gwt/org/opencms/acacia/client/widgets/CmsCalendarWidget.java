@@ -61,6 +61,7 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
      * @param config The configuration string given from OpenCms XSD.
      */
     public CmsCalendarWidget(String config) {
+        m_dateBox.setAllowInvalidValue(true);
 
         // All composites must call initWidget() in their constructors.
         initWidget(m_dateBox);
@@ -124,10 +125,7 @@ public class CmsCalendarWidget extends Composite implements I_CmsEditWidget {
      */
     public void fireChangeEvent() {
 
-        if (m_dateBox.isValideDateBox()) {
-            ValueChangeEvent.fire(this, m_dateBox.getFormValueAsString());
-        }
-
+        ValueChangeEvent.fire(this, m_dateBox.getFormValueAsString());
     }
 
     /**
