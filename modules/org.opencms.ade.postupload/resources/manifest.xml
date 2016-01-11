@@ -14,7 +14,7 @@
     <group>OpenCms ADE</group>
     <class/>
     <description><![CDATA[This module provides a dialog for editing the configured default properties of a file after uploading it.<br>
-<i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
+<i>&copy; 2016 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
     <version>9.5.3</version>
     <authorname/>
     <authoremail/>
