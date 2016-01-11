@@ -57,9 +57,18 @@ createDefaultProject "Offline" "The Offline Project"
 
 # Import the modules that have been selected in the setup wizard to the default site
 setSiteRoot "/sites/default/"
+
+# Turn of indexing for faster module import
+setIndexRebuildMode "Solr Online" "manual"
+setIndexRebuildMode "Solr Offline" "manual"
+
 importModulesFromSetupBean
 
 # Rebuild search indexes
 rebuildAllIndexes
+
+# Restore index modes
+setIndexRebuildMode "Solr Online" "auto"
+setIndexRebuildMode "Solr Offline" "offline"
 
 exit

@@ -50,6 +50,7 @@ import org.opencms.module.CmsModule.ExportMode;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.CmsSearchIndex;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
@@ -1178,9 +1179,12 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void setIndexRebuildMode(String searchIndex, String mode) {
 
-        OpenCms.getSearchManager().getIndex(searchIndex).setRebuildMode(mode);
-        // required for this setting to take effect
-        OpenCms.getSearchManager().initOfflineIndexes();
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(searchIndex);
+        if (index != null) {
+            index.setRebuildMode(mode);
+            // required for this setting to take effect
+            OpenCms.getSearchManager().initOfflineIndexes();
+        }
     }
 
     /**
