@@ -142,7 +142,6 @@ div.calendarStyle input[type="text"].textboxGhostMode{
 	outline: none;
 }
 
-
 div.calendarStyle {
 	border: 1px solid #7788AA;
 	background: none repeat scroll 0 0 value("constants.css.backgroundColorDialog");
@@ -152,6 +151,10 @@ div.calendarStyle {
 	width: auto;
 	padding: 0px 4px;
 	height: 18px;
+}
+
+div.input-textBoxPanelError.calendarStyle input[type='text'] {
+	background-color: #fcc !important;
 }
 
 
