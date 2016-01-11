@@ -38,11 +38,7 @@ OpenCms Update Wizard
 
 	<%
 		if(isFormSubmitted)	{
-			if (Bean.isValidUser()){
-				out.println("location.href='"+nextPage+"';");
-			}else{
-				out.println("alert('The given user/password combination is not valid, or the given user has no root administrator role.');");
-			}
+			out.println("location.href='"+nextPage+"';");
 		}
 	%>
 //-->

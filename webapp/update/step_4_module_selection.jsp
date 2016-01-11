@@ -2,6 +2,14 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 	
+	if (!Bean.isValidUser()){%>
+		<script type="text/javascript">
+			alert('The given user/password combination is not valid, or the given user has no root administrator role.');
+			location.href = 'step_2_settings.jsp';
+		</script>
+		<%return;
+	}
+	
 	// next page
 	String nextPage = "step_5_update_modules.jsp";	
 	
