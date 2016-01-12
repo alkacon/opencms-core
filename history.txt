@@ -21,7 +21,7 @@ OpenCms 9.5.3 - January 13, 2016
 ! Gallery dialog now memorizes the last search result sort order.
 ! Demo template updated to Bootstrap 3.3.6 and jQuery 1.11.3.
 * Fixed issue #231 where lower case SQL statements failed on MSSQL DBs.
-* Fixed issue #240/#307 where invalid dates where not handled properly by the content editor.
+* Fixed issue #240/#307 where invalid dates were not handled properly by the content editor.
 * Fixed issue #279 related to Java 8 support.
 * Fixed issue #282 with MySQLSyntaxErrorException for DROP DATABASE in setup.sh (pr #346 by gallardo).
 * Fixed issue #296 with wrong order of choice elements after XSD change or saving in control code editor (fix by mwxwidmann).
