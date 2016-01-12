@@ -52,6 +52,86 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         m_state = new CmsSearchStateFacet();
     }
 
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addParametersForCurrentState(java.util.Map)
+     */
+    @Override
+    public void addParametersForCurrentState(final Map<String, String[]> parameters) {
+
+        if (!m_state.getCheckedEntries().isEmpty()) {
+            parameters.put(
+                m_config.getParamKey(),
+                m_state.getCheckedEntries().toArray(new String[m_state.getCheckedEntries().size()]));
+        }
+        if (m_state.getIgnoreChecked()) {
+            parameters.put(m_config.getIgnoreMaxParamKey(), null);
+        }
+
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
+     */
+    @Override
+    public void addQueryParts(CmsSolrQuery query) {
+
+        addFacetPart(query);
+        addFilterQueryParts(query);
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getConfig()
+     */
+    @Override
+    public I_CmsSearchConfigurationFacetField getConfig() {
+
+        return m_config;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getState()
+     */
+    @Override
+    public I_CmsSearchStateFacet getState() {
+
+        return m_state;
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateForQueryChange()
+     */
+    @Override
+    public void updateForQueryChange() {
+
+        m_state.setIgnoreChecked(true);
+
+    }
+
+    /**
+     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
+     */
+    @Override
+    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
+
+        m_state.setUseLimit(!parameters.containsKey(m_config.getIgnoreMaxParamKey()));
+
+        if (isReloaded) {
+            // update checked fields
+            m_state.clearChecked();
+            if (!m_state.getIgnoreChecked() && parameters.containsKey(m_config.getParamKey())) {
+                final String[] checked = parameters.get(m_config.getParamKey());
+                for (int i = 0; i < checked.length; i++) {
+                    m_state.addChecked(checked[i]);
+                }
+
+            }
+        } else { // use the preselection on first load
+            for (String checked : m_config.getPreSelection()) {
+                m_state.addChecked(checked);
+            }
+        }
+    }
+
     /** Adds the query parts for the facet options, except the filter parts.
      * @param query The query part that is extended with the facet options.
      * @param fieldPrefix The facet's field used to identify the facet.
@@ -113,40 +193,17 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         }
     }
 
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addParametersForCurrentState(java.util.Map)
-     */
-    @Override
-    public void addParametersForCurrentState(final Map<String, String[]> parameters) {
-
-        if (!m_state.getCheckedEntries().isEmpty()) {
-            parameters.put(
-                m_config.getParamKey(),
-                m_state.getCheckedEntries().toArray(new String[m_state.getCheckedEntries().size()]));
-        }
-        if (m_state.getIgnoreChecked()) {
-            parameters.put(m_config.getIgnoreMaxParamKey(), null);
-        }
-
-    }
-
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#addQueryParts(CmsSolrQuery)
-     */
-    @Override
-    public void addQueryParts(CmsSolrQuery query) {
-
-        addFacetPart(query);
-        addFilterQueryParts(query);
-    }
-
     /** Appends the query part for the facet to the query string.
      * @param query The current query string.
      * @param fieldPrefix The facet's field used to identify the facet.
      * @param name The name of the facet parameter, e.g. "limit", "order", ....
      * @param value The value to set for the parameter specified by name.
      */
-    protected void appendQueryPart(CmsSolrQuery query, final String fieldPrefix, final String name, final String value) {
+    protected void appendQueryPart(
+        CmsSolrQuery query,
+        final String fieldPrefix,
+        final String name,
+        final String value) {
 
         StringBuffer key = new StringBuffer();
         if ((fieldPrefix != null) && !fieldPrefix.trim().isEmpty()) {
@@ -154,59 +211,6 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         }
         key.append("facet.").append(name);
         query.add(key.toString(), value);
-    }
-
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getConfig()
-     */
-    @Override
-    public I_CmsSearchConfigurationFacetField getConfig() {
-
-        return m_config;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchControllerFacetField#getState()
-     */
-    @Override
-    public I_CmsSearchStateFacet getState() {
-
-        return m_state;
-    }
-
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateForQueryChange()
-     */
-    @Override
-    public void updateForQueryChange() {
-
-        m_state.setIgnoreChecked(true);
-
-    }
-
-    /**
-     * @see org.opencms.jsp.search.controller.I_CmsSearchController#updateFromRequestParameters(java.util.Map, boolean)
-     */
-    @Override
-    public void updateFromRequestParameters(final Map<String, String[]> parameters, boolean isReloaded) {
-
-        m_state.setUseLimit(!parameters.containsKey(m_config.getIgnoreMaxParamKey()));
-
-        if (isReloaded) {
-            // update checked fields
-            m_state.clearChecked();
-            if (!m_state.getIgnoreChecked() && parameters.containsKey(m_config.getParamKey())) {
-                final String[] checked = parameters.get(m_config.getParamKey());
-                for (int i = 0; i < checked.length; i++) {
-                    m_state.addChecked(checked[i]);
-                }
-
-            }
-        } else { // use the preselection on first load
-            for (String checked : m_config.getPreSelection()) {
-                m_state.addChecked(checked);
-            }
-        }
     }
 
 }
