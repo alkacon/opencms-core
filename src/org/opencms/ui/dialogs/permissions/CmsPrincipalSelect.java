@@ -98,7 +98,8 @@ public class CmsPrincipalSelect extends CustomComponent {
         main.setSpacing(true);
         main.setMargin(true);
         main.setWidth("100%");
-        this.setCompositionRoot(main);
+        setCompositionRoot(main);
+
         m_principalTypeSelect = new ComboBox();
         m_principalTypeSelect.setWidth("150px");
         Map<String, String> principalTypes = new LinkedHashMap<String, String>();
@@ -109,9 +110,10 @@ public class CmsPrincipalSelect extends CustomComponent {
         m_principalTypeSelect.setNullSelectionAllowed(false);
         m_principalTypeSelect.select(I_CmsPrincipal.PRINCIPAL_USER);
         main.addComponent(m_principalTypeSelect);
+
         m_principalName = new TextField();
+        m_principalName.setWidth("100%");
         main.addComponent(m_principalName);
-        main.setWidth("100%");
         main.setExpandRatio(m_principalName, 2);
 
         m_selectPrincipalButton = new Button(FontAwesome.USER);
