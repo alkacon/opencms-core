@@ -207,7 +207,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 cms.getRequestContext().setAttribute(I_CmsMenuItemRule.ATTR_CONTEXT_INFO, context.toString());
             }
             CmsResourceUtil[] resUtil = new CmsResourceUtil[1];
-            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.ONLY_VISIBLE));
+            resUtil[0] = new CmsResourceUtil(cms, cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION));
             CmsResource resource = resUtil[0].getResource();
             if (hasViewPermissions(cms, resource)) {
                 String fallbackType = resource.isFolder()

@@ -422,7 +422,7 @@
 							name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
 						<entry key="EDITSMALLELEMENTS" name="editsmallelements"
 							rule="containerpage" />
-						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage">
+						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage-basic">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
 							rule="containerpage-no-different-site-and-has-editor-role" />

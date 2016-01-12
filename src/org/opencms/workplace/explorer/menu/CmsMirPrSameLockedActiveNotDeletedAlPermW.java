@@ -41,6 +41,8 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  *
  * Also checks if the current user has write permissions on the resource and sets the visibility to inactive if not.<p>
  *
+ * Also checks if the current user has view permissions and sets the visibility to invisible if not.<p>
+ *
  * @since 6.5.6
  */
 public class CmsMirPrSameLockedActiveNotDeletedAlPermW extends A_CmsMenuItemRule {
@@ -52,6 +54,13 @@ public class CmsMirPrSameLockedActiveNotDeletedAlPermW extends A_CmsMenuItemRule
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         try {
+            if (!cms.hasPermissions(
+                resourceUtil[0].getResource(),
+                CmsPermissionSet.ACCESS_VIEW,
+                false,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+            }
             if (!resourceUtil[0].isEditable()
                 || !cms.hasPermissions(
                     resourceUtil[0].getResource(),
@@ -61,7 +70,7 @@ public class CmsMirPrSameLockedActiveNotDeletedAlPermW extends A_CmsMenuItemRule
                 return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(
                     Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
             }
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             // error checking permissions, disable entry completely
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
@@ -76,6 +85,18 @@ public class CmsMirPrSameLockedActiveNotDeletedAlPermW extends A_CmsMenuItemRule
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#matches(org.opencms.file.CmsObject, CmsResourceUtil[])
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
+
+        try {
+            if (!cms.hasPermissions(
+                resourceUtil[0].getResource(),
+                CmsPermissionSet.ACCESS_VIEW,
+                false,
+                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                return true;
+            }
+        } catch (@SuppressWarnings("unused") CmsException e) {
+            return true;
+        }
 
         if (resourceUtil[0].isInsideProject()) {
             CmsLock lock = resourceUtil[0].getLock();
