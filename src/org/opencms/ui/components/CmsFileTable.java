@@ -59,6 +59,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.apps.CmsFileExplorerSettings;
+import org.opencms.ui.components.contextmenu.CmsContextMenu;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 

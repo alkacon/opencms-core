@@ -28,10 +28,9 @@
 package org.opencms.ui;
 
 import org.opencms.file.CmsResource;
+import org.opencms.ui.components.contextmenu.CmsContextMenu;
 
 import java.util.List;
-
-import org.vaadin.peter.contextmenu.ContextMenu;
 
 /**
  * Builds an explorer context menu based on the set of selected resources' IDs.<p>
@@ -45,6 +44,6 @@ public interface I_CmsContextMenuBuilder {
      *
      * @param menu the menu
      */
-    void buildContextMenu(List<CmsResource> selectedResources, ContextMenu menu);
+    void buildContextMenu(List<CmsResource> selectedResources, CmsContextMenu menu);
 
 }

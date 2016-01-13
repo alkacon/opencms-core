@@ -63,6 +63,10 @@ import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.components.I_CmsFilePropertyEditHandler;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.OpenCmsTheme;
+import org.opencms.ui.components.contextmenu.CmsContextMenu;
+import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItem;
+import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItemClickEvent;
+import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItemClickListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
@@ -88,11 +92,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
-
-import org.vaadin.peter.contextmenu.ContextMenu;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickEvent;
-import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItemClickListener;
 
 import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
@@ -437,9 +436,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
         private CmsContextMenuTreeBuilder m_treeBuilder;
 
         /**
-         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.List, org.vaadin.peter.contextmenu.ContextMenu)
+         * @see org.opencms.ui.I_CmsContextMenuBuilder#buildContextMenu(java.util.List, org.opencms.ui.components.contextmenu.CmsContextMenu)
          */
-        public void buildContextMenu(List<CmsResource> resources, ContextMenu menu) {
+        public void buildContextMenu(List<CmsResource> resources, CmsContextMenu menu) {
 
             CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(createDialogContext());
             m_treeBuilder = treeBuilder;
@@ -472,13 +471,17 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
             final I_CmsContextMenuItem data = node.getData();
             ContextMenuItem guiMenuItem = null;
-            if (parent instanceof ContextMenu) {
-                guiMenuItem = ((ContextMenu)parent).addItem(getTitle(data));
+            if (parent instanceof CmsContextMenu) {
+                guiMenuItem = ((CmsContextMenu)parent).addItem(getTitle(data));
             } else {
                 guiMenuItem = ((ContextMenuItem)parent).addItem(getTitle(data));
             }
             if (m_treeBuilder.getVisibility(data).isInActive()) {
                 guiMenuItem.setEnabled(false);
+                String key = m_treeBuilder.getVisibility(data).getMessageKey();
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(key)) {
+                    guiMenuItem.setDescription(CmsVaadinUtils.getMessageText(key));
+                }
             }
             if (node.getChildren().size() > 0) {
                 for (CmsTreeNode<I_CmsContextMenuItem> childNode : node.getChildren()) {
