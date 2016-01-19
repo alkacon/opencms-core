@@ -115,6 +115,8 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
     /** A JSON key. */
     private static final String JSON_KEY_FACET_FIELD = "field";
     /** A JSON key. */
+    private static final String JSON_KEY_FACET_NAME = "name";
+    /** A JSON key. */
     private static final String JSON_KEY_FACET_PREFIX = "prefix";
     /** A JSON key. */
     private static final String JSON_KEY_FACET_ORDER = "order";
@@ -380,6 +382,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
 
         try {
             final String field = fieldFacetObject.getString(JSON_KEY_FACET_FIELD);
+            final String name = parseOptionalStringValue(fieldFacetObject, JSON_KEY_FACET_NAME);
             final String label = parseOptionalStringValue(fieldFacetObject, JSON_KEY_FACET_LABEL);
             final Integer minCount = parseOptionalIntValue(fieldFacetObject, JSON_KEY_FACET_MINCOUNT);
             final Integer limit = parseOptionalIntValue(fieldFacetObject, JSON_KEY_FACET_LIMIT);
@@ -398,6 +401,7 @@ public class CmsJSONSearchConfigurationParser implements I_CmsSearchConfiguratio
             final List<String> preselection = parseOptionalStringValues(fieldFacetObject, JSON_KEY_FACET_PRESELECTION);
             return new CmsSearchConfigurationFacetField(
                 field,
+                name,
                 minCount,
                 limit,
                 prefix,

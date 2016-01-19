@@ -46,6 +46,7 @@ implements I_CmsSearchConfigurationFacetField {
 
     /** Constructor directly setting all configuration values.
      * @param field The index field to use for the facet.
+     * @param name The name of the facet. If <code>null</code> it defaults to the name of the index field.
      * @param minCount The minimal number of hits that is necessary to add a term to the facet.
      * @param limit The maximal number of facet entries.
      * @param prefix A prefix all entries of a facet must have.
@@ -57,6 +58,7 @@ implements I_CmsSearchConfigurationFacetField {
      */
     public CmsSearchConfigurationFacetField(
         final String field,
+        final String name,
         final Integer minCount,
         final Integer limit,
         final String prefix,
@@ -66,7 +68,7 @@ implements I_CmsSearchConfigurationFacetField {
         final Boolean isAndFacet,
         final List<String> preselection) {
 
-        super(minCount, limit, label, field, order, isAndFacet, preselection);
+        super(minCount, limit, label, null != name ? name : field, order, isAndFacet, preselection);
 
         if (prefix != null) {
             m_prefix = prefix;

@@ -116,6 +116,8 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_FIELD = "Field";
     /** XML element name. */
+    private static final String XML_ELEMENT_FACET_NAME = "Name";
+    /** XML element name. */
     private static final String XML_ELEMENT_FACET_PREFIX = "Prefix";
     /** XML element name. */
     private static final String XML_ELEMENT_FACET_ORDER = "Order";
@@ -391,6 +393,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
 
         try {
             final String field = parseMandatoryStringValue(pathPrefix + XML_ELEMENT_FACET_FIELD);
+            final String name = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_NAME);
             final String label = parseOptionalStringValue(pathPrefix + XML_ELEMENT_FACET_LABEL);
             final Integer minCount = parseOptionalIntValue(pathPrefix + XML_ELEMENT_FACET_MINCOUNT);
             final Integer limit = parseOptionalIntValue(pathPrefix + XML_ELEMENT_FACET_LIMIT);
@@ -408,6 +411,7 @@ public class CmsXMLSearchConfigurationParser implements I_CmsSearchConfiguration
             final List<String> preselection = parseOptionalStringValues(pathPrefix + XML_ELEMENT_FACET_PRESELECTION);
             return new CmsSearchConfigurationFacetField(
                 field,
+                name,
                 minCount,
                 limit,
                 prefix,

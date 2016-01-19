@@ -13,6 +13,7 @@
 	<xsd:complexType name="OpenCmsFieldFacetConfig">
 		<xsd:sequence>
 			<xsd:element name="Field" type="OpenCmsString" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Label" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="MinCount" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Limit" type="OpenCmsString" minOccurs="0" />

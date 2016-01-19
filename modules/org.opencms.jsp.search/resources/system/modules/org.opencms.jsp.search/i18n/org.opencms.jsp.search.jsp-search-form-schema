@@ -187,6 +187,14 @@
       <Value><![CDATA[Der Name des Solr-Feldes, über welchem die Facette gebildet wird.]]></Value>
     </Message>
     <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
+      <Value><![CDATA[Facetten-Name]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
+      <Value><![CDATA[Der Name der zur Identifikation der Facette genutzt wird. Standardwert ist das Facetten-Feld.]]></Value>
+    </Message>
+    <Message>
       <Key><![CDATA[label.FieldFacetConfig.Label]]></Key>
       <Value><![CDATA[Facetten-Label]]></Value>
     </Message>
@@ -663,6 +671,14 @@
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Field.help]]></Key>
       <Value><![CDATA[The name of the Solr field where the facet entries are read from.]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name]]></Key>
+      <Value><![CDATA[Facet Name]]></Value>
+    </Message>
+    <Message>
+      <Key><![CDATA[label.FieldFacetConfig.Name.help]]></Key>
+      <Value><![CDATA[The name used to identify the facet. It defaults to the facet field.]]></Value>
     </Message>
     <Message>
       <Key><![CDATA[label.FieldFacetConfig.Label]]></Key>

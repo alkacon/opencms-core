@@ -132,43 +132,20 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         }
     }
 
-    /** Adds the query parts for the facet options, except the filter parts.
-     * @param query The query part that is extended with the facet options.
-     * @param fieldPrefix The facet's field used to identify the facet.
-     * @param useLimit Flag, if the limit option should be set.
-     */
-    protected void addCommonQueryParts(CmsSolrQuery query, final String fieldPrefix, final boolean useLimit) {
-
-        // mincount
-        if (m_config.getMinCount() != null) {
-            appendQueryPart(query, fieldPrefix, "mincount", m_config.getMinCount().toString());
-        }
-        // limit
-        if (useLimit && (m_config.getLimit() != null)) {
-            appendQueryPart(query, fieldPrefix, "limit", m_config.getLimit().toString());
-        }
-        // sort
-        if (m_config.getSortOrder() != null) {
-            appendQueryPart(query, fieldPrefix, "sort", m_config.getSortOrder().toString());
-        }
-        // prefix
-        if (!m_config.getPrefix().isEmpty()) {
-            appendQueryPart(query, fieldPrefix, "prefix", m_config.getPrefix());
-        }
-    }
-
     /** Generate query part for the facet, without filters.
      * @param query The query, where the facet part should be added
      */
     protected void addFacetPart(CmsSolrQuery query) {
 
         StringBuffer value = new StringBuffer();
+        value.append("{!key=").append(m_config.getName());
+        addFacetOptions(value, m_state.getUseLimit());
         if (!m_state.getCheckedEntries().isEmpty() && !m_config.getIsAndFacet()) {
-            value.append("{!ex=").append(m_config.getField()).append('}');
+            value.append(" ex=").append(m_config.getName());
         }
+        value.append("}");
         value.append(m_config.getField());
         query.add("facet.field", value.toString());
-        addCommonQueryParts(query, m_config.getField(), m_state.getUseLimit());
     }
 
     /** Adds filter parts to the query.
@@ -178,7 +155,7 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
 
         if (!m_state.getCheckedEntries().isEmpty()) {
             StringBuffer value = new StringBuffer();
-            value.append("{!tag=").append(m_config.getField()).append('}');
+            value.append("{!tag=").append(m_config.getName()).append('}');
             value.append(m_config.getField());
             value.append(":(");
             final Iterator<String> fieldIterator = m_state.getCheckedEntries().iterator();
@@ -193,24 +170,38 @@ public class CmsSearchControllerFacetField implements I_CmsSearchControllerFacet
         }
     }
 
+    /** Adds the query parts for the facet options, except the filter parts.
+     * @param query The query part that is extended with the facet options.
+     * @param useLimit Flag, if the limit option should be set.
+     */
+    protected void addFacetOptions(StringBuffer query, final boolean useLimit) {
+
+        // mincount
+        if (m_config.getMinCount() != null) {
+            appendFacetOption(query, "mincount", m_config.getMinCount().toString());
+        }
+        // limit
+        if (useLimit && (m_config.getLimit() != null)) {
+            appendFacetOption(query, "limit", m_config.getLimit().toString());
+        }
+        // sort
+        if (m_config.getSortOrder() != null) {
+            appendFacetOption(query, "sort", m_config.getSortOrder().toString());
+        }
+        // prefix
+        if (!m_config.getPrefix().isEmpty()) {
+            appendFacetOption(query, "prefix", m_config.getPrefix());
+        }
+    }
+
     /** Appends the query part for the facet to the query string.
      * @param query The current query string.
-     * @param fieldPrefix The facet's field used to identify the facet.
      * @param name The name of the facet parameter, e.g. "limit", "order", ....
      * @param value The value to set for the parameter specified by name.
      */
-    protected void appendQueryPart(
-        CmsSolrQuery query,
-        final String fieldPrefix,
-        final String name,
-        final String value) {
+    protected void appendFacetOption(StringBuffer query, final String name, final String value) {
 
-        StringBuffer key = new StringBuffer();
-        if ((fieldPrefix != null) && !fieldPrefix.trim().isEmpty()) {
-            key.append("f.").append(fieldPrefix).append('.');
-        }
-        key.append("facet.").append(name);
-        query.add(key.toString(), value);
+        query.append(" facet.").append(name).append("=").append(value);
     }
 
 }
