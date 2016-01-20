@@ -368,10 +368,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     }
                 }
             } else {
-                valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(attributeIndex));
-                if (m_widgetService.isDisplayCompact(attributeName)) {
-                    valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
-                }
+                    valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(attributeIndex));
+                    if (m_widgetService.isDisplayCompact(attributeName)) {
+                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
+                    }
             }
             setAttributeChoice(valueWidget, attributeType);
         }
@@ -510,7 +510,6 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         CmsAttributeValueView lastCompactView = null;
         if (entityType.isChoice()) {
             CmsEntityAttribute attribute = entity.getAttribute(CmsType.CHOICE_ATTRIBUTE_NAME);
-            assert(attribute != null) && attribute.isComplexValue() : "a choice type must have a choice attribute";
             CmsAttributeHandler handler = new CmsAttributeHandler(
                 m_entityBackEnd,
                 entity,
@@ -518,40 +517,39 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                 m_widgetService);
             parentHandler.setHandler(attributeIndex, CmsType.CHOICE_ATTRIBUTE_NAME, handler);
             CmsValuePanel attributeElement = new CmsValuePanel();
-            for (CmsEntity choiceEntity : attribute.getComplexValues()) {
-                CmsType choiceType = m_entityBackEnd.getType(choiceEntity.getTypeName());
-                List<CmsEntityAttribute> choiceAttributes = choiceEntity.getAttributes();
-                assert(choiceAttributes.size() == 1)
-                    && choiceAttributes.get(
-                        0).isSingleValue() : "each choice entity may only have a single attribute with a single value";
-                CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
-                CmsType attributeType = choiceType.getAttributeType(choiceAttribute.getAttributeName());
-                I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(
-                    choiceAttribute.getAttributeName(),
-                    attributeType);
-                String label = m_widgetService.getAttributeLabel(choiceAttribute.getAttributeName());
-                String help = m_widgetService.getAttributeHelp(choiceAttribute.getAttributeName());
-                context.add(attributeElement);
-                CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help);
-                attributeElement.add(valueWidget);
-                if (choiceAttribute.isSimpleValue()) {
-                    valueWidget.setValueWidget(
-                        m_widgetService.getAttributeFormWidget(choiceAttribute.getAttributeName()),
-                        choiceAttribute.getSimpleValue(),
-                        m_widgetService.getDefaultAttributeValue(
-                            choiceAttribute.getAttributeName(),
-                            handler.getSimplePath(attributeIndex)),
-                        true);
-                    if (m_widgetService.isDisplaySingleLine(choiceAttribute.getAttributeName())) {
-                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_SINGLE_LINE);
+            if ((attribute != null) && attribute.isComplexValue()) {
+                for (CmsEntity choiceEntity : attribute.getComplexValues()) {
+                    CmsType choiceType = m_entityBackEnd.getType(choiceEntity.getTypeName());
+                    List<CmsEntityAttribute> choiceAttributes = choiceEntity.getAttributes();
+                    CmsEntityAttribute choiceAttribute = choiceAttributes.get(0);
+                    CmsType attributeType = choiceType.getAttributeType(choiceAttribute.getAttributeName());
+                    I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(
+                        choiceAttribute.getAttributeName(),
+                        attributeType);
+                    String label = m_widgetService.getAttributeLabel(choiceAttribute.getAttributeName());
+                    String help = m_widgetService.getAttributeHelp(choiceAttribute.getAttributeName());
+                    context.add(attributeElement);
+                    CmsAttributeValueView valueWidget = new CmsAttributeValueView(handler, label, help);
+                    attributeElement.add(valueWidget);
+                    if (choiceAttribute.isSimpleValue()) {
+                        valueWidget.setValueWidget(
+                            m_widgetService.getAttributeFormWidget(choiceAttribute.getAttributeName()),
+                            choiceAttribute.getSimpleValue(),
+                            m_widgetService.getDefaultAttributeValue(
+                                choiceAttribute.getAttributeName(),
+                                handler.getSimplePath(attributeIndex)),
+                            true);
+                        if (m_widgetService.isDisplaySingleLine(choiceAttribute.getAttributeName())) {
+                            valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_SINGLE_LINE);
+                        }
+                    } else {
+                        valueWidget.setValueEntity(renderer, choiceAttribute.getComplexValue());
+                        if (m_widgetService.isDisplayCompact(choiceAttribute.getAttributeName())) {
+                            valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
+                        }
                     }
-                } else {
-                    valueWidget.setValueEntity(renderer, choiceAttribute.getComplexValue());
-                    if (m_widgetService.isDisplayCompact(choiceAttribute.getAttributeName())) {
-                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
-                    }
+                    setAttributeChoice(valueWidget, entityType);
                 }
-                setAttributeChoice(valueWidget, entityType);
             }
             handler.updateButtonVisisbility();
         } else {
@@ -818,16 +816,16 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                         }
                     }
                 } else {
-                    valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(i));
-                    if (lastCompactView != null) {
-                        // previous widget was set to first column mode,
-                        // revert that as the current widget will be displayed in a new line
-                        lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
-                        lastCompactView = null;
-                    }
-                    if (m_widgetService.isDisplayCompact(attributeName)) {
-                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
-                    }
+                        valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(i));
+                        if (lastCompactView != null) {
+                            // previous widget was set to first column mode,
+                            // revert that as the current widget will be displayed in a new line
+                            lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
+                            lastCompactView = null;
+                        }
+                        if (m_widgetService.isDisplayCompact(attributeName)) {
+                            valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
+                        }
                 }
                 setAttributeChoice(valueWidget, attributeType);
             }
