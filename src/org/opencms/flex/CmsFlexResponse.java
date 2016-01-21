@@ -27,7 +27,6 @@
 
 package org.opencms.flex;
 
-import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -480,12 +479,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
         // never cache some request attributes, e.g. the Flex controller
         m_controller.removeUncacheableAttributes(attributeMap);
-        // only cache a copy of the JSP standard context bean
-        CmsJspStandardContextBean bean = (CmsJspStandardContextBean)attributeMap.get(
-            CmsJspStandardContextBean.ATTRIBUTE_NAME);
-        if (bean != null) {
-            attributeMap.put(CmsJspStandardContextBean.ATTRIBUTE_NAME, bean.createCopy());
-        }
         m_includeListAttributes.add(attributeMap);
         m_includeListParameters.add(parameterMap);
         m_includeList.add(target);
@@ -614,6 +607,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @throws IllegalArgumentException In case of a malformed location string
      */
+    @SuppressWarnings("unused")
     @Override
     public void sendRedirect(String location) throws IOException {
 
