@@ -30,6 +30,7 @@ package org.opencms.flex;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsLog;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
@@ -38,12 +39,15 @@ import org.opencms.util.CmsCollectionsGenericWrapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.logging.Log;
 
 /**
@@ -170,7 +174,7 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             if (attrs == null) {
                 attrs = Collections.emptyMap();
             }
-            m_elements.add(attrs);
+            m_elements.add(cloneAttributes(attrs));
             m_byteSize += CmsMemoryMonitor.getValueSize(attrs);
         }
     }
@@ -367,7 +371,8 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
                     Map<String, Object> oldAttrMap = null;
                     if (attrMap.size() > 0) {
                         oldAttrMap = req.getAttributeMap();
-                        req.addAttributeMap(attrMap);
+                        // to avoid issues with multi threading, try to clone the attribute instances
+                        req.addAttributeMap(cloneAttributes(attrMap));
                     }
                     // do the include call
                     req.getRequestDispatcher((String)o).include(req, res);
@@ -548,5 +553,29 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             str = "CmsFlexCacheEntry [Redirect to target=" + m_redirectTarget + "]";
         }
         return str;
+    }
+
+    /**
+     * Clones the attribute instances if possible.<p>
+     *
+     * @param attrs the attributes
+     *
+     * @return a new map instance with the cloned attributes
+     */
+    private Map<String, Object> cloneAttributes(Map<String, Object> attrs) {
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        for (Entry<String, Object> entry : attrs.entrySet()) {
+            if (entry.getValue() instanceof CmsJspStandardContextBean) {
+                result.put(entry.getKey(), ((CmsJspStandardContextBean)entry.getValue()).createCopy());
+            } else if (entry.getValue() instanceof Cloneable) {
+                result.put(entry.getKey(), ObjectUtils.cloneIfPossible(entry.getValue()));
+            } else {
+                result.put(entry.getKey(), entry.getValue());
+            }
+
+        }
+
+        return result;
     }
 }
