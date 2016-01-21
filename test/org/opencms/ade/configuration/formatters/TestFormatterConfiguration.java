@@ -516,6 +516,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
+            false,
             hasNestedContainers);
 
         return result;
@@ -562,6 +563,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             + enabled
             + "</AutoEnabled>\n"
             + "    <Detail>true</Detail>\n"
+            + "    <Display>false</Display>"
             + "    <NestedContainers>false</NestedContainers>\n"
             + "  </NewFormatter>\n"
             + "</NewFormatters>\n"
@@ -627,6 +629,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
+            false,
             hasNestedContainers);
 
         return result;
@@ -686,6 +689,7 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isFromConfigFile,
             isAutoEnabled,
             isDetail,
+            false,
             hasNestedContainers);
         return result;
     }

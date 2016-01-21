@@ -249,6 +249,14 @@ public class CmsSchemaFormatterBeanWrapper implements I_CmsFormatterBean {
     }
 
     /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isDisplayFormatter()
+     */
+    public boolean isDisplayFormatter() {
+
+        return false;
+    }
+
+    /**
      *
      * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isFromFormatterConfigFile()
      */

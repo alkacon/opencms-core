@@ -2363,7 +2363,7 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
+	<!-- 	<file>
 			<destination>system/modules/org.opencms.ade.config/schemas</destination>
 			<type>folder</type>
 			<uuidstructure>11e58fdd-70df-11e0-b650-91706a02fba1</uuidstructure>
@@ -2540,7 +2540,7 @@
 			<properties/>
 			<relations/>
 			<accesscontrol/>
-		</file>
+		</file> -->
 		<file>
 			<destination>system/schemas</destination>
 			<type>folder</type>

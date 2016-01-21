@@ -449,6 +449,27 @@ public class CmsADEConfigData {
     }
 
     /**
+     * Returns all available display formatters.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the available display formatters
+     */
+    public List<I_CmsFormatterBean> getDisplayFormatters(CmsObject cms) {
+
+        List<I_CmsFormatterBean> result = new ArrayList<I_CmsFormatterBean>();
+        for (CmsResourceTypeConfig type : getResourceTypes()) {
+            try {
+                CmsFormatterConfiguration conf = getFormatters(cms, type.getType(), null);
+                result.addAll(conf.getDisplayFormatters());
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns the formatter change sets for this and all parent sitemaps, ordered by increasing folder depth of the sitemap.<p>
      *
      * @return the formatter change sets for all ancestor sitemaps
@@ -956,10 +977,11 @@ public class CmsADEConfigData {
                 changeSet.applyToTypes(types);
             }
         }
-        if (types.contains(typeName)) {
+        if ((schemaFormatters != null) && types.contains(typeName)) {
             for (I_CmsFormatterBean formatter : schemaFormatters.getAllFormatters()) {
                 formatters.add(formatter);
             }
+
         }
         Map<CmsUUID, I_CmsFormatterBean> externalFormattersById = Maps.newHashMap();
         for (I_CmsFormatterBean formatter : formatterCacheState.getFormattersForType(typeName, true)) {

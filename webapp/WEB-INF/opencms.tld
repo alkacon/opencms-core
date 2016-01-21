@@ -1848,7 +1848,109 @@
         	<rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>        
-    
+    <tag>
+    	<description></description>
+    	<name>display</name>
+    	<tag-class>org.opencms.jsp.CmsJspTagDisplay</tag-class>
+    	<body-content>JSP</body-content>
+    	<attribute>
+    		<description></description>
+    		<name>passSettings</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>      
+    		<type>java.lang.Boolean</type>      
+    	</attribute>
+    	<attribute>
+    		<description></description>
+    		<name>displayFormatters</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>            
+    	</attribute>
+    	<attribute>
+    		<description></description>
+    		<name>editable</name>
+    		<required>false</required>
+    		<rtexprvalue>true</rtexprvalue>       
+    		<type>java.lang.Boolean</type>     
+    	</attribute>
+    	<attribute>
+    		<description></description>
+    		<name>value</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>            
+    	</attribute>
+    	<attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code> the "Create" option is added to the edit buttons.
+              Newly created resources have the same type as the resource displayed.
+              If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
+              <em>Default: <code>false</code>.</em>
+            ]]></description>
+            <name>create</name>
+            <required>false</required>              
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The type of resources (XML contents) that should be created, specified via the resource type name.</p>
+              <em>Default: The type of the resource displayed.</em>
+            ]]></description>
+            <name>createType</name>
+            <required>false</required>                     
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>The location where newly created contents are stored is read from sitemap configurations.
+              <code>creationSiteMap</code> specifies the sitemap from which the configuration should be used. Provide the (site-relative) path to a folder in the (sub)sitemap.</p>
+              <em>Default: The (sub)sitemap of the currently requested URI.
+            ]]></description>
+            <name>creationSiteMap</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              <p>If set to <code>true</code>, the "Delete" option is added to the edit buttons.</p>
+              <em>Default: <code>false</code></em>
+            ]]></description>
+            <name>delete</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description><![CDATA[
+              The fully qualified class name of a <code>org.opencms.file.collectors.I_CmsCollectorPostCreateHandler</code> that
+              is called when a new resource is created via the tag.
+            ]]></description>
+            <name>postCreateHandler</name>
+            <required>false</required>                    
+            <rtexprvalue>true</rtexprvalue>            
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+    	<description></description>
+    	<name>displayFormatter</name>
+    	<tag-class>org.opencms.jsp.CmsJspTagDisplayFormatter</tag-class>
+    	<body-content>empty</body-content>
+    	<attribute>
+    		<description></description>
+    		<name>type</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>            
+    	</attribute>
+    	<attribute>
+    		<description></description>
+    		<name>path</name>
+    		<required>true</required>
+    		<rtexprvalue>true</rtexprvalue>            
+    	</attribute>
+    </tag>
     <tag>
       	<description><![CDATA[
             This tag loads single XML content items.

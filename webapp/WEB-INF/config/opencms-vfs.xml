@@ -497,12 +497,15 @@
 				<widget class="org.opencms.widgets.CmsTypeComboWidget" alias="TypeComboWidget" />
 				<widget class="org.opencms.widgets.CmsLocationPickerWidget" alias="LocationPickerWidget" />
 				<widget class="org.opencms.widgets.CmsDependentSelectWidget" alias="DependentSelectWidget" />
+				<widget class="org.opencms.widgets.CmsDisplayTypeSelectWidget" alias="DisplayTypeSelectWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue"
 					defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlColorValue"
 					defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlDisplayFormatterValue"
+					defaultwidget="org.opencms.widgets.CmsDisplayTypeSelectWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue"
 					defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue"

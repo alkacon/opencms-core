@@ -85,6 +85,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** True if this formatter can be used for detail views. */
     private boolean m_isDetail;
 
+    /** True if this formatter should be used by the display tag. */
+    private boolean m_isDisplay;
+
     /** Is the formatter from a formatter configuration file? */
     private boolean m_isFromFormatterConfigFile;
 
@@ -153,6 +156,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isFromConfigFile <code>true</code> if configuration file based
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDetail <code>true</code> if detail formatter
+     * @param isDisplay the display flag
      * @param nestedContainers <code>true</code> if this formatter has nested containers
      */
     public CmsFormatterBean(
@@ -176,6 +180,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isFromConfigFile,
         boolean isAutoEnabled,
         boolean isDetail,
+        boolean isDisplay,
         boolean nestedContainers) {
 
         m_jspRootPath = jspRootPath;
@@ -201,6 +206,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isFromFormatterConfigFile = isFromConfigFile;
         m_isAutoEnabled = isAutoEnabled;
         m_isDetail = isDetail;
+        m_isDisplay = isDisplay;
         m_nestedContainers = nestedContainers;
     }
 
@@ -247,6 +253,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false);
 
     }
@@ -336,6 +343,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false);
         m_matchAll = true;
     }
@@ -533,6 +541,14 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean isDetailFormatter() {
 
         return m_isDetail;
+    }
+
+    /**
+     * @see org.opencms.xml.containerpage.I_CmsFormatterBean#isDisplayFormatter()
+     */
+    public boolean isDisplayFormatter() {
+
+        return m_isDisplay;
     }
 
     /**

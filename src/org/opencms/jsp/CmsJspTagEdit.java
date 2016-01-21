@@ -31,7 +31,6 @@ import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.contenteditor.shared.CmsEditorConstants;
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.collectors.A_CmsResourceCollector;
@@ -43,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.directedit.CmsDirectEditButtonSelection;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
@@ -50,6 +50,7 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
 import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -57,47 +58,35 @@ import org.apache.commons.logging.Log;
 /** This tag is used to attach an edit provider to a snippet of HTML. */
 public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
 
+    /** Identifier to indicate that the new link should be handled by this tag - not by a {@link org.opencms.file.collectors.I_CmsResourceCollector}. */
+    public static final String NEW_LINK_IDENTIFIER = "__edit__";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagEdit.class);
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -3781368910893187306L;
 
-    /** Identifier to indicate that the new link should be handled by this tag - not by a {@link org.opencms.file.collectors.I_CmsResourceCollector}. */
-    public static final String NEW_LINK_IDENTIFIER = "__edit__";
-
-    /** UUID of the content to edit. */
-    private String m_uuid;
+    /** Flag, indicating if the create option should be displayed. */
+    private boolean m_canCreate;
 
     /** Flag, indicating if the delete option should be displayed. */
     private boolean m_canDelete;
 
-    /** Flag, indicating if the create option should be displayed. */
-    private boolean m_canCreate;
+    /** The type of the resource that should be created. */
+    private String m_createType;
+
+    /** The tag attribute's value, specifying the path to the (sub)sitemap where new content should be created. */
+    private String m_creationSiteMap;
 
     /** Flag, indicating if during rendering the "startDirectEdit" part has been rendered, but not the "endDirectEdit" part. */
     private boolean m_isEditOpen;
 
-    /** The resource to edit. */
-    private CmsResource m_resource;
-
-    /** The type of the resource that should be created. */
-    private I_CmsResourceType m_createType;
-
-    /** The tag attribute's value, specifying the path to the (sub)sitemap where new content should be created. */
-    private String m_creationSiteMapAttribute;
-
-    /** The (sub)sitemap where new content should be created. */
-    private CmsFolder m_creationSiteMap;
-
-    /** The CmsObject from the current request context. */
-    private CmsObject m_cms;
-
-    /** The buttons shown in the edit options. */
-    private CmsDirectEditButtonSelection m_buttonSelection;
-
     /** The fully qualified class name of the post create handler to use. */
     private String m_postCreateHandler;
+
+    /** UUID of the content to edit. */
+    private String m_uuid;
 
     /** Creates a new resource.
      * @param cmsObject The CmsObject of the current request context.
@@ -147,17 +136,176 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
+     * Inserts the closing direct edit tag.<p>
+     *
+     * @param pageContext the page context
+     */
+    public static void insertDirectEditEnd(PageContext pageContext) {
+
+        try {
+            CmsJspTagEditable.endDirectEdit(pageContext);
+        } catch (JspException e) {
+            LOG.error("Could not print closing direct edit tag.", e);
+        }
+    }
+
+    /**
+     * Inserts the opening direct edit tag.<p>
+     *
+     * @param cms the CMS context
+     * @param pageContext the page context
+     * @param resource the resource to edit
+     * @param canCreate if resource creation is allowed
+     * @param canDelete if resource deletion is allowed
+     * @param createType the resource type to create, default to the type of the edited resource
+     * @param creationSitemap the sitemap context to create the resource in, default to the current requested URI
+     * @param postCreateHandler the post create handler if required
+     *
+     * @return <code>true</code> if an opening direct edit tag was inserted
+     */
+    public static boolean insertDirectEditStart(
+        CmsObject cms,
+        PageContext pageContext,
+        CmsResource resource,
+        boolean canCreate,
+        boolean canDelete,
+        String createType,
+        String creationSitemap,
+        String postCreateHandler) {
+
+        boolean result = false;
+        CmsDirectEditParams editParams = null;
+        if (resource != null) {
+
+            String newLink = null;
+            // reconstruct create type from the edit-resource if necessary
+            if (canCreate) {
+                I_CmsResourceType resType = getResourceType(resource, createType);
+                if (resType != null) {
+                    newLink = getNewLink(cms, resType, creationSitemap);
+                }
+            }
+            CmsDirectEditButtonSelection buttons = null;
+            if (canDelete) {
+                if (newLink != null) {
+                    buttons = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
+                } else {
+                    buttons = CmsDirectEditButtonSelection.EDIT_DELETE;
+                }
+            } else if (newLink != null) {
+                buttons = CmsDirectEditButtonSelection.EDIT_NEW;
+            } else {
+                buttons = CmsDirectEditButtonSelection.EDIT;
+            }
+            editParams = new CmsDirectEditParams(cms.getSitePath(resource), buttons, null, newLink);
+        } else if (canCreate) {
+            I_CmsResourceType resType = getResourceType(null, createType);
+            if (resType != null) {
+                editParams = new CmsDirectEditParams(
+                    cms.getRequestContext().getFolderUri(),
+                    CmsDirectEditButtonSelection.NEW,
+                    null,
+                    getNewLink(cms, resType, creationSitemap));
+            }
+        }
+
+        if (editParams != null) {
+            editParams.setPostCreateHandler(postCreateHandler);
+            try {
+                CmsJspTagEditable.startDirectEdit(pageContext, editParams);
+                result = true;
+            } catch (JspException e) {
+                // TODO: Localize and improve error message.
+                LOG.error("Could not create direct edit start.", e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the context root path.<p>
+     *
+     * @param cms the CMS context
+     * @param creationSitemap the creation sitemap parameter
+     *
+     * @return the context root path
+     */
+    private static String getContextRootPath(CmsObject cms, String creationSitemap) {
+
+        String path = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(creationSitemap)) {
+            try {
+                path = cms.readFolder(creationSitemap).getRootPath();
+            } catch (CmsException e) {
+
+                // TODO: Localize log output.
+                LOG.warn("The provided creation sitemap " + creationSitemap + " is not a VFS folder.", e);
+            }
+        }
+        if (path == null) {
+            path = cms.addSiteRoot(cms.getRequestContext().getFolderUri());
+        }
+
+        return path;
+    }
+
+    /**
+     * Creates the String specifying where which type of resource has to be created.<p>
+     *
+     * @param cms the CMS context
+     * @param resType the resource type to create
+     * @param creationSitemap the creation sitemap parameter
+     *
+     * @return The String identifying which type of resource has to be created where.<p>
+     *
+     * @see #createResource(CmsObject, String, Locale, String, String, String, String)
+     */
+    private static String getNewLink(CmsObject cms, I_CmsResourceType resType, String creationSitemap) {
+
+        String contextPath = getContextRootPath(cms, creationSitemap);
+        StringBuffer newLink = new StringBuffer(NEW_LINK_IDENTIFIER);
+        newLink.append('|');
+        newLink.append(contextPath);
+        newLink.append('|');
+        newLink.append(resType.getTypeName());
+
+        return newLink.toString();
+    }
+
+    /**
+     * Returns the resource type to create, or <code>null</code> if not available.<p>
+     *
+     * @param resource the edit resource
+     * @param createType the create type parameter
+     *
+     * @return the resource type
+     */
+    private static I_CmsResourceType getResourceType(CmsResource resource, String createType) {
+
+        I_CmsResourceType resType = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(createType)) {
+            try {
+                resType = OpenCms.getResourceManager().getResourceType(createType);
+            } catch (CmsLoaderException e) {
+                LOG.error("Could not read resource type '" + createType + "' for resource creation.", e);
+            }
+        } else if (resource != null) {
+            resType = OpenCms.getResourceManager().getResourceType(resource);
+        }
+        return resType;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
      */
     @Override
     public int doEndTag() throws JspException {
 
-        // TODO: Override release?
         if (m_isEditOpen) {
             CmsJspTagEditable.endDirectEdit(pageContext);
         }
         release();
-        return super.doEndTag();
+        return EVAL_PAGE;
     }
 
     /**
@@ -166,9 +314,16 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     @Override
     public int doStartTag() throws CmsIllegalArgumentException {
 
-        // initialize the content load tag
-        init();
-        addDirectEditStart();
+        CmsObject cms = getCmsObject();
+        m_isEditOpen = insertDirectEditStart(
+            cms,
+            pageContext,
+            getResourceToEdit(cms),
+            m_canCreate,
+            m_canDelete,
+            m_createType,
+            m_creationSiteMap,
+            m_postCreateHandler);
         return EVAL_BODY_INCLUDE;
     }
 
@@ -180,13 +335,9 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
 
         m_canCreate = false;
         m_canDelete = false;
-        m_buttonSelection = null;
-        m_cms = null;
         m_creationSiteMap = null;
-        m_creationSiteMapAttribute = null;
         m_createType = null;
         m_isEditOpen = false;
-        m_resource = null;
         m_uuid = null;
         super.release();
     }
@@ -199,25 +350,22 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
         m_canCreate = canCreate == null ? false : canCreate.booleanValue();
     }
 
-    /** Setter for the "createType" attribute of the tag.
+    /** Setter for the "createType" attribute of the tag.<p>
+     *
      * @param typeName value of the "createType" attribute of the tag.
      */
     public void setCreateType(final String typeName) {
 
-        try {
-            m_createType = OpenCms.getResourceManager().getResourceType(typeName);
-        } catch (CmsLoaderException e) {
-            // TODO: localize log entry
-            LOG.warn("Resource type" + typeName + "cannot be loaded.", e);
-        }
+        m_createType = typeName;
     }
 
     /** Setter for the "creationSiteMap" attribute of the tag.
+     *
      * @param sitePath value of the "creationSiteMap" attribute of the tag.
      */
     public void setCreationSiteMap(final String sitePath) {
 
-        m_creationSiteMapAttribute = sitePath;
+        m_creationSiteMap = sitePath;
     }
 
     /**Setter for the "delete" attribute of the tag.
@@ -246,136 +394,37 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
     }
 
     /**
-     * Initialization for the tag, called from {@link #doStartTag()}.
-     */
-    protected void init() {
-
-        initCmsObject();
-        initResourceToEdit();
-        initCreateInfo();
-        initDirectEditButtonSelection();
-    }
-
-    /**
-     * Renders the "startDirectEdit" part, if it can/should be rendered at all.
-     */
-    private void addDirectEditStart() {
-
-        if (null != m_buttonSelection) { // editing is possible at all
-            String resourceName = m_resource != null
-            ? m_cms.getSitePath(m_resource)
-            : m_cms.getRequestContext().getFolderUri();
-            String newLink = createNewLink();
-            CmsDirectEditParams editParams = new CmsDirectEditParams(resourceName, m_buttonSelection, null, newLink);
-            editParams.setPostCreateHandler(m_postCreateHandler);
-            try {
-                CmsJspTagEditable.startDirectEdit(pageContext, editParams);
-                m_isEditOpen = true;
-            } catch (JspException e) {
-                // TODO: Localize and improve error message.
-                LOG.error("Could not create direct edit start.", e);
-            }
-        }
-
-    }
-
-    /** Creates the String specifying where which type of resource has to be created.
-     * @return The String identifying which type of resource has to be created where.
+     * Returns the current CMS context.<p>
      *
-     * @see #createResource(CmsObject, String, Locale, String, String, String, String)
+     * @return the CMS context
      */
-    private String createNewLink() {
-
-        if (m_createType != null) {
-            String rootPath = m_creationSiteMap != null
-            ? m_creationSiteMap.getRootPath()
-            : m_cms.addSiteRoot(m_cms.getRequestContext().getFolderUri());
-            String typeName = m_createType.getTypeName();
-            StringBuffer newLink = new StringBuffer(NEW_LINK_IDENTIFIER);
-            newLink.append('|');
-            newLink.append(rootPath);
-            newLink.append('|');
-            newLink.append(typeName);
-
-            return newLink.toString();
-        }
-        return null;
-    }
-
-    /**
-     * Initializes {@link #m_cms} with the current CmsObject.
-     */
-    private void initCmsObject() {
+    private CmsObject getCmsObject() {
 
         CmsFlexController controller = CmsFlexController.getController(pageContext.getRequest());
-        m_cms = controller.getCmsObject();
+        return controller.getCmsObject();
 
     }
 
     /**
-     * Constructs the creation sub-site and the creation type from values given as attributes of the tag.
+     * Returns the resource to edit according to the uuid provided via the tag's attribute "uuid".<p>
+     *
+     * @param cms the CMS context
+     *
+     * @return the resource
      */
-    private void initCreateInfo() {
+    private CmsResource getResourceToEdit(CmsObject cms) {
 
-        // set the creation sub-site from the tag's attribute
-        if (null != m_creationSiteMapAttribute) {
-            try {
-                m_creationSiteMap = m_cms.readFolder(m_creationSiteMapAttribute);
-            } catch (CmsException e) {
-
-                // TODO: Localize log output.
-                LOG.warn("The provided creation sitemap " + m_creationSiteMapAttribute + " is not a VFS folder.", e);
-            }
-        }
-
-        // reconstruct create type from the edit-resource if necessary
-        if (m_canCreate && (m_createType == null) && (m_resource != null)) {
-            m_createType = OpenCms.getResourceManager().getResourceType(m_resource);
-        }
-
-    }
-
-    /**
-     * Initializes the button selection shown in the edit options according to the values of the tag's attributes.
-     */
-    private void initDirectEditButtonSelection() {
-
-        if (null != m_resource) {
-            if (m_createType != null) {
-                if (m_canDelete) {
-                    m_buttonSelection = CmsDirectEditButtonSelection.EDIT_DELETE_NEW;
-                } else {
-                    m_buttonSelection = CmsDirectEditButtonSelection.EDIT_NEW;
-                }
-            } else {
-                if (m_canDelete) {
-                    m_buttonSelection = CmsDirectEditButtonSelection.EDIT_DELETE;
-                } else {
-                    m_buttonSelection = CmsDirectEditButtonSelection.EDIT;
-                }
-            }
-        } else {
-            if (m_createType != null) {
-                m_buttonSelection = CmsDirectEditButtonSelection.NEW;
-            }
-        }
-    }
-
-    /**
-     * Initializes the resource to edit according to the uuid provided via the tag's attribute "uuid".
-     */
-    private void initResourceToEdit() {
-
+        CmsResource resource = null;
         if (m_uuid != null) {
             try {
                 CmsUUID uuid = new CmsUUID(m_uuid);
-                m_resource = m_cms.readResource(uuid);
+                resource = cms.readResource(uuid);
 
             } catch (NumberFormatException | CmsException e) {
                 // TODO: Localize debug message.
                 LOG.warn("UUID was not valid or there is no resource with the given UUID.", e);
             }
         }
-
+        return resource;
     }
 }

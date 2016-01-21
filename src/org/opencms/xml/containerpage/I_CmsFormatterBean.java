@@ -179,6 +179,13 @@ public interface I_CmsFormatterBean {
     boolean isDetailFormatter();
 
     /**
+     * Returns whether this formatter should be used by the 'display' tag.<p>
+     *
+     * @return <code>true</code> if this formatter should be used by the 'display' tag
+     */
+    boolean isDisplayFormatter();
+
+    /**
      * Returns true if the formatter is from a formatter configuration file.<p>
      *
      * @return formatter f

@@ -100,6 +100,20 @@ public final class CmsFormatterConfiguration {
     }
 
     /**
+     * Predicate which checks whether the given formatter is a display formatter.<p>
+     */
+    public static class IsDisplay implements Predicate<I_CmsFormatterBean> {
+
+        /**
+         * @see com.google.common.base.Predicate#apply(java.lang.Object)
+         */
+        public boolean apply(I_CmsFormatterBean formatter) {
+
+            return formatter.isDisplayFormatter();
+        }
+    }
+
+    /**
      * Predicate to check whether the formatter is from a schema.<p>
      */
     public static class IsSchemaFormatter implements Predicate<I_CmsFormatterBean> {
@@ -182,6 +196,9 @@ public final class CmsFormatterConfiguration {
 
     /** Cache for the searchContent option. */
     private Map<CmsUUID, Boolean> m_searchContent = Maps.newHashMap();
+
+    /** The available display formatters. */
+    private List<I_CmsFormatterBean> m_displayFormatters;
 
     /**
      * Creates a new formatter configuration based on the given list of formatters.<p>
@@ -331,6 +348,43 @@ public final class CmsFormatterConfiguration {
 
         return Collections.<I_CmsFormatterBean> unmodifiableCollection(
             Collections2.filter(m_allFormatters, new IsDetail()));
+    }
+
+    /**
+     * Returns the display formatter for this type.<p>
+     *
+     * @return the display formatter
+     */
+    public I_CmsFormatterBean getDisplayFormatter() {
+
+        if (!getDetailFormatters().isEmpty()) {
+            return getDisplayFormatters().get(0);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the available display formatters.<p>
+     *
+     * @return the display formatters
+     */
+    public List<I_CmsFormatterBean> getDisplayFormatters() {
+
+        if (m_displayFormatters == null) {
+            List<I_CmsFormatterBean> formatters = new ArrayList<I_CmsFormatterBean>(
+                Collections2.filter(m_allFormatters, new IsDisplay()));
+            if (formatters.size() > 1) {
+                Collections.sort(formatters, new Comparator<I_CmsFormatterBean>() {
+
+                    public int compare(I_CmsFormatterBean o1, I_CmsFormatterBean o2) {
+
+                        return o1.getRank() == o2.getRank() ? 0 : (o1.getRank() < o2.getRank() ? -1 : 1);
+                    }
+                });
+            }
+            m_displayFormatters = Collections.unmodifiableList(formatters);
+        }
+        return m_displayFormatters;
     }
 
     /**

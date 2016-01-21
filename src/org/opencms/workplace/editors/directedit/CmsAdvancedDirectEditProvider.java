@@ -95,7 +95,7 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
      */
     public String endDirectEditEnabled() {
 
-        return "<div class=\"cms-editable-end\"></div>";
+        return "<div class=\"cms-editable-end\"></div>\n";
     }
 
     /**
@@ -299,9 +299,9 @@ public class CmsAdvancedDirectEditProvider extends A_CmsDirectEditProvider {
         StringBuffer result = new StringBuffer(512);
         if (m_useIds) {
             result.append("<div id=\"" + getRandomId() + "\" class='cms-editable' rel='").append(
-                editableData.toString()).append("'></div>");
+                editableData.toString()).append("'></div>\n");
         } else {
-            result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>");
+            result.append("<div class='cms-editable' rel='").append(editableData.toString()).append("'></div>\n");
         }
         return result.toString();
     }
