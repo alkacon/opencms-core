@@ -48,6 +48,7 @@ import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.ui.dialogs.history.diff.CmsAttributeDiff;
 import org.opencms.ui.dialogs.history.diff.CmsImageDiff;
 import org.opencms.ui.dialogs.history.diff.CmsPropertyDiff;
+import org.opencms.ui.dialogs.history.diff.CmsShowVersionButtons;
 import org.opencms.ui.dialogs.history.diff.CmsTextDiff;
 import org.opencms.ui.dialogs.history.diff.CmsValueDiff;
 import org.opencms.ui.dialogs.history.diff.I_CmsDiffProvider;
@@ -96,6 +97,7 @@ public class CmsHistoryDialog extends CmsBasicDialog {
 
     /** Objects used to display differences between two versions. */
     private List<I_CmsDiffProvider> m_diffs = Arrays.<I_CmsDiffProvider> asList(
+        new CmsShowVersionButtons(),
         new CmsPropertyDiff(),
         new CmsAttributeDiff(),
         new CmsImageDiff(),
