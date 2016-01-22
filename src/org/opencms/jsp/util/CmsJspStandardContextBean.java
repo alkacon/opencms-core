@@ -742,12 +742,12 @@ public final class CmsJspStandardContextBean {
     public CmsJspStandardContextBean createCopy() {
 
         CmsJspStandardContextBean result = new CmsJspStandardContextBean();
-        result.m_container = getContainer();
-        if (getDetailContent() != null) {
-            result.m_detailContentResource = getDetailContent().getCopy();
+        result.m_container = m_container;
+        if (m_detailContentResource != null) {
+            result.m_detailContentResource = m_detailContentResource.getCopy();
         }
-        result.m_element = getElement();
-        result.setPage(getPage());
+        result.m_element = m_element;
+        result.setPage(m_page);
         return result;
     }
 

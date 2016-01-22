@@ -174,7 +174,7 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             if (attrs == null) {
                 attrs = Collections.emptyMap();
             }
-            m_elements.add(cloneAttributes(attrs));
+            m_elements.add(attrs);
             m_byteSize += CmsMemoryMonitor.getValueSize(attrs);
         }
     }
@@ -373,6 +373,7 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
                         oldAttrMap = req.getAttributeMap();
                         // to avoid issues with multi threading, try to clone the attribute instances
                         req.addAttributeMap(cloneAttributes(attrMap));
+                        //req.addAttributeMap(attrMap);
                     }
                     // do the include call
                     req.getRequestDispatcher((String)o).include(req, res);
@@ -569,7 +570,14 @@ public class CmsFlexCacheEntry implements I_CmsLruCacheObject, I_CmsMemoryMonito
             if (entry.getValue() instanceof CmsJspStandardContextBean) {
                 result.put(entry.getKey(), ((CmsJspStandardContextBean)entry.getValue()).createCopy());
             } else if (entry.getValue() instanceof Cloneable) {
-                result.put(entry.getKey(), ObjectUtils.cloneIfPossible(entry.getValue()));
+                Object clone = null;
+                try {
+                    clone = ObjectUtils.clone(entry.getValue());
+                } catch (Exception e) {
+                    LOG.info(e.getMessage(), e);
+                }
+
+                result.put(entry.getKey(), clone != null ? clone : entry.getValue());
             } else {
                 result.put(entry.getKey(), entry.getValue());
             }
