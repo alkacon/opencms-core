@@ -59,8 +59,6 @@ public enum CmsDisplayType {
      */
     public static CmsDisplayType getDisplayType(int width) {
 
-        System.out.println("Width is " + width);
-
         CmsDisplayType[] values = CmsDisplayType.values();
         for (CmsDisplayType type : values) {
             if (width >= type.minWidth()) {
