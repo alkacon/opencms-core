@@ -33,7 +33,9 @@ import org.opencms.main.CmsUIServlet;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.extensions.CmsWindowExtension;
+import org.opencms.ui.util.CmsDisplayType;
 
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -52,6 +54,9 @@ public abstract class A_CmsUI extends UI {
     /** Serial version id. */
     private static final long serialVersionUID = 989182479322461838L;
 
+    /** The display type at the time the UI was initialized. */
+    private CmsDisplayType m_displayType;
+
     /** Extension used for opening new browser windows. */
     private CmsWindowExtension m_windowExtension;
 
@@ -60,6 +65,7 @@ public abstract class A_CmsUI extends UI {
      */
     public A_CmsUI() {
         m_windowExtension = new CmsWindowExtension(this);
+
     }
 
     /**
@@ -70,6 +76,7 @@ public abstract class A_CmsUI extends UI {
     public static A_CmsUI get() {
 
         return (A_CmsUI)(UI.getCurrent());
+
     }
 
     /**
@@ -80,6 +87,16 @@ public abstract class A_CmsUI extends UI {
     public static CmsObject getCmsObject() {
 
         return ((CmsUIServlet)VaadinServlet.getCurrent()).getCmsObject();
+    }
+
+    /**
+     * Gets the display type from the time when the UI was initialized.<p>
+     *
+     * @return the display type
+     */
+    public CmsDisplayType getDisplayType() {
+
+        return m_displayType;
     }
 
     /**
@@ -170,6 +187,12 @@ public abstract class A_CmsUI extends UI {
     public void storeCurrentFolder(CmsResource folder) {
 
         getSession().setAttribute("WP_FOLDER", folder);
+    }
+
+    @Override
+    protected void init(VaadinRequest request) {
+
+        m_displayType = CmsDisplayType.getDisplayType(getPage().getBrowserWindowWidth());
     }
 
 }

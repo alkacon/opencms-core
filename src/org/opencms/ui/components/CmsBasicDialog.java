@@ -203,6 +203,18 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
+     * Gets a list of buttons.<p>
+     *
+     * @return a list of buttons
+     */
+    public List<Component> getButtons() {
+
+        List<Component> result = Lists.newArrayList();
+        result.addAll(Lists.newArrayList(m_buttonPanel));
+        return result;
+    }
+
+    /**
      * Gets the resources for which the resource info boxes should be displayed.<p>
      *
      * @return the resource info resources

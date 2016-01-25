@@ -113,12 +113,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
-
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
@@ -133,6 +127,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
+
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
 
     /**
      * Gets the current UI instance.<p>
@@ -450,6 +450,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     @Override
     protected void init(VaadinRequest req) {
 
+        super.init(req);
         getSession().setErrorHandler(new CmsVaadinErrorHandler());
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);

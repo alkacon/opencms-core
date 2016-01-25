@@ -119,12 +119,17 @@ public class CmsBeanTableBuilder<T> {
     private String m_view;
 
     /**
-     * Creates a new table builder instance for the given bean class.<p>
+     * Creates a new table builder instance for the given bean class and view.<p>
+     *
+     * Depending on the view configuration of the columns, columns may be hidden depending on the view.
      *
      * @param cls the bean class
+     * @param view the selected view
+     *
      */
-    public CmsBeanTableBuilder(Class<T> cls) {
+    public CmsBeanTableBuilder(Class<T> cls, String view) {
         m_class = cls;
+        m_view = view;
         try {
             List<PropertyDescriptor> descriptors = BeanUtil.getBeanPropertyDescriptor(m_class);
             for (PropertyDescriptor desc : descriptors) {
@@ -173,7 +178,21 @@ public class CmsBeanTableBuilder<T> {
      */
     public static <V> CmsBeanTableBuilder<V> newInstance(Class<V> cls) {
 
-        return new CmsBeanTableBuilder<V>(cls);
+        return new CmsBeanTableBuilder<V>(cls, null);
+
+    }
+
+    /**
+     * Convenience method used to create a new instance of a table builder.<p>
+     *
+     * @param cls the bean class
+     * @param view the selected view
+     *
+     * @return the new table builder
+     */
+    public static <V> CmsBeanTableBuilder<V> newInstance(Class<V> cls, String view) {
+
+        return new CmsBeanTableBuilder<V>(cls, view);
 
     }
 
@@ -203,7 +222,6 @@ public class CmsBeanTableBuilder<T> {
             visibleCols.add(propName);
         }
         table.setContainerDataSource(container);
-
         table.setVisibleColumns(visibleCols.toArray());
 
         for (ColumnBean column : m_columns) {

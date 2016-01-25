@@ -191,7 +191,7 @@ public class CmsHistoryDialog extends CmsBasicDialog {
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         }
-
+        addButton(createCloseButton());
         displayResourceInfo(m_context.getResources());
     }
 
@@ -208,6 +208,7 @@ public class CmsHistoryDialog extends CmsBasicDialog {
         final Window window = CmsVaadinUtils.getWindow(currentComponent);
         final String oldCaption = window.getCaption();
         CmsBasicDialog dialog = new CmsBasicDialog();
+
         VerticalLayout vl = new VerticalLayout();
         dialog.setContent(vl);
         Button backButton = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_CHILD_DIALOG_GO_BACK_0));
@@ -220,6 +221,9 @@ public class CmsHistoryDialog extends CmsBasicDialog {
         if (oldContent instanceof CmsBasicDialog) {
             List<CmsResource> infoResources = ((CmsBasicDialog)oldContent).getInfoResources();
             dialog.displayResourceInfo(infoResources);
+            if (oldContent instanceof CmsHistoryDialog) {
+                dialog.addButton(((CmsHistoryDialog)oldContent).createCloseButton());
+            }
         }
         backButton.addClickListener(new ClickListener() {
 
@@ -268,6 +272,27 @@ public class CmsHistoryDialog extends CmsBasicDialog {
                 }
             }
         });
+    }
+
+    /**
+     * Creates a close button for child dialogs.<p>
+     *
+     * @return the close button
+     */
+    public Button createCloseButton() {
+
+        Button button = new Button(CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_BUTTON_CLOSE_DIALOG_0));
+        button.setWidth("150px");
+        button.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                m_context.finish(Lists.newArrayList(m_context.getResources().get(0).getStructureId()));
+            }
+        });
+        return button;
     }
 
     /**
@@ -344,7 +369,9 @@ public class CmsHistoryDialog extends CmsBasicDialog {
 
         final CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsBeanTableBuilder<CmsHistoryRow> builder = CmsBeanTableBuilder.newInstance(CmsHistoryRow.class);
+            CmsBeanTableBuilder<CmsHistoryRow> builder = CmsBeanTableBuilder.newInstance(
+                CmsHistoryRow.class,
+                A_CmsUI.get().getDisplayType().toString());
             List<CmsHistoryRow> rows = Lists.newArrayList();
 
             for (CmsHistoryResourceBean bean : historyList.getResources()) {

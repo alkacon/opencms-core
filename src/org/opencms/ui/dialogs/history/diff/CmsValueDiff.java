@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.dialogs.history.CmsHistoryDialog;
@@ -130,6 +131,8 @@ public class CmsValueDiff implements I_CmsDiffProvider {
      * @param parent the parent widget for the table (does not need to be the direct parent)
      * @param file1 the first file
      * @param file2 the second file
+     * @param macroResolver the macro resolver to use for building the table
+     *
      * @return the table with the content value comparisons
      *
      * @throws CmsException if something goes wrong
@@ -142,7 +145,9 @@ public class CmsValueDiff implements I_CmsDiffProvider {
         CmsMacroResolver macroResolver) throws CmsException {
 
         CmsXmlDocumentComparison comp = new CmsXmlDocumentComparison(cms, file1, file2);
-        CmsBeanTableBuilder<CmsValueCompareBean> builder = CmsBeanTableBuilder.newInstance(CmsValueCompareBean.class);
+        CmsBeanTableBuilder<CmsValueCompareBean> builder = CmsBeanTableBuilder.newInstance(
+            CmsValueCompareBean.class,
+            A_CmsUI.get().getDisplayType().toString());
         builder.setMacroResolver(macroResolver);
 
         List<CmsValueCompareBean> rows = Lists.newArrayList();
@@ -171,6 +176,7 @@ public class CmsValueDiff implements I_CmsDiffProvider {
             rows.add(row);
         }
         Table table = builder.buildTable(rows);
+        table.setSortEnabled(false);
         table.setWidth("100%");
         table.setPageLength(Math.min(rows.size(), 12));
         return table;

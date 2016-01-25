@@ -72,8 +72,9 @@ public class CmsImageDiff implements I_CmsDiffProvider {
             String link2 = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                 cms,
                 CmsHistoryListUtil.getHistoryLink(cms, v2.getStructureId(), v2Param));
-            int scaleWidth = 640;
-            final String scaleParams = "w:" + scaleWidth + ",h:480,t:1"; // scale type 1 for thumbnails (no enlargement)
+            int scaleWidth = 400;
+            int scaleHeight = (2 * scaleWidth) / 3;
+            final String scaleParams = "w:" + scaleWidth + ",h:" + scaleHeight + ",t:1"; // scale type 1 for thumbnails (no enlargement)
             link1 = CmsRequestUtil.appendParameter(link1, "__scale", scaleParams);
             link2 = CmsRequestUtil.appendParameter(link2, "__scale", scaleParams);
             Image img1 = new Image("", new ExternalResource(link1));

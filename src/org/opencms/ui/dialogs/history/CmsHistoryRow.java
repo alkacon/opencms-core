@@ -136,7 +136,7 @@ public class CmsHistoryRow {
      *
      * @return the path
      */
-    @Column(header = Messages.GUI_HISTORY_DIALOG_COL_PATH_0, order = 40, expandRatio = 1.0f)
+    @Column(header = Messages.GUI_HISTORY_DIALOG_COL_PATH_0, order = 40, expandRatio = 1.0f, view = "wide")
     public String getPath() {
 
         String rootPath = m_bean.getRootPath();

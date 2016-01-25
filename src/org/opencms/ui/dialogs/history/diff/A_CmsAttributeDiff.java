@@ -35,6 +35,7 @@ import org.opencms.gwt.shared.CmsHistoryResourceBean;
 import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.util.table.CmsBeanTableBuilder;
 import org.opencms.workplace.comparison.CmsAttributeComparison;
 
@@ -141,9 +142,11 @@ public abstract class A_CmsAttributeDiff implements I_CmsDiffProvider {
             compareBeans.add(new CmsPropertyCompareBean(comp));
         }
         CmsBeanTableBuilder<CmsPropertyCompareBean> builder = CmsBeanTableBuilder.newInstance(
-            CmsPropertyCompareBean.class);
+            CmsPropertyCompareBean.class,
+            A_CmsUI.get().getDisplayType().toString());
         builder.setMacroResolver(new CmsVersionMacroResolver(v1, v2));
         Table table = builder.buildTable(compareBeans);
+        table.setSortEnabled(false);
         table.setWidth("100%");
         table.setPageLength(Math.min(12, compareBeans.size()));
         VerticalLayout vl = new VerticalLayout();

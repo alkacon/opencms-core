@@ -39,6 +39,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_APP_NOT_AVAILABLE_0 = "GUI_APP_NOT_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_CLOSE_DIALOG_0 = "GUI_BUTTON_CLOSE_DIALOG_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */
@@ -162,6 +165,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_HISTORY_DIALOG_SELECT_TWO_DIFFERENT_VERSIONS_0 = "GUI_HISTORY_DIALOG_SELECT_TWO_DIFFERENT_VERSIONS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_DIALOG_SHOW_VERSION_BUTTON_1 = "GUI_HISTORY_DIALOG_SHOW_VERSION_BUTTON_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_DIALOG_TEXT_COMPARISON_CAPTION_0 = "GUI_HISTORY_DIALOG_TEXT_COMPARISON_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */
@@ -280,18 +286,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEDULER_TITLE_CREATE_0 = "GUI_SCHEDULER_TITLE_CREATE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FOLDER_0 = "GUI_UNDO_MULTI_FOLDER_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_NONRECURSIVE_MULTI_FILE_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FILE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FOLDER_0";
 
@@ -324,7 +330,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
     /** Message constant for key in the resource bundle. */
@@ -333,11 +338,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
+
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_DIALOG_SHOW_VERSION_BUTTON_1 = "GUI_HISTORY_DIALOG_SHOW_VERSION_BUTTON_1";
 
     /**
      * Hides the public constructor for this utility class.<p>
