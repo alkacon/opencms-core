@@ -42,6 +42,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notnew;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notonline;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.notunchangedfile;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.otherlock;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.pointer;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.publishpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.replacable;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
@@ -56,6 +57,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -113,6 +115,16 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         inproject,
         haseditor);
+
+    /** Visibility check for editing external links (pointers). */
+    public static final I_CmsHasMenuItemVisibility EDIT_POINTER = new CmsStandardVisibilityCheck(
+        file,
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject,
+        pointer);
 
     /** Check for locking resources. */
     public static final CmsStandardVisibilityCheck LOCK = new CmsStandardVisibilityCheck(
@@ -252,6 +264,13 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
 
             if (flag(folder) && resource.isFile()) {
+                return VISIBILITY_INVISIBLE;
+            }
+
+            if (flag(pointer)
+                && !OpenCms.getResourceManager().matchResourceType(
+                    CmsResourceTypePointer.getStaticTypeName(),
+                    resource.getTypeId())) {
                 return VISIBILITY_INVISIBLE;
             }
 

@@ -91,6 +91,16 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
     }
 
     /**
+     * Opens the dialog for editing pointer resources.<p>
+     *
+     * @param resource the pointer resource
+     */
+    public void editPointer(CmsResource resource) {
+
+        getRpcProxy(I_CmsGwtDialogClientRpc.class).editPointer("" + resource.getStructureId());
+    }
+
+    /**
      * Open property editor for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource
@@ -222,6 +232,13 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         getRpcProxy(I_CmsGwtDialogClientRpc.class).showAbout();
     }
 
+    /**
+     * Shows the prewview dialog for a given resource and version.<p>
+     *
+     * @param id the structure id of the resource
+     * @param version the version
+     * @param offlineOnline indicates whether we want the offlne or online version
+     */
     public void showPreview(CmsUUID id, Integer version, OfflineOnline offlineOnline) {
 
         getRpcProxy(I_CmsGwtDialogClientRpc.class).showPreview("" + id, version + ":" + offlineOnline);

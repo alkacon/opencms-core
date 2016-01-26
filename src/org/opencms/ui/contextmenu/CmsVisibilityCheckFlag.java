@@ -76,6 +76,9 @@ public enum CmsVisibilityCheckFlag {
     /** Checks if resource is locked by different user. */
     otherlock,
 
+    /** Checks if resource is a pointer. */
+    pointer,
+
     /** Checks if user has publish permissions. */
     publishpermission,
 

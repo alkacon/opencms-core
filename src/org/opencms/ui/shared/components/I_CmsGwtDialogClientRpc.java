@@ -35,6 +35,13 @@ import com.vaadin.shared.communication.ClientRpc;
 public interface I_CmsGwtDialogClientRpc extends ClientRpc {
 
     /**
+     * Opens the 'external link' editor dialog for a pointer resource.<p>
+     *
+     * @param structureId the structure id of the resource
+     */
+    void editPointer(String structureId);
+
+    /**
      * Tells the client to open the property editing dialog for the resource with the given structure id.<p>
      *
      * @param structureId the structure id of a resource, as a string

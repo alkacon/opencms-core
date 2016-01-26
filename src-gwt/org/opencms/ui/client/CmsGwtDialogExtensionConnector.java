@@ -44,6 +44,7 @@ import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.externallink.CmsEditExternalLinkDialog;
 import org.opencms.gwt.client.ui.input.category.CmsCategoryDialog;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
@@ -153,6 +154,58 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
     /** List of structure ids of changed resources. */
     protected List<String> m_changed = Lists.newArrayList();
+
+    /**
+     * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#editPointer(java.lang.String)
+     */
+    public void editPointer(String pointerStructureId) {
+
+        CmsEditExternalLinkDialog dialog = CmsEditExternalLinkDialog.loadAndShowDialog(new CmsUUID(pointerStructureId));
+        dialog.setContextMenuHandler(new I_CmsContextMenuHandler() {
+
+            public boolean ensureLockOnResource(CmsUUID lockStructureId) {
+
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
+
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public I_CmsContentEditorHandler getEditorHandler() {
+
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public void leavePage(String targetUri) {
+
+                // TODO Auto-generated method stub
+
+            }
+
+            public void refreshResource(CmsUUID structureId) {
+
+                m_changed.add("" + structureId);
+            }
+
+            public void unlockResource(CmsUUID structureId) {
+
+                // TODO Auto-generated method stub
+
+            }
+        });
+        dialog.addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                CmsGwtDialogExtensionConnector.this.close(0);
+            }
+        });
+    }
 
     /**
      * @see org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc#editProperties(java.lang.String, boolean)

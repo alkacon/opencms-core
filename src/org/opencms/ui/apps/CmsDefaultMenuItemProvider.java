@@ -40,6 +40,7 @@ import org.opencms.ui.actions.CmsDeleteDialogAction;
 import org.opencms.ui.actions.CmsDirectPublishDialogAction;
 import org.opencms.ui.actions.CmsEditCodeDialogAction;
 import org.opencms.ui.actions.CmsEditDialogAction;
+import org.opencms.ui.actions.CmsEditPointerAction;
 import org.opencms.ui.actions.CmsEditPropertyAction;
 import org.opencms.ui.actions.CmsGalleryDialogAction;
 import org.opencms.ui.actions.CmsHistoryDialogAction;
@@ -96,6 +97,7 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
         // for better readability please place additional entries  according to this sort order
         return Arrays.<I_CmsContextMenuItem> asList(
             new CmsContextMenuActionItem(new CmsEditDialogAction(), null, 50, 0),
+            new CmsContextMenuActionItem(new CmsEditPointerAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsGalleryDialogAction(), null, 50, 0),
             new CmsContextMenuActionItem(new CmsLockAction(), null, 100, 0),
             new CmsContextMenuActionItem(new CmsUnlockAction(), null, 100, 0),
