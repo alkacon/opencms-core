@@ -29,10 +29,13 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.login.CmsLoginController;
+import org.opencms.ui.shared.components.CmsUploadState.UploadType;
 import org.opencms.util.CmsStringUtil;
 
 import java.text.DateFormat;
@@ -43,8 +46,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Image;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -54,17 +56,17 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class CmsUserInfo extends VerticalLayout {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 7215454442218119869L;
-
     /** The HTML line break. */
     private static final String LINE_BREAK = "<br />";
 
-    /** The image. */
-    private Image m_image;
+    /** The serial version id. */
+    private static final long serialVersionUID = 7215454442218119869L;
 
     /** The info. */
     private Label m_info;
+
+    /** The info panel. */
+    private HorizontalLayout m_infoPanel;
 
     /** The logout button. */
     private Button m_logout;
@@ -74,16 +76,18 @@ public class CmsUserInfo extends VerticalLayout {
 
     /**
      * Constructor.<p>
+     *
+     * @param uploadListener the user image upload listener
      */
-    public CmsUserInfo() {
+    public CmsUserInfo(I_UploadListener uploadListener) {
         CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsUser user = cms.getRequestContext().getCurrentUser();
 
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfoHtml(user));
-        m_image.setSource(new ExternalResource(CmsUserIconHelper.getInstance().getBigIconPath(cms, user)));
-        m_logout.addClickListener(new ClickListener() {
+        m_infoPanel.addComponent(createImageButton(cms, user, uploadListener), 0);
+        m_logout.addClickListener(new Button.ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
@@ -92,7 +96,7 @@ public class CmsUserInfo extends VerticalLayout {
                 logout();
             }
         });
-        m_preferences.addClickListener(new ClickListener() {
+        m_preferences.addClickListener(new Button.ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
@@ -104,6 +108,30 @@ public class CmsUserInfo extends VerticalLayout {
 
         // hiding the button for now
         m_preferences.setVisible(false);
+    }
+
+    /**
+     * Creates the user image button.<p>
+     *
+     * @param cms the cms context
+     * @param user the current user
+     * @param uploadListener the upload listener
+     *
+     * @return the created button
+     */
+    CmsUploadButton createImageButton(CmsObject cms, CmsUser user, I_UploadListener uploadListener) {
+
+        CmsUploadButton button = new CmsUploadButton(
+            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(cms, user)),
+            CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
+        button.getState().setUploadType(UploadType.singlefile);
+        button.getState().setTargetFileNamePrefix(user.getId().toString());
+        button.getState().setDialogTitle(
+            CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
+        button.addStyleName("o-user-image");
+        button.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
+        button.addUploadListener(uploadListener);
+        return button;
     }
 
     /**
@@ -162,5 +190,4 @@ public class CmsUserInfo extends VerticalLayout {
 
         return infoHtml.toString();
     }
-
 }

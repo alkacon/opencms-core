@@ -31,8 +31,16 @@ import com.alkacon.simapi.IdentIcon;
 import com.alkacon.simapi.Simapi;
 
 import org.opencms.cache.CmsVfsNameBasedDiskCache;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.loader.CmsImageScaler;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -42,6 +50,7 @@ import org.opencms.workplace.CmsWorkplace;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 
@@ -62,8 +71,14 @@ public class CmsUserIconHelper {
     /** The small icon suffix. */
     public static final String SMALL_ICON_SUFFIX = "_small_icon.png";
 
-    /** The helper instance. */
-    private static CmsUserIconHelper INSTANCE;
+    /** The temp folder name. */
+    public static final String TEMP_FOLDER = "temp/";
+
+    /** The user image folder. */
+    public static final String USER_IMAGE_FOLDER = "/system/userimages/";
+
+    /** The user image additional info key. */
+    public static final String USER_IMAGE_INFO = "USER_IMAGE";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserIconHelper.class);
@@ -74,29 +89,22 @@ public class CmsUserIconHelper {
     /** The icon renderer. */
     private IdentIcon m_renderer;
 
+    /** The admin cms context. */
+    private CmsObject m_adminCms;
+
     /**
      * Constructor.<p>
+     *
+     * @param adminCms the admin cms context
      */
-    private CmsUserIconHelper() {
+    public CmsUserIconHelper(CmsObject adminCms) {
+        m_adminCms = adminCms;
         m_renderer = new IdentIcon();
         m_renderer.setReservedColor(ADMIN_COLOR);
 
         m_cache = new CmsVfsNameBasedDiskCache(
             OpenCms.getSystemInfo().getWebApplicationRfsPath() + "/" + CmsWorkplace.RFS_PATH_RESOURCES,
             ICON_FOLDER);
-    }
-
-    /**
-     * Returns the icon helper instance.<p>
-     *
-     * @return the icon helper instance
-     */
-    public static CmsUserIconHelper getInstance() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new CmsUserIconHelper();
-        }
-        return INSTANCE;
     }
 
     /**
@@ -126,6 +134,93 @@ public class CmsUserIconHelper {
     }
 
     /**
+     * Handles a user image upload.
+     * The uploaded file will be scaled and save as a new file beneath /system/userimages/, the original file will be deleted.<p>
+     *
+     * @param cms the cms context
+     * @param user the user
+     * @param uploadedFile the uploaded file
+     */
+    public void handleImageUpload(CmsObject cms, CmsUser user, String uploadedFile) {
+
+        try {
+            setUserImage(cms, user, uploadedFile);
+
+        } catch (CmsException e) {
+            LOG.error("Error setting user image.", e);
+        }
+        try {
+            cms.lockResource(uploadedFile);
+            cms.deleteResource(uploadedFile, CmsResource.DELETE_REMOVE_SIBLINGS);
+        } catch (CmsException e) {
+            LOG.error("Error deleting user image temp file.", e);
+        }
+    }
+
+    /**
+     * Sets the user image for the given user.<p>
+     *
+     * @param cms the cms context
+     * @param user the user
+     * @param rootPath the image root path
+     *
+     * @throws CmsException in case anything goes wrong
+     */
+    public void setUserImage(CmsObject cms, CmsUser user, String rootPath) throws CmsException {
+
+        CmsFile tempFile = cms.readFile(cms.getRequestContext().removeSiteRoot(rootPath));
+        CmsImageScaler scaler = new CmsImageScaler(tempFile.getContents(), tempFile.getRootPath());
+
+        if (scaler.isValid()) {
+            scaler.setType(2);
+            scaler.setHeight(192);
+            scaler.setWidth(192);
+            byte[] content = scaler.scaleImage(tempFile);
+            String previousImage = null;
+            String newFileName = USER_IMAGE_FOLDER
+                + user.getId().toString()
+                + "_"
+                + System.currentTimeMillis()
+                + getSuffix(tempFile.getName());
+            CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
+            CmsProject tempProject = adminCms.createTempfileProject();
+            adminCms.getRequestContext().setCurrentProject(tempProject);
+            if (adminCms.existsResource(newFileName)) {
+                // a user image of the given name already exists, just write the new content
+                CmsFile imageFile = adminCms.readFile(newFileName);
+                adminCms.lockResource(imageFile);
+                imageFile.setContents(content);
+                adminCms.writeFile(imageFile);
+                adminCms.writePropertyObject(
+                    newFileName,
+                    new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192"));
+            } else {
+                previousImage = (String)user.getAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previousImage)) {
+                    adminCms.lockResource(previousImage);
+                    adminCms.deleteResource(previousImage, CmsResource.DELETE_REMOVE_SIBLINGS);
+                }
+                // create a new user image file
+                adminCms.createResource(
+                    newFileName,
+                    OpenCms.getResourceManager().getResourceType(CmsResourceTypeImage.getStaticTypeName()),
+                    content,
+                    Collections.singletonList(
+                        new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192")));
+            }
+            user.setAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO, newFileName);
+            adminCms.writeUser(user);
+
+            try {
+                OpenCms.getPublishManager().publishProject(adminCms);
+            } catch (Exception e) {
+                LOG.error("Error publishing user image resources.", e);
+            }
+
+        }
+    }
+
+    /**
      * Returns the ident-icon path for the given user.<p>
      *
      * @param cms the cms context
@@ -135,6 +230,12 @@ public class CmsUserIconHelper {
      * @return the icon path
      */
     private String getIconPath(CmsObject cms, CmsUser user, boolean big) {
+
+        String userIconPath = (String)user.getAdditionalInfo(USER_IMAGE_INFO);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userIconPath)) {
+            String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, userIconPath);
+            return big ? link : link + "?__scale=h:32,w:32";
+        }
 
         boolean isAdmin = OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ADMINISTRATOR);
         String name = user.getName() + Boolean.toString(isAdmin);
@@ -163,6 +264,23 @@ public class CmsUserIconHelper {
     private byte[] getImageBytes(BufferedImage image) throws IOException {
 
         return Simapi.getImageBytes(image, Simapi.TYPE_PNG);
+    }
+
+    /**
+     * Returns the file suffix.<p>
+     *
+     * @param fileName the file name
+     *
+     * @return the suffix
+     */
+    private String getSuffix(String fileName) {
+
+        int index = fileName.lastIndexOf(".");
+        if (index > 0) {
+            return fileName.substring(index);
+        } else {
+            return fileName;
+        }
     }
 
     /**

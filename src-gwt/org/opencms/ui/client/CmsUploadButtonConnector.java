@@ -29,6 +29,7 @@ package org.opencms.ui.client;
 
 import org.opencms.ade.upload.client.I_CmsUploadContext;
 import org.opencms.ade.upload.client.ui.CmsDialogUploadButtonHandler;
+import org.opencms.gwt.client.ui.input.upload.I_CmsUploadButtonHandler;
 import org.opencms.ui.shared.components.CmsUploadState;
 import org.opencms.ui.shared.rpc.I_CmsUploadRpc;
 
@@ -105,8 +106,7 @@ public class CmsUploadButtonConnector extends ButtonConnector {
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
 
         super.onStateChanged(stateChangeEvent);
-        ((CmsDialogUploadButtonHandler)getWidget().getButtonHandler()).setTargetFolder(
-            getState().getTargetFolderRootPath());
+        getWidget().reinitButton(createButtonHandler());
     }
 
     /**
@@ -115,10 +115,7 @@ public class CmsUploadButtonConnector extends ButtonConnector {
     @Override
     protected Widget createWidget() {
 
-        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(new ButtonContextSupplier());
-
-        buttonHandler.setIsTargetRootPath(true);
-        CmsUploadButton uploadButton = new CmsUploadButton(buttonHandler);
+        CmsUploadButton uploadButton = new CmsUploadButton(createButtonHandler());
         return uploadButton;
     }
 
@@ -131,9 +128,34 @@ public class CmsUploadButtonConnector extends ButtonConnector {
 
         m_rpc.onUploadFinished(uploadedFiles);
         // create a new button handler instance, as the old one is in a messed up state
-        CmsDialogUploadButtonHandler buttonHandler = new CmsDialogUploadButtonHandler(new ButtonContextSupplier());
-        buttonHandler.setIsTargetRootPath(true);
-        buttonHandler.setTargetFolder(getState().getTargetFolderRootPath());
-        getWidget().reinitButton(buttonHandler);
+        getWidget().reinitButton(createButtonHandler());
+    }
+
+    /**
+     * Creates a button handler according to the component state.<p>
+     *
+     * @return the button handler
+     */
+    private I_CmsUploadButtonHandler createButtonHandler() {
+
+        I_CmsUploadButtonHandler buttonHandler = null;
+        switch (getState().getUploadType()) {
+            case singlefile:
+                buttonHandler = new CmsSingleFileUploadHandler(
+                    new ButtonContextSupplier(),
+                    getState().getDialogTitle());
+                ((CmsSingleFileUploadHandler)buttonHandler).setTargetFolderPath(getState().getTargetFolderRootPath());
+                ((CmsSingleFileUploadHandler)buttonHandler).setTargetFileName(getState().getTargetFileName());
+                ((CmsSingleFileUploadHandler)buttonHandler).setTargetFileNamePrefix(
+                    getState().getTargetFileNamePrefix());
+                break;
+            case multifile:
+            default:
+                buttonHandler = new CmsDialogUploadButtonHandler(new ButtonContextSupplier());
+                ((CmsDialogUploadButtonHandler)buttonHandler).setIsTargetRootPath(true);
+                ((CmsDialogUploadButtonHandler)buttonHandler).setTargetFolder(getState().getTargetFolderRootPath());
+                break;
+        }
+        return buttonHandler;
     }
 }

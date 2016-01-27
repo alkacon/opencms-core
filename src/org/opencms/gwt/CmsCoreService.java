@@ -76,7 +76,6 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
-import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
@@ -1042,7 +1041,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
         UserInfo userInfo = new UserInfo(
             cms.getRequestContext().getCurrentUser().getName(),
-            CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser()),
+            OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
+                cms,
+                cms.getRequestContext().getCurrentUser()),
             isAdmin,
             isDeveloper,
             isCategoryManager);

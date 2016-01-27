@@ -61,18 +61,36 @@
     }
   }
   
-  .o-user-info .v-button.v-button-o-toolbar-button{
-  	padding: 2px;
-  	border: 2px solid #4E545B;
+  .o-user-info{ 
+  
+  	.o-user-image.v-button {
+  		height: 102px;
+  		padding: 2px;
+  		
+  		> span.v-button-wrap {
+  			display: inline-block;
+  			vertical-align: top;
+  			
+  			img.v-icon {
+  				height: 96px;
+  				width: 96px;
+  			}
+  		}
+  	}
+    .v-button.v-button-o-toolbar-button{
+  	  padding: 2px;
+  	  border: 2px solid #4E545B;
   	
-  	&:after{
+  	  &:after{
   		border: none;
-  	}
+  	  }
   	
-  	&:hover{
+  	  &:hover{
    		border-color: $v-selection-color;
-  	}
+  	  }
+    }
   }
+  
   
   /* App buttons */
   .v-button.v-button-o-app-button{

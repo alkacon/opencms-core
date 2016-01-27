@@ -27,6 +27,8 @@
 
 package org.opencms.ui.shared.components;
 
+import org.opencms.util.CmsUUID;
+
 import com.vaadin.shared.ui.button.ButtonState;
 
 /**
@@ -34,11 +36,82 @@ import com.vaadin.shared.ui.button.ButtonState;
  */
 public class CmsUploadState extends ButtonState {
 
+    /** The upload types. */
+    public enum UploadType {
+        /** Multi file upload. */
+        multifile,
+
+        /** Single file upload. */
+        singlefile
+    }
+
     /** Serial version id. */
     private static final long serialVersionUID = -763395505975462778L;
 
+    /** The structure id of the file to replace. */
+    private CmsUUID m_replaceId;
+
+    /** The target file name. */
+    private String m_targetFileName;
+
+    /** The target file name prefix. */
+    private String m_targetFileNamePrefix;
+
     /** The upload target folder root path. */
     private String m_targetFolderRootPath;
+
+    /** The upload type. */
+    private UploadType m_uploadType;
+
+    /** The dialog title. */
+    private String m_dialogTitle;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsUploadState() {
+        m_uploadType = UploadType.multifile;
+    }
+
+    /**
+     * Returns the dialog title.<p>
+     *
+     * @return the dialog title
+     */
+    public String getDialogTitle() {
+
+        return m_dialogTitle;
+    }
+
+    /**
+     * Returns the structure id of the file to replace.<p>
+     *
+     * @return the structure id of the file to replace
+     */
+    public CmsUUID getReplaceId() {
+
+        return m_replaceId;
+    }
+
+    /**
+     * Returns the target file name.<p>
+     *
+     * @return the target file name
+     */
+    public String getTargetFileName() {
+
+        return m_targetFileName;
+    }
+
+    /**
+     * Returns the target file name prefix.<p>
+     *
+     * @return the target file name prefix
+     */
+    public String getTargetFileNamePrefix() {
+
+        return m_targetFileNamePrefix;
+    }
 
     /**
      * Returns the targetFolderRootPath.<p>
@@ -51,6 +124,56 @@ public class CmsUploadState extends ButtonState {
     }
 
     /**
+     * Returns the upload type.<p>
+     *
+     * @return the upload type
+     */
+    public UploadType getUploadType() {
+
+        return m_uploadType;
+    }
+
+    /**
+     * Sets the dialog title.<p>
+     *
+     * @param dialogTitle the dialog title to set
+     */
+    public void setDialogTitle(String dialogTitle) {
+
+        m_dialogTitle = dialogTitle;
+    }
+
+    /**
+     * Sets the structure id of the file to replace.<p>
+     *
+     * @param replaceId the structure id of the file to replace
+     */
+    public void setReplaceId(CmsUUID replaceId) {
+
+        m_replaceId = replaceId;
+    }
+
+    /**
+     * Sets the target file name.<p>
+     *
+     * @param targetFileName the target file name to set
+     */
+    public void setTargetFileName(String targetFileName) {
+
+        m_targetFileName = targetFileName;
+    }
+
+    /**
+     * Sets the target file name prefix.<p>
+     *
+     * @param targetFileNamePrefix the target file name prefix to set
+     */
+    public void setTargetFileNamePrefix(String targetFileNamePrefix) {
+
+        m_targetFileNamePrefix = targetFileNamePrefix;
+    }
+
+    /**
      * Sets the targetFolderRootPath.<p>
      *
      * @param targetFolderRootPath the targetFolderRootPath to set
@@ -59,4 +182,15 @@ public class CmsUploadState extends ButtonState {
 
         m_targetFolderRootPath = targetFolderRootPath;
     }
+
+    /**
+     * Sets the upload type.<p>
+     *
+     * @param uploadType the upload type to set
+     */
+    public void setUploadType(UploadType uploadType) {
+
+        m_uploadType = uploadType;
+    }
+
 }

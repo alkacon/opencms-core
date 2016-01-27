@@ -33,6 +33,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
@@ -133,6 +134,30 @@ public class CmsWorkplaceAppManager {
     /** The configured apps. */
     private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
 
+    /** The admin cms context. */
+    private CmsObject m_adminCms;
+
+    /** The user icon helper. */
+    private CmsUserIconHelper m_iconHelper;
+
+    /**
+     * Constructor.<p>
+     *
+     * @param adminCms the admin cms context
+     *
+     * @throws CmsException in case initializing the cms object fails
+     */
+    public CmsWorkplaceAppManager(CmsObject adminCms)
+    throws CmsException {
+        m_adminCms = adminCms;
+        m_iconHelper = new CmsUserIconHelper(OpenCms.initCmsObject(m_adminCms));
+    }
+
+    /**
+     * Constructor for testing only.<p>
+     */
+    protected CmsWorkplaceAppManager() {}
+
     /**
      * Returns the app configuration with the given id.<p>
      *
@@ -181,6 +206,16 @@ public class CmsWorkplaceAppManager {
     public List<CmsAppCategory> getCategories() {
 
         return Collections.unmodifiableList(m_appCategories);
+    }
+
+    /**
+     * Returns the user icon helper.<p>
+     *
+     * @return the user icon helper
+     */
+    public CmsUserIconHelper getUserIconHelper() {
+
+        return m_iconHelper;
     }
 
     /**

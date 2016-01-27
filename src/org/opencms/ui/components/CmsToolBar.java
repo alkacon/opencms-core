@@ -41,6 +41,7 @@ import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsStringUtil;
@@ -112,16 +113,23 @@ public class CmsToolBar extends CssLayout {
     /** Toolbar items right. */
     private HorizontalLayout m_itemsRight;
 
+    /** The quick launch drop down. */
+    private Component m_quickLaunchDropDown;
+
+    /** The user drop down. */
+    private Component m_userDropDown;
+
     /**
      * Constructor.<p>
      */
     public CmsToolBar() {
-
+        m_quickLaunchDropDown = createQuickLaunchDropDown();
+        m_userDropDown = createUserInfoDropDown();
         Design.read("CmsToolBar.html", this);
         m_dialogContext = new ToolbarContext();
         initContextMenu();
-        m_itemsRight.addComponent(createQuickLaunchDropDown());
-        m_itemsRight.addComponent(createUserInfoDropDown());
+        m_itemsRight.addComponent(m_quickLaunchDropDown);
+        m_itemsRight.addComponent(m_userDropDown);
     }
 
     /**
@@ -272,6 +280,27 @@ public class CmsToolBar extends CssLayout {
     }
 
     /**
+     * Handles the user image file upload.<p>
+     *
+     * @param uploadedFiles the uploaded file names
+     */
+    void handleUpload(List<String> uploadedFiles) {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        if (uploadedFiles.size() == 1) {
+            String tempFile = CmsStringUtil.joinPaths(
+                CmsUserIconHelper.USER_IMAGE_FOLDER,
+                CmsUserIconHelper.TEMP_FOLDER,
+                uploadedFiles.get(0));
+            OpenCms.getWorkplaceAppManager().getUserIconHelper().handleImageUpload(
+                cms,
+                cms.getRequestContext().getCurrentUser(),
+                tempFile);
+            refreshUserInfoDropDown();
+        }
+    }
+
+    /**
      * Creates the context menu entry and it's children.<p>
      *
      * @param parent the entry parent
@@ -353,10 +382,17 @@ public class CmsToolBar extends CssLayout {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         Component userDropdown = createDropDown(
-            new ExternalResource(
-                CmsUserIconHelper.getInstance().getSmallIconPath(cms, cms.getRequestContext().getCurrentUser())),
-            new CmsUserInfo(),
-            "User info");
+            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
+                cms,
+                cms.getRequestContext().getCurrentUser())),
+            new CmsUserInfo(new I_UploadListener() {
+
+                public void onUploadFinished(List<String> uploadedFiles) {
+
+                    handleUpload(uploadedFiles);
+                }
+            }),
+            CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0));
         userDropdown.addStyleName(OpenCmsTheme.USER_INFO);
         return userDropdown;
     }
@@ -376,5 +412,15 @@ public class CmsToolBar extends CssLayout {
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createMenuEntry(main, node, treeBuilder);
         }
+    }
+
+    /**
+     * Refreshes the user drop down.<p>
+     */
+    private void refreshUserInfoDropDown() {
+
+        Component oldVersion = m_userDropDown;
+        m_userDropDown = createUserInfoDropDown();
+        m_itemsRight.replaceComponent(oldVersion, m_userDropDown);
     }
 }

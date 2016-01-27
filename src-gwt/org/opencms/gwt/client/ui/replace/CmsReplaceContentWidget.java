@@ -146,7 +146,7 @@ public class CmsReplaceContentWidget extends Composite {
      *
      * @param msg the message to display below the animation
      */
-    protected void showLoadingAnimation(String msg) {
+    public void showLoadingAnimation(String msg) {
 
         removeLoadingAnimation();
         m_loadingPanel = new FlowPanel();
@@ -164,5 +164,4 @@ public class CmsReplaceContentWidget extends Composite {
 
         m_container.add(m_loadingPanel);
     }
-
 }

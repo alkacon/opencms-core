@@ -1435,7 +1435,7 @@ public final class OpenCmsCore {
             CmsLoginUI.setAdminCmsObject(initCmsObject(adminCms));
             //m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
             m_adeManager = new CmsADEManager(initCmsObject(adminCms), m_memoryMonitor, systemConfiguration);
-            m_workplaceAppManager = new CmsWorkplaceAppManager();
+            m_workplaceAppManager = new CmsWorkplaceAppManager(initCmsObject(adminCms));
             m_workplaceAppManager.loadApps();
             m_templateContextManager = new CmsTemplateContextManager(initCmsObject(adminCms));
             m_workflowManager = systemConfiguration.getWorkflowManager();
