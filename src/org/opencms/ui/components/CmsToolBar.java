@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
@@ -92,6 +93,14 @@ public class CmsToolBar extends CssLayout {
         public void focus(CmsUUID structureId) {
 
             // nothing to do
+        }
+
+        /**
+         * @see org.opencms.ui.I_CmsDialogContext#getAllStructureIdsInView()
+         */
+        public List<CmsUUID> getAllStructureIdsInView() {
+
+            return Lists.newArrayList();
         }
     }
 

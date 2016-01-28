@@ -75,6 +75,13 @@ public interface I_CmsDialogContext {
     void focus(CmsUUID structureId);
 
     /**
+     * Gets a list of structure ids of all visible resources, not just the ones selected for the dialog.<p>
+     *
+     * @return the structure ids of all the resources in the current view
+     */
+    List<CmsUUID> getAllStructureIdsInView();
+
+    /**
      * Returns the app UI context.<p>
      *
      * @return the app UI context

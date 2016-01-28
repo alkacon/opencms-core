@@ -34,7 +34,9 @@ import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
+import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
 import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 import org.opencms.gwt.client.ui.input.form.CmsInfoBoxFormFieldPanel;
@@ -58,6 +60,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -104,6 +107,9 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
 
     /** The tab wrapper for the individual tab. */
     private FlowPanel m_individualTabWrapper = new FlowPanel();
+
+    /** Name of property which should be focused, used while rendering the extended tabs. */
+    private String m_markedProperty;
 
     /** Set of fields which should be displayed at the top of the "shared" tab. */
     private Set<String> m_sharedDisplay = Sets.newHashSet();
@@ -228,13 +234,22 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         unusedFieldSet.setOpen(false);
         unusedFieldSet.setLegend(unused);
         unusedFieldSet.setAnimationDuration(50);
-
+        boolean reopen = false;
+        final String currentMarkedProperty = m_markedProperty;
+        m_markedProperty = null;
         for (I_CmsFormField field : fields) {
             if (isTop(field)) {
                 usedFieldSet.addContent(createRow(field));
             } else {
+                if ((currentMarkedProperty != null)
+                    && field.getLayoutData().get(LD_PROPERTY).equals(currentMarkedProperty)) {
+                    reopen = true;
+                }
                 unusedFieldSet.addContent(createRow(field));
             }
+        }
+        if (reopen) {
+            unusedFieldSet.setOpen(true);
         }
 
         if (usedFieldSet.getWidgetCount() > 0) {
@@ -316,6 +331,81 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
         truncatePanel(m_simpleTabWrapper, textMetricsKey, clientWidth);
         truncatePanel(m_sharedTab, textMetricsKey, clientWidth);
         truncatePanel(m_sharedTabWrapper, textMetricsKey, clientWidth);
+    }
+
+    /**
+     * Tries to restore the active field data.<p>
+     *
+     * @param fieldDataToBeRestored the field data which should be restored (may be null, in which case this method does nothing)
+     */
+    public void tryToRestoreFieldData(CmsActiveFieldData fieldDataToBeRestored) {
+
+        if (fieldDataToBeRestored == null) {
+            return;
+        }
+        m_markedProperty = null;
+        final String propName = fieldDataToBeRestored.getProperty();
+        final String tabName = fieldDataToBeRestored.getTab();
+        m_markedProperty = propName;
+        final int tabIndex;
+        if (TAB_INDIVIDUAL.equals(tabName)) {
+            tabIndex = 1;
+        } else if (TAB_SHARED.equals(tabName)) {
+            tabIndex = 2;
+        } else {
+            tabIndex = 0;
+        }
+
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                if ((tabIndex > 0) && (tabIndex < m_tabPanel.getTabCount())) {
+                    I_CmsFormField markedField = null;
+                    m_tabPanel.selectTab(tabIndex);
+                    @SuppressWarnings("synthetic-access")
+                    Collection<I_CmsFormField> fieldsForTab = m_fieldsByGroup.get(tabName);
+                    if ((fieldsForTab != null) && !fieldsForTab.isEmpty()) {
+                        for (I_CmsFormField currentField : fieldsForTab) {
+                            if (currentField.getLayoutData().get(LD_PROPERTY).equals(propName)) {
+                                markedField = currentField;
+                                break;
+                            }
+                        }
+                    }
+                    if (markedField != null) {
+                        final I_CmsFormField constMarkedField = markedField;
+                        Timer timer2 = new Timer() {
+
+                            @Override
+                            @SuppressWarnings("synthetic-access")
+                            public void run() {
+
+                                focusField(constMarkedField);
+                            }
+
+                        };
+                        timer2.schedule(1);
+
+                    }
+                }
+
+            }
+
+            private void focusField(final I_CmsFormField constMarkedField) {
+
+                I_CmsFormWidget widget = constMarkedField.getWidget();
+                if (widget instanceof CmsTextBox) {
+                    CmsTextBox box = (CmsTextBox)widget;
+                    box.selectAll();
+                    box.setFocus(true);
+
+                }
+            }
+        };
+        timer.schedule(1);
+
     }
 
     /**

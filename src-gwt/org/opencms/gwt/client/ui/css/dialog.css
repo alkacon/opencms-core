@@ -29,6 +29,18 @@
 	border-spacing: inherit;
 }
 
+.leftButtonBox.leftButtonBox.leftButtonBox { 
+	margin-left: 0px; 
+}
+
+.leftButtonBox > *:first-child { 
+	margin-left: 0px; 
+}
+
+.leftButtonBox > * {
+	margin-left: 10px; 
+}
+
 
 .closePopup{
     position: absolute;

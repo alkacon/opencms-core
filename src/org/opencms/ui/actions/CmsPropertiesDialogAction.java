@@ -32,7 +32,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.components.extensions.CmsPropertyDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -63,7 +63,7 @@ public class CmsPropertiesDialogAction extends A_CmsWorkplaceAction {
 
         if (!hasBlockingLocks(context)) {
             try {
-                CmsGwtDialogExtension dialogExtension = new CmsGwtDialogExtension(
+                CmsPropertyDialogExtension dialogExtension = new CmsPropertyDialogExtension(
                     A_CmsUI.get(),
                     new I_CmsUpdateListener<String>() {
 
@@ -72,11 +72,15 @@ public class CmsPropertiesDialogAction extends A_CmsWorkplaceAction {
                             List<CmsUUID> updatedIds = Lists.newArrayList();
                             for (String item : updatedItems) {
                                 updatedIds.add(new CmsUUID(item));
+
                             }
                             context.finish(updatedIds);
                         }
                     });
-                dialogExtension.editProperties(context.getResources().get(0).getStructureId(), false);
+                dialogExtension.editProperties(
+                    context.getResources().get(0).getStructureId(),
+                    context.getAllStructureIdsInView(),
+                    false);
             } catch (Exception e) {
                 context.error(e);
             }

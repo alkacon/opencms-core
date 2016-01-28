@@ -135,6 +135,14 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#getAllStructureIdsInView()
+     */
+    public List<CmsUUID> getAllStructureIdsInView() {
+
+        return Lists.newArrayList(m_explorer.getAllIds());
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsEditPropertyContext#isPropertyEditable(java.lang.Object)
      */
     public boolean isPropertyEditable(Object propertyId) {

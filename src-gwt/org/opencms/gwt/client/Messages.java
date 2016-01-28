@@ -37,27 +37,6 @@ import org.opencms.gwt.client.util.CmsMessages;
 public final class Messages {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_TITLE_ASC_0 = "GUI_SORT_LABEL_TITLE_ASC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_TITLE_DECS_0 = "GUI_SORT_LABEL_TITLE_DECS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORIES_IS_EMPTY_0 = "GUI_CATEGORIES_IS_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_DATEBOX_INVALID_DATE_FORMAT_0 = "ERR_DATEBOX_INVALID_DATE_FORMAT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -121,6 +100,12 @@ public final class Messages {
     public static final String GUI_BUTTON_ELEMENT_EDIT_0 = "GUI_BUTTON_ELEMENT_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_NEXT_RESOURCE_0 = "GUI_BUTTON_NEXT_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PREV_RESOURCE_0 = "GUI_BUTTON_PREV_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANCEL_0 = "GUI_CANCEL_0";
 
     /** Message constant for key in the resource bundle. */
@@ -128,6 +113,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CAPTION_DEFINE_PROPERTY_0 = "GUI_CAPTION_DEFINE_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORIES_IS_EMPTY_0 = "GUI_CATEGORIES_IS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
@@ -511,6 +499,9 @@ public final class Messages {
     public static final String GUI_PROPERTY_TAB_STRUCTURE_0 = "GUI_PROPERTY_TAB_STRUCTURE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_FINDER_SEARCH_0 = "GUI_QUICK_FINDER_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_REASON_0 = "GUI_REASON_0";
 
     /** Message constant for key in the resource bundle. */
@@ -674,6 +665,21 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHOW_PREVIEW_0 = "GUI_SHOW_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_HIERARCHIC_0 = "GUI_SORT_LABEL_HIERARCHIC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_ASC_0 = "GUI_SORT_LABEL_PATH_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_PATH_DESC_0 = "GUI_SORT_LABEL_PATH_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_ASC_0 = "GUI_SORT_LABEL_TITLE_ASC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SORT_LABEL_TITLE_DECS_0 = "GUI_SORT_LABEL_TITLE_DECS_0";
 
     /** Message constant for key in the resource bundle. */
 

@@ -36,7 +36,6 @@ import org.opencms.gwt.client.ui.input.form.CmsFormDialog;
 
 import java.util.ArrayList;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -60,7 +59,6 @@ public class CmsPropertyDefinitionButton extends CmsPushButton {
         super(I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyDefinitionButton());
         setTitle(CmsPropertyDefinitionMessages.messageDialogCaption());
         setButtonStyle(ButtonStyle.TRANSPARENT, null);
-        getElement().getStyle().setFloat(Style.Float.LEFT);
         getElement().getStyle().setMarginTop(4, Unit.PX);
         addClickHandler(new ClickHandler() {
 

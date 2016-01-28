@@ -877,6 +877,16 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * Gets all ids of resources in current folder.<p>
+     *
+     * @return the
+     */
+    public List<CmsUUID> getAllIds() {
+
+        return m_fileTable.getAllIds();
+    }
+
+    /**
      * Returns the current folder id.<p>
      *
      * @return the current folder structure id

@@ -220,10 +220,9 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
             protected void onResponse(Void result) {
 
                 stop(false);
-                if (getContextMenuHandler() != null) {
-                    getContextMenuHandler().refreshResource(m_propertiesBean.getStructureId());
-                }
+                onSubmitSuccess();
             }
+
         };
         saveAction.execute();
 
@@ -297,6 +296,16 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     protected I_CmsContextMenuHandler getContextMenuHandler() {
 
         return m_handler;
+    }
+
+    /**
+     * Called when the form is submitted successfully.<p>
+     */
+    protected void onSubmitSuccess() {
+
+        if (getContextMenuHandler() != null) {
+            getContextMenuHandler().refreshResource(m_propertiesBean.getStructureId());
+        }
     }
 
 }

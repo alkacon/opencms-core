@@ -59,6 +59,7 @@ import org.opencms.ui.A_CmsCustomComponent;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -256,11 +257,11 @@ public class CmsResourceTable extends A_CmsCustomComponent {
     /** Flag to mark columns as invisible. */
     public static final int INVISIBLE = 2;
 
-    /** Serial version id. */
-    private static final long serialVersionUID = 1L;
-
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTable.class);
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /** The resource data container. */
     protected ItemContainer m_container = new ItemContainer();
@@ -515,6 +516,18 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
         m_fileTable.sort();
         clearSelection();
+    }
+
+    /**
+     * Gets structure ids of resources for current folder in current sort order.<p>
+     *
+     * @return the structure ids of the current folder contents
+     */
+    public List<CmsUUID> getAllIds() {
+
+        @SuppressWarnings("unchecked")
+        List<CmsUUID> ids = (List<CmsUUID>)(m_fileTable.getContainerDataSource().getItemIds());
+        return Lists.newArrayList(ids);
     }
 
     /**

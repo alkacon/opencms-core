@@ -84,7 +84,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
     /**
      * Context menu handler.<p>
      */
-    protected class ContextMenuHandler implements I_CmsContextMenuHandler {
+    public class ContextMenuHandler implements I_CmsContextMenuHandler {
 
         /**
          * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#ensureLockOnResource(org.opencms.util.CmsUUID)

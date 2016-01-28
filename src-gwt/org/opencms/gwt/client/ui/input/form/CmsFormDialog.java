@@ -187,6 +187,14 @@ public class CmsFormDialog extends CmsPopup {
     }
 
     /**
+     * Called when the cancel button is clicked.
+     */
+    protected void onClickCancel() {
+
+        hide();
+    }
+
+    /**
      * The method which should be called when the user clicks on the OK button of the dialog.<p>
      */
     protected void onClickOk() {
@@ -213,7 +221,8 @@ public class CmsFormDialog extends CmsPopup {
              */
             public void onClick(ClickEvent event) {
 
-                CmsFormDialog.this.hide();
+                onClickCancel();
+
             }
         });
         return button;

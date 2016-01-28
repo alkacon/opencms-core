@@ -30,10 +30,13 @@ package org.opencms.gwt.client.property;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.input.CmsTextBox;
+import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.I_CmsFormWidget;
 import org.opencms.gwt.client.ui.input.I_CmsHasGhostValue;
 import org.opencms.gwt.client.ui.input.I_CmsStringModel;
 import org.opencms.gwt.client.ui.input.form.CmsBasicFormField;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
 import org.opencms.gwt.shared.CmsListInfoBean;
@@ -58,6 +61,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -81,15 +87,14 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
 
-    static {
-        tabs = HashBiMap.create();
-        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
-        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
-        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
-    }
-
     /** The map of models of the fields. */
     Map<String, I_CmsStringModel> m_models = new HashMap<String, I_CmsStringModel>();
+
+    /** Active field data. */
+    private CmsActiveFieldData m_activeFieldData;
+
+    /** Field data which should be restored. */
+    private CmsActiveFieldData m_fieldDataToBeRestored;
 
     /** Flag to control whether the properties should be editable. */
     private boolean m_isReadOnly;
@@ -116,6 +121,13 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
 
         super(propConfig, handler);
         m_properties = CmsClientProperty.makeLazyCopy(handler.getOwnProperties());
+    }
+
+    static {
+        tabs = HashBiMap.create();
+        tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
+        tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
+        tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
     }
 
     /**
@@ -145,6 +157,28 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     }
 
     /**
+     * Gets the active field data.<p>
+     *
+     * @return the active field data
+     */
+    public CmsActiveFieldData getActiveFieldData() {
+
+        return m_activeFieldData;
+    }
+
+    /**
+     * Handles field value changes.<p>
+     *
+     * @param field the changed field
+     */
+    public void handleFieldChange(I_CmsFormField field) {
+
+        if ((m_activeFieldData != null) && (m_activeFieldData.getField() != field)) {
+            m_activeFieldData = null;
+        }
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.A_CmsPropertyEditor#initializeWidgets(org.opencms.gwt.client.ui.CmsPopup)
      */
     @Override
@@ -153,6 +187,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         super.initializeWidgets(dialog);
         dialog.setCaption(null);
         dialog.removePadding();
+        m_panel.tryToRestoreFieldData(m_fieldDataToBeRestored);
 
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
 
@@ -165,6 +200,17 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 return true;
             }
         }, UPDATE_HEIGHT_INTERVAL);
+    }
+
+    /**
+     * Sets the active field data to be restored.<p>
+     *
+     * @param fieldData the active field data to be restored
+     */
+    public void restoreActiveFieldData(CmsActiveFieldData fieldData) {
+
+        m_fieldDataToBeRestored = fieldData;
+
     }
 
     /**
@@ -246,6 +292,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         });
 
         m_form.setWidget(m_panel);
+
     }
 
     /**
@@ -313,8 +360,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         CmsPathValue pathValue = CmsClientProperty.getPathValue(ownProp, mode).prepend(entryId + "/" + propName + "/");
 
         //CHECK: should fields other than NavText be really automatically allowed to be empty in navigation mode?
-        String tab = tabs.get(mode);
-        CmsBasicFormField field = CmsBasicFormField.createField(
+        final String tab = tabs.get(mode);
+        final CmsBasicFormField field = CmsBasicFormField.createField(
             propDef,
             pathValue.getPath() + "#" + tab,
             this,
@@ -339,6 +386,21 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 initialValue = null;
             }
         }
+        if ((w instanceof CmsTextBox)) {
+            try {
+                ((HasFocusHandlers)w).addFocusHandler(new FocusHandler() {
+
+                    @SuppressWarnings("synthetic-access")
+                    public void onFocus(FocusEvent event) {
+
+                        m_activeFieldData = new CmsActiveFieldData(field, tab, propName);
+                    }
+                });
+            } catch (Exception e) {
+                CmsDebugLog.consoleLog("" + e);
+            }
+
+        }
 
         boolean isShowingGhost = ghost && !CmsStringUtil.isEmpty(defaultValue);
 
@@ -349,6 +411,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             field.getLayoutData().put(CmsPropertyPanel.LD_DISPLAY_VALUE, "true");
         }
         field.getLayoutData().put(CmsPropertyPanel.LD_PROPERTY, propName);
+        field.getLayoutData().put("tab", tab);
         m_form.addField(tab, field, initialValue);
     }
 

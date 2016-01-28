@@ -37,7 +37,6 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties.PropertyEditingContext;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -103,7 +102,6 @@ public class CmsPropertiesEntryPoint extends A_CmsEntryPoint {
      */
     protected void editProperties(final CmsUUID structureId) {
 
-        CmsDebugLog.consoleLog("editProperties entry point");
         CmsEditProperties.editProperties(structureId, null, false, null, false, new PropertyEditingContext() {
 
             @Override

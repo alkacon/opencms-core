@@ -96,6 +96,7 @@ public abstract class A_CmsFormFieldPanel extends Composite implements I_CmsTrun
             field.getDescription(),
             (Widget)field.getWidget(),
             field.getLayoutData().get("info"));
+
     }
 
     /**
