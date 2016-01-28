@@ -81,6 +81,15 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#hideToolbar()
+     */
+    public void hideToolbar() {
+
+        addStyleName(OpenCmsTheme.HIDDEN_TOOLBAR);
+        m_toolbar.setVisible(false);
+    }
+
+    /**
      * Sets the app content component.<p>
      *
      * @param appContent the app content
@@ -125,5 +134,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     public void showInfoArea(boolean show) {
 
         m_infoArea.setVisible(show);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#showToolbar()
+     */
+    public void showToolbar() {
+
+        removeStyleName(OpenCmsTheme.HIDDEN_TOOLBAR);
+        m_toolbar.setVisible(false);
     }
 }

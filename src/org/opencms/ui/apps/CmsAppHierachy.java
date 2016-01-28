@@ -76,7 +76,6 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
 
         context.setAppContent(hierarchyPanel);
         context.showInfoArea(false);
-        // some dummy buttons
 
         Button publishButton = CmsToolBar.createButton(
             FontOpenCms.PUBLISH,

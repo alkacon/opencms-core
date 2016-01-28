@@ -113,6 +113,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
+
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
@@ -127,12 +133,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
-
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
 
     /**
      * Gets the current UI instance.<p>
@@ -411,6 +411,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public void showApp(I_CmsWorkplaceAppConfiguration appConfig) {
 
         getNavigator().navigateTo(appConfig.getId());
+    }
+
+    /**
+     * Navigates to the given app.<p>
+     *
+     * @param appConfig the app configuration
+     * @param state the app state to call
+     */
+    public void showApp(I_CmsWorkplaceAppConfiguration appConfig, String state) {
+
+        getNavigator().navigateTo(appConfig.getId() + "/" + state);
     }
 
     /**

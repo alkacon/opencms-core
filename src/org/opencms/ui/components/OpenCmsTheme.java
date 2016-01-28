@@ -109,10 +109,13 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String FORMLAYOUT_WORKPLACE_MAIN = "o-formlayout-workplace-main";
+
     /** CSS style name. */
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
     /** CSS style name. */
     public static final String HIDDEN = "hidden";
+    /** CSS style name. */
+    public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
 

@@ -29,12 +29,16 @@ package org.opencms.ui.apps;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
+import org.opencms.ui.editors.CmsAcaciaEditor;
+import org.opencms.ui.editors.CmsSourceEditor;
+import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolManager;
@@ -44,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -128,6 +133,9 @@ public class CmsWorkplaceAppManager {
     /** Legacy apps explicitly hidden from new workplace. */
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
 
+    /** The available editors. */
+    private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {new CmsAcaciaEditor(), new CmsSourceEditor()};
+
     /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
 
@@ -206,6 +214,37 @@ public class CmsWorkplaceAppManager {
     public List<CmsAppCategory> getCategories() {
 
         return Collections.unmodifiableList(m_appCategories);
+    }
+
+    /**
+     * Returns the editor for the given resource.<p>
+     *
+     * @param resource the resource to edit
+     *
+     * @return the editor
+     */
+    public I_CmsEditor getEditorForResource(CmsResource resource) {
+
+        List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
+        for (int i = 0; i < EDITORS.length; i++) {
+            if (EDITORS[i].matchesResource(resource)) {
+                editors.add(EDITORS[i]);
+            }
+        }
+        I_CmsEditor result = null;
+        if (editors.size() == 1) {
+            result = editors.get(0);
+        } else if (editors.size() > 1) {
+            Collections.sort(editors, new Comparator<I_CmsEditor>() {
+
+                public int compare(I_CmsEditor o1, I_CmsEditor o2) {
+
+                    return o1.getPriority() > o1.getPriority() ? -1 : 1;
+                }
+            });
+            result = editors.get(0);
+        }
+        return result;
     }
 
     /**
@@ -317,7 +356,8 @@ public class CmsWorkplaceAppManager {
                 new CmsPageEditorConfiguration(),
                 new CmsFileExplorerConfiguration(),
                 new CmsScheduledJobsAppConfig(),
-                new CmsAppHierarchyConfiguration()));
+                new CmsAppHierarchyConfiguration(),
+                new CmsEditorConfiguration()));
         return result;
     }
 

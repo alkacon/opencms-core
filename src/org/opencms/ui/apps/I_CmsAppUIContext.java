@@ -37,6 +37,16 @@ import com.vaadin.ui.Component;
 public interface I_CmsAppUIContext {
 
     /**
+     * Hides the the toolbar.<p>
+     */
+    public void hideToolbar();
+
+    /**
+     * Shows the formerly hidden toolbar.<p>
+     */
+    public void showToolbar();
+
+    /**
      * Adds a toolbar button.<p>
      *
      * @param button the button to add

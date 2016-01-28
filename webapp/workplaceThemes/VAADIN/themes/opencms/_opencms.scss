@@ -302,6 +302,10 @@
 		height: auto !important;
 	}
 	
+	.o-hidden-toolbar .o-main {
+		top: 0;
+	}
+	
 	/* Toolbar drop down */
 	.v-popupview.v-popupview-o-navigator-dropdown{
 		color: inherit;
