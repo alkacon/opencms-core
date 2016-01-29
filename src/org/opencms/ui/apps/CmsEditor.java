@@ -53,6 +53,9 @@ public class CmsEditor implements I_CmsWorkplaceApp {
     /** The back link prefix. */
     public static final String BACK_LINK_PREFIX = "backLink:";
 
+    /** The back link prefix. */
+    public static final String PLAIN_TEXT_PREFIX = "plainText:";
+
     /** The state separator. */
     public static final String STATE_SEPARATOR = ";;";
 
@@ -64,6 +67,28 @@ public class CmsEditor implements I_CmsWorkplaceApp {
 
     /** The editor instance. */
     private I_CmsEditor m_editorInstance;
+
+    /**
+     * Returns the edit state for the given resource structure id.<p>
+     *
+     * @param resourceId the resource structure is
+     * @param plainText if plain text/source editing is required
+     * @param backLink the back link location
+     *
+     * @return the state
+     */
+    public static String getEditState(CmsUUID resourceId, boolean plainText, String backLink) {
+
+        String state = CmsEditor.RESOURCE_ID_PREFIX
+            + resourceId.toString()
+            + CmsEditor.STATE_SEPARATOR
+            + CmsEditor.PLAIN_TEXT_PREFIX
+            + plainText
+            + CmsEditor.STATE_SEPARATOR
+            + CmsEditor.BACK_LINK_PREFIX
+            + backLink;
+        return state;
+    }
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
@@ -83,7 +108,7 @@ public class CmsEditor implements I_CmsWorkplaceApp {
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
             CmsResource resource = cms.readResource(resId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-            I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource);
+            I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
             if (editor != null) {
                 m_editorInstance = editor.newInstance();
                 m_editorInstance.initUI(m_context, resource, getBackLinkFromState(state));
@@ -136,6 +161,18 @@ public class CmsEditor implements I_CmsWorkplaceApp {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns if plain text/source editing is requested
+     *
+     * @param state the state
+     *
+     * @return <code>true</code> if plain text/source editing is requested
+     */
+    private boolean isPlainText(String state) {
+
+        return state.indexOf(PLAIN_TEXT_PREFIX + Boolean.TRUE.toString()) >= 0;
     }
 
 }

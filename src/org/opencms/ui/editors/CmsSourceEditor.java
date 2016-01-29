@@ -47,9 +47,9 @@ public class CmsSourceEditor extends A_CmsFrameEditor {
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource)
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
      */
-    public boolean matchesResource(CmsResource resource) {
+    public boolean matchesResource(CmsResource resource, boolean plainText) {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
 

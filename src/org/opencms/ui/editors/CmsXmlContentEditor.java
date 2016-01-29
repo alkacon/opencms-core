@@ -28,46 +28,46 @@
 package org.opencms.ui.editors;
 
 import org.opencms.file.CmsResource;
-import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.OpenCms;
 
 /**
- * Interface for resource editors.<p>
+ * The acacia XML content editor.<p>
  */
-public interface I_CmsEditor {
+public class CmsXmlContentEditor extends A_CmsFrameEditor {
 
     /**
-     * Gets the priority.<p>
-     *
-     * If multiple editors for the same resource type are available, the one with the highest priority will be picked.<p>
-     *
-     * @return the priority
+     * @see org.opencms.ui.editors.I_CmsEditor#getPriority()
      */
-    int getPriority();
+    public int getPriority() {
+
+        return 20;
+    }
 
     /**
-     * Within this method the editor UI should be initialized.<p>
-     * Use the context to add the app's components to the UI.<p>
-     *
-     * @param context the UI context
-     * @param resource the resource to edit
-     * @param backLink the link to return to when closing the editor
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
      */
-    void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink);
+    public boolean matchesResource(CmsResource resource, boolean plainText) {
+
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+        return !plainText && (type instanceof CmsResourceTypeXmlContent);
+    }
 
     /**
-     * Checks whether the editor is available for the given resource.<p>
-     *
-     * @param resource the resource to edit
-     * @param plainText if plain text editing is required
-     *
-     * @return <code>true</code> if the editor is available for the given resource
+     * @see org.opencms.ui.editors.I_CmsEditor#newInstance()
      */
-    boolean matchesResource(CmsResource resource, boolean plainText);
+    public I_CmsEditor newInstance() {
+
+        return new CmsXmlContentEditor();
+    }
 
     /**
-     * Returns a new editor instance.<p>
-     *
-     * @return the editor instance
+     * @see org.opencms.ui.editors.A_CmsFrameEditor#getEditorUri()
      */
-    I_CmsEditor newInstance();
+    @Override
+    protected String getEditorUri() {
+
+        return "/system/workplace/editors/xmlcontent/editor.jsp";
+    }
 }

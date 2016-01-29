@@ -38,6 +38,8 @@ import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
 import org.opencms.ui.editors.CmsAcaciaEditor;
 import org.opencms.ui.editors.CmsSourceEditor;
+import org.opencms.ui.editors.CmsXmlContentEditor;
+import org.opencms.ui.editors.CmsXmlPageEditor;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
@@ -134,7 +136,11 @@ public class CmsWorkplaceAppManager {
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
 
     /** The available editors. */
-    private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {new CmsAcaciaEditor(), new CmsSourceEditor()};
+    private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {
+        new CmsAcaciaEditor(),
+        new CmsSourceEditor(),
+        new CmsXmlContentEditor(),
+        new CmsXmlPageEditor()};
 
     /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
@@ -220,14 +226,15 @@ public class CmsWorkplaceAppManager {
      * Returns the editor for the given resource.<p>
      *
      * @param resource the resource to edit
+     * @param plainText if plain text editing is required
      *
      * @return the editor
      */
-    public I_CmsEditor getEditorForResource(CmsResource resource) {
+    public I_CmsEditor getEditorForResource(CmsResource resource, boolean plainText) {
 
         List<I_CmsEditor> editors = new ArrayList<I_CmsEditor>();
         for (int i = 0; i < EDITORS.length; i++) {
-            if (EDITORS[i].matchesResource(resource)) {
+            if (EDITORS[i].matchesResource(resource, plainText)) {
                 editors.add(EDITORS[i]);
             }
         }
@@ -239,7 +246,7 @@ public class CmsWorkplaceAppManager {
 
                 public int compare(I_CmsEditor o1, I_CmsEditor o2) {
 
-                    return o1.getPriority() > o1.getPriority() ? -1 : 1;
+                    return o1.getPriority() > o2.getPriority() ? -1 : 1;
                 }
             });
             result = editors.get(0);

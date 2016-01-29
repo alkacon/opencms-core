@@ -32,9 +32,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.components.CmsBrowserFrame;
 
 import com.vaadin.server.ExternalResource;
-import com.vaadin.ui.BrowserFrame;
 
 /**
  * Class to extended by frame based editors.<p>
@@ -42,7 +42,7 @@ import com.vaadin.ui.BrowserFrame;
 public abstract class A_CmsFrameEditor implements I_CmsEditor {
 
     /** The frame component. */
-    private BrowserFrame m_frame;
+    private CmsBrowserFrame m_frame;
 
     /**
      * @see org.opencms.ui.editors.I_CmsEditor#initUI(org.opencms.ui.apps.I_CmsAppUIContext, org.opencms.file.CmsResource, java.lang.String)
@@ -51,8 +51,9 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, getEditorUri());
-        m_frame = new BrowserFrame();
+        m_frame = new CmsBrowserFrame();
         m_frame.setDescription("Editor");
+        m_frame.setName("edit");
         m_frame.setSource(
             new ExternalResource(link + "?resource=" + cms.getSitePath(resource) + "&backlink=" + backLink));
         m_frame.setSizeFull();

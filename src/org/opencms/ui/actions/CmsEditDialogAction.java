@@ -66,18 +66,16 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        String state = CmsEditor.RESOURCE_ID_PREFIX
-            + context.getResources().get(0).getStructureId().toString()
-            + CmsEditor.STATE_SEPARATOR
-            + CmsEditor.BACK_LINK_PREFIX;
+        String backLink;
         try {
-
-            state += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
+            backLink = URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            state += UI.getCurrent().getPage().getLocation().toString();
+            backLink = UI.getCurrent().getPage().getLocation().toString();
         }
-        CmsAppWorkplaceUi.get().showApp(OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"), state);
+        CmsAppWorkplaceUi.get().showApp(
+            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
+            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), false, backLink));
     }
 
     /**

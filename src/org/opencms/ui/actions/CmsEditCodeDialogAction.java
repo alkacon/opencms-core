@@ -31,8 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
@@ -65,19 +66,16 @@ public class CmsEditCodeDialogAction extends A_CmsWorkplaceAction {
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        String url = OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/editors/editor.jsp");
-        url += "?resource=";
-        url += cms.getSitePath(context.getResources().get(0));
-        url += "&editastext=true";
-        url += "&backlink=";
+        String backLink;
         try {
-            url += URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
+            backLink = URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             LOG.error(e.getLocalizedMessage(), e);
-            url += UI.getCurrent().getPage().getLocation().toString();
+            backLink = UI.getCurrent().getPage().getLocation().toString();
         }
-        UI.getCurrent().getPage().open(url, "_self");
+        CmsAppWorkplaceUi.get().showApp(
+            OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),
+            CmsEditor.getEditState(context.getResources().get(0).getStructureId(), true, backLink));
     }
 
     /**

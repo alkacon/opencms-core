@@ -31,14 +31,20 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
+
+import org.apache.commons.logging.Log;
 
 /**
  * The acacia XML content editor.<p>
  */
 public class CmsAcaciaEditor extends A_CmsFrameEditor {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAcaciaEditor.class);
 
     /**
      * @see org.opencms.ui.editors.I_CmsEditor#getPriority()
@@ -49,19 +55,18 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
     }
 
     /**
-     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource)
+     * @see org.opencms.ui.editors.I_CmsEditor#matchesResource(org.opencms.file.CmsResource, boolean)
      */
-    public boolean matchesResource(CmsResource resource) {
+    public boolean matchesResource(CmsResource resource, boolean plainText) {
 
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         boolean result = false;
 
-        if (type instanceof CmsResourceTypeXmlContent) {
+        if (!plainText && (type instanceof CmsResourceTypeXmlContent)) {
             try {
                 result = CmsWorkplaceEditorManager.checkAcaciaEditorAvailable(A_CmsUI.getCmsObject(), resource);
             } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("Error evaluating XML schema for acacia editor.", e);
             }
         }
 
