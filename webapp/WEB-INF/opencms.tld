@@ -1858,7 +1858,6 @@
     		<name>passSettings</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>      
-    		<type>java.lang.Boolean</type>      
     	</attribute>
     	<attribute>
     		<description></description>
@@ -1871,7 +1870,6 @@
     		<name>editable</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>       
-    		<type>java.lang.Boolean</type>     
     	</attribute>
     	<attribute>
     		<description></description>
@@ -1889,7 +1887,6 @@
             <name>create</name>
             <required>false</required>              
             <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
             <description><![CDATA[
@@ -1920,7 +1917,6 @@
             <name>delete</name>
             <required>false</required>                    
             <rtexprvalue>true</rtexprvalue>            
-            <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
             <description><![CDATA[

@@ -272,9 +272,17 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /** Setter for the "create" attribute of the tag.
      * @param canCreate value of the tag's attribute "create".
      */
-    public void setCreate(Boolean canCreate) {
+    public void setCreate(boolean canCreate) {
 
-        m_canCreate = canCreate == null ? false : canCreate.booleanValue();
+        m_canCreate = canCreate;
+    }
+
+    /** Setter for the "create" attribute of the tag.
+     * @param canCreate value of the tag's attribute "create".
+     */
+    public void setCreate(String canCreate) {
+
+        m_canCreate = Boolean.valueOf(canCreate).booleanValue();
     }
 
     /** Setter for the "createType" attribute of the tag.<p>
@@ -297,9 +305,17 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /**Setter for the "delete" attribute of the tag.
      * @param canDelete value of the "delete" attribute of the tag.
      */
-    public void setDelete(Boolean canDelete) {
+    public void setDelete(boolean canDelete) {
 
-        m_canDelete = canDelete == null ? false : canDelete.booleanValue();
+        m_canDelete = canDelete;
+    }
+
+    /**Setter for the "delete" attribute of the tag.
+     * @param canDelete value of the "delete" attribute of the tag.
+     */
+    public void setDelete(String canDelete) {
+
+        m_canDelete = Boolean.valueOf(canDelete).booleanValue();
     }
 
     /**
@@ -317,6 +333,11 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             }
         } else if (displayFormatters instanceof CmsJspContentAccessValueWrapper) {
             addFormatter((CmsJspContentAccessValueWrapper)displayFormatters);
+        } else if (displayFormatters instanceof String) {
+            String[] temp = ((String)displayFormatters).split(CmsXmlDisplayFormatterValue.SEPARATOR);
+            if (temp.length == 2) {
+                addDisplayFormatter(temp[0], temp[1]);
+            }
         }
     }
 
@@ -325,9 +346,19 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      *
      * @param editable the editable to set
      */
-    public void setEditable(Boolean editable) {
+    public void setEditable(boolean editable) {
 
-        m_editable = editable.booleanValue();
+        m_editable = editable;
+    }
+
+    /**
+     * Sets the editable.<p>
+     *
+     * @param editable the editable to set
+     */
+    public void setEditable(String editable) {
+
+        m_editable = Boolean.valueOf(editable).booleanValue();
     }
 
     /**
