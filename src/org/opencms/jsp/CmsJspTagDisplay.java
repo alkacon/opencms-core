@@ -396,7 +396,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      */
     private void addFormatter(CmsJspContentAccessValueWrapper formatterItem) {
 
-        I_CmsXmlContentValue val = formatterItem.obtainContentValue();
+        I_CmsXmlContentValue val = formatterItem.getContentValue();
         if (val instanceof CmsXmlDisplayFormatterValue) {
             CmsXmlDisplayFormatterValue value = (CmsXmlDisplayFormatterValue)val;
             String type = value.getDisplayType();

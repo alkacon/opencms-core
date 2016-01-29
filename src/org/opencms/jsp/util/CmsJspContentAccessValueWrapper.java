@@ -73,7 +73,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         public Object transform(Object input) {
 
             return Boolean.valueOf(
-                obtainContentValue().getDocument().hasValue(createPath(input), obtainContentValue().getLocale()));
+                getContentValue().getDocument().hasValue(createPath(input), getContentValue().getLocale()));
         }
     }
 
@@ -91,7 +91,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
 
             if ((obtainCmsObject() != null)
                 && !obtainCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
-                return CmsContentService.getRdfaAttributes(obtainContentValue(), String.valueOf(input));
+                return CmsContentService.getRdfaAttributes(getContentValue(), String.valueOf(input));
             } else {
                 return "";
             }
@@ -110,9 +110,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getSubValues(
+            List<I_CmsXmlContentValue> values = getContentValue().getDocument().getSubValues(
                 createPath(input),
-                obtainContentValue().getLocale());
+                getContentValue().getLocale());
             List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
             Iterator<I_CmsXmlContentValue> i = values.iterator();
             while (i.hasNext()) {
@@ -136,9 +136,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            List<I_CmsXmlContentValue> values = obtainContentValue().getDocument().getValues(
+            List<I_CmsXmlContentValue> values = getContentValue().getDocument().getValues(
                 createPath(input),
-                obtainContentValue().getLocale());
+                getContentValue().getLocale());
             List<CmsJspContentAccessValueWrapper> result = new ArrayList<CmsJspContentAccessValueWrapper>();
             Iterator<I_CmsXmlContentValue> i = values.iterator();
             while (i.hasNext()) {
@@ -162,9 +162,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            I_CmsXmlContentValue value = obtainContentValue().getDocument().getValue(
+            I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
                 createPath(input),
-                obtainContentValue().getLocale());
+                getContentValue().getLocale());
             return createWrapper(obtainCmsObject(), value);
         }
     }
@@ -181,7 +181,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            Node node = obtainContentValue().getElement().selectSingleNode(input.toString());
+            Node node = getContentValue().getElement().selectSingleNode(input.toString());
             if (node != null) {
                 return node.getStringValue();
             }
@@ -312,6 +312,18 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
             return hashCode() == ((CmsJspContentAccessValueWrapper)obj).hashCode();
         }
         return false;
+    }
+
+    /**
+     * Returns the wrapped content value.<p>
+     *
+     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code><p>.
+     *
+     * @return the wrapped content value
+     */
+    public I_CmsXmlContentValue getContentValue() {
+
+        return m_contentValue;
     }
 
     /**
@@ -806,7 +818,10 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
      * Method name does not start with "get" to prevent using it in the expression language.<p>
      *
      * @return the wrapped content value
+     *
+     * @deprecated use {@link #getContentValue()} instead
      */
+    @Deprecated
     public I_CmsXmlContentValue obtainContentValue() {
 
         return m_contentValue;

@@ -110,7 +110,7 @@ public final class CmsJspElFunctions {
                     result.getRequestContext().setSiteRoot(
                         OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
                 }
-            } catch (CmsException e) {
+            } catch (@SuppressWarnings("unused") CmsException e) {
                 result = null;
             }
         }
@@ -123,7 +123,7 @@ public final class CmsJspElFunctions {
                     result.getRequestContext().setSiteRoot(
                         OpenCms.getSiteManager().matchRequest((HttpServletRequest)req).getSiteRoot());
                 }
-            } catch (CmsException e1) {
+            } catch (@SuppressWarnings("unused") CmsException e1) {
                 // this should never fail since we can always create a "Guest" user
             }
         }
@@ -160,11 +160,11 @@ public final class CmsJspElFunctions {
                 // treat the input as a String
                 long l = Long.parseLong(str);
                 result = new Date(l);
-            } catch (NumberFormatException e) {
+            } catch (@SuppressWarnings("unused") NumberFormatException e) {
                 try {
                     // try to parse String as a Date
                     result = DateFormat.getDateInstance().parse(str);
-                } catch (ParseException e1) {
+                } catch (@SuppressWarnings("unused") ParseException e1) {
                     result = null;
                 }
                 if (result == null) {
@@ -190,7 +190,7 @@ public final class CmsJspElFunctions {
         for (Object item : input) {
             try {
                 result.add(PropertyUtils.getProperty(item, attributeName));
-            } catch (Exception e) {
+            } catch (@SuppressWarnings("unused") Exception e) {
                 // specified attribute is not implemented, return empty list
                 return Collections.emptyList();
             }
@@ -471,7 +471,7 @@ public final class CmsJspElFunctions {
         if (input instanceof CmsJspContentAccessValueWrapper) {
             CmsJspContentAccessValueWrapper wrapper = (CmsJspContentAccessValueWrapper)input;
             if (wrapper.getExists()) {
-                return wrapper.obtainContentValue().getPlainText(wrapper.obtainCmsObject());
+                return wrapper.getContentValue().getPlainText(wrapper.obtainCmsObject());
             } else {
                 return "";
             }
