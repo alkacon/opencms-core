@@ -34,6 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.util.CmsUUID;
 
@@ -49,6 +50,9 @@ public class CmsEditor implements I_CmsWorkplaceApp {
 
     /** The resource id state prefix.  */
     public static final String RESOURCE_ID_PREFIX = "resourceId:";
+
+    /** The resource id state prefix.  */
+    public static final String RESOURCE_PATH_PREFIX = "resourcePath:";
 
     /** The back link prefix. */
     public static final String BACK_LINK_PREFIX = "backLink:";
@@ -104,10 +108,20 @@ public class CmsEditor implements I_CmsWorkplaceApp {
     public void onStateChange(String state) {
 
         CmsUUID resId = getResourceIdFromState(state);
+        String path = null;
+        if (resId == null) {
+            path = getResourcePathFromState(state);
+        }
+
         CmsAppWorkplaceUi.get();
         CmsObject cms = A_CmsUI.getCmsObject();
         try {
-            CmsResource resource = cms.readResource(resId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            CmsResource resource;
+            if (resId != null) {
+                resource = cms.readResource(resId, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            } else {
+                resource = cms.readResource(path, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            }
             I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
             if (editor != null) {
                 m_editorInstance = editor.newInstance();
@@ -116,6 +130,7 @@ public class CmsEditor implements I_CmsWorkplaceApp {
 
         } catch (CmsException e) {
             LOG.error("Error initializing the editor.", e);
+            CmsErrorDialog.showErrorDialog(e);
         }
     }
 
@@ -159,6 +174,28 @@ public class CmsEditor implements I_CmsWorkplaceApp {
             if (CmsUUID.isValidUUID(id)) {
                 result = new CmsUUID(id);
             }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the resource path from the given state.<p>
+     *
+     * @param state the state
+     *
+     * @return the resource path
+     */
+    private String getResourcePathFromState(String state) {
+
+        String result = null;
+        int index = state.indexOf(RESOURCE_PATH_PREFIX);
+        if (index >= 0) {
+            result = state.substring(index + RESOURCE_PATH_PREFIX.length());
+            index = result.indexOf(STATE_SEPARATOR);
+            if (index > 0) {
+                result = result.substring(0, index);
+            }
+
         }
         return result;
     }
