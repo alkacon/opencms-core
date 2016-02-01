@@ -377,7 +377,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 editContext.setDialog(dialog);
 
                 CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
+
                 defButton.installOnDialog(dialog);
+                defButton.getElement().getStyle().setFloat(Float.LEFT);
                 final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
                 editContext.setFormHandler(formHandler);
                 editContext.initCloseHandler();

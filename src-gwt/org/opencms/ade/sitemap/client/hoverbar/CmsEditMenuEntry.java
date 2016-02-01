@@ -54,6 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.dom.client.Style;
+
 /**
  * Sitemap context menu edit entry.<p>
  *
@@ -150,6 +152,7 @@ public class CmsEditMenuEntry extends A_CmsSitemapMenuEntry {
                             }
 
                         };
+                        defButton.getElement().getStyle().setFloat(Style.Float.LEFT);
                         defButton.installOnDialog(dialog);
                         CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
                         formHandler.setDialog(dialog);
