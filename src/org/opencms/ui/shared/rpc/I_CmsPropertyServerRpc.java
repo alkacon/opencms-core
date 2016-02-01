@@ -27,8 +27,6 @@
 
 package org.opencms.ui.shared.rpc;
 
-import java.util.List;
-
 import com.vaadin.shared.communication.ServerRpc;
 
 /**
@@ -39,10 +37,9 @@ public interface I_CmsPropertyServerRpc extends ServerRpc {
     /**
      * Disposes of the extension, and tells the server which resources have changed.<p>
      *
-     * @param changedStructureIds the structure ids of changed resources, as strings
      * @param delayMillis time to delay the RPC (for allowing short background operations to finish)
      */
-    void onClose(List<String> changedStructureIds, long delayMillis);
+    void onClose(long delayMillis);
 
     /**
      * Requests the id of the next file.<p>

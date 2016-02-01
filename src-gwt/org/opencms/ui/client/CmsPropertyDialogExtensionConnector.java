@@ -183,7 +183,7 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
      */
     protected void close(long delayMillis) {
 
-        getRpcProxy(I_CmsPropertyServerRpc.class).onClose(m_changed, delayMillis);
+        getRpcProxy(I_CmsPropertyServerRpc.class).onClose(delayMillis);
     }
 
     /**

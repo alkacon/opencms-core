@@ -39,11 +39,13 @@ import org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc;
 import org.opencms.util.CmsUUID;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.UI;
 
@@ -70,6 +72,9 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
     /** The update listener. */
     private I_CmsUpdateListener<String> m_updateListener;
 
+    /** The structure ids of possibly updated resources. */
+    private HashSet<CmsUUID> m_updatedIds = Sets.newHashSet();
+
     /**
      * Creates a new instance and binds it to a UI instance.<p>
      *
@@ -92,7 +97,9 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
     public void editProperties(CmsUUID structureId, List<CmsUUID> allIds, boolean editName) {
 
         m_position = allIds.indexOf(structureId);
+
         m_ids = allIds;
+        m_updatedIds.add(structureId);
         boolean online = A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().isOnlineProject();
         getRpcProxy(I_CmsPropertyClientRpc.class).editProperties(
             "" + structureId,
@@ -101,9 +108,9 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
     }
 
     /**
-     * @see org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc#onClose(java.util.List, long)
+     * @see org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc#onClose(long)
      */
-    public void onClose(List<String> changedStructureIds, long delayMillis) {
+    public void onClose(long delayMillis) {
 
         remove();
         if (delayMillis > 0) {
@@ -113,7 +120,11 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
                 // ignore
             }
         }
-        m_updateListener.onUpdate(changedStructureIds);
+        List<String> updates = Lists.newArrayList();
+        for (CmsUUID id : m_updatedIds) {
+            updates.add("" + id);
+        }
+        m_updateListener.onUpdate(updates);
     }
 
     /**
@@ -133,7 +144,9 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
             }
         } while (!canEdit(m_ids.get(newPos)));
         m_position = newPos;
-        getRpcProxy(I_CmsPropertyClientRpc.class).sendNextId("" + m_ids.get(m_position));
+        CmsUUID nextId = m_ids.get(m_position);
+        m_updatedIds.add(nextId);
+        getRpcProxy(I_CmsPropertyClientRpc.class).sendNextId("" + nextId);
     }
 
     /**
