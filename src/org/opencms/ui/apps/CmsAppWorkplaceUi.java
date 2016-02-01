@@ -49,13 +49,16 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.NavigationStateManager;
 import com.vaadin.navigator.Navigator;
@@ -78,6 +81,7 @@ import com.vaadin.ui.Window;
  * The workplace ui.<p>
  */
 @Theme("opencms")
+@PreserveOnRefresh
 public class CmsAppWorkplaceUi extends A_CmsUI
 implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListener {
 
@@ -113,17 +117,17 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
-
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
+    /** The cached views. */
+    private Map<String, I_CmsAppView> m_cachedViews;
+
     /** The current view in case it implements view change listener. */
     private View m_currentView;
+
+    /** The has errors flag. */
+    private boolean m_hasErrors;
 
     /** The history extension. */
     private CmsHistoryExtension m_history;
@@ -133,6 +137,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
+
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
 
     /**
      * Gets the current UI instance.<p>
@@ -169,6 +179,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
+        cacheView(m_currentView);
         if ((m_currentView != null) && (m_currentView instanceof ViewChangeListener)) {
             return ((ViewChangeListener)m_currentView).beforeViewChange(event);
         }
@@ -254,6 +265,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * @see com.vaadin.ui.UI#detach()
+     */
+    @Override
+    public void detach() {
+
+        clearCachedViews();
+        super.detach();
+    }
+
+    /**
      * Disables the global keyboard shortcuts.<p>
      */
     public void disableGlobalShortcuts() {
@@ -324,6 +345,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public View getView(String viewName) {
 
+        if (m_cachedViews.containsKey(viewName)) {
+            return m_cachedViews.get(viewName);
+        }
         I_CmsWorkplaceAppConfiguration appConfig = OpenCms.getWorkplaceAppManager().getAppConfiguration(viewName);
         if (appConfig != null) {
             return new CmsAppView(appConfig);
@@ -370,6 +394,14 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Sets the has errors flag.<p>
+     */
+    public void onError() {
+
+        m_hasErrors = true;
+    }
+
+    /**
      * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
      */
     public void onWindowClose() {
@@ -377,6 +409,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         if ((m_currentView != null) && (m_currentView instanceof I_CmsWindowCloseListener)) {
             ((I_CmsWindowCloseListener)m_currentView).onWindowClose();
         }
+        cacheView(m_currentView);
     }
 
     /**
@@ -445,7 +478,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         m_currentView = view;
         Component component = null;
         if (view instanceof I_CmsAppView) {
-            component = ((I_CmsAppView)view).createComponent();
+            component = ((I_CmsAppView)view).getComponent();
         } else if (view instanceof Component) {
             component = (Component)view;
         }
@@ -462,12 +495,13 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     protected void init(VaadinRequest req) {
 
         super.init(req);
-        getSession().setErrorHandler(new CmsVaadinErrorHandler());
+        getSession().setErrorHandler(new CmsVaadinErrorHandler(this));
+        m_cachedViews = new HashMap<String, I_CmsAppView>();
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
         Navigator navigator = new Navigator(this, m_navigationStateManager, this);
         navigator.addProvider(this);
         setNavigator(navigator);
-        String fragment = getPage().getUriFragment();
+
         Page.getCurrent().addBrowserWindowResizeListener(new BrowserWindowResizeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -481,12 +515,41 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         CmsWindowCloseExtension windowClose = new CmsWindowCloseExtension(getCurrent());
         windowClose.addWindowCloseListener(this);
         navigator.addViewChangeListener(this);
+        navigateToFragment();
+    }
 
-        if (fragment != null) {
-            navigator.navigateTo(fragment);
-        } else {
-            showHome();
+    /**
+     * @see com.vaadin.ui.UI#refresh(com.vaadin.server.VaadinRequest)
+     */
+    @Override
+    protected void refresh(VaadinRequest request) {
+
+        if (m_hasErrors) {
+            m_hasErrors = false;
+            clearCachedViews();
+            navigateToFragment();
         }
+
+    }
+
+    /**
+     * Caches the given view in case it implements the I_CmsAppView interface and is cachable.<p>
+     *
+     * @param view the view to cache
+     */
+    private void cacheView(View view) {
+
+        if ((view instanceof I_CmsAppView) && ((I_CmsAppView)view).isCachable()) {
+            m_cachedViews.put(((I_CmsAppView)view).getName(), (I_CmsAppView)view);
+        }
+    }
+
+    /**
+     * Clears the cached views.<p>
+     */
+    private void clearCachedViews() {
+
+        m_cachedViews.clear();
     }
 
     /**
@@ -499,6 +562,19 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         if (component instanceof AbstractComponent) {
             new CmsPollServerExtension((AbstractComponent)component);
+        }
+    }
+
+    /**
+     * Navigates to the current URI fragment.<p>
+     */
+    private void navigateToFragment() {
+
+        String fragment = getPage().getUriFragment();
+        if (fragment != null) {
+            getNavigator().navigateTo(fragment);
+        } else {
+            showHome();
         }
     }
 }

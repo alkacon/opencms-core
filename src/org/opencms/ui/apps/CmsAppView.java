@@ -112,6 +112,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /** The current app. */
     private I_CmsWorkplaceApp m_app;
 
+    /** The app layout component. */
+    private CmsAppViewLayout m_appLayout;
+
     /**
      * Constructor.<p>
      *
@@ -164,21 +167,11 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     public boolean beforeViewChange(ViewChangeEvent event) {
 
         disableGlobalShortcuts();
+        m_appLayout.closePopupViews();
         if (m_app instanceof ViewChangeListener) {
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }
         return true;
-    }
-
-    /**
-     * @see org.opencms.ui.I_CmsAppView#createComponent()
-     */
-    public Component createComponent() {
-
-        if (m_app == null) {
-            return reinitComponent();
-        }
-        return null;
     }
 
     /**
@@ -237,6 +230,25 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     }
 
     /**
+     * @see org.opencms.ui.I_CmsAppView#getComponent()
+     */
+    public Component getComponent() {
+
+        if (m_app == null) {
+            return reinitComponent();
+        }
+        return m_appLayout;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#getName()
+     */
+    public String getName() {
+
+        return m_appConfig.getId();
+    }
+
+    /**
      * @see com.vaadin.event.Action.Handler#handleAction(com.vaadin.event.Action, java.lang.Object, java.lang.Object)
      */
     public void handleAction(Action action, Object sender, Object target) {
@@ -246,6 +258,14 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
         } else if (m_defaultActions.containsKey(action)) {
             m_defaultActions.get(action).run();
         }
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsAppView#isCachable()
+     */
+    public boolean isCachable() {
+
+        return (m_app instanceof I_CmsCachableApp) && ((I_CmsCachableApp)m_app).isCachable();
     }
 
     /**
@@ -273,9 +293,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
         } else {
             m_app = m_appConfig.getAppInstance();
         }
-        CmsAppViewLayout layout = new CmsAppViewLayout();
-        layout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
-        m_app.initUI(layout);
-        return layout;
+        m_appLayout = new CmsAppViewLayout();
+        m_appLayout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
+        m_app.initUI(m_appLayout);
+        return m_appLayout;
     }
 }

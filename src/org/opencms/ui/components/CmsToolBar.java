@@ -59,6 +59,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
@@ -207,7 +208,6 @@ public class CmsToolBar extends CssLayout {
         pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
         pv.setHideOnMouseOut(false);
         return pv;
-
     }
 
     /**
@@ -248,6 +248,15 @@ public class CmsToolBar extends CssLayout {
     public void clearButtonsRight() {
 
         m_itemsRight.removeAllComponents();
+    }
+
+    /**
+     * Closes all visible popup views.<p>
+     */
+    public void closePopupViews() {
+
+        closePopupViews(m_itemsLeft);
+        closePopupViews(m_itemsRight);
     }
 
     /**
@@ -306,6 +315,20 @@ public class CmsToolBar extends CssLayout {
                 cms.getRequestContext().getCurrentUser(),
                 tempFile);
             refreshUserInfoDropDown();
+        }
+    }
+
+    /**
+     * Closes the visible popup view children of the given layout.<p>
+     *
+     * @param layout the layout
+     */
+    private void closePopupViews(AbstractOrderedLayout layout) {
+
+        for (Component item : layout) {
+            if (item instanceof PopupView) {
+                ((PopupView)item).setPopupVisible(false);
+            }
         }
     }
 

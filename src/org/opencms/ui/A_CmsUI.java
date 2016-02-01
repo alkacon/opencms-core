@@ -189,6 +189,9 @@ public abstract class A_CmsUI extends UI {
         getSession().setAttribute("WP_FOLDER", folder);
     }
 
+    /**
+     * @see com.vaadin.ui.UI#init(com.vaadin.server.VaadinRequest)
+     */
     @Override
     protected void init(VaadinRequest request) {
 

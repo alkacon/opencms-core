@@ -28,6 +28,7 @@
 package org.opencms.ui;
 
 import org.opencms.main.CmsLog;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 
 import java.net.SocketException;
 
@@ -41,11 +42,28 @@ import com.vaadin.server.ErrorEvent;
  */
 public class CmsVaadinErrorHandler extends DefaultErrorHandler {
 
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsVaadinErrorHandler.class);
+
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsVaadinErrorHandler.class);
+    /** The workplace UI instance. */
+    private CmsAppWorkplaceUi m_ui;
+
+    /**
+     * Constructor.<p>
+     */
+    public CmsVaadinErrorHandler() {}
+
+    /**
+     * Constructor.<p>
+     *
+     * @param ui the workplace UI
+     */
+    public CmsVaadinErrorHandler(CmsAppWorkplaceUi ui) {
+        m_ui = ui;
+    }
 
     /**
      * @see com.vaadin.server.DefaultErrorHandler#error(com.vaadin.server.ErrorEvent)
@@ -54,6 +72,9 @@ public class CmsVaadinErrorHandler extends DefaultErrorHandler {
     public void error(ErrorEvent event) {
 
         super.error(event);
+        if (m_ui != null) {
+            m_ui.onError();
+        }
         Throwable throwable = event.getThrowable();
         if (!(throwable instanceof SocketException)) {
             LOG.error(throwable.getLocalizedMessage(), throwable);

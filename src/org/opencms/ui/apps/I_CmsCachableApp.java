@@ -25,58 +25,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui;
-
-import com.vaadin.navigator.View;
-import com.vaadin.ui.Component;
+package org.opencms.ui.apps;
 
 /**
- * Factory to create components.<p>
+ * Apps implementing this interface will be stored in the user session so returning to the app will be quicker and use less resources.<p>
  */
-public interface I_CmsAppView extends View {
+public interface I_CmsCachableApp {
 
     /**
-     * Disables the global keyboard shortcuts.<p>
-     */
-    void disableGlobalShortcuts();
-
-    /**
-     * Enables the global keyboard shortcuts.<p>
-     */
-    void enableGlobalShortcuts();
-
-    /**
-     * Enters the view.<p>
+     * Returns whether this app should be cached within the user session.<p>
      *
-     * @param state the state to set
-     */
-    void enter(String state);
-
-    /**
-     * Returns the app component, initializes it if required.<p>
-     *
-     * @return the component
-     */
-    Component getComponent();
-
-    /**
-     * Returns the view name.<p>
-     *
-     * @return the view name
-     */
-    String getName();
-
-    /**
-     * Returns whether this view should be cached within the user session.<p>
-     *
-     * @return <code>true</code> if the view is cachable
+     * @return <code>true</code> if the app is cachable
      */
     boolean isCachable();
-
-    /**
-     * Creates a new component instance.<p>
-     *
-     * @return the new component
-     */
-    Component reinitComponent();
 }

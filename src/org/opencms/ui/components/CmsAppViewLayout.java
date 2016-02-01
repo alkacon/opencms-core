@@ -81,6 +81,14 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     }
 
     /**
+     * Closes the toolbar popup views.<p>
+     */
+    public void closePopupViews() {
+
+        m_toolbar.closePopupViews();
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsAppUIContext#hideToolbar()
      */
     public void hideToolbar() {

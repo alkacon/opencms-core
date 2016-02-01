@@ -368,6 +368,16 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Returns the index of the first visible item.<p>
+     *
+     * @return the first visible item
+     */
+    public int getFirstVisibleItemIndex() {
+
+        return m_fileTable.getCurrentPageFirstItemIndex();
+    }
+
+    /**
      * Gets the selected structure ids.<p>
      *
      * @return the set of selected structure ids
@@ -455,6 +465,16 @@ public class CmsFileTable extends CmsResourceTable {
     public void openContextMenu(ItemClickEvent event) {
 
         m_menu.openForTable(event, m_fileTable);
+    }
+
+    /**
+     * Sets the first visible item index.<p>
+     *
+     * @param i the item index
+     */
+    public void setFirstVisibleItemIndex(int i) {
+
+        m_fileTable.setCurrentPageFirstItemIndex(i);
     }
 
     /**

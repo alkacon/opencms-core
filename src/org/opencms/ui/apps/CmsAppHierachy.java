@@ -47,7 +47,7 @@ import com.vaadin.ui.Button.ClickListener;
 /**
  * Displays all available app.<p>
  */
-public class CmsAppHierachy implements I_CmsWorkplaceApp {
+public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
@@ -91,6 +91,14 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp {
             }
         });
         context.addToolbarButton(publishButton);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#isCachable()
+     */
+    public boolean isCachable() {
+
+        return true;
     }
 
     /**

@@ -144,7 +144,7 @@ import com.vaadin.ui.themes.ValoTheme;
  * The file explorer app.<p>
  */
 public class CmsFileExplorer
-implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
+implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowCloseListener, I_CmsHasShortcutActions {
 
     /**
      * Handles inline editing within the file table.<p>
@@ -585,6 +585,9 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     /** The folder tree. */
     private Tree m_fileTree;
 
+    /** The first visible file table item index. */
+    private int m_firstVisibleTableItemIndex;
+
     /** The opened paths by site. */
     private Map<String, String> m_openedPaths;
 
@@ -829,14 +832,15 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
      */
     public void afterViewChange(ViewChangeEvent event) {
 
-        // nothing to do
-
+        m_fileTable.setFirstVisibleItemIndex(m_firstVisibleTableItemIndex);
     }
 
     /**
      * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
+
+        m_firstVisibleTableItemIndex = m_fileTable.getFirstVisibleItemIndex();
 
         OpenCms.getWorkplaceAppManager().storeAppSettings(
             A_CmsUI.getCmsObject(),
@@ -954,6 +958,14 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#isCachable()
+     */
+    public boolean isCachable() {
+
+        return true;
+    }
+
+    /**
      * Triggered when the user clicks the 'publsh' button.<p>
      */
     public void onClickPublish() {
@@ -1036,6 +1048,7 @@ implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener, I_Cm
 
         CmsObject cms = A_CmsUI.getCmsObject();
         m_searchField.clear();
+        m_firstVisibleTableItemIndex = 0;
         try {
             List<CmsResource> folderResources = cms.readResources(sitePath, FILES_N_FOLDERS, false);
             m_fileTable.fillTable(cms, folderResources);
