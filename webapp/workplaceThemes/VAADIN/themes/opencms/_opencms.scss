@@ -384,6 +384,18 @@
 	.cmslogin-hidden-form {
 		display: none;  
 	}
+	
+	.o-login-form .o-login-logo{
+		text-align: center;
+		
+		> span {
+			vertical-align: top;
+			display: inline-block;
+  			height: 42px;
+  			width: 170px;
+  			background: url("img/opencmsLogo.png") no-repeat transparent; 
+		}
+	}
 	 
 	div.o-upload-drop{
 		position: relative;

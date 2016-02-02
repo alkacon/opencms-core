@@ -32,7 +32,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
-import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.List;
 import java.util.Locale;
@@ -40,13 +39,10 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
@@ -77,12 +73,6 @@ public class CmsLoginForm extends VerticalLayout {
 
     /** Login button. */
     private Button m_loginButton;
-
-    /** OpenCms logo. */
-    private Image m_logo;
-
-    /** Container for the logo. */
-    private VerticalLayout m_logoContainer;
 
     /** Button to show / hide advanced options. */
     private Button m_optionsButton;
@@ -130,9 +120,6 @@ public class CmsLoginForm extends VerticalLayout {
             "public",
             messages.key(org.opencms.workplace.Messages.GUI_LOGIN_PCTYPE_PUBLIC_0));
         setWidth("600px");
-
-        m_logo.setSource(new ThemeResource(OpenCmsTheme.OPENCMS_LOGO_PATH));
-        setComponentAlignment(m_logoContainer, Alignment.MIDDLE_CENTER);
         m_loginButton.setClickShortcut(KeyCode.ENTER);
         m_loginButton.addClickListener(new ClickListener() {
 
