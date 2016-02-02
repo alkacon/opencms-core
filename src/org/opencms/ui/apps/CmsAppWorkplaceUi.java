@@ -117,6 +117,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
+
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
@@ -138,11 +144,8 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The navigation state manager. */
     private NavigationStateManager m_navigationStateManager;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
+    /** Flag indicating that the view is being refreshed. */
+    private boolean m_refreshing;
 
     /**
      * Gets the current UI instance.<p>
@@ -525,9 +528,11 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     protected void refresh(VaadinRequest request) {
 
         if (m_hasErrors) {
+            m_refreshing = true;
             m_hasErrors = false;
             clearCachedViews();
             navigateToFragment();
+            m_refreshing = false;
         }
 
     }
@@ -539,7 +544,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     private void cacheView(View view) {
 
-        if ((view instanceof I_CmsAppView) && ((I_CmsAppView)view).isCachable()) {
+        if (!m_refreshing && (view instanceof I_CmsAppView) && ((I_CmsAppView)view).isCachable()) {
             m_cachedViews.put(((I_CmsAppView)view).getName(), (I_CmsAppView)view);
         }
     }
