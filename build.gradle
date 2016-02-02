@@ -2,7 +2,6 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
-//apply from: 'http://plugins.jasoft.fi/vaadin.plugin?version=0.9.8'
 
 sourceCompatibility = java_target_version
 targetCompatibility = java_target_version
@@ -35,9 +34,6 @@ repositories {
         }
     }
     mavenCentral()
-    maven { 
-    	url "http://maven.vaadin.com/vaadin-addons"
-    }
     maven {
     	url 'http://maven.restlet.org'
     }
@@ -1516,6 +1512,7 @@ install {
 // fixed issue with libraries containing both .java and .class files
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-sourcepath", ""]
+    options.encoding='UTF-8'
 }
 tasks.withType(Javadoc) {
     options.addStringOption("sourcepath", "")
