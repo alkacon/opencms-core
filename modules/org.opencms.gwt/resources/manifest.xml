@@ -1022,18 +1022,5 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
-			<destination>system/modules/org.opencms.gwt/resources/opencmsall</destination>
-			<type>folder</type>
-			<uuidstructure>7e5359db-8c72-11e5-901f-837a0f2b9303</uuidstructure>
-			<datelastmodified>Mon, 16 Nov 2015 14:58:27 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 16 Nov 2015 14:58:27 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
 	</files>
 </export>

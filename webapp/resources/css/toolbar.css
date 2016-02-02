@@ -1,0 +1,12 @@
+div.org-opencms-gwt-client-ui-css-I_CmsLayoutBundle-I_CmsToolbarCss-toolbarBackground div.org-opencms-gwt-client-ui-css-I_CmsLayoutBundle-I_CmsToolbarCss-title, .opencms .o-toolbar .o-toolbar-inner div.o-toolbar-app-indicator{
+  /*  Set the app indicator style here
+  background: some color;
+  */
+}
+
+.org-opencms-gwt-client-ui-css-I_CmsLayoutBundle-I_CmsToolbarCss-toolbarBackground span.org-opencms-gwt-client-ui-css-I_CmsLayoutBundle-I_CmsToolbarCss-toolbarLogo, .opencms .o-toolbar .o-toolbar-center span.o-toolbar-logo, .opencms .o-login-form div.o-login-logo > span{
+  /* Set the toolbar logo style here
+  background: url(mylogo.png);
+  background-size: 170px 42px;
+  */
+}
