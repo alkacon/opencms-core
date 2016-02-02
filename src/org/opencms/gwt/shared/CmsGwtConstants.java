@@ -86,9 +86,6 @@ public final class CmsGwtConstants {
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
 
-    /** The xmlimage resource type name. */
-    public static final String TYPE_XML_IMAGE = "xmlimage";
-
     /**
      * Hide constructor.<p>
      */

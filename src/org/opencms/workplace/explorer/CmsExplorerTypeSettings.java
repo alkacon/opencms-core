@@ -106,8 +106,6 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
             put("pointer", new Integer(200));
 
             put("modelgroup", new Integer(100));
-            put("xmlimage", new Integer(200));
-
         }
     };
 

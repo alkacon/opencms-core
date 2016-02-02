@@ -64,12 +64,6 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
  */
 public class CmsGwtService extends RemoteServiceServlet {
 
-    /** XPath for xmlimage images. */
-    public static final String XPATH_XMLIMAGE_IMAGE = "/Image";
-
-    /** XPath for xmlimage title. */
-    public static final String XPATH_XMLIMAGE_TITLE = "/Headline";
-
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGwtService.class);
 

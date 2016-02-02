@@ -1612,36 +1612,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Creates xml content wrapper for a given image, and passes its element data to the given callback.<p>
-     *
-     * @param clientId the id of the image
-     * @param callback the callback to call with the element data
-     */
-    public void getImageElementForDragAndDrop(
-        final String clientId,
-        final I_CmsSimpleCallback<CmsContainerElementData> callback) {
-
-        CmsRpcAction<String> action = new CmsRpcAction<String>() {
-
-            @Override
-            public void execute() {
-
-                start(200, false);
-                getContainerpageService().createImageWrapperContent(getData().getRpcContext(), clientId, this);
-            }
-
-            @Override
-            protected void onResponse(String result) {
-
-                stop(false);
-                getElementForDragAndDropFromContainer(result, null, callback);
-            }
-        };
-        action.execute();
-
-    }
-
-    /**
      * Gets the lock error message.<p>
      *
      * @return the lock error message

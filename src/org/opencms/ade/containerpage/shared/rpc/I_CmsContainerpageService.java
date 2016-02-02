@@ -127,17 +127,6 @@ public interface I_CmsContainerpageService extends RemoteService {
     CmsUUID copyElement(CmsUUID pageId, CmsUUID originalElementId) throws CmsRpcException;
 
     /**
-     * Creates a wrapper content for the image with the given id and returns the wrapper content's structure id as a string.<p>
-     *
-     * @param context the RPC context
-     * @param imageId the structure id of the image, as a string
-     * @return the structure id of the created wrapper content
-     *
-     * @throws CmsRpcException if something goes wrong
-     */
-    String createImageWrapperContent(CmsContainerPageRpcContext context, String imageId) throws CmsRpcException;
-
-    /**
      * Creates a new element of the given type and returns the new element data containing structure id and site path.<p>
      *
      * @param pageStructureId the container page structure id

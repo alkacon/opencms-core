@@ -64,7 +64,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
@@ -74,7 +73,6 @@ import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.CmsVfsService;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsModelResourceInfo;
 import org.opencms.gwt.shared.CmsTemplateContextInfo;
@@ -553,62 +551,6 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         } catch (Throwable e) {
             error(e);
             return null; // will never be reached
-        }
-    }
-
-    /**
-     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#createImageWrapperContent(org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext, java.lang.String)
-     */
-    public String createImageWrapperContent(CmsContainerPageRpcContext context, String clientId)
-    throws CmsRpcException {
-
-        try {
-            CmsUUID structureId = new CmsUUID(clientId);
-            CmsObject cms = OpenCms.initCmsObject(getCmsObject()); // Copy CmsObject because we want to set a request context attribute
-
-            CmsResource resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-            if (OpenCms.getResourceManager().matchResourceType(
-                CmsResourceTypeImage.getStaticTypeName(),
-                resource.getTypeId())) {
-                CmsResource pageResource = cms.readResource(context.getPageStructureId());
-                CmsADEConfigData configData = getConfigData(pageResource.getRootPath());
-
-                CmsResourceTypeConfig resTypeConfig = configData.getResourceType(CmsGwtConstants.TYPE_XML_IMAGE);
-                Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, pageResource);
-                cms.getRequestContext().setLocale(locale);
-
-                CmsResource newResource = resTypeConfig.createNewElement(cms, pageResource.getRootPath());
-                CmsFile file = cms.readFile(newResource);
-
-                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
-
-                content.getValue(XPATH_XMLIMAGE_IMAGE, locale).setStringValue(cms, cms.getSitePath(resource));
-                String title = resource.getName();
-                List<CmsProperty> propertyList = cms.readPropertyObjects(cms.getSitePath(resource), false);
-                Map<String, CmsProperty> properties = CmsProperty.toObjectMap(propertyList);
-                for (String propName : Arrays.asList(
-                    CmsPropertyDefinition.PROPERTY_TITLE,
-                    CmsPropertyDefinition.PROPERTY_DESCRIPTION)) {
-                    CmsProperty currentProperty = properties.get(propName);
-                    if (currentProperty != null) {
-                        title = currentProperty.getValue();
-                        break;
-                    }
-                }
-                content.getValue(XPATH_XMLIMAGE_TITLE, locale).setStringValue(cms, title);
-
-                byte[] newContentBytes = content.marshal();
-                file.setContents(newContentBytes);
-                cms.lockResource(file);
-                cms.writeFile(file);
-                cms.unlockResource(file);
-                return "" + file.getStructureId();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            error(e);
-            return null;
         }
     }
 

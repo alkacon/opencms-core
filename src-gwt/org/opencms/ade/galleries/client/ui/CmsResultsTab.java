@@ -350,7 +350,7 @@ public class CmsResultsTab extends A_CmsListTab {
      */
     public static boolean isImagelikeType(String typeName) {
 
-        return CmsGwtConstants.TYPE_IMAGE.equals(typeName) || CmsGwtConstants.TYPE_XML_IMAGE.equals(typeName);
+        return CmsGwtConstants.TYPE_IMAGE.equals(typeName);
     }
 
     /**

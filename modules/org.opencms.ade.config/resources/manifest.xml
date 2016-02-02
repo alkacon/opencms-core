@@ -293,11 +293,6 @@
 					</property>
 				</properties>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-				name="xmlimage" id="312">
-				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/xmlimage.xsd
-				</param>
-			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
 				name="sitemap_master_config" id="313">
 				<properties>
@@ -340,11 +335,6 @@
 				icon="modelpage.png" bigicon="modelpage_big.png" reference="folder">
 				<newresource page="none" uri="" order="490"
 					autosetnavigation="false" autosettitle="false" info="" />
-			</explorertype>
-			<explorertype name="xmlimage" key="fileicon.xmlimage"
-				icon="image_xml.gif" bigicon="image_xml_big.png" reference="xmlcontent">
-				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=xmlimage"
-					order="490" autosetnavigation="false" autosettitle="false" info="desc.xmlimage" />
 			</explorertype>
 			<explorertype name="category" key="fileicon.category"
 				icon="category.png" bigicon="category_big.png" reference="folder">
@@ -1115,26 +1105,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.ade.config/formatters/xmlimage.jsp</source>
-			<destination>system/modules/org.opencms.ade.config/formatters/xmlimage.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>2bbf8c48-62be-11e5-a6b9-35cf27d9ef56</uuidstructure>
-			<uuidresource>2bbf8c49-62be-11e5-a6b9-35cf27d9ef56</uuidresource>
-			<datelastmodified>Wed, 04 May 2011 07:20:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 24 Sep 2015 13:14:22 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[container-element;locale]]></value>
 				</property>
 			</properties>
 			<relations/>
