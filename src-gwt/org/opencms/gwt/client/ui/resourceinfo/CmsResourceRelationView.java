@@ -77,8 +77,12 @@ public class CmsResourceRelationView extends Composite {
 
     /** Enum for the display mode. */
     public enum Mode {
+        /** Display siblings. */
+        siblings,
         /** Display relation sources. */
-        sources, /** Display relation targets. */
+        sources,
+
+        /** Display relation targets. */
         targets
     }
 
@@ -332,9 +336,14 @@ public class CmsResourceRelationView extends Composite {
                 return org.opencms.gwt.client.Messages.get().key(
                     org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_USAGE_0);
             case targets:
-            default:
+
                 return org.opencms.gwt.client.Messages.get().key(
                     org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_TARGETS_0);
+            case siblings:
+            default:
+                return org.opencms.gwt.client.Messages.get().key(
+                    org.opencms.gwt.client.Messages.GUI_RESOURCE_INFO_TAB_SIBLINGS_0);
+
         }
 
     }
@@ -350,8 +359,10 @@ public class CmsResourceRelationView extends Composite {
             case targets:
                 return m_statusBean.getRelationTargets();
             case sources:
-            default:
                 return m_statusBean.getRelationSources();
+            case siblings:
+            default:
+                return m_statusBean.getSiblings();
         }
     }
 }

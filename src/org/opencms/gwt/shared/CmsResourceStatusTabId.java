@@ -32,8 +32,13 @@ package org.opencms.gwt.shared;
  */
 public enum CmsResourceStatusTabId {
     /** Tab for relations from a resource. */
-    tabRelationsFrom, /** Tab for relations to a resource. */
-    tabRelationsTo, /** Tab for resource status information.*/
+    tabRelationsFrom,
+    /** Tab for relations to a resource. */
+    tabRelationsTo,
+    /** Tab for resource sibling information.*/
+    tabSiblings,
+
+    /** Tab for resource status information.*/
     tabStatus;
 
 }

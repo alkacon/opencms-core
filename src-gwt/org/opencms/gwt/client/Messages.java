@@ -541,6 +541,9 @@ public final class Messages {
     public static final String GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0 = "GUI_RESOURCE_INFO_TAB_ATTRIBUTES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_RESOURCE_INFO_TAB_SIBLINGS_0 = "GUI_RESOURCE_INFO_TAB_SIBLINGS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_INFO_TAB_TARGETS_0 = "GUI_RESOURCE_INFO_TAB_TARGETS_0";
 
     /** Message constant for key in the resource bundle. */

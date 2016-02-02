@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabContentWrapper;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
+import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.util.CmsUUID;
@@ -70,6 +71,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setModal(true);
         setGlassEnabled(true);
         addDialogClose(null);
+        setWidth(610);
         removePadding();
 
         final CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
@@ -98,6 +100,17 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     setTabMinHeight(infoView);
                     tabPanel.add(new CmsTabContentWrapper(infoView), tabEntry.getValue());
                     relationViews.add(null);
+                    break;
+                case tabSiblings:
+                    CmsDebugLog.consoleLog("case tabSiblings");
+                    if (statusBean.getSiblings().size() > 0) {
+                        CmsDebugLog.consoleLog("more than one sibling");
+
+                        CmsResourceRelationView siblings = new CmsResourceRelationView(statusBean, Mode.siblings);
+                        setTabMinHeight(siblings);
+                        tabPanel.add(new CmsTabContentWrapper(siblings), tabEntry.getValue());
+                        relationViews.add(siblings);
+                    }
                     break;
                 default:
                     break;

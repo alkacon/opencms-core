@@ -307,7 +307,7 @@ public class CmsDefaultResourceStatusProvider {
         if (includeTargets) {
             result.getRelationTargets().addAll(getTargets(cms, contentLocale, resource, additionalStructureIds));
         }
-
+        result.getSiblings().addAll(getSiblings(cms, contentLocale, resource));
         LinkedHashMap<CmsResourceStatusTabId, String> tabMap = new LinkedHashMap<CmsResourceStatusTabId, String>();
         Map<CmsResourceStatusTabId, CmsMessageContainer> tabs;
         CmsResourceStatusTabId startTab = CmsResourceStatusTabId.tabRelationsFrom;
@@ -373,6 +373,44 @@ public class CmsDefaultResourceStatusProvider {
                 return result;
             }
         });
+    }
+
+    /**
+     * Gets beans which represents the siblings of a resource.<p>
+     *
+     * @param cms the CMS ccontext
+     * @param locale the locale
+     * @param resource the resource
+     * @return the list of sibling beans
+     *
+     * @throws CmsException if something goes wrong
+     */
+    protected List<CmsResourceStatusRelationBean> getSiblings(CmsObject cms, String locale, CmsResource resource)
+    throws CmsException {
+
+        List<CmsResourceStatusRelationBean> result = new ArrayList<CmsResourceStatusRelationBean>();
+        for (CmsResource sibling : cms.readSiblings(resource, CmsResourceFilter.ALL)) {
+            if (sibling.getStructureId().equals(resource.getStructureId())) {
+                continue;
+            }
+            try {
+                CmsPermissionInfo permissionInfo = OpenCms.getADEManager().getPermissionInfo(
+                    cms,
+                    sibling,
+                    resource.getRootPath());
+                if (permissionInfo.hasViewPermission()) {
+                    CmsResourceStatusRelationBean relationBean = createRelationBean(
+                        cms,
+                        locale,
+                        sibling,
+                        permissionInfo);
+                    result.add(relationBean);
+                }
+            } catch (CmsException e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return result;
     }
 
     /**

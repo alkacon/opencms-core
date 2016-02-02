@@ -87,8 +87,14 @@ public class CmsResourceStatusBean implements IsSerializable {
     /** Resource type. */
     private String m_resourceType;
 
+    /** Beans representing siblings. */
+    private ArrayList<CmsResourceStatusRelationBean> m_siblings = new ArrayList<CmsResourceStatusRelationBean>();
+
     /** Size. */
     private int m_size;
+
+    /** The start tab id. */
+    private CmsResourceStatusTabId m_startTab;
 
     /** Structure id of the resource. */
     private CmsUUID m_structureId;
@@ -104,9 +110,6 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Last modifier. */
     private String m_userLastModified;
-
-    /** The start tab id. */
-    private CmsResourceStatusTabId m_startTab;
 
     /**
      * Gets the date created.
@@ -246,6 +249,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public String getResourceType() {
 
         return m_resourceType;
+    }
+
+    /**
+     * Gets the sibling information.<p>
+     *
+     * @return the sibling information
+     */
+    public ArrayList<CmsResourceStatusRelationBean> getSiblings() {
+
+        return m_siblings;
     }
 
     /**
@@ -517,4 +530,5 @@ public class CmsResourceStatusBean implements IsSerializable {
 
         m_userLastModified = userLastModified;
     }
+
 }
