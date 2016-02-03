@@ -636,6 +636,18 @@ public class CmsElementUtil {
                 container.getWidth(),
                 allowNested);
             formatter = formatters.get(formatterId);
+            if (formatter == null) {
+                for (I_CmsFormatterBean currentFormatter : formatters.values()) {
+                    if ((currentFormatter.getJspStructureId() != null)
+                        && currentFormatter.getJspStructureId().equals(element.getFormatterId())) {
+                        formatter = currentFormatter;
+                        break;
+                    }
+                }
+            }
+            if (formatter == null) {
+                formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
+            }
         } else {
             formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
         }
