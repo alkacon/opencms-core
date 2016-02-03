@@ -60,7 +60,7 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
             if (!m_cancelled) {
                 try {
                     m_rpc.poll();
-                } catch (@SuppressWarnings("unused") Throwable t) {
+                } catch (Throwable t) {
                     m_cancelled = true;
                 }
             }
@@ -77,16 +77,16 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
     }
 
     /** The polling delay in milliseconds. */
-    private static final int POLLING_DELAY_MS = 120 * 1000;
+    private static final int POLLING_DELAY_MS = 10 * 1000;
 
     /** The serial version id. */
     private static final long serialVersionUID = -3661096843568550285L;
 
-    /** The polling command. */
-    private PollingCommand m_command;
-
     /** The RPC proxy. */
     I_CmsPollServerRpc m_rpc;
+
+    /** The polling command. */
+    private PollingCommand m_command;
 
     /** The widget to enhance. */
     private Widget m_widget;
@@ -125,10 +125,11 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
      */
     void startPolling() {
 
+        m_rpc.poll();
         if (m_command == null) {
             m_command = new PollingCommand();
+            Scheduler.get().scheduleFixedDelay(m_command, POLLING_DELAY_MS);
         }
-        Scheduler.get().scheduleFixedDelay(m_command, POLLING_DELAY_MS);
     }
 
     /**
