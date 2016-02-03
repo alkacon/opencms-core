@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSite;
 import org.opencms.synchronize.CmsSynchronizeSettings;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
@@ -377,7 +378,12 @@ public class CmsFrameset extends CmsWorkplace {
             CmsSite site = i.next();
             values.add(site.getSiteRoot());
             options.add(substituteSiteTitle(site.getTitle()));
-            if (site.getSiteRoot().equals(getSettings().getSite())) {
+            String siteRoot = CmsFileUtil.addTrailingSeparator(site.getSiteRoot());
+            String settingsSiteRoot = getSettings().getSite();
+            if (settingsSiteRoot != null) {
+                settingsSiteRoot = CmsFileUtil.addTrailingSeparator(settingsSiteRoot);
+            }
+            if (siteRoot.equals(settingsSiteRoot)) {
                 // this is the user's current site
                 selectedIndex = pos;
             }

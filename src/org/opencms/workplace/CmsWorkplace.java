@@ -724,23 +724,24 @@ public abstract class CmsWorkplace {
         StringBuffer siteRoot = new StringBuffer();
         StringBuffer path = new StringBuffer('/');
         Scanner scanner = new Scanner(explorerRootPath);
-        scanner.useDelimiter("/");
-        int count = 0;
-        while (scanner.hasNext()) {
-            if (count < 2) {
-                siteRoot.append('/').append(scanner.next());
+        String targetSiteRoot = OpenCms.getSiteManager().getSiteRoot(explorerRootPath);
+        if (targetSiteRoot == null) {
+            if (OpenCms.getSiteManager().startsWithShared(explorerRootPath)) {
+                targetSiteRoot = OpenCms.getSiteManager().getSharedFolder();
             } else {
-                if (count == 2) {
-                    path.append('/');
-                }
-                path.append(scanner.next());
-                path.append('/');
+                targetSiteRoot = "";
             }
-            count++;
         }
-        String targetSiteRoot = siteRoot.toString();
-        String targetVfsFolder = path.toString();
-        // build the link
+        String targetVfsFolder;
+        if (explorerRootPath.startsWith(targetSiteRoot)) {
+            targetVfsFolder = explorerRootPath.substring(targetSiteRoot.length());
+            targetVfsFolder = CmsStringUtil.joinPaths("/", targetVfsFolder);
+        } else {
+            targetVfsFolder = "/";
+            // Not sure this can ever happen
+            LOG.error("Inconsistent site for path: " + explorerRootPath);
+        }
+
         StringBuilder link2Source = new StringBuilder();
         link2Source.append("/system/workplace/views/workplace.jsp?");
         link2Source.append(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE);
