@@ -170,8 +170,11 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
     protected Map<Integer, CmsPushButton> getAdditionalButtons() {
 
         Map<Integer, CmsPushButton> result = Maps.newHashMap();
-        result.put(Integer.valueOf(130), createFavButton());
-        result.put(Integer.valueOf(160), createInfoButton());
+        // only show add to favorites and info button, in case there actually is a resource and not in case of create new only
+        if (m_editableData.hasDelete() || m_editableData.hasEdit()) {
+            result.put(Integer.valueOf(130), createFavButton());
+            result.put(Integer.valueOf(160), createInfoButton());
+        }
         return result;
     }
 
