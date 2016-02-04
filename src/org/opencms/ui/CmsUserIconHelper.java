@@ -83,14 +83,14 @@ public class CmsUserIconHelper {
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUserIconHelper.class);
 
+    /** The admin cms context. */
+    private CmsObject m_adminCms;
+
     /** The image cache. */
     private CmsVfsNameBasedDiskCache m_cache;
 
     /** The icon renderer. */
     private IdentIcon m_renderer;
-
-    /** The admin cms context. */
-    private CmsObject m_adminCms;
 
     /**
      * Constructor.<p>

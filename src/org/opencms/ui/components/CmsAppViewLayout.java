@@ -27,11 +27,20 @@
 
 package org.opencms.ui.components;
 
+import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.Messages;
+import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 
 import com.vaadin.server.Responsive;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.declarative.Design;
@@ -62,6 +71,34 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
         Responsive.makeResponsive(this);
         // setting the width to 100% within the java code is required by the responsive resize listeners
         setWidth("100%");
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#addPublishButton(org.opencms.ui.I_CmsUpdateListener)
+     */
+    public void addPublishButton(final I_CmsUpdateListener<String> updateListener) {
+
+        Button publishButton = CmsToolBar.createButton(
+            FontOpenCms.PUBLISH,
+            CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
+        if (CmsAppWorkplaceUi.isOnlineProject()) {
+            // disable publishing in online project
+            publishButton.setEnabled(false);
+            publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+        } else {
+            publishButton.addClickListener(new ClickListener() {
+
+                /** Serial version id. */
+                private static final long serialVersionUID = 1L;
+
+                public void buttonClick(ClickEvent event) {
+
+                    CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), updateListener);
+                    extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
+                }
+            });
+        }
+        addToolbarButton(publishButton);
     }
 
     /**

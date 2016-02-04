@@ -30,19 +30,12 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
-import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.components.CmsToolBar;
-import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 
 import java.util.List;
 import java.util.Locale;
 
 import com.google.common.collect.Lists;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 /**
  * Displays all available app.<p>
@@ -76,21 +69,12 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
 
         context.setAppContent(hierarchyPanel);
         context.showInfoArea(false);
+        context.addPublishButton(new I_CmsUpdateListener<String>() {
 
-        Button publishButton = CmsToolBar.createButton(
-            FontOpenCms.PUBLISH,
-            CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
-        publishButton.addClickListener(new ClickListener() {
-
-            /** Serial version id. */
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-
-                onClickPublish();
+            public void onUpdate(List<String> updatedItems) {
+                // ignore
             }
         });
-        context.addToolbarButton(publishButton);
     }
 
     /**
@@ -102,25 +86,10 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
     }
 
     /**
-     * Triggered when the user clicks the 'publsh' button.<p>
-     */
-    public void onClickPublish() {
-
-        CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), new I_CmsUpdateListener<String>() {
-
-            public void onUpdate(List<String> updatedItems) {
-                // ignore
-            }
-        });
-        extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
-    }
-
-    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
      */
     public void onStateChange(String state) {
 
         // nothing to do
     }
-
 }

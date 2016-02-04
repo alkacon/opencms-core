@@ -36,13 +36,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0 = "GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_DIALOG_MESSAGE_0 = "GUI_ERROR_DIALOG_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_DIALOG_SELECT_TEXT_0 = "GUI_ERROR_DIALOG_SELECT_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0 = "GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILE_SELECT_CAPTION_0 = "GUI_FILE_SELECT_CAPTION_0";

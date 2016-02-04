@@ -39,9 +39,6 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_BROADCAST_TITLE_0 = "GUI_BROADCAST_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CLICK_TO_EDIT_0 = "GUI_EXPLORER_CLICK_TO_EDIT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -72,6 +69,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_MENU_TITLE_0 = "GUI_MENU_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEW_RESOURCE_TITLE_0 = "GUI_NEW_RESOURCE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PAGEEDITOR_HELP_0 = "GUI_PAGEEDITOR_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -88,6 +88,12 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SITEMAP_TITLE_0 = "GUI_SITEMAP_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0 = "GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TOOLBAR_PROJECT_SITE_INFO_2 = "GUI_TOOLBAR_PROJECT_SITE_INFO_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_BUTTON_TITLE_0 = "GUI_UPLOAD_BUTTON_TITLE_0";

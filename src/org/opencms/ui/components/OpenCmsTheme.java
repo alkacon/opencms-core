@@ -195,6 +195,9 @@ public class OpenCmsTheme {
     public static final String TOOLABER_APP_INDICATOR = "o-toolbar-app-indicator";
 
     /** CSS style name. */
+    public static final String TOOLABER_APP_INDICATOR_ONLINE = "o-toolbar-app-indicator-online";
+
+    /** CSS style name. */
     public static final String TOOLBAR = "o-toolbar";
 
     /** CSS style name. */

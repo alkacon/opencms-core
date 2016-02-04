@@ -28,6 +28,7 @@
 package org.opencms.ui.apps;
 
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsUpdateListener;
 
 import com.vaadin.ui.Component;
 
@@ -45,6 +46,13 @@ public interface I_CmsAppUIContext {
      * Shows the formerly hidden toolbar.<p>
      */
     public void showToolbar();
+
+    /**
+     * Adds the publish button to the toolbar.<p>
+     *
+     * @param updateListener the update listener, called after publishing
+     */
+    void addPublishButton(I_CmsUpdateListener<String> updateListener);
 
     /**
      * Adds a toolbar button.<p>

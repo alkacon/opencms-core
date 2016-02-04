@@ -268,6 +268,20 @@ public class CmsToolBar extends CssLayout {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appTitle)) {
             m_appIndicator.setValue(appTitle);
+            if (CmsAppWorkplaceUi.isOnlineProject()) {
+                m_appIndicator.addStyleName(OpenCmsTheme.TOOLABER_APP_INDICATOR_ONLINE);
+
+            }
+            String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
+            String siteName = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getTitle();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteName)) {
+                siteName = siteRoot;
+            }
+            m_appIndicator.setDescription(
+                CmsVaadinUtils.getMessageText(
+                    Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
+                    A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
+                    siteName));
             m_appIndicator.setVisible(true);
         } else {
             m_appIndicator.setVisible(false);

@@ -117,6 +117,12 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
+    static {
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
+    }
+
     /** Launch pad redirect view. */
     protected View m_launchRedirect = new LaunchpadRedirectView();
 
@@ -141,12 +147,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** Flag indicating that the view is being refreshed. */
     private boolean m_refreshing;
 
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
-
     /**
      * Gets the current UI instance.<p>
      *
@@ -155,6 +155,16 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     public static CmsAppWorkplaceUi get() {
 
         return (CmsAppWorkplaceUi)A_CmsUI.get();
+    }
+
+    /**
+     * Returns whether the current project is the online project.<p>
+     *
+     * @return <code>true</code> if the current project is the online project
+     */
+    public static boolean isOnlineProject() {
+
+        return getCmsObject().getRequestContext().getCurrentProject().isOnlineProject();
     }
 
     /**

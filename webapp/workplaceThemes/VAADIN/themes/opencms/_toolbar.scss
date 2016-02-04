@@ -26,7 +26,12 @@
     		border-radius: $v-border-radius;
     		padding: 4px 12px;
 		    color: $gray-lighter;
+		    position: relative;
 		    @include valo-gradient($gray-darker);
+		    
+		    &.o-toolbar-app-indicator-online{
+		    	@include valo-gradient($gray);
+		    }
     	}
   	}
   	
