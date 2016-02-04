@@ -25,50 +25,66 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.ui.components.extensions;
+package org.opencms.ui.components;
 
-import org.opencms.ui.shared.components.CmsSelectTextState;
+import org.opencms.ui.shared.components.CmsCopyToClipboardState;
 
-import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Button;
 
 /**
- * The select text button extension.<p>
+ * The copy to clip-board/select text button.<p>
  */
-public class CmsSelectTextExtension extends AbstractExtension {
+public class CmsCopyToClipboardButton extends Button {
 
     /** The serial version id. */
     private static final long serialVersionUID = -5962296601420539691L;
 
     /**
      * Hiding the constructor.<p>
-     *
-     * @param button the button to extend
-     * @param selector the selector string to the element to select
      */
-    private CmsSelectTextExtension(Button button, String selector) {
-        extend(button);
-        getState().setSelector(selector);
+    public CmsCopyToClipboardButton() {
+        super();
     }
 
     /**
-     * Extends the button with a click handler to select the text within the given HTML element.<p>
+     * Constructor.<p>
      *
-     * @param button the button to extend
+     * @param text the button text
+     * @param alternativeText the alternative button text, in case copy to clip-board is not supported
      * @param selector the selector string to the element to select
      */
-    @SuppressWarnings("unused")
-    public static void extend(Button button, String selector) {
+    public CmsCopyToClipboardButton(String text, String alternativeText, String selector) {
+        super(text);
+        getState().setSelector(selector);
+        getState().setAlternativeText(alternativeText);
+    }
 
-        new CmsSelectTextExtension(button, selector);
+    /**
+     * Sets the alternative button text, in case copy to clip-board is not supported.<p>
+     *
+     * @param alternativeText the alternative button text, in case copy to clip-board is not supported to set
+     */
+    public void setAlternativeText(String alternativeText) {
+
+        getState().setAlternativeText(alternativeText);
+    }
+
+    /**
+     * Sets the element selector.<p>
+     *
+     * @param selector the element selector
+     */
+    public void setSelector(String selector) {
+
+        getState().setSelector(selector);
     }
 
     /**
      * @see com.vaadin.server.AbstractClientConnector#getState()
      */
     @Override
-    protected CmsSelectTextState getState() {
+    protected CmsCopyToClipboardState getState() {
 
-        return (CmsSelectTextState)super.getState();
+        return (CmsCopyToClipboardState)super.getState();
     }
 }

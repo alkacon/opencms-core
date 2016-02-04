@@ -31,7 +31,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
-import org.opencms.ui.components.extensions.CmsSelectTextExtension;
 import org.opencms.util.CmsUUID;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -77,7 +76,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
     private CssLayout m_details;
 
     /** The select text button. */
-    private Button m_selectText;
+    private CmsCopyToClipboardButton m_selectText;
 
     /** The toggle details button. */
     private Button m_detailsButton;
@@ -106,7 +105,10 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_errorLabel.setId(labelId);
         m_errorMessage.setContentMode(ContentMode.HTML);
         m_errorMessage.setValue(message);
-        CmsSelectTextExtension.extend(m_selectText, "#" + labelId + " > pre");
+        m_selectText.setCaption("Copy to clipboard");
+        m_selectText.setAlternativeText(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_SELECT_TEXT_0));
+        m_selectText.setSelector("#" + labelId + " > pre");
 
         m_details.setVisible(false);
 

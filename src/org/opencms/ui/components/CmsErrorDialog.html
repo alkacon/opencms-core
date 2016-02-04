@@ -12,7 +12,7 @@
 						<v-label _id="m_errorMessage" :expand style-name="o-error-message"/>
 					</v-horizontal-layout>
 					<v-css-layout _id="m_details" size-full :expand style-name="o-error-details">
-						<v-button _id="m_selectText" style-name="borderless">%(key.GUI_ERROR_DIALOG_SELECT_TEXT_0)</v-button>
+						<o-cms-copy-to-clipboard-button _id="m_selectText" style-name="borderless" />
 						<v-panel scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)">
 							<v-label _id="m_errorLabel" width="-1px" size-full />
 		  				</v-panel>

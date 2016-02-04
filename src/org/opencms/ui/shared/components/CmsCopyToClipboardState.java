@@ -27,18 +27,31 @@
 
 package org.opencms.ui.shared.components;
 
-import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.ui.button.ButtonState;
 
 /**
- * The select text shared state.<p>
+ * The copy to clip-board/select text button shared state.<p>
  */
-public class CmsSelectTextState extends AbstractComponentState {
+public class CmsCopyToClipboardState extends ButtonState {
 
     /** The serial version id. */
     private static final long serialVersionUID = 5756156529345274883L;
 
+    /** The alternative button text, in case copy to clip-board is not supported. */
+    private String m_alternativeText;
+
     /** The element selector. */
     private String m_selector;
+
+    /**
+     * Returns the alternative button text, in case copy to clip-board is not supported.<p>
+     *
+     * @return the alternative button text, in case copy to clip-board is not supported
+     */
+    public String getAlternativeText() {
+
+        return m_alternativeText;
+    }
 
     /**
      * Returns the element selector.<p>
@@ -48,6 +61,16 @@ public class CmsSelectTextState extends AbstractComponentState {
     public String getSelector() {
 
         return m_selector;
+    }
+
+    /**
+     * Sets the alternative button text, in case copy to clip-board is not supported.<p>
+     *
+     * @param alternativeText the alternative button text, in case copy to clip-board is not supported to set
+     */
+    public void setAlternativeText(String alternativeText) {
+
+        m_alternativeText = alternativeText;
     }
 
     /**
