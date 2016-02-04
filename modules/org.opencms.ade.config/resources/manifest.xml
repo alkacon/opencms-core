@@ -644,6 +644,10 @@
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
 								name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
 								rule="sitemap" />
+							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" 
+								name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" 
+								params="reload=true|filename=%(subsite)/.content/.config" 
+								rule="sitemapcheckfile"/>
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
 								rule="sitemap-wpuser" />

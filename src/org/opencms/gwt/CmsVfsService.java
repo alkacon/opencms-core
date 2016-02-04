@@ -1182,9 +1182,14 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
 
         try {
             CmsObject cms = getCmsObject();
-            CmsResource currentPage = cms.readResource(currentPageId, CmsResourceFilter.IGNORE_EXPIRATION);
-            String path = prepareFileNameForEditor(cms, currentPage, pathWithMacros);
-            CmsResource resource = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource resource = null;
+            if (cms.existsResource(pathWithMacros, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                resource = cms.readResource(pathWithMacros, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+            } else {
+                CmsResource currentPage = cms.readResource(currentPageId, CmsResourceFilter.IGNORE_EXPIRATION);
+                String path = prepareFileNameForEditor(cms, currentPage, pathWithMacros);
+                resource = cms.readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+            }
             ensureLock(resource);
             CmsPrepareEditResponse result = new CmsPrepareEditResponse();
             result.setRootPath(resource.getRootPath());

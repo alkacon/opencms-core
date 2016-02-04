@@ -1564,6 +1564,12 @@
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
 				</menurule>
+				<menurule name="sitemapcheckfile">
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirSitemapActiveAndFileAvailable" />
+					<menuitemrule
+						class="org.opencms.workplace.explorer.menu.CmsMirAlwaysInvisible" />
+				</menurule>
 				<menurule name="ade-undochanges">
 					<menuitemrule
 						class="org.opencms.workplace.explorer.menu.CmsMirNonContainerpageInvisible" />
