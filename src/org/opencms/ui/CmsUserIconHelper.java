@@ -234,7 +234,7 @@ public class CmsUserIconHelper {
         String userIconPath = (String)user.getAdditionalInfo(USER_IMAGE_INFO);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userIconPath)) {
             String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, userIconPath);
-            return big ? link : link + "?__scale=h:32,w:32";
+            return big ? link : link + "?__scale=h:32,w:32,t:2";
         }
 
         boolean isAdmin = OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ADMINISTRATOR);
