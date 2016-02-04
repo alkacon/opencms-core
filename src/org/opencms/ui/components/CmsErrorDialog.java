@@ -105,7 +105,8 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_errorLabel.setId(labelId);
         m_errorMessage.setContentMode(ContentMode.HTML);
         m_errorMessage.setValue(message);
-        m_selectText.setCaption("Copy to clipboard");
+        m_selectText.setCaption(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0));
         m_selectText.setAlternativeText(
             CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_SELECT_TEXT_0));
         m_selectText.setSelector("#" + labelId + " > pre");

@@ -93,7 +93,6 @@ public class CmsCopyToClipboardButtonConnector extends ButtonConnector {
         var targetElement = doc.querySelector(selector);
         if (targetElement != null) {
             var text = targetElement.textContent;
-            $wnd.console.log("Preparing to copy:\n\n" + text);
             var textArea = document.createElement("textarea");
 
             // add some styles to hide the text area
@@ -117,11 +116,8 @@ public class CmsCopyToClipboardButtonConnector extends ButtonConnector {
             try {
                 var successful = document.execCommand('copy');
                 var msg = successful ? 'successful' : 'unsuccessful';
-                $wnd.console.log('Copying text command was ' + msg);
             } catch (err) {
-                $wnd.console.log('Oops, unable to copy' + err);
             }
-
             document.body.removeChild(textArea);
         }
     }-*/;
@@ -136,11 +132,9 @@ public class CmsCopyToClipboardButtonConnector extends ButtonConnector {
         if (result) {
             var uMatch = navigator.userAgent.match(/Firefox\/(.*)$/);
             if (uMatch && uMatch.length > 1) {
-                $wnd.console.log("Detected firefox version " + uMatch[1]);
                 result = uMatch[1] >= 41;
             }
         }
-        $wnd.console.log("Copy command support: " + result);
         return result;
     }-*/;
 
