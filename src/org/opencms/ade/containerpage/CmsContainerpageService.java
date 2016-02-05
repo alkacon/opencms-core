@@ -1384,7 +1384,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         }
         if (formatter == null) {
             formatter = formatters.getDefaultFormatter(containerType, containerWidth, true);
-            formatterConfigId = CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatter.getJspStructureId().toString();
+            if (formatter != null) {
+                formatterConfigId = formatter.isFromFormatterConfigFile()
+                ? formatter.getId()
+                : CmsFormatterConfig.SCHEMA_FORMATTER_ID + formatter.getJspStructureId().toString();
+            }
         }
         CmsContainerElementBean newElementBean = null;
         if (formatter != null) {
