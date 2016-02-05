@@ -16,27 +16,36 @@
 				</v-vertical-layout>
 			</v-panel>
 			<v-panel caption="Settings">
-				<v-form-layout style-name="o-formlayout-workplace-main" margin spacing>
-					<v-text-field _id="m_userField" width="100%" caption="Git user" input-prompt="Not adjusted if empty" />
-					<v-text-field _id="m_emailField" width="100%" caption="Git email"  input-prompt="Not adjusted if empty"/>
-					<v-text-area _id="m_commitMessage" width="100%" caption="Commit message" />
-					<v-button _id="m_toggleOptions" caption="Toggle options" />
-					<v-vertical-layout spacing>
-						<v-check-box _id="m_ignoreUnclean" caption="Ignore unclean repository" description="Caution: This can cause serious problems when a merge conflict is present."/>
-						<v-check-box _id="m_pullFirst" caption="Pull first" description="This can overwrite changes from the remote repository." />
-						<v-check-box _id="m_copyAndUnzip" caption="Copy and unzip modules" description="Typically you want this." />
-						<v-check-box _id="m_addAndCommit" caption="Add and commit automatically" />
-						<v-check-box _id="m_pullAfterCommit" caption="Pull after commit" />
-						<v-check-box _id="m_pushAutomatically" caption="Push automatically" />
-						<v-check-box _id="m_excludeLib" caption="Exclude lib/ subfolder" />
-					</v-vertical-layout>
-				</v-form-layout>
+					<v-tab-sheet _id="m_tabs">
+					<tab caption="Check in">
+						<v-form-layout style-name="o-formlayout-workplace-main" margin spacing>
+							<v-text-field _id="m_userField" width="100%" caption="Git user" input-prompt="Not adjusted if empty" />
+							<v-text-field _id="m_emailField" width="100%" caption="Git email"  input-prompt="Not adjusted if empty"/>
+							<v-text-area _id="m_commitMessage" width="100%" caption="Commit message" />
+							<v-button _id="m_toggleOptions" caption="Toggle options" />
+							<v-vertical-layout spacing>
+								<v-check-box _id="m_ignoreUnclean" caption="Ignore unclean repository" description="Caution: This can cause serious problems when a merge conflict is present."/>
+								<v-check-box _id="m_pullFirst" caption="Pull first" description="This can overwrite changes from the remote repository." />
+								<v-check-box _id="m_copyAndUnzip" caption="Copy and unzip modules" description="Typically you want this." />
+								<v-check-box _id="m_addAndCommit" caption="Add and commit automatically" />
+								<v-check-box _id="m_pullAfterCommit" caption="Pull after commit" />
+								<v-check-box _id="m_pushAutomatically" caption="Push automatically" />
+								<v-check-box _id="m_excludeLib" caption="Exclude lib/ subfolder" />
+							</v-vertical-layout>
+						</v-form-layout>
+						</tab>
+						<tab caption="Import">
+							<v-form-layout _id="m_checkoutTab" margin spacing>
+								<v-check-box _id="m_fetchAndReset" caption="Fetch remote branch"/>
+							</v-form-layout>	
+						</tab>
+						</v-tab-sheet>
 			</v-panel>
 			
 			<v-panel>
 				<v-horizontal-layout spacing style-name="o-dialog-button-bar" width="100%" margin> 
 					<v-horizontal-layout :center spacing>
-						<v-button _id="m_checkinSelected">Check in</v-button>
+						<v-button _id="m_okButton">Check in</v-button>
 						<v-button _id="m_cancel">Cancel</v-button>
 					</v-horizontal-layout>
 				</v-horizontal-layout>

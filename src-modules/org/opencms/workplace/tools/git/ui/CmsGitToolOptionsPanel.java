@@ -27,6 +27,10 @@
 
 package org.opencms.workplace.tools.git.ui;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.ui.A_CmsUI;
@@ -42,6 +46,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -60,10 +66,14 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
+import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Main widget for the Git check-in tool.<p>
@@ -81,14 +91,43 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         resetHead,
 
         /** Reset to remote head. */
-        resetRemoteHead;
+        resetRemoteHead,
+
+        /** Checkout action. */
+        checkOut;
     }
+
+    /**
+     * Enum representing the dialog's tabs.
+     */
+    enum DialogTab {
+        /** The 'check in' tab. */
+        checkIn,
+
+        /** The 'import' tab. */
+        checkOut;
+    }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsGitToolOptionsPanel.class);
 
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
+    /** Additional info key for the user name. */
+    public static final String ADDINFO_USER = "git_cms_user";
+
+    /** Additional info key for the email address. */
+    public static final String ADDINFO_EMAIL = "git_cms_email";
+
+    /** Additional info key for the commit message. */
+    public static final String ADDINFO_MESSAGE = "git_cms_message";
+
+    /** The initial dialog tab. */
+    private DialogTab m_dialogTab = DialogTab.checkIn;
+
     /** True when advanced options are currently visible. */
-    protected boolean m_advancedVisible = false;
+    protected boolean m_advancedVisible;
 
     /** Map of check boxes for selectable modules, with the module names as keys. */
     Map<String, CheckBox> m_moduleCheckboxes = Maps.newHashMap();
@@ -99,14 +138,20 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Cancel button. */
     private Button m_cancel;
 
+    /** Checkbox for the 'fetch and reset' option. */
+    private CheckBox m_fetchAndReset;
+
     /** The check-in bean. */
     private CmsGitCheckin m_checkinBean;
 
     /** Button for check-in. */
-    private Button m_checkinSelected;
+    private Button m_okButton;
 
     /** Field for 'Commit message' setting. */
     private TextArea m_commitMessage;
+
+    /** The tab with the import settings. */
+    private Component m_checkoutTab;
 
     /** Field for 'Copy and unzip' setting. */
     private CheckBox m_copyAndUnzip;
@@ -143,6 +188,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     /** Field for 'Push automatically' setting. */
     private CheckBox m_pushAutomatically;
+
+    /** Tab sheet. */
+    private TabSheet m_tabs;
 
     /** Button used to toggle advanced options. */
     private Button m_toggleOptions;
@@ -188,6 +236,24 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_ignoreUnclean.setValue(Boolean.valueOf(m_checkinBean.getDefaultIngoreUnclean()));
         m_userField.setValue(Strings.nullToEmpty(m_checkinBean.getDefaultGitUserName()));
         m_emailField.setValue(Strings.nullToEmpty(m_checkinBean.getDefaultGitUserEmail()));
+
+        CmsUser user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser();
+        String savedEmail = (String)(user.getAdditionalInfo().get(ADDINFO_EMAIL));
+        String savedName = (String)(user.getAdditionalInfo().get(ADDINFO_USER));
+        String savedMessage = (String)(user.getAdditionalInfo().get(ADDINFO_MESSAGE));
+
+        if (savedEmail != null) {
+            m_emailField.setValue(savedEmail);
+        }
+
+        if (savedName != null) {
+            m_userField.setValue(savedName);
+        }
+
+        if (savedMessage != null) {
+            m_commitMessage.setValue(savedMessage);
+        }
+
         setAdvancedVisible(false);
         m_toggleOptions.addClickListener(new ClickListener() {
 
@@ -198,14 +264,18 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 setAdvancedVisible(!m_advancedVisible);
             }
         });
-        m_checkinSelected.addClickListener(new ClickListener() {
+        m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
+            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                runAction(ActionType.checkIn);
-
+                if (m_dialogTab == DialogTab.checkIn) {
+                    runAction(ActionType.checkIn);
+                } else {
+                    runAction(ActionType.checkOut);
+                }
             }
         });
         m_cancel.addClickListener(new ClickListener() {
@@ -229,6 +299,29 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 }
             }
         });
+
+        m_tabs.addStyleName(ValoTheme.TABSHEET_FRAMED);
+        m_tabs.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+        m_tabs.addSelectedTabChangeListener(new SelectedTabChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            @SuppressWarnings("synthetic-access")
+            public void selectedTabChange(SelectedTabChangeEvent event) {
+
+                DialogTab tab;
+                if (m_tabs.getSelectedTab() == m_checkoutTab) {
+                    tab = DialogTab.checkOut;
+                } else {
+                    tab = DialogTab.checkIn;
+                }
+                CmsGitToolOptionsPanel.this.setTab(tab);
+
+            }
+
+        });
+        m_fetchAndReset.setValue(Boolean.TRUE);
+        setTab(m_dialogTab);
     }
 
     /**
@@ -248,11 +341,12 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
         Window window = new Window();
         window.setContent(component);
-        window.setCaption("Git check-in results");
+        window.setCaption("Git script results");
         window.setWidth("1000px");
         window.setModal(true);
         window.setResizable(false);
         A_CmsUI.get().addWindow(window);
+
         m_currentWindow[0] = window;
         return window;
     }
@@ -264,7 +358,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
      */
     public void addSelectableModule(final String moduleName) {
 
-        boolean enabled = OpenCms.getModuleManager().hasModule(moduleName);
+        boolean enabled = true; /* OpenCms.getModuleManager().hasModule(moduleName); */
         CheckBox moduleCheckBox = new CheckBox();
         String iconUri = CmsWorkplace.getResourceUri("tools/modules/buttons/modules.png");
         CmsResourceInfo info = new CmsResourceInfo(moduleName, "", iconUri);
@@ -275,10 +369,30 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         line.addComponent(info);
         line.setComponentAlignment(moduleCheckBox, Alignment.MIDDLE_CENTER);
         line.setExpandRatio(info, 1.0f);
-        moduleCheckBox.setEnabled(enabled);
+        moduleCheckBox.setEnabled(true);
         moduleCheckBox.setValue(Boolean.valueOf(enabled)); // If enabled, then checked by default
         m_moduleCheckboxes.put(moduleName, moduleCheckBox);
         m_moduleSelectionContainer.addComponent(line, m_moduleSelectionContainer.getComponentCount() - 1);
+        setTab(m_dialogTab);
+    }
+
+    /**
+     * Enables/disables checkboxes for listed modules which are not installed.<p>
+     *
+     * @param enable true if the checkboxes for modules which are not installed should be enabled, false if they should be disabled
+     */
+    public void enableCheckboxesForNotInstalledModules(boolean enable) {
+
+        for (Map.Entry<String, CheckBox> entry : m_moduleCheckboxes.entrySet()) {
+            String moduleName = entry.getKey();
+            CheckBox checkbox = entry.getValue();
+            if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+                checkbox.setEnabled(enable);
+                if (!enable) {
+                    checkbox.setValue(Boolean.FALSE);
+                }
+            }
+        }
     }
 
     /**
@@ -317,6 +431,20 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         boolean error = false;
         switch (action) {
             case checkIn:
+                String messageToSave = m_checkinBean.getCommitMessage();
+                String emailToSave = m_checkinBean.getGitUserEmail();
+                String userToSave = m_checkinBean.getGitUserName();
+                CmsObject cms = m_checkinBean.getCmsObject();
+                CmsUser user = cms.getRequestContext().getCurrentUser();
+                setUserInfo(user, ADDINFO_USER, userToSave);
+                setUserInfo(user, ADDINFO_EMAIL, emailToSave);
+                setUserInfo(user, ADDINFO_MESSAGE, messageToSave);
+                try {
+                    cms.writeUser(user);
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+
                 List<Button> resetButtons = new ArrayList<Button>();
 
                 Button resetHead = new Button("Reset head");
@@ -360,6 +488,19 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 CmsGitActionResultPanel panel = new CmsGitActionResultPanel(message, log, error, resetButtons);
                 addAsWindow(panel);
                 break;
+            case checkOut:
+                if (result == 0) {
+                    message = "Checkout successful.";
+                } else {
+                    message = "Checkout failed, please see the log file for details.";
+                }
+                CmsGitActionResultPanel checkoutResult = new CmsGitActionResultPanel(
+                    message,
+                    log,
+                    error,
+                    new ArrayList<Button>());
+                addAsWindow(checkoutResult);
+                break;
             case resetHead:
                 if (result == 0) {
                     message = "The repository was reset. You can repeat your commit with the \"Pull first\" option (WARNING: Be aware that you may overwrite changes from the remote repository.)";
@@ -398,16 +539,25 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
      */
     public void setActionFlags() {
 
+        m_checkinBean.setFetchAndResetBeforeImport(m_fetchAndReset.getValue().booleanValue());
         switch (m_mode) {
+            case checkOut:
+                m_checkinBean.setCheckout(true);
+                m_checkinBean.setResetHead(false);
+                m_checkinBean.setResetRemoteHead(false);
+                break;
             case checkIn:
+                m_checkinBean.setCheckout(false);
                 m_checkinBean.setResetHead(false);
                 m_checkinBean.setResetRemoteHead(false);
                 break;
             case resetHead:
+                m_checkinBean.setCheckout(false);
                 m_checkinBean.setResetHead(true);
                 m_checkinBean.setResetRemoteHead(false);
                 break;
             case resetRemoteHead:
+                m_checkinBean.setCheckout(false);
                 m_checkinBean.setResetHead(false);
                 m_checkinBean.setResetRemoteHead(true);
                 break;
@@ -429,6 +579,28 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         }
         m_advancedVisible = visible;
         m_toggleOptions.setCaption(visible ? "Hide options" : "Show options");
+    }
+
+    /**
+     * Called when the active tab is switched.<p>
+     *
+     * @param dialogTab the dialog tab to which the user has switched
+     */
+    public void setTab(DialogTab dialogTab) {
+
+        m_dialogTab = dialogTab;
+        switch (dialogTab) {
+            case checkIn:
+                enableCheckboxesForNotInstalledModules(false);
+                m_okButton.setCaption("Check in");
+                break;
+            case checkOut:
+                m_okButton.setCaption("Import");
+                enableCheckboxesForNotInstalledModules(true);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -514,6 +686,20 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         String commitMessage = m_commitMessage.getValue();
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(commitMessage)) {
             m_checkinBean.setCommitMessage(commitMessage);
+        }
+    }
+
+    /**
+     * Sets an additional info value if it's not empty.<p>
+     *
+     * @param user the user on which to set the additional info
+     * @param key the additional info key
+     * @param value the additional info value
+     */
+    private void setUserInfo(CmsUser user, String key, String value) {
+
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            user.getAdditionalInfo().put(key, value);
         }
     }
 

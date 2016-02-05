@@ -93,7 +93,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getHelpText(Locale locale) {
 
-        return "Provides git checkin functionality.";
+        return "Provides git integration functionality.";
     }
 
     /**
@@ -118,7 +118,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public String getName(Locale locale) {
 
-        return "Git check in";
+        return "Git integration";
     }
 
     /**

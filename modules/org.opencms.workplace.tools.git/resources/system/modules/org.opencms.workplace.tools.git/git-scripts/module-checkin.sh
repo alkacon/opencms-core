@@ -18,6 +18,7 @@
 # 11 - the hard reset to HEAD failed
 # 12 - backup folder does not exist
 # 13 - permission problems during file operations
+# 14 - checkout error
 
 getExportedModule(){
 	case $exportMode in
@@ -148,6 +149,8 @@ while [ "$1" != "" ]; do
                                 modulesToExport=$1
 								echo " * Read modules to export: \"$modulesToExport\"." 
                                 ;;
+        --checkout )			checkout=1
+								;;                                
         --push )                push=1
 								echo " * Read push option."
                                 ;;
@@ -266,6 +269,24 @@ else
 	done
 fi
 echo " * Set modules to export: \"$modulesToExport\"."
+
+if [[ -n "$checkout" ]]; then
+	cd $REPOSITORY_HOME
+	echo "Fetching from remote..."
+	git fetch || echo "Failed to fetch from remote."  
+	origin="$(git remote)"
+	branch="$(git symbolic-ref --short -q HEAD)"
+	echo "Checkout action..."
+	commonAncestor=$(git merge-base "$branch" "$origin/$branch")
+	currentCommit=$(git rev-parse --verify HEAD)
+	if [[ $currentCommit = $commonAncestor ]] ; then
+		git reset --hard "$origin/$branch" || exit 14
+		exit 0
+	else
+		echo "Error: Branch $branch has diverged from remote branch."
+		exit 14
+	fi
+fi
 
 ## set export mode
 if [[ -z "$exportMode" ]]; then
