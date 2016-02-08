@@ -204,4 +204,14 @@ public class CmsUploadButton extends VButton implements I_CmsUploadButton, HasWi
         CmsDomUtil.clearHover(getElement());
         m_buttonHandler.onChange(m_fileInput);
     }
+
+    /**
+     * Sets the upload enabled.<p>
+     *
+     * @param enabled the enabled flag
+     */
+    void setUploadEnabled(boolean enabled) {
+
+        m_fileInput.setVisible(enabled);
+    }
 }

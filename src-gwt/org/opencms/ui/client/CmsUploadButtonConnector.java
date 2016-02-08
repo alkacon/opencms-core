@@ -107,6 +107,7 @@ public class CmsUploadButtonConnector extends ButtonConnector {
 
         super.onStateChanged(stateChangeEvent);
         getWidget().reinitButton(createButtonHandler());
+        getWidget().setUploadEnabled(isEnabled());
     }
 
     /**
@@ -116,6 +117,7 @@ public class CmsUploadButtonConnector extends ButtonConnector {
     protected Widget createWidget() {
 
         CmsUploadButton uploadButton = new CmsUploadButton(createButtonHandler());
+        uploadButton.setUploadEnabled(isEnabled());
         return uploadButton;
     }
 
