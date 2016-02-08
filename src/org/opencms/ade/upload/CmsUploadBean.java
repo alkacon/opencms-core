@@ -581,7 +581,11 @@ public class CmsUploadBean extends CmsJspBean {
         // maximum size that will be stored in memory
         factory.setSizeThreshold(4096);
         // the location for saving data that is larger than the threshold
-        factory.setRepository(new File(OpenCms.getSystemInfo().getPackagesRfsPath()));
+        File temp = new File(OpenCms.getSystemInfo().getPackagesRfsPath());
+        if (temp.exists() || temp.mkdirs()) {
+            // make sure the folder exists
+            factory.setRepository(temp);
+        }
 
         // create a file upload servlet
         ServletFileUpload fu = new ServletFileUpload(factory);
