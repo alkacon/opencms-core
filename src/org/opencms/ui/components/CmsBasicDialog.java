@@ -35,6 +35,7 @@ import org.opencms.ui.components.extensions.CmsMaxHeightExtension;
 
 import java.util.List;
 
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 
 import com.google.common.collect.Lists;
@@ -69,7 +70,7 @@ public class CmsBasicDialog extends VerticalLayout {
     private static final long serialVersionUID = 1L;
 
     /** The button bar. */
-    private HorizontalLayout m_buttonPanel;
+    private HorizontalLayout m_buttonPanelRight;
 
     /** The content panel. */
     private Panel m_contentPanel;
@@ -85,6 +86,9 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** Extension used to regulate max height. */
     private CmsMaxHeightExtension m_maxHeightExtension;
+
+    /** The left button panel. */
+    private HorizontalLayout m_buttonPanelLeft;
 
     /**
      * Creates new instance.<p>
@@ -112,12 +116,19 @@ public class CmsBasicDialog extends VerticalLayout {
         panel.setSizeFull();
         addComponent(panel);
         setExpandRatio(panel, 1);
-
-        m_buttonPanel = new HorizontalLayout();
-        m_buttonPanel.setSpacing(true);
-        m_buttonPanel.addStyleName(OpenCmsTheme.DIALOG_BUTTON_BAR);
-        addComponent(m_buttonPanel);
-        setComponentAlignment(m_buttonPanel, Alignment.MIDDLE_RIGHT);
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setWidth("100%");
+        buttons.addStyleName(OpenCmsTheme.DIALOG_BUTTON_BAR);
+        addComponent(buttons);
+        m_buttonPanelLeft = new HorizontalLayout();
+        m_buttonPanelLeft.setSpacing(true);
+        buttons.addComponent(m_buttonPanelLeft);
+        buttons.setComponentAlignment(m_buttonPanelLeft, Alignment.MIDDLE_LEFT);
+        m_buttonPanelLeft.setVisible(false);
+        m_buttonPanelRight = new HorizontalLayout();
+        m_buttonPanelRight.setSpacing(true);
+        buttons.addComponent(m_buttonPanelRight);
+        buttons.setComponentAlignment(m_buttonPanelRight, Alignment.MIDDLE_RIGHT);
         enableMaxHeight();
     }
 
@@ -167,7 +178,23 @@ public class CmsBasicDialog extends VerticalLayout {
      */
     public void addButton(Component button) {
 
-        m_buttonPanel.addComponent(button);
+        addButton(button, true);
+    }
+
+    /**
+     * Adds a button to the button bar.<p>
+     *
+     * @param button the button to add
+     * @param right to align the button right
+     */
+    public void addButton(Component button, boolean right) {
+
+        if (right) {
+            m_buttonPanelRight.addComponent(button);
+        } else {
+            m_buttonPanelLeft.addComponent(button);
+            m_buttonPanelLeft.setVisible(true);
+        }
     }
 
     /**
@@ -203,18 +230,6 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
-     * Gets a list of buttons.<p>
-     *
-     * @return a list of buttons
-     */
-    public List<Component> getButtons() {
-
-        List<Component> result = Lists.newArrayList();
-        result.addAll(Lists.newArrayList(m_buttonPanel));
-        return result;
-    }
-
-    /**
      * Gets the resources for which the resource info boxes should be displayed.<p>
      *
      * @return the resource info resources
@@ -242,7 +257,8 @@ public class CmsBasicDialog extends VerticalLayout {
             } else if ("buttons".equals(child.tagName()) && !buttonsRead) {
                 for (Element buttonElement : child.children()) {
                     Component button = designContext.readDesign(buttonElement);
-                    addButton(button);
+                    Attributes attr = buttonElement.attributes();
+                    addButton(button, !attr.hasKey(":left"));
                 }
                 buttonsRead = true;
             } else if ("above".equals(child.tagName()) && !aboveRead) {

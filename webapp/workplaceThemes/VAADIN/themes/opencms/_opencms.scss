@@ -432,10 +432,6 @@
 	.login-dialog { 
 		background: $v-background-color;
 	}
-		
-	.o-login-form .o-dialog-button-bar .v-button { 
-		min-width: 160px;
-	}
 	  	
 	.v-label.o-label-error { 
 		color: $red; 
@@ -462,18 +458,14 @@
 		}
 		.o-error-details{
 			position: relative;
-			
-			.v-button{
-				position: absolute;
-				right: 4px;
-				top: 4px;
-				height: 24px;
-				padding: 0 8px;
-			}
-			
+		
 			pre {
 				white-space: pre-wrap;
+				padding: 0 5px;
 			}
+		}
+		.o-hidden {
+			display: none;
 		}
 	}
 	
