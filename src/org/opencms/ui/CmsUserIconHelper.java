@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.loader.CmsImageScaler;
@@ -196,9 +197,14 @@ public class CmsUserIconHelper {
                     new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, "w:192,h:192"));
             } else {
                 previousImage = (String)user.getAdditionalInfo(CmsUserIconHelper.USER_IMAGE_INFO);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previousImage)) {
-                    adminCms.lockResource(previousImage);
-                    adminCms.deleteResource(previousImage, CmsResource.DELETE_REMOVE_SIBLINGS);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(previousImage)
+                    && cms.existsResource(newFileName, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
+                    try {
+                        adminCms.lockResource(previousImage);
+                        adminCms.deleteResource(previousImage, CmsResource.DELETE_REMOVE_SIBLINGS);
+                    } catch (CmsException e) {
+                        LOG.error("Error deleting previous user image.", e);
+                    }
                 }
                 // create a new user image file
                 adminCms.createResource(
@@ -233,8 +239,8 @@ public class CmsUserIconHelper {
 
         String userIconPath = (String)user.getAdditionalInfo(USER_IMAGE_INFO);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userIconPath)) {
-            String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, userIconPath);
-            return big ? link : link + "?__scale=h:32,w:32,t:2";
+            userIconPath += big ? "" : "?__scale=h:32,w:32,t:2";
+            return OpenCms.getLinkManager().substituteLinkForRootPath(cms, userIconPath);
         }
 
         boolean isAdmin = OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ADMINISTRATOR);
