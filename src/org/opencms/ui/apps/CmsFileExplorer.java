@@ -605,6 +605,12 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
 
+    /** The publish button. */
+    private Button m_publishButton;
+
+    /** The new button. */
+    private Button m_newButton;
+
     /**
      * Constructor.<p>
      */
@@ -978,6 +984,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             populateFolderTree();
             openPath(getPathFromState());
         }
+        m_appContext.updateOnChange();
+        setToolbarButtonsEnabled(!CmsAppWorkplaceUi.isOnlineProject());
     }
 
     /**
@@ -1587,6 +1595,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 String value = (String)event.getProperty().getValue();
                 if (availableSites.containsId(value)) {
                     changeSite(value, null);
+                    m_appContext.updateOnChange();
                     availableSites.removeAllContainerFilters();
                 }
             }
@@ -1648,7 +1657,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private void initToolbarButtons(I_CmsAppUIContext context) {
 
-        context.addPublishButton(new I_CmsUpdateListener<String>() {
+        m_publishButton = context.addPublishButton(new I_CmsUpdateListener<String>() {
 
             public void onUpdate(List<String> updatedItems) {
 
@@ -1657,25 +1666,25 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         });
 
-        Button newButton = CmsToolBar.createButton(
+        m_newButton = CmsToolBar.createButton(
             FontOpenCms.WAND,
             CmsVaadinUtils.getMessageText(Messages.GUI_NEW_RESOURCE_TITLE_0));
         if (CmsAppWorkplaceUi.isOnlineProject()) {
-            newButton.setEnabled(false);
-            newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
-        } else {
-            newButton.addClickListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    onClickNew();
-                }
-
-            });
+            m_newButton.setEnabled(false);
+            m_newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
         }
-        context.addToolbarButton(newButton);
+        m_newButton.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                onClickNew();
+            }
+
+        });
+
+        context.addToolbarButton(m_newButton);
 
         m_uploadButton = new CmsUploadButton(FontOpenCms.UPLOAD, "/");
         m_uploadButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
@@ -1685,14 +1694,15 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
         } else {
             m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
-            m_uploadButton.addUploadListener(new I_UploadListener() {
-
-                public void onUploadFinished(List<String> uploadedFiles) {
-
-                    updateAll();
-                }
-            });
         }
+        m_uploadButton.addUploadListener(new I_UploadListener() {
+
+            public void onUploadFinished(List<String> uploadedFiles) {
+
+                updateAll();
+            }
+        });
+
         context.addToolbarButton(m_uploadButton);
     }
 
@@ -1737,6 +1747,27 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             crumb.setData(openPath);
             crumb.addStyleName(ValoTheme.BUTTON_LINK);
             m_crumbs.addComponent(crumb);
+        }
+    }
+
+    /**
+     * Sets the toolbar buttons enabled.<p>
+     *
+     * @param enabled the enabled flag
+     */
+    private void setToolbarButtonsEnabled(boolean enabled) {
+
+        m_publishButton.setEnabled(enabled);
+        m_newButton.setEnabled(enabled);
+        m_uploadButton.setEnabled(enabled);
+        if (enabled) {
+            m_publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_PUBLISH_BUTTON_TITLE_0));
+            m_newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_NEW_RESOURCE_TITLE_0));
+            m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_UPLOAD_BUTTON_TITLE_0));
+        } else {
+            m_publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+            m_newButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+            m_uploadButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
         }
     }
 }

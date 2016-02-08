@@ -76,7 +76,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
     /**
      * @see org.opencms.ui.apps.I_CmsAppUIContext#addPublishButton(org.opencms.ui.I_CmsUpdateListener)
      */
-    public void addPublishButton(final I_CmsUpdateListener<String> updateListener) {
+    public Button addPublishButton(final I_CmsUpdateListener<String> updateListener) {
 
         Button publishButton = CmsToolBar.createButton(
             FontOpenCms.PUBLISH,
@@ -85,20 +85,21 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
             // disable publishing in online project
             publishButton.setEnabled(false);
             publishButton.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
-        } else {
-            publishButton.addClickListener(new ClickListener() {
-
-                /** Serial version id. */
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-
-                    CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), updateListener);
-                    extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
-                }
-            });
         }
+        publishButton.addClickListener(new ClickListener() {
+
+            /** Serial version id. */
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), updateListener);
+                extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
+            }
+        });
+
         addToolbarButton(publishButton);
+        return publishButton;
     }
 
     /**
@@ -188,5 +189,13 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
         removeStyleName(OpenCmsTheme.HIDDEN_TOOLBAR);
         m_toolbar.setVisible(false);
+    }
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsAppUIContext#updateOnChange()
+     */
+    public void updateOnChange() {
+
+        m_toolbar.updateAppIndicator();
     }
 }

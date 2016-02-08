@@ -29,7 +29,11 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
@@ -47,12 +51,15 @@ import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.commons.logging.Log;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
@@ -104,6 +111,9 @@ public class CmsToolBar extends CssLayout {
             return Lists.newArrayList();
         }
     }
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsToolBar.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = -4551194983054069395L;
@@ -170,19 +180,7 @@ public class CmsToolBar extends CssLayout {
      */
     public static Component createDropDown(ExternalResource icon, Component content, String title) {
 
-        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
-            + OpenCmsTheme.TOOLBAR_BUTTON
-            + " v-button-"
-            + OpenCmsTheme.TOOLBAR_BUTTON
-            + "\"><span class=\"v-button-wrap\"><img class=\"v-icon\" src=\""
-            + icon.getURL()
-            + "\" /></span></div>";
-        PopupView pv = new PopupView(html, content);
-        pv.setDescription(title);
-        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
-        pv.setHideOnMouseOut(false);
-        return pv;
-
+        return createDropDown(getDropDownButtonHtml(icon), content, title);
     }
 
     /**
@@ -196,18 +194,61 @@ public class CmsToolBar extends CssLayout {
      */
     public static Component createDropDown(FontIcon icon, Component content, String title) {
 
-        String html = "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
+        return createDropDown(getDropDownButtonHtml(icon), content, title);
+    }
+
+    /**
+     * Creates a drop down menu.<p>
+     *
+     * @param buttonHtml the button HTML
+     * @param content the drop down content
+     * @param title the button title
+     *
+     * @return the component
+     */
+    public static Component createDropDown(String buttonHtml, Component content, String title) {
+
+        PopupView pv = new PopupView(buttonHtml, content);
+        pv.setDescription(title);
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        pv.setHideOnMouseOut(false);
+        return pv;
+    }
+
+    /**
+     * Creates the button HTML for the given icon resource.<p>
+     *
+     * @param icon the icon
+     *
+     * @return the HTML
+     */
+    static String getDropDownButtonHtml(ExternalResource icon) {
+
+        return "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + " v-button-"
+            + OpenCmsTheme.TOOLBAR_BUTTON
+            + "\"><span class=\"v-button-wrap\"><img class=\"v-icon\" src=\""
+            + icon.getURL()
+            + "\" /></span></div>";
+    }
+
+    /**
+     * Creates the button HTML for the given icon resource.<p>
+     *
+     * @param icon the icon
+     *
+     * @return the HTML
+     */
+    static String getDropDownButtonHtml(FontIcon icon) {
+
+        return "<div tabindex=\"0\" role=\"button\" class=\"v-button v-widget borderless v-button-borderless "
             + OpenCmsTheme.TOOLBAR_BUTTON
             + " v-button-"
             + OpenCmsTheme.TOOLBAR_BUTTON
             + "\"><span class=\"v-button-wrap\">"
             + icon.getHtml()
             + "</span></div>";
-        PopupView pv = new PopupView(html, content);
-        pv.setDescription(title);
-        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
-        pv.setHideOnMouseOut(false);
-        return pv;
     }
 
     /**
@@ -268,24 +309,49 @@ public class CmsToolBar extends CssLayout {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(appTitle)) {
             m_appIndicator.setValue(appTitle);
-            if (CmsAppWorkplaceUi.isOnlineProject()) {
-                m_appIndicator.addStyleName(OpenCmsTheme.TOOLABER_APP_INDICATOR_ONLINE);
-
-            }
-            String siteRoot = A_CmsUI.getCmsObject().getRequestContext().getSiteRoot();
-            String siteName = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot).getTitle();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteName)) {
-                siteName = siteRoot;
-            }
-            m_appIndicator.setDescription(
-                CmsVaadinUtils.getMessageText(
-                    Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
-                    A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
-                    siteName));
+            updateAppIndicator();
             m_appIndicator.setVisible(true);
         } else {
             m_appIndicator.setVisible(false);
         }
+    }
+
+    /**
+     * Updates the app indicator site and project info.<p>
+     */
+    public void updateAppIndicator() {
+
+        if (CmsAppWorkplaceUi.isOnlineProject()) {
+            m_appIndicator.addStyleName(OpenCmsTheme.TOOLABER_APP_INDICATOR_ONLINE);
+
+        } else {
+            m_appIndicator.removeStyleName(OpenCmsTheme.TOOLABER_APP_INDICATOR_ONLINE);
+        }
+        CmsObject cms = A_CmsUI.getCmsObject();
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+        String siteName = null;
+        if (site != null) {
+            siteName = site.getTitle();
+        } else {
+            try {
+                CmsResource folder = cms.readResource("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+
+                siteName = OpenCms.getSiteManager().getSiteTitle(cms, folder);
+            } catch (CmsException e) {
+                LOG.warn("Error reading site title.", e);
+            }
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteName)) {
+            siteName = siteRoot;
+        } else {
+            siteName = CmsWorkplace.substituteSiteTitleStatic(siteName, UI.getCurrent().getLocale());
+        }
+        m_appIndicator.setDescription(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_TOOLBAR_PROJECT_SITE_INFO_2,
+                A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName(),
+                siteName));
     }
 
     /**
@@ -386,37 +452,52 @@ public class CmsToolBar extends CssLayout {
      */
     private Component createQuickLaunchDropDown() {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        Locale locale = UI.getCurrent().getLocale();
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
-        //    layout.setSpacing(true);
-        layout.setMargin(true);
-        List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
-            OpenCms.getWorkplaceAppManager().getWorkplaceApps());
+        PopupView pv = new PopupView(new PopupView.Content() {
 
-        Collections.sort(configs, new Comparator<I_CmsWorkplaceAppConfiguration>() {
+            private static final long serialVersionUID = 1L;
 
-            public int compare(I_CmsWorkplaceAppConfiguration cat1, I_CmsWorkplaceAppConfiguration cat2) {
+            public String getMinimizedValueAsHTML() {
 
-                return ComparisonChain.start().compare(cat1.getOrder(), cat2.getOrder()).result();
+                return getDropDownButtonHtml(FontOpenCms.APPS);
+            }
+
+            public Component getPopupComponent() {
+
+                CmsObject cms = A_CmsUI.getCmsObject();
+                Locale locale = UI.getCurrent().getLocale();
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+                //    layout.setSpacing(true);
+                layout.setMargin(true);
+                List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
+                    OpenCms.getWorkplaceAppManager().getWorkplaceApps());
+
+                Collections.sort(configs, new Comparator<I_CmsWorkplaceAppConfiguration>() {
+
+                    public int compare(I_CmsWorkplaceAppConfiguration cat1, I_CmsWorkplaceAppConfiguration cat2) {
+
+                        return ComparisonChain.start().compare(cat1.getOrder(), cat2.getOrder()).result();
+                    }
+                });
+
+                for (I_CmsWorkplaceAppConfiguration appConfig : configs) {
+                    CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
+                    if (status.isVisible()) {
+                        layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(cms, appConfig, locale));
+                        // show only the top 10
+                        if (layout.getComponentCount() > 9) {
+                            break;
+                        }
+                    }
+                }
+                return layout;
             }
         });
+        pv.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_QUICK_LAUNCH_TITLE_0));
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        pv.setHideOnMouseOut(false);
 
-        for (I_CmsWorkplaceAppConfiguration appConfig : configs) {
-            CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
-            if (status.isVisible()) {
-                layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(appConfig, locale));
-                // show only the top 10
-                if (layout.getComponentCount() > 9) {
-                    break;
-                }
-            }
-        }
-        return createDropDown(
-            FontOpenCms.APPS,
-            layout,
-            CmsVaadinUtils.getMessageText(Messages.GUI_QUICK_LAUNCH_TITLE_0));
+        return pv;
     }
 
     /**
@@ -426,21 +507,35 @@ public class CmsToolBar extends CssLayout {
      */
     private Component createUserInfoDropDown() {
 
-        CmsObject cms = A_CmsUI.getCmsObject();
-        Component userDropdown = createDropDown(
-            new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
-                cms,
-                cms.getRequestContext().getCurrentUser())),
-            new CmsUserInfo(new I_UploadListener() {
+        PopupView pv = new PopupView(new PopupView.Content() {
 
-                public void onUploadFinished(List<String> uploadedFiles) {
+            private static final long serialVersionUID = 1L;
 
-                    handleUpload(uploadedFiles);
-                }
-            }),
-            CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0));
-        userDropdown.addStyleName(OpenCmsTheme.USER_INFO);
-        return userDropdown;
+            public String getMinimizedValueAsHTML() {
+
+                CmsObject cms = A_CmsUI.getCmsObject();
+                return getDropDownButtonHtml(
+                    new ExternalResource(OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
+                        cms,
+                        cms.getRequestContext().getCurrentUser())));
+            }
+
+            public Component getPopupComponent() {
+
+                return new CmsUserInfo(new I_UploadListener() {
+
+                    public void onUploadFinished(List<String> uploadedFiles) {
+
+                        handleUpload(uploadedFiles);
+                    }
+                });
+            }
+        });
+        pv.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0));
+        pv.addStyleName(OpenCmsTheme.NAVIGATOR_DROPDOWN);
+        pv.setHideOnMouseOut(false);
+        pv.addStyleName(OpenCmsTheme.USER_INFO);
+        return pv;
     }
 
     /**

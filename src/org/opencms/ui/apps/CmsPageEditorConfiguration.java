@@ -142,7 +142,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(true, true, null);
+        return new CmsAppVisibilityStatus(true, !cms.getRequestContext().getCurrentProject().isOnlineProject(), null);
     }
 
     /**

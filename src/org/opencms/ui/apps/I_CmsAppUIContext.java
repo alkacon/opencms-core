@@ -30,6 +30,7 @@ package org.opencms.ui.apps;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 
 /**
@@ -51,8 +52,10 @@ public interface I_CmsAppUIContext {
      * Adds the publish button to the toolbar.<p>
      *
      * @param updateListener the update listener, called after publishing
+     *
+     * @return the added button
      */
-    void addPublishButton(I_CmsUpdateListener<String> updateListener);
+    Button addPublishButton(I_CmsUpdateListener<String> updateListener);
 
     /**
      * Adds a toolbar button.<p>
@@ -100,4 +103,9 @@ public interface I_CmsAppUIContext {
      * @param show <code>true</code> to show the info
      */
     void showInfoArea(boolean show);
+
+    /**
+     * Updates the ui context on site or project changes.<p>
+     */
+    void updateOnChange();
 }

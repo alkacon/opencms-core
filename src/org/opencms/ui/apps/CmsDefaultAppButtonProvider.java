@@ -27,6 +27,7 @@
 
 package org.opencms.ui.apps;
 
+import org.opencms.file.CmsObject;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.OpenCmsTheme;
 
@@ -48,12 +49,16 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
     /**
      * Creates a properly styled button for the given app.<p>
      *
+     * @param cms the cms context
      * @param appConfig the app configuration
      * @param locale the locale
      *
      * @return the button component
      */
-    public static Component createAppIconWidget(final I_CmsWorkplaceAppConfiguration appConfig, Locale locale) {
+    public static Component createAppIconWidget(
+        CmsObject cms,
+        final I_CmsWorkplaceAppConfiguration appConfig,
+        Locale locale) {
 
         Button button = new Button(appConfig.getName(locale));
         button.addClickListener(new ClickListener() {
@@ -77,8 +82,14 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
         button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
         button.addStyleName(appConfig.getButtonStyle());
-        String helpText = appConfig.getHelpText(locale);
-        button.setDescription(helpText);
+        CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
+        if (!status.isActive()) {
+            button.setEnabled(false);
+            button.setDescription(status.getHelpText());
+        } else {
+            String helpText = appConfig.getHelpText(locale);
+            button.setDescription(helpText);
+        }
         return button;
     }
 
@@ -87,6 +98,6 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
      */
     public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
 
-        return createAppIconWidget(appConfig, UI.getCurrent().getLocale());
+        return createAppIconWidget(A_CmsUI.getCmsObject(), appConfig, UI.getCurrent().getLocale());
     }
 }

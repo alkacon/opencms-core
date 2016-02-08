@@ -396,17 +396,7 @@ public final class CmsSiteManagerImpl {
                                 title = configuredSite.getTitle();
                             }
                             if (title == null) {
-                                // not found, use the 'Title' property
-                                title = cms.readPropertyObject(
-                                    res,
-                                    CmsPropertyDefinition.PROPERTY_TITLE,
-                                    false).getValue();
-                                if (title == null) {
-                                    title = folder;
-                                }
-                                if ((shared != null) && folder.equals(shared)) {
-                                    title = SHARED_FOLDER_TITLE;
-                                }
+                                title = getSiteTitle(cms, res);
                             }
 
                             // get the position
@@ -677,6 +667,28 @@ public final class CmsSiteManagerImpl {
     public Map<CmsSiteMatcher, CmsSite> getSites() {
 
         return m_siteMatcherSites;
+    }
+
+    /**
+     * Returns the site title.<p>
+     *
+     * @param cms the cms context
+     * @param resource the site root resource
+     *
+     * @return the title
+     *
+     * @throws CmsException in case reading the title property fails
+     */
+    public String getSiteTitle(CmsObject cms, CmsResource resource) throws CmsException {
+
+        String title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
+        if (title == null) {
+            title = resource.getRootPath();
+        }
+        if (resource.getRootPath().equals(getSharedFolder())) {
+            title = SHARED_FOLDER_TITLE;
+        }
+        return title;
     }
 
     /**

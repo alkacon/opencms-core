@@ -33,6 +33,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.shared.components.CmsUploadState.UploadType;
@@ -126,10 +127,16 @@ public class CmsUserInfo extends VerticalLayout {
             CmsUserIconHelper.USER_IMAGE_FOLDER + CmsUserIconHelper.TEMP_FOLDER);
         button.getState().setUploadType(UploadType.singlefile);
         button.getState().setTargetFileNamePrefix(user.getId().toString());
+        button.addStyleName("o-user-image");
         button.getState().setDialogTitle(
             CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_DIALOG_TITLE_0));
-        button.addStyleName("o-user-image");
-        button.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
+        if (CmsAppWorkplaceUi.isOnlineProject()) {
+            button.setEnabled(false);
+            button.setDescription(
+                CmsVaadinUtils.getMessageText(org.opencms.ui.apps.Messages.GUI_TOOLBAR_NOT_AVAILABLE_ONLINE_0));
+        } else {
+            button.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_UPLOAD_IMAGE_0));
+        }
         button.addUploadListener(uploadListener);
         return button;
     }
