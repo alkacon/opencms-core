@@ -50,23 +50,11 @@ public class CmsCopyToClipboardButton extends Button {
      * Constructor.<p>
      *
      * @param text the button text
-     * @param alternativeText the alternative button text, in case copy to clip-board is not supported
      * @param selector the selector string to the element to select
      */
-    public CmsCopyToClipboardButton(String text, String alternativeText, String selector) {
+    public CmsCopyToClipboardButton(String text, String selector) {
         super(text);
         getState().setSelector(selector);
-        getState().setAlternativeText(alternativeText);
-    }
-
-    /**
-     * Sets the alternative button text, in case copy to clip-board is not supported.<p>
-     *
-     * @param alternativeText the alternative button text, in case copy to clip-board is not supported to set
-     */
-    public void setAlternativeText(String alternativeText) {
-
-        getState().setAlternativeText(alternativeText);
     }
 
     /**

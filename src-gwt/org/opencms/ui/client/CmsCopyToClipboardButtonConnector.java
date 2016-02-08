@@ -29,11 +29,9 @@ package org.opencms.ui.client;
 
 import org.opencms.ui.components.CmsCopyToClipboardButton;
 import org.opencms.ui.shared.components.CmsCopyToClipboardState;
-import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.ui.ConnectorFocusAndBlurHandler;
 import com.vaadin.client.ui.VButton;
 import com.vaadin.client.ui.button.ButtonConnector;
@@ -70,16 +68,20 @@ public class CmsCopyToClipboardButtonConnector extends ButtonConnector {
         button.client = getConnection();
         ConnectorFocusAndBlurHandler.addHandlers(this);
 
-        m_copySupported = isCopyToClipboardSupported();
-        button.addClickHandler(new ClickHandler() {
+        if (isCopyToClipboardSupported()) {
+            button.addClickHandler(new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+                public void onClick(ClickEvent event) {
 
-                event.preventDefault();
-                event.stopPropagation();
-                onButtonClick();
-            }
-        });
+                    event.preventDefault();
+                    event.stopPropagation();
+                    copyToClipboard(getState().getSelector());
+                }
+            });
+        } else {
+            button.setVisible(false);
+        }
+
     }
 
     /**
@@ -137,55 +139,4 @@ public class CmsCopyToClipboardButtonConnector extends ButtonConnector {
         }
         return result;
     }-*/;
-
-    /**
-     * Handles the button click.<p>
-     */
-    void onButtonClick() {
-
-        if (m_copySupported) {
-            copyToClipboard(getState().getSelector());
-        } else {
-            selectText(getState().getSelector());
-        }
-    }
-
-    /**
-     * Selects the text content of the given element.<p>
-     *
-     * @param selector the element selector
-     */
-    native void selectText(String selector)/*-{
-
-        var doc = $wnd.document;
-        var targetElement = doc.querySelector(selector);
-        if (targetElement != null) {
-            targetElement.focus();
-
-            var range, selection;
-            if (doc.body.createTextRange) {
-                range = doc.body.createTextRange();
-                range.moveToElementText(targetElement);
-                range.select();
-            } else if ($wnd.getSelection) {
-                selection = $wnd.getSelection();
-                range = doc.createRange();
-                range.selectNodeContents(targetElement);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
-        }
-    }-*/;
-
-    /**
-     * Overriding the set caption method, to show alternative text in case copy to clip-board is not supported.<p>
-     */
-    @OnStateChange({"caption", "captionAsHtml"})
-    void setCaption() {
-
-        String caption = m_copySupported || CmsStringUtil.isEmptyOrWhitespaceOnly(getState().getAlternativeText())
-        ? getState().caption
-        : getState().getAlternativeText();
-        getWidget().setText(caption);
-    }
 }

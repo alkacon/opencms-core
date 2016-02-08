@@ -107,8 +107,6 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_errorMessage.setValue(message);
         m_selectText.setCaption(
             CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0));
-        m_selectText.setAlternativeText(
-            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_SELECT_TEXT_0));
         m_selectText.setSelector("#" + labelId + " > pre");
 
         m_details.setVisible(false);
