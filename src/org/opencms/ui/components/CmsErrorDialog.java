@@ -63,6 +63,9 @@ public class CmsErrorDialog extends CmsBasicDialog {
     /** Warning icon. */
     private Label m_icon;
 
+    /** Hidden stack trace element. */
+    private Label m_hiddenStack;
+
     /** The OK button. */
     private Button m_okButton;
 
@@ -76,7 +79,7 @@ public class CmsErrorDialog extends CmsBasicDialog {
     private CssLayout m_details;
 
     /** The select text button. */
-    private CmsCopyToClipboardButton m_selectText;
+    private CmsCopyToClipboardButton m_copyText;
 
     /** The toggle details button. */
     private Button m_detailsButton;
@@ -99,16 +102,16 @@ public class CmsErrorDialog extends CmsBasicDialog {
         m_icon.setContentMode(ContentMode.HTML);
         m_icon.setValue(FontAwesome.WARNING.getHtml());
         m_errorLabel.setContentMode(ContentMode.PREFORMATTED);
-        m_errorLabel.setValue(ExceptionUtils.getFullStackTrace(t));
-        m_errorLabel.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         final String labelId = "label" + new CmsUUID().toString();
-        m_errorLabel.setId(labelId);
+        String stacktrace = message + "\n\n" + ExceptionUtils.getFullStackTrace(t);
+        m_hiddenStack.setId(labelId);
+        m_hiddenStack.setValue(stacktrace);
+        m_errorLabel.setValue(stacktrace);
+        m_errorLabel.addStyleName(OpenCmsTheme.FULL_WIDTH_PADDING);
         m_errorMessage.setContentMode(ContentMode.HTML);
         m_errorMessage.setValue(message);
-        m_selectText.setCaption(
-            CmsVaadinUtils.getMessageText(org.opencms.ui.components.Messages.GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0));
-        m_selectText.setSelector("#" + labelId + " > pre");
 
+        m_copyText.setSelector("#" + labelId);
         m_details.setVisible(false);
 
         m_okButton.addClickListener(new ClickListener() {

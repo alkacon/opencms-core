@@ -12,16 +12,17 @@
 						<v-label _id="m_errorMessage" :expand style-name="o-error-message"/>
 					</v-horizontal-layout>
 					<v-css-layout _id="m_details" size-full :expand style-name="o-error-details">
-						<o-cms-copy-to-clipboard-button _id="m_selectText" style-name="borderless" />
 						<v-panel scrollable="true" size-full caption="%(key.GUI_LABEL_STACKTRACE_0)">
 							<v-label _id="m_errorLabel" width="-1px" size-full />
 		  				</v-panel>
 		  			</v-css-layout>
+		  			<v-label _id="m_hiddenStack" height="0px" primary-style-name="o-hidden" />
 		  		</v-vertical-layout>
 			</content>
 			<buttons>
-			<v-button _id="m_detailsButton" width="150px">%(key.GUI_DETAILS_0)</v-button>
-  				<v-button _id="m_okButton" width="150px">%(key.GUI_CLOSE_0)</v-button>
+				<o-cms-copy-to-clipboard-button _id="m_copyText" :left>%(key.GUI_ERROR_DIALOG_COPY_TO_CLIPBOARD_0)</o-cms-copy-to-clipboard-button>
+				<v-button _id="m_detailsButton">%(key.GUI_DETAILS_0)</v-button>
+  				<v-button _id="m_okButton">%(key.GUI_CLOSE_0)</v-button>
   			</buttons>
   		</o-cms-basic-dialog>
 	</body>
