@@ -127,6 +127,12 @@ public final class Messages {
     public static final String GUI_CONFIRM_REVERT_TITLE_0 = "GUI_CONFIRM_REVERT_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_TO_CLIPBOARD_0 = "GUI_COPY_TO_CLIPBOARD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COPY_TO_CLIPBOARD_DESCRIPTION_0 = "GUI_COPY_TO_CLIPBOARD_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_MODE_ASK_0 = "GUI_CREATE_MODE_ASK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -347,6 +353,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_NEW_PROPERTY_0 = "GUI_LABEL_NEW_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_STACKTRACE_0 = "GUI_LABEL_STACKTRACE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_CHECKBOX_EXTERNAL_0 = "GUI_LINK_CHECKBOX_EXTERNAL_0";

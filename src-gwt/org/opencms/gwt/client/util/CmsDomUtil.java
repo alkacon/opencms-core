@@ -554,10 +554,10 @@ public final class CmsDomUtil {
     }
 
     /**
-     * Removes the opacity attribute from the element's inline-style.<p>
-     *
-     * @param element the DOM element to manipulate
-     */
+    * Removes the opacity attribute from the element's inline-style.<p>
+    *
+    * @param element the DOM element to manipulate
+    */
     public static void clearOpacity(Element element) {
 
         getStyleImpl().clearOpacity(element);
@@ -592,6 +592,48 @@ public final class CmsDomUtil {
 
         return "</" + tag.name() + ">";
     }
+
+    /**
+     * Copy the text content of the matching element to the clip-board.<p>
+     *
+     * @param selector the query selector matching the target element
+     *
+     * @return in case the command was executed successfully
+     */
+    public static native boolean copyToClipboard(String selector)/*-{
+
+        var doc = $wnd.document;
+        var targetElement = doc.querySelector(selector);
+        if (targetElement != null) {
+            var text = targetElement.textContent;
+            var textArea = document.createElement("textarea");
+
+            // add some styles to hide the text area
+            textArea.style.position = 'fixed';
+            textArea.style.top = 0;
+            textArea.style.left = 0;
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = 0;
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            textArea.style.color = 'transparent';
+            textArea.value = text;
+
+            document.body.appendChild(textArea);
+
+            textArea.select();
+            var result = false;
+            try {
+                result = document.execCommand('copy');
+            } catch (err) {
+            }
+            document.body.removeChild(textArea);
+            return result;
+        }
+    }-*/;
 
     /**
      * This method will create an {@link com.google.gwt.dom.client.Element} for the given HTML.
@@ -1411,6 +1453,22 @@ public final class CmsDomUtil {
 
         return (element.getOffsetHeight() > 0) || (element.getOffsetWidth() > 0);
     }
+
+    /**
+     * Checks whether the copy command is supported by the client browser.<p>
+     *
+     * @return <code>true</code> if the copy command is supported
+     */
+    public static native boolean isCopyToClipboardSupported()/*-{
+        var result = document.queryCommandSupported('copy');
+        if (result) {
+            var uMatch = navigator.userAgent.match(/Firefox\/(.*)$/);
+            if (uMatch && uMatch.length > 1) {
+                result = uMatch[1] >= 41;
+            }
+        }
+        return result;
+    }-*/;
 
     /**
      * Checks whether a given script resource is present within the window context.<p>

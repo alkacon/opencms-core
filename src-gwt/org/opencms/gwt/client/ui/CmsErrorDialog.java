@@ -32,11 +32,13 @@ import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsLog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
+import org.opencms.gwt.client.util.CmsDomUtil;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -75,14 +77,14 @@ public class CmsErrorDialog extends CmsPopup {
      */
     public CmsErrorDialog(String message, String details) {
 
-        super(Messages.get().key(Messages.GUI_ERROR_0));
+        super(Messages.get().key(Messages.GUI_ERROR_0), WIDE_WIDTH);
         m_errorDialogId = new Date() + " " + message;
         setAutoHideEnabled(false);
         setModal(true);
         setGlassEnabled(true);
         addDialogClose(null);
         m_closeButton = new CmsPushButton();
-        m_closeButton.setText(Messages.get().key(Messages.GUI_OK_0));
+        m_closeButton.setText(Messages.get().key(Messages.GUI_CLOSE_0));
         m_closeButton.setUseMinWidth(true);
         m_closeButton.addClickHandler(new ClickHandler() {
 
@@ -114,6 +116,36 @@ public class CmsErrorDialog extends CmsPopup {
                 }
             });
             content.add(m_detailsFieldset);
+            m_detailsFieldset.setVisible(false);
+            CmsPushButton detailsB = new CmsPushButton();
+            detailsB.setText(Messages.get().key(Messages.GUI_DETAILS_0));
+            detailsB.setUseMinWidth(true);
+            detailsB.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+
+                    toggleDetails();
+                }
+            });
+            addButton(detailsB, 0);
+            if (CmsDomUtil.isCopyToClipboardSupported()) {
+                final String id = "details" + CmsClientStringUtil.randomUUID();
+                m_detailsFieldset.getElement().setId(id);
+                CmsPushButton copy = new CmsPushButton();
+                copy.setText(Messages.get().key(Messages.GUI_COPY_TO_CLIPBOARD_0));
+                copy.setUseMinWidth(true);
+                copy.addClickHandler(new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+
+                        CmsDomUtil.copyToClipboard("#" + id + " .gwt-HTML");
+                    }
+                });
+                copy.getElement().getStyle().setFloat(com.google.gwt.dom.client.Style.Float.LEFT);
+                copy.getElement().getStyle().setMarginLeft(0, Unit.PX);
+                copy.setTitle(Messages.get().key(Messages.GUI_COPY_TO_CLIPBOARD_DESCRIPTION_0));
+                addButton(copy, 0);
+            }
         }
         setMainContent(content);
     }
@@ -211,6 +243,17 @@ public class CmsErrorDialog extends CmsPopup {
     }
 
     /**
+     * Toggles the details visibility.<p>
+     */
+    void toggleDetails() {
+
+        if (m_detailsFieldset != null) {
+            m_detailsFieldset.setVisible(!m_detailsFieldset.isVisible());
+            center();
+        }
+    }
+
+    /**
      * Creates a field-set containing the error details.<p>
      *
      * @param details the error details
@@ -221,9 +264,9 @@ public class CmsErrorDialog extends CmsPopup {
 
         CmsFieldSet fieldset = new CmsFieldSet();
         fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
-        fieldset.setLegend(Messages.get().key(Messages.GUI_DETAILS_0));
+        fieldset.setLegend(Messages.get().key(Messages.GUI_LABEL_STACKTRACE_0));
         fieldset.addContent(new HTML(details));
-        fieldset.setOpen(false);
+        fieldset.setOpen(true);
         return fieldset;
     }
 
