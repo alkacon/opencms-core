@@ -33,6 +33,7 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.ade.config/" />
+			<resource uri="/system/userimages/temp/"/>
 			<resource uri="/system/workplace/resources/filetypes/category.png" />
 			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
 			<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
@@ -1113,6 +1114,50 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/userimages</destination>
+			<type>folder</type>
+			<uuidstructure>8e53d9be-ce30-11e5-8623-5517cca7ff58</uuidstructure>
+			<datelastmodified>Mon, 08 Feb 2016 06:52:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Feb 2016 06:52:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/userimages/temp</destination>
+			<type>folder</type>
+			<uuidstructure>9ac1eb20-ce30-11e5-8623-5517cca7ff58</uuidstructure>
+			<datelastmodified>Mon, 08 Feb 2016 06:53:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Feb 2016 06:53:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.ELEMENT_AUTHOR</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>7</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
