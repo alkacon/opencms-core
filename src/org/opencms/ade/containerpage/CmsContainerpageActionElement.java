@@ -32,6 +32,7 @@ import org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.shared.CmsCoreData;
+import org.opencms.main.OpenCms;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,6 +89,13 @@ public class CmsContainerpageActionElement extends CmsGwtActionElement {
             getCntPageData());
         sb.append(prefetchedData);
         sb.append(exportModuleScriptTag(GWT_MODULE_NAME));
+        sb.append("<script type=\"text/javascript\" src=\"");
+        sb.append(
+            OpenCms.getLinkManager().substituteLinkForRootPath(
+                getCmsObject(),
+                "/system/workplace/editors/tinymce/opencms_plugin.js"));
+        sb.append("\"></script>\n<style type=\"text/css\">\n    html {\n        overflow-y: scroll;\n    }\n</style>");
+
         return sb.toString();
     }
 

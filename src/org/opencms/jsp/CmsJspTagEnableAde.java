@@ -27,6 +27,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.ade.containerpage.CmsContainerpageActionElement;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
@@ -37,6 +38,8 @@ import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -47,9 +50,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * @since 7.6
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
-
-    /** The container-page editor jsp-include URI. */
-    private static final String INCLUDE_JSP_URI = "/system/modules/org.opencms.ade.containerpage/containerpage_include.jsp";
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8447599916548975733L;
@@ -91,15 +91,15 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
         eb.init(cms, CmsDirectEditMode.TRUE, "");
         CmsJspTagEditable.setDirectEditProvider(context, eb);
 
-        CmsJspTagInclude.includeTagAction(
-            context,
-            INCLUDE_JSP_URI,
-            null,
-            false,
-            null,
-            null,
-            req,
-            context.getResponse());
+        try {
+            CmsContainerpageActionElement actionEl = new CmsContainerpageActionElement(
+                context,
+                (HttpServletRequest)req,
+                (HttpServletResponse)context.getResponse());
+            context.getResponse().getWriter().print(actionEl.exportAll());
+        } catch (Exception e) {
+            throw new JspException(e);
+        }
     }
 
     /**
