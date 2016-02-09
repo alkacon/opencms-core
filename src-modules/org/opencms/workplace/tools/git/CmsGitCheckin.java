@@ -38,7 +38,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
-import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRoleViolationException;
@@ -65,7 +64,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -716,7 +714,10 @@ public class CmsGitCheckin {
             m_logStream.println();
         }
         if ((exitCode == 0) && m_checkout) {
-            importModules();
+            boolean importOk = importModules();
+            if (!importOk) {
+                return -1;
+            }
         }
         m_logStream.println("[" + new Date() + "] FINISHED Git task");
         m_logStream.println();
@@ -879,14 +880,19 @@ public class CmsGitCheckin {
      *
      * @param file the module file to import
      * @throws CmsException if soemthing goes wrong
+     *
+     * @return true if there were no errors during the import
      */
-    private void importModule(File file) throws CmsException {
+    private boolean importModule(File file) throws CmsException {
 
         m_logStream.println("Trying to import module from " + file.getAbsolutePath());
         CmsModuleImportExportHandler importHandler = new CmsModuleImportExportHandler();
         CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(file.getAbsolutePath());
         String moduleName = module.getName();
-        I_CmsReport report = new CmsLogReport(Locale.ENGLISH, getClass());
+        I_CmsReport report = new CmsPrintStreamReport(
+            m_logStream,
+            OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()),
+            false);
         if (OpenCms.getModuleManager().hasModule(moduleName)) {
             OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true /*replace module*/, report);
         }
@@ -896,14 +902,20 @@ public class CmsGitCheckin {
         file.delete();
         if (report.hasError() || report.hasWarning()) {
             m_logStream.println("Import failed, see opencms.log for details");
+            return false;
         }
+        return true;
     }
 
     /**
      * Imports the selected modules from the git repository.<p>
+     *
+     * @return true if there were no errors during the import
      */
     @SuppressWarnings("resource")
-    private void importModules() {
+    private boolean importModules() {
+
+        boolean result = true;
 
         try {
             m_logStream.println("Checking module dependencies.");
@@ -961,11 +973,12 @@ public class CmsGitCheckin {
                     FileOutputStream fos = new FileOutputStream(outputFile);
                     m_logStream.println("Zipping module structure to " + outputFile.getAbsolutePath());
                     zipRfsFolder(dirEntry, fos);
-                    importModule(outputFile);
+                    result &= importModule(outputFile);
                     outputFile.delete();
                 } catch (Exception e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     e.printStackTrace(m_logStream);
+                    result = false;
                 }
             }
         } catch (Exception e) {
@@ -973,7 +986,9 @@ public class CmsGitCheckin {
             LOG.error(e.getLocalizedMessage(), e);
             m_logStream.println("Unable to check dependencies for modules, giving up.");
             e.printStackTrace(m_logStream);
+            result = false;
         }
+        return result;
     }
 
     /** Reads the config file and stores configured values in member variables. */

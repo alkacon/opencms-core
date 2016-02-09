@@ -36,6 +36,8 @@
 						</tab>
 						<tab caption="Import">
 							<v-form-layout _id="m_checkoutTab" margin spacing>
+								<v-text-field enabled="false" _id="m_fakeUserField" width="100%" caption="Git user" input-prompt="Not adjusted if empty" />
+								<v-text-field enabled="false" _id="m_fakeEmailField" width="100%" caption="Git email"  input-prompt="Not adjusted if empty"/>
 								<v-check-box _id="m_fetchAndReset" caption="Fetch remote branch"/>
 							</v-form-layout>	
 						</tab>

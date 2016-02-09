@@ -140,6 +140,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     /** Checkbox for the 'fetch and reset' option. */
     private CheckBox m_fetchAndReset;
+    private TextField m_fakeEmailField;
+
+    private TextField m_fakeUserField;
 
     /** The check-in bean. */
     private CmsGitCheckin m_checkinBean;
@@ -490,9 +493,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 break;
             case checkOut:
                 if (result == 0) {
-                    message = "Checkout successful.";
+                    message = "Import successful.";
                 } else {
-                    message = "Checkout failed, please see the log file for details.";
+                    message = "Import failed, please see the log file for details.";
                 }
                 CmsGitActionResultPanel checkoutResult = new CmsGitActionResultPanel(
                     message,
@@ -595,6 +598,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 m_okButton.setCaption("Check in");
                 break;
             case checkOut:
+                m_fakeEmailField.setValue(m_emailField.getValue());
+                m_fakeUserField.setValue(m_userField.getValue());
                 m_okButton.setCaption("Import");
                 enableCheckboxesForNotInstalledModules(true);
                 break;
