@@ -73,14 +73,14 @@ public class CmsTokenValidator {
      *
      * @param cms the CMS context
      * @param user the user
+     * @param currentTime the current time
      * @return the authorization token
      * @throws CmsException if something goes wrong
      */
-    public static String createToken(CmsObject cms, CmsUser user) throws CmsException {
+    public static String createToken(CmsObject cms, CmsUser user, long currentTime) throws CmsException {
 
         String randomKey = RandomStringUtils.randomAlphanumeric(8);
-        String value = CmsEncoder.encodeStringsAsBase64Parameter(
-            Arrays.asList(randomKey, "" + System.currentTimeMillis()));
+        String value = CmsEncoder.encodeStringsAsBase64Parameter(Arrays.asList(randomKey, "" + currentTime));
         user.setAdditionalInfo(ADDINFO_KEY, value);
         cms.writeUser(user);
         return CmsEncoder.encodeStringsAsBase64Parameter(Arrays.asList(user.getName(), randomKey));

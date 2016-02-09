@@ -29,6 +29,7 @@ package org.opencms.ui.login;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.gwt.CmsVfsService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -186,10 +187,17 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                     Type.ERROR_MESSAGE);
                 return false;
             }
-            String token = CmsTokenValidator.createToken(cms, foundUser);
+            long now = System.currentTimeMillis();
+            long expiration = OpenCms.getLoginManager().getTokenLifetime() + now;
+            String expirationStr = CmsVfsService.formatDateTime(cms, expiration);
+            String token = CmsTokenValidator.createToken(cms, foundUser, now);
             String link = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false) + "?at=" + token; //$NON-NLS-1$ //$NON-NLS-2$
             LOG.info("Sending password reset link to user " + foundUser.getName() + ": " + link); //$NON-NLS-1$ //$NON-NLS-2$
-            CmsPasswordChangeNotification notification = new CmsPasswordChangeNotification(cms, foundUser, link);
+            CmsPasswordChangeNotification notification = new CmsPasswordChangeNotification(
+                cms,
+                foundUser,
+                link,
+                expirationStr);
             try {
                 notification.send();
             } catch (EmailException e) {

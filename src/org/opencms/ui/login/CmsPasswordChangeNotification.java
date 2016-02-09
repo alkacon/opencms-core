@@ -46,11 +46,13 @@ public class CmsPasswordChangeNotification extends A_CmsNotification {
      * @param cms the CMS context
      * @param receiver the receiver
      * @param link the link
+     * @param expiration the formatted link expiration date
      */
-    public CmsPasswordChangeNotification(CmsObject cms, CmsUser receiver, String link) {
+    public CmsPasswordChangeNotification(CmsObject cms, CmsUser receiver, String link, String expiration) {
         super(cms, receiver);
         m_link = CmsEncoder.escapeXml(link);
         addMacro("user", receiver.getName());
+        addMacro("expiration", expiration);
     }
 
     /**
