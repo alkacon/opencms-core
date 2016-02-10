@@ -30,6 +30,8 @@ package org.opencms.setup.xml.v8;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.loader.CmsRedirectLoader;
+import org.opencms.loader.CmsSeoFileLoader;
 import org.opencms.loader.CmsXmlContainerPageLoader;
 import org.opencms.setup.CmsSetupBean;
 import org.opencms.setup.xml.A_CmsXmlVfs;
@@ -48,6 +50,12 @@ import org.dom4j.Node;
  * @since 8.0.0
  */
 public class CmsXmlAddLoaders extends A_CmsXmlVfs {
+
+    /** The loader classes to add. */
+    private static final Class<?>[] LOADER_CLASSES = new Class[] {
+        CmsXmlContainerPageLoader.class,
+        CmsRedirectLoader.class,
+        CmsSeoFileLoader.class};
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;
@@ -77,13 +85,17 @@ public class CmsXmlAddLoaders extends A_CmsXmlVfs {
 
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsXmlContainerPageLoader.class.getName());
+            for (int i = 0; i < LOADER_CLASSES.length; i++) {
+
+                if (xpath.contains(LOADER_CLASSES[i].getName())) {
+                    CmsSetupXmlHelper.setValue(
+                        document,
+                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
+                        LOADER_CLASSES[i].getName());
+                    return true;
+                }
             }
-            return true;
+
         }
         return false;
     }
@@ -117,7 +129,9 @@ public class CmsXmlAddLoaders extends A_CmsXmlVfs {
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='");
             m_xpaths = new ArrayList<String>();
-            m_xpaths.add(xp.toString() + CmsXmlContainerPageLoader.class.getName() + "']");
+            for (int i = 0; i < LOADER_CLASSES.length; i++) {
+                m_xpaths.add(xp.toString() + LOADER_CLASSES[i].getName() + "']");
+            }
         }
         return m_xpaths;
     }

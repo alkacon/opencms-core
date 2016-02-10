@@ -24,8 +24,6 @@
 		<dependencies>
 			<dependency name="org.opencms.gwt" version="10.0.0" />
 			<dependency name="org.opencms.workplace" version="10.0.0" />
-			<dependency name="org.opencms.workplace.categories"
-				version="10.0.0" />
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"

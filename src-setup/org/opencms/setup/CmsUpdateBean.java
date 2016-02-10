@@ -69,8 +69,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
@@ -113,6 +111,21 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** Static flag to indicate if all modules should be updated regardless of their version number. */
     private static final boolean UPDATE_ALL_MODULES = false;
+
+    /** The obsolete modules that should be removed. */
+    private static String[] OBSOLETE_MODULES = new String[] {
+        "org.opencms.ade.containerpage",
+        "org.opencms.ade.contenteditor",
+        "org.opencms.ade.editprovider",
+        "org.opencms.ade.galleries",
+        "org.opencms.ade.postupload",
+        "org.opencms.ade.properties",
+        "org.opencms.ade.publish",
+        "org.opencms.ade.sitemap",
+        "org.opencms.ade.upload",
+        "org.opencms.workplace.help.de",
+        "org.opencms.workplace.help.en",
+        "org.opencms.workplace.help"};
 
     /** The new logging offset in the database update thread. */
     protected int m_newLoggingDBOffset;
@@ -215,7 +228,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_cms.getRequestContext().setSiteRoot("");
             m_cms.getRequestContext().setCurrentProject(m_cms.createTempfileProject());
             if (!m_cms.existsResource("/shared")) {
-                m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder").getTypeId());
+                m_cms.createResource("/shared", OpenCms.getResourceManager().getResourceType("folder"));
             }
 
             try {
@@ -870,12 +883,6 @@ public class CmsUpdateBean extends CmsSetupBean {
             }
 
             List<String> installList = Lists.newArrayList(m_installModules);
-
-            // HACK: Some resources were moved from org.opencms.ade.sitemap to org.opencms.ade.config, but they are located
-            // under /system/workplace/resources, so if org.opencms.ade.config is updated before org.opencms.ade.sitemap, these
-            // resources will be deleted. So just update org.opencms.ade.config again at the end.
-            installList.add("org.opencms.ade.config");
-
             for (String name : installList) {
                 if (!utdModules.contains(name)) {
                     String filename = m_moduleFilenames.get(name);
@@ -1022,19 +1029,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         List<String> result = new ArrayList<String>();
         if (m_installModules.contains("org.opencms.ade.config")) {
-            // some resource types have been moved from org.opencms.ade.containerpage an org.opencms.ade.sitemap
-            // to org.opencms.ade.config in 8.0.3, so we need to remove the former modules to avoid a resource
-            // type conflict.
-            CmsModule containerpageModule = OpenCms.getModuleManager().getModule("org.opencms.ade.containerpage");
-            if (containerpageModule != null) {
-                String version = containerpageModule.getVersion().toString();
-                if ("8.0.0".equals(version)
-                    || "8.0.1".equals(version)
-                    || "8.0.2".equals(version)
-                    || "8.0.3".equals(version)
-                    || "8.0.4".equals(version)) {
-                    result.add("org.opencms.ade.containerpage");
-                    result.add("org.opencms.ade.sitemap");
+            for (int i = 0; i < OBSOLETE_MODULES.length; i++) {
+                if (OpenCms.getModuleManager().hasModule(OBSOLETE_MODULES[i])) {
+                    result.add(OBSOLETE_MODULES[i]);
                 }
             }
         }

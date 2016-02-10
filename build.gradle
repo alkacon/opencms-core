@@ -893,7 +893,7 @@ task war (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     from("${projectDir}/lib/jni") { into "/WEB-INF/lib/jni" }
 }
 
-task updater (dependsOn: setupJar, type: Zip){
+task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
     baseName 'opencms-upgrade-to'
     ext.preserveLibModules = preserveLibModules
     
@@ -957,6 +957,7 @@ task updater (dependsOn: setupJar, type: Zip){
     from ("${project.buildDir}/libs") {
         include 'opencms.jar'
         include 'opencms-setup.jar'
+        include 'opencms-widgetset.jar'
         into '/WEB-INF/lib'
     }
     into ('/WEB-INF/lib') { from configurations.distribution }
