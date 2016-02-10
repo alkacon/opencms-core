@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
 public abstract class A_CmsAdeGalleryWidget extends A_CmsWidget implements I_CmsADEWidget {
 
     /** The gallery JSP path. */
-    protected static final String PATH_GALLERY_JSP = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+    protected static final String PATH_GALLERY_JSP = "/system/workplace/commons/gallery.jsp";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsAdeGalleryWidget.class);

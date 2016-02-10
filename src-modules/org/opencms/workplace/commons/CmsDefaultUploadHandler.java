@@ -36,7 +36,7 @@ import org.opencms.workplace.I_CmsPostUploadDialogHandler;
 public class CmsDefaultUploadHandler implements I_CmsPostUploadDialogHandler {
 
     /** The upload hook path. */
-    public static final String DEFAULT_HOOK = "/system/modules/org.opencms.ade.postupload/pages/postupload.jsp";
+    public static final String DEFAULT_HOOK = "/system/workplace/commons/postupload.jsp";
 
     /**
      * @see org.opencms.workplace.I_CmsPostUploadDialogHandler#getUploadHook(org.opencms.file.CmsObject, java.lang.String)

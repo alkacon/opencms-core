@@ -1,7 +1,7 @@
 @mixin o-buttons {
 	
 	.o-dialog-button-bar .v-button, .v-button.o-button-blue {
-  		min-width: 150px;
+  		min-width: 100px;
   		@include valo-button-style($unit-size: 30px, $font-weight: bold, $background-color: $o-button-blue);
   }
   

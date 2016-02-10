@@ -167,7 +167,7 @@ function createGalleryDialogUrl(path, typesParam, integrator, integratorArgs) {
        // leave the parameter empty  
    } 
    
-   return "<%= cms.link("/system/modules/org.opencms.ade.galleries/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
+   return "<%= cms.link("/system/workplace/commons/gallery.jsp") %>?<%=org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.CONFIG_GALLERY_MODE+"="+org.opencms.ade.galleries.shared.I_CmsGalleryProviderConstants.GalleryMode.editor.name() %>" + searchParam + resParam + galleryStoragePrefixParam + integratorParam + debugParam;
 }
 
 

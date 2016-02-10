@@ -490,7 +490,7 @@ public class CmsProjectsList extends A_CmsListDialog {
 
                 String link = OpenCms.getLinkManager().substituteLink(
                     getCms(),
-                    "/system/modules/org.opencms.ade.publish/publish.jsp?publishProjectId=" + getItem().getId());
+                    "/system/workplace/commons/publish.jsp?publishProjectId=" + getItem().getId());
                 return "window.location='" + link + "' + '&closelink='+encodeURI(window.location.href);";
             }
         };

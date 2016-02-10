@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_CONFLICTING_RESTYPES_IN_MODULE_5 = "ERR_CONFLICTING_RESTYPES_IN_MODULE_5";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_EXPORT_UNSUPPORTED_1 = "ERR_EXPORT_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1 = "ERR_FILE_NAME_PATTERN_WITHOUT_NUMBER_MACRO_1";
 
     /** Message constant for key in the resource bundle. */
@@ -89,6 +92,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SERVICE_UNSUPPORTED_1 = "ERR_SERVICE_UNSUPPORTED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_TEMPLATE_PROTERTY_UNSUPPORTED_1 = "ERR_TEMPLATE_PROTERTY_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1 = "ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -107,10 +113,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOADER_DUMB_DEFAULT_DESC_0 = "GUI_LOADER_DUMB_DEFAULT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_HTMLREDIRECT_DEFAULT_DESC_0 = "GUI_LOADER_HTMLREDIRECT_DEFAULT_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADER_JSP_DEFAULT_DESC_0 = "GUI_LOADER_JSP_DEFAULT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADER_POINTER_DEFAULT_DESC_0 = "GUI_LOADER_POINTER_DEFAULT_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_SEOFILE_DEFAULT_DESC_0 = "GUI_LOADER_SEOFILE_DEFAULT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADER_SITEMAP_DEFAULT_DESC_0 = "GUI_LOADER_SITEMAP_DEFAULT_DESC_0";

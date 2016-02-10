@@ -88,7 +88,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_MULTIFILE_PROPERTY_0" uri="commons/property_multifile.jsp"
@@ -142,7 +142,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
@@ -175,7 +175,7 @@
 				uri="commons/lockchange.jsp" rule="changelock" /> <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" 
 				uri="commons/unlock.jsp" rule="unlock" /> <separator /> <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" 
 				uri="commons/copytoproject.jsp" rule="copytoproject" /> <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" 
-				uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp" rule="directpublish" 
+				uri="/system/workplace/commons/direct_publish.jsp" rule="directpublish" 
 				/> <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp" 
 				rule="publishscheduled" /> <separator /> <entry key="GUI_EXPLORER_CONTEXT_PAGEEDIT_0" 
 				uri="editors/editor.jsp" target="_top" rule="standard" /> <separator /> <entry 
@@ -201,7 +201,7 @@
 				uri="commons/chtype.jsp" rule="standard" /> <separator /> <entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" 
 				uri="editors/editor.jsp?editastext=true" target="_top" rule="editcontrolcode" 
 				/> </entry> <separator /> <entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" 
-				rule="nondeleted" /> <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp" 
+				rule="nondeleted" /> <entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" 
 				rule="nondeleted" /> <entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" 
 				name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site"/> 
 				<entry key="GUI_EXPLORER_CONTEXT_RESOURCE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" 
@@ -237,7 +237,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -294,7 +294,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
@@ -360,7 +360,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -416,7 +416,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
@@ -478,7 +478,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -535,7 +535,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -560,7 +560,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -616,7 +616,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
@@ -683,7 +683,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -738,7 +738,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditExternalLink"
@@ -774,7 +774,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/open_ade_gallery.jsp"
@@ -832,7 +832,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -857,7 +857,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/open_ade_gallery.jsp"
@@ -913,7 +913,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -937,7 +937,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp"
@@ -993,7 +993,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -1036,7 +1036,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
 							rule="copytoproject" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -1097,7 +1097,7 @@
 							rule="nondeleted" />
 
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
 							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
@@ -1163,7 +1163,7 @@
 							rule="showlocks" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
@@ -1199,7 +1199,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -1225,7 +1225,7 @@
 							rule="unlock" />
 						<separator />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-							uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+							uri="/system/workplace/commons/direct_publish.jsp"
 							rule="directpublish" />
 						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
 							rule="publishscheduled" />
@@ -1264,7 +1264,7 @@
 							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
 							rule="nondeleted" />
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-							uri="/system/modules/org.opencms.ade.properties/pages/properties.jsp"
+							uri="/system/workplace/commons/properties.jsp"
 							rule="nondeleted" />
 					</contextmenu>
 				</editoptions>
@@ -1286,7 +1286,7 @@
 					rule="multistandard" />
 				<separator />
 				<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-					uri="/system/modules/org.opencms.ade.publish/direct_publish.jsp"
+					uri="/system/workplace/commons/direct_publish.jsp"
 					rule="multipubstandard" />
 				<separator />
 				<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"

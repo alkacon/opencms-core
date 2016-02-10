@@ -379,6 +379,10 @@
 		right: 0;
 		top:0;
 		bottom: 0;
+		
+		.o-dialog-button-bar .v-button {
+  			min-width: 150px;
+		}
 	}
 	 
 	.cmslogin-hidden-form {

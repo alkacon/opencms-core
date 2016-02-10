@@ -35,7 +35,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -147,9 +146,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * Returns <code>true</code> in case the given resource is an XML content.<p>
      *
-     * Internally this checks if the content loader for the given resource is
-     * identical to the XML content loader.<p>
-     *
      * @param resource the resource to check
      *
      * @return <code>true</code> in case the given resource is an XML content
@@ -162,11 +158,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
         if (resource != null) {
             // avoid array index out of bound exception:
             if (!resource.isFolder()) {
-                try {
-                    result = OpenCms.getResourceManager().getLoader(resource) instanceof CmsXmlContentLoader;
-                } catch (CmsLoaderException e) {
-                    // result will be false
-                }
+                result = OpenCms.getResourceManager().getResourceType(resource) instanceof CmsResourceTypeXmlContent;
             }
         }
         return result;

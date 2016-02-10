@@ -658,7 +658,7 @@ public class CmsExtendedWorkflowManager extends CmsDefaultWorkflowManager {
         try {
             String linkHref = OpenCms.getLinkManager().getServerLink(
                 userCms,
-                "/system/modules/org.opencms.ade.publish/publish.jsp?"
+                "/system/workplace/commons/publish.jsp?"
                     + CmsPublishService.PARAM_PUBLISH_PROJECT_ID
                     + "="
                     + workflowProject.getUuid()

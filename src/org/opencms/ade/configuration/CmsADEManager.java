@@ -111,8 +111,10 @@ public class CmsADEManager {
     /** JSON property name constant. */
     protected enum FavListProp {
         /** element property. */
-        ELEMENT, /** formatter property. */
-        FORMATTER, /** properties property. */
+        ELEMENT,
+        /** formatter property. */
+        FORMATTER,
+        /** properties property. */
         PROPERTIES;
     }
 
@@ -121,8 +123,10 @@ public class CmsADEManager {
      */
     protected enum Status {
         /** already initialized. */
-        initialized, /** currently initializing. */
-        initializing, /** not initialized. */
+        initialized,
+        /** currently initializing. */
+        initializing,
+        /** not initialized. */
         notInitialized
     }
 
@@ -163,7 +167,7 @@ public class CmsADEManager {
     public static final String N_TYPE = "Type";
 
     /** The path to the sitemap editor JSP. */
-    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/modules/org.opencms.ade.sitemap/pages/sitemap.jsp";
+    public static final String PATH_SITEMAP_EDITOR_JSP = "/system/workplace/commons/sitemap.jsp";
 
     /** User additional info key constant. */
     protected static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
@@ -766,13 +770,13 @@ public class CmsADEManager {
      * @param response the servlet response
      * @param htmlRedirect the path of the HTML redirect resource
      *
-     * @throws Exception if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     public void handleHtmlRedirect(
         CmsObject userCms,
         HttpServletRequest request,
         HttpServletResponse response,
-        String htmlRedirect) throws Exception {
+        String htmlRedirect) throws CmsException {
 
         CmsObject cms = OpenCms.initCmsObject(m_offlineCms);
         CmsRequestContext userContext = userCms.getRequestContext();
@@ -801,26 +805,33 @@ public class CmsADEManager {
 
         String typeValue = content.getValue(N_TYPE, contentLocale).getStringValue(cms);
         String lnkUri = "";
-        String errorCode = "";
+        Integer errorCode;
         if ("sublevel".equals(typeValue)) {
             // use the nav builder to get the first sub level entry
             CmsJspNavBuilder navBuilder = new CmsJspNavBuilder(cms);
             if (navBuilder.getNavigationForFolder().size() > 0) {
                 CmsJspNavElement target = navBuilder.getNavigationForFolder().get(0);
                 lnkUri = CmsJspTagLink.linkTagAction(target.getResourceName(), request);
-                errorCode = HttpServletResponse.SC_MOVED_TEMPORARILY + "";
+                errorCode = Integer.valueOf(HttpServletResponse.SC_MOVED_TEMPORARILY);
             } else {
                 // send error 404 if no sub entry available
-                errorCode = HttpServletResponse.SC_NOT_FOUND + "";
+                errorCode = Integer.valueOf(HttpServletResponse.SC_NOT_FOUND);
             }
         } else {
             String linkValue = content.getValue(N_LINK, contentLocale).getStringValue(cms);
             lnkUri = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, linkValue);
-            errorCode = typeValue;
+            try {
+                errorCode = Integer.valueOf(typeValue);
+            } catch (NumberFormatException e) {
+                LOG.error(e.getMessage(), e);
+                // fall back to default
+                errorCode = Integer.valueOf(307);
+            }
         }
-        request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
+        request.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, errorCode);
         response.setHeader("Location", CmsEncoder.convertHostToPunycode(lnkUri));
         response.setHeader("Connection", "close");
+        response.setStatus(errorCode.intValue());
     }
 
     /**

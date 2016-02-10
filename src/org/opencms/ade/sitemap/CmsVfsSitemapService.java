@@ -206,10 +206,10 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     }
 
     /** The path of the JSP used to download aliases. */
-    public static final String ALIAS_DOWNLOAD_PATH = "/system/modules/org.opencms.ade.sitemap/pages/download-aliases.jsp";
+    public static final String ALIAS_DOWNLOAD_PATH = "/system/workplace/commons/download-aliases.jsp";
 
     /** The path to the JSP used to upload aliases. */
-    public static final String ALIAS_IMPORT_PATH = "/system/modules/org.opencms.ade.sitemap/pages/import-aliases.jsp";
+    public static final String ALIAS_IMPORT_PATH = "/system/workplace/commons/import-aliases.jsp";
 
     /** The galleries folder name. */
     public static final String GALLERIES_FOLDER_NAME = ".galleries";

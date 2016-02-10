@@ -42,7 +42,7 @@ import javax.servlet.jsp.PageContext;
 /**
  * Sitemap action used to generate the sitemap editor.<p>
  *
- * See jsp file <tt>/system/modules/org.opencms.ade.sitemap/sitemap.jsp</tt>.<p>
+ * See jsp file <tt>/system/workplace/commons/sitemap.jsp</tt>.<p>
  *
  * @since 8.0.0
  */

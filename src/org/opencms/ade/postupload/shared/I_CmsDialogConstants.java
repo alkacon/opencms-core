@@ -36,7 +36,7 @@ public interface I_CmsDialogConstants {
     String ATTR_CLOSE_LINK = "closeLink";
 
     /** Dialog JSP URI. */
-    String DIALOG_JSP_URI = "/system/modules/org.opencms.ade.postupload/pages/postupload.jsp";
+    String DIALOG_JSP_URI = "/system/workplace/commons/postupload.jsp";
 
     /** Key for the resources. */
     String PARAM_RESOURCES = "resources";

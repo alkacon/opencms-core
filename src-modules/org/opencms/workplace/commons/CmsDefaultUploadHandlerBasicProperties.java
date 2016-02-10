@@ -40,6 +40,6 @@ public class CmsDefaultUploadHandlerBasicProperties implements I_CmsPostUploadDi
      */
     public String getUploadHook(CmsObject cms, String uploadFolderSitePath) {
 
-        return "/system/modules/org.opencms.ade.postupload/pages/postupload_basicproperties.jsp";
+        return "/system/workplace/commons/postupload_basicproperties.jsp";
     }
 }

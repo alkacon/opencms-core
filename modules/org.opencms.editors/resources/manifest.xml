@@ -28,6 +28,7 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
+			<resource uri="/system/workplace/editors/acacia/" />
 			<resource uri="/system/workplace/editors/configuration/"/>
 			<resource uri="/system/workplace/editors/dialogs/"/>
 			<resource uri="/system/workplace/editors/simple/"/>
@@ -187,6 +188,82 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/editors/acacia</destination>
+			<type>folder</type>
+			<uuidstructure>ad2766c6-991c-11e1-a85e-d138de4a8c16</uuidstructure>
+			<datelastmodified>Tue, 08 May 2012 14:47:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 May 2012 14:47:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Acacia Editor]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/editors/acacia/contenteditor.jsp
+			</source>
+			<destination>system/workplace/editors/acacia/contenteditor.jsp
+			</destination>
+			<type>jsp</type>
+			<uuidstructure>b91dbe4b-53d1-11e1-af11-e5cbe0b4d4f3</uuidstructure>
+			<uuidresource>b91dbe4c-53d1-11e1-af11-e5cbe0b4d4f3</uuidresource>
+			<datelastmodified>Fri, 10 Feb 2012 10:26:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Feb 2012 10:26:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<destination>system/workplace/editors/acacia/editor.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>caf4cbc9-991c-11e1-a85e-d138de4a8c16</uuidstructure>
+			<uuidresource>b91dbe4c-53d1-11e1-af11-e5cbe0b4d4f3</uuidresource>
+			<datelastmodified>Fri, 10 Feb 2012 10:26:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Feb 2012 10:26:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations />
+			<accesscontrol />
+		</file>
+		<file>
+			<source>system/workplace/editors/acacia/editor_configuration.xml
+			</source>
+			<destination>system/workplace/editors/acacia/editor_configuration.xml
+			</destination>
+			<type>plain</type>
+			<uuidstructure>07ab3efc-991d-11e1-a85e-d138de4a8c16</uuidstructure>
+			<uuidresource>07ab3efd-991d-11e1-a85e-d138de4a8c16</uuidresource>
+			<datelastmodified>Wed, 09 May 2012 08:16:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 May 2012 14:49:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties />
+			<relations />
+			<accesscontrol />
 		</file>
 		<file>
 			<destination>system/workplace/editors/configuration</destination>

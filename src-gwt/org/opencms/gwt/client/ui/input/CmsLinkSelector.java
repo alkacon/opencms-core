@@ -357,7 +357,7 @@ public class CmsLinkSelector extends Composite implements I_CmsFormWidget, I_Cms
      */
     protected String buildGalleryUrl() {
 
-        String basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+        String basePath = "/system/workplace/commons/gallery.jsp";
         return CmsCoreProvider.get().link(basePath + "?dialogmode=widget&fieldid=" + m_id);
     }
 

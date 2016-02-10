@@ -54,7 +54,7 @@ import com.google.gwt.user.server.rpc.RPC;
 /**
  * Sitemap action used to generate the sitemap editor.<p>
  *
- * see jsp file <tt>/system/modules/org.opencms.ade.sitemap/sitemap.jsp</tt>.<p>
+ * see jsp file <tt>/system/workplace/commons/sitemap.jsp</tt>.<p>
  *
  * @since 8.0.0
  */

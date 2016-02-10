@@ -82,7 +82,7 @@ public class CmsClientTemplateBean implements IsSerializable {
      */
     public static CmsClientTemplateBean getNullTemplate() {
 
-        String imagePath = "/system/modules/org.opencms.ade.sitemap/pages/notemplate.png";
+        String imagePath = "/system/workplace/resources/commons/notemplate.png";
         CmsClientTemplateBean result = new CmsClientTemplateBean("No template", "", "", imagePath);
         result.setShowWeakText(true);
         return result;

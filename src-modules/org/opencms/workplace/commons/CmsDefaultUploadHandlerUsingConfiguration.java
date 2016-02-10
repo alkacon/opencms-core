@@ -40,6 +40,6 @@ public class CmsDefaultUploadHandlerUsingConfiguration implements I_CmsPostUploa
      */
     public String getUploadHook(CmsObject cms, String uploadFolderSitePath) {
 
-        return "/system/modules/org.opencms.ade.postupload/pages/postupload_useconfig.jsp";
+        return "/system/workplace/commons/postupload_useconfig.jsp";
     }
 }

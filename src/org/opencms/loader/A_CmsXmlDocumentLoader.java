@@ -147,11 +147,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException {
 
-        CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
-            cms,
-            req,
-            resource,
-            getTemplatePropertyDefinition());
+        CmsTemplateLoaderFacade loaderFacade = getTemplateLoaderFacade(cms, resource, req);
         return loaderFacade.getLoader().export(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
 
@@ -217,11 +213,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         // ensure the requested XML document gets cached in the request attributes
         unmarshalXmlDocument(cms, resource, req);
 
-        CmsTemplateLoaderFacade loaderFacade = OpenCms.getResourceManager().getTemplateLoaderFacade(
-            cms,
-            req,
-            resource,
-            getTemplatePropertyDefinition());
+        CmsTemplateLoaderFacade loaderFacade = getTemplateLoaderFacade(cms, resource, req);
         CmsTemplateContext context = loaderFacade.getTemplateContext();
         req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_CONTEXT, context);
         TemplateBean templateBean = new TemplateBean(
@@ -251,6 +243,29 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
             byte[] result = value.getBytes(doc.getEncoding());
             res.getOutputStream().write(result);
         }
+    }
+
+    /**
+     * Returns the template loader facade for the given resource.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     * @param req the current request
+     *
+     * @return the loader facade
+     *
+     * @throws CmsException in case reading the template property fails
+     */
+    protected CmsTemplateLoaderFacade getTemplateLoaderFacade(
+        CmsObject cms,
+        CmsResource resource,
+        HttpServletRequest req) throws CmsException {
+
+        return OpenCms.getResourceManager().getTemplateLoaderFacade(
+            cms,
+            req,
+            resource,
+            getTemplatePropertyDefinition());
     }
 
     /**

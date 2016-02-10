@@ -438,7 +438,7 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
                 basePath = "/system/workplace/galleries/" + m_type + "gallery/index.jsp";
             }
         } else {
-            basePath = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+            basePath = "/system/workplace/commons/gallery.jsp";
             basePath += "?dialogmode=widget&fieldid=" + m_id;
         }
 
@@ -533,10 +533,10 @@ public class CmsVfsSelection extends Composite implements I_CmsFormWidget, HasVa
      * Exporting the set principal function to the window scope.<p>
      */
     private native void exportSetPrincipalFunction()/*-{
-                                                    var self=this;
-                                                    $wnd.setPrincipalFormValue = function(typeFlag, principal){
-                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
-                                                    self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
-                                                    }
-                                                    }-*/;
+        var self = this;
+        $wnd.setPrincipalFormValue = function(typeFlag, principal) {
+            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::setFormValueAsString(Ljava/lang/String;)(principal);
+            self.@org.opencms.gwt.client.ui.input.CmsVfsSelection::close()();
+        }
+    }-*/;
 }

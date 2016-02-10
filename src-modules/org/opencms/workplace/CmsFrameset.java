@@ -315,7 +315,7 @@ public class CmsFrameset extends CmsWorkplace {
         if (CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
             if (getCms().isManagerOfProject()) {
                 return button(
-                    "../../modules/org.opencms.ade.publish/publish_project.jsp",
+                    "../../workplace/commons/publish_project.jsp",
                     "body",
                     "publish.png",
                     Messages.GUI_BUTTON_PUBLISH_0,
@@ -327,7 +327,7 @@ public class CmsFrameset extends CmsWorkplace {
 
         if (getCms().isManagerOfProject()) {
             return (button(
-                "../../modules/org.opencms.ade.publish/publish_project.jsp",
+                "../../workplace/commons/publish_project.jsp",
                 "body",
                 "publish.png",
                 Messages.GUI_BUTTON_PUBLISH_0,

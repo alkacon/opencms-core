@@ -256,7 +256,7 @@ public interface I_CmsGalleryProviderConstants {
     String TREE_VFS = "vfs";
 
     /** Path to the host page. */
-    String VFS_OPEN_GALLERY_PATH = "/system/modules/org.opencms.ade.galleries/gallery.jsp";
+    String VFS_OPEN_GALLERY_PATH = "/system/workplace/commons/gallery.jsp";
 
     /** Option to enable/disable gallery selection. */
     String CONFIG_GALLERIES_SELECTABLE = "galleriesSelectable";

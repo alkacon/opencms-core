@@ -73,7 +73,7 @@ public interface I_CmsUploadConstants extends IsSerializable {
     String PARAM_RESOURCES = "resources";
 
     /** Upload action JSP URI. */
-    String UPLOAD_ACTION_JSP_URI = "/system/modules/org.opencms.ade.upload/uploadAction.jsp";
+    String UPLOAD_ACTION_JSP_URI = "/system/workplace/commons/uploadAction.jsp";
 
     /** The encoded file name field name suffix. */
     String UPLOAD_FILENAME_ENCODED_SUFFIX = "_filename_encoded";
@@ -82,7 +82,7 @@ public interface I_CmsUploadConstants extends IsSerializable {
     String UPLOAD_IS_ROOT_PATH_FIELD_NAME = "isRootPath";
 
     /** Upload JSP URI. */
-    String UPLOAD_JSP_URI = "/system/modules/org.opencms.ade.upload/upload.jsp";
+    String UPLOAD_JSP_URI = "/system/workplace/commons/upload.jsp";
 
     /** The name of the form field that stores the target folder for the upload. */
     String UPLOAD_TARGET_FOLDER_FIELD_NAME = "upload_target_folder";
