@@ -25,4 +25,119 @@
 	.oc-spinner-dots:before {
 		content: "\e61d";
 	}
+	
+	.opencms-icon[class^="opencms-icon-"], .opencms-icon[class*=" opencms-icon-"], .opencms-icon [class^="opencms-icon-"], .opencms-icon [class*=" opencms-icon-"] {
+	font-family: opencms-font !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.opencms-icon[class^="opencms-icon-"] *, .opencms-icon[class*=" opencms-icon-"] *, .opencms-icon [class^="opencms-icon-"] *, .opencms-icon [class*=" opencms-icon-"] *{
+	font-family: inherit !important;
+	font-size: inherit !important;
+}
+
+.opencms-icon .opencms-icon-filter:before, .opencms-icon.opencms-icon-filter:before {
+	content: "\e60c";
+}
+.opencms-icon .opencms-icon-search:before, .opencms-icon.opencms-icon-search:before {
+	content: "\e60d";
+}
+.opencms-icon .opencms-icon-undo:before, .opencms-icon.opencms-icon-undo:before {
+	content: "\e606";
+}
+.opencms-icon .opencms-icon-redo:before, .opencms-icon.opencms-icon-redo:before {
+	content: "\e607";
+}
+.opencms-icon .opencms-icon-help:before, .opencms-icon.opencms-icon-help:before {
+	content: "\e602";
+}
+/* the up state */
+.opencms-icon.cmsState-up .opencms-icon-help:before, .opencms-icon.opencms-icon-help.cmsState-up:before, .opencms-icon.cmsState-up-hovering .opencms-icon-help:before, .opencms-icon.opencms-icon-help.cmsState-up-hovering:before {
+	content: "\e603";
+}
+
+.opencms-icon .opencms-icon-remove-locale:before, .opencms-icon.opencms-icon-remove-locale:before {
+	content: "\e619";
+}
+.opencms-icon .opencms-icon-copy-locale:before, .opencms-icon.opencms-icon-copy-locale:before {
+	content: "\e61a";
+}
+.opencms-icon .opencms-icon-save-exit:before, .opencms-icon.opencms-icon-save-exit:before {
+	content: "\e60a";
+}
+.opencms-icon .opencms-icon-save:before, .opencms-icon.opencms-icon-save:before {
+	content: "\e60b";
+}
+.opencms-icon .opencms-icon-exit:before, .opencms-icon.opencms-icon-exit:before {
+	content: "\e615";
+}
+.opencms-icon .opencms-icon-pen:before, .opencms-icon.opencms-icon-pen:before {
+	content: "\e614";
+}
+.opencms-icon .opencms-icon-upload:before, .opencms-icon.opencms-icon-upload:before {
+	content: "\e604";
+}
+.opencms-icon .opencms-icon-download:before, .opencms-icon.opencms-icon-download:before {
+	content: "\e605";
+}
+.opencms-icon .opencms-icon-publish:before, .opencms-icon.opencms-icon-publish:before {
+	content: "\e60e";
+}
+.opencms-icon .opencms-icon-clipboard:before, .opencms-icon.opencms-icon-clipboard:before {
+	content: "\e60f";
+}
+.opencms-icon .opencms-icon-wand:before, .opencms-icon.opencms-icon-wand:before {
+	content: "\e610";
+}
+.opencms-icon .opencms-icon-gallery:before, .opencms-icon.opencms-icon-gallery:before {
+	content: "\e611";
+}
+.opencms-icon .opencms-icon-info:before, .opencms-icon.opencms-icon-info:before {
+	content: "\e612";
+}
+.opencms-icon .opencms-icon-context-menu:before, .opencms-icon.opencms-icon-context-menu:before {
+	content: "\e616";
+}
+.opencms-icon .opencms-icon-apps:before, .opencms-icon.opencms-icon-apps:before {
+	content: "\e616";
+}
+.opencms-icon .opencms-icon-sitemap:before, .opencms-icon.opencms-icon-sitemap:before {
+	content: "\e613";
+}
+.opencms-icon .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point:before {
+	content: "\e600";
+}
+/* the up state */
+.opencms-icon.cmsState-up .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point.cmsState-up:before, .opencms-icon.cmsState-up-hovering .opencms-icon-edit-point:before, .opencms-icon.opencms-icon-edit-point.cmsState-up-hovering:before {
+	content: "\e601";
+}
+
+.opencms-icon .opencms-icon-show:before, .opencms-icon.opencms-icon-show:before {
+	content: "\e608";
+}
+.opencms-icon .opencms-icon-hide:before, .opencms-icon.opencms-icon-hide:before {
+	content: "\e609";
+}
+.opencms-icon .opencms-icon-settings:before, .opencms-icon.opencms-icon-settings:before {
+	content: "\e618";
+}
+
+.opencms-icon .opencms-icon-warning:before, .opencms-icon.opencms-icon-warning:before {
+	content: "\ed50";
+}
+.opencms-icon .opencms-icon-error:before, .opencms-icon.opencms-icon-error:before {
+	content: "\ed6b";
+}
+.opencms-icon .opencms-icon-circle-info:before, .opencms-icon.opencms-icon-circle-info:before {
+	content: "\ed6c";
+}
 }

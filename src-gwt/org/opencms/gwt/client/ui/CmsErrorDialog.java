@@ -102,6 +102,8 @@ public class CmsErrorDialog extends CmsPopup {
         m_messageWidget = createMessageWidget(message);
         content.add(m_messageWidget);
         if (details != null) {
+            // prepend the message
+            details = message + "<br /><br />" + details;
             m_detailsFieldset = createDetailsFieldSet(details);
             m_detailsFieldset.addOpenHandler(new OpenHandler<CmsFieldSet>() {
 
@@ -280,7 +282,8 @@ public class CmsErrorDialog extends CmsPopup {
     private CmsMessageWidget createMessageWidget(String message) {
 
         CmsMessageWidget widget = new CmsMessageWidget();
-        widget.setIconClass(I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon());
+        widget.setIconClass(
+            I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon() + " opencms-icon opencms-icon-error");
         widget.setMessageHtml(message);
         return widget;
     }
