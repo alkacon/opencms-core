@@ -46,6 +46,9 @@ public enum FontOpenCms implements FontIcon {
     /** The circle check icon. */
     CIRCLE_CHECK(0xe61e),
 
+    /** The circle info icon. */
+    CIRCLE_INFO(0xed6c),
+
     /** The circle invert icon. */
     CIRCLE_INV(0xe62b),
 
@@ -93,6 +96,9 @@ public enum FontOpenCms implements FontIcon {
 
     /** The disabled bulls eye edit icon. */
     EDIT_POINT_DISABLED(0xe601),
+
+    /** The error icon. */
+    ERROR(0xed6b),
 
     /** The exit icon. */
     EXIT(0xe615),
@@ -152,7 +158,10 @@ public enum FontOpenCms implements FontIcon {
     UPLOAD(0xe604),
 
     /** The wand icon. */
-    WAND(0xe610);
+    WAND(0xe610),
+
+    /** The warning icon. */
+    WARNING(0xed50);
 
     /** The icon code point. */
     private int m_codepoint;
