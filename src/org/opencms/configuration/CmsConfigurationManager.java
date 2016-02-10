@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -82,6 +83,24 @@ import org.xml.sax.XMLReader;
  * @since 6.0.0
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
+
+    class MyStream extends OutputStream {
+
+        private ByteArrayOutputStream m_baos = new ByteArrayOutputStream();
+
+        /**
+         * @see java.io.OutputStream#write(int)
+         */
+        @Override
+        public void write(int b) throws IOException {
+
+            m_baos.write(b);
+            if ((b == 10) || (b == 13)) {
+                System.out.println("*");
+            }
+
+        }
+    }
 
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
@@ -481,39 +500,53 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         String configPath = CmsStringUtil.joinPaths(url.getFile(), config.getXmlFileName());
         String transformPath = getTransformationPath();
         TransformerFactory factory = TransformerFactory.newInstance();
-        LOG.info("Transforming '" + configPath + "' with transformation '" + transformPath + "'");
-        Transformer transformer = factory.newTransformer(new StreamSource(new File(transformPath)));
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setParameter("file", config.getXmlFileName());
-        InetAddress localhost = InetAddress.getLocalHost();
-        transformer.setParameter("hostName", localhost.getHostName());
-        transformer.setParameter("canonicalHostName", localhost.getCanonicalHostName());
-        transformer.setParameter("hostAddress", localhost.getHostAddress());
-        // use a SAXSource here because we need to set the correct entity resolver to prevent errors
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true);
-        parserFactory.setValidating(false); // Turn off validation
-        XMLReader reader = parserFactory.newSAXParser().getXMLReader();
-        reader.setEntityResolver(new CmsXmlEntityResolver(null));
-        Source source = new SAXSource(reader, new InputSource(configPath));
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Result target = new StreamResult(baos);
+        ByteArrayOutputStream errBaos = new ByteArrayOutputStream();
+        PrintStream oldErr = System.err;
+        System.setErr(new PrintStream(errBaos));
+        try {
+            LOG.info("Transforming '" + configPath + "' with transformation '" + transformPath + "'");
+            Transformer transformer = factory.newTransformer(new StreamSource(new File(transformPath)));
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setParameter("file", config.getXmlFileName());
+            InetAddress localhost = InetAddress.getLocalHost();
+            transformer.setParameter("hostName", localhost.getHostName());
+            transformer.setParameter("canonicalHostName", localhost.getCanonicalHostName());
+            transformer.setParameter("hostAddress", localhost.getHostAddress());
+            // use a SAXSource here because we need to set the correct entity resolver to prevent errors
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setNamespaceAware(true);
+            parserFactory.setValidating(false); // Turn off validation
+            XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+            reader.setEntityResolver(new CmsXmlEntityResolver(null));
+            Source source = new SAXSource(reader, new InputSource(configPath));
 
-        transformer.transform(source, target);
-        byte[] transformedConfig = baos.toByteArray();
-        // We can't set the doctype dynamically from inside the XSLT transform using XSLT 1.0, and XSLT 2.0
-        // isn't supported by the standard implementation in the JDK. So we do some macro replacement after the
-        // transformation.
-        String transformedConfigStr = new String(transformedConfig, "UTF-8").replaceFirst(
-            "@dtd@",
-            config.getDtdUrlPrefix() + config.getDtdFilename());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("");
-            LOG.debug("=================== Transformation result for config file '" + config.getXmlFileName() + "':");
-            LOG.debug(transformedConfigStr);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Result target = new StreamResult(baos);
+
+            transformer.transform(source, target);
+
+            byte[] transformedConfig = baos.toByteArray();
+            // We can't set the doctype dynamically from inside the XSLT transform using XSLT 1.0, and XSLT 2.0
+            // isn't supported by the standard implementation in the JDK. So we do some macro replacement after the
+            // transformation.
+            String transformedConfigStr = new String(transformedConfig, "UTF-8").replaceFirst(
+                "@dtd@",
+                config.getDtdUrlPrefix() + config.getDtdFilename());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("");
+                LOG.debug(
+                    "=================== Transformation result for config file '" + config.getXmlFileName() + "':");
+                LOG.debug(transformedConfigStr);
+            }
+            return new InputSource(new ByteArrayInputStream(transformedConfigStr.getBytes("UTF-8")));
+        } finally {
+            System.setErr(oldErr);
+            byte[] errorBytes = errBaos.toByteArray();
+            if (errorBytes.length > 0) {
+                LOG.warn(new String(errorBytes, "UTF-8"));
+            }
         }
-        return new InputSource(new ByteArrayInputStream(transformedConfigStr.getBytes("UTF-8")));
     }
 
     /**
