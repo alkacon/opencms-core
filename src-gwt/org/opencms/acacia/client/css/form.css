@@ -608,3 +608,34 @@ div.overlayButtonPanel > div{
 @sprite .overlayButtonPanel .multiButtonBar.hoverButton .cmsState:first-child.cmsState-up span {
     gwt-image: "coreImages.icons.editIconDeactivated";
 }
+
+.tabDescription.tabDescription {
+	padding-left: 4px;
+	padding-top: 4px;
+	margin-bottom: 8px; 
+}
+
+.tabDescription.tabDescription, .tabDescription.tabDescription * { 
+	color: value("constants.css.textColorEditorLabel");
+	font-weight: 400;
+	line-height: normal !important;
+}
+
+.tabDescription.tabDescription, .tabDescription.tabDescription * {
+	font-size: 17px; 
+}
+
+.tabDescription.tabDescription h1 {
+	font-size: 200%; 
+}
+
+.tabDescription.tabDescription h2 {
+	font-size: 159%; 
+}
+
+.tabDescription.tabDescription h3 {
+	font-size: 126%; 
+}
+
+
+

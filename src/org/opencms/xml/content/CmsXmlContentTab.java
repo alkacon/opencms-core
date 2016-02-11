@@ -43,6 +43,9 @@ public class CmsXmlContentTab {
     /** The XML element name where this tab starts. */
     private String m_startName;
 
+    /** Description of this tab. */
+    private String m_description;
+
     /** The name to display on the tab. */
     private String m_tabName;
 
@@ -55,7 +58,7 @@ public class CmsXmlContentTab {
      */
     public CmsXmlContentTab(String startName) {
 
-        this(startName, true, startName);
+        this(startName, true, startName, null);
     }
 
     /**
@@ -64,12 +67,14 @@ public class CmsXmlContentTab {
      * @param startName XML element name where this tab starts
      * @param collapsed indicates if the first level of left labels should be shown in the editor
      * @param tabName the name to display on the tab
+     * @param description the tab description HTML
      */
-    public CmsXmlContentTab(String startName, boolean collapsed, String tabName) {
+    public CmsXmlContentTab(String startName, boolean collapsed, String tabName, String description) {
 
         m_startName = startName;
         m_collapsed = collapsed;
         m_tabName = tabName;
+        m_description = description;
     }
 
     /**
@@ -85,6 +90,16 @@ public class CmsXmlContentTab {
             return ((CmsXmlContentTab)obj).getStartName().equals(getStartName());
         }
         return false;
+    }
+
+    /**
+     * Gets the tab description HTML.<p>
+     *
+     * @return the tab description HTML
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**

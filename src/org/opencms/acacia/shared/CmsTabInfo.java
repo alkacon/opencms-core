@@ -46,6 +46,9 @@ public class CmsTabInfo implements IsSerializable {
     /** The name to display on the tab. */
     private String m_tabName;
 
+    /** The tab description HTML. */
+    private String m_description;
+
     /**
      * Constructor.<p>
      *
@@ -53,13 +56,15 @@ public class CmsTabInfo implements IsSerializable {
      * @param tabId the tab id
      * @param startName the start element name
      * @param collapsed if the labels should be collapsed
+     * @param description the description HTML
      */
-    public CmsTabInfo(String tabName, String tabId, String startName, boolean collapsed) {
+    public CmsTabInfo(String tabName, String tabId, String startName, boolean collapsed, String description) {
 
         m_tabName = tabName;
         m_tabId = tabId;
         m_startName = startName;
         m_collapsed = collapsed;
+        m_description = description;
     }
 
     /**
@@ -68,6 +73,16 @@ public class CmsTabInfo implements IsSerializable {
     protected CmsTabInfo() {
 
         // nothing to do
+    }
+
+    /**
+     * Gets the description HTML.<p>
+     *
+     * @return the description HTML
+     */
+    public String getDescription() {
+
+        return m_description;
     }
 
     /**

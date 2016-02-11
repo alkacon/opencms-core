@@ -112,6 +112,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -2581,11 +2582,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
                 // this is a tab node
                 String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
                 String collapseValue = element.attributeValue(APPINFO_ATTR_COLLAPSE, CmsStringUtil.TRUE);
+                Node descriptionNode = element.selectSingleNode(APPINFO_ATTR_DESCRIPTION + "/text()");
+                String description = null;
+                if (descriptionNode != null) {
+                    description = descriptionNode.getText();
+                }
                 String tabName = element.attributeValue(APPINFO_ATTR_NAME, elementName);
                 if (elementName != null) {
                     // add the element tab
                     m_tabs.add(
-                        new CmsXmlContentTab(elementName, Boolean.valueOf(collapseValue).booleanValue(), tabName));
+                        new CmsXmlContentTab(
+                            elementName,
+                            Boolean.valueOf(collapseValue).booleanValue(),
+                            tabName,
+                            description));
                 }
             }
             // check if first element has been defined as tab
@@ -3062,7 +3072,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler, I_Cm
         }
         try {
             String sitePath = cms.getRequestContext().removeSiteRoot(link.getTarget());
-            
+
             // check for links to static resources
             if (sitePath.startsWith(CmsSystemInfo.STATIC_RESOURCE_PREFIX)) {
                 return false;

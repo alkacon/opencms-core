@@ -58,6 +58,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -368,10 +369,10 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     }
                 }
             } else {
-                    valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(attributeIndex));
-                    if (m_widgetService.isDisplayCompact(attributeName)) {
-                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
-                    }
+                valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(attributeIndex));
+                if (m_widgetService.isDisplayCompact(attributeName)) {
+                    valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
+                }
             }
             setAttributeChoice(valueWidget, attributeType);
         }
@@ -389,6 +390,9 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         int attributeIndex) {
 
         if ((tabInfos == null) || (tabInfos.size() < 2)) {
+            if ((tabInfos != null) && (tabInfos.size() == 1)) {
+                renderDescription(tabInfos.get(0), context);
+            }
             renderForm(entity, context, parentHandler, attributeIndex);
             return null;
         } else {
@@ -423,6 +427,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
             CmsTabInfo currentTab = tabIt.next();
             CmsTabInfo nextTab = tabIt.next();
             FlowPanel tabPanel = createTab();
+            renderDescription(currentTab, tabPanel);
             tabbedPanel.addNamed(tabPanel, currentTab.getTabName(), currentTab.getTabId());
             CmsType entityType = m_entityBackEnd.getType(entity.getTypeName());
             List<String> attributeNames = entityType.getAttributeNames();
@@ -438,6 +443,7 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                     currentTab = nextTab;
                     nextTab = tabIt.hasNext() ? tabIt.next() : null;
                     tabPanel = createTab();
+                    renderDescription(currentTab, tabPanel);
                     tabbedPanel.addNamed(tabPanel, currentTab.getTabName(), currentTab.getTabId());
                     // check if the tab content may be collapsed
                     if (currentTab.isCollapsed()) {
@@ -816,16 +822,16 @@ public class CmsRenderer implements I_CmsEntityRenderer {
                         }
                     }
                 } else {
-                        valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(i));
-                        if (lastCompactView != null) {
-                            // previous widget was set to first column mode,
-                            // revert that as the current widget will be displayed in a new line
-                            lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
-                            lastCompactView = null;
-                        }
-                        if (m_widgetService.isDisplayCompact(attributeName)) {
-                            valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
-                        }
+                    valueWidget.setValueEntity(renderer, attribute.getComplexValues().get(i));
+                    if (lastCompactView != null) {
+                        // previous widget was set to first column mode,
+                        // revert that as the current widget will be displayed in a new line
+                        lastCompactView.setCompactMode(CmsAttributeValueView.COMPACT_MODE_WIDE);
+                        lastCompactView = null;
+                    }
+                    if (m_widgetService.isDisplayCompact(attributeName)) {
+                        valueWidget.setCompactMode(CmsAttributeValueView.COMPACT_MODE_NESTED);
+                    }
                 }
                 setAttributeChoice(valueWidget, attributeType);
             }
@@ -877,6 +883,22 @@ public class CmsRenderer implements I_CmsEntityRenderer {
         }
         handler.updateButtonVisisbility();
         return lastCompactView;
+    }
+
+    /**
+     * Renders the tab description in a given panel.<p>
+     * @param tabInfo the tab info object
+     *
+     * @param descriptionParent the panel in which to render the tab description
+     */
+    private void renderDescription(CmsTabInfo tabInfo, Panel descriptionParent) {
+
+        if (tabInfo.getDescription() != null) {
+            HTML descriptionLabel = new HTML();
+            descriptionLabel.addStyleName(I_CmsLayoutBundle.INSTANCE.form().tabDescription());
+            descriptionLabel.setHTML(tabInfo.getDescription());
+            descriptionParent.add(descriptionLabel);
+        }
     }
 
     /**

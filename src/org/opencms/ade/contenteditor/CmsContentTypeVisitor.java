@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsADEWidget;
 import org.opencms.widgets.I_CmsComplexWidget;
@@ -208,9 +209,12 @@ public class CmsContentTypeVisitor {
     /** Widget display type evaluation rules. */
     protected enum EvaluationRule {
         /** Label length rule. */
-        labelLength, /** No rule applied. */
-        none, /** Optional field rule. */
-        optional, /** Root level rule. */
+        labelLength,
+        /** No rule applied. */
+        none,
+        /** Optional field rule. */
+        optional,
+        /** Root level rule. */
         rootLevel
     }
 
@@ -434,12 +438,21 @@ public class CmsContentTypeVisitor {
     private List<CmsTabInfo> collectTabInfos(CmsXmlContentDefinition definition) {
 
         List<CmsTabInfo> result = new ArrayList<CmsTabInfo>();
+        CmsMacroResolver resolver = new CmsMacroResolver();
+        resolver.setMessages(m_messages);
         if (definition.getContentHandler().getTabs() != null) {
             for (CmsXmlContentTab xmlTab : definition.getContentHandler().getTabs()) {
                 String tabName = m_messages.keyDefault(
                     A_CmsWidget.LABEL_PREFIX + definition.getInnerName() + "." + xmlTab.getTabName(),
                     xmlTab.getTabName());
-                result.add(new CmsTabInfo(tabName, xmlTab.getIdName(), xmlTab.getStartName(), xmlTab.isCollapsed()));
+
+                result.add(
+                    new CmsTabInfo(
+                        tabName,
+                        xmlTab.getIdName(),
+                        xmlTab.getStartName(),
+                        xmlTab.isCollapsed(),
+                        resolver.resolveMacros(xmlTab.getDescription())));
             }
         }
         return result;

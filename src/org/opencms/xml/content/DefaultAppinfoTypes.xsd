@@ -196,6 +196,9 @@
 	</xsd:complexType>
 	
 	<xsd:complexType name="OpenCmsDefaultAppinfoTab">
+		<xsd:sequence>
+			<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
 		<xsd:attribute name="element" type="xsd:string" use="required" />
 		<xsd:attribute name="collapse" type="xsd:string" use="optional" />
 		<xsd:attribute name="name" type="xsd:string" use="optional" />
