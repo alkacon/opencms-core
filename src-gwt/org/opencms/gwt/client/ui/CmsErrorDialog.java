@@ -57,6 +57,9 @@ public class CmsErrorDialog extends CmsPopup {
     /** The active error dialog ids. */
     private static Set<String> m_activeErrorDialogIds = new HashSet<String>();
 
+    /** The stack trace line break. */
+    private static final String LINE_BREAK = "\n";
+
     /** The 'close' button. */
     private CmsPushButton m_closeButton;
 
@@ -73,7 +76,7 @@ public class CmsErrorDialog extends CmsPopup {
      * Constructor.<p>
      *
      * @param message the error message
-     * @param details the error details
+     * @param details the error details, will be 'pre' formatted
      */
     public CmsErrorDialog(String message, String details) {
 
@@ -103,7 +106,7 @@ public class CmsErrorDialog extends CmsPopup {
         content.add(m_messageWidget);
         if (details != null) {
             // prepend the message
-            details = message + "<br /><br />" + details;
+            details = message + LINE_BREAK + LINE_BREAK + details;
             m_detailsFieldset = createDetailsFieldSet(details);
             m_detailsFieldset.addOpenHandler(new OpenHandler<CmsFieldSet>() {
 
@@ -178,17 +181,17 @@ public class CmsErrorDialog extends CmsPopup {
             className = t.getClass().getName();
         }
         // send the ticket to the server
-        String ticket = CmsLog.log(message + "\n" + CmsClientStringUtil.getStackTraceAsString(trace, "\n"));
-        String lineBreak = "<br />\n";
+        String ticket = CmsLog.log(message + LINE_BREAK + CmsClientStringUtil.getStackTraceAsString(trace, LINE_BREAK));
+
         String errorMessage = message == null
         ? className + ": " + Messages.get().key(Messages.GUI_NO_DESCIPTION_0)
         : message;
         if (cause != null) {
-            errorMessage += lineBreak + Messages.get().key(Messages.GUI_REASON_0) + ":" + cause;
+            errorMessage += LINE_BREAK + Messages.get().key(Messages.GUI_REASON_0) + ":" + cause;
         }
 
         String details = Messages.get().key(Messages.GUI_TICKET_MESSAGE_3, ticket, className, message)
-            + CmsClientStringUtil.getStackTraceAsString(trace, lineBreak);
+            + CmsClientStringUtil.getStackTraceAsString(trace, LINE_BREAK);
         new CmsErrorDialog(errorMessage, details).center();
     }
 
@@ -267,7 +270,7 @@ public class CmsErrorDialog extends CmsPopup {
         CmsFieldSet fieldset = new CmsFieldSet();
         fieldset.addStyleName(I_CmsLayoutBundle.INSTANCE.errorDialogCss().details());
         fieldset.setLegend(Messages.get().key(Messages.GUI_LABEL_STACKTRACE_0));
-        fieldset.addContent(new HTML(details));
+        fieldset.addContent(new HTML("<pre>" + details + "</pre>"));
         fieldset.setOpen(true);
         return fieldset;
     }

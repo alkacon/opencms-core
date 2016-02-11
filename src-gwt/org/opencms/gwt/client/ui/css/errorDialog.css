@@ -1,11 +1,16 @@
+@external gwt-HTML;
+
 .details {
 	clear: both;
 	margin: 15px 0px 5px 0px;
 }
 
-.details > div{
-	overflow: auto;
-	white-space: nowrap;
+.details  div.gwt-HTML{
+	padding: 4px 2px;
+	overflow: hidden;
+}	
+.details div.gwt-HTML > pre{
+	white-space: pre-wrap;
 }
 span.errorIcon{
 	display: inline-block;

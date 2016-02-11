@@ -416,7 +416,7 @@ public class CmsUploadBean extends CmsJspBean {
 
         StringBuffer result = new StringBuffer(64);
         for (String s : new ThrowableInformation(e).getThrowableStrRep()) {
-            result.append(s + "<br />\n");
+            result.append(s + "\n");
         }
         return result.toString();
     }
