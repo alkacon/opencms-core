@@ -30,6 +30,10 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexCache;
+import org.opencms.flex.CmsFlexController;
+import org.opencms.flex.CmsFlexRequest;
+import org.opencms.flex.CmsFlexResponse;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -45,13 +49,16 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Loader for HTML redirects.<p>
  */
-public class CmsRedirectLoader implements I_CmsResourceLoader {
+public class CmsRedirectLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
     /** The loader id. */
     public static final int LOADER_ID = 13;
 
     /** Empty configuration. */
     private static final CmsParameterConfiguration CONFIG = new CmsParameterConfiguration();
+
+    /** The CmsFlexCache used to store generated cache entries in. */
+    private CmsFlexCache m_cache;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -165,7 +172,9 @@ public class CmsRedirectLoader implements I_CmsResourceLoader {
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws CmsException {
 
+        getController(cms, resource, req, res, false, true);
         OpenCms.getADEManager().handleHtmlRedirect(cms, req, res, cms.getSitePath(resource));
+        CmsFlexController.removeController(req);
     }
 
     /**
@@ -175,5 +184,53 @@ public class CmsRedirectLoader implements I_CmsResourceLoader {
 
         throw new CmsRuntimeException(
             Messages.get().container(Messages.ERR_SERVICE_UNSUPPORTED_1, getClass().getName()));
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsFlexCacheEnabledLoader#setFlexCache(org.opencms.flex.CmsFlexCache)
+     */
+    public void setFlexCache(CmsFlexCache cache) {
+
+        m_cache = cache;
+    }
+
+    /**
+     * Delivers a Flex controller, either by creating a new one, or by re-using an existing one.<p>
+     *
+     * @param cms the initial CmsObject to wrap in the controller
+     * @param resource the resource requested
+     * @param req the current request
+     * @param res the current response
+     * @param streaming indicates if the response is streaming
+     * @param top indicates if the response is the top response
+     *
+     * @return a Flex controller
+     */
+    protected CmsFlexController getController(
+        CmsObject cms,
+        CmsResource resource,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        boolean streaming,
+        boolean top) {
+
+        CmsFlexController controller = null;
+        if (top) {
+            // only check for existing controller if this is the "top" request/response
+            controller = CmsFlexController.getController(req);
+        }
+        if (controller == null) {
+            // create new request / response wrappers
+            controller = new CmsFlexController(cms, resource, m_cache, req, res, streaming, top);
+            CmsFlexController.setController(req, controller);
+            CmsFlexRequest f_req = new CmsFlexRequest(req, controller);
+            CmsFlexResponse f_res = new CmsFlexResponse(res, controller, streaming, true);
+            controller.push(f_req, f_res);
+        } else if (controller.isForwardMode()) {
+            // reset CmsObject (because of URI) if in forward mode
+            controller = new CmsFlexController(cms, controller);
+            CmsFlexController.setController(req, controller);
+        }
+        return controller;
     }
 }
