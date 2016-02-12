@@ -242,7 +242,7 @@ public class CmsVfsSitemapService extends CmsGwtService implements I_CmsSitemapS
     private static final long serialVersionUID = -7236544324371767330L;
 
     /** The VFS path of the redirect copy page for navigation level entries. */
-    private static final String SUB_LEVEL_REDIRECT_COPY_PAGE = "/system/modules/org.opencms.ade.sitemap/pages/sub-level-redirect.html";
+    private static final String SUB_LEVEL_REDIRECT_COPY_PAGE = "/system/modules/org.opencms.ade.config/copyresources/sub-level-redirect.html";
 
     /** The navigation builder. */
     private CmsJspNavBuilder m_navBuilder;
