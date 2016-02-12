@@ -23,7 +23,7 @@
         	<xsd:element name="SearchContent" type="OpenCmsBoolean" />
         	<xsd:element name="AutoEnabled" type="OpenCmsBoolean" />
         	<xsd:element name="Detail" type="OpenCmsBoolean" />
-        	<xsd:element name="Display" type="OpenCmsBoolean" />
+        	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
         	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
@@ -37,6 +37,7 @@
         <defaults>
 			<default element="Rank" value="1000" />
 			<default element="Detail" value="true" />
+			<default element="Display" value="true" />
 			<default element="SearchContent" value="true" />
 		</defaults>
 		<mappings>
