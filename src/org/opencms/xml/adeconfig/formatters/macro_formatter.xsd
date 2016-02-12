@@ -1,0 +1,44 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd" />
+    <xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/formatters/choice_type_width.xsd" />
+    <xsd:element name="MacroFormatters" type="OpenCmsMacroFormatters" />
+    
+    <xsd:complexType name="OpenCmsMacroFormatters">
+        <xsd:sequence>
+            <xsd:element name="MacroFormatter" type="OpenCmsMacroFormatter" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="OpenCmsMacroFormatter">
+        <xsd:sequence>
+        	<xsd:element name="NiceName" type="OpenCmsString" />
+        	<xsd:element name="Type" type="OpenCmsString" maxOccurs="unbounded" />
+        	<xsd:element name="Rank" type="OpenCmsString"/>
+        	<xsd:element name="Match" type="OpenCmsChoiceTypeWidth" minOccurs="0" />
+        	<xsd:element name="Detail" type="OpenCmsBoolean" />
+        	<xsd:element name="Display" type="OpenCmsBoolean" />
+        	<xsd:element name="Macro" type="OpenCmsString" />
+        </xsd:sequence>
+        <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
+    </xsd:complexType>
+   <xsd:annotation>
+        <xsd:appinfo>
+        <resourcebundle name="org.opencms.xml.containerpage.messages"/>
+        <defaults>
+			<default element="Rank" value="1000" />
+			<default element="Detail" value="true" />
+		</defaults>
+		<mappings>
+				<mapping element="NiceName" mapto="property:Title" />
+		</mappings>
+        <layouts>
+        	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
+        	<layout element="Macro" widget="TextareaWidgetPlaintext" />
+        </layouts>
+        <tabs>
+			<tab element="NiceName" name="TabBasic" collapse="false" />
+			<tab element="Macro" name="TabMacro" collapse="false" />
+		</tabs>
+        </xsd:appinfo> 
+    </xsd:annotation>    
+</xsd:schema>

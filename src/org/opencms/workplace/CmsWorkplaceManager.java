@@ -178,7 +178,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     static ViewRules m_defaultViewRules = new ViewRules(
         "folder,plain,jsp,htmlredirect,containerpage:view_basic",
         "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
-        "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config:view_configs",
+        "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter:view_configs",
         "xmlcontent,pointer:view_other");
 
     /** Value of the acacia-unlock configuration option (may be null if not set). */
@@ -1087,7 +1087,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (m_galleryDefaultScope != null) {
             try {
                 result = CmsGallerySearchScope.valueOf(m_galleryDefaultScope);
-            } catch (Throwable t) {
+            } catch (@SuppressWarnings("unused") Throwable t) {
                 // ignore
             }
         }
@@ -1540,7 +1540,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 // workplace encoding is set on the workplace parent folder /system/workplace/
                 CmsResource wpFolderRes = cms.readResource(CmsWorkplace.VFS_PATH_WORKPLACE);
                 m_encoding = CmsLocaleManager.getResourceEncoding(cms, wpFolderRes);
-            } catch (CmsVfsResourceNotFoundException e) {
+            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
                 // workplace parent folder could not be read - use configured default encoding
                 m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
@@ -1580,7 +1580,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 m_tempFileProject = cms.readProject(I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME);
             } catch (CmsException e) {
                 // during initial setup of OpenCms the temp file project does not yet exist...
-                LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0), e);
             }
             // create an instance of editor display options
             m_editorDisplayOptions = new CmsEditorDisplayOptions();
@@ -2310,9 +2310,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             localeFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_LOCALES);
         } catch (CmsException e) {
             LOG.error(
-                Messages.get().getBundle().key(
-                    Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1,
-                    CmsWorkplace.VFS_PATH_LOCALES));
+                Messages.get().getBundle().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, CmsWorkplace.VFS_PATH_LOCALES),
+                e);
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             localeFolders = new ArrayList<CmsResource>();
         }
@@ -2394,9 +2393,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 try {
                     // create Float order object
                     orderValue = Float.valueOf(order);
-                } catch (NumberFormatException e) {
+                } catch (@SuppressWarnings("unused") NumberFormatException e) {
                     // String was not formatted correctly, use loop counter
-                    orderValue = Float.valueOf("" + i);
+                    orderValue = Float.valueOf(i);
                 }
                 if (key == null) {
                     // no language key found, use default String to avoid NullPointerException

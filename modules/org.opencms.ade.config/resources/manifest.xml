@@ -24,6 +24,8 @@
 		<dependencies>
 			<dependency name="org.opencms.gwt" version="10.0.0" />
 			<dependency name="org.opencms.workplace" version="10.0.0" />
+			<dependency name="org.opencms.workplace.categories"
+				version="10.0.0" />
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
@@ -327,6 +329,25 @@
 					</property>
 				</properties>				
 				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeMacroFormatter"
+				name="macro_formatter" id="315">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter.xsd
 				</param>
 			</type>
 		</resourcetypes>
@@ -763,6 +784,18 @@
 					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
 				</accesscontrol>
 			</explorertype>
+			<explorertype name="macro_formatter" key="fileicon.macro_formatter"
+				icon="formatter_config.png" bigicon="formatter_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=macro_formatter"
+					order="24" autosetnavigation="false" autosettitle="false"
+					info="desc.macro_formatter" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
 			
 			
 			
@@ -1189,6 +1222,26 @@
 			</properties>
 			<relations />
 			<accesscontrol />
+		</file>
+		<file>
+			<source>system/modules/org.opencms.ade.config/pages/render-macro.jsp</source>
+			<destination>system/modules/org.opencms.ade.config/pages/render-macro.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>7fdf3f5f-d164-11e5-b5bd-cf61f8636af1</uuidstructure>
+			<uuidresource>7fdf3f60-d164-11e5-b5bd-cf61f8636af1</uuidresource>
+			<datelastmodified>Fri, 12 Feb 2016 08:42:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Feb 2016 08:42:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/userimages</destination>

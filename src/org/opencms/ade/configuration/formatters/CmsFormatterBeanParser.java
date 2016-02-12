@@ -31,8 +31,10 @@ import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -249,6 +251,9 @@ public class CmsFormatterBeanParser {
     public CmsFormatterBean parse(CmsXmlContent content, String location, String id)
     throws CmsException, ParseException {
 
+        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(content.getFile());
+        boolean isMacroFromatter = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(type.getTypeName());
+
         Locale en = Locale.ENGLISH;
         I_CmsXmlContentValue niceName = content.getValue(N_NICE_NAME, en);
         m_niceName = niceName != null ? niceName.getStringValue(m_cms) : null;
@@ -268,27 +273,38 @@ public class CmsFormatterBeanParser {
         m_rank = rank;
 
         m_resourceType = getStringSet(root, N_TYPE);
+        boolean hasNestedContainers;
+        if (isMacroFromatter) {
+            // setting macro formatter defaults
+            m_autoEnabled = true;
+            m_formatterResource = content.getFile();
+            m_preview = false;
+            m_extractContent = true;
+            hasNestedContainers = false;
+        } else {
+            String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
+            m_autoEnabled = Boolean.parseBoolean(autoEnabled);
+            I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
+            CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
+            CmsLink link = jspValue.getLink(m_cms);
+            if (link == null) {
+                // JSP link is not set (for example because the formatter configuration has just been created)
+                LOG.info("JSP link is null in formatter configuration: " + content.getFile().getRootPath());
+                return null;
+            }
+            CmsUUID jspID = link.getStructureId();
+            CmsResource formatterRes = m_cms.readResource(jspID);
+            m_formatterResource = formatterRes;
+            String previewStr = getString(root, N_PREVIEW, "false");
+            m_preview = Boolean.parseBoolean(previewStr);
 
-        String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
-        m_autoEnabled = Boolean.parseBoolean(autoEnabled);
-
-        I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
-        CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
-        CmsLink link = jspValue.getLink(m_cms);
-        if (link == null) {
-            // JSP link is not set (for example because the formatter configuration has just been created)
-            LOG.info("JSP link is null in formatter configuration: " + content.getFile().getRootPath());
-            return null;
+            String searchableStr = getString(root, N_SEARCH_CONTENT, "true");
+            m_extractContent = Boolean.parseBoolean(searchableStr);
+            String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
+            hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
+            parseHeadIncludes(root);
+            parseSettings(root);
         }
-        CmsUUID jspID = link.getStructureId();
-        CmsResource formatterRes = m_cms.readResource(jspID);
-        m_formatterResource = formatterRes;
-
-        String previewStr = getString(root, N_PREVIEW, "false");
-        m_preview = Boolean.parseBoolean(previewStr);
-
-        String searchableStr = getString(root, N_SEARCH_CONTENT, "true");
-        m_extractContent = Boolean.parseBoolean(searchableStr);
 
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
@@ -296,12 +312,7 @@ public class CmsFormatterBeanParser {
         String isDisplayStr = getString(root, N_DISPLAY, "false");
         boolean isDisplay = Boolean.parseBoolean(isDisplayStr);
 
-        String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
-        boolean hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
-
         parseMatch(root);
-        parseHeadIncludes(root);
-        parseSettings(root);
 
         CmsFormatterBean formatterBean = new CmsFormatterBean(
             m_containerTypes,

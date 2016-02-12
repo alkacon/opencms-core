@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -42,6 +43,7 @@ import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +71,9 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
     /** The resource type for formatter configurations. */
     public static final String TYPE_FORMATTER_CONFIG = "formatter_config";
+
+    /** The resource type for macro formatters. */
+    public static final String TYPE_MACRO_FORMATTER = "macro_formatter";
 
     /** The delay to use for updating the formatter cache, in seconds. */
     protected static int UPDATE_DELAY_SECONDS = 7;
@@ -167,9 +172,12 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
 
         try {
             m_idsToUpdate.clear();
-            int typeId = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG).getTypeId();
-            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(typeId);
-            List<CmsResource> formatterResources = m_cms.readResources("/", filter);
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(TYPE_FORMATTER_CONFIG);
+            CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+            List<CmsResource> formatterResources = new ArrayList<CmsResource>(m_cms.readResources("/", filter));
+            type = OpenCms.getResourceManager().getResourceType(TYPE_MACRO_FORMATTER);
+            filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+            formatterResources.addAll(m_cms.readResources("/", filter));
             Map<CmsUUID, I_CmsFormatterBean> newFormatters = Maps.newHashMap();
             for (CmsResource formatterResource : formatterResources) {
                 I_CmsFormatterBean formatterBean = readFormatter(formatterResource.getStructureId());
@@ -278,7 +286,8 @@ public class CmsFormatterConfigurationCache implements I_CmsGlobalConfigurationC
         if (CmsResource.isTemporaryFileName(path)) {
             return;
         }
-        if (OpenCms.getResourceManager().matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)) {
+        if (OpenCms.getResourceManager().matchResourceType(TYPE_FORMATTER_CONFIG, resourceType)
+            || OpenCms.getResourceManager().matchResourceType(TYPE_MACRO_FORMATTER, resourceType)) {
             markForUpdate(structureId);
         }
     }
