@@ -26,6 +26,11 @@
 				  	<param name="taglib.x">http://java.sun.com/jsp/jstl/xml</param>
 				</loader>
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
+				<loader class="org.opencms.loader.CmsXmlContentLoader" />
+				<loader class="org.opencms.loader.CmsXmlContainerPageLoader" />
+				<loader class="org.opencms.loader.CmsRedirectLoader" />
+				<loader class="org.opencms.loader.CmsSeoFileLoader" />
+				<loader class="org.opencms.loader.CmsMacroFormatterLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder" name="unknown_folder" id="-2" />

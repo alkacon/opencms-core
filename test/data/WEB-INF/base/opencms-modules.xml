@@ -53,161 +53,174 @@
 			</resourcetypes>
 		</module>
 		<module>
-			<name>org.opencms.ade.config</name>
-			<nicename><![CDATA[OpenCms 9 ADE Configuration]]></nicename>
-			<group>OpenCms ADE</group>
-			<class />
-			<description><![CDATA[Configuration for OpenCms websites.<br>
+		<name>org.opencms.ade.config</name>
+		<nicename><![CDATA[OpenCms ADE Configuration]]></nicename>
+		<group>OpenCms ADE</group>
+		<class />
+		<description><![CDATA[Configuration for OpenCms websites.<br>
 <i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i>]]></description>
-			<version>9.4.8</version>
-			<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
-			<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
-			<datecreated />
-			<userinstalled />
-			<dateinstalled />
-			<dependencies>
-				<dependency name="org.opencms.gwt" version="9.0.0" />
-				<dependency name="org.opencms.workplace" version="9.0.0" />
-				<dependency name="org.opencms.workplace.categories"
-					version="7.0.0" />
-			</dependencies>
-			<exportpoints>
-				<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
-					destination="WEB-INF/classes/" />
-			</exportpoints>
-			<resources>
-				<resource uri="/system/modules/org.opencms.ade.config/" />
-				<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/configfolder_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/module_config.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/module_config_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/containerpage.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/containerpage_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/elementgroup.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/elementgroup_big.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/containerpage_template.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/containerpage_template_big.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/subsitemap.png" />
-				<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png" />
-				<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
-				<resource
-					uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
-			</resources>
-			<parameters />
-			<resourcetypes>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
-					name="containerpage" id="13">
-					<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="groupcontainer" id="17">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>true</value>
-						</property>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="elementview" id="310">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>true</value>
-						</property>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template"
-					id="21" />
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-					name="function" id="22">
-					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="htmlredirect" id="15">
-					<properties>
-						<property>
-							<name>template-elements</name>
-							<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/redirect-detail.jsp]]></value>
-						</property>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap"
-					name="subsitemap" id="23" />
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
-					name="content_folder" id="24">
-					<copy-resources>
-						<copy-resource
-							source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config"
-							target="${resource.folder.path}/.config" type="new" />
-					</copy-resources>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="sitemap_config" id="14">
-					<properties>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-				name="sitemap_master_config" id="313">
+		<version>10.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[sales@alkacon.com]]></authoremail>
+		<datecreated />
+		<userinstalled />
+		<dateinstalled />
+		<dependencies>
+			<dependency name="org.opencms.gwt" version="10.0.0" />
+			<dependency name="org.opencms.workplace" version="10.0.0" />
+			<dependency name="org.opencms.workplace.categories"
+				version="10.0.0" />
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.ade.config/classes/"
+				destination="WEB-INF/classes/" />
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.ade.config/" />
+			<resource uri="/system/userimages/temp/"/>
+			<resource uri="/system/workplace/commons/gallery.jsp"/>
+      		<resource uri="/system/workplace/commons/open_ade_gallery.jsp"/>
+      		<resource uri="/system/workplace/commons/postupload_basicproperties.jsp"/>
+      <resource uri="/system/workplace/commons/postupload_useconfig.jsp"/>
+      <resource uri="/system/workplace/commons/postupload.jsp"/>
+      <resource uri="/system/workplace/commons/properties.jsp"/>
+      <resource uri="/system/workplace/commons/direct_publish.jsp"/>
+      <resource uri="/system/workplace/commons/publish_project.jsp"/>
+      <resource uri="/system/workplace/commons/publish.jsp"/>
+      <resource uri="/system/workplace/commons/download-aliases.jsp" />
+			<resource uri="/system/workplace/commons/import-aliases.jsp" />
+			<resource uri="/system/workplace/commons/sitemap.jsp" />
+			<resource uri="/system/workplace/commons/upload.jsp"/>
+      <resource uri="/system/workplace/commons/uploadAction.jsp"/>
+			<resource uri="/system/workplace/resources/commons/notemplate.png" />
+			<resource uri="/system/workplace/resources/filetypes/category.png" />
+			<resource uri="/system/workplace/resources/filetypes/category_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/configfolder.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/configfolder_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/containerpage.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_big.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_template.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/containerpage_template_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/elementgroup.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/elementgroup_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/formatter_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/formatter_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/function.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/function_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/htmlredirect.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/htmlredirect_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/image_xml.png" />
+			<resource uri="/system/workplace/resources/filetypes/image_xml_big.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/inheritancegroup.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/inheritancegroup_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_copy_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelgroup_reuse_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelpage.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/modelpage_groups.png"/>
+			<resource uri="/system/workplace/resources/filetypes/modelpage_groups_big.png"/>
+			<resource uri="/system/workplace/resources/filetypes/module_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/module_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/navlevel.png" />
+			<resource uri="/system/workplace/resources/filetypes/navlevel_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/sitemap_config.png" />
+			<resource
+				uri="/system/workplace/resources/filetypes/sitemap_config_big.png" />
+			<resource uri="/system/workplace/resources/filetypes/subsitemap.png" />
+			<resource uri="/system/workplace/resources/filetypes/subsitemap_big.png" />
+		</resources>
+		<parameters />
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
+				name="containerpage" id="13">
+				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="groupcontainer" id="17">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/group_container.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="elementview" id="310">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/element_view.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeJsp" name="containerpage_template"
+				id="21" />
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="function" id="22">
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/function.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeHtmlRedirect"
+				name="htmlredirect" id="15">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.sitemap/schemas/redirect.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeFolderSubSitemap"
+				name="subsitemap" id="23" />
+			<type class="org.opencms.file.types.CmsResourceTypeFolderExtended"
+				name="content_folder" id="24">
+				<copy-resources>
+					<copy-resource
+						source="/system/modules/org.opencms.ade.config/copyresources/sitemap.config"
+						target="${resource.folder.path}/.config" type="new" />
+				</copy-resources>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="sitemap_config" id="14">
 				<properties>
 					<property>
 						<name>locale-available</name>
@@ -225,515 +238,647 @@
 				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_config.xsd
 				</param>
 			</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="module_config" id="28">
-					<properties>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
-					</param>
-				</type>
-
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="formatter_config" id="308">
-					<properties>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="seo_file" id="305">
-					<properties>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>template-elements</name>
-							<value type="shared"><![CDATA[/system/modules/org.opencms.ade.sitemap/pages/render-seo-file.jsp]]></value>
-						</property>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/seo_file.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
-					name="inheritance_group" id="303">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>true</value>
-						</property>
-						<property>
-							<name>locale-available</name>
-							<value><![CDATA[en]]></value>
-						</property>
-						<property>
-							<name>locale</name>
-							<value><![CDATA[en]]></value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-					name="inheritance_config" id="304">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
-					</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
-					name="xmlvfsbundle" id="306">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-					<param name="schema">/system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd
-					</param>
-				</type>
-
-				<type class="org.opencms.file.types.CmsResourceTypePlain" name="propertyvfsbundle"
-					id="307">
-					<properties>
-						<property>
-							<name>search.exclude</name>
-							<value>all</value>
-						</property>
-					</properties>
-				</type>
-			</resourcetypes>
-			<explorertypes>
-				<explorertype name="subsitemap" key="fileicon.subsitemap"
-					icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
-					<newresource page="extendedfolder"
-						uri="newresource.jsp?newresourcetype=subsitemap" order="490"
-						autosetnavigation="false" autosettitle="false" info="desc.subsitemap" />
-				</explorertype>
-				<explorertype name="htmlredirect" key="fileicon.htmlredirect"
-					icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
-					<newresource
-						uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect"
-						order="27" autosetnavigation="true" autosettitle="true"
-						info="desc.htmlredirect" />
-					<accesscontrol>
-						<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="containerpage" key="fileicon.containerpage"
-					icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
-					<newresource
-						uri="newresource_xmlcontent.jsp?newresourcetype=containerpage"
-						order="25" autosetnavigation="false" autosettitle="false"
-						info="desc.containerpage" />
-					<accesscontrol>
-						<accessentry principal="ROLE.ELEMENT_AUTHOR"
-							permissions="+r+v+w" />
-						<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
-					</accesscontrol>
-					<editoptions>
-						<defaultproperties enabled="true"
-							shownavigation="true">
-							<defaultproperty name="Title" />
-							<defaultproperty name="Keywords" />
-							<defaultproperty name="Description" />
-						</defaultproperties>
-						<contextmenu>
-							<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
-								rule="lock" />
-							<entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp"
-								rule="changelock" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp"
-								rule="unlock" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
-								rule="copytoproject" />
-							<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-								uri="/system/workplace/commons/direct_publish.jsp"
-								rule="directpublish" />
-							<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
-								rule="publishscheduled" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp"
-								target="_top" rule="standard" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"
-								rule="copy" />
-							<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="module_config" id="28">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/module_config.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="formatter_config" id="308">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/new_formatter.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeSeoFile"
+				name="seo_file" id="305">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/seo_file.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="inheritance_group" id="303">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_group.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="inheritance_config" id="304">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.containerpage/schemas/inheritance_config.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent"
+				name="xmlvfsbundle" id="306">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/xmlvfsbundle.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypePlain" name="propertyvfsbundle"
+				id="307">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlAdeConfiguration"
+				name="sitemap_master_config" id="313">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/sitemap_master_config.xsd
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContainerPage"
+				name="modelgroup" id="314">
+				<properties>
+					<property>
+						<name>search.exclude</name>
+						<value>true</value>
+					</property>
+				</properties>				
+				<param name="formatter_gallery_preview">/system/workplace/editors/ade/container-preview-formatter.jsp
+				</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeMacroFormatter"
+				name="macro_formatter" id="315">
+				<properties>
+					<property>
+						<name>locale-available</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>locale</name>
+						<value><![CDATA[en]]></value>
+					</property>
+					<property>
+						<name>search.exclude</name>
+						<value>all</value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.ade.config/schemas/formatters/macro_formatter.xsd
+				</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="subsitemap" key="fileicon.subsitemap"
+				icon="subsitemap.png" bigicon="subsitemap_big.png" reference="folder">
+				<newresource page="extendedfolder"
+					uri="newresource.jsp?newresourcetype=subsitemap" order="490"
+					autosetnavigation="false" autosettitle="false" info="desc.subsitemap" />
+			</explorertype>
+			<explorertype name="modelpage" key="fileicon.modelpage"
+				icon="modelpage.png" bigicon="modelpage_big.png" reference="folder">
+				<newresource page="none" uri="" order="490"
+					autosetnavigation="false" autosettitle="false" info="" />
+			</explorertype>
+			<explorertype name="category" key="fileicon.category"
+				icon="category.png" bigicon="category_big.png" reference="folder">
+				<newresource page="none" uri="" order="490"
+					autosetnavigation="false" autosettitle="false" info="" />
+			</explorertype>
+			<explorertype name="htmlredirect" key="fileicon.htmlredirect"
+				icon="htmlredirect.png" bigicon="htmlredirect_big.png" reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=htmlredirect"
+					order="27" autosetnavigation="true" autosettitle="true"
+					info="desc.htmlredirect" />
+				<accesscontrol>
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="containerpage" key="fileicon.containerpage"
+				icon="containerpage.png" bigicon="containerpage_big.png" reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=containerpage"
+					order="25" autosetnavigation="false" autosettitle="false"
+					info="desc.containerpage" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v+w" />
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<defaultproperty name="Title" />
+						<defaultproperty name="Keywords" />
+						<defaultproperty name="Description" />
+					</defaultproperties>
+					<contextmenu>
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
+							rule="lock" />
+						<entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp"
+							rule="changelock" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp"
+							rule="unlock" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
+							rule="copytoproject" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
+							uri="/system/workplace/commons/direct_publish.jsp"
+							rule="directpublish" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
+							rule="publishscheduled" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp"
+							target="_top" rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"
+							rule="copy" />
+						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp"
+							rule="undochanges" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp"
+							rule="undelete" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget"
 								rule="standard" />
-							<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp"
-								rule="standard" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp"
-								rule="undochanges" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp"
-								rule="undelete" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-								<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource"
-									rule="standard" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings"
-									rule="showsiblings" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories"
-									rule="standard" />
-							</entry>
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp"
-								rule="permissions" />
-							<entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp"
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource"
 								rule="standard" />
 							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-								<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
-									rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings"
+								rule="showsiblings" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories"
+								rule="standard" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp"
+							rule="permissions" />
+						<entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp"
+							rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
+								rule="standard" />
 
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp"
-									rule="standard" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true"
-									target="_top" rule="editcontrolcode" />
-							</entry>
 							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
-								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
-								rule="nondeleted" />
-							<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-								uri="/system/workplace/commons/properties.jsp"
-								rule="nondeleted" />
-							<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
-								rule="containerpage-no-different-site" />
-							<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
-							<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
-								rule="containerpage" />
+							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp"
+								rule="standard" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true"
+								target="_top" rule="editcontrolcode" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
+							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
+							uri="/system/workplace/commons/properties.jsp"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties"
+							rule="containerpage-no-different-site-and-has-editor-role" />
+						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo"
+							rule="containerpage" />
+						<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
+							Entry is processed on the client side, the message key doesn't exist -->
+						<entry key="SELECTELEMENTVIEW" name="selectelementview"
+							rule="containerpage" /><!-- Entry is processed on the client side, 
+							the message key doesn't exist -->
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
+						<entry key="EDITSMALLELEMENTS" name="editsmallelements"
+							rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="containerpage-basic">
 							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsAvailabilityDialog"
-								rule="containerpage-no-different-site" />
+								rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_LOCK_REPORT_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsLockReport" rule="containerpage" />
 							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site" />
-							<entry key="TEMPLATECONTEXTS" name="templatecontexts" rule="containerpage" /><!-- 
-								Entry is processed on the client side, the message key doesn't exist -->
-							<entry key="SELECTELEMENTVIEW" name="selectelementview"
-								rule="containerpage" /><!-- Entry is processed on the client side, 
-								the message key doesn't exist -->
+								name="org.opencms.gwt.client.ui.contextmenu.CmsCategories" rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog"
-								rule="containerpage-no-different-site" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsRestore" rule="ade-undochanges" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsUndelete" rule="containerpage-deleted" />
-							<entry key="EDITSMALLELEMENTS" name="editsmallelements"
-								rule="containerpage" />
+								rule="containerpage-no-different-site-and-has-editor-role" />
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-								rule="containerpage" />
-							<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
-								rule="containerpage" />
-							<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" rule="containerpage" />
+								rule="containerpage-wpuser" />
+						</entry>
+						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
+							rule="containerpage-basic" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
+							rule="containerpage-basic" />
 
-							<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
-								rule="containerpage" />
+						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout"
+							rule="containerpage-basic" />
+					</contextmenu>
+				</editoptions>
+			</explorertype>
+			<explorertype name="groupcontainer" key="fileicon.groupcontainer"
+				icon="elementgroup.png" bigicon="elementgroup_big.png" reference="xmlcontent">
+				<newresource 
+					uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer"
+					order="26" autosetnavigation="false" autosettitle="false"
+					info="desc.groupcontainer" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="elementview" key="fileicon.elementview"
+				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=elementview" order="999"
+					autosetnavigation="false" autosettitle="false" info="desc.elementview" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v-w-c" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="function" key="fileicon.function"
+				icon="function.png" bigicon="function_big.png" reference="xmlcontent">
+				<newresource page="structurecontent"
+					uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999"
+					autosetnavigation="false" autosettitle="false" info="desc.function" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v-w-c" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="seo_file" key="fileicon.seo_file"
+				reference="xmlcontent">
+				<newresource page="structurecontent"
+					uri="newresource_xmlcontent.jsp?newresourcetype=seo_file" order="998"
+					autosetnavigation="false" autosettitle="false" info="desc.seo_file" />
+			</explorertype>
+			<explorertype name="containerpage_template" key="fileicon.containerpage_template"
+				icon="containerpage_template.png" bigicon="containerpage_template_big.png"
+				reference="jsp">
+				<newresource page="otheroptions"
+					uri="newresource.jsp?newresourcetype=containerpage_template" order="22"
+					autosetnavigation="false" autosettitle="false"
+					info="desc.containerpage_template" />
+			</explorertype>
 
-
-						</contextmenu>
-					</editoptions>
-				</explorertype>
-				<explorertype name="groupcontainer" key="fileicon.groupcontainer"
-					icon="elementgroup.png" bigicon="elementgroup_big.png" reference="xmlcontent">
-					<newresource
-						uri="newresource_xmlcontent.jsp?newresourcetype=groupcontainer"
-						order="26" autosetnavigation="false" autosettitle="false"
-						info="desc.groupcontainer" />
-					<accesscontrol>
-						<accessentry principal="ROLE.ELEMENT_AUTHOR"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="elementview" key="fileicon.elementview"
-					icon="function.png" bigicon="function_big.png" reference="xmlcontent">
-					<newresource page="structurecontent"
-						uri="newresource_xmlcontent.jsp?newresourcetype=elementview"
-						order="999" autosetnavigation="false" autosettitle="false"
-						info="desc.elementview" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v-w-c" />
-						<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="function" key="fileicon.function"
-					icon="function.png" bigicon="function_big.png" reference="xmlcontent">
-					<newresource page="structurecontent"
-						uri="newresource_xmlcontent.jsp?newresourcetype=function" order="999"
-						autosetnavigation="false" autosettitle="false" info="desc.function" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v-w-c" />
-						<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="seo_file" key="fileicon.seo_file"
-					reference="xmlcontent">
-					<newresource page="structurecontent"
-						uri="newresource_xmlcontent.jsp?newresourcetype=seo_file" order="998"
-						autosetnavigation="false" autosettitle="false" info="desc.seo_file" />
-				</explorertype>
-				<explorertype name="containerpage_template" key="fileicon.containerpage_template"
-					icon="containerpage_template.png" bigicon="containerpage_template_big.png"
-					reference="jsp">
-					<newresource page="otheroptions"
-						uri="newresource.jsp?newresourcetype=containerpage_template"
-						order="22" autosetnavigation="false" autosettitle="false"
-						info="desc.containerpage_template" />
-				</explorertype>
-
-				<explorertype name="content_folder" key="fileicon.configfolder"
-					icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
-					<newresource page="extendedfolder"
-						uri="newresource.jsp?newresourcetype=content_folder" order="491"
-						autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
-					<accesscontrol>
-						<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="sitemap_config" key="fileicon.sitemap_config"
-					icon="sitemap_config.png" bigicon="sitemap_config_big.png"
-					reference="xmlcontent">
-					<newresource page="otheroptions"
-						uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config"
-						order="21" autosetnavigation="false" autosettitle="false"
-						info="desc.sitemap_config" />
-					<accesscontrol>
-						<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
-					</accesscontrol>
-					<editoptions>
-						<defaultproperties enabled="true"
-							shownavigation="true">
-							<defaultproperty name="Title" />
-							<defaultproperty name="Keywords" />
-							<defaultproperty name="Description" />
-						</defaultproperties>
-						<contextmenu>
-							<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
-								rule="lock" />
-							<entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp"
-								rule="changelock" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp"
-								rule="unlock" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
-								rule="copytoproject" />
-							<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
-								uri="/system/workplace/commons/direct_publish.jsp"
-								rule="directpublish" />
-							<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
-								rule="publishscheduled" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp"
-								target="_top" rule="standard" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"
-								rule="copy" />
-							<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
+			<explorertype name="content_folder" key="fileicon.configfolder"
+				icon="configfolder.png" bigicon="configfolder_big.png" reference="folder">
+				<newresource page="extendedfolder"
+					uri="newresource.jsp?newresourcetype=content_folder" order="491"
+					autosetnavigation="false" autosettitle="false" info="desc.configfolder" />
+				<accesscontrol>
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="sitemap_config" key="fileicon.sitemap_config"
+				icon="sitemap_config.png" bigicon="sitemap_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_config"
+					order="21" autosetnavigation="false" autosettitle="false"
+					info="desc.sitemap_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.EDITOR" permissions="+r+v+w+c" />
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<defaultproperty name="Title" />
+						<defaultproperty name="Keywords" />
+						<defaultproperty name="Description" />
+					</defaultproperties>
+					<contextmenu>
+						<entry key="GUI_EXPLORER_CONTEXT_LOCK_0" uri="commons/lock.jsp"
+							rule="lock" />
+						<entry key="GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0" uri="commons/lockchange.jsp"
+							rule="changelock" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp"
+							rule="unlock" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp"
+							rule="copytoproject" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0"
+							uri="/system/workplace/commons/direct_publish.jsp"
+							rule="directpublish" />
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_SCHEDULED_0" uri="commons/publishscheduledresource.jsp"
+							rule="publishscheduled" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_EDIT_0" uri="editors/editor.jsp"
+							target="_top" rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp"
+							rule="copy" />
+						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp"
+							rule="standard" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp"
+							rule="undochanges" />
+						<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp"
+							rule="undelete" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget"
 								rule="standard" />
-							<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp"
-								rule="standard" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp"
-								rule="undochanges" />
-							<entry key="GUI_EXPLORER_CONTEXT_UNDELETE_0" uri="commons/undelete.jsp"
-								rule="undelete" />
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_RELATIONS_0" rule="substandard">
-								<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONTO_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationtarget"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource"
-									rule="standard" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings"
-									rule="showsiblings" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
-									uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories"
-									rule="standard" />
-							</entry>
-							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp"
-								rule="permissions" />
-							<entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp"
+							<entry key="GUI_EXPLORER_CONTEXT_LINKRELATIONFROM_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Flinkrelationsource"
 								rule="standard" />
 							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
-								<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
-									rule="standard" />
-
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
-									rule="standard" />
-								<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp"
-									rule="standard" />
-								<separator />
-								<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true"
-									target="_top" rule="editcontrolcode" />
-							</entry>
+							<entry key="GUI_EXPLORER_CONTEXT_SHOWSIBLINGS_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fsiblings"
+								rule="showsiblings" />
 							<separator />
-							<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
-								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
-								rule="nondeleted" />
-							<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
-								uri="/system/workplace/commons/properties.jsp"
-								rule="nondeleted" />
-							<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0"
-								name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction"
-								rule="sitemap" />
+							<entry key="GUI_EXPLORER_CONTEXT_CATEGORIES_0"
+								uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fcategories"
+								rule="standard" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ACCESS_0" uri="commons/chacc.jsp"
+							rule="permissions" />
+						<entry key="GUI_EXPLORER_CONTEXT_CHNAV_0" uri="commons/chnav.jsp"
+							rule="standard" />
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_0" rule="substandard">
+							<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp"
+								rule="standard" />
+
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_SECURE_0" uri="commons/secure.jsp"
+								rule="standard" />
+							<entry key="GUI_EXPLORER_CONTEXT_TYPE_0" uri="commons/chtype.jsp"
+								rule="standard" />
+							<separator />
+							<entry key="GUI_EXPLORER_CONTEXT_EDITCONTROLFILE_0" uri="editors/editor.jsp?editastext=true"
+								target="_top" rule="editcontrolcode" />
+						</entry>
+						<separator />
+						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0"
+							uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0"
+							uri="/system/workplace/commons/properties.jsp"
+							rule="nondeleted" />
+						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0"
+							name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction"
+							rule="sitemap" />
+						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0"
+							name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction"
+							rule="sitemap" />
+						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="sitemap">
 							<entry key="GUI_EXPLORER_CONTEXT_ALIAS_DIALOG_0"
 								name="org.opencms.ade.sitemap.client.toolbar.CmsAliasDialog"
 								rule="sitemap" />
-							<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0"
-								name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction"
-								rule="sitemap" />
+							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" 
+								name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" 
+								params="reload=true|filename=%(subsite)/.content/.config" 
+								rule="sitemapcheckfile"/>
 							<entry key="GUI_EXPLORER_CONTEXT_SHOW_WORKPLACE_0"
 								name="org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace"
-								rule="sitemap" />
-							<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
-								rule="sitemap" />
-							<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0"
-								name="org.opencms.gwt.client.ui.contextmenu.CmsLogout" rule="sitemap" />
-						</contextmenu>
-					</editoptions>
-				</explorertype>
-				<explorertype name="module_config" key="fileicon.module_config"
-					icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
-					<newresource page="otheroptions"
-						uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
-						order="22" autosetnavigation="false" autosettitle="false"
-						info="desc.module_config" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
+								rule="sitemap-wpuser" />
+							<entry key="GUI_EXPLORER_CONTEXT_OLD_WORKPLACE_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsShowClassicWorkplace"
+							rule="sitemap-wpuser" />
+						</entry>
+						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0"
+							name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings"
+							rule="sitemap" />
+						<entry key="GUI_EXPLORER_CONTEXT_LOGOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsLogout"
+							rule="sitemap" />
+					</contextmenu>
+				</editoptions>
+			</explorertype>
+			<explorertype name="module_config" key="fileicon.module_config"
+				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=module_config"
+					order="22" autosetnavigation="false" autosettitle="false"
+					info="desc.module_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="sitemap_master_config" key="fileicon.sitemap_master_config"
+				icon="module_config.png" bigicon="module_config_big.png" reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=sitemap_master_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.sitemap_master_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="formatter_config" key="fileicon.formatter_config"
+				icon="formatter_config.png" bigicon="formatter_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
+					order="23" autosetnavigation="false" autosettitle="false"
+					info="desc.formatter_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+            <explorertype name="inheritance_group" key="fileicon.inheritance_group"
+				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
+				reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group"
+					order="27" autosetnavigation="false" autosettitle="false"
+					info="desc.inheritance_group" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="inheritance_config" key="fileicon.inheritance_config"
+				icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
+				reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
+					order="28" autosetnavigation="false" autosettitle="false"
+					info="desc.inheritance_config" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle"
+				icon="document.png" bigicon="document_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle"
+					order="28" autosetnavigation="false" autosettitle="false"
+					info="desc.xmlvfsbundle" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
 
-				<explorertype name="formatter_config" key="fileicon.formatter_config"
-					icon="formatter_config.png" bigicon="formatter_config_big.png"
-					reference="xmlcontent">
-					<newresource page="otheroptions"
-						uri="newresource_xmlcontent.jsp?newresourcetype=formatter_config"
-						order="23" autosetnavigation="false" autosettitle="false"
-						info="desc.formatter_config" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-
-				<explorertype name="inheritance_group" key="fileicon.inheritance_group"
-					icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
-					reference="xmlcontent">
-					<newresource
-						uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_group"
-						order="27" autosetnavigation="false" autosettitle="false"
-						info="desc.inheritance_group" />
-					<accesscontrol>
-						<accessentry principal="ROLE.ELEMENT_AUTHOR"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="inheritance_config" key="fileicon.inheritance_config"
-					icon="inheritancegroup.png" bigicon="inheritancegroup_big.png"
-					reference="xmlcontent">
-					<newresource
-						uri="newresource_xmlcontent.jsp?newresourcetype=inheritance_config"
-						order="28" autosetnavigation="false" autosettitle="false"
-						info="desc.inheritance_config" />
-					<accesscontrol>
-						<accessentry principal="ROLE.ELEMENT_AUTHOR"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-				<explorertype name="xmlvfsbundle" key="fileicon.xmlvfsbundle"
-					reference="xmlcontent">
-					<newresource page="otheroptions"
-						uri="newresource_xmlcontent.jsp?newresourcetype=xmlvfsbundle"
-						order="28" autosetnavigation="false" autosettitle="false"
-						info="desc.xmlvfsbundle" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-
-				<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle"
-					reference="plain">
-					<newresource page="otheroptions"
-						uri="newresource.jsp?newresourcetype=propertyvfsbundle" order="30"
-						autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle" />
-					<accesscontrol>
-						<accessentry principal="ROLE.WORKPLACE_USER"
-							permissions="+r+v+w+c" />
-					</accesscontrol>
-				</explorertype>
-			</explorertypes>
-		</module>
+			<explorertype name="propertyvfsbundle" key="fileicon.propertyvfsbundle"
+				icon="plain.png" bigicon="plain_big.png"
+				reference="plain">
+				<newresource page="otheroptions"
+					uri="newresource.jsp?newresourcetype=propertyvfsbundle" order="30"
+					autosetnavigation="false" autosettitle="false" info="desc.propertyvfsbundle" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="modelgroup" key="fileicon.modelgroup"
+				icon="containerpage.png" bigicon="modelgroup_copy_big.png" reference="xmlcontent">
+				<newresource
+					uri="newresource_xmlcontent.jsp?newresourcetype=modelgroup"
+					order="50" autosetnavigation="false" autosettitle="false"
+					info="desc.modelgroup" />
+				<accesscontrol>
+					<accessentry principal="ROLE.ELEMENT_AUTHOR"
+						permissions="+r+v" />
+					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="macro_formatter" key="fileicon.macro_formatter"
+				icon="formatter_config.png" bigicon="formatter_config_big.png"
+				reference="xmlcontent">
+				<newresource page="otheroptions"
+					uri="newresource_xmlcontent.jsp?newresourcetype=macro_formatter"
+					order="24" autosetnavigation="false" autosettitle="false"
+					info="desc.macro_formatter" />
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER"
+						permissions="+r+v+w+c" />
+				</accesscontrol>
+			</explorertype>
+			
+			
+			
+			<explorertype name="view_basic" key="fileicon.view_basic" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="1000" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="view_folders" key="fileicon.view_folders" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="2100" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="view_configs" key="fileicon.view_configs" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="2200" autosetnavigation="false" autosettitle="false"
+					info="desc.otheroptions" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+			
+			<explorertype name="view_other" key="fileicon.view_other" 
+				icon="menu.png" reference="folder" isview="true">
+				<newresource uri="" order="2300" autosetnavigation="false" autosettitle="false"
+					info="" />
+				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v" />
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
 	</modules>
 </opencms>

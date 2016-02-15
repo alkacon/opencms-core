@@ -21,6 +21,9 @@
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
 				<loader class="org.opencms.loader.CmsXmlContainerPageLoader" />
+				<loader class="org.opencms.loader.CmsRedirectLoader" />
+				<loader class="org.opencms.loader.CmsSeoFileLoader" />
+				<loader class="org.opencms.loader.CmsMacroFormatterLoader" />
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeUnknownFolder"
