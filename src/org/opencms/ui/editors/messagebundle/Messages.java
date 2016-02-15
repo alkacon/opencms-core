@@ -50,8 +50,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SAVING_CHANGES_0 = "ERR_SAVING_CHANGES_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERROR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1 = "ERROR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1";
-
+    /** Message constant for key in the resource bundle. */
     public static final String ERROR_UNSUPPORTED_BUNDLE_TYPE_1 = "ERROR_UNSUPPORTED_BUNDLE_TYPE_1";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LANGUAGE_SWITCHER_LABEL_0 = "GUI_LANGUAGE_SWITCHER_LABEL_0";
+
+    public static final String GUI_VIEW_SWITCHER_LABEL_0 = "GUI_VIEW_SWITCHER_LABEL_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

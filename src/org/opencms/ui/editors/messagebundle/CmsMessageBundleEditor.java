@@ -29,6 +29,7 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -37,10 +38,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsToolBar;
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.BundleType;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,7 +52,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 import org.tepi.filtertable.FilterTable;
-import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Container;
@@ -59,6 +61,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
@@ -83,7 +86,7 @@ import com.vaadin.ui.UI;
  * Controller for the VAADIN UI of the Message Bundle Editor.
  */
 @Theme("opencms")
-public class CmsMessageBundleEditor implements I_CmsEditor {
+public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener {
 
     /** The different edit modes. */
     enum EditMode {
@@ -303,6 +306,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
         }
     }
 
+    /** Used to implement {@link Serializable}. */
+    private static final long serialVersionUID = 5366955716462191580L;
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditor.class);
 
@@ -340,11 +346,29 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
     private String m_backLink;
 
     /**
+     * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void afterViewChange(ViewChangeEvent event) {
+
+        // do nothing
+
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public boolean beforeViewChange(ViewChangeEvent event) {
+
+        closeAction();
+        return true;
+    }
+
+    /**
      * @see org.opencms.ui.editors.I_CmsEditor#getPriority()
      */
     public int getPriority() {
 
-        return 50;
+        return 200;
     }
 
     /**
@@ -368,6 +392,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
             m_kbdHandlers.put(EditMode.TRANSLATE, new KbdHandler(m_fieldFactories.get(EditMode.TRANSLATE)));
 
             fillToolBar(context);
+            fillAppInfo(context);
 
             Component main = createMainComponent();
             context.setAppContent(main);
@@ -411,6 +436,15 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
     }
 
     /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        closeAction();
+
+    }
+
+    /**
      * Unlocks all resources. Call when closing the editor.
      */
     void closeAction() {
@@ -422,7 +456,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
             LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
         }
 
-        Page.getCurrent().setLocation(m_backLink);
+        Page.getCurrent().setLocation(CmsEncoder.decode(m_backLink));
     }
 
     /**
@@ -508,12 +542,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
 
         HorizontalLayout languages = new HorizontalLayout();
         languages.setHeight("100%");
-        languages.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
-        Label languageLabel = new Label("Languages");
-        languageLabel.setHeight("100%");
+        languages.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        languages.setSpacing(true);
+        Label languageLabel = new Label(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
+        //languageLabel.setHeight("100%");
         ComboBox languageSelect = new ComboBox();
         languageSelect.setNullSelectionAllowed(false);
-        languageSelect.setHeight("100%");
+        //languageSelect.setHeight("100%");
         // set Locales
         for (Locale locale : m_model.getLocales()) {
             languageSelect.addItem(locale);
@@ -527,23 +562,18 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
 
             public void valueChange(ValueChangeEvent event) {
 
-                m_model.setLocale((Locale)event.getProperty().getValue());
+                try {
+                    m_model.setLocale((Locale)event.getProperty().getValue());
+                } catch (IOException | CmsException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 m_table.setColumnHeader(
                     CmsMessageBundleEditorModel.PROPERTY_ID_TRANSLATION,
                     m_messages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0)
                         + " ("
                         + m_model.getLocale().getDisplayName(UI.getCurrent().getLocale())
                         + ")");
-                try {
-                    m_table.setContainerDataSource(m_model.getContainerForCurrentLocale());
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
             }
         });
         languages.addComponent(languageLabel);
@@ -658,8 +688,27 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
     @SuppressWarnings("serial")
     private Component createViewSwitcher() {
 
-        Switch swtch = new Switch();
-        swtch.addValueChangeListener(new ValueChangeListener() {
+        HorizontalLayout views = new HorizontalLayout();
+        views.setHeight("100%");
+        views.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        views.setSpacing(true);
+
+        Label viewLabel = new Label(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
+        viewLabel.setHeight("100%");
+        viewLabel.addStyleName("padding-right");
+        ComboBox viewSelect = new ComboBox();
+        viewSelect.setNullSelectionAllowed(false);
+        //languageSelect.setHeight("100%");
+        // set Locales
+        for (Locale locale : m_model.getLocales()) {
+            viewSelect.addItem(locale);
+            viewSelect.setItemCaption(locale, locale.getDisplayName(UI.getCurrent().getLocale()));
+        }
+        viewSelect.setValue(m_model.getLocale());
+        viewSelect.setNewItemsAllowed(false);
+        viewSelect.setTextInputAllowed(false);
+        // languageSelect.addStyleName("relative");
+        viewSelect.addValueChangeListener(new ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
 
@@ -670,9 +719,26 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
                 }
 
             }
-
         });
-        return swtch;
+        views.addComponent(viewLabel);
+        views.addComponent(viewSelect);
+        return views;
+    }
+
+    /**
+     * Adds the compontents to the app info bar.
+     * @param context the app UI context.
+     */
+    private void fillAppInfo(I_CmsAppUIContext context) {
+
+        HorizontalLayout appInfo = new HorizontalLayout();
+        appInfo.setSizeFull();
+        appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        Component languages = createLanguageSwitcher();
+        Component viewSwitcher = createViewSwitcher();
+        appInfo.addComponent(languages);
+        appInfo.addComponent(viewSwitcher);
+        context.setAppInfo(appInfo);
     }
 
     /** Adds Editor specific UI components to the toolbar.
@@ -685,15 +751,11 @@ public class CmsMessageBundleEditor implements I_CmsEditor {
         // create components
         Component saveBtn = createSaveButton();
         Component saveExitBtn = createSaveExitButton();
-        Component languages = createLanguageSwitcher();
         Component closeBtn = createCloseButton();
-        Component viewSwitcher = createViewSwitcher();
 
-        context.addToolbarButton(saveBtn);
-        context.addToolbarButton(saveExitBtn);
-        context.addToolbarButton(languages);
-        context.addToolbarButton(viewSwitcher);
         context.addToolbarButton(closeBtn);
+        context.addToolbarButton(saveExitBtn);
+        context.addToolbarButton(saveBtn);
     }
 
     /** Generates the options column for the table.
