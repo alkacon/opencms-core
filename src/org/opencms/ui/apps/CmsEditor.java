@@ -212,6 +212,16 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
     }
 
     /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        if (m_editorInstance instanceof I_CmsWindowCloseListener) {
+            ((I_CmsWindowCloseListener)m_editorInstance).onWindowClose();
+        }
+    }
+
+    /**
      * Returns the back link info from the given state.<p>
      *
      * @param state the state
