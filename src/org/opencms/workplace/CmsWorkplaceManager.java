@@ -180,7 +180,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     static ViewRules m_defaultViewRules = new ViewRules(
         "folder,plain,jsp,htmlredirect,containerpage:view_basic",
         "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
-        "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter:view_configs",
+        "formatter_config,xmlvfsbundle,propertyvfsbundle,bundledescriptor,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter:view_configs",
         "xmlcontent,pointer:view_other");
 
     /** The default account infos. */

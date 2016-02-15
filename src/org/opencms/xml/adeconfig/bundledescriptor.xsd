@@ -1,0 +1,32 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/descriptor-message.xsd" />
+
+	<xsd:element name="BundleDescriptors" type="OpenCmsBundleDescriptors"/>
+
+	<xsd:complexType name="OpenCmsBundleDescriptors">
+		<xsd:sequence>
+			<xsd:element name="BundleDescriptor" type="OpenCmsBundleDescriptor" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsBundleDescriptor">
+		<xsd:sequence>
+			<xsd:element name="Message" type="OpenCmsBundleDescriptorMessage" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<mappings/>
+			<defaults/>
+			<layouts/>
+			<validationrules/>
+			<relations/>
+			<searchsettings containerPageOnly="true"/>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

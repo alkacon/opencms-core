@@ -94,6 +94,7 @@ public class CmsExplorerTypeSettings implements Comparable<CmsExplorerTypeSettin
 
             put("xmlvfsbundle", new Integer(200));
             put("propertyvfsbundle", new Integer(300));
+            put("bundledescriptor", new Integer(350));
             put("sitemap_config", new Integer(400));
             put("sitemap_master_config", new Integer(500));
             put("module_config", new Integer(600));

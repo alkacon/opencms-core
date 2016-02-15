@@ -34,6 +34,9 @@ repositories {
         }
     }
     jcenter()
+    maven { 
+        url "http://maven.vaadin.com/vaadin-addons" 
+    }
 }
 
 if (!project.hasProperty('max_heap_size')){

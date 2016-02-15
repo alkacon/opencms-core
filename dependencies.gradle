@@ -64,6 +64,8 @@ dependencies {
     distribution group: 'com.vaadin', name: 'vaadin-server', version: '7.6.3'
     distribution group: 'com.vaadin', name: 'vaadin-shared', version: '7.6.3'
     distribution group: 'com.vaadin', name: 'vaadin-themes', version: '7.6.3'
+    distribution group: 'org.vaadin.addons', name: 'filteringtable', version: '0.9.15.v7'
+    distribution group: 'org.vaadin.addons', name: 'popupbutton', version: '2.5.0'
     distribution group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
     distribution group: 'commons-codec', name: 'commons-codec', version: '1.10'
     distribution group: 'commons-collections', name: 'commons-collections', version: '3.2.2'

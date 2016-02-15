@@ -45,6 +45,7 @@ import org.opencms.ui.editors.CmsSourceEditor;
 import org.opencms.ui.editors.CmsXmlContentEditor;
 import org.opencms.ui.editors.CmsXmlPageEditor;
 import org.opencms.ui.editors.I_CmsEditor;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.CmsTool;
 import org.opencms.workplace.tools.CmsToolManager;
@@ -141,7 +142,8 @@ public class CmsWorkplaceAppManager {
         new CmsAcaciaEditor(),
         new CmsSourceEditor(),
         new CmsXmlContentEditor(),
-        new CmsXmlPageEditor()};
+        new CmsXmlPageEditor(),
+        new CmsMessageBundleEditor()};
 
     /** Legacy apps explicitly hidden from new workplace. */
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(
