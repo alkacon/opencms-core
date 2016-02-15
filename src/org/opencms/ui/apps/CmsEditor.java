@@ -35,15 +35,25 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
 import org.opencms.util.CmsUUID;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import org.apache.commons.logging.Log;
+
+import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Page;
 
 /**
  * The editor app. Will open the appropriate editor for a resource.<p>
  */
-public class CmsEditor implements I_CmsWorkplaceApp {
+public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWindowCloseListener {
+
+    /** The serial version id. */
+    private static final long serialVersionUID = 7503052469189004387L;
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditor.class);
@@ -95,6 +105,56 @@ public class CmsEditor implements I_CmsWorkplaceApp {
     }
 
     /**
+     * Navigates to the back link target.<p>
+     *
+     * @param backlink the back link
+     */
+    public static void openBackLink(String backlink) {
+
+        try {
+            backlink = URLDecoder.decode(backlink, "UTF-8");
+            String current = Page.getCurrent().getLocation().toString();
+            if (current.contains("#")) {
+                current = current.substring(0, current.indexOf("#"));
+            }
+            // check if the back link targets the workplace UI
+            if (backlink.startsWith(current)) {
+                // use the navigator to open the target
+                String target = backlink.substring(backlink.indexOf("#") + 1);
+                CmsAppWorkplaceUi.get().getNavigator().navigateTo(target);
+            } else {
+                // otherwise set the new location
+                Page.getCurrent().setLocation(backlink);
+            }
+        } catch (UnsupportedEncodingException e) {
+            // only in case of malformed charset
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public void afterViewChange(ViewChangeEvent event) {
+
+        if (m_editorInstance instanceof ViewChangeListener) {
+            ((ViewChangeListener)m_editorInstance).afterViewChange(event);
+        }
+    }
+
+    /**
+     * @see com.vaadin.navigator.ViewChangeListener#beforeViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+     */
+    public boolean beforeViewChange(ViewChangeEvent event) {
+
+        if (m_editorInstance instanceof ViewChangeListener) {
+            return ((ViewChangeListener)m_editorInstance).beforeViewChange(event);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
      */
     public void initUI(I_CmsAppUIContext context) {
@@ -131,6 +191,16 @@ public class CmsEditor implements I_CmsWorkplaceApp {
         } catch (CmsException e) {
             LOG.error("Error initializing the editor.", e);
             CmsErrorDialog.showErrorDialog(e);
+        }
+    }
+
+    /**
+     * @see org.opencms.ui.components.I_CmsWindowCloseListener#onWindowClose()
+     */
+    public void onWindowClose() {
+
+        if (m_editorInstance instanceof I_CmsWindowCloseListener) {
+            ((I_CmsWindowCloseListener)m_editorInstance).onWindowClose();
         }
     }
 
