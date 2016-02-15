@@ -57,6 +57,20 @@ import com.vaadin.ui.themes.ValoTheme;
 public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener, I_CmsAppView, Handler {
 
     /**
+     * Enum representing caching status of a view.<p>
+     */
+    public static enum CacheStatus {
+        /** Cache view. */
+        cache,
+
+        /** Cache view one time only. */
+        cacheOnce,
+
+        /** Don't cache view. */
+        noCache
+    }
+
+    /**
      * Used in case the requested app can not be displayed to the current user.<p>
      */
     protected class NotAvailableApp implements I_CmsWorkplaceApp {
@@ -100,8 +114,8 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /** The serial version id. */
     private static final long serialVersionUID = -8128528863875050216L;
 
-    /** The default shortcut actions. */
-    private Map<Action, Runnable> m_defaultActions;
+    /** The current app. */
+    private I_CmsWorkplaceApp m_app;
 
     /** The app shortcut actions. */
     private Map<Action, Runnable> m_appActions;
@@ -109,11 +123,14 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /** The app configuration. */
     private I_CmsWorkplaceAppConfiguration m_appConfig;
 
-    /** The current app. */
-    private I_CmsWorkplaceApp m_app;
-
     /** The app layout component. */
     private CmsAppViewLayout m_appLayout;
+
+    /** The cache status. */
+    private CacheStatus m_cacheStatus = CacheStatus.noCache;
+
+    /** The default shortcut actions. */
+    private Map<Action, Runnable> m_defaultActions;
 
     /**
      * Constructor.<p>
@@ -230,6 +247,16 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     }
 
     /**
+     * Gets the cache status of the view.<p>
+     *
+     * @return the cache status of the view
+     */
+    public CacheStatus getCacheStatus() {
+
+        return m_cacheStatus;
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsAppView#getComponent()
      */
     public Component getComponent() {
@@ -297,5 +324,23 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
         m_appLayout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
         m_app.initUI(m_appLayout);
         return m_appLayout;
+    }
+
+    /**
+     * Restores the view from cache.<p>
+     */
+    public void restoreFromCache() {
+
+        ((I_CmsCachableApp)m_app).onRestoreFromCache();
+    }
+
+    /**
+     * Sets the cache status.
+     *
+     * @param status the new cache status
+     */
+    public void setCacheStatus(CacheStatus status) {
+
+        m_cacheStatus = status;
     }
 }

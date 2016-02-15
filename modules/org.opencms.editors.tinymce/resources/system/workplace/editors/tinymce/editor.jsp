@@ -557,6 +557,14 @@ function confirmDeleteLocale() {
 function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.action.value = "";
+	var isWp = false;
+    try { 
+        if (top.document.querySelector(".o-editor-frame")) {
+            isWp = true; 
+        } else { 
+            isWp = false; 
+        }
+    } catch (e) {}
     switch (para) {
     case 1:
         // reload the editor
@@ -855,10 +863,21 @@ function addCustomShortcuts(editor){
 
 //sets field values and submits the editor form
 function execAction(editor, action, target) {
+    var isWp = false;
+    try { 
+        if (top.document.querySelector(".o-editor-frame")) {
+            isWp = true; 
+        } else { 
+            isWp = false; 
+        }
+    } catch (e) {}
 	var form = document.forms["EDITOR"];
 	form.content.value = encodeURIComponent(editor.getContent());
 	form.action.value = action;
 	form.target = target;
+	  if (isWp) {
+         form.target="_self";
+      }
 	form.submit(); 
 }
 // JavaScript resize editor stuff

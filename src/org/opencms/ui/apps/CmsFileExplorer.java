@@ -92,6 +92,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -500,6 +501,95 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         }
     }
 
+    /** Bean representing the file explorer navigation substate. */
+    static class StateBean {
+
+        /** Current folder. */
+        private String m_folder;
+
+        /** Project id. */
+        private String m_projectId;
+
+        /** The site root. */
+        private String m_siteRoot;
+
+        /**
+         * Creates a new state bean.<p>
+         *
+         * @param siteRoot the site root
+         * @param folder the folder
+         * @param projectId the project id
+         */
+        public StateBean(String siteRoot, String folder, String projectId) {
+            m_siteRoot = siteRoot;
+            m_folder = folder;
+            m_projectId = projectId;
+            if ("".equals(m_siteRoot)) {
+                m_siteRoot = "/";
+            }
+        }
+
+        /**
+         * Parses the state bean from a string.<p>
+         *
+         * @param state the state string
+         * @return the state bean
+         */
+        public static StateBean parse(String state) {
+
+            List<String> fields = CmsStringUtil.splitAsList(state, "!!");
+            if (fields.size() >= 3) {
+                String projectId = fields.get(0);
+                String siteRoot = fields.get(1);
+                String folder = fields.get(2);
+                return new StateBean(siteRoot, folder, projectId);
+            } else {
+                return new StateBean(null, null, null);
+            }
+        }
+
+        /**
+         * Converts state bean to a string.<p>
+         *
+         * @return the string format of the state
+         */
+        public String asString() {
+
+            String result = m_projectId + "!!" + m_siteRoot + "!!" + m_folder + "!!";
+            return result;
+        }
+
+        /**
+         * Returns the folderId.<p>
+         *
+         * @return the folderId
+         */
+        public String getFolder() {
+
+            return m_folder;
+        }
+
+        /**
+         * Returns the projectId.<p>
+         *
+         * @return the projectId
+         */
+        public String getProjectId() {
+
+            return m_projectId;
+        }
+
+        /**
+         * Returns the siteRoot.<p>
+         *
+         * @return the siteRoot
+         */
+        public String getSiteRoot() {
+
+            return m_siteRoot;
+        }
+    }
+
     /** The opened paths session attribute name. */
     public static final String OPENED_PATHS = "explorer-opened-paths";
 
@@ -587,8 +677,16 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The first visible file table item index. */
     private int m_firstVisibleTableItemIndex;
 
+    private List<CmsResource> m_lastDialogContextResources;
+
+    /** The new button. */
+    private Button m_newButton;
+
     /** The opened paths by site. */
     private Map<String, String> m_openedPaths;
+
+    /** The publish button. */
+    private Button m_publishButton;
 
     /** The search field. */
     private TextField m_searchField;
@@ -604,12 +702,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
     /** The upload button. */
     private CmsUploadButton m_uploadButton;
-
-    /** The publish button. */
-    private Button m_publishButton;
-
-    /** The new button. */
-    private Button m_newButton;
 
     /**
      * Constructor.<p>
@@ -971,6 +1063,21 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#onRestoreFromCache()
+     */
+    public void onRestoreFromCache() {
+
+        if (m_lastDialogContextResources != null) {
+            List<CmsUUID> updateIds = Lists.newArrayList();
+            for (CmsResource resource : m_lastDialogContextResources) {
+                updateIds.add(resource.getStructureId());
+            }
+            update(updateIds);
+        }
+
+    }
+
+    /**
      * Call if site and or project have been changed.<p>
      *
      * @param project the project
@@ -1212,7 +1319,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     protected I_CmsDialogContext createDialogContext() {
 
-        return new CmsExplorerDialogContext(m_appContext, this, m_fileTable.getSelectedResources());
+        List<CmsResource> resources = m_fileTable.getSelectedResources();
+        m_lastDialogContextResources = resources;
+        return new CmsExplorerDialogContext(m_appContext, this, resources);
     }
 
     /**
@@ -1270,12 +1379,10 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             ? ""
             : cms.getSitePath(folder);
 
-            String state = normalizeState(
-                cms.getRequestContext().getCurrentProject().getUuid().toString()
-                    + STATE_SEPARATOR
-                    + cms.getRequestContext().getSiteRoot()
-                    + STATE_SEPARATOR
-                    + sitePath);
+            String state = new StateBean(
+                cms.getRequestContext().getSiteRoot(),
+                sitePath,
+                cms.getRequestContext().getCurrentProject().getUuid().toString()).asString();
 
             if (!(state).equals(m_currentState)) {
                 m_currentState = state;
@@ -1610,11 +1717,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private String getPathFromState() {
 
-        String path = null;
-        if (m_currentState.contains(STATE_SEPARATOR)) {
-            path = m_currentState.substring(m_currentState.lastIndexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length());
-        }
-        return path;
+        return StateBean.parse(m_currentState).getFolder();
     }
 
     /**
@@ -1624,14 +1727,13 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private CmsUUID getProjectIdFromState() {
 
-        CmsUUID projectId = null;
-        if (m_currentState.contains(STATE_SEPARATOR)) {
-            String id = m_currentState.substring(0, m_currentState.indexOf(STATE_SEPARATOR));
-            if (CmsUUID.isValidUUID(id)) {
-                projectId = new CmsUUID(id);
-            }
+        String projectIdStr = StateBean.parse(m_currentState).getProjectId();
+        if (CmsUUID.isValidUUID(projectIdStr)) {
+            return new CmsUUID(projectIdStr);
+
         }
-        return projectId;
+        return null;
+
     }
 
     /**
@@ -1641,12 +1743,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
      */
     private String getSiteRootFromState() {
 
-        String siteRoot = null;
-        if (m_currentState.contains(STATE_SEPARATOR)) {
-            siteRoot = m_currentState.substring(
-                m_currentState.indexOf(STATE_SEPARATOR) + STATE_SEPARATOR.length(),
-                m_currentState.lastIndexOf(STATE_SEPARATOR));
-        }
+        String siteRoot = StateBean.parse(m_currentState).getSiteRoot();
         return siteRoot;
     }
 

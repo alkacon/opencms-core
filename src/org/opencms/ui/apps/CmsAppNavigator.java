@@ -27,20 +27,42 @@
 
 package org.opencms.ui.apps;
 
+import com.vaadin.navigator.NavigationStateManager;
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.ui.UI;
+
 /**
- * Apps implementing this interface will be stored in the user session so returning to the app will be quicker and use less resources.<p>
+ * Custom navigator subclass used to prevent "slash accumulation" in the URL fragment if the navigateTo(...) methods are called
+ * multiple names in the same navigation.
  */
-public interface I_CmsCachableApp {
+public class CmsAppNavigator extends Navigator {
+
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Returns whether this app should be cached within the user session.<p>
+     * Creates a new instance.<p>
      *
-     * @return <code>true</code> if the app is cachable
+     * @param ui the UI
+     * @param stateManager the state manager
+     * @param display the display
      */
-    boolean isCachable();
+    public CmsAppNavigator(UI ui, NavigationStateManager stateManager, ViewDisplay display) {
+        super(ui, stateManager, display);
+    }
 
     /**
-     * Called after the view is fetched from the cache.<p>
+     * @see com.vaadin.navigator.Navigator#navigateTo(com.vaadin.navigator.View, java.lang.String, java.lang.String)
      */
-    void onRestoreFromCache();
+    @Override
+    protected void navigateTo(View view, String viewName, String parameters) {
+
+        if ((parameters != null) && parameters.startsWith("/")) {
+            parameters = parameters.substring(1);
+        }
+        super.navigateTo(view, viewName, parameters);
+    }
+
 }

@@ -10,7 +10,18 @@
 <!--
 <% if (link) { %>
 // check for direct edit frame
-if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
+var isWp = false; 
+try { 
+     if (top.document.querySelector(".o-editor-frame")) {
+         isWp = true; 
+     } else { 
+         isWp = false; 
+     }
+} catch (e) {} 
+
+if (isWp) {
+    top.location.href = "<%=wp.getParamCloseLink()%>";
+} else if (top.frames['cmsAdvancedDirectEditor']!=null && top.frames['cmsAdvancedDirectEditor'].document!=null){
     location.href = "<%= wp.getParamCloseLink() %>";
 }else{
 	this.location.href = "<%= wp.getParamCloseLink() %>";

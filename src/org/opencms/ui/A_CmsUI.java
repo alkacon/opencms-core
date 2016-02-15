@@ -65,7 +65,6 @@ public abstract class A_CmsUI extends UI {
      */
     public A_CmsUI() {
         m_windowExtension = new CmsWindowExtension(this);
-
     }
 
     /**

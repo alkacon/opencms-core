@@ -32,6 +32,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppView;
+import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
@@ -45,6 +47,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
 
 /**
@@ -52,14 +55,14 @@ import com.vaadin.ui.UI;
  */
 public class CmsEditDialogAction extends A_CmsWorkplaceAction {
 
-    /** Log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
-
     /** The action id. */
     public static final String ACTION_ID = "edit";
 
     /** The action visibility. */
     public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -68,10 +71,15 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
 
         String backLink;
         try {
-            backLink = URLEncoder.encode(UI.getCurrent().getPage().getLocation().toString(), "UTF-8");
+            String currentLocation = UI.getCurrent().getPage().getLocation().toString();
+            backLink = URLEncoder.encode(currentLocation, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             LOG.error(e.getLocalizedMessage(), e);
             backLink = UI.getCurrent().getPage().getLocation().toString();
+        }
+        View view = CmsAppWorkplaceUi.get().getCurrentView();
+        if (view instanceof CmsAppView) {
+            ((CmsAppView)view).setCacheStatus(CacheStatus.cacheOnce);
         }
         CmsAppWorkplaceUi.get().showApp(
             OpenCms.getWorkplaceAppManager().getAppConfiguration("editor"),

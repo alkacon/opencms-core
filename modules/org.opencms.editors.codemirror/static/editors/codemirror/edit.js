@@ -29,15 +29,31 @@
 // Script for CodeMirror text editor (editor with syntax highlighting)
 //---------------------------------------------------------------------//
 
+
+
 // function action on button click
 function buttonAction(para) {
     var _form = document.EDITOR;
     _form.content.value = encodeURIComponent(editorCodeMirror.getValue());
-
+    var isWp = false;
+    try { 
+        if (top.document.querySelector(".o-editor-frame")) {
+            isWp = true; 
+        } else { 
+            isWp = false; 
+        }
+    } catch (e) {} 
+    
     switch (para) {
         case 1:
         {
             _form.action.value = actionExit;
+            if (isWp) {
+                _form.target="_self";
+                _form.submit();
+                break;
+            }
+            
             if (!callCloseFunction) {
                 _form.target = "_top";
             }
@@ -47,6 +63,12 @@ function buttonAction(para) {
         case 2:
         {
             _form.action.value = actionSaveExit;
+            if (isWp) {
+                _form.target="_self";
+                _form.submit();
+                break;
+            }
+
             if (!callCloseFunction) {
                 _form.target = "_top";
             }

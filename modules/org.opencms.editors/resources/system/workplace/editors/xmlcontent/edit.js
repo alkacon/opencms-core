@@ -110,17 +110,35 @@ function buttonAction(para) {
 	try {
 		editFrame.buttonbar.focus();
 	} catch (e) {}
+	var isWp = false;
+    try { 
+        if (top.document.querySelector(".o-editor-frame")) {
+            isWp = true; 
+        } else { 
+            isWp = false; 
+        }
+    } catch (e) {}
 
 	switch (para) {
 	case 1:
 		// exit editor without saving
 		_form.action.value = actionExit;
+        if (isWp) {
+            _form.target="_self";
+            _form.submit();
+            break;
+        }
 		_form.target = editorTopFrameTarget;
 		_form.submit();
 		break;
 	case 2:
 		// save and exit editor
 		_form.action.value = actionSaveExit;
+        if (isWp) {
+            _form.target="_self";
+            _form.submit();
+            break;
+        }
 		_form.submit();
 		break;
 	case 3:

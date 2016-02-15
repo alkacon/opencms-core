@@ -237,6 +237,7 @@ public class CmsFileTable extends CmsResourceTable {
         m_fileTable.setColumnCollapsingAllowed(true);
         m_fileTable.setSelectable(true);
         m_fileTable.setMultiSelect(true);
+
         m_fileTable.setTableFieldFactory(new FileFieldFactory());
         new ColumnBuilder() {
 

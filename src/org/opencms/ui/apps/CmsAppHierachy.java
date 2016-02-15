@@ -86,6 +86,13 @@ public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
     }
 
     /**
+     * @see org.opencms.ui.apps.I_CmsCachableApp#onRestoreFromCache()
+     */
+    public void onRestoreFromCache() {
+        // do nothing
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#onStateChange(java.lang.String)
      */
     public void onStateChange(String state) {

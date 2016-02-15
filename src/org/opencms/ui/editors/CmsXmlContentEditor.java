@@ -70,4 +70,14 @@ public class CmsXmlContentEditor extends A_CmsFrameEditor {
 
         return "/system/workplace/editors/xmlcontent/editor.jsp";
     }
+
+    /**
+     * @see org.opencms.ui.editors.A_CmsFrameEditor#getFrameStyles()
+     */
+    @Override
+    protected String getFrameStyles() {
+
+        return "o-editor-frame";
+    }
+
 }

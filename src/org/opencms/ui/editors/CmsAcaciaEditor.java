@@ -87,7 +87,7 @@ public class CmsAcaciaEditor extends A_CmsFrameEditor {
     @Override
     protected String getEditorUri() {
 
-        return "/system/workplace/editors/acacia/contenteditor.jsp";
+        return "/system/workplace/editors/acacia/editor.jsp";
     }
 
 }
