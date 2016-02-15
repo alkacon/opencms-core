@@ -535,7 +535,10 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
                         getSessionCache().setCacheXmlContent(resource.getStructureId(), content);
                         if (locale == null) {
-                            locale = getBestAvailableLocale(resource, content);
+                            locale = OpenCms.getLocaleManager().getBestAvailableLocaleForXmlContent(
+                                getCmsObject(),
+                                resource,
+                                content);
                         }
                         result = readContentDefinition(file, content, null, locale, false, null);
                     }
@@ -1239,46 +1242,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 }
             }
         }
-    }
-
-    /**
-     * Returns the best available locale present in the given XML content, or the default locale.<p>
-     *
-     * @param resource the resource
-     * @param content the XML content
-     *
-     * @return the locale
-     */
-    private Locale getBestAvailableLocale(CmsResource resource, CmsXmlContent content) {
-
-        CmsObject cms = getCmsObject();
-        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(getCmsObject(), resource);
-        if (!content.hasLocale(locale)) {
-            // if the requested locale is not available, get the first matching default locale,
-            // or the first matching available locale
-            boolean foundLocale = false;
-            if (content.getLocales().size() > 0) {
-                List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, resource);
-                for (Locale defaultLocale : locales) {
-                    if (content.hasLocale(defaultLocale)) {
-                        locale = defaultLocale;
-                        foundLocale = true;
-                        break;
-                    }
-                }
-                if (!foundLocale) {
-                    locales = OpenCms.getLocaleManager().getAvailableLocales(cms, resource);
-                    for (Locale availableLocale : locales) {
-                        if (content.hasLocale(availableLocale)) {
-                            locale = availableLocale;
-                            foundLocale = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return locale;
     }
 
     /**

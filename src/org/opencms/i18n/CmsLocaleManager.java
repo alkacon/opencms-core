@@ -39,6 +39,7 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -556,6 +557,46 @@ public class CmsLocaleManager implements I_CmsEventListener {
     public List<Locale> getAvailableLocales(String names) {
 
         return checkLocaleNames(getLocales(names));
+    }
+
+    /**
+     * Returns the best available locale present in the given XML content, or the default locale.<p>
+     *
+     * @param cms the current OpenCms user context
+     * @param resource the resource
+     * @param content the XML content
+     *
+     * @return the locale
+     */
+    public Locale getBestAvailableLocaleForXmlContent(CmsObject cms, CmsResource resource, CmsXmlContent content) {
+
+        Locale locale = getDefaultLocale(cms, resource);
+        if (!content.hasLocale(locale)) {
+            // if the requested locale is not available, get the first matching default locale,
+            // or the first matching available locale
+            boolean foundLocale = false;
+            if (content.getLocales().size() > 0) {
+                List<Locale> locales = getDefaultLocales(cms, resource);
+                for (Locale defaultLocale : locales) {
+                    if (content.hasLocale(defaultLocale)) {
+                        locale = defaultLocale;
+                        foundLocale = true;
+                        break;
+                    }
+                }
+                if (!foundLocale) {
+                    locales = getAvailableLocales(cms, resource);
+                    for (Locale availableLocale : locales) {
+                        if (content.hasLocale(availableLocale)) {
+                            locale = availableLocale;
+                            foundLocale = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return locale;
     }
 
     /**
