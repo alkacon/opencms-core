@@ -164,7 +164,8 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                 try {
                     temp = eval('(' + config.style_formats + ')');
                 } catch (error) {
-                    $wnd.alert("Could not parse WYSIWYG editor options: " + error);
+                    $wnd.alert("Could not parse WYSIWYG editor options: "
+                            + error);
                 }
                 if (typeof temp != 'undefined' && temp != null) {
                     options.style_formats = temp;
@@ -199,13 +200,15 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                     options.contextmenu = contextmenu;
                 }
                 if (config.tinyMceOptions) {
-                    options.paste_as_text = config.tinyMceOptions.paste_text_sticky_default ? true : false;
+                    options.paste_as_text = config.tinyMceOptions.paste_text_sticky_default ? true
+                            : false;
                 }
                 if (config.spellcheck_url) {
                     options.spellchecker_language = config.spellcheck_language;
                     options.spellchecker_languages = config.spellcheck_language;
                     options.spellchecker_rpc_url = config.spellcheck_url;
-                    options.spellchecker_callback = function(method, text, success, failure) {
+                    options.spellchecker_callback = function(method, text,
+                            success, failure) {
                         $wnd.tinymce.util.JSONRequest.sendRPC({
                             url : config.spellcheck_url,
                             method : "spellcheck",
@@ -238,6 +241,6 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
      */
     private String getCodeMirrorPath() {
 
-        return CmsCoreProvider.get().getWorkplaceResourcesPrefix() + "editors/codemirror/dist/";
+        return CmsStringUtil.joinPaths(CmsCoreProvider.get().getWorkplaceResourcesPrefix(), "editors/codemirror/dist/");
     }
 }

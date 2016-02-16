@@ -1056,7 +1056,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             EDITOR_DELETE_URI,
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
-            CmsWorkplace.getSkinUri(),
+            OpenCms.getSystemInfo().getStaticResourceContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),
             OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
