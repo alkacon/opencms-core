@@ -390,6 +390,12 @@ div.selectHover, div.selectorPopup.selectBoxSelector div.selectBoxCell.selectHov
 	top: 4px;
 }
 
+.selectComboIcon {
+	position: absolute;
+	right: 20px; 
+	top: 4px;
+}
+
 .selectBoxRoot {
 	/* needed to enable hasLayout in IE (required for reading clientHeight) */
 	min-height: 0px;

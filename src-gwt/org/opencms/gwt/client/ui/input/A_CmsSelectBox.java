@@ -285,6 +285,16 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
     }
 
     /**
+     * Adds a widget.<p>
+     *
+     * @param widget the widget to add
+     */
+    public void addWidget(Widget widget) {
+
+        m_panel.add(widget);
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.I_CmsFormWidget#getFieldType()
      */
     public FieldType getFieldType() {

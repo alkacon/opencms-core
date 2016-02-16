@@ -59,7 +59,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @since 8.0.0
  *
  */
-public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I_CmsHasInit, I_CmsHasGhostValue {
+public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell> implements I_CmsHasInit, I_CmsHasGhostValue {
 
     /** The key for the text which should be displayed in the opener if no option is available. */
     public static final String NO_SELECTION_OPENER_TEXT = "%NO_SELECTION_OPENER_TEXT%";
@@ -69,6 +69,9 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I_
 
     /** The widget type identifier. */
     private static final String WIDGET_TYPE = "combo";
+
+    /** CSS style name for combo boxes. */
+    public static final String CSS_CLASS = I_CmsInputLayoutBundle.INSTANCE.inputCss().comboBox();
 
     /** The ghost value. */
     protected String m_ghostValue;
@@ -93,9 +96,6 @@ public class CmsComboBox extends A_CmsSelectBox<CmsLabelSelectCell>implements I_
 
     /** A map of titles for the select options which should  be displayed on mouseover. */
     private Map<String, String> m_titles = new HashMap<String, String>();
-
-    /** CSS style name for combo boxes. */
-    public static final String CSS_CLASS = I_CmsInputLayoutBundle.INSTANCE.inputCss().comboBox();
 
     /**
      * Default constructor.<p>
