@@ -208,28 +208,7 @@
 			<accesscontrol />
 		</file>
 		<file>
-			<source>system/workplace/editors/acacia/contenteditor.jsp
-			</source>
-			<destination>system/workplace/editors/acacia/contenteditor.jsp
-			</destination>
-			<type>jsp</type>
-			<uuidstructure>b91dbe4b-53d1-11e1-af11-e5cbe0b4d4f3</uuidstructure>
-			<uuidresource>b91dbe4c-53d1-11e1-af11-e5cbe0b4d4f3</uuidresource>
-			<datelastmodified>Fri, 10 Feb 2012 10:26:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Feb 2012 10:26:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations />
-			<accesscontrol />
-		</file>
-		<file>
+			<source>system/workplace/editors/acacia/editor.jsp</source>
 			<destination>system/workplace/editors/acacia/editor.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>caf4cbc9-991c-11e1-a85e-d138de4a8c16</uuidstructure>

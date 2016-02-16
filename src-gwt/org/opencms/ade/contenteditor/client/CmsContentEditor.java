@@ -791,7 +791,7 @@ public final class CmsContentEditor extends CmsEditorBase {
     }
 
     /**
-     * Opens the form based editor. Used within the stand alone contenteditor.jsp.<p>
+     * Opens the form based editor. Used within the stand alone acacia/editor.jsp.<p>
      *
      * @param context the editor context
      */
