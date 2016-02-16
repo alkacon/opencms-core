@@ -46,7 +46,6 @@ import org.opencms.gwt.CmsRpcException;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.loader.CmsImageScaler;
-import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -145,13 +144,14 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
                     standardContext.setPage(
                         new CmsContainerPageBean(Collections.<CmsContainerBean> singletonList(containerBean)));
                     String encoding = response.getCharacterEncoding();
-                    CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
-                        OpenCms.getResourceManager().getLoader(formatterResource),
-                        element.getResource(),
-                        formatterResource);
-                    CmsResource loaderRes = loaderFacade.getLoaderStartResource();
                     return (new String(
-                        loaderFacade.getLoader().dump(tempCms, loaderRes, null, locale, request, response),
+                        OpenCms.getResourceManager().getLoader(formatterResource).dump(
+                            tempCms,
+                            formatterResource,
+                            null,
+                            locale,
+                            request,
+                            response),
                         encoding)).trim();
                 }
             }
@@ -338,7 +338,7 @@ public class CmsPreviewService extends CmsGwtService implements I_CmsPreviewServ
         CmsResource resource = null;
         try {
             resource = cms.readResource(name, CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsVfsResourceNotFoundException e) {
+        } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
             String originalSiteRoot = cms.getRequestContext().getSiteRoot();
             try {
                 cms.getRequestContext().setSiteRoot("");

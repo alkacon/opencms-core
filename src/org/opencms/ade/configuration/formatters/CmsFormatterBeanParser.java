@@ -32,6 +32,8 @@ import org.opencms.ade.configuration.CmsPropertyConfig;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsMacroFormatterResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -39,6 +41,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
+import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -281,6 +284,7 @@ public class CmsFormatterBeanParser {
             m_preview = false;
             m_extractContent = true;
             hasNestedContainers = false;
+            readSettingsFromReferencedFormatters(content);
         } else {
             String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
             m_autoEnabled = Boolean.parseBoolean(autoEnabled);
@@ -303,9 +307,8 @@ public class CmsFormatterBeanParser {
             String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
             hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
             parseHeadIncludes(root);
-            parseSettings(root);
         }
-
+        parseSettings(root);
         String isDetailStr = getString(root, N_DETAIL, "true");
         boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
@@ -469,6 +472,29 @@ public class CmsFormatterBeanParser {
             CmsPropertyConfig propConfig = CmsConfigurationReader.parseProperty(m_cms, settingLoc);
             CmsXmlContentProperty property = propConfig.getPropertyData();
             m_settings.put(property.getName(), property);
+        }
+    }
+
+    /**
+     * Reads the settings from referenced formatters.<p>
+     *
+     * @param xmlContent the XML content
+     */
+    private void readSettingsFromReferencedFormatters(CmsXmlContent xmlContent) {
+
+        List<I_CmsXmlContentValue> formatters = xmlContent.getValues(
+            CmsMacroFormatterResolver.N_FORMATTERS,
+            CmsLocaleManager.MASTER_LOCALE);
+        for (I_CmsXmlContentValue formatterValue : formatters) {
+            CmsXmlVfsFileValue file = (CmsXmlVfsFileValue)xmlContent.getValue(
+                formatterValue.getPath() + "/" + CmsMacroFormatterResolver.N_FORMATTER,
+                CmsLocaleManager.MASTER_LOCALE);
+            CmsUUID formatterId = file.getLink(m_cms).getStructureId();
+            I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
+                m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(formatterId);
+            if (formatter != null) {
+                m_settings.putAll(formatter.getSettings());
+            }
         }
     }
 

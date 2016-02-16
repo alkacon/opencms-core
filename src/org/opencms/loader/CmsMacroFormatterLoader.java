@@ -30,9 +30,11 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsParameterConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.containerpage.CmsContainerElementBean;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -82,7 +84,8 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
         HttpServletResponse res) throws CmsException, IOException, ServletException {
 
         CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+        ensureElementFormatter(resource, req);
         return loader.dump(cms, renderer, element, selectedLocale, req, res);
     }
 
@@ -93,7 +96,8 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
     throws ServletException, IOException, CmsException {
 
         CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+        ensureElementFormatter(resource, req);
         return loader.export(cms, renderer, req, res);
     }
 
@@ -112,7 +116,6 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
      */
     public int getLoaderId() {
 
-        // TODO Auto-generated method stub
         return LOADER_ID;
     }
 
@@ -174,7 +177,8 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
     throws ServletException, IOException, CmsException {
 
         CmsResource renderer = cms.readResource(RENDER_JSP);
-        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(renderer);
+        ensureElementFormatter(resource, req);
         loader.load(cms, renderer, req, res);
     }
 
@@ -187,5 +191,20 @@ public class CmsMacroFormatterLoader implements I_CmsResourceLoader {
         CmsResource renderer = cms.readResource(RENDER_JSP);
         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
         loader.service(cms, renderer, req, res);
+    }
+
+    /**
+     * Ensure the element formatter id is set in the element bean.<p>
+     *
+     * @param resource the formatter resource
+     * @param req the request
+     */
+    private void ensureElementFormatter(CmsResource resource, HttpServletRequest req) {
+
+        CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(req);
+        CmsContainerElementBean element = contextBean.getElement();
+        if (!resource.getStructureId().equals(element.getFormatterId())) {
+            element.setFormatterId(resource.getStructureId());
+        }
     }
 }

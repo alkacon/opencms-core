@@ -1,4 +1,4 @@
-<%@page import="org.opencms.file.*"  %><%@page import="org.opencms.jsp.*" %><%@page import="org.opencms.site.xmlsitemap.*" %><%
+<%@page import="org.opencms.site.xmlsitemap.CmsXmlSitemapActionElement" %><%
 CmsXmlSitemapActionElement actionElement = new CmsXmlSitemapActionElement(pageContext, request, response);
 actionElement.run();
 %>

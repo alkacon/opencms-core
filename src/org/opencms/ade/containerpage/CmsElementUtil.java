@@ -48,7 +48,6 @@ import org.opencms.gwt.shared.CmsPermissionInfo;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.jsp.util.CmsJspStandardContextBean.TemplateBean;
 import org.opencms.loader.CmsTemplateContextManager;
-import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -726,11 +725,6 @@ public class CmsElementUtil {
     throws CmsException, ServletException, IOException {
 
         element.initResource(m_cms);
-        CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(
-            OpenCms.getResourceManager().getLoader(formatter),
-            element.getResource(),
-            formatter);
-        CmsResource loaderRes = loaderFacade.getLoaderStartResource();
         TemplateBean templateBean = CmsADESessionCache.getCache(m_req, m_cms).getTemplateBean(
             m_cms.addSiteRoot(m_currentPageUri),
             true);
@@ -764,7 +758,7 @@ public class CmsElementUtil {
             m_req.setAttribute(CmsTemplateContextManager.ATTR_TEMPLATE_BEAN, templateBean);
             String encoding = m_res.getCharacterEncoding();
             return (new String(
-                loaderFacade.getLoader().dump(m_cms, loaderRes, null, m_locale, m_req, m_res),
+                OpenCms.getResourceManager().getLoader(formatter).dump(m_cms, formatter, null, m_locale, m_req, m_res),
                 encoding)).trim();
         } finally {
             m_cms.getRequestContext().setUri(oldUri);
