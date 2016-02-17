@@ -113,10 +113,10 @@ public class CmsRemoveFormatterWidget extends A_CmsFormatterWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData)
+     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, java.lang.String)
      */
     @Override
-    protected List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config) {
+    protected List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config, String rootPath) {
 
         Map<CmsUUID, I_CmsFormatterBean> activeFormatters = config.getActiveFormatters();
         List<CmsSelectWidgetOption> result = Lists.newArrayList();

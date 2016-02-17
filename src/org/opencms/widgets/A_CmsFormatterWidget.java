@@ -147,10 +147,14 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
      *
      * @param cms the CMS context
      * @param config the ADE configuration
+     * @param rootPath the root path of the edited file
      *
      * @return the select widget options for the external formatters
      */
-    protected abstract List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config);
+    protected abstract List<CmsSelectWidgetOption> getFormatterOptions(
+        CmsObject cms,
+        CmsADEConfigData config,
+        String rootPath);
 
     /**
      * Gets the values which have already been selected in the edited resource on the VFS.<p>
@@ -192,7 +196,7 @@ public abstract class A_CmsFormatterWidget extends CmsSelectWidget {
             Set<String> added = new HashSet<String>();
             List<CmsSelectWidgetOption> options = Lists.newArrayList();
             options.add(new CmsSelectWidgetOption("", true, getMessage(cms, Messages.GUI_FORMATTER_EMPTY_SELECTION_0)));
-            List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig);
+            List<CmsSelectWidgetOption> formatterOptions = getFormatterOptions(cms, adeConfig, path);
             options.addAll(formatterOptions);
             List<CmsSelectWidgetOption> typeOptions = getTypeOptions(cms, adeConfig);
             options.addAll(typeOptions);

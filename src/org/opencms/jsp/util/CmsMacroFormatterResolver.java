@@ -27,6 +27,7 @@
 
 package org.opencms.jsp.util;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -43,6 +44,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
+import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -330,22 +332,31 @@ public class CmsMacroFormatterResolver {
      */
     private void initMacroContent() throws CmsException {
 
-        m_formatterReferences = new HashMap<String, CmsUUID>();
-        CmsResource macroContent = m_cms.readResource(m_element.getFormatterId());
-        CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, macroContent, m_reqest);
-        m_input = xmlContent.getStringValue(m_cms, N_MACRO, CmsLocaleManager.MASTER_LOCALE);
-        List<I_CmsXmlContentValue> formatters = xmlContent.getValues(N_FORMATTERS, CmsLocaleManager.MASTER_LOCALE);
-        for (I_CmsXmlContentValue formatterValue : formatters) {
-            CmsXmlVfsFileValue file = (CmsXmlVfsFileValue)xmlContent.getValue(
-                formatterValue.getPath() + "/" + N_FORMATTER,
+        I_CmsFormatterBean formatterConfig = OpenCms.getADEManager().getCachedFormatters(
+            m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
+                m_element.getFormatterId());
+        if (formatterConfig instanceof CmsMacroFormatterBean) {
+            m_input = ((CmsMacroFormatterBean)formatterConfig).getMacroInput();
+            m_formatterReferences = ((CmsMacroFormatterBean)formatterConfig).getReferencedFormatters();
+        } else {
+            // only as a fall back, should not be used
+            m_formatterReferences = new HashMap<String, CmsUUID>();
+            CmsResource macroContent = m_cms.readResource(m_element.getFormatterId());
+            CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(m_cms, macroContent, m_reqest);
+            m_input = xmlContent.getStringValue(m_cms, CmsFormatterBeanParser.N_MACRO, CmsLocaleManager.MASTER_LOCALE);
+            List<I_CmsXmlContentValue> formatters = xmlContent.getValues(
+                CmsFormatterBeanParser.N_FORMATTERS,
                 CmsLocaleManager.MASTER_LOCALE);
-            String macroName = xmlContent.getStringValue(
-                m_cms,
-                formatterValue.getPath() + "/" + N_MACRO_NAME,
-                CmsLocaleManager.MASTER_LOCALE);
-            m_formatterReferences.put(macroName, file.getLink(m_cms).getStructureId());
+            for (I_CmsXmlContentValue formatterValue : formatters) {
+                CmsXmlVfsFileValue file = (CmsXmlVfsFileValue)xmlContent.getValue(
+                    formatterValue.getPath() + "/" + CmsFormatterBeanParser.N_FORMATTER,
+                    CmsLocaleManager.MASTER_LOCALE);
+                String macroName = xmlContent.getStringValue(
+                    m_cms,
+                    formatterValue.getPath() + "/" + CmsFormatterBeanParser.N_MACRO_NAME,
+                    CmsLocaleManager.MASTER_LOCALE);
+                m_formatterReferences.put(macroName, file.getLink(m_cms).getStructureId());
+            }
         }
-
     }
-
 }

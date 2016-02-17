@@ -28,6 +28,7 @@
 
 package org.opencms.ade.configuration;
 
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
@@ -39,6 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsWaitHandle;
 
@@ -386,6 +388,19 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         }
     }
 
+    protected boolean isMacroFormatter(int type, String rootPath) {
+
+        boolean result = false;
+        try {
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(type);
+            result = CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER.equals(resType.getTypeName())
+                && CmsResource.getParentFolder(rootPath).endsWith("/.content/.formatters");
+        } catch (Exception e) {
+            LOG.debug(e.getMessage(), e);
+        }
+        return result;
+    }
+
     /**
      * Checks whether the given path/type combination belongs to a module configuration file.<p>
      *
@@ -570,6 +585,19 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             m_updateSet.add(ID_UPDATE_ELEMENT_VIEWS);
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
+        } else if (isMacroFormatter(type, rootPath)) {
+            try {
+                String path = CmsResource.getParentFolder(CmsResource.getParentFolder(rootPath));
+                path = CmsStringUtil.joinPaths(path, ".config");
+                CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
+                if (m_cms.existsResource(path, filter)) {
+
+                    CmsResource config = m_cms.readResource(path, filter);
+                    m_updateSet.add(config.getStructureId());
+                }
+            } catch (Exception e) {
+                LOG.warn(e.getMessage(), e);
+            }
         }
     }
 

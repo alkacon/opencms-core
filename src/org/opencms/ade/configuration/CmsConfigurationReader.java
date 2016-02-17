@@ -28,12 +28,14 @@
 package org.opencms.ade.configuration;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterChangeSet;
+import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
 import org.opencms.ade.detailpage.CmsDetailPageInfo;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -741,6 +743,7 @@ public class CmsConfigurationReader {
     protected CmsFormatterChangeSet parseFormatterChangeSet(I_CmsXmlContentLocation node) {
 
         Set<String> addFormatters = parseAddFormatters(node);
+        addFormatters.addAll(readLocalMacroFormatters(node));
         Set<String> removeFormatters = parseRemoveFormatters(node);
         CmsFormatterChangeSet result = new CmsFormatterChangeSet(removeFormatters, addFormatters);
         return result;
@@ -778,6 +781,26 @@ public class CmsConfigurationReader {
 
         CmsPropertyConfig propConfig = parseProperty(m_cms, field);
         m_propertyConfigs.add(propConfig);
+    }
+
+    private Set<String> readLocalMacroFormatters(I_CmsXmlContentLocation node) {
+
+        Set<String> addFormatters = new HashSet<String>();
+        String path = m_cms.getSitePath(node.getDocument().getFile());
+        path = CmsStringUtil.joinPaths(CmsResource.getParentFolder(path), ".formatters");
+        try {
+            I_CmsResourceType macroType = OpenCms.getResourceManager().getResourceType(
+                CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER);
+
+            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(macroType);
+            List<CmsResource> macroFormatters = m_cms.readResources(path, filter);
+            for (CmsResource formatter : macroFormatters) {
+                addFormatters.add(formatter.getStructureId().toString());
+            }
+        } catch (CmsException e) {
+            LOG.warn(e.getMessage(), e);
+        }
+        return addFormatters;
     }
 
 }

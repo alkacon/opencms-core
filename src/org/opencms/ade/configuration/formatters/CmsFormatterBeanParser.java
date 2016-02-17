@@ -41,7 +41,7 @@ import org.opencms.relations.CmsLink;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.containerpage.CmsFormatterBean;
-import org.opencms.xml.containerpage.I_CmsFormatterBean;
+import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentProperty;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -95,9 +95,6 @@ public class CmsFormatterBeanParser {
         }
     }
 
-    /** The logger instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
-
     /** Content value node name. */
     public static final String N_AUTO_ENABLED = "AutoEnabled";
 
@@ -119,8 +116,11 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_DISPLAY = "Display";
 
-    /** Content value node name. */
-    public static final String N_NESTED_CONTAINERS = "NestedContainers";
+    /** Node name. */
+    public static final String N_FORMATTER = "Formatter";
+
+    /** Node name. */
+    public static final String N_FORMATTERS = "Formatters";
 
     /** Content value node name. */
     public static final String N_HEAD_INCLUDE_CSS = "HeadIncludeCss";
@@ -137,11 +137,20 @@ public class CmsFormatterBeanParser {
     /** Content value node name. */
     public static final String N_JSP = "Jsp";
 
+    /** Node name. */
+    public static final String N_MACRO = "Macro";
+
+    /** Node name. */
+    public static final String N_MACRO_NAME = "MacroName";
+
     /** Content value node name. */
     public static final String N_MATCH = "Match";
 
     /** Content value node name. */
     public static final String N_MAX_WIDTH = "MaxWidth";
+
+    /** Content value node name. */
+    public static final String N_NESTED_CONTAINERS = "NestedContainers";
 
     /** Content value node name. */
     public static final String N_NICE_NAME = "NiceName";
@@ -166,6 +175,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_WIDTH = "Width";
+
+    /** The logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFormatterBeanParser.class);
 
     /** Parsed field. */
     int m_width;
@@ -276,15 +288,43 @@ public class CmsFormatterBeanParser {
         m_rank = rank;
 
         m_resourceType = getStringSet(root, N_TYPE);
+        parseSettings(root);
+        String isDetailStr = getString(root, N_DETAIL, "true");
+        boolean isDetail = Boolean.parseBoolean(isDetailStr);
+
+        String isDisplayStr = getString(root, N_DISPLAY, "false");
+        boolean isDisplay = Boolean.parseBoolean(isDisplayStr);
+
+        parseMatch(root);
         boolean hasNestedContainers;
+        CmsFormatterBean formatterBean;
         if (isMacroFromatter) {
             // setting macro formatter defaults
-            m_autoEnabled = true;
+            m_autoEnabled = false;
             m_formatterResource = content.getFile();
             m_preview = false;
             m_extractContent = true;
             hasNestedContainers = false;
-            readSettingsFromReferencedFormatters(content);
+            String macroInput = getString(root, N_MACRO, "");
+            Map<String, CmsUUID> referencedFormatters = readReferencedFormatters(content);
+            formatterBean = new CmsMacroFormatterBean(
+                m_containerTypes,
+                m_formatterResource.getRootPath(),
+                m_formatterResource.getStructureId(),
+                m_width,
+                m_maxWidth,
+                m_extractContent,
+                location,
+                m_niceName,
+                m_resourceType,
+                rank,
+                id,
+                m_settings,
+                isDetail,
+                isDisplay,
+                macroInput,
+                referencedFormatters,
+                m_cms.getRequestContext().getCurrentProject().isOnlineProject());
         } else {
             String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
             m_autoEnabled = Boolean.parseBoolean(autoEnabled);
@@ -307,39 +347,31 @@ public class CmsFormatterBeanParser {
             String hasNestedContainersString = getString(root, N_NESTED_CONTAINERS, "false");
             hasNestedContainers = Boolean.parseBoolean(hasNestedContainersString);
             parseHeadIncludes(root);
+            formatterBean = new CmsFormatterBean(
+                m_containerTypes,
+                m_formatterResource.getRootPath(),
+                m_formatterResource.getStructureId(),
+                m_width,
+                m_maxWidth,
+                m_preview,
+                m_extractContent,
+                location,
+                m_cssPaths,
+                m_inlineCss.toString(),
+                m_jsPaths,
+                m_inlineJs.toString(),
+                m_niceName,
+                m_resourceType,
+                m_rank,
+                id,
+                m_settings,
+                true,
+                m_autoEnabled,
+                isDetail,
+                isDisplay,
+                hasNestedContainers);
         }
-        parseSettings(root);
-        String isDetailStr = getString(root, N_DETAIL, "true");
-        boolean isDetail = Boolean.parseBoolean(isDetailStr);
 
-        String isDisplayStr = getString(root, N_DISPLAY, "false");
-        boolean isDisplay = Boolean.parseBoolean(isDisplayStr);
-
-        parseMatch(root);
-
-        CmsFormatterBean formatterBean = new CmsFormatterBean(
-            m_containerTypes,
-            m_formatterResource.getRootPath(),
-            m_formatterResource.getStructureId(),
-            m_width,
-            m_maxWidth,
-            m_preview,
-            m_extractContent,
-            location,
-            m_cssPaths,
-            m_inlineCss.toString(),
-            m_jsPaths,
-            m_inlineJs.toString(),
-            m_niceName,
-            m_resourceType,
-            m_rank,
-            id,
-            m_settings,
-            true,
-            m_autoEnabled,
-            isDetail,
-            isDisplay,
-            hasNestedContainers);
         return formatterBean;
     }
 
@@ -476,12 +508,15 @@ public class CmsFormatterBeanParser {
     }
 
     /**
-     * Reads the settings from referenced formatters.<p>
+     * Reads the referenced formatters.<p>
      *
      * @param xmlContent the XML content
+     *
+     * @return the referenced formatters
      */
-    private void readSettingsFromReferencedFormatters(CmsXmlContent xmlContent) {
+    private Map<String, CmsUUID> readReferencedFormatters(CmsXmlContent xmlContent) {
 
+        Map<String, CmsUUID> result = new LinkedHashMap<String, CmsUUID>();
         List<I_CmsXmlContentValue> formatters = xmlContent.getValues(
             CmsMacroFormatterResolver.N_FORMATTERS,
             CmsLocaleManager.MASTER_LOCALE);
@@ -490,12 +525,13 @@ public class CmsFormatterBeanParser {
                 formatterValue.getPath() + "/" + CmsMacroFormatterResolver.N_FORMATTER,
                 CmsLocaleManager.MASTER_LOCALE);
             CmsUUID formatterId = file.getLink(m_cms).getStructureId();
-            I_CmsFormatterBean formatter = OpenCms.getADEManager().getCachedFormatters(
-                m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(formatterId);
-            if (formatter != null) {
-                m_settings.putAll(formatter.getSettings());
-            }
+            String macroName = xmlContent.getStringValue(
+                m_cms,
+                formatterValue.getPath() + "/" + CmsMacroFormatterResolver.N_MACRO_NAME,
+                CmsLocaleManager.MASTER_LOCALE);
+            result.put(macroName, formatterId);
         }
+        return result;
     }
 
 }

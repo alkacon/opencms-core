@@ -30,7 +30,10 @@ package org.opencms.widgets;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.ade.configuration.CmsConfigurationReader;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.containerpage.CmsMacroFormatterBean;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentRootLocation;
@@ -114,16 +117,30 @@ public class CmsAddFormatterWidget extends A_CmsFormatterWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData)
+     * @see org.opencms.widgets.A_CmsFormatterWidget#getFormatterOptions(org.opencms.file.CmsObject, org.opencms.ade.configuration.CmsADEConfigData, java.lang.String)
      */
     @Override
-    protected List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config) {
+    protected List<CmsSelectWidgetOption> getFormatterOptions(CmsObject cms, CmsADEConfigData config, String rootPath) {
 
         Map<CmsUUID, I_CmsFormatterBean> inactiveFormatters = config.getInactiveFormatters();
         List<CmsSelectWidgetOption> result = Lists.newArrayList();
         List<I_CmsFormatterBean> formatters = Lists.newArrayList(inactiveFormatters.values());
         Collections.sort(formatters, new A_CmsFormatterWidget.FormatterSelectComparator());
         for (I_CmsFormatterBean formatterBean : formatters) {
+
+            if (formatterBean instanceof CmsMacroFormatterBean) {
+                boolean systemOrShared = formatterBean.getLocation().startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
+                    || formatterBean.getLocation().startsWith(OpenCms.getSiteManager().getSharedFolder());
+                if (!systemOrShared) {
+                    String formatterSubSite = CmsResource.getParentFolder(
+                        CmsResource.getParentFolder(CmsResource.getParentFolder(formatterBean.getLocation())));
+                    String subSite = CmsResource.getParentFolder(CmsResource.getParentFolder(rootPath));
+                    if (subSite.equals(formatterSubSite) || !subSite.startsWith(formatterSubSite)) {
+                        // we ignore macro formatters that are defined in the current sub site (they are added automatically), or not within a parent site
+                        continue;
+                    }
+                }
+            }
             CmsSelectWidgetOption option = getWidgetOptionForFormatter(cms, formatterBean);
             result.add(option);
         }
