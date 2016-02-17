@@ -291,7 +291,7 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         // create test folder
         String folderName = "/filenameTest/";
         CmsObject cms = getCmsObject();
-        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+        CmsResource folder = cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
         cms.unlockResource(folderName);
         for (String filename : filenames.keySet()) {
             // create master resource
@@ -324,6 +324,30 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
             assertTrue(fieldLocales.size() == filename.getValue().size());
             assertTrue(fieldLocales.containsAll(filename.getValue()));
             assertTrue(filename.getValue().containsAll(fieldLocales));
+        }
+
+        CmsProperty localesAvailable = new CmsProperty("locale-available", "en", null);
+        for (String filename : filenames.keySet()) {
+            String resourceName = folderName + filename;
+            cms.lockResource(resourceName);
+            cms.writePropertyObjects(resourceName, Collections.singletonList(localesAvailable));
+            cms.unlockResource(resourceName);
+        }
+
+        // publish the project and update the search index
+        OpenCms.getPublishManager().publishProject(cms, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        for (String filename : filenames.keySet()) {
+            String absoluteFileName = cms.getRequestContext().addSiteRoot(folderName + filename);
+            SolrQuery squery = new CmsSolrQuery();
+            squery.addFilterQuery("path:\"" + absoluteFileName + "\"");
+            results = index.search(cms, squery);
+            assertEquals(1, results.size());
+            CmsSearchResource res = results.get(0);
+            List<String> fieldLocales = res.getMultivaluedField(CmsSearchField.FIELD_CONTENT_LOCALES);
+            assertTrue(fieldLocales.size() == 1);
+            assertTrue(fieldLocales.contains("en"));
         }
 
         SolrQuery squery = new CmsSolrQuery();

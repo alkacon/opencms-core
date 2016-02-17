@@ -7,6 +7,9 @@
 			<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler" />
 			<localesconfigured>
 				<locale>en</locale>
+				<locale>en_DE</locale>
+				<locale>en_GB</locale>
+				<locale>fr</locale>
 				<locale>de</locale>
 			</localesconfigured>
 			<localesdefault>
