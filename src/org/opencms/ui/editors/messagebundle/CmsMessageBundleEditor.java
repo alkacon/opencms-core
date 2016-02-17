@@ -29,23 +29,23 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsUIServlet;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.FontOpenCms;
+import org.opencms.ui.apps.CmsEditor;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
-import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.BundleType;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.EditMode;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -55,14 +55,12 @@ import org.tepi.filtertable.FilterTable;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Container;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.Page;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -88,19 +86,12 @@ import com.vaadin.ui.UI;
 @Theme("opencms")
 public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener {
 
-    /** The different edit modes. */
-    enum EditMode {
-        /** Editing the messages and the descriptor. */
-        DESCRIBE, /** Only editing messages. */
-        TRANSLATE
-    }
-
     /** Handler to improve the keyboard navigation in the table. */
     @SuppressWarnings("serial")
-    class KbdHandler implements Handler {
+    static class KbdHandler implements Handler {
 
         /** The field factory keeps track of the editable rows and the row/col positions of the TextFields. */
-        private TranslateTableFieldFactory m_fieldFactory;
+        private FilterTable m_table;
 
         /** Tab was pressed. */
         private Action m_tabNext = new ShortcutAction("Tab", ShortcutAction.KeyCode.TAB, null);
@@ -119,10 +110,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         /**
          * Shortcut-Handler to improve the navigation in the table component.
          *
-         * @param fieldFactory FieldFactory used for the table.
+         * @param table the table, the handler is attached to.
          */
-        public KbdHandler(final TranslateTableFieldFactory fieldFactory) {
-            m_fieldFactory = fieldFactory;
+        public KbdHandler(final FilterTable table) {
+            m_table = table;
         }
 
         /**
@@ -138,38 +129,50 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
          */
         public void handleAction(Action action, Object sender, Object target) {
 
+            TranslateTableFieldFactory fieldFactory = (TranslateTableFieldFactory)m_table.getTableFieldFactory();
+
             if (target instanceof TextField) {
                 // Move according to keypress
                 String data = (String)(((TextField)target).getData());
                 String[] dataItems = data.split(":");
                 int colId = Integer.parseInt(dataItems[0]);
                 int rowId = Integer.parseInt(dataItems[1]);
+
+                // NOTE: A collection is returned, but actually it's a linked list.
+                // It's a hack, but actually I don't know how to do better here.
+                List<Integer> visibleItemIds = (List<Integer>)m_table.getVisibleItemIds();
+
                 if ((action == m_curDown) || (action == m_enter)) {
-                    rowId++;
+                    int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
+                    if (currentRow < (visibleItemIds.size() - 1)) {
+                        rowId = visibleItemIds.get(currentRow + 1).intValue();
+                    }
                 } else if (action == m_curUp) {
-                    rowId--;
+                    int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
+                    if (currentRow > 0) {
+                        rowId = visibleItemIds.get(currentRow - 1).intValue();
+                    }
                 } else if (action == m_tabNext) {
-                    if (colId == m_fieldFactory.getEditableColumns()) {
+                    if (colId == fieldFactory.getEditableColumns()) {
                         colId = 1;
-                        rowId++;
+                        int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
+                        rowId = visibleItemIds.get((currentRow + 1) % visibleItemIds.size()).intValue();
                     } else {
                         colId++;
                     }
                 } else if (action == m_tabPrev) {
                     if (colId == 1) {
-                        colId = m_fieldFactory.getEditableColumns();
-                        rowId--;
+                        int currentRow = visibleItemIds.indexOf(Integer.valueOf(rowId));
+                        colId = fieldFactory.getEditableColumns();
+                        rowId = visibleItemIds.get((currentRow - 1) % visibleItemIds.size()).intValue();
                     } else {
                         colId--;
                     }
                 }
 
-                if ((rowId > 0) && (rowId <= m_table.size())) {
-                    TextField newTF = m_fieldFactory.getValueFields().get(Integer.valueOf(colId)).get(
-                        Integer.valueOf(rowId));
-                    if (newTF != null) {
-                        newTF.focus();
-                    }
+                TextField newTF = fieldFactory.getValueFields().get(Integer.valueOf(colId)).get(Integer.valueOf(rowId));
+                if (newTF != null) {
+                    newTF.focus();
                 }
             }
         }
@@ -182,16 +185,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         /** Mapping from column -> row -> TextField. */
         private final Map<Integer, Map<Integer, TextField>> m_valueFields;
         /** The EditMode for the table. */
-        private final EditMode m_mode;
+        private final List<String> m_editableColumns;
+        /** The mapping from the actual position of the row (i.e., the position in the list) to the row's item id. */
 
         /**
          * Default constructor.
-         * @param mode the EditMode of the table.
+         * @param editableColumns the property names of the editable columns of the table.
          */
-        public TranslateTableFieldFactory(EditMode mode) {
+        public TranslateTableFieldFactory(List<String> editableColumns) {
             m_valueFields = new HashMap<Integer, Map<Integer, TextField>>();
-            m_mode = mode;
-
+            m_editableColumns = editableColumns;
         }
 
         /**
@@ -200,14 +203,20 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         @Override
         public Field<?> createField(Container container, Object itemId, Object propertyId, Component uiContext) {
 
-            switch (m_mode) {
-                case TRANSLATE:
-                    return createFieldTranslate(itemId, propertyId);
-                case DESCRIBE:
-                    return createFieldDescribe(itemId, propertyId);
-                default:
-                    throw new IllegalArgumentException();
+            String pid = (String)propertyId;
+            for (int i = 1; i <= m_editableColumns.size(); i++) {
+                if (pid.equals(m_editableColumns.get(i - 1))) {
+                    TextField tf = new TextField();
+                    tf.setWidth("100%");
+                    tf.setData(i + ":" + itemId);
+                    if (!m_valueFields.containsKey(Integer.valueOf(i))) {
+                        m_valueFields.put(Integer.valueOf(i), new HashMap<Integer, TextField>());
+                    }
+                    m_valueFields.get(Integer.valueOf(i)).put((Integer)itemId, tf);
+                    return tf;
+                }
             }
+            return null;
 
         }
 
@@ -217,14 +226,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
          */
         public int getEditableColumns() {
 
-            switch (m_mode) {
-                case DESCRIBE:
-                    return 4;
-                case TRANSLATE:
-                    return 1;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return m_editableColumns.size();
         }
 
         /**
@@ -234,75 +236,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         public Map<Integer, Map<Integer, TextField>> getValueFields() {
 
             return m_valueFields;
-        }
-
-        /**
-         * Create a Field in the EditMode.DESCRIBE mode.
-         * @param itemId row number.
-         * @param propertyId column id.
-         * @return The field to place in the table cell.
-         */
-        private Field<?> createFieldDescribe(Object itemId, Object propertyId) {
-
-            String pid = (String)propertyId;
-            TextField tf = null;
-            int column = 0;
-            if (CmsMessageBundleEditorModel.PROPERTY_ID_KEY.equals(pid)) {
-                column = 1;
-            } else if (CmsMessageBundleEditorModel.PROPERTY_ID_DESC.equals(pid)) {
-                column = 2;
-            } else if (CmsMessageBundleEditorModel.PROPERTY_ID_DEFAULT.equals(pid)) {
-                column = 3;
-            } else if (CmsMessageBundleEditorModel.PROPERTY_ID_TRANSLATION.equals(pid)) {
-                column = 4;
-            }
-            if (column > 0) {
-                tf = new TextField();
-                tf.setWidth("100%");
-                tf.setData(column + ":" + itemId);
-                getColFields(column).put((Integer)itemId, tf);
-            }
-            return tf;
-
-        }
-
-        /**
-         * Create a Field in the EditMode.TRANSLATE mode.
-         * @param itemId row number.
-         * @param propertyId column id.
-         * @return The field to place in the table cell.
-         */
-        private Field<?> createFieldTranslate(Object itemId, Object propertyId) {
-
-            String pid = (String)propertyId;
-            if (pid.equals(CmsMessageBundleEditorModel.PROPERTY_ID_TRANSLATION)) {
-                TextField tf = new TextField();
-                tf.setWidth("100%");
-                tf.setData("1:" + itemId);
-                if (!m_valueFields.containsKey(Integer.valueOf(1))) {
-                    m_valueFields.put(Integer.valueOf(1), new HashMap<Integer, TextField>());
-                }
-                m_valueFields.get(Integer.valueOf(1)).put((Integer)itemId, tf);
-                return tf;
-            }
-
-            return null;
-
-        }
-
-        /**
-         * Gets the fields for the <code>i</code>th editable row.
-         * @param i the index of the editable row.
-         * @return the mapping from row number to textfield in the table cell.
-         */
-        private Map<Integer, TextField> getColFields(int i) {
-
-            Integer in = Integer.valueOf(i);
-            if (!m_valueFields.containsKey(in)) {
-                m_valueFields.put(in, new HashMap<Integer, TextField>());
-            }
-            return m_valueFields.get(in);
-
         }
     }
 
@@ -333,12 +266,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** The options column, optionally shown in the table. */
     ColumnGenerator m_optionsColumn;
 
-    /** The current edit mode. */
-    private EditMode m_editMode;
-
-    /** The edit mode specific Handlers for improved table navigation. */
-    private Map<EditMode, Handler> m_kbdHandlers = new HashMap<EditMode, Handler>();
-
     /** Panel that where the tables short cut handler is attached. */
     private Panel m_navigator;
 
@@ -359,7 +286,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     public boolean beforeViewChange(ViewChangeEvent event) {
 
-        closeAction();
+        unlockAction();
         return true;
     }
 
@@ -386,10 +313,14 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
             m_optionsColumn = generateOptionsColumn();
 
-            m_fieldFactories.put(EditMode.DESCRIBE, new TranslateTableFieldFactory(EditMode.DESCRIBE));
-            m_fieldFactories.put(EditMode.TRANSLATE, new TranslateTableFieldFactory(EditMode.TRANSLATE));
-            m_kbdHandlers.put(EditMode.DESCRIBE, new KbdHandler(m_fieldFactories.get(EditMode.DESCRIBE)));
-            m_kbdHandlers.put(EditMode.TRANSLATE, new KbdHandler(m_fieldFactories.get(EditMode.TRANSLATE)));
+            if (m_model.hasMasterMode()) {
+                m_fieldFactories.put(
+                    EditMode.MASTER,
+                    new TranslateTableFieldFactory(m_model.getEditableColumns(EditMode.MASTER)));
+            }
+            m_fieldFactories.put(
+                EditMode.DEFAULT,
+                new TranslateTableFieldFactory(m_model.getEditableColumns(EditMode.DEFAULT)));
 
             fillToolBar(context);
             fillAppInfo(context);
@@ -397,11 +328,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             Component main = createMainComponent();
             context.setAppContent(main);
 
-            if (m_model.getBundleType().equals(BundleType.DESCRIPTOR)) {
-                setEditMode(EditMode.DESCRIBE);
-            } else {
-                setEditMode(EditMode.TRANSLATE);
-            }
+            adjustFocus();
 
         } catch (IOException | CmsException e) {
             LOG.error(m_messages.key(Messages.ERR_LOADING_RESOURCES_0), e);
@@ -440,7 +367,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     public void onWindowClose() {
 
-        closeAction();
+        unlockAction();
 
     }
 
@@ -449,14 +376,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      */
     void closeAction() {
 
-        // unlock resource
-        try {
-            m_model.unlock();
-        } catch (CmsException e) {
-            LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
-        }
+        unlockAction();
 
-        Page.getCurrent().setLocation(CmsEncoder.decode(m_backLink));
+        CmsEditor.openBackLink(m_backLink);
     }
 
     /**
@@ -474,44 +396,50 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
     /**
      * Set the edit mode.
-     * @param mode the edit mode to set.
+     * @param newMode the edit mode to set.
      */
-    void setEditMode(EditMode mode) {
+    void setEditMode(EditMode newMode) {
 
-        if (!mode.equals(m_editMode)) {
-            m_table.setTableFieldFactory(m_fieldFactories.get(mode));
-            m_navigator.removeActionHandler(m_kbdHandlers.get(m_editMode));
-            m_navigator.addActionHandler(m_kbdHandlers.get(mode));
-            adjustOptionsColumn(mode);
-            Map<Integer, TextField> firstEditableCol = m_fieldFactories.get(mode).getValueFields().get(
-                Integer.valueOf(1));
-            if (null != firstEditableCol) {
-                TextField firstTextField = firstEditableCol.get(Integer.valueOf(1));
-                if (null != firstTextField) {
-                    firstTextField.focus();
-                }
-            }
-            m_editMode = mode;
+        EditMode oldMode = m_model.getEditMode();
+        if (!newMode.equals(oldMode)) {
+            m_model.setEditMode(newMode);
+            m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
+            adjustOptionsColumn(oldMode, newMode);
+            adjustFocus();
         }
     }
 
     /**
-     * Show or hide the options column dependent on the provided edit mode.
-     * @param mode the edit mode for which the options column's visibility should be adjusted.
+     * Sets the focus to the first editable field of the table.
      */
-    private void adjustOptionsColumn(EditMode mode) {
+    private void adjustFocus() {
 
-        switch (mode) {
-            case TRANSLATE:
-                m_table.removeGeneratedColumn(PROPERTY_ID_OPTIONS);
-                break;
-            case DESCRIBE:
-                m_table.addGeneratedColumn(PROPERTY_ID_OPTIONS, m_optionsColumn);
-                break;
-            default:
-                break;
+        Map<Integer, TextField> firstEditableCol = m_fieldFactories.get(m_model.getEditMode()).getValueFields().get(
+            Integer.valueOf(1));
+        if (null != firstEditableCol) {
+            TextField firstTextField = firstEditableCol.get(Integer.valueOf(1));
+            if (null != firstTextField) {
+                firstTextField.focus();
+            }
         }
 
+    }
+
+    /**
+     * Show or hide the options column dependent on the provided edit mode.
+     * @param oldMode the old edit mode
+     * @param newMode the edit mode for which the options column's visibility should be adjusted.
+     */
+    private void adjustOptionsColumn(EditMode oldMode, EditMode newMode) {
+
+        if (m_model.isShowOptionsColumn(oldMode) != m_model.isShowOptionsColumn(newMode)) {
+            if (m_model.isShowOptionsColumn(newMode)) {
+                m_table.addGeneratedColumn(PROPERTY_ID_OPTIONS, m_optionsColumn);
+
+            } else {
+                m_table.removeGeneratedColumn(PROPERTY_ID_OPTIONS);
+            }
+        }
     }
 
     /**
@@ -545,10 +473,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         languages.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         languages.setSpacing(true);
         Label languageLabel = new Label(m_messages.key(Messages.GUI_LANGUAGE_SWITCHER_LABEL_0));
-        //languageLabel.setHeight("100%");
         ComboBox languageSelect = new ComboBox();
         languageSelect.setNullSelectionAllowed(false);
-        //languageSelect.setHeight("100%");
+
         // set Locales
         for (Locale locale : m_model.getLocales()) {
             languageSelect.addItem(locale);
@@ -557,7 +484,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         languageSelect.setValue(m_model.getLocale());
         languageSelect.setNewItemsAllowed(false);
         languageSelect.setTextInputAllowed(false);
-        // languageSelect.addStyleName("relative");
+
         languageSelect.addValueChangeListener(new ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
@@ -590,11 +517,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     private Component createMainComponent() throws IOException, CmsException {
 
         m_table = createTable();
-
         m_navigator = new Panel();
         m_navigator.setSizeFull();
         m_navigator.setContent(m_table);
-        m_navigator.addActionHandler(m_kbdHandlers.get(m_editMode));
+        m_navigator.addActionHandler(new KbdHandler(m_table));
 
         return m_navigator;
     }
@@ -639,14 +565,12 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** Creates the (filled) table UI component.
      * @return the (filled) table
      * @throws IOException thrown if reading the properties file fails.
-     * @throws CmsException thrown if some read action for getting the table content fails.
+     * @throws CmsException thrown if some read action for getting the table contentFilter fails.
      */
     private FilterTable createTable() throws IOException, CmsException {
 
         FilterTable table = new FilterTable();
         table.setSizeFull();
-
-        // table.setTableFieldFactory(m_fieldFactories.get(m_editMode));
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
         table.setColumnHeader(
@@ -671,13 +595,19 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setEditable(true);
 
         table.setSelectable(true);
-
-        table.setImmediate(false);
+        table.setImmediate(true);
         table.setMultiSelect(false);
         table.setSelectable(false);
         table.setColumnCollapsingAllowed(false);
 
         table.setColumnReorderingAllowed(false);
+
+        table.setTableFieldFactory(m_fieldFactories.get(m_model.getEditMode()));
+
+        if (m_model.isShowOptionsColumn(m_model.getEditMode())) {
+            table.addGeneratedColumn(PROPERTY_ID_OPTIONS, m_optionsColumn);
+        }
+        table.setColumnWidth(PROPERTY_ID_OPTIONS, 72);
 
         return table;
     }
@@ -694,30 +624,27 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         views.setSpacing(true);
 
         Label viewLabel = new Label(m_messages.key(Messages.GUI_VIEW_SWITCHER_LABEL_0));
-        viewLabel.setHeight("100%");
-        viewLabel.addStyleName("padding-right");
+
         ComboBox viewSelect = new ComboBox();
-        viewSelect.setNullSelectionAllowed(false);
-        //languageSelect.setHeight("100%");
-        // set Locales
-        for (Locale locale : m_model.getLocales()) {
-            viewSelect.addItem(locale);
-            viewSelect.setItemCaption(locale, locale.getDisplayName(UI.getCurrent().getLocale()));
-        }
-        viewSelect.setValue(m_model.getLocale());
+
+        // add Modes
+        viewSelect.addItem(EditMode.DEFAULT);
+        viewSelect.setItemCaption(EditMode.DEFAULT, m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0));
+        viewSelect.addItem(EditMode.MASTER);
+        viewSelect.setItemCaption(EditMode.MASTER, m_messages.key(Messages.GUI_VIEW_SWITCHER_EDITMODE_MASTER_0));
+
+        // set current mode as selected
+        viewSelect.setValue(m_model.getEditMode());
+
         viewSelect.setNewItemsAllowed(false);
         viewSelect.setTextInputAllowed(false);
-        // languageSelect.addStyleName("relative");
+        viewSelect.setNullSelectionAllowed(false);
+
         viewSelect.addValueChangeListener(new ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
 
-                if (((Boolean)event.getProperty().getValue()).booleanValue()) {
-                    setEditMode(EditMode.DESCRIBE);
-                } else {
-                    setEditMode(EditMode.TRANSLATE);
-                }
-
+                setEditMode((EditMode)event.getProperty().getValue());
             }
         });
         views.addComponent(viewLabel);
@@ -734,10 +661,14 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         HorizontalLayout appInfo = new HorizontalLayout();
         appInfo.setSizeFull();
         appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        Component languages = createLanguageSwitcher();
-        Component viewSwitcher = createViewSwitcher();
-        appInfo.addComponent(languages);
-        appInfo.addComponent(viewSwitcher);
+        if (m_model.getLocales().size() > 1) {
+            Component languages = createLanguageSwitcher();
+            appInfo.addComponent(languages);
+        }
+        if (m_model.hasMasterMode()) {
+            Component viewSwitcher = createViewSwitcher();
+            appInfo.addComponent(viewSwitcher);
+        }
         context.setAppInfo(appInfo);
     }
 
@@ -780,7 +711,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     public void buttonClick(ClickEvent event) {
 
                         m_table.removeItem(itemId);
-
                     }
                 });
 
@@ -794,14 +724,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
                     public void buttonClick(ClickEvent event) {
 
-                        Object newItemId = m_table.addItemAfter(itemId);
-                        Item item = m_table.getItem(newItemId);
-                        Collection<?> ids = item.getItemPropertyIds();
-                        String notification = "";
-                        for (Object id : ids) {
-                            notification += id.toString() + " - ";
-                        }
-                        Notification.show(notification);
+                        m_table.addItemAfter(itemId);
                     }
                 });
                 options.addComponent(delete);
@@ -809,5 +732,19 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 return options;
             }
         };
+    }
+
+    /**
+     * Unlock all edited resources.
+     */
+    private void unlockAction() {
+
+        // unlock resource
+        try {
+            m_model.unlock();
+        } catch (CmsException e) {
+            LOG.error(m_messages.key(Messages.ERR_UNLOCKING_RESOURCES_0), e);
+        }
+
     }
 }

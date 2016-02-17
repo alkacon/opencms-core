@@ -54,8 +54,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERROR_UNSUPPORTED_BUNDLE_TYPE_1 = "ERROR_UNSUPPORTED_BUNDLE_TYPE_1";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LANGUAGE_SWITCHER_LABEL_0 = "GUI_LANGUAGE_SWITCHER_LABEL_0";
-
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_SWITCHER_LABEL_0 = "GUI_VIEW_SWITCHER_LABEL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0 = "GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_VIEW_SWITCHER_EDITMODE_MASTER_0 = "GUI_VIEW_SWITCHER_EDITMODE_MASTER_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
