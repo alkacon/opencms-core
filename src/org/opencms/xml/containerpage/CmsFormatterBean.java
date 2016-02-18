@@ -133,6 +133,9 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     /** The settings. */
     private Map<String, CmsXmlContentProperty> m_settings = new LinkedHashMap<String, CmsXmlContentProperty>();
 
+    /** Indicating if this formatter will always render all nested containers. */
+    private boolean m_strictContainers;
+
     /**
      * Constructor for creating a new formatter configuration with resource structure id.<p>
      *
@@ -158,6 +161,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
      * @param isDetail <code>true</code> if detail formatter
      * @param isDisplay the display flag
      * @param nestedContainers <code>true</code> if this formatter has nested containers
+     * @param strictContainers <code>true</code> if this formatter will always render all nested containers
      */
     public CmsFormatterBean(
         Set<String> containerTypes,
@@ -181,7 +185,8 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         boolean isAutoEnabled,
         boolean isDetail,
         boolean isDisplay,
-        boolean nestedContainers) {
+        boolean nestedContainers,
+        boolean strictContainers) {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
@@ -208,6 +213,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
         m_isDetail = isDetail;
         m_isDisplay = isDisplay;
         m_nestedContainers = nestedContainers;
+        m_strictContainers = strictContainers;
     }
 
     /**
@@ -253,6 +259,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false);
 
@@ -343,6 +350,7 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
             false,
             false,
             true,
+            false,
             false,
             false);
         m_matchAll = true;
@@ -585,6 +593,16 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
     public boolean isSearchContent() {
 
         return m_search;
+    }
+
+    /**
+     * Returns whether this formatter will always render all nested containers.<p>
+     *
+     * @return <code>true</code> if this formatter will always render all nested containers
+     */
+    public boolean isStrictContainers() {
+
+        return m_strictContainers;
     }
 
     /**

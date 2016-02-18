@@ -28,6 +28,7 @@
 package org.opencms.xml.containerpage;
 
 import org.opencms.ade.containerpage.CmsModelGroupHelper;
+import org.opencms.ade.containerpage.shared.CmsFormatterConfig;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -289,7 +290,7 @@ public class CmsXmlContainerPage extends CmsXmlContent {
     public void writeContainerPage(CmsObject cms, CmsContainerPageBean cntPage) throws CmsException {
 
         // keep unused containers
-        CmsContainerPageBean savePage = addUnusedContainers(cms, cntPage);
+        CmsContainerPageBean savePage = cleanupContainersContainers(cms, cntPage);
         savePage = removeEmptyContainers(cntPage);
         // Replace existing locales with master locale
         for (Locale locale : getLocales()) {
@@ -302,69 +303,6 @@ public class CmsXmlContainerPage extends CmsXmlContent {
         Element parent = getLocaleNode(masterLocale);
         saveContainerPage(cms, parent, savePage);
         initDocument(m_document, m_encoding, m_contentDefinition);
-    }
-
-    /**
-     * Merges the containers of the current document that are not used in the given container page with it.<p>
-     *
-     * @param cms the current CMS context
-     * @param cntPage the container page to merge
-     *
-     * @return a new container page with the additional unused containers
-     */
-    protected CmsContainerPageBean addUnusedContainers(CmsObject cms, CmsContainerPageBean cntPage) {
-
-        // get the used containers first
-        Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
-        List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
-        for (String cntName : cntPage.getNames()) {
-            containers.add(currentContainers.get(cntName));
-        }
-
-        // now get the unused containers
-        CmsContainerPageBean currentContainerPage = getContainerPage(cms);
-        if (currentContainerPage != null) {
-            for (String cntName : currentContainerPage.getNames()) {
-                if (!currentContainers.containsKey(cntName)) {
-                    containers.add(currentContainerPage.getContainers().get(cntName));
-                }
-            }
-        }
-
-        // check if any nested containers have lost their parent element
-
-        // first collect all present elements
-        Map<String, CmsContainerElementBean> pageElements = new HashMap<String, CmsContainerElementBean>();
-        for (CmsContainerBean container : containers) {
-            for (CmsContainerElementBean element : container.getElements()) {
-                try {
-                    element.initResource(cms);
-
-                    if (!CmsModelGroupHelper.isModelGroupResource(element.getResource())) {
-                        pageElements.put(element.getInstanceId(), element);
-                    }
-                } catch (CmsException e) {
-                    LOG.warn(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        Iterator<CmsContainerBean> cntIt = containers.iterator();
-        while (cntIt.hasNext()) {
-            CmsContainerBean container = cntIt.next();
-            // check all unused nested containers if their parent element is still part of the page
-            if (!currentContainers.containsKey(container.getName())
-                && container.isNestedContainer()
-                && !pageElements.containsKey(container.getParentInstanceId())) {
-                // remove the sub elements from the page list
-                for (CmsContainerElementBean element : container.getElements()) {
-                    pageElements.remove(element.getInstanceId());
-                }
-                // remove the container
-                cntIt.remove();
-            }
-        }
-
-        return new CmsContainerPageBean(containers);
     }
 
     /**
@@ -383,6 +321,92 @@ public class CmsXmlContainerPage extends CmsXmlContent {
             }
         }
         initDocument();
+    }
+
+    /**
+     * Removes all empty containers and merges the containers of the current document that are not used in the given container page with it.<p>
+     *
+     * @param cms the current CMS context
+     * @param cntPage the container page to merge
+     *
+     * @return a new container page with the additional unused containers
+     */
+    protected CmsContainerPageBean cleanupContainersContainers(CmsObject cms, CmsContainerPageBean cntPage) {
+
+        // get the used containers first
+        Map<String, CmsContainerBean> currentContainers = cntPage.getContainers();
+        List<CmsContainerBean> containers = new ArrayList<CmsContainerBean>();
+        for (String cntName : cntPage.getNames()) {
+            CmsContainerBean container = currentContainers.get(cntName);
+            if (!container.getElements().isEmpty()) {
+                containers.add(container);
+            }
+        }
+
+        // now get the unused containers
+        CmsContainerPageBean currentContainerPage = getContainerPage(cms);
+        if (currentContainerPage != null) {
+            for (String cntName : currentContainerPage.getNames()) {
+                if (!currentContainers.containsKey(cntName)) {
+                    CmsContainerBean container = currentContainerPage.getContainers().get(cntName);
+                    if (!container.getElements().isEmpty()) {
+                        containers.add(container);
+                    }
+                }
+            }
+        }
+
+        // check if any nested containers have lost their parent element
+
+        // first collect all present elements
+        Map<String, CmsContainerElementBean> pageElements = new HashMap<String, CmsContainerElementBean>();
+        Map<String, String> parentContainers = new HashMap<String, String>();
+        for (CmsContainerBean container : containers) {
+            for (CmsContainerElementBean element : container.getElements()) {
+                try {
+                    element.initResource(cms);
+
+                    if (!CmsModelGroupHelper.isModelGroupResource(element.getResource())) {
+                        pageElements.put(element.getInstanceId(), element);
+                        parentContainers.put(element.getInstanceId(), container.getName());
+                    }
+                } catch (CmsException e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        Iterator<CmsContainerBean> cntIt = containers.iterator();
+        while (cntIt.hasNext()) {
+            CmsContainerBean container = cntIt.next();
+            // check all unused nested containers if their parent element is still part of the page
+            if (!currentContainers.containsKey(container.getName()) && container.isNestedContainer()) {
+                boolean remove = !pageElements.containsKey(container.getParentInstanceId())
+                    || container.getElements().isEmpty();
+                if (!remove) {
+                    // check if the parent element formatter is set to strictly render all nested containers
+                    CmsContainerElementBean element = pageElements.get(container.getParentInstanceId());
+                    String settingsKey = CmsFormatterConfig.getSettingsKeyForContainer(
+                        parentContainers.get(element.getInstanceId()));
+                    String formatterId = element.getIndividualSettings().get(settingsKey);
+                    if (CmsUUID.isValidUUID(formatterId)) {
+                        I_CmsFormatterBean formatterBean = OpenCms.getADEManager().getCachedFormatters(
+                            false).getFormatters().get(new CmsUUID(formatterId));
+                        remove = (formatterBean instanceof CmsFormatterBean)
+                            && ((CmsFormatterBean)formatterBean).isStrictContainers();
+                    }
+                }
+                if (remove) {
+                    // remove the sub elements from the page list
+                    for (CmsContainerElementBean element : container.getElements()) {
+                        pageElements.remove(element.getInstanceId());
+                    }
+                    // remove the container
+                    cntIt.remove();
+                }
+            }
+        }
+
+        return new CmsContainerPageBean(containers);
     }
 
     /**

@@ -25,6 +25,7 @@
         	<xsd:element name="Detail" type="OpenCmsBoolean" />
         	<xsd:element name="Display" type="OpenCmsBoolean" minOccurs="0"/>
         	<xsd:element name="NestedContainers" type="OpenCmsBoolean" />
+        	<xsd:element name="StrictContainers" type="OpenCmsBoolean" minOccurs="0" />
         	<xsd:element name="HeadIncludeCss" type="OpenCmsHeadIncludeCss" minOccurs="0" maxOccurs="1"/>
         	<xsd:element name="HeadIncludeJs" type="OpenCmsHeadIncludeJavascript" minOccurs="0" maxOccurs="1" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />

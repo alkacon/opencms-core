@@ -113,6 +113,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             false,
             isDetail,
             isDisplay,
+            false,
             false);
         m_macroInput = macroInput;
         m_referencedFormatters = Collections.unmodifiableMap(referencedFormatters);

@@ -517,7 +517,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isAutoEnabled,
             isDetail,
             false,
-            hasNestedContainers);
+            hasNestedContainers,
+            false);
 
         return result;
 
@@ -630,7 +631,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isAutoEnabled,
             isDetail,
             false,
-            hasNestedContainers);
+            hasNestedContainers,
+            false);
 
         return result;
     }
@@ -690,7 +692,8 @@ public class TestFormatterConfiguration extends OpenCmsTestCase {
             isAutoEnabled,
             isDetail,
             false,
-            hasNestedContainers);
+            hasNestedContainers,
+            false);
         return result;
     }
 
