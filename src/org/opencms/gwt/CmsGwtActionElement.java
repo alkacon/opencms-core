@@ -246,7 +246,7 @@ public class CmsGwtActionElement extends CmsJspActionElement {
      */
     private static String getFontIconCssLink() {
 
-        return CmsWorkplace.getResourceUri("ade/css/opencmsFont.css");
+        return CmsWorkplace.getStaticResourceUri("gwt/css/opencmsFont.css");
     }
 
     /**
