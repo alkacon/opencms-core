@@ -41,6 +41,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.CmsXmlVarLinkValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Comparator;
@@ -91,6 +92,9 @@ public class CmsElementView {
     /** The title key node. */
     public static final String N_TITLE_KEY = "TitleKey";
 
+    /** Special value indicating that no view is selected (used for parent view selection). */
+    public static final String PARENT_NONE = "view://null";
+
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementView.class);
 
@@ -105,6 +109,9 @@ public class CmsElementView {
 
     /** The order. */
     private int m_order;
+
+    /** The parent view id. */
+    private CmsUUID m_parentViewId;
 
     /** The view resource. */
     private CmsResource m_resource;
@@ -210,6 +217,16 @@ public class CmsElementView {
     }
 
     /**
+     * Gets the parent view id (null if there is no parent view).<p>
+     *
+     * @return the parent view id
+     */
+    public CmsUUID getParentViewId() {
+
+        return m_parentViewId;
+    }
+
+    /**
      * Returns the element view resource.<p>
      *
      * @return the element view resource
@@ -285,6 +302,7 @@ public class CmsElementView {
      * @param cms the cms context
      * @throws Exception if parsing the resource fails
      */
+    @SuppressWarnings("null")
     private void init(CmsObject cms) throws Exception {
 
         CmsFile configFile = cms.readFile(m_resource);
@@ -305,5 +323,27 @@ public class CmsElementView {
         } else {
             m_order = DEFAULT_ORDER;
         }
+
+        I_CmsXmlContentValue parentView = content.getValue("Parent", CmsConfigurationReader.DEFAULT_LOCALE);
+        if (parentView != null) {
+            CmsUUID parentViewId = null;
+            try {
+                CmsXmlVarLinkValue elementViewValue = (CmsXmlVarLinkValue)parentView;
+                String stringValue = elementViewValue.getStringValue(cms);
+                if (CmsStringUtil.isEmpty(stringValue)) {
+                    parentViewId = CmsUUID.getNullUUID();
+                } else if (stringValue.equals(PARENT_NONE)) {
+                    parentViewId = null;
+                } else if (stringValue.startsWith(CmsConfigurationReader.VIEW_SCHEME)) {
+                    parentViewId = new CmsUUID(stringValue.substring(CmsConfigurationReader.VIEW_SCHEME.length()));
+                } else {
+                    parentViewId = elementViewValue.getLink(cms).getStructureId();
+                }
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            m_parentViewId = parentViewId;
+        }
+
     }
 }

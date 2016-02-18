@@ -30,12 +30,17 @@ package org.opencms.widgets;
 import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A widget to select an element view.<p>
+ *
+ * If the widget configuration contains the string 'selectparent', the widget will be used for selecting parent views of a view.
+ * This makes sense *only* when the widget is used in the element view content itself.
  */
 public class CmsElementViewSelectWidget extends CmsSelectWidget {
 
@@ -66,7 +71,14 @@ public class CmsElementViewSelectWidget extends CmsSelectWidget {
         I_CmsWidgetParameter param) {
 
         List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
-        for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
+        String myPath = getResourcePath(cms, widgetDialog);
+        Map<CmsUUID, CmsElementView> views = OpenCms.getADEManager().getElementViews(cms);
+
+        for (CmsElementView view : views.values()) {
+
+            if (shouldIgnore(view, views, myPath)) {
+                continue;
+            }
             String value = "";
             if (view.getResource() != null) {
                 value = cms.getSitePath(view.getResource());
@@ -76,6 +88,57 @@ public class CmsElementViewSelectWidget extends CmsSelectWidget {
             }
             options.add(new CmsSelectWidgetOption(value, false, view.getTitle(cms, widgetDialog.getLocale())));
         }
+        if (isSelectParent()) {
+            //
+            options.add(new CmsSelectWidgetOption(CmsElementView.PARENT_NONE, true, "--"));
+        }
         return options;
+    }
+
+    /**
+     * Returns true if the 'selectparent' option is enabled.<p>
+     *
+     * @return true if the 'selectparent' option is enabled
+     */
+    private boolean isSelectParent() {
+
+        return (getConfiguration() != null) && getConfiguration().contains("selectparent");
+    }
+
+    /**
+     * Check if the view should be ignored when constructing select options.<p>
+     *
+     * @param view the view to check
+     * @param views the map of all views
+     * @param myPath the path of the currently edited resource
+     *
+     * @return true if the view should be ignored
+     */
+    private boolean shouldIgnore(CmsElementView view, Map<CmsUUID, CmsElementView> views, String myPath) {
+
+        if (isSelectParent()) {
+            for (CmsElementView otherView : views.values()) {
+                CmsUUID parentViewId = otherView.getParentViewId();
+                if (parentViewId != null) {
+                    CmsElementView parentOfOther = views.get(parentViewId);
+                    if ((parentOfOther != null)
+                        && (parentOfOther.getResource() != null)
+                        && parentOfOther.getResource().getRootPath().equals(myPath)) {
+                        // can't have "grandparents"
+                        return true;
+                    }
+                }
+            }
+            boolean isStandardView = (view.getResource() != null) || view.getId().isNullUUID();
+            if ((view.getParentViewId() != null) || !isStandardView) {
+                // synthetic view, or already a sub-view of something else
+                return true;
+            }
+            if ((view.getResource() != null) && view.getResource().getRootPath().equals(myPath)) {
+                // can't make a view its own parent
+                return true;
+            }
+        }
+        return false;
     }
 }

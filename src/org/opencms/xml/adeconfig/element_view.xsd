@@ -14,12 +14,19 @@
             <xsd:element name="Title" type="OpenCmsString" />
             <xsd:element name="TitleKey" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Order" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Parent" type="OpenCmsVarLink" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
     </xsd:complexType>
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.xml.containerpage.messages"/>
+			<layouts>
+				<layout element="Parent" widget="org.opencms.widgets.CmsElementViewSelectWidget" configuration="selectparent"/>
+			</layouts>
+			<defaults>
+				<default element="Parent" value="view://null" />
+			</defaults>
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>		 

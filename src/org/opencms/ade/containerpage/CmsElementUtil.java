@@ -28,6 +28,7 @@
 package org.opencms.ade.containerpage;
 
 import org.opencms.ade.configuration.CmsADEConfigData;
+import org.opencms.ade.configuration.CmsElementView;
 import org.opencms.ade.configuration.CmsResourceTypeConfig;
 import org.opencms.ade.containerpage.inherited.CmsContainerConfigurationCache;
 import org.opencms.ade.containerpage.inherited.CmsInheritanceReference;
@@ -560,8 +561,14 @@ public class CmsElementUtil {
 
         result.setCreateNew(elementBean.isCreateNew());
         CmsResourceTypeConfig typeConfig = getConfigData().getResourceType(typeName);
+        Map<CmsUUID, CmsElementView> viewMap = OpenCms.getADEManager().getElementViews(m_cms);
         if (typeConfig != null) {
-            result.setElementView(typeConfig.getElementView());
+            CmsUUID elementView = typeConfig.getElementView();
+            CmsElementView viewObject = viewMap.get(elementView);
+            if ((viewObject != null) && (viewObject.getParentViewId() != null)) {
+                elementView = viewObject.getParentViewId();
+            }
+            result.setElementView(elementView);
         }
         if (elementBean.isCreateNew()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(permissionInfo.getNoEditReason())

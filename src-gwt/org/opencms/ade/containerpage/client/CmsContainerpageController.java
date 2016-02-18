@@ -45,6 +45,7 @@ import org.opencms.ade.containerpage.shared.CmsContainerElement;
 import org.opencms.ade.containerpage.shared.CmsContainerElementData;
 import org.opencms.ade.containerpage.shared.CmsContainerPageRpcContext;
 import org.opencms.ade.containerpage.shared.CmsCreateElementData;
+import org.opencms.ade.containerpage.shared.CmsElementViewInfo;
 import org.opencms.ade.containerpage.shared.CmsGroupContainer;
 import org.opencms.ade.containerpage.shared.CmsGroupContainerSaveResult;
 import org.opencms.ade.containerpage.shared.CmsInheritanceContainer;
@@ -750,7 +751,7 @@ public final class CmsContainerpageController {
     private Timer m_editButtonsPositionTimer;
 
     /** The current element view. */
-    private CmsUUID m_elementView;
+    private CmsElementViewInfo m_elementView;
 
     /** The currently editing group-container editor. */
     private A_CmsGroupEditor m_groupEditor;
@@ -1519,7 +1520,7 @@ public final class CmsContainerpageController {
      *
      * @return the current element view
      */
-    public CmsUUID getElementView() {
+    public CmsElementViewInfo getElementView() {
 
         return m_elementView;
     }
@@ -1719,6 +1720,23 @@ public final class CmsContainerpageController {
     public CmsSmallElementsHandler getSmallElementsHandler() {
 
         return m_smallElementsHandler;
+    }
+
+    /**
+     * Gets the view with the given id.<p>
+     *
+     * @param value the view id as a string
+     *
+     * @return the view with the given id, or null if no such view is available
+     */
+    public CmsElementViewInfo getView(String value) {
+
+        for (CmsElementViewInfo info : m_data.getElementViews()) {
+            if (info.getElementViewId().toString().equals(value)) {
+                return info;
+            }
+        }
+        return null;
     }
 
     /**
@@ -2039,7 +2057,7 @@ public final class CmsContainerpageController {
         return !getData().isUseClassicEditor()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())
             && hasActiveSelection()
-            && m_elementView.equals(elemView)
+            && matchRootView(elemView)
             && isContainerEditable(dragParent)
             && (getData().isModelGroup() || !element.hasModelGroupParent())
             && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
@@ -2193,6 +2211,18 @@ public final class CmsContainerpageController {
             onLockFail(lockError);
             return false;
         }
+    }
+
+    /**
+     * Returns true if the view with the given view id and the current view have the same root view.<p>
+     *
+     * @param viewIdFromElement the id of a view
+     * @return true if the root view of the id matches the root view of the current view
+     */
+    public boolean matchRootView(CmsUUID viewIdFromElement) {
+
+        CmsElementViewInfo viewFromElement = getView(viewIdFromElement.toString());
+        return viewFromElement.getRootViewId().equals(m_elementView.getRootViewId());
     }
 
     /**
@@ -2500,7 +2530,7 @@ public final class CmsContainerpageController {
 
         return element.hasViewPermission()
             && (!element.hasModelGroupParent() || getData().isModelGroup())
-            && (m_elementView.equals(element.getElementView()) || isGroupcontainerEditing())
+            && (matchRootView(element.getElementView()) || isGroupcontainerEditing())
             && isContainerEditable(dragParent);
     }
 
@@ -2881,18 +2911,20 @@ public final class CmsContainerpageController {
     /**
      * Sets the element view.<p>
      *
-     * @param elementView the element view
+     * @param viewInfo the element view
      * @param nextAction the action to execute after setting the view
      */
-    public void setElementView(final CmsUUID elementView, Runnable nextAction) {
+    public void setElementView(CmsElementViewInfo viewInfo, Runnable nextAction) {
 
-        m_elementView = elementView;
+        m_elementView = viewInfo;
+
         CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
+            @SuppressWarnings("synthetic-access")
             @Override
             public void execute() {
 
-                getContainerpageService().setElementView(elementView, this);
+                getContainerpageService().setElementView(m_elementView.getElementViewId(), this);
             }
 
             @Override
@@ -3479,7 +3511,7 @@ public final class CmsContainerpageController {
 
                 getContainerpageService().getGalleryDataForPage(
                     getEditableContainers(),
-                    getElementView(),
+                    getElementView().getElementViewId(),
                     CmsCoreProvider.get().getUri(),
                     getData().getLocale(),
                     this);

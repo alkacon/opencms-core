@@ -294,7 +294,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
         if (elementViews.size() <= 1) {
             return null;
         }
-        CmsUUID currentView = m_controller.getElementView();
+        CmsUUID currentView = m_controller.getElementView().getElementViewId();
         Map<String, String> options = Maps.newHashMap();
         for (CmsElementViewInfo view : elementViews) {
             options.put("" + view.getElementViewId(), view.getTitle());
@@ -306,7 +306,8 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             public void onValueChange(ValueChangeEvent<String> event) {
 
                 m_editor.getAdd().setActive(false);
-                setElementView(new CmsUUID(event.getValue()), new Runnable() {
+                CmsElementViewInfo newValue = m_controller.getView(event.getValue());
+                setElementView(newValue, new Runnable() {
 
                     public void run() {
 
@@ -1082,11 +1083,13 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             parentEntry.setBean(parentBean);
             List<I_CmsContextMenuEntry> viewEntries = new ArrayList<I_CmsContextMenuEntry>();
             for (CmsElementViewInfo viewInfo : elementViews) {
-                viewEntries.add(
-                    createMenuEntryForElementView(
-                        viewInfo,
-                        m_controller.getElementView().equals(viewInfo.getElementViewId()),
-                        this));
+                if (viewInfo.isRoot()) {
+                    viewEntries.add(
+                        createMenuEntryForElementView(
+                            viewInfo,
+                            m_controller.matchRootView(viewInfo.getElementViewId()),
+                            this));
+                }
             }
 
             parentEntry.setSubMenu(viewEntries);
@@ -1379,7 +1382,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      * @param elementView the element view
      * @param nextAction the action to execute after setting the view
      */
-    protected void setElementView(CmsUUID elementView, Runnable nextAction) {
+    protected void setElementView(CmsElementViewInfo elementView, Runnable nextAction) {
 
         m_controller.setElementView(elementView, nextAction);
     }
@@ -1405,7 +1408,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
                 I_CmsContextMenuHandler innerHandler,
                 CmsContextMenuEntryBean bean) {
 
-                setElementView(elementView.getElementViewId(), null);
+                setElementView(elementView, null);
             }
 
             public A_CmsContextMenuItem getItemWidget(

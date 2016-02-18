@@ -100,10 +100,16 @@ public final class CmsCntPageData implements IsSerializable {
     private boolean m_editSmallElementsInitially;
 
     /** The current element view. */
-    private CmsUUID m_elementView;
+    private CmsElementViewInfo m_elementView;
 
     /** The element views. */
     private List<CmsElementViewInfo> m_elementViews;
+
+    /** True if the page is used for model groups. */
+    private boolean m_isModelGroup;
+
+    /** True if the container page is a model page. */
+    private boolean m_isModelPage;
 
     /** The date at which the container page was last modified. */
     private long m_lastModified;
@@ -120,14 +126,11 @@ public final class CmsCntPageData implements IsSerializable {
     /** The original request parameters. */
     private String m_requestParams;
 
-    /** True if the container page is a model page. */
-    private boolean m_isModelPage;
-
-    /** True if the page is used for model groups. */
-    private boolean m_isModelGroup;
-
     /** The element reuse mode. */
     private ElementReuseMode m_reuseMode;
+
+    /** The RPC context. */
+    private CmsContainerPageRpcContext m_rpcContext;
 
     /** Flag indicating if the current user has the sitemap manager role. */
     private boolean m_sitemapManager;
@@ -140,9 +143,6 @@ public final class CmsCntPageData implements IsSerializable {
 
     /** Flag indicating to use the classic XmlContent editor. */
     private boolean m_useClassicEditor;
-
-    /** The RPC context. */
-    private CmsContainerPageRpcContext m_rpcContext;
 
     /**
      * Constructor.<p>
@@ -179,7 +179,7 @@ public final class CmsCntPageData implements IsSerializable {
         CmsTemplateContextInfo contextInfo,
         boolean showSmallElementsInitially,
         List<CmsElementViewInfo> elementViews,
-        CmsUUID elementView,
+        CmsElementViewInfo elementView,
         ElementReuseMode reuseMode,
         boolean isModelPage,
         boolean isModelGroup) {
@@ -276,7 +276,7 @@ public final class CmsCntPageData implements IsSerializable {
      *
      * @return the current element view
      */
-    public CmsUUID getElementView() {
+    public CmsElementViewInfo getElementView() {
 
         return m_elementView;
     }

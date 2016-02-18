@@ -39,6 +39,9 @@ public class CmsElementViewInfo implements IsSerializable {
     /** The element view id. */
     private CmsUUID m_elementViewId;
 
+    /** The parent view (may be null). */
+    private CmsElementViewInfo m_parent;
+
     /** The title. */
     private String m_title;
 
@@ -72,6 +75,22 @@ public class CmsElementViewInfo implements IsSerializable {
     }
 
     /**
+     * Gets the id of the root view of this view.<p>
+     *
+     * The root view is either this view itself if it doesn't have a parent view, or the parent view if it does.
+     *
+     * @return the root view
+     */
+    public CmsUUID getRootViewId() {
+
+        if (m_parent != null) {
+            return m_parent.getElementViewId();
+        } else {
+            return getElementViewId();
+        }
+    }
+
+    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -79,6 +98,26 @@ public class CmsElementViewInfo implements IsSerializable {
     public String getTitle() {
 
         return m_title;
+    }
+
+    /**
+     * Returns true if this is a root view.<p>
+     *
+     * @return true if this is a root view
+     */
+    public boolean isRoot() {
+
+        return m_parent == null;
+    }
+
+    /**
+     * Sets the parent view bean.<p>
+     *
+     * @param parent the parent view bean
+     */
+    public void setParent(CmsElementViewInfo parent) {
+
+        m_parent = parent;
     }
 
 }

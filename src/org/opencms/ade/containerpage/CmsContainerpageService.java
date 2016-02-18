@@ -155,17 +155,22 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      */
     private class InitialElementViewProvider {
 
-        /** Map of available views. */
-        private Map<CmsUUID, CmsElementViewInfo> m_viewMap;
-
         /** Start view id. */
         private CmsUUID m_defaultView;
+
+        /** Map of available views. */
+        private Map<CmsUUID, CmsElementViewInfo> m_viewMap;
 
         /**
          * Empty default constructor.<p>
          */
         public InitialElementViewProvider() {
             // do nothing
+        }
+
+        public CmsElementViewInfo getDefaultView() {
+
+            return getViewMap().get(getDefaultViewId());
         }
 
         /**
@@ -209,13 +214,30 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             }
 
             Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-            for (CmsElementView view : OpenCms.getADEManager().getElementViews(cms).values()) {
+            Map<CmsUUID, CmsElementView> realViewMap = OpenCms.getADEManager().getElementViews(cms);
+
+            Set<CmsUUID> parentIds = Sets.newHashSet();
+            for (CmsElementView view : realViewMap.values()) {
+                if (view.getParentViewId() != null) {
+                    parentIds.add(view.getParentViewId());
+                }
                 // add only element view that are used within the type configuration and the user has sufficient permissions for
                 if (usedIds.contains(view.getId()) && view.hasPermission(cms, checkRes) && !view.isOther()) {
                     result.put(view.getId(), new CmsElementViewInfo(view.getTitle(cms, wpLocale), view.getId()));
                 }
+
             }
             m_viewMap = result;
+            for (Map.Entry<CmsUUID, CmsElementViewInfo> viewEntry : m_viewMap.entrySet()) {
+                CmsElementView realView = realViewMap.get(viewEntry.getKey());
+                CmsUUID parentViewId = realView.getParentViewId();
+                if ((parentViewId != null) && !parentIds.contains(viewEntry.getKey())) {
+                    CmsElementViewInfo parentBean = m_viewMap.get(parentViewId);
+                    if (parentBean != null) {
+                        viewEntry.getValue().setParent(parentBean);
+                    }
+                }
+            }
             if (m_viewMap.containsKey(defaultValue)) {
                 m_defaultView = defaultValue;
             } else if (m_viewMap.containsKey(CmsElementView.DEFAULT_ELEMENT_VIEW.getId())) {
@@ -975,7 +997,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 info,
                 isEditSmallElements(request, cms),
                 Lists.newArrayList(viewHelper.getViewMap().values()),
-                viewHelper.getDefaultViewId(),
+                viewHelper.getDefaultView(),
                 reuseMode,
                 isModelPage,
                 isEditingModelGroups(cms, containerPage));
