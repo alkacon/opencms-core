@@ -245,7 +245,10 @@ public class CmsJspTagFormatter extends CmsJspScopedVarBodyTagSuport {
             CmsJspContentAccessBean bean;
             if ((m_element.isInMemoryOnly() || m_element.isTemporaryContent())
                 && (m_element.getResource() instanceof CmsFile)) {
-                I_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(m_cms, (CmsFile)m_element.getResource());
+                I_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(
+                    m_cms,
+                    m_element.getResource(),
+                    pageContext.getRequest());
                 bean = new CmsJspContentAccessBean(m_cms, m_locale, xmlContent);
             } else {
                 bean = new CmsJspContentAccessBean(m_cms, m_locale, m_element.getResource());

@@ -217,7 +217,7 @@ public final class CmsXmlContentFactory {
                 filename,
                 CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
                 true).getValue();
-        } catch (CmsException e) {
+        } catch (@SuppressWarnings("unused") CmsException e) {
             // encoding will be null
         }
         if (encoding == null) {
@@ -244,7 +244,7 @@ public final class CmsXmlContentFactory {
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException(
-                        Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename));
+                        Messages.get().container(Messages.ERR_XMLCONTENT_INVALID_ENC_1, filename), e);
                 }
             }
         } else {
@@ -289,7 +289,8 @@ public final class CmsXmlContentFactory {
 
         if (content == null) {
             // unmarshal XML structure from the file content
-            content = unmarshal(cms, cms.readFile(resource));
+            CmsFile file = resource instanceof CmsFile ? (CmsFile)resource : cms.readFile(resource);
+            content = unmarshal(cms, file);
             // store the content as request attribute for future read requests
             req.setAttribute(rootPath, content);
         }
