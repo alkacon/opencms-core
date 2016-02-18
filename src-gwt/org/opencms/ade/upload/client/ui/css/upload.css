@@ -1,4 +1,4 @@
-@external html-face;
+@external opencms-font-icon, html-face;
 
 .popup {}
 
@@ -7,6 +7,7 @@
     border: 1px solid value("constants.css.borderColor");
     padding: 0 2px;
     position: relative;
+    clear: both;
 }
 
 .dragAndDropMessage{
@@ -22,6 +23,13 @@
 
 .dialogInfo {
 	padding-bottom: 2px;
+}
+
+
+.dialogInfo .opencms-font-icon{
+	margin: 3px 0 5px 3px;
+	display: block;
+	float: left;
 }
 
 .summary {

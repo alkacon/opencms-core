@@ -30,6 +30,7 @@ package org.opencms.gwt.client.ui;
 import org.opencms.gwt.CmsRpcException;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsLog;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsClientStringUtil;
 import org.opencms.gwt.client.util.CmsDomUtil;
@@ -285,8 +286,7 @@ public class CmsErrorDialog extends CmsPopup {
     private CmsMessageWidget createMessageWidget(String message) {
 
         CmsMessageWidget widget = new CmsMessageWidget();
-        widget.setIconClass(
-            I_CmsLayoutBundle.INSTANCE.errorDialogCss().errorIcon() + " opencms-icon opencms-icon-error");
+        widget.setIcon(FontOpenCms.ERROR, I_CmsConstantsBundle.INSTANCE.css().colorError());
         widget.setMessageHtml(message);
         return widget;
     }

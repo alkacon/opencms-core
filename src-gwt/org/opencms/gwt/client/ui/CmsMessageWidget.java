@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -52,14 +52,11 @@ public class CmsMessageWidget extends Widget {
 
     /** The element displaying the icon. */
     @UiField
-    protected Element m_icon;
+    protected Element m_iconCell;
 
     /** The element holding the message. */
     @UiField
     protected Element m_message;
-
-    /** The current icon CSS class. */
-    private String m_iconClass;
 
     /**
      * Constructor.<p>
@@ -67,21 +64,22 @@ public class CmsMessageWidget extends Widget {
     public CmsMessageWidget() {
 
         setElement(uiBinder.createAndBindUi(this));
-        setIconClass(I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningBigIcon());
+        setIcon(FontOpenCms.WARNING, I_CmsConstantsBundle.INSTANCE.css().colorWarning());
     }
 
     /**
      * Sets the icon CSS class.<p>
      *
-     * @param iconClass the icon CSS class
+     * @param icon the icon
+     * @param color the icon color
      */
-    public void setIconClass(String iconClass) {
+    public void setIcon(FontOpenCms icon, String color) {
 
-        if (m_iconClass != null) {
-            m_icon.removeClassName(m_iconClass);
+        if (icon != null) {
+            m_iconCell.setInnerHTML(icon.getHtml(32, color));
+        } else {
+            m_iconCell.setInnerHTML("");
         }
-        m_iconClass = iconClass;
-        m_icon.addClassName(m_iconClass);
     }
 
     /**

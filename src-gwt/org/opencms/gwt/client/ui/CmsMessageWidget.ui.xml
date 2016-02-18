@@ -32,7 +32,7 @@
 	<div class="{style.outercontainer} {resources.generalCss.cornerAll}" >
 	<table class="{style.main} ">
 		<colgroup><col class="{style.iconCol}" /><col /></colgroup>
-		<tr><td class="{style.iconCol}"><span ui:field="m_icon"  /></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
+		<tr><td class="{style.iconCol}" ui:field="m_iconCell"></td><td><div ui:field="m_message" class="{style.message}"></div></td></tr>
 	</table>
 	</div>
 </ui:UiBinder>

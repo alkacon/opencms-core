@@ -39,8 +39,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsContextMenuHandler;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
 import org.opencms.gwt.client.ui.input.CmsCheckBox;
 import org.opencms.gwt.client.ui.input.CmsSelectBox;
@@ -363,7 +365,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
                 publishOptions.getParameters().get(CmsPublishOptions.PARAM_ENABLE_INCLUDE_CONTENTS));
             addContent = Boolean.parseBoolean(
                 publishOptions.getParameters().get(CmsPublishOptions.PARAM_INCLUDE_CONTENTS));
-        } catch (Exception e) {
+        } catch (@SuppressWarnings("unused") Exception e) {
             // ignore; enableAddContents remains the default value
         }
         m_checkboxAddContents.setVisible(enableAddContents);
@@ -1146,9 +1148,7 @@ implements I_CmsPublishSelectionChangeHandler, I_CmsPublishItemStatusUpdateHandl
         m_problemsPanel.clear();
         if (numProblems > 0) {
             HorizontalPanel errorBox = new HorizontalPanel();
-            Label warnIcon = new Label();
-            warnIcon.addStyleName(
-                org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.gwtImages().style().warningIcon());
+            Widget warnIcon = FontOpenCms.WARNING.getWidget(20, I_CmsConstantsBundle.INSTANCE.css().colorWarning());
             String message = Messages.get().key(Messages.GUI_PUBLISH_DIALOG_PROBLEM_1, "" + numProblems);
             errorBox.add(warnIcon);
             errorBox.add(new Label(message));

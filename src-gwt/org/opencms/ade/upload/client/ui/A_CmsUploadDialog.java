@@ -43,6 +43,7 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
+import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.I_CmsButton;
 import org.opencms.gwt.client.ui.I_CmsListItem;
 import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
@@ -1270,9 +1271,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             buffer.append(msg);
             buffer.append("</p>");
         } else {
-            buffer.append("<div class=\"");
-            buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().warningIcon());
-            buffer.append("\"></div>");
+            buffer.append(FontOpenCms.WARNING.getHtml(32, I_CmsConstantsBundle.INSTANCE.css().colorWarning()));
             buffer.append("<p class=\"");
             buffer.append(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.uploadButton().warningMessage());
             buffer.append("\">");

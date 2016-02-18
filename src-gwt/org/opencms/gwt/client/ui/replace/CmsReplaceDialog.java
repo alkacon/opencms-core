@@ -35,8 +35,9 @@ import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.FontOpenCms;
 import org.opencms.gwt.client.ui.I_CmsButton;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInfo;
 import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
@@ -66,9 +67,9 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The replace resource dialog.<p>
@@ -498,7 +499,9 @@ public class CmsReplaceDialog extends CmsPopup implements I_CmsUploadDialog {
         if ((m_fileInput != null) && (m_replaceInfo != null) && (m_fileWidget != null)) {
             CmsFileInfo file = m_fileInput.getFiles()[0];
             if (!m_replaceInfo.getSitepath().endsWith(file.getFileSuffix())) {
-                Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
+                Widget warningImage = FontOpenCms.WARNING.getWidget(
+                    20,
+                    I_CmsConstantsBundle.INSTANCE.css().colorWarning());
                 warningImage.setTitle(Messages.get().key(Messages.GUI_REPLACE_WRONG_FILE_EXTENSION_0));
                 warningImage.addStyleName(
                     org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());

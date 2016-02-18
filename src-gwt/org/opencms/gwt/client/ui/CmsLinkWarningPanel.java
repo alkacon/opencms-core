@@ -28,7 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.tree.CmsTreeItem;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
@@ -42,7 +42,6 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -141,7 +140,7 @@ public class CmsLinkWarningPanel extends Composite {
         CmsTreeItem item = new CmsTreeItem(false, itemWidget);
         for (CmsBrokenLinkBean child : brokenLinkBean.getChildren()) {
             CmsListItemWidget childItemWidget = createListItemWidget(child);
-            Image warningImage = new Image(I_CmsImageBundle.INSTANCE.warningSmallImage());
+            Widget warningImage = FontOpenCms.WARNING.getWidget(20, I_CmsConstantsBundle.INSTANCE.css().colorWarning());
             warningImage.addStyleName(I_CmsLayoutBundle.INSTANCE.listItemWidgetCss().permaVisible());
             childItemWidget.addButton(warningImage);
             childItemWidget.addTitleStyleName(I_CmsLayoutBundle.INSTANCE.linkWarningCss().deletedEntryLabel());

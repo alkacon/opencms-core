@@ -23,10 +23,6 @@
 	
 }
 
-@sprite .warning {
-	gwt-image: "images.warningSmallImage";
-}
-
 @sprite .checkmark {
 	gwt-image: "bigIcons.checkmark"
 }

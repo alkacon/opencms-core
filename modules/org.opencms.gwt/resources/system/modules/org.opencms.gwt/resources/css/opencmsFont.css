@@ -29,7 +29,7 @@
 	font-style: normal;
 }
 
-.opencms-icon[class^="opencms-icon-"], .opencms-icon[class*=" opencms-icon-"], .opencms-icon [class^="opencms-icon-"], .opencms-icon [class*=" opencms-icon-"] {
+.opencms-font-icon, .opencms-icon[class^="opencms-icon-"], .opencms-icon[class*=" opencms-icon-"], .opencms-icon [class^="opencms-icon-"], .opencms-icon [class*=" opencms-icon-"] {
 	font-family: opencms-font !important;
 	speak: none;
 	font-style: normal;

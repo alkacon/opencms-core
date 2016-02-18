@@ -43,13 +43,6 @@ div.uploadButton input.uploadFileInput {
 	color: value("constants.css.textColorImportant");
 }
 
-
-@sprite .warningIcon{
-	gwt-image: "gwtImages.warningBigImage";
-	margin: 0px 0px 0px 3px;
-	display: block;
-	float: left;
-}
 .warningMessage{
 	line-height: 16px;
 	margin: 0px 0px 0px 45px;

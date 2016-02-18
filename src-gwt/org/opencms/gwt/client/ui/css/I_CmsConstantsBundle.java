@@ -263,6 +263,20 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String colorError();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
+        String colorWarning();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String dateboxAnotherMonthBg();
 
         /**

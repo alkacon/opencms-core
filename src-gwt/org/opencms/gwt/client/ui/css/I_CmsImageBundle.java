@@ -269,18 +269,6 @@ public interface I_CmsImageBundle extends ClientBundle {
         * @return the CSS class name
         */
         String uploadSmallIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String warningBigIcon();
-
-        /** Access method.<p>
-         *
-         * @return the CSS class name
-         */
-        String warningIcon();
     }
 
     /** The bundle instance. */
@@ -396,14 +384,6 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/editCursor.ico")
     DataResource editCursorIco();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/errorImage.png")
-    ImageResource errorImage();
 
     /**
      * Image resource accessor.<p>
@@ -623,21 +603,4 @@ public interface I_CmsImageBundle extends ClientBundle {
      */
     @Source("images/userImage.png")
     ImageResource userImage();
-
-    /**
-     * Image resource accessor.<p>
-     *
-     * @return an image resource
-     */
-    @Source("images/warningBigImage.png")
-    @ImageOptions(repeatStyle = RepeatStyle.Both)
-    ImageResource warningBigImage();
-
-    /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("images/warningSmallImage.png")
-    ImageResource warningSmallImage();
 }

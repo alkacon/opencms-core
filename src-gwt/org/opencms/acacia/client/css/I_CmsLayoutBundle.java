@@ -478,14 +478,6 @@ public interface I_CmsLayoutBundle extends org.opencms.gwt.client.ui.css.I_CmsLa
     ImageResource bottomLeftCornerError();
 
     /**
-     * Access method.<p>
-     *
-     * @return the image resource
-     */
-    @Source("errorImageSmall.png")
-    ImageResource errorImageSmall();
-
-    /**
      * Returns the style CSS.<p>
      *
      * @return the style CSS

@@ -291,17 +291,6 @@
 	cursor: pointer;
 }
 
-@sprite div.warningIcon, span.warningIcon{
-	gwt-image: "warningSmallImage";
-}
-
-@sprite table tr td.warningBigIcon, div.warningBigIcon, span.warningBigIcon{
-	gwt-image: "warningBigImage";
-	display: inline-block;
-	width: 32px;
-	height: 32px;
-}
-
 @sprite div.directoryIcon, span.directoryIcon{
 	gwt-image: "directorySmallImage";
 }

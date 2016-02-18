@@ -28,6 +28,8 @@
 package org.opencms.gwt.client.ui.replace;
 
 import org.opencms.gwt.client.ui.CmsLoadingAnimation;
+import org.opencms.gwt.client.ui.FontOpenCms;
+import org.opencms.gwt.client.ui.css.I_CmsConstantsBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 
 import com.google.gwt.core.client.GWT;
@@ -93,9 +95,7 @@ public class CmsReplaceContentWidget extends Composite {
             buffer.append(msg);
             buffer.append("</p>");
         } else {
-            buffer.append("<div class=\"");
-            buffer.append(I_CmsLayoutBundle.INSTANCE.uploadButton().warningIcon());
-            buffer.append("\"></div>");
+            buffer.append(FontOpenCms.WARNING.getHtml(32, I_CmsConstantsBundle.INSTANCE.css().colorWarning()));
             buffer.append("<p class=\"");
             buffer.append(I_CmsLayoutBundle.INSTANCE.uploadButton().warningMessage());
             buffer.append("\">");

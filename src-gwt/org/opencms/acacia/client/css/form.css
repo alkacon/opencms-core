@@ -406,13 +406,25 @@ div.helpBubble{
 	background: #FFFFCC;
 }
 
-@sprite .hasError .helpMessage .helpMessageIcon{
-	gwt-image: "errorImageSmall";
+.hasError .helpMessage .helpMessageIcon{
+	font-family: opencms-font;
 	height: 20px;
 	width: 20px;
 	margin: 0px 3px 3px 0px;
 	display: inline-block;
 	vertical-align: middle;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.hasError .helpMessage .helpMessageIcon:before{
+	content: "\ed6b";
 }
 .helpMessage{
 	display:none;
