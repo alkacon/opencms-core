@@ -41,8 +41,10 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * A context menu command for editing an XML content. <p>
@@ -54,6 +56,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
 
     /** A flag which indicates whether the window should be reloaded after editing. */
     protected boolean m_reload;
+
+    /** A flag indicating if the editor should open in the same window, not using any overlays and iFrames. */
+    private boolean m_useSelf;
 
     /**
      * Hidden utility class constructor.<p>
@@ -144,30 +149,36 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
                 // nothing to do
             }
         };
+        if (m_useSelf) {
+            FormElement form = CmsContentEditorDialog.generateForm(editData, false, "_self", null);
+            RootPanel.getBodyElement().appendChild(form);
+            form.submit();
+        } else {
 
-        I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
+            I_CmsContentEditorHandler handler = new I_CmsContentEditorHandler() {
 
-            public void onClose(String sitePath, CmsUUID id, boolean isNew) {
+                public void onClose(String sitePath, CmsUUID id, boolean isNew) {
 
-                if (!m_reload) {
-                    return;
-                }
-
-                // defer the window.location.reload until after the editor window has closed
-                // so we don't get another confirmation dialog
-                Timer timer = new Timer() {
-
-                    @Override
-                    public void run() {
-
-                        String url = Window.Location.getHref();
-                        m_menuHandler.leavePage(url);
+                    if (!m_reload) {
+                        return;
                     }
-                };
-                timer.schedule(10);
-            }
-        };
-        CmsContentEditorDialog.get().openEditDialog(editData, false, null, new DialogOptions(), handler);
+
+                    // defer the window.location.reload until after the editor window has closed
+                    // so we don't get another confirmation dialog
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+
+                            String url = Window.Location.getHref();
+                            m_menuHandler.leavePage(url);
+                        }
+                    };
+                    timer.schedule(10);
+                }
+            };
+            CmsContentEditorDialog.get().openEditDialog(editData, false, null, new DialogOptions(), handler);
+        }
     }
 
     /**
@@ -186,6 +197,9 @@ public final class CmsEditFile implements I_CmsHasContextMenuCommand, I_CmsConte
         }
         String reloadStr = params.get(CmsMenuCommandParameters.PARAM_RELOAD);
         m_reload = Boolean.parseBoolean(reloadStr);
+        String useSelfStr = params.get(CmsMenuCommandParameters.PARAM_USE_SELF);
+        m_useSelf = Boolean.parseBoolean(useSelfStr);
+
         if (handler instanceof I_CmsToolbarHandler) {
             ((I_CmsToolbarHandler)handler).deactivateCurrentButton();
         }
