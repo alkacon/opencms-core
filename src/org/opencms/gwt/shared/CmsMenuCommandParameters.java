@@ -32,20 +32,23 @@ package org.opencms.gwt.shared;
  */
 public final class CmsMenuCommandParameters {
 
+    /** Parameter key for dialog height. */
+    public static final String PARAM_DIALOG_HEIGHT = "dialogHeight";
+
+    /** Parameter key for dialog URI. */
+    public static final String PARAM_DIALOG_URI = "dialogUri";
+
+    /** Parameter key for dialog width. */
+    public static final String PARAM_DIALOG_WIDTH = "dialogWidth";
+
     /** Parameter key for file names. */
     public static final String PARAM_FILENAME = "filename";
 
     /** Parameter for 'reload on edit'. */
     public static final String PARAM_RELOAD = "reload";
 
-    /** Parameter key for dialog URI. */
-    public static final String PARAM_DIALOG_URI = "dialogUri";
-
-    /** Parameter key for dialog height. */
-    public static final String PARAM_DIALOG_HEIGHT = "dialogHeight";
-
-    /** Parameter key for dialog width. */
-    public static final String PARAM_DIALOG_WIDTH = "dialogWidth";
+    /** Parameter to open the edit dialog in the same window, not using any overlays and iFrames. */
+    public static final String PARAM_USE_SELF = "useSelf";
 
     /**
      * Hidden constructor.<p>
