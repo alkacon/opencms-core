@@ -331,6 +331,64 @@
 			padding-left: 4px;
 		}
 	}
+	
+	
+	
+	.o-resinfo2 {
+		 border: 1px solid #ccc; 
+		 border-radius: 4px; 
+		 @include linear-gradient(to bottom, $v-app-background-color 0%, $v-app-background-color 48%, $o-medium-background-color 52%, $o-medium-background-color 100%);
+		 height: 38px;
+		 display: -ms-flex;
+		 display: flex;
+		 
+		 .o-resinfo-top, .o-resinfo-bottom {
+			vertical-align: middle;
+			line-height: 17px;
+			font-face: Open Sans,sans-serif;
+			color: $v-font-color;
+		}
+	
+		.o-resinfo-top > *, .o-resinfo-bottom > * {
+			white-space: nowrap;
+			overflow: ellipsis;  
+		}
+		
+		.o-resource-icon {
+			margin-top: 2px;
+		}
+	
+		.o-resinfo-top {
+		  font-size: 14px;
+		  font-weight: bold;
+		}
+	
+		.o-resinfo-bottom {
+		  font-size: 12px;
+		}
+		
+		.o-resinfo-lines {
+			overflow: hidden;
+			flex: 1;
+			padding-left: 5px; 
+			margin-top: 1px;
+		}
+		
+		.o-resinfo-hidden-icon {
+			margin-top: 8px;
+			margin-right: 10px;
+		}
+	 } 
+	 		
+	.o-resinfo2:hover .o-resinfo-hidden-icon {
+		visibility: visible; 
+    }
+    
+    .o-resinfo2 .o-resinfo-hidden-icon {
+    	cursor:pointer;
+    }
+    
+    
 	  
 	/* explorer bread crumb path input styles */
 	.o-crumb-wrapper{
@@ -564,5 +622,7 @@
 	.diffTypeDeleted { 
 		color: red; 
 	}
+	
+	
 	 
 }

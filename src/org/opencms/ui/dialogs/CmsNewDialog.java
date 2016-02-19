@@ -50,7 +50,7 @@ import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsResourceInfo;
+import org.opencms.ui.components.CmsResourceInfo2;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.util.CmsStringUtil;
@@ -76,10 +76,12 @@ import com.google.common.collect.Maps;
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.event.MouseEvents;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -100,11 +102,11 @@ public class CmsNewDialog extends CmsBasicDialog {
     /** Default value for the 'default location' check box. */
     public static final Boolean DEFAULT_LOCATION_DEFAULT = Boolean.TRUE;
 
-    /** Setting name for the standard view. */
-    public static final String SETTING_STANDARD_VIEW = "newDialogStandardView";
-
     /** Id for the 'All' pseudo-view. */
     public static final CmsUUID ID_VIEW_ALL = CmsUUID.getConstantUUID("view-all");
+
+    /** Setting name for the standard view. */
+    public static final String SETTING_STANDARD_VIEW = "newDialogStandardView";
 
     /** The 'All' pseudo-view. */
     public static final CmsElementView VIEW_ALL = new CmsElementView(ID_VIEW_ALL);
@@ -214,6 +216,17 @@ public class CmsNewDialog extends CmsBasicDialog {
         });
         m_viewSelector.setNullSelectionAllowed(false);
         m_viewSelector.setTextInputAllowed(false);
+        m_typeContainer.addLayoutClickListener(new LayoutClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void layoutClick(LayoutClickEvent event) {
+
+                CmsResourceTypeBean clickedType = (CmsResourceTypeBean)(((AbstractComponent)(event.getChildComponent())).getData());
+                handleSelection(clickedType);
+            }
+        });
+
         init(initView, true);
     }
 
@@ -262,28 +275,16 @@ public class CmsNewDialog extends CmsBasicDialog {
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
             String iconUri = explorerType.getBigIconIfAvailable();
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
-            CmsResourceInfo info = new CmsResourceInfo(
+            CmsResourceInfo2 info = new CmsResourceInfo2(
                 title,
                 subtitle,
                 CmsWorkplace.getResourceUri("filetypes/" + iconUri));
+            info.setData(type);
             m_typeContainer.addComponent(info);
             info.getButtonLabel().setContentMode(ContentMode.HTML);
             String labelClass = getLabelClass();
             info.getButtonLabel().setValue("<span class='" + labelClass + "'>");
             info.getButtonLabel().addStyleName(OpenCmsTheme.RESINFO_HIDDEN_ICON);
-            final CmsResourceTypeBean typeFinal = type;
-            info.addClickListener(new MouseEvents.ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
-
-                    handleSelection(typeFinal);
-
-                }
-
-            });
-
         }
     }
 
