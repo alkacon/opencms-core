@@ -654,8 +654,8 @@ allModuleNames.split(',').each{ moduleName ->
         sourceSets[moduleName].java.srcDirs=files("$moduleSrcFolder")
         sourceSets[moduleName].resources.srcDirs=files("$moduleSrcFolder")
         modulePackages.split(',').each{ pack ->
-            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/**')
-            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/**')
+            sourceSets[moduleName].java.includes.add(pack.replaceAll('\\.','/')+'/*')
+            sourceSets[moduleName].resources.includes.add(pack.replaceAll('\\.','/')+'/*')
         }
 
         sourceSets[moduleName].compileClasspath=sourceSets.modules.compileClasspath
