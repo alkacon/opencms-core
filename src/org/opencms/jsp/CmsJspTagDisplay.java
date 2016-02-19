@@ -511,6 +511,9 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
+        } else if (m_displayFormatterIds.containsKey(typeName)) {
+            result = OpenCms.getADEManager().getCachedFormatters(isOnline).getFormatters().get(
+                m_displayFormatterIds.get(typeName));
         } else {
             CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
                 cms,
