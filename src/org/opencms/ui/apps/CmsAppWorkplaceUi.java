@@ -43,8 +43,6 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
 import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
-import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
-import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -110,9 +108,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAppWorkplaceUi.class);
 
-    /** Menu item manager. */
-    private static CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
-
     /** The serial version id. */
     private static final long serialVersionUID = -5606711048683809028L;
 
@@ -136,12 +131,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
     /** Currently refreshing? */
     private boolean m_refreshing;
-
-    static {
-        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
-        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
-        m_workplaceMenuItemProvider.initialize();
-    }
 
     /**
      * Gets the current UI instance.<p>
@@ -350,16 +339,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Gets the menu item provider for the workplace.<p>
-     *
-     * @return the menu item provider
-     */
-    public I_CmsContextMenuItemProvider getMenuItemProvider() {
-
-        return m_workplaceMenuItemProvider;
-    }
-
-    /**
      * @see com.vaadin.navigator.ViewProvider#getView(java.lang.String)
      */
     public View getView(String viewName) {
@@ -428,7 +407,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public void onError() {
 
-        // do nothing for now 
+        // do nothing for now
 
     }
 

@@ -70,7 +70,6 @@ import org.opencms.ui.components.contextmenu.CmsContextMenu.ContextMenuItemClick
 import org.opencms.ui.components.extensions.CmsUploadAreaExtension;
 import org.opencms.ui.contextmenu.CmsContextMenuTreeBuilder;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
-import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.dialogs.CmsCopyMoveDialog;
 import org.opencms.ui.dialogs.CmsDeleteDialog;
 import org.opencms.ui.dialogs.CmsNewDialog;
@@ -442,7 +441,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
             CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(createDialogContext());
             m_treeBuilder = treeBuilder;
-            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(m_menuItemProvider.getMenuItems());
+            CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
+                OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
             for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
                 createItem(menu, node);
             }
@@ -644,9 +644,6 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The UI context. */
     protected I_CmsAppUIContext m_appContext;
 
-    /** The menu item provider. */
-    protected I_CmsContextMenuItemProvider m_menuItemProvider = CmsAppWorkplaceUi.get().getMenuItemProvider();
-
     /** Saved explorer state used by dialogs after they have finished. */
     protected String m_savedExplorerState = "";
 
@@ -677,6 +674,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     /** The first visible file table item index. */
     private int m_firstVisibleTableItemIndex;
 
+    /** The last context menu resources. */
     private List<CmsResource> m_lastDialogContextResources;
 
     /** The new button. */

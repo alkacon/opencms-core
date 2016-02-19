@@ -36,6 +36,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.apps.scheduler.CmsScheduledJobsAppConfig;
+import org.opencms.ui.contextmenu.CmsContextMenuItemProviderGroup;
+import org.opencms.ui.contextmenu.I_CmsContextMenuItemProvider;
 import org.opencms.ui.editors.CmsAcaciaEditor;
 import org.opencms.ui.editors.CmsSourceEditor;
 import org.opencms.ui.editors.CmsXmlContentEditor;
@@ -154,6 +156,9 @@ public class CmsWorkplaceAppManager {
     /** The user icon helper. */
     private CmsUserIconHelper m_iconHelper;
 
+    /** Menu item manager. */
+    private CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
+
     /**
      * Constructor.<p>
      *
@@ -165,6 +170,9 @@ public class CmsWorkplaceAppManager {
     throws CmsException {
         m_adminCms = adminCms;
         m_iconHelper = new CmsUserIconHelper(OpenCms.initCmsObject(m_adminCms));
+        m_workplaceMenuItemProvider = new CmsContextMenuItemProviderGroup();
+        m_workplaceMenuItemProvider.addProvider(CmsDefaultMenuItemProvider.class);
+        m_workplaceMenuItemProvider.initialize();
     }
 
     /**
@@ -252,6 +260,16 @@ public class CmsWorkplaceAppManager {
             result = editors.get(0);
         }
         return result;
+    }
+
+    /**
+     * Gets the menu item provider for the workplace.<p>
+     *
+     * @return the menu item provider
+     */
+    public I_CmsContextMenuItemProvider getMenuItemProvider() {
+
+        return m_workplaceMenuItemProvider;
     }
 
     /**

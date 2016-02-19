@@ -549,7 +549,7 @@ public class CmsToolBar extends CssLayout {
         main.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_MENU_TITLE_0));
         CmsContextMenuTreeBuilder treeBuilder = new CmsContextMenuTreeBuilder(getDialogContext());
         CmsTreeNode<I_CmsContextMenuItem> tree = treeBuilder.buildAll(
-            CmsAppWorkplaceUi.get().getMenuItemProvider().getMenuItems());
+            OpenCms.getWorkplaceAppManager().getMenuItemProvider().getMenuItems());
         for (CmsTreeNode<I_CmsContextMenuItem> node : tree.getChildren()) {
             createMenuEntry(main, node, treeBuilder);
         }
