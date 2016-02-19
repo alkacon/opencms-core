@@ -344,7 +344,11 @@ public class CmsWorkplaceAppManager {
         Iterator<I_CmsWorkplaceAppConfiguration> configs = ServiceLoader.load(
             I_CmsWorkplaceAppConfiguration.class).iterator();
         while (configs.hasNext()) {
-            appConfigurations.add(configs.next());
+            try {
+                appConfigurations.add(configs.next());
+            } catch (Throwable t) {
+                LOG.error("Error loading workplace app configuration from classpath.", t);
+            }
         }
         return appConfigurations;
     }

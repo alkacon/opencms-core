@@ -30,6 +30,7 @@ package org.opencms.ui.contextmenu;
 import org.opencms.main.CmsLog;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
@@ -59,10 +60,14 @@ public class CmsContextMenuItemProviderGroup implements I_CmsContextMenuItemProv
      * Creates a new instance.<p>
      */
     public CmsContextMenuItemProviderGroup() {
-        ServiceLoader<I_CmsContextMenuItemProvider> providerLoader = ServiceLoader.load(
-            I_CmsContextMenuItemProvider.class);
-        for (I_CmsContextMenuItemProvider provider : providerLoader) {
-            addProvider(provider);
+        Iterator<I_CmsContextMenuItemProvider> providersIt = ServiceLoader.load(
+            I_CmsContextMenuItemProvider.class).iterator();
+        while (providersIt.hasNext()) {
+            try {
+                addProvider(providersIt.next());
+            } catch (Throwable t) {
+                LOG.error("Error loading context menu provider from classpath.", t);
+            }
         }
     }
 
