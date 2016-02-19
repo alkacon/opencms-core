@@ -30,16 +30,67 @@ package org.opencms.widgets;
 import org.opencms.ade.configuration.CmsADEConfigData;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.xml.containerpage.I_CmsFormatterBean;
 import org.opencms.xml.types.CmsXmlDisplayFormatterValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Widget to select a type and formatter combination.<p>
  */
 public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
+
+    /**
+     * Formatter option comparator, sorting by type name and rank.<p>
+     */
+    class FormatterComparator implements Comparator<FormatterOption> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(FormatterOption o1, FormatterOption o2) {
+
+            return o1.m_typeName.equals(o2.m_typeName) ? o2.m_rank - o1.m_rank : o1.m_typeName.compareTo(o2.m_typeName);
+        }
+    }
+
+    /**
+     * Formatter select option.<p>
+     */
+    class FormatterOption {
+
+        /** The option key. */
+        String m_key;
+
+        /** The option label. */
+        String m_label;
+
+        /** The formatter rank. */
+        int m_rank;
+
+        /** The type name. */
+        String m_typeName;
+
+        /**
+         * Constructor.<p>
+         *
+         * @param key the option key
+         * @param typeName the type name
+         * @param label the option label
+         * @param rank the formatter rank
+         */
+        FormatterOption(String key, String typeName, String label, int rank) {
+            m_key = key;
+            m_typeName = typeName;
+            m_label = label;
+            m_rank = rank;
+        }
+    }
 
     /**
      * @see org.opencms.widgets.CmsSelectWidget#newInstance()
@@ -59,18 +110,29 @@ public class CmsDisplayTypeSelectWidget extends CmsSelectWidget {
         I_CmsWidgetDialog widgetDialog,
         I_CmsWidgetParameter param) {
 
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
         List<CmsSelectWidgetOption> result = new ArrayList<CmsSelectWidgetOption>();
+        List<FormatterOption> options = new ArrayList<FormatterOption>();
         CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, getResourcePath(cms, widgetDialog));
         if (config != null) {
             for (I_CmsFormatterBean formatter : config.getDisplayFormatters(cms)) {
                 for (String typeName : formatter.getResourceTypeNames()) {
-                    result.add(
-                        new CmsSelectWidgetOption(
+                    String label = formatter.getNiceName()
+                        + " ("
+                        + CmsWorkplaceMessages.getResourceTypeName(wpLocale, typeName)
+                        + ")";
+                    options.add(
+                        new FormatterOption(
                             typeName + CmsXmlDisplayFormatterValue.SEPARATOR + formatter.getId(),
-                            false,
-                            typeName + ": " + formatter.getNiceName()));
+                            typeName,
+                            label,
+                            formatter.getRank()));
                 }
             }
+        }
+        Collections.sort(options, new FormatterComparator());
+        for (FormatterOption option : options) {
+            result.add(new CmsSelectWidgetOption(option.m_key, false, option.m_label));
         }
         return result;
     }
