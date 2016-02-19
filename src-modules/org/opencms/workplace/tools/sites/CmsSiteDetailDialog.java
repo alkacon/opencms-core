@@ -38,21 +38,25 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeFolderSubSitemap;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.report.CmsLogReport;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidget;
@@ -75,6 +79,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Dialog for showing the sites details.<p>
@@ -103,6 +109,9 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
 
     /** Dialog new action parameter value. */
     private static final String DIALOG_NEW = "new";
+
+    /** The logger for this class. */
+    private static Log LOG = CmsLog.getLog(CmsSiteDetailDialog.class.getName());
 
     /** Constant. */
     private static final String MODEL_PAGE = "ModelPage";
@@ -470,12 +479,7 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_site, "webserver", PAGES[0], new CmsCheckboxWidget()));
             if (DIALOG_NEW.equals(getParamEditaction())) {
                 addWidget(new CmsWidgetDialogParameter(this, "createou", PAGES[0], new CmsCheckboxWidget()));
-                addWidget(
-                    new CmsWidgetDialogParameter(
-                        this,
-                        "template",
-                        PAGES[0],
-                        new CmsVfsFileWidget(true, "", true, false)));
+                addWidget(new CmsWidgetDialogParameter(this, "template", PAGES[0], createTemplateSelect()));
             }
 
             if (m_site.getFavicon() != null) {
@@ -715,6 +719,30 @@ public class CmsSiteDetailDialog extends CmsWidgetDialog {
                 OpenCms.getResourceManager().getResourceType(CmsADEManager.CONFIG_TYPE).getTypeId());
         }
         return configFile;
+    }
+
+    /**
+     * Creates a template select combo widget.<p>
+     *
+     * @return the widget
+     */
+    private CmsComboWidget createTemplateSelect() {
+
+        List<CmsSelectWidgetOption> options = new ArrayList<CmsSelectWidgetOption>();
+        try {
+            I_CmsResourceType templateType = OpenCms.getResourceManager().getResourceType(
+                CmsResourceTypeJsp.getContainerPageTemplateTypeName());
+            List<CmsResource> templates = getCms().readResources(
+                "/system/",
+                CmsResourceFilter.DEFAULT.addRequireType(templateType));
+            for (CmsResource res : templates) {
+                options.add(new CmsSelectWidgetOption(res.getRootPath()));
+            }
+
+        } catch (CmsException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return new CmsComboWidget(options);
     }
 
     /**
