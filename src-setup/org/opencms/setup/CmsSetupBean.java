@@ -1760,7 +1760,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_workplaceImportThread = new CmsSetupWorkplaceImportThread(this);
         }
 
-        if (!m_workplaceImportThread.isAlive()) {
+        if (!m_workplaceImportThread.isAlive() && !m_workplaceImportThread.getState().equals(Thread.State.TERMINATED)) {
             m_workplaceImportThread.start();
         }
     }
