@@ -30,13 +30,15 @@ package org.opencms.ui.apps;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 
+import java.io.Serializable;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 
 /**
  * The app ui context. Allows OpenCms workplace apps access to the surrounding UI.<p>
  */
-public interface I_CmsAppUIContext {
+public interface I_CmsAppUIContext extends Serializable {
 
     /**
      * Hides the the toolbar.<p>

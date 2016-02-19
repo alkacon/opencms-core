@@ -27,10 +27,12 @@
 
 package org.opencms.ui.apps;
 
+import java.io.Serializable;
+
 /**
  * Apps implementing this interface will be stored in the user session so returning to the app will be quicker and use less resources.<p>
  */
-public interface I_CmsCachableApp {
+public interface I_CmsCachableApp extends Serializable {
 
     /**
      * Returns whether this app should be cached within the user session.<p>
