@@ -70,10 +70,4 @@ public class CmsXmlPageEditor extends A_CmsFrameEditor {
 
         return "/system/workplace/editors/tinymce/editor.jsp";
     }
-
-    protected String getFrameStyles() {
-
-        return "o-editor-frame";
-    }
-
 }

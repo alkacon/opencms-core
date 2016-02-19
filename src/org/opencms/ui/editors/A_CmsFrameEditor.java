@@ -59,10 +59,7 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor {
         m_frame.setSizeFull();
         context.showInfoArea(false);
         context.hideToolbar();
-        String frameStyles = getFrameStyles();
-        if (frameStyles != null) {
-            m_frame.addStyleName(frameStyles);
-        }
+        m_frame.addStyleName("o-editor-frame");
         context.setAppContent(m_frame);
     }
 
@@ -72,14 +69,4 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor {
      * @return the editor URI
      */
     protected abstract String getEditorUri();
-
-    /**
-     * Gets additional style names to add to the editor frame.<p>
-     * 
-     * @return the additional styles 
-     */
-    protected String getFrameStyles() {
-
-        return null;
-    }
 }

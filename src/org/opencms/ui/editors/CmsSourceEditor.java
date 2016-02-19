@@ -72,14 +72,4 @@ public class CmsSourceEditor extends A_CmsFrameEditor {
 
         return "/system/workplace/editors/codemirror/editor.jsp";
     }
-
-    /**
-     * @see org.opencms.ui.editors.A_CmsFrameEditor#getFrameStyles()
-     */
-    @Override
-    protected String getFrameStyles() {
-
-        return "o-editor-frame";
-    }
-
 }
