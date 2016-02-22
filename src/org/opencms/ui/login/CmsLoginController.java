@@ -500,51 +500,44 @@ public class CmsLoginController {
         String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
         String target = "";
         boolean checkRole = false;
-        if (m_params.getRequestedWorkplaceApp() != null) {
+        String fragment = UI.getCurrent().getPage().getUriFragment();
+        boolean workplace2 = false;
 
-            target = m_params.getRequestedWorkplaceApp();
-            // we need to read the URI fragment from the current page, as it is not available in the servlet request
-            String fragment = UI.getCurrent().getPage().getUriFragment();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
-                target += "#" + UI.getCurrent().getPage().getUriFragment();
-            }
+        if (CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
+            && settings.getUserSettings().startWithNewWorkplace()) {
+            workplace2 = true;
             checkRole = true;
+        } else if ((m_params.getRequestedResource() != null)
+            && !CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
+            target = m_params.getRequestedResource();
+        } else if (directEditPath != null) {
+            target = directEditPath;
         } else {
-            boolean workplace2 = false;
+            target = CmsWorkplace.JSP_WORKPLACE_URI;
+            checkRole = true;
+        }
 
-            if (CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
-                && settings.getUserSettings().startWithNewWorkplace()) {
-                workplace2 = true;
-                checkRole = true;
-            } else if ((m_params.getRequestedResource() != null)
-                && !CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
-                target = m_params.getRequestedResource();
-            } else if (directEditPath != null) {
-                target = directEditPath;
-            } else {
-                target = CmsWorkplace.JSP_WORKPLACE_URI;
-                checkRole = true;
-            }
-
-            UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
-            boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
-            if (showUserAgreement) {
-                target = userAgreementHelper.getConfigurationVfsPath()
-                    + "?"
-                    + CmsLoginUserAgreement.PARAM_WPRES
-                    + "="
-                    + target;
-            }
-            if (workplace2) {
-                target = CmsVaadinUtils.getWorkplaceLink();
-            } else {
-                target = OpenCms.getLinkManager().substituteLink(currentCms, target);
-            }
+        UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
+        boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
+        if (showUserAgreement) {
+            target = userAgreementHelper.getConfigurationVfsPath()
+                + "?"
+                + CmsLoginUserAgreement.PARAM_WPRES
+                + "="
+                + target;
+        }
+        if (workplace2) {
+            target = CmsVaadinUtils.getWorkplaceLink();
+        } else {
+            target = OpenCms.getLinkManager().substituteLink(currentCms, target);
         }
         if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
             throw new CmsCustomLoginException(
                 org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
+            target += "#" + fragment;
         }
         return target;
     }

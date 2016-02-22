@@ -90,9 +90,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         /** The redirect URL after a successful login. */
         private String m_requestedResource;
 
-        /** The requested workplace app. */
-        private String m_requestedWorkplaceApp;
-
         /** The value of the user name parameter. */
         private String m_username;
 
@@ -106,7 +103,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
          * @param pcType the pc type
          * @param oufqn the ou fqn
          * @param requestedResource the requested resource
-         * @param requestedWorkplaceApp the requested workplace app
          * @param locale the locale
          * @param authToken the authorization token
          * @param logout the logout flag
@@ -117,7 +113,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             String pcType,
             String oufqn,
             String requestedResource,
-            String requestedWorkplaceApp,
             Locale locale,
             String authToken,
             boolean logout,
@@ -127,7 +122,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
             m_pcType = pcType;
             m_oufqn = oufqn;
             m_requestedResource = requestedResource;
-            m_requestedWorkplaceApp = requestedWorkplaceApp;
             m_locale = locale;
             m_authToken = authToken;
             m_logout = logout;
@@ -182,16 +176,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         public String getRequestedResource() {
 
             return m_requestedResource;
-        }
-
-        /**
-         * Returns the requested workplace app.<p>
-         *
-         * @return the requested workplace app
-         */
-        public String getRequestedWorkplaceApp() {
-
-            return m_requestedWorkplaceApp;
         }
 
         /**
@@ -409,29 +393,17 @@ public class CmsLoginHelper extends CmsJspLoginBean {
                 }
             }
         }
-        String requestedWorkplaceApp = null;
         String requestedResource = CmsRequestUtil.getNotEmptyParameter(
             request,
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-        if (workplaceUiRequest && (requestedResource == null)) {
-            requestedWorkplaceApp = request.getRequestURL().toString();
-        } else if (requestedResource == null) {
+        if (!workplaceUiRequest && (requestedResource == null)) {
             // no resource was requested, use default workplace URI
             requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
         }
         Locale locale = getLocaleForRequest(request);
         String resetStr = request.getParameter(PARAM_RESET_PASSWORD);
         boolean reset = (resetStr != null);
-        return new LoginParameters(
-            username,
-            pcType,
-            oufqn,
-            requestedResource,
-            requestedWorkplaceApp,
-            locale,
-            authToken,
-            logout,
-            reset);
+        return new LoginParameters(username, pcType, oufqn, requestedResource, locale, authToken, logout, reset);
     }
 
     /**

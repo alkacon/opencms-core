@@ -204,7 +204,6 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     /**
      * Returns the initial HTML for the Vaadin based login dialog.<p>
      *
-     * @param cms the current cms context
      * @param request the request
      * @param response the response
      *
