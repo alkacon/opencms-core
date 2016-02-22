@@ -60,7 +60,7 @@ public class CmsPollServerConnector extends AbstractExtensionConnector {
             if (!m_cancelled) {
                 try {
                     m_rpc.poll();
-                } catch (Throwable t) {
+                } catch (@SuppressWarnings("unused") Throwable t) {
                     m_cancelled = true;
                 }
             }

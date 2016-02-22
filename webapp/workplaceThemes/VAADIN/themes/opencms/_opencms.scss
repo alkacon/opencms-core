@@ -92,7 +92,25 @@
 	.gwt-MenuItem span.v-disabled {
 		display: none;
 	}
-  
+	
+	/* Toolbar menu pointy corner */
+	div.o-toolbar-menu-corner{
+		width: 40px;
+		height: 10px;
+		top: -14px;
+		position: absolute;
+		overflow: hidden;
+		&:after {
+			content: "";
+			top: 8px;
+			height: 40px;
+			width: 40px;
+			position: absolute;
+			transform: rotate(45deg);
+			background: $v-window-background-color;
+		}
+	}
+
 	div.v-window {
 		max-height: 95%;
 		.v-window-header, .v-window-closebox, .v-window-maximizebox, .v-window-restorebox {
@@ -314,8 +332,6 @@
 	.v-popupview-popup-o-navigator-dropdown{
 		margin-top: 55px !important;
 		margin-left: -10px !important;
-		max-height: 80%;
-		overflow: auto !important;
 		border: 4px solid $v-window-background-color;
 	}
 	
