@@ -158,17 +158,6 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     }
 
     /**
-     * Returns the workplace UI.<p>
-     *
-     * @return the workplace UI
-     */
-    public static CmsAppWorkplaceUi getWorkplaceUi() {
-
-        CmsAppWorkplaceUi ui = (CmsAppWorkplaceUi)A_CmsUI.get();
-        return ui;
-    }
-
-    /**
      * @see com.vaadin.navigator.ViewChangeListener#afterViewChange(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
      */
     public void afterViewChange(ViewChangeEvent event) {
@@ -216,6 +205,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
 
         if (newState.startsWith(NavigationState.PARAM_SEPARATOR)) {
             newState = newState.substring(1);
+        }
+        if ((m_appLayout != null) && (m_appConfig != null)) {
+            m_appLayout.setAppTitle(m_appConfig.getName(UI.getCurrent().getLocale()));
         }
         m_app.onStateChange(newState);
         if (m_app instanceof I_CmsHasShortcutActions) {
