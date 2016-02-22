@@ -60,6 +60,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_TITLE_0 = "GUI_EXPLORER_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_TITLE_0 = "GUI_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LAUNCHPAD_HELP_0 = "GUI_LAUNCHPAD_HELP_0";
 
     /** Message constant for key in the resource bundle. */

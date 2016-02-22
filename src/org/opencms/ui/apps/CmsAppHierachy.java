@@ -42,6 +42,9 @@ import com.google.common.collect.Lists;
  */
 public class CmsAppHierachy implements I_CmsWorkplaceApp, I_CmsCachableApp {
 
+    /** The serial version id. */
+    private static final long serialVersionUID = -2767203655877536034L;
+
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceApp#initUI(org.opencms.ui.apps.I_CmsAppUIContext)
      */

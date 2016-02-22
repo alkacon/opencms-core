@@ -29,6 +29,8 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 
+import java.util.Locale;
+
 import com.vaadin.server.Resource;
 
 /**
@@ -68,6 +70,15 @@ public class CmsEditorConfiguration extends A_CmsWorkplaceAppConfiguration {
     public String getId() {
 
         return "editor";
+    }
+
+    /**
+     * @see org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration#getName(java.util.Locale)
+     */
+    @Override
+    public String getName(Locale locale) {
+
+        return Messages.get().getBundle(locale).key(Messages.GUI_EDITOR_TITLE_0);
     }
 
     /**
