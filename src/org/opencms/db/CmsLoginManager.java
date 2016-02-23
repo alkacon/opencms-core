@@ -240,6 +240,7 @@ public class CmsLoginManager {
     public boolean canLockBecauseOfInactivity(CmsObject cms, CmsUser user) {
 
         return !user.isManaged()
+            && !user.isWebuser()
             && !OpenCms.getDefaultUsers().isDefaultUser(user.getName())
             && !OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN);
     }
@@ -460,6 +461,7 @@ public class CmsLoginManager {
     public boolean requiresPasswordChange(CmsObject cms, CmsUser user) {
 
         if (user.isManaged()
+            || user.isWebuser()
             || OpenCms.getDefaultUsers().isDefaultUser(user.getName())
             || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
             return false;

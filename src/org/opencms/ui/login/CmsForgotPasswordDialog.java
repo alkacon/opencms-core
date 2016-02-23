@@ -181,7 +181,9 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
             }
             if ((foundUser == null)
                 || CmsStringUtil.isEmptyOrWhitespaceOnly(email)
-                || !email.equals(foundUser.getEmail())) {
+                || !email.equals(foundUser.getEmail())
+                || foundUser.isManaged()
+                || foundUser.isWebuser()) {
                 Notification.show(
                     CmsVaadinUtils.getMessageText(Messages.GUI_PWCHANGE_EMAIL_MISMATCH_0),
                     Type.ERROR_MESSAGE);

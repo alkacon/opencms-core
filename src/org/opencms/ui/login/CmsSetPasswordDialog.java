@@ -100,6 +100,9 @@ public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButt
             @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
+                if ((m_user != null) && m_user.isManaged()) {
+                    return;
+                }
                 m_passwordField1.setComponentError(null);
                 m_passwordField2.setComponentError(null);
                 String password1 = m_passwordField1.getValue();
