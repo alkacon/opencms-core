@@ -2051,9 +2051,6 @@ public final class CmsContainerpageController {
     public boolean isInlineEditable(CmsContainerPageElementPanel element, I_CmsDropContainer dragParent) {
 
         CmsUUID elemView = element.getElementView();
-        if (elemView == null) {
-            elemView = CmsUUID.getNullUUID();
-        }
         return !getData().isUseClassicEditor()
             && CmsStringUtil.isEmptyOrWhitespaceOnly(element.getNoEditReason())
             && hasActiveSelection()
@@ -2221,6 +2218,9 @@ public final class CmsContainerpageController {
      */
     public boolean matchRootView(CmsUUID viewIdFromElement) {
 
+        if (viewIdFromElement == null) {
+            viewIdFromElement = CmsUUID.getNullUUID();
+        }
         CmsElementViewInfo viewFromElement = getView(viewIdFromElement.toString());
         return viewFromElement.getRootViewId().equals(m_elementView.getRootViewId());
     }
