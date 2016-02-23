@@ -136,7 +136,7 @@ public class CmsDefaultResourceStatusProvider {
                     return result;
                 }
             } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
+                LOG.debug(e.getLocalizedMessage(), e);
             }
         }
         return result;
