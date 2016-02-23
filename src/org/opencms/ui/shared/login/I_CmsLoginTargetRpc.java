@@ -38,9 +38,7 @@ public interface I_CmsLoginTargetRpc extends ClientRpc {
      * Opens a login target.<p>
      *
      * @param target the login target
-     * @param user the user name
-     * @param password the password
      */
-    void openTarget(String target, String user, String password);
+    void openTarget(String target);
 
 }

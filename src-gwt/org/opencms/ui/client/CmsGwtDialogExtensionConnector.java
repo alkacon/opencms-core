@@ -165,26 +165,22 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
             public boolean ensureLockOnResource(CmsUUID lockStructureId) {
 
-                // TODO Auto-generated method stub
                 return false;
             }
 
             public Map<String, I_CmsContextMenuCommand> getContextMenuCommands() {
 
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public I_CmsContentEditorHandler getEditorHandler() {
 
-                // TODO Auto-generated method stub
                 return null;
             }
 
             public void leavePage(String targetUri) {
 
-                // TODO Auto-generated method stub
-
+                // nothing to do
             }
 
             public void refreshResource(CmsUUID structureId) {
@@ -194,8 +190,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
             public void unlockResource(CmsUUID structureId) {
 
-                // TODO Auto-generated method stub
-
+                // nothing to do
             }
         });
         dialog.addCloseHandler(new CloseHandler<PopupPanel>() {

@@ -16,17 +16,13 @@
   <script type="text/javascript"
           src="%(vaadinBootstrap)"></script>
           
-  <form class="cmslogin-hidden-form">
+  <form class="cmslogin-form" id="opencms-login-form" method="post" action="">
   	<input type="text" id="hidden-username" name="ocUname" %(predefUser) >
   	%(hiddenPasswordField)
-  </form>          
+    	  
+	
 
-  <!-- GWT requires an invisible history frame. It is   -->
-  <!-- needed for page/fragment history in the browser. -->
-  <iframe tabindex="-1" id="__gwt_historyFrame"
-          style="position: absolute; width: 0; height: 0;
-                 border: 0; overflow: hidden"
-          src="javascript:false"></iframe>  
+  
   
   <div id="login-app" class="v-app vaadinBox">
 	    <!-- Optional placeholder for the loading indicator -->
@@ -35,7 +31,13 @@
 	    <noscript>You have to enable javascript in your browser to
 	              use an application built with Vaadin.</noscript>
 	  </div>
-
+         </form> 
+<!-- GWT requires an invisible history frame. It is   -->
+  <!-- needed for page/fragment history in the browser. -->
+  <iframe tabindex="-1" id="__gwt_historyFrame"
+          style="position: absolute; width: 0; height: 0;
+                 border: 0; overflow: hidden"
+          src="javascript:false"></iframe>  
   
   <script type="text/javascript">//<![CDATA[
     if (!window.vaadin)

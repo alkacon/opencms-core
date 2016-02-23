@@ -79,7 +79,13 @@ public final class CmsClientStringUtil {
      */
     public static String getStackTrace(Throwable t, String separator) {
 
-        return getStackTraceAsString(t.getStackTrace(), separator);
+        Throwable cause = t;
+        String result = "";
+        while (cause != null) {
+            result += getStackTraceAsString(cause.getStackTrace(), separator);
+            cause = cause.getCause();
+        }
+        return result;
     }
 
     /**
@@ -110,12 +116,12 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native double parseFloat(String str) /*-{
-                                                       var ret = parseFloat(str, 10);
-                                                       if (isNaN(ret)) {
-                                                       return 0;
-                                                       }
-                                                       return ret;
-                                                       }-*/;
+        var ret = parseFloat(str, 10);
+        if (isNaN(ret)) {
+            return 0;
+        }
+        return ret;
+    }-*/;
 
     /**
      * The parseInt() function parses a string and returns an integer.<p>
@@ -128,12 +134,12 @@ public final class CmsClientStringUtil {
      * @return the parsed number
      */
     public static native int parseInt(String str) /*-{
-                                                  var ret = parseInt(str, 10);
-                                                  if (isNaN(ret)) {
-                                                  return 0;
-                                                  }
-                                                  return ret;
-                                                  }-*/;
+        var ret = parseInt(str, 10);
+        if (isNaN(ret)) {
+            return 0;
+        }
+        return ret;
+    }-*/;
 
     /**
      * Pushes a String into a javascript array.<p>
@@ -142,8 +148,8 @@ public final class CmsClientStringUtil {
      * @param s the String to push into the array
      */
     public static native void pushArray(JavaScriptObject array, String s) /*-{
-                                                                          array.push(s);
-                                                                          }-*/;
+        array.push(s);
+    }-*/;
 
     /**
      * Generates a purely random uuid.<p>

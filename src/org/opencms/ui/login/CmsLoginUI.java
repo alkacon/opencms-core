@@ -228,6 +228,12 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()
+            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter("requestedResource"))) {
+            response.sendRedirect(request.getParameter("requestedResource"));
+            return null;
+        }
+
         String logout = request.getParameter(CmsLoginHelper.PARAM_ACTION_LOGOUT);
         if (Boolean.valueOf(logout).booleanValue()) {
             CmsLoginController.logout(cms, request, response);
@@ -372,7 +378,7 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
 
         // login was successful, remove login init data from session
         VaadinService.getCurrentRequest().getWrappedSession().removeAttribute(INIT_DATA_SESSION_ATTR);
-        m_targetOpener.openTarget(targetInfo.getTarget(), targetInfo.getUser(), targetInfo.getPassword());
+        m_targetOpener.openTarget(targetInfo.getTarget());
     }
 
     /**

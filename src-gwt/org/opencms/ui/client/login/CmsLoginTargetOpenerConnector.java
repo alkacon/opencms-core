@@ -30,9 +30,9 @@ package org.opencms.ui.client.login;
 import org.opencms.ui.shared.login.I_CmsLoginTargetRpc;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
@@ -63,25 +63,27 @@ public class CmsLoginTargetOpenerConnector extends AbstractExtensionConnector {
 
             private static final long serialVersionUID = 1L;
 
-            public void openTarget(String target, String user, String password) {
+            public void openTarget(String target) {
 
                 // Post a hidden form with user name and password fields,
                 // to hopefully trigger the browser's password manager
-                final FormPanel form = new FormPanel("_self");
                 Document doc = Document.get();
-                InputElement userField = doc.createTextInputElement();
-                userField.setName("ocUname");
-                InputElement passwordField = doc.createPasswordInputElement();
-                passwordField.setName("ocPword");
-                userField.setValue(user);
-                passwordField.setValue(password);
-                form.getElement().appendChild(userField);
-                form.getElement().appendChild(passwordField);
-                form.setMethod("post");
-                form.setAction(target);
-                form.setVisible(false);
-                RootPanel.get().add(form);
-                form.submit();
+                FormElement formEl = (FormElement)doc.getElementById("opencms-login-form");
+
+                // make sure user name and password are children of the form
+                Element user = doc.getElementById("hidden-username");
+                Element password = doc.getElementById("hidden-password");
+                if (!formEl.isOrHasChild(user) || !formEl.isOrHasChild(password)) {
+                    formEl.appendChild(user);
+                    formEl.appendChild(password);
+                }
+
+                InputElement requestedResourceField = doc.createTextInputElement();
+                requestedResourceField.setName("requestedResource");
+                requestedResourceField.setValue(target);
+
+                formEl.appendChild(requestedResourceField);
+                formEl.submit();
             }
         });
     }
