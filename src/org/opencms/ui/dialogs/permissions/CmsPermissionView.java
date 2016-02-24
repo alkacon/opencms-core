@@ -212,7 +212,7 @@ public class CmsPermissionView extends CssLayout {
         m_changeHandler = changeHandler;
         m_editable = editable;
         m_entry = entry;
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
         // get name and type of the current entry
         I_CmsPrincipal principal;

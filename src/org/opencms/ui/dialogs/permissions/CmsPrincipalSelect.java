@@ -103,8 +103,12 @@ public class CmsPrincipalSelect extends CustomComponent {
         m_principalTypeSelect = new ComboBox();
         m_principalTypeSelect.setWidth("150px");
         Map<String, String> principalTypes = new LinkedHashMap<String, String>();
-        principalTypes.put(I_CmsPrincipal.PRINCIPAL_USER, "User");
-        principalTypes.put(I_CmsPrincipal.PRINCIPAL_GROUP, "Group");
+        principalTypes.put(
+            I_CmsPrincipal.PRINCIPAL_USER,
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_USER_0));
+        principalTypes.put(
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_GROUP_0));
         CmsVaadinUtils.prepareComboBox(m_principalTypeSelect, principalTypes);
         m_principalTypeSelect.setNewItemsAllowed(false);
         m_principalTypeSelect.setNullSelectionAllowed(false);
@@ -223,7 +227,9 @@ public class CmsPrincipalSelect extends CustomComponent {
         CmsBasicDialog dialog = new CmsBasicDialog();
         dialog.setContent(selectFrame);
         m_window = CmsBasicDialog.prepareWindow();
-        m_window.setCaption("Select principal");
+        m_window.setCaption(
+            CmsVaadinUtils.getMessageText(
+                org.opencms.workplace.commons.Messages.GUI_PRINCIPALSELECTION_LIST_ACTION_SELECT_NAME_0));
         m_window.setContent(dialog);
         A_CmsUI.get().addWindow(m_window);
     }
