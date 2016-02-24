@@ -527,6 +527,11 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
         windowClose.addWindowCloseListener(this);
         navigator.addViewChangeListener(this);
         navigateToFragment();
+
+        getReconnectDialogConfiguration().setDialogText(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_SYSTEM_CONNECTION_LOST_TRYING_RECONNECT_0));
+        getReconnectDialogConfiguration().setDialogTextGaveUp(
+            CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_SYSTEM_CONNECTION_LOST_GIVING_UP_0));
     }
 
     /**

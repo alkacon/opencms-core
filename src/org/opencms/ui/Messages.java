@@ -286,15 +286,49 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SCHEDULER_TITLE_CREATE_0 = "GUI_SCHEDULER_TITLE_CREATE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEND_RESET_LINK_0 = "GUI_SEND_RESET_LINK_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SHORT_ORGUNIT_0 = "GUI_SHORT_ORGUNIT_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_AUTHENTICATION_ERROR_CAPTION_0 = "GUI_SYSTEM_AUTHENTICATION_ERROR_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_AUTHENTICATION_ERROR_MESSAGE_0 = "GUI_SYSTEM_AUTHENTICATION_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_COMMUNICATION_ERROR_CAPTION_0 = "GUI_SYSTEM_COMMUNICATION_ERROR_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_COMMUNICATION_ERROR_MESSAGE_0 = "GUI_SYSTEM_COMMUNICATION_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_CONNECTION_LOST_GIVING_UP_0 = "GUI_SYSTEM_CONNECTION_LOST_GIVING_UP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_CONNECTION_LOST_TRYING_RECONNECT_0 = "GUI_SYSTEM_CONNECTION_LOST_TRYING_RECONNECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_INTERNAL_ERROR_CAPTION_0 = "GUI_SYSTEM_INTERNAL_ERROR_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_INTERNAL_ERROR_MESSAGE_0 = "GUI_SYSTEM_INTERNAL_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_SESSION_EXPIRED_ERROR_CAPTION_0 = "GUI_SYSTEM_SESSION_EXPIRED_ERROR_CAPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SYSTEM_SESSION_EXPIRED_ERROR_MESSAGE_0 = "GUI_SYSTEM_SESSION_EXPIRED_ERROR_MESSAGE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FILE_0 = "GUI_UNDO_MULTI_FILE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_MULTI_FOLDER_0 = "GUI_UNDO_MULTI_FOLDER_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_NONRECURSIVE_MULTI_FILE_0 = "GUI_UNDO_NONRECURSIVE_MULTI_FILE_0";
 
@@ -330,12 +364,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_UNDOMOVE_0 = "GUI_UNDO_UNDOMOVE_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATION_FIELD_EMPTY_0 = "GUI_VALIDATION_FIELD_EMPTY_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VALIDATOR_EMPTY_OR_NUMBER_0 = "GUI_VALIDATOR_EMPTY_OR_NUMBER_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_ALL_0 = "GUI_VIEW_ALL_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.messages";
 

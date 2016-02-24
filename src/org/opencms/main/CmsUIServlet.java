@@ -30,7 +30,9 @@ package org.opencms.main;
 import org.opencms.file.CmsObject;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsRequestUtil;
@@ -38,7 +40,9 @@ import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,9 +59,13 @@ import org.jsoup.select.Elements;
 import com.vaadin.server.BootstrapFragmentResponse;
 import com.vaadin.server.BootstrapListener;
 import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.CustomizedSystemMessages;
 import com.vaadin.server.RequestHandler;
 import com.vaadin.server.SessionInitEvent;
 import com.vaadin.server.SessionInitListener;
+import com.vaadin.server.SystemMessages;
+import com.vaadin.server.SystemMessagesInfo;
+import com.vaadin.server.SystemMessagesProvider;
 import com.vaadin.server.UIClassSelectionEvent;
 import com.vaadin.server.UIProvider;
 import com.vaadin.server.VaadinRequest;
@@ -70,25 +78,62 @@ import com.vaadin.ui.UI;
 /**
  * Servlet for workplace UI requests.<p>
  */
-public class CmsUIServlet extends VaadinServlet {
+public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvider, SessionInitListener {
+
+    /** The bootstrap listener. */
+    static final BootstrapListener bootstrapListener = new BootstrapListener() {
+
+        private static final long serialVersionUID = -6249561809984101044L;
+
+        public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
+
+            // nothing to do
+        }
+
+        public void modifyBootstrapPage(BootstrapPageResponse response) {
+
+            CmsCoreService svc = new CmsCoreService();
+            HttpServletRequest request = (HttpServletRequest)VaadinService.getCurrentRequest();
+            svc.setRequest(request);
+            CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
+            svc.setCms(cms);
+
+            Document doc = response.getDocument();
+
+            Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
+            if (appLoadingElements.size() > 0) {
+                for (Node node : appLoadingElements.get(0).childNodes()) {
+                    node.remove();
+
+                }
+
+                appLoadingElements.get(0).append(CmsVaadinConstants.LOADING_INDICATOR_HTML);
+            }
+
+            if (shouldShowLogin()) {
+                try {
+                    String html = CmsLoginUI.generateLoginHtmlFragment(cms, response.getRequest());
+                    Element el = new Element(Tag.valueOf("div"), "").html(html);
+                    doc.body().appendChild(el);
+                } catch (IOException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+            // Inject CmsCoreData etc. for GWT dialogs
+            try {
+                doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
+                doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(currentLocale, true));
+                doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(currentLocale, true));
+                doc.head().append(org.opencms.ade.galleries.ClientMessages.get().export(currentLocale, true));
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+    };
 
     /** The static log object for this class. */
     static final Log LOG = CmsLog.getLog(CmsUIServlet.class);
-
-    /** The login UI provider, overrides the default UI to display the login dialog when required. */
-    static final UIProvider loginUiProvider = new UIProvider() {
-
-        private static final long serialVersionUID = 9154828335594149982L;
-
-        @Override
-        public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
-
-            if (shouldShowLogin()) {
-                return CmsLoginUI.class;
-            }
-            return null;
-        }
-    };
 
     /** The login redirect handler. */
     static final RequestHandler loginRedirectHandler = new RequestHandler() {
@@ -113,11 +158,29 @@ public class CmsUIServlet extends VaadinServlet {
         }
     };
 
+    /** The login UI provider, overrides the default UI to display the login dialog when required. */
+    static final UIProvider loginUiProvider = new UIProvider() {
+
+        private static final long serialVersionUID = 9154828335594149982L;
+
+        @Override
+        public Class<? extends UI> getUIClass(UIClassSelectionEvent event) {
+
+            if (shouldShowLogin()) {
+                return CmsLoginUI.class;
+            }
+            return null;
+        }
+    };
+
     /** Serialization id. */
     private static final long serialVersionUID = 8119684308154724518L;
 
     /** The current CMS context. */
     private ThreadLocal<CmsObject> m_perThreadCmsObject;
+
+    /** Map of stored system messages objects. */
+    private Map<Locale, SystemMessages> m_systemMessages = new HashMap<Locale, SystemMessages>();
 
     /**
      * Returns whether the login dialog should be shown.<p>
@@ -137,6 +200,31 @@ public class CmsUIServlet extends VaadinServlet {
     public CmsObject getCmsObject() {
 
         return m_perThreadCmsObject.get();
+    }
+
+    /**
+     * @see com.vaadin.server.SystemMessagesProvider#getSystemMessages(com.vaadin.server.SystemMessagesInfo)
+     */
+    public SystemMessages getSystemMessages(SystemMessagesInfo systemMessagesInfo) {
+
+        Locale locale = systemMessagesInfo.getLocale();
+        if (!m_systemMessages.containsKey(locale)) {
+            m_systemMessages.put(locale, createSystemMessages(locale));
+        }
+        return m_systemMessages.get(locale);
+    }
+
+    /**
+     * @see com.vaadin.server.SessionInitListener#sessionInit(com.vaadin.server.SessionInitEvent)
+     */
+    public void sessionInit(final SessionInitEvent event) {
+
+        // set the locale to the users workplace locale
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject());
+        event.getSession().setLocale(wpLocale);
+        event.getSession().addRequestHandler(loginRedirectHandler);
+        event.getSession().addUIProvider(loginUiProvider);
+        event.getSession().addBootstrapListener(bootstrapListener);
     }
 
     /**
@@ -227,70 +315,33 @@ public class CmsUIServlet extends VaadinServlet {
     protected void servletInitialized() throws ServletException {
 
         super.servletInitialized();
-        getService().addSessionInitListener(new SessionInitListener() {
+        getService().setSystemMessagesProvider(this);
+        getService().addSessionInitListener(this);
+    }
 
-            private static final long serialVersionUID = -3191245142912338247L;
+    /**
+     * Returns a system messages instance for the given locale.<p>
+     *
+     * @param locale the locale
+     *
+     * @return the system messages
+     */
+    private SystemMessages createSystemMessages(Locale locale) {
 
-            public void sessionInit(final SessionInitEvent event) {
-
-                // set the locale to the users workplace locale
-                final Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(
-                    ((CmsUIServlet)getCurrent()).getCmsObject());
-                event.getSession().setLocale(wpLocale);
-                event.getSession().addRequestHandler(loginRedirectHandler);
-                event.getSession().addUIProvider(loginUiProvider);
-                event.getSession().addBootstrapListener(new BootstrapListener() {
-
-                    private static final long serialVersionUID = -6249561809984101044L;
-
-                    public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
-
-                        // nothing to do
-                    }
-
-                    public void modifyBootstrapPage(BootstrapPageResponse response) {
-
-                        CmsCoreService svc = new CmsCoreService();
-                        HttpServletRequest request = (HttpServletRequest)VaadinService.getCurrentRequest();
-                        svc.setRequest(request);
-                        CmsObject cms = ((CmsUIServlet)getCurrent()).getCmsObject();
-                        svc.setCms(cms);
-
-                        Document doc = response.getDocument();
-
-                        Elements appLoadingElements = doc.getElementsByClass("v-app-loading");
-                        if (appLoadingElements.size() > 0) {
-                            for (Node node : appLoadingElements.get(0).childNodes()) {
-                                node.remove();
-
-                            }
-
-                            appLoadingElements.get(0).append(CmsVaadinConstants.LOADING_INDICATOR_HTML);
-                        }
-
-                        if (shouldShowLogin()) {
-                            try {
-                                String html = CmsLoginUI.generateLoginHtmlFragment(cms, response.getRequest());
-                                Element el = new Element(Tag.valueOf("div"), "").html(html);
-                                doc.body().appendChild(el);
-                            } catch (IOException e) {
-                                LOG.error(e.getLocalizedMessage(), e);
-                            }
-                        }
-                        Locale currentLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-                        // Inject CmsCoreData etc. for GWT dialogs
-                        try {
-                            doc.head().append(CmsGwtActionElement.exportCommon(cms, svc.prefetch(), ""));
-                            doc.head().append(org.opencms.ade.publish.ClientMessages.get().export(currentLocale, true));
-                            doc.head().append(org.opencms.ade.upload.ClientMessages.get().export(currentLocale, true));
-                            doc.head().append(
-                                org.opencms.ade.galleries.ClientMessages.get().export(currentLocale, true));
-                        } catch (Exception e) {
-                            LOG.error(e.getLocalizedMessage(), e);
-                        }
-                    }
-                });
-            }
-        });
+        CmsMessages messages = Messages.get().getBundle(locale);
+        CustomizedSystemMessages systemMessages = new CustomizedSystemMessages();
+        systemMessages.setCommunicationErrorCaption(messages.key(Messages.GUI_SYSTEM_COMMUNICATION_ERROR_CAPTION_0));
+        systemMessages.setCommunicationErrorMessage(messages.key(Messages.GUI_SYSTEM_COMMUNICATION_ERROR_MESSAGE_0));
+        systemMessages.setCommunicationErrorNotificationEnabled(true);
+        systemMessages.setAuthenticationErrorCaption(messages.key(Messages.GUI_SYSTEM_AUTHENTICATION_ERROR_CAPTION_0));
+        systemMessages.setAuthenticationErrorMessage(messages.key(Messages.GUI_SYSTEM_AUTHENTICATION_ERROR_MESSAGE_0));
+        systemMessages.setAuthenticationErrorNotificationEnabled(true);
+        systemMessages.setSessionExpiredCaption(messages.key(Messages.GUI_SYSTEM_SESSION_EXPIRED_ERROR_CAPTION_0));
+        systemMessages.setSessionExpiredMessage(messages.key(Messages.GUI_SYSTEM_SESSION_EXPIRED_ERROR_MESSAGE_0));
+        systemMessages.setSessionExpiredNotificationEnabled(true);
+        systemMessages.setInternalErrorCaption(messages.key(Messages.GUI_SYSTEM_INTERNAL_ERROR_CAPTION_0));
+        systemMessages.setInternalErrorMessage(messages.key(Messages.GUI_SYSTEM_INTERNAL_ERROR_MESSAGE_0));
+        systemMessages.setInternalErrorNotificationEnabled(true);
+        return systemMessages;
     }
 }
