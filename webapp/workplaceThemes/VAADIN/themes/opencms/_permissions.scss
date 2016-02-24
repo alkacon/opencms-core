@@ -11,7 +11,10 @@
 				padding-left: round($v-unit-size/2);
 			}
 		}
-		
+		.o-permissions_delete {
+			float: right;
+			margin-right: $o-layout-margin;
+		}
 		.o-permissions-info {
 			margin-left: 38px;
 		}

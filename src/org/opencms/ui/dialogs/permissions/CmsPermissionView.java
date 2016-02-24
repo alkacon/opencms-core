@@ -223,6 +223,7 @@ public class CmsPermissionView extends CssLayout {
         }
 
         m_principalName = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
+        @SuppressWarnings("unused")
         String ou = null;
         String displayName;
 
@@ -314,6 +315,7 @@ public class CmsPermissionView extends CssLayout {
         }
 
         FontIcon icon = null;
+        boolean isOverwriteAll = false;
         switch (flags) {
             case CmsAccessControlEntry.ACCESS_FLAGS_USER:
                 icon = FontAwesome.USER;
@@ -329,6 +331,7 @@ public class CmsPermissionView extends CssLayout {
                 break;
             case CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL:
                 icon = FontAwesome.EXCLAMATION_CIRCLE;
+                isOverwriteAll = true;
                 break;
             default:
                 icon = FontAwesome.QUESTION_CIRCLE;
@@ -375,40 +378,51 @@ public class CmsPermissionView extends CssLayout {
             m_inheritedFrom.setVisible(false);
         }
 
-        // get all permissions of the current entry
-        CmsPermissionSet permissions = entry.getPermissions();
-        IndexedContainer container = getPermissionContainer(permissions);
-        m_permissions.setContainerDataSource(container);
-        m_permissions.setColumnReorderingAllowed(false);
-        m_permissions.setColumnHeader(PROPERTY_LABEL, CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_0));
-        m_permissions.setColumnHeader(
-            PROPERTY_ALLOWED,
-            CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_ALLOWED_0));
-        m_permissions.setColumnHeader(
-            PROPERTY_DISPLAY_ALLOWED,
-            CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_ALLOWED_0));
-        m_permissions.setColumnHeader(PROPERTY_DENIED, CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_DENIED_0));
-        m_permissions.setColumnHeader(
-            PROPERTY_DISPLAY_DENIED,
-            CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_DENIED_0));
-
-        m_permissions.setPageLength(5);
-        m_permissions.setSortEnabled(false);
-
-        if (m_editable) {
-            m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED, PROPERTY_DENIED);
-            toggleDetails();
+        if (isOverwriteAll) {
             m_details.setVisible(false);
-            m_permissions.setTableFieldFactory(FIELD_FACTORY);
-            m_permissions.setEditable(m_editable);
-            m_responsibleCheckbox.setValue(isResponsible(entry.getFlags()));
-            m_overwriteCheckbox.setValue(isOverWritingInherited(entry.getFlags()));
-            m_inheritCheckbox.setVisible(isFolder);
-            m_inheritCheckbox.setValue(Boolean.valueOf(m_entry.isInheriting()));
-            m_buttonBar.setVisible(true);
+            if (m_editable) {
+                addComponent(m_deleteButton, 2);
+                m_deleteButton.addStyleName("o-permissions_delete");
+            }
         } else {
-            m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_DISPLAY_ALLOWED, PROPERTY_DISPLAY_DENIED);
+            // get all permissions of the current entry
+            CmsPermissionSet permissions = entry.getPermissions();
+            IndexedContainer container = getPermissionContainer(permissions);
+            m_permissions.setContainerDataSource(container);
+            m_permissions.setColumnReorderingAllowed(false);
+            m_permissions.setColumnHeader(PROPERTY_LABEL, CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_0));
+            m_permissions.setColumnHeader(
+                PROPERTY_ALLOWED,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_ALLOWED_0));
+            m_permissions.setColumnHeader(
+                PROPERTY_DISPLAY_ALLOWED,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_ALLOWED_0));
+            m_permissions.setColumnHeader(
+                PROPERTY_DENIED,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_DENIED_0));
+            m_permissions.setColumnHeader(
+                PROPERTY_DISPLAY_DENIED,
+                CmsVaadinUtils.getMessageText(Messages.GUI_PERMISSION_DENIED_0));
+
+            m_permissions.setPageLength(5);
+            m_permissions.setSortEnabled(false);
+            if (m_editable) {
+                toggleDetails();
+                m_details.setVisible(false);
+                m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED, PROPERTY_DENIED);
+                m_permissions.setTableFieldFactory(FIELD_FACTORY);
+                m_permissions.setEditable(m_editable);
+                m_responsibleCheckbox.setValue(isResponsible(entry.getFlags()));
+                m_overwriteCheckbox.setValue(isOverWritingInherited(entry.getFlags()));
+                m_inheritCheckbox.setVisible(isFolder);
+                m_inheritCheckbox.setValue(Boolean.valueOf(m_entry.isInheriting()));
+
+                m_buttonBar.setVisible(true);
+            } else {
+                m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_DISPLAY_ALLOWED, PROPERTY_DISPLAY_DENIED);
+            }
         }
+
     }
 
     /**
