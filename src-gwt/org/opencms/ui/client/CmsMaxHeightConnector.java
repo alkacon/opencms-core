@@ -64,6 +64,9 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     /** Flag indicating the required height is currently being evaluated. */
     private boolean m_evaluating;
 
+    /** Flag which is set when this connector is unregistered. */
+    private boolean m_unregistered;
+
     /**
      * Constructor.<p>
      */
@@ -82,10 +85,23 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
     }
 
     /**
+     * @see com.vaadin.client.ui.AbstractConnector#onUnregister()
+     */
+    @Override
+    public void onUnregister() {
+
+        super.onUnregister();
+        m_unregistered = true;
+        removeObserver();
+    }
+
+    /**
      * @see com.vaadin.client.extensions.AbstractExtensionConnector#extend(com.vaadin.client.ServerConnector)
      */
     @Override
     protected void extend(ServerConnector target) {
+
+        target.isEnabled();
 
         // Get the extended widget
         m_widget = ((ComponentConnector)target).getWidget();
@@ -97,6 +113,10 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      */
     protected void handleMutation() {
 
+        if (m_unregistered) {
+            removeObserver();
+            return;
+        }
         int maxHeight = getState().getMaxHeight();
         if (m_currentHeight > 0) {
             removeObserver();
@@ -123,9 +143,10 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      */
     private native void addMutationObserver(Element element)/*-{
         var self = this;
-        var observer = new MutationObserver(function(mutations) {
-            self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
-        });
+        var observer = new MutationObserver(
+                function(mutations) {
+                    self.@org.opencms.ui.client.CmsMaxHeightConnector::handleMutation()();
+                });
         this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = observer;
 
         // configuration of the observer:
@@ -145,7 +166,8 @@ public class CmsMaxHeightConnector extends AbstractExtensionConnector {
      */
     private native void removeObserver()/*-{
         if (this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver != null) {
-            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver.disconnect();
+            this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver
+                    .disconnect();
             this.@org.opencms.ui.client.CmsMaxHeightConnector::m_mutationObserver = null;
         }
     }-*/;
