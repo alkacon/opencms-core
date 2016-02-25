@@ -38,11 +38,7 @@ import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.Messages;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
-
-import org.apache.commons.lang.RandomStringUtils;
 
 /**
  * The user preferences dialog action.<p>
@@ -67,30 +63,7 @@ public class CmsPreferencesDialogAction extends A_CmsWorkplaceAction {
 
                     public void onUpdate(List<String> updatedItems) {
 
-                        URI uri = A_CmsUI.get().getPage().getLocation();
-                        try {
-                            String query = uri.getQuery();
-                            final int idLength = 6;
-                            String lrid = RandomStringUtils.randomAlphanumeric(idLength);
-                            String prefix = "_lrid=";
-                            // Add or replace _lrid parameter to force reload without triggering query about resubmitting POST parameters
-                            if (query == null) {
-                                query = prefix + lrid;
-                            } else if (query.contains(prefix)) {
-                                query = query.replaceFirst(prefix + ".{" + idLength + "}", prefix + lrid);
-                            } else {
-                                query = query + "&" + prefix + lrid;
-                            }
-                            URI newUri = new URI(
-                                uri.getScheme(),
-                                uri.getAuthority(),
-                                uri.getPath(),
-                                query,
-                                uri.getFragment());
-                            A_CmsUI.get().getPage().setLocation(newUri);
-                        } catch (URISyntaxException e) {
-                            A_CmsUI.get().getPage().reload();
-                        }
+                        A_CmsUI.get().getPage().reload();
                     }
                 });
             dialogExtension.showUserPreferences();
