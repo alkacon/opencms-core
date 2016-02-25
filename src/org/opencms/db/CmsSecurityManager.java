@@ -95,7 +95,6 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -3049,7 +3048,7 @@ public final class CmsSecurityManager {
                     "",
                     true,
                     true,
-                    false,
+                    true,
                     dbc.getRequestContext().getRemoteAddress()));
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
@@ -3058,21 +3057,6 @@ public final class CmsSecurityManager {
             // any exception: return false
             return false;
         }
-        // to improve performance, sort the roles by OU and name to start the role check closest to the root
-        Collections.sort(roles, new Comparator<CmsGroup>() {
-
-            public int compare(CmsGroup o1, CmsGroup o2) {
-
-                String ou1 = o1.getOuFqn();
-                String ou2 = o2.getOuFqn();
-
-                if ((ou1 == null) || (ou2 == null)) {
-                    // one of the OUs is the root OU, the root OU has to show up first
-                    return ou1 == null ? -1 : 1;
-                }
-                return ou1.equals(ou2) ? o1.getName().compareTo(o2.getName()) : ou1.compareTo(ou2);
-            }
-        });
 
         // first check the user has the role at all
         if (!hasRole(role.forOrgUnit(null), roles)) {
