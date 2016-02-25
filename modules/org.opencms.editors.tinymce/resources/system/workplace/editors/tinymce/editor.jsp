@@ -708,7 +708,7 @@ tinyMCE.init({
     // General options
     codemirror: {
       indentOnInit: true, // whether or not to indent code on init.
-      path: "<%= CmsWorkplace.getSkinUri() + "editors/codemirror/dist/" %>", // path to CodeMirror distribution
+      path: "<%= CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getStaticResourceContext() , "editors/codemirror/dist/") %>", // path to CodeMirror distribution
       config: {           // CodeMirror config object
          lineNumbers: true
       }
@@ -791,7 +791,7 @@ tinyMCE.init({
 		// Add Publisg button
 	    ed.addButton('oc-publish', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0), encoding)  %>',
-	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-publish.gif")%>',
+	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-publish.gif")%>',
 	        onclick : function() {
 	        	var exitTarget='_top';
 	        	//the editors exit frame target, may be !='_top' if in advanced direct edit!
@@ -805,21 +805,21 @@ tinyMCE.init({
 	 	// Add Save & Exit button
 	    ed.addButton('oc-save-exit', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0), encoding) %>',
-	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save-exit.gif")%>',
+	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-save-exit.gif")%>',
 	        onclick : ocmsSaveExit
 	   });
 	   
 	 	// Add Save button
 	    ed.addButton('oc-save', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0), encoding) %>',
-	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-save.gif")%>',
+	        image : '<%=CmsWorkplace.getStaticResourceUri("/editors/tinymce/toolbar/oc-save.gif")%>',
 	        onclick : ocmsSave
 	   });
 
 	 	// Add Exit button
 	    ed.addButton('oc-exit', {
 	    	title : '<%= CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0), encoding) %>',
-	        image : '<%=cms.link("/system/workplace/resources/editors/tinymce/toolbar/oc-exit.gif")%>',
+	        image : '<%=CmsWorkplace.getStaticResourceUri("editors/tinymce/toolbar/oc-exit.gif")%>',
 	        onclick : ocmsExit
 	   });
 	}
