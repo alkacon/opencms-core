@@ -83,7 +83,7 @@ function setList() {
 
    if (document.forms['main'].result.value == '0') {
      img = "error.png";
-     txt = "<%= wp.key(Messages.GUI_PUBLISH_LIST_EMPTY_0) %>";
+     txt = "<%= wp.key(org.opencms.workplace.commons.Messages.GUI_PUBLISH_LIST_EMPTY_0) %>";
      
      var html = "<table border='0' style='vertical-align:middle; height: 200px;'>";
      html += "<tr><td width='40' align='center' valign='middle'><img src='<%= CmsWorkplace.getSkinUri() %>commons/";
@@ -197,7 +197,7 @@ function restartProgress() {
 <%= wp.paramsAsHidden(excludes) %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 <input type="hidden" name="<%= CmsProgressWidget.PARAMETER_KEY %>" value="<%= wp.getProgress().getKey() %>">
-<%= wp.dialogBlockStart(wp.key(Messages.GUI_PUBLISH_RESOURCES_TITLE_0)) %>
+<%= wp.dialogBlockStart(wp.key(org.opencms.workplace.commons.Messages.GUI_PUBLISH_RESOURCES_TITLE_0)) %>
 <%= wp.dialogWhiteBoxStart() %>
 
 <div id="resourcesreport" ></div>
@@ -330,7 +330,7 @@ function activateOkButton() {
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
-<%= wp.dialogBlockStart(wp.key(Messages.GUI_PUBLISH_RELATIONS_TITLE_0)) %>
+<%= wp.dialogBlockStart(wp.key(org.opencms.workplace.commons.Messages.GUI_PUBLISH_RELATIONS_TITLE_0)) %>
 <%= wp.dialogWhiteBoxStart() %>
 
 <div id="relationsreport" ></div>
