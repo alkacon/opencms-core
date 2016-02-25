@@ -636,7 +636,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** Scheduler parameter: Write the output of the update to the logfile. */
     public static final String JOB_PARAM_WRITELOG = "writeLog";
 
-    /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.</code>). */
+    /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.core.</code>). */
     public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.core.";
 
     /** The log object for this class. */
@@ -832,7 +832,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         } catch (ClassNotFoundException e) {
             // allow Lucene standard classes to be written in a short form
             analyzerClass = Class.forName(LUCENE_ANALYZER + className);
-            LOG.warn(e.getLocalizedMessage(), e);
         }
 
         // since Lucene 3.0 most analyzers need a "version" parameter and don't support an empty constructor
@@ -2334,8 +2333,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 if (CmsJspTagContainer.isDetailContainersPage(adminCms, adminCms.getSitePath(res))) {
                                     addDetailContent(adminCms, containerPages, adminCms.getSitePath(res));
                                 }
-                            } else if (OpenCms.getResourceManager().getResourceType(
-                                res.getTypeId()).getTypeName().equals(
+                            } else
+                                if (OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName().equals(
                                     CmsResourceTypeXmlContainerPage.GROUP_CONTAINER_TYPE_NAME)) {
                                 elementGroups.add(res);
                             }
