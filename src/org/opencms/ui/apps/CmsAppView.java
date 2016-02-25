@@ -173,7 +173,9 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     public boolean beforeViewChange(ViewChangeEvent event) {
 
         disableGlobalShortcuts();
-        m_appLayout.closePopupViews();
+        if (m_appLayout != null) {
+            m_appLayout.closePopupViews();
+        }
         if (m_app instanceof ViewChangeListener) {
             return ((ViewChangeListener)m_app).beforeViewChange(event);
         }

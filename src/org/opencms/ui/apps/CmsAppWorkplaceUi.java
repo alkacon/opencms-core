@@ -43,6 +43,7 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
 import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -68,6 +69,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
@@ -382,8 +384,15 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public CmsWorkplaceSettings getWorkplaceSettings() {
 
-        return (CmsWorkplaceSettings)getSession().getSession().getAttribute(
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getSession().getSession().getAttribute(
             CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            settings = CmsLoginHelper.initSiteAndProject(getCmsObject());
+            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                settings);
+        }
+        return settings;
     }
 
     /**
