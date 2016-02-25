@@ -39,7 +39,6 @@ import org.opencms.util.CmsUUID;
 
 import java.util.Map;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -102,7 +101,7 @@ public class CmsListCollectorEditor extends A_CmsDirectEditButtons {
      */
     public boolean isVisibleInCurrentView() {
 
-        return Objects.equal(m_editableData.getElementView(), CmsContainerpageController.get().getElementView());
+        return CmsContainerpageController.get().matchRootView(m_editableData.getElementView());
     }
 
     /**
