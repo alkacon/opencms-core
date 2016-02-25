@@ -16,7 +16,33 @@ Legend:
 - General comment
 
 
-OpenCms 10.0.x Alpha 2 - December 9, 2015
+OpenCms 10.0.0 Beta - February 25, 2016
+! Added permission dialog to the new explorer
+! Added history dialog to the new explorer
+! Added "step through" feature to the properties dialog
+! Added "copy stack trace" function to the error dialog
+! Added <cms:display> tag for output generation in search list results
+! Added personal user image upload to the toolbar user info dialog
+! Added replace dialog to the new explorer
+! Added edit pointer dialog to the new explorer
+! Added tool tips for disabled context menu entries in the new explorer
+! Added option to edit the current sitemap configuration from the sitemap editor
+! Added publish queue dialog to new explorer
+! Added siblings tab to info dialog in the new explorer
+! Added optional text info fields for tabs in the form based editor
+! Added support for grouping content types in sub views for the "add new" dialog
+! Added template select widget to the site manager "add new site" dialog
+! Added options to SOLR search for multiple facets on one field
+! Added support for macro formatters
+- The Git integration app now allows to pull and import selected modules
+- The improvements / fixes made in OpenCms 9.5.3 have been integrated in 10 Beta
+- Improved and unified error dialog layout
+- Improved container page XML cleanup on save
+- Improved toolbar buttons to be disabled in online project
+- Removed no longer required core modules
+- Separated old workplace classes and resources from standard core
+
+OpenCms 10.0.0 Alpha 2 - December 9, 2015
 ! Copy or move resources with drag and drop in the new explorer.
 ! Upload files with drag and drop from the local desktop to the new explorer.
 ! Quick navigation with keyboard shortcuts in the new explorer.
