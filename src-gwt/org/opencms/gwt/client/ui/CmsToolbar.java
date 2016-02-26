@@ -27,7 +27,6 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -41,7 +40,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -75,18 +73,12 @@ public class CmsToolbar extends Composite {
 
     /** The user info button HTML. */
     @UiField
-    protected HTML m_userInfo;
-
-    /** The user icon path. */
-    @UiField(provided = true)
-    protected String m_userIcon;
+    protected CmsUserInfo m_userInfo;
 
     /**
      * Constructor.<p>
      */
     public CmsToolbar() {
-        // set user icon path before binding the UI with provided field
-        m_userIcon = CmsCoreProvider.get().getUserInfo().getUserIcon();
         initWidget(uiBinder.createAndBindUi(this));
     }
 

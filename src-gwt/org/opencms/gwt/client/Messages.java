@@ -439,6 +439,9 @@ public final class Messages {
     public static final String GUI_LOCKING_0 = "GUI_LOCKING_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOGOUT_0 = "GUI_LOGOUT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_SELECT_MESSAGE_0 = "GUI_MODEL_SELECT_MESSAGE_0";
 
     /** Message constant for key in the resource bundle. */

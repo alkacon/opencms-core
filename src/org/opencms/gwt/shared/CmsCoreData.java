@@ -89,6 +89,9 @@ public class CmsCoreData implements IsSerializable {
      */
     public static class UserInfo implements IsSerializable {
 
+        /** The info HTML. */
+        private String m_infoHtml;
+
         /** True if the user is an administrator. */
         private boolean m_isAdmin;
 
@@ -109,17 +112,25 @@ public class CmsCoreData implements IsSerializable {
          *
          * @param name the user name
          * @param userIcon the user icon path
+         * @param infoHtml the info HTML
          * @param isAdmin true if the user is an administrator
          * @param isDeveloper true if the user is a template developer
          * @param isCategoryManager true if the user is a category manager
          */
-        public UserInfo(String name, String userIcon, boolean isAdmin, boolean isDeveloper, boolean isCategoryManager) {
+        public UserInfo(
+            String name,
+            String userIcon,
+            String infoHtml,
+            boolean isAdmin,
+            boolean isDeveloper,
+            boolean isCategoryManager) {
 
             m_isDeveloper = isDeveloper;
             m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
             m_name = name;
             m_userIcon = userIcon;
+            m_infoHtml = infoHtml;
         }
 
         /**
@@ -128,6 +139,16 @@ public class CmsCoreData implements IsSerializable {
         protected UserInfo() {
 
             // empty
+        }
+
+        /**
+         * Returns the info HTML.<p>
+         *
+         * @return the info HTML
+         */
+        public String getInfoHtml() {
+
+            return m_infoHtml;
         }
 
         /**
@@ -256,11 +277,11 @@ public class CmsCoreData implements IsSerializable {
     /** The OpenCms VFS prefix. */
     private String m_vfsPrefix;
 
-    /** The current workplace locale. */
-    private String m_wpLocale;
-
     /** The workplaces resources path prefix. */
     private String m_workplaceResourcesPrefix;
+
+    /** The current workplace locale. */
+    private String m_wpLocale;
 
     /**
      * Constructor.<p>

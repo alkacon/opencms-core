@@ -81,12 +81,12 @@ public class CmsUserInfo extends VerticalLayout {
      * @param uploadListener the user image upload listener
      */
     public CmsUserInfo(I_UploadListener uploadListener) {
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+        CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsUser user = cms.getRequestContext().getCurrentUser();
 
         m_info.setContentMode(ContentMode.HTML);
-        m_info.setValue(generateInfoHtml(user));
+        m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
         m_infoPanel.addComponent(createImageButton(cms, user, uploadListener), 0);
         m_logout.addClickListener(new Button.ClickListener() {
 
@@ -109,6 +109,75 @@ public class CmsUserInfo extends VerticalLayout {
 
         // hiding the button for now
         m_preferences.setVisible(false);
+    }
+
+    /**
+     * Generates the user info HTML.<p>
+     *
+     * @param cms the cms context
+     * @param locale the user workplace locale
+     *
+     * @return the user info
+     */
+    public static String generateUserInfoHtml(CmsObject cms, Locale locale) {
+
+        StringBuffer infoHtml = new StringBuffer(256);
+        infoHtml.append("<div class=\"cms-user-image\"><img src=\"");
+        infoHtml.append(
+            OpenCms.getWorkplaceAppManager().getUserIconHelper().getBigIconPath(
+                cms,
+                cms.getRequestContext().getCurrentUser()));
+        infoHtml.append("\" title=\"");
+        infoHtml.append(Messages.get().getBundle(locale).key(Messages.GUI_USER_INFO_NO_UPLOAD_0));
+        infoHtml.append("\" /></div><div class=\"cms-user-info\">");
+        infoHtml.append(generateInfo(cms, locale));
+        infoHtml.append("</div>");
+        return infoHtml.toString();
+    }
+
+    /**
+     * Generates the info data HTML.<p>
+     *
+     * @param cms the cms context.<p>
+     * @param locale the locale
+     *
+     * @return the info data HTML
+     */
+    private static String generateInfo(CmsObject cms, Locale locale) {
+
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        StringBuffer infoHtml = new StringBuffer(128);
+        infoHtml.append("<b>").append(user.getFullName()).append("</b>").append(LINE_BREAK);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
+            infoHtml.append(user.getEmail()).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getInstitution())) {
+            infoHtml.append(user.getInstitution()).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getAddress())) {
+            infoHtml.append(user.getAddress()).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getZipcode())) {
+            infoHtml.append(user.getZipcode()).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCity())) {
+            infoHtml.append(user.getCity()).append(LINE_BREAK);
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCountry())) {
+            infoHtml.append(user.getCountry()).append(LINE_BREAK);
+        }
+        infoHtml.append(
+            Messages.get().getBundle(locale).key(
+                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
+                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
+                    LINE_BREAK);
+        infoHtml.append(
+            org.opencms.workplace.Messages.get().getBundle(locale).key(
+                org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
+        infoHtml.append(": ");
+        infoHtml.append(cms.getRequestContext().getCurrentProject().getName()).append(LINE_BREAK);
+
+        return infoHtml.toString();
     }
 
     /**
@@ -154,47 +223,5 @@ public class CmsUserInfo extends VerticalLayout {
      */
     void showPreferences() {
         //TODO: implement
-    }
-
-    /**
-     * Generates the user info HTML.<p>
-     *
-     * @param user the user
-     *
-     * @return the user info
-     */
-    private String generateInfoHtml(CmsUser user) {
-
-        StringBuffer infoHtml = new StringBuffer(128);
-        infoHtml.append("<b>").append(user.getFullName()).append("</b>").append(LINE_BREAK);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
-            infoHtml.append(user.getEmail()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getInstitution())) {
-            infoHtml.append(user.getInstitution()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getAddress())) {
-            infoHtml.append(user.getAddress()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getZipcode())) {
-            infoHtml.append(user.getZipcode()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCity())) {
-            infoHtml.append(user.getCity()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCountry())) {
-            infoHtml.append(user.getCountry()).append(LINE_BREAK);
-        }
-        Locale locale = UI.getCurrent().getLocale();
-        infoHtml.append(
-            CmsVaadinUtils.getMessageText(
-                Messages.GUI_USER_INFO_ONLINE_SINCE_1,
-                DateFormat.getTimeInstance(DateFormat.DEFAULT, locale).format(new Date(user.getLastlogin())))).append(
-                    LINE_BREAK);
-        infoHtml.append(CmsVaadinUtils.getMessageText(org.opencms.workplace.Messages.GUI_LABEL_PROJECT_0));
-        infoHtml.append(": ");
-        infoHtml.append(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject().getName()).append(LINE_BREAK);
-
-        return infoHtml.toString();
     }
 }

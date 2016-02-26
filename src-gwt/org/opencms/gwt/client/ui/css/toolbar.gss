@@ -1,3 +1,5 @@
+@external cms-user-info, cms-user-image;
+
 @def TOOLBAR_HEIGHT 52px;
 
 @keyframes toolbarfadeaway {
@@ -298,17 +300,62 @@
 }
 
 .toolbarBackground div.userInfo{
-	border: 2px solid #4E545B;
-    border-radius: 4px;
-    padding: 2px;
-    width: 40px;
-    height: 40px;
+	padding: 0px;
     float: right;
     display: block;
+    position: relative;
 }
 
-.toolbarBackground div.userInfo:hover{
+.toolbarBackground div.userInfo > div {
+	border: 2px solid #4E545B;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+	padding: 2px;
+	background: transparent;
+}
+
+.toolbarBackground div.userInfo img {
+	height: 32px;
+	width: 32px;
+	vertical-align: middle;
+}
+
+.toolbarBackground div.userInfo > div:hover{
 	border-color: #2197DB;
+}
+
+div.userInfoDialog{
+	background: #ffffff;
+	padding: 3px;
+}
+
+div.userInfoDialog div.userInfoButtons{
+	clear: both;
+	padding-top: 10px;
+	text-align: right;
+}
+
+div.userInfoDialog div.userInfoButtons > div{
+	margin-left: 10px;
+}
+
+div.userInfoDialog .cms-user-info{
+	margin-left: 112px;
+	width: 200px;
+}
+
+div.userInfoDialog .cms-user-image{
+	border: 1px solid #C5C5C7;
+    border-radius: 4px;
+    height: 102px;
+    padding: 2px;
+    float: left;
+}
+
+div.userInfoDialog .cms-user-image img{
+	height: 96px;
+	width: 96px;
 }
 
 .notification {

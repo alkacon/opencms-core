@@ -27,11 +27,10 @@
 
 package org.opencms.ui.client;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.vaadin.client.ui.VPopupView;
 
 /**
@@ -62,13 +61,17 @@ public class CmsVPopupView extends VPopupView {
                 popup.getElement().appendChild(m_corner);
             }
             updateCornerLeft();
-            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
-                public void execute() {
+            // wait to reposition the corner, as their may be an animation effecting the position
+            Timer timer = new Timer() {
+
+                @Override
+                public void run() {
 
                     updateCornerLeft();
                 }
-            });
+            };
+            timer.schedule(100);
         }
     }
 

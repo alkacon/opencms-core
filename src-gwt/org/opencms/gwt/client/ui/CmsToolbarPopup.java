@@ -36,12 +36,14 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ButtonBase;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A popup which can be displayed below buttons in a toolbar.
  */
 public class CmsToolbarPopup extends CmsPopup {
+
+    /** The minimum distance of the popup to the window border. */
+    private static final int MIN_MARGIN = 8;
 
     /** The 'arrow-shaped' connector element above the popup. */
     protected Element m_arrow = DOM.createDiv();
@@ -106,38 +108,22 @@ public class CmsToolbarPopup extends CmsPopup {
     }
 
     /**
-     * Positions the menu popup the button.<p>
-     *
-     * @param popup the popup to position
-     * @param button the toolbar button
-     * @param toolbarWidth the width of the toolbar
-     * @param isToolbarMode a flag indicating whether the button is in toolbar mode
-     * @param arrow the arrow shaped connector element
+     * Positions the popup below the toolbar button.<p>
      */
-    protected static void positionPopup(
-        CmsPopup popup,
-        Widget button,
-        int toolbarWidth,
-        boolean isToolbarMode,
-        Element arrow) {
-
-        int spaceAssurance = 20;
-        int space = toolbarWidth + (2 * spaceAssurance);
+    public void position() {
 
         // get the window client width
         int windowWidth = Window.getClientWidth();
         // get the min left position
-        int minLeft = (windowWidth - space) / 2;
-        if (minLeft < spaceAssurance) {
-            minLeft = spaceAssurance;
-        }
+        int minLeft = MIN_MARGIN;
+
         // get the max right position
-        int maxRight = minLeft + space;
+        int maxRight = windowWidth - MIN_MARGIN;
         // get the middle button position
-        CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(button.getElement());
+        CmsPositionBean buttonPosition = CmsPositionBean.generatePositionInfo(m_button.getElement());
         int buttonMiddle = (buttonPosition.getLeft() - Window.getScrollLeft()) + (buttonPosition.getWidth() / 2);
         // get the content width
-        int contentWidth = popup.getOffsetWidth();
+        int contentWidth = getOffsetWidth();
 
         // the optimum left position is in the middle of the button minus the half content width
         // assume that the optimum fits into the space
@@ -154,13 +140,13 @@ public class CmsToolbarPopup extends CmsPopup {
         }
 
         // limit the right position if the popup is right outside the window
-        if ((contentLeft + contentWidth + spaceAssurance) > windowWidth) {
-            contentLeft = windowWidth - contentWidth - spaceAssurance;
+        if ((contentLeft + contentWidth + MIN_MARGIN) > windowWidth) {
+            contentLeft = windowWidth - contentWidth - MIN_MARGIN;
         }
 
         // limit the left position if the popup is left outside the window
-        if (contentLeft < spaceAssurance) {
-            contentLeft = spaceAssurance;
+        if (contentLeft < MIN_MARGIN) {
+            contentLeft = MIN_MARGIN;
         }
 
         int arrowSpace = 10;
@@ -182,14 +168,14 @@ public class CmsToolbarPopup extends CmsPopup {
 
         int contentTop = (((buttonPosition.getTop() + buttonPosition.getHeight()) - Window.getScrollTop())
             + arrowHeight) - 2;
-        if (!isToolbarMode) {
+        if (!m_isToolbarMode) {
             contentTop = (buttonPosition.getTop() + buttonPosition.getHeight() + arrowHeight) - 2;
-            int contentHeight = popup.getOffsetHeight();
+            int contentHeight = getOffsetHeight();
             int windowHeight = Window.getClientHeight();
 
-            if (((contentHeight + spaceAssurance) < windowHeight)
+            if (((contentHeight + MIN_MARGIN) < windowHeight)
                 && ((buttonPosition.getTop() - Window.getScrollTop()) > contentHeight)
-                && (((contentHeight + spaceAssurance + contentTop) - Window.getScrollTop()) > windowHeight)) {
+                && (((contentHeight + MIN_MARGIN + contentTop) - Window.getScrollTop()) > windowHeight)) {
                 // content fits into the window height,
                 // there is enough space above the button
                 // and there is to little space below the button
@@ -200,23 +186,15 @@ public class CmsToolbarPopup extends CmsPopup {
             }
         } else {
             contentLeft = contentLeft - Window.getScrollLeft();
-            popup.setPositionFixed();
+            setPositionFixed();
         }
 
-        arrow.setClassName(arrowClass);
-        arrow.getStyle().setLeft(arrowLeft, Unit.PX);
-        arrow.getStyle().setTop(arrowTop, Unit.PX);
+        m_arrow.setClassName(arrowClass);
+        m_arrow.getStyle().setLeft(arrowLeft, Unit.PX);
+        m_arrow.getStyle().setTop(arrowTop, Unit.PX);
 
-        popup.showArrow(arrow);
-        popup.setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
-    }
-
-    /**
-     * Positions the popup below the toolbar button.<p>
-     */
-    public void position() {
-
-        positionPopup(this, m_button, getToolbarWidth(), m_isToolbarMode, m_arrow);
+        showArrow(m_arrow);
+        setPopupPosition(contentLeft + Window.getScrollLeft(), contentTop);
     }
 
     /**
@@ -233,15 +211,5 @@ public class CmsToolbarPopup extends CmsPopup {
         } else {
             removeAutoHidePartner(m_baseElement);
         }
-    }
-
-    /**
-     * Returns the toolbar width.<p>
-     *
-     * @return the toolbar width
-     */
-    private int getToolbarWidth() {
-
-        return Window.getClientWidth() - 20;
     }
 }

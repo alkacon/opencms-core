@@ -100,7 +100,7 @@ public class CmsMenuButton extends Composite implements HasClickHandlers {
     /**
      * Constructor.<p>
      */
-    private CmsMenuButton() {
+    protected CmsMenuButton() {
 
         initWidget(uiBinder.createAndBindUi(this));
         m_button.setSize(I_CmsButton.Size.big);

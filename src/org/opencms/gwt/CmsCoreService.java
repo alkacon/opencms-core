@@ -77,6 +77,7 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.components.CmsUserInfo;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -1039,11 +1040,14 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
         boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
         boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+
         UserInfo userInfo = new UserInfo(
             cms.getRequestContext().getCurrentUser().getName(),
             OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
                 cms,
                 cms.getRequestContext().getCurrentUser()),
+            CmsUserInfo.generateUserInfoHtml(cms, wpLocale),
             isAdmin,
             isDeveloper,
             isCategoryManager);
@@ -1059,7 +1063,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             OpenCms.getSystemInfo().getStaticResourceContext(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),
-            OpenCms.getWorkplaceManager().getWorkplaceLocale(cms).toString(),
+            wpLocale.toString(),
             cms.getRequestContext().getUri(),
             navigationUri,
             structureId,

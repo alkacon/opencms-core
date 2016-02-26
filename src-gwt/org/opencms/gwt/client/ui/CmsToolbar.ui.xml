@@ -4,7 +4,6 @@
 	xmlns:cms="urn:import:org.opencms.gwt.client.ui">
 	<ui:with field="images" type="org.opencms.gwt.client.ui.css.I_CmsImageBundle" />
 	<ui:with field="resources" type="org.opencms.gwt.client.ui.css.I_CmsLayoutBundle" />
-	<ui:with field="m_userIcon" type="java.lang.String" />
 	<g:FlowPanel ui:field="m_panel" styleName="{resources.toolbarCss.toolbar}">
 		<cms:CmsNotificationWidget />
 		<g:FlowPanel styleName="{resources.toolbarCss.toolbarBackground}">
@@ -13,7 +12,7 @@
 					<span class="{resources.toolbarCss.toolbarLogo}"></span>
 	  			</g:HTMLPanel>
 				<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
-			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"><g:HTML ui:field="m_userInfo" styleName="{resources.toolbarCss.userInfo}"><img src="{m_userIcon}" /></g:HTML></g:FlowPanel>
+			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"><cms:CmsUserInfo ui:field="m_userInfo" /></g:FlowPanel>
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>
