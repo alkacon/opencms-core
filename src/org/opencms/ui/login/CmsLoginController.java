@@ -42,6 +42,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsLoginUserAgreement;
@@ -273,6 +274,12 @@ public class CmsLoginController {
                 org.opencms.workplace.Messages.get().container(
                     org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
         }
+        if (workplace2
+            && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)
+            && CmsWorkplace.FILE_EXPLORER_FILELIST.equals(settings.getUserSettings().getStartView())) {
+            fragment = CmsFileExplorerConfiguration.APP_ID;
+        }
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
             target += "#" + fragment;
         }

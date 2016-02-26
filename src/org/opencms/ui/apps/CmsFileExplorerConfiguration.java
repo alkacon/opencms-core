@@ -40,6 +40,9 @@ import com.vaadin.server.Resource;
  */
 public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration {
 
+    /** The app id. */
+    public static final String APP_ID = "explorer";
+
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -88,7 +91,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public String getId() {
 
-        return "explorer";
+        return APP_ID;
     }
 
     /**
