@@ -503,8 +503,9 @@ public class CmsLogin extends CmsJspLoginBean {
      * @return the HTML for the login dialog
      *
      * @throws IOException in case a redirect fails
+     * @throws CmsException
      */
-    public String displayDialog() throws IOException {
+    public String displayDialog() throws IOException, CmsException {
 
         if ((OpenCms.getSiteManager().getSites().size() > 1)
             && !OpenCms.getSiteManager().isWorkplaceRequest(getRequest())) {

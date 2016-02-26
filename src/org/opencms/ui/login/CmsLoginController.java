@@ -134,7 +134,7 @@ public class CmsLoginController {
      *
      * This is only used for detecting whether we need to display the user agreement dialog, not for displaying the dialog itself.<p>
      */
-    protected class UserAgreementHelper extends CmsLoginUserAgreement {
+    protected static class UserAgreementHelper extends CmsLoginUserAgreement {
 
         /** The replacement CMS context. */
         private CmsObject m_cms;
@@ -221,6 +221,62 @@ public class CmsLoginController {
     public static String getFormLink(CmsObject cms) {
 
         return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
+    }
+
+    /**
+     * Gets the login target link.<p>
+     *
+     * @param currentCms the current CMS context
+     * @param settings the workplace settings
+     * @param requestedResource the requested resource parameter
+     *
+     * @return the login target
+     *
+     * @throws CmsException in case the user has insufficient permissions to access the login target
+     */
+    public static String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings, String requestedResource)
+    throws CmsException {
+
+        String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
+        String target = "";
+        boolean checkRole = false;
+        String fragment = UI.getCurrent() != null ? UI.getCurrent().getPage().getUriFragment() : "";
+        boolean workplace2 = false;
+
+        if ((requestedResource == null) && (directEditPath != null)) {
+            target = directEditPath;
+        } else if ((requestedResource != null) && !CmsWorkplace.JSP_WORKPLACE_URI.equals(requestedResource)) {
+            target = requestedResource;
+        } else if (settings.getUserSettings().startWithNewWorkplace()) {
+            workplace2 = true;
+            target = CmsVaadinUtils.getWorkplaceLink();
+            checkRole = true;
+        } else {
+            target = CmsWorkplace.JSP_WORKPLACE_URI;
+            checkRole = true;
+        }
+
+        UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
+        boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
+        if (showUserAgreement) {
+            target = userAgreementHelper.getConfigurationVfsPath()
+                + "?"
+                + CmsLoginUserAgreement.PARAM_WPRES
+                + "="
+                + target;
+        }
+        if (!workplace2) {
+            target = OpenCms.getLinkManager().substituteLink(currentCms, target);
+        }
+        if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
+            throw new CmsCustomLoginException(
+                org.opencms.workplace.Messages.get().container(
+                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
+            target += "#" + fragment;
+        }
+        return target;
     }
 
     /**
@@ -398,7 +454,7 @@ public class CmsLoginController {
                 CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
                 settings);
 
-            String loginTarget = getLoginTarget(currentCms, settings);
+            String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
 
             CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
             m_ui.openLoginTarget(targetInfo);
@@ -482,64 +538,6 @@ public class CmsLoginController {
     public void setUi(I_CmsLoginUI ui) {
 
         m_ui = ui;
-    }
-
-    /**
-     * Gets the login target link.<p>
-     *
-     * @param currentCms the current CMS context
-     * @param settings the workplace settings
-     *
-     * @return the login target
-     *
-     * @throws CmsException in case the user has insufficient permissions to access the login target
-     */
-    protected String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings) throws CmsException {
-
-        m_params.getLocale();
-        String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
-        String target = "";
-        boolean checkRole = false;
-        String fragment = UI.getCurrent().getPage().getUriFragment();
-        boolean workplace2 = false;
-
-        if (CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())
-            && settings.getUserSettings().startWithNewWorkplace()) {
-            workplace2 = true;
-            checkRole = true;
-        } else if ((m_params.getRequestedResource() != null)
-            && !CmsWorkplace.JSP_WORKPLACE_URI.equals(m_params.getRequestedResource())) {
-            target = m_params.getRequestedResource();
-        } else if (directEditPath != null) {
-            target = directEditPath;
-        } else {
-            target = CmsWorkplace.JSP_WORKPLACE_URI;
-            checkRole = true;
-        }
-
-        UserAgreementHelper userAgreementHelper = new UserAgreementHelper(currentCms, settings);
-        boolean showUserAgreement = userAgreementHelper.isShowUserAgreement();
-        if (showUserAgreement) {
-            target = userAgreementHelper.getConfigurationVfsPath()
-                + "?"
-                + CmsLoginUserAgreement.PARAM_WPRES
-                + "="
-                + target;
-        }
-        if (workplace2) {
-            target = CmsVaadinUtils.getWorkplaceLink();
-        } else {
-            target = OpenCms.getLinkManager().substituteLink(currentCms, target);
-        }
-        if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
-            throw new CmsCustomLoginException(
-                org.opencms.workplace.Messages.get().container(
-                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fragment)) {
-            target += "#" + fragment;
-        }
-        return target;
     }
 
     /**

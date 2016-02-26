@@ -396,10 +396,6 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         String requestedResource = CmsRequestUtil.getNotEmptyParameter(
             request,
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-        if (!workplaceUiRequest && (requestedResource == null)) {
-            // no resource was requested, use default workplace URI
-            requestedResource = CmsWorkplace.JSP_WORKPLACE_URI;
-        }
         Locale locale = getLocaleForRequest(request);
         String resetStr = request.getParameter(PARAM_RESET_PASSWORD);
         boolean reset = (resetStr != null);

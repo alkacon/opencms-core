@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -49,6 +50,8 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -57,6 +60,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -210,9 +214,10 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
      * @return the initial page HTML for the Vaadin login dialog
      *
      * @throws IOException in case writing to the response fails
+     * @throws CmsException in case the user has not the required role
      */
     public static String displayVaadinLoginDialog(HttpServletRequest request, HttpServletResponse response)
-    throws IOException {
+    throws IOException, CmsException {
 
         CmsFlexController controller = CmsFlexController.getController(request);
         if (controller == null) {
@@ -228,15 +233,18 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        if (!cms.getRequestContext().getCurrentUser().isGuestUser()
-            && CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getParameter("requestedResource"))) {
-            response.sendRedirect(request.getParameter("requestedResource"));
-            return null;
-        }
-
         String logout = request.getParameter(CmsLoginHelper.PARAM_ACTION_LOGOUT);
         if (Boolean.valueOf(logout).booleanValue()) {
             CmsLoginController.logout(cms, request, response);
+            return null;
+        }
+
+        if (!cms.getRequestContext().getCurrentUser().isGuestUser()) {
+            String target = request.getParameter("requestedResource");
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(target)) {
+                target = CmsLoginController.getLoginTarget(cms, getWorkplaceSettings(request.getSession()), null);
+            }
+            response.sendRedirect(target);
             return null;
         }
 
@@ -252,7 +260,9 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
             String vaadinDir = CmsStringUtil.joinPaths(context, "VAADIN/");
             String vaadinVersion = Version.getFullVersion();
             String vaadinServlet = CmsStringUtil.joinPaths(context, "workplace/");
-            String vaadinBootstrap = CmsStringUtil.joinPaths(context, "VAADIN/vaadinBootstrap.js");
+            String vaadinBootstrap = CmsStringUtil.joinPaths(
+                context,
+                "VAADIN/vaadinBootstrap.js?v=" + OpenCms.getSystemInfo().getVersionNumber());
             String autocomplete = params.isPrivatePc() ? "on" : "off";
 
             String cmsLogo = OpenCms.getSystemInfo().getContextPath()
@@ -328,6 +338,26 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
     public static void setAdminCmsObject(CmsObject cms) {
 
         m_adminCms = cms;
+    }
+
+    /**
+     * Returns the current users workplace settings.<p>
+     *
+     * @param session the session
+     *
+     * @return the settings
+     */
+    private static CmsWorkplaceSettings getWorkplaceSettings(HttpSession session) {
+
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            settings = CmsLoginHelper.initSiteAndProject(getCmsObject());
+            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                settings);
+        }
+        return settings;
     }
 
     /**

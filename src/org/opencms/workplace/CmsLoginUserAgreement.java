@@ -474,13 +474,10 @@ public class CmsLoginUserAgreement extends CmsDialog {
     }
 
     /**
-    <<<<<<< HEAD
      * Initializes the 'accepted' data from the current user.<p>
-    =======
      * Returns the absolute path in the OpenCms VFS to the user agreement configuration file.<p>
      *
      * @return the absolute path in the OpenCms VFS to the user agreement configuration file
-    >>>>>>> refs/heads/branch_9_5_x
      */
     protected void initAcceptData() {
 
