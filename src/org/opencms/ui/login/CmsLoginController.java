@@ -276,7 +276,7 @@ public class CmsLoginController {
         }
         if (workplace2
             && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)
-            && CmsWorkplace.FILE_EXPLORER_FILELIST.equals(settings.getUserSettings().getStartView())) {
+            && CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {
             fragment = CmsFileExplorerConfiguration.APP_ID;
         }
 
