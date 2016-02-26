@@ -86,10 +86,18 @@ public class CmsEditorBase extends CmsDialog {
                 res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             }
             hasPermissions = getCms().hasPermissions(res, required, false, CmsResourceFilter.ALL)
-                && OpenCms.getRoleManager().hasRoleForResource(
+                && (OpenCms.getRoleManager().hasRoleForResource(
                     getCms(),
                     CmsRole.ELEMENT_AUTHOR,
-                    getCms().getSitePath(res));
+                    getCms().getSitePath(res))
+                    || OpenCms.getRoleManager().hasRoleForResource(
+                        getCms(),
+                        CmsRole.PROJECT_MANAGER,
+                        getCms().getSitePath(res))
+                    || OpenCms.getRoleManager().hasRoleForResource(
+                        getCms(),
+                        CmsRole.ACCOUNT_MANAGER,
+                        getCms().getSitePath(res)));
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
