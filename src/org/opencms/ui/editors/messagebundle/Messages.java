@@ -60,6 +60,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0 = "GUI_VIEW_SWITCHER_EDITMODE_DEFAULT_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEW_SWITCHER_EDITMODE_MASTER_0 = "GUI_VIEW_SWITCHER_EDITMODE_MASTER_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_KEYSET_SWITCHER_LABEL_0 = "GUI_KEYSET_SWITCHER_LABEL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_KEYSET_SWITCHER_MODE_ALL_0 = "GUI_KEYSET_SWITCHER_MODE_ALL_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0 = "GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0";
+
+    public static final String GUI_COLUMN_HEADER_OPTIONS_0 = "GUI_COLUMN_HEADER_OPTIONS_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

@@ -40,7 +40,9 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.EditMode;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.KeySetMode;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -134,6 +136,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             if (target instanceof TextField) {
                 // Move according to keypress
                 String data = (String)(((TextField)target).getData());
+                // Abort if no data attribute found
+                if (null == data) {
+                    return;
+                }
                 String[] dataItems = data.split(":");
                 int colId = Integer.parseInt(dataItems[0]);
                 int rowId = Integer.parseInt(dataItems[1]);
@@ -208,6 +214,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 if (pid.equals(m_editableColumns.get(i - 1))) {
                     TextField tf = new TextField();
                     tf.setWidth("100%");
+                    tf.setInputPrompt("Please add a value.");
                     tf.setData(i + ":" + itemId);
                     if (!m_valueFields.containsKey(Integer.valueOf(i))) {
                         m_valueFields.put(Integer.valueOf(i), new HashMap<Integer, TextField>());
@@ -387,7 +394,29 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     void saveAction() {
 
         try {
+
+            Map<String, Object> filters = new HashMap<String, Object>(4);
+            filters.put(
+                CmsMessageBundleEditorModel.PROPERTY_ID_DEFAULT,
+                m_table.getFilterFieldValue(CmsMessageBundleEditorModel.PROPERTY_ID_DEFAULT));
+            filters.put(
+                CmsMessageBundleEditorModel.PROPERTY_ID_DESC,
+                m_table.getFilterFieldValue(CmsMessageBundleEditorModel.PROPERTY_ID_DESC));
+            filters.put(
+                CmsMessageBundleEditorModel.PROPERTY_ID_KEY,
+                m_table.getFilterFieldValue(CmsMessageBundleEditorModel.PROPERTY_ID_KEY));
+            filters.put(
+                CmsMessageBundleEditorModel.PROPERTY_ID_TRANSLATION,
+                m_table.getFilterFieldValue(CmsMessageBundleEditorModel.PROPERTY_ID_TRANSLATION));
+
+            m_table.clearFilters();
+
             m_model.save();
+
+            for (String propertyId : filters.keySet()) {
+                m_table.setFilterFieldValue(propertyId, filters.get(propertyId));
+            }
+
         } catch (CmsException e) {
             LOG.error(m_messages.key(Messages.ERR_SAVING_CHANGES_0), e);
         }
@@ -402,9 +431,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         EditMode oldMode = m_model.getEditMode();
         if (!newMode.equals(oldMode)) {
+            m_table.clearFilters();
             m_model.setEditMode(newMode);
             m_table.setTableFieldFactory(m_fieldFactories.get(newMode));
             adjustOptionsColumn(oldMode, newMode);
+            if (newMode.equals(EditMode.MASTER) && m_table.getItemIds().isEmpty()) {
+                m_table.addItem();
+            }
             adjustFocus();
         }
     }
@@ -462,6 +495,46 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /**
+     * Creates the switcher component for the key sets.
+     *
+     * @return the switcher component.
+     */
+    @SuppressWarnings("serial")
+    private Component createKeysetSwitcher() {
+
+        HorizontalLayout allkeys = new HorizontalLayout();
+        allkeys.setHeight("100%");
+        allkeys.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
+        allkeys.setSpacing(true);
+        Label allkeysLabel = new Label(m_messages.key(Messages.GUI_KEYSET_SWITCHER_LABEL_0));
+        ComboBox allkeysSelect = new ComboBox();
+        allkeysSelect.setNullSelectionAllowed(false);
+
+        allkeysSelect.addItem(KeySetMode.ALL);
+        allkeysSelect.setItemCaption(KeySetMode.ALL, m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ALL_0));
+        allkeysSelect.addItem(KeySetMode.USED_ONLY);
+        allkeysSelect.setItemCaption(
+            KeySetMode.USED_ONLY,
+            m_messages.key(Messages.GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0));
+        allkeysSelect.setValue(m_model.getKeySetMode());
+        allkeysSelect.setNewItemsAllowed(false);
+        allkeysSelect.setTextInputAllowed(false);
+
+        allkeysSelect.addValueChangeListener(new ValueChangeListener() {
+
+            public void valueChange(ValueChangeEvent event) {
+
+                m_table.clearFilters();
+                m_model.setKeySetMode((KeySetMode)event.getProperty().getValue());
+            }
+
+        });
+        allkeys.addComponent(allkeysLabel);
+        allkeys.addComponent(allkeysSelect);
+        return allkeys;
+    }
+
+    /**
      * Creates the language switcher UI Component.
      * @return the language switcher.
      */
@@ -490,6 +563,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             public void valueChange(ValueChangeEvent event) {
 
                 try {
+                    m_table.clearFilters();
                     m_model.setLocale((Locale)event.getProperty().getValue());
                 } catch (IOException | CmsException e) {
                     // TODO Auto-generated catch block
@@ -573,6 +647,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         table.setSizeFull();
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
+        if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
+            table.addItem();
+        }
         table.setColumnHeader(
             CmsMessageBundleEditorModel.PROPERTY_ID_KEY,
             m_messages.key(Messages.GUI_COLUMN_HEADER_KEY_0));
@@ -588,6 +665,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 + " ("
                 + m_model.getLocale().getDisplayName()
                 + ")");
+        table.setColumnHeader(PROPERTY_ID_OPTIONS, m_messages.key(Messages.GUI_COLUMN_HEADER_OPTIONS_0));
 
         table.setFilterBarVisible(true);
         table.setFilterFieldVisible(PROPERTY_ID_OPTIONS, false);
@@ -664,6 +742,10 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (m_model.getLocales().size() > 1) {
             Component languages = createLanguageSwitcher();
             appInfo.addComponent(languages);
+        }
+        if (!(m_model.hasDescriptor() || m_model.getBundleType().equals(BundleType.DESCRIPTOR))) {
+            Component keysetSwitcher = createKeysetSwitcher();
+            appInfo.addComponent(keysetSwitcher);
         }
         if (m_model.hasMasterMode()) {
             Component viewSwitcher = createViewSwitcher();

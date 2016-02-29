@@ -33,6 +33,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockUtil;
@@ -53,10 +54,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
@@ -161,6 +164,75 @@ public class CmsMessageBundleEditorModel {
         }
     }
 
+    /** Manages the keys used in at least one locale. */
+    static final class KeySet {
+
+        /** Map from keys to the number of locales they are present. */
+        Map<String, Integer> m_keyset;
+
+        /** Default constructor. */
+        public KeySet() {
+            m_keyset = new HashMap<String, Integer>();
+        }
+
+        /**
+         * Returns the current key set.
+         * @return the current key set.
+         */
+        public Set<String> getKeySet() {
+
+            return new HashSet<String>(m_keyset.keySet());
+        }
+
+        /**
+         * Updates the set with all keys that are used in at least one language.
+         * @param oldKeys keys of a locale as registered before
+         * @param newKeys keys of the locale now
+         */
+        public void updateKeySet(Set<String> oldKeys, Set<String> newKeys) {
+
+            // Remove keys that are not present anymore
+            if (null != oldKeys) {
+                Set<String> removedKeys = new HashSet<String>(oldKeys);
+                if (null != newKeys) {
+                    removedKeys.removeAll(newKeys);
+                }
+                for (String key : removedKeys) {
+                    int uses = m_keyset.get(key).intValue();
+                    if (uses > 1) {
+                        m_keyset.put(key, Integer.valueOf(uses - 1));
+                    } else {
+                        m_keyset.remove(key);
+                    }
+                }
+            }
+
+            // Add keys that are new
+            if (null != newKeys) {
+                Set<String> addedKeys = new HashSet<String>(newKeys);
+                if (null != oldKeys) {
+                    addedKeys.removeAll(oldKeys);
+                }
+                for (String key : addedKeys) {
+                    if (m_keyset.containsKey(key)) {
+                        m_keyset.put(key, Integer.valueOf(m_keyset.get(key).intValue() + 1));
+                    } else {
+                        m_keyset.put(key, Integer.valueOf(1));
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    /** The different ways the key set is shown. */
+    enum KeySetMode {
+        /** All keys used in any of the available languages. */
+        ALL, /** Only keys used for the current language. */
+        USED_ONLY;
+    }
+
     /** Helper to handle the lock reports together with the files. */
     private static final class LockedFile {
 
@@ -259,7 +331,7 @@ public class CmsMessageBundleEditorModel {
     /** The xml bundle edited (or null, if a property bundle is edited). */
     private CmsXmlContent m_xmlBundle;
     /** The already loaded localizations. */
-    private Map<Locale, Properties> m_localizations;
+    private Map<Locale, Map<String, String>> m_localizations;
     /** The bundle's base name. */
     private String m_basename;
     /** The site path to the folder where the edited resource is in. */
@@ -270,6 +342,10 @@ public class CmsMessageBundleEditorModel {
     private BundleType m_bundleType;
     /** Messages used by the GUI. */
     CmsMessages m_messages;
+    /** The currently used key set mode. */
+    KeySetMode m_keysetMode;
+    /** The complete key set as map from keys to the number of occurrences. */
+    KeySet m_keyset;
 
     /** Containers holding the keys for each locale. */
     private IndexedContainer m_container;
@@ -290,9 +366,10 @@ public class CmsMessageBundleEditorModel {
      * @param cms the {@link CmsObject} used for reading / writing.
      * @param resource the file that is opened for editing.
      * @throws CmsException thrown if reading some of the involved {@link CmsResource}s is not possible.
+     * @throws IOException initialization of a property bundle fails
      */
     public CmsMessageBundleEditorModel(CmsObject cms, CmsResource resource)
-    throws CmsException {
+    throws CmsException, IOException {
 
         if (cms == null) {
             throw new CmsException(Messages.get().container(Messages.ERROR_LOADING_BUNDLE_CMS_OBJECT_NULL_0));
@@ -305,9 +382,11 @@ public class CmsMessageBundleEditorModel {
         m_cms = cms;
         m_resource = resource;
         m_editMode = EditMode.DEFAULT;
+        m_keysetMode = KeySetMode.ALL;
 
         m_bundleFiles = new HashMap<Locale, LockedFile>();
-        m_localizations = new HashMap<Locale, Properties>();
+        m_localizations = new HashMap<Locale, Map<String, String>>();
+        m_keyset = new KeySet();
 
         m_bundleType = initBundleType();
 
@@ -316,6 +395,10 @@ public class CmsMessageBundleEditorModel {
         }
 
         setResourceInformation();
+
+        if (m_bundleType.equals(BundleType.PROPERTY)) {
+            initPropertyBundle();
+        }
 
         if (m_bundleType.equals(BundleType.DESCRIPTOR)) {
             m_locales = new ArrayList<Locale>(1);
@@ -330,6 +413,32 @@ public class CmsMessageBundleEditorModel {
 
         initEditorStates();
 
+    }
+
+    /**
+     * Converts {@link Properties} to {@link Map} from {@link String} to {@link String}.
+     *
+     * @param props the properties to convert.
+     * @return the resulting map.
+     */
+    private static Map<String, String> propertiesToMap(Properties props) {
+
+        if (null == props) {
+            return new HashMap<String, String>();
+        }
+        Map<String, String> map = new HashMap<String, String>(props.size());
+        for (Object key : props.keySet()) {
+            map.put((String)key, props.getProperty((String)key));
+        }
+        return map;
+    }
+
+    /** Returns the a set with all keys that are used at least in one translation.
+     * @return the a set with all keys that are used at least in one translation.
+     */
+    public Set<String> getAllUsedKeys() {
+
+        return m_keyset.getKeySet();
     }
 
     /** Returns the type of the currently edited bundle.
@@ -370,6 +479,14 @@ public class CmsMessageBundleEditorModel {
     public EditMode getEditMode() {
 
         return m_editMode;
+    }
+
+    /** Returns the current key set mode.
+     * @return the current key set mode.
+     */
+    public KeySetMode getKeySetMode() {
+
+        return m_keysetMode;
     }
 
     /**
@@ -463,6 +580,24 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Sets the currently used key set mode.
+     * @param mode the key set mode to set.
+     */
+    public void setKeySetMode(KeySetMode mode) {
+
+        if (!m_keyset.equals(mode)) {
+            try {
+                adjustExistingContainer(m_locale, mode);
+            } catch (IOException | CmsException e) {
+                // Should never happen
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            m_keysetMode = mode;
+        }
+    }
+
+    /**
      * Set the currently edited locale.
      *
      * @param locale the currently edited locale.
@@ -471,7 +606,7 @@ public class CmsMessageBundleEditorModel {
      */
     public void setLocale(Locale locale) throws IOException, CmsException {
 
-        adjustExistingContainerForLocale(locale);
+        adjustExistingContainer(locale, m_keysetMode);
         m_locale = locale;
     }
 
@@ -498,14 +633,15 @@ public class CmsMessageBundleEditorModel {
     /**
      * Adjusts the locale for an already existing container by first saving the translation for the current locale and the loading the values of the new locale.
      *
-     * @param newLocale the locale where to switch to.
+     * @param locale the locale for which the container should be adjusted.
+     * @param mode the key set mode for which the container should be adjusted.
      * @throws IOException thrown if a bundle resource must be read and reading fails.
      * @throws CmsException thrown if a bundle resource must be read and reading fails.
      */
-    private void adjustExistingContainerForLocale(Locale newLocale) throws IOException, CmsException {
+    private void adjustExistingContainer(Locale locale, KeySetMode mode) throws IOException, CmsException {
 
         saveLocalization();
-        replaceValues(newLocale);
+        replaceValues(locale, mode);
 
     }
 
@@ -549,7 +685,7 @@ public class CmsMessageBundleEditorModel {
         container.addContainerProperty(PROPERTY_ID_TRANSLATION, String.class, "");
 
         // add entries
-        Properties localization = getLocalization(m_locale);
+        Map<String, String> localization = getLocalization(m_locale);
         CmsXmlContentValueSequence messages = m_descContent.getValueSequence("/Message", LOCALE_BUNDLE_DESCRIPTOR);
         for (int i = 0; i < messages.getElementCount(); i++) {
 
@@ -562,7 +698,7 @@ public class CmsMessageBundleEditorModel {
                 m_descContent.getValue(prefix + "Description", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
             item.getItemProperty(PROPERTY_ID_DEFAULT).setValue(
                 m_descContent.getValue(prefix + "Default", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
-            String translation = localization.getProperty(key);
+            String translation = localization.get(key);
             item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
@@ -585,13 +721,23 @@ public class CmsMessageBundleEditorModel {
         container.addContainerProperty(PROPERTY_ID_TRANSLATION, String.class, "");
 
         // add entries
-        Properties localization = getLocalization(m_locale);
-        for (Object key : localization.keySet()) {
+        Map<String, String> localization = getLocalization(m_locale);
+        Set<String> keySet = null;
+        switch (m_keysetMode) {
+            case ALL:
+                keySet = m_keyset.getKeySet();
+                break;
+            case USED_ONLY:
+            default:
+                keySet = localization.keySet();
+                break;
+        }
+        for (String key : keySet) {
 
             Object itemId = container.addItem();
             Item item = container.getItem(itemId);
             item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
-            String translation = localization.getProperty((String)key);
+            String translation = localization.get(key);
             item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
@@ -637,7 +783,7 @@ public class CmsMessageBundleEditorModel {
      * @throws IOException thrown if reading the properties from a file fails.
      * @throws CmsException thrown if reading the properties from a file fails.
      */
-    private Properties getLocalization(Locale locale) throws IOException, CmsException {
+    private Map<String, String> getLocalization(Locale locale) throws IOException, CmsException {
 
         if (null == m_localizations.get(locale)) {
             switch (m_bundleType) {
@@ -768,6 +914,65 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Initializes the key set for property bundles. That requires to load all localizations, i.e., all the files making up the bundle.
+     *
+     * @throws CmsLoaderException thrown if loading a bundle file fails.
+     * @throws CmsException thrown if loading a bundle file fails.
+     * @throws IOException thrown if loading a bundle file fails.
+     */
+    private void initKeySetForPropertyBundle() throws CmsLoaderException, CmsException, IOException {
+
+        Collection<CmsResource> translations = m_cms.readResources(
+            m_sitepath,
+            CmsResourceFilter.DEFAULT.addRequireType(
+                OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString())));
+        for (CmsResource resource : translations) {
+            String baseName = resource.getName();
+            String localeSuffix = CmsStringUtil.getLocaleSuffixForName(baseName);
+            if ((null != localeSuffix) && !localeSuffix.isEmpty()) {
+                baseName = baseName.substring(
+                    0,
+                    baseName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
+            }
+            if (baseName.equals(m_basename)) {
+                Properties props = new Properties();
+                //TODO: Check for lock problems
+                props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
+                m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
+            }
+        }
+    }
+
+    /**
+     * Initialization required for editing an xml bundle.
+     */
+    private void initKeySetForXmlBundle() {
+
+        for (Locale l : m_xmlBundle.getLocales()) {
+            Set<String> keys = new HashSet<String>();
+            for (I_CmsXmlContentValue msg : m_xmlBundle.getValueSequence("Message", l).getValues()) {
+                String msgpath = msg.getPath();
+                keys.add(m_xmlBundle.getStringValue(m_cms, msgpath + "/Key", l));
+            }
+            m_keyset.updateKeySet(null, keys);
+        }
+
+    }
+
+    /**
+     * Initialization necessary for editing a property bundle.
+     *
+     * @throws CmsLoaderException thrown if loading a bundle file fails.
+     * @throws CmsException thrown if loading a bundle file fails.
+     * @throws IOException thrown if loading a bundle file fails.
+     */
+    private void initPropertyBundle() throws CmsLoaderException, CmsException, IOException {
+
+        initKeySetForPropertyBundle();
+
+    }
+
+    /**
      * Unmarshals the XML content and adds the file to the bundle files.
      * @throws CmsException thrown if reading the file or unmarshalling fails.
      */
@@ -776,6 +981,7 @@ public class CmsMessageBundleEditorModel {
         LockedFile bundleFile = LockedFile.lockResource(m_cms, m_resource);
         m_bundleFiles.put(null, bundleFile);
         m_xmlBundle = CmsXmlContentFactory.unmarshal(m_cms, bundleFile.getFile());
+        initKeySetForXmlBundle();
 
     }
 
@@ -805,7 +1011,7 @@ public class CmsMessageBundleEditorModel {
         m_bundleFiles.put(locale, file);
         Properties props = new Properties();
         props.load(new ByteArrayInputStream(file.getFile().getContents()));
-        m_localizations.put(locale, props);
+        m_localizations.put(locale, propertiesToMap(props));
 
     }
 
@@ -817,7 +1023,7 @@ public class CmsMessageBundleEditorModel {
     private void loadLocalizationFromXmlBundle(Locale locale) {
 
         CmsXmlContentValueSequence messages = m_xmlBundle.getValueSequence("Message", locale);
-        Properties props = new Properties();
+        Map<String, String> props = new HashMap<String, String>();
         if (null != messages) {
             for (I_CmsXmlContentValue msg : messages.getValues()) {
                 String msgpath = msg.getPath();
@@ -831,18 +1037,34 @@ public class CmsMessageBundleEditorModel {
 
     /**
      * Replaces the translations in an existing container with the translations for the provided locale.
-     * @param newLocale the locale for which translations should be loaded.
+     * @param locale the locale for which translations should be loaded.
+     * @param mode the key set mode used.
      * @throws IOException thrown if loading the localization from a bundle resource fails.
      * @throws CmsException thrown if loading the localization from a bundle resource fails.
      */
-    private void replaceValues(Locale newLocale) throws IOException, CmsException {
+    private void replaceValues(Locale locale, KeySetMode mode) throws IOException, CmsException {
 
-        Properties localization = getLocalization(newLocale);
-        for (Object itemId : m_container.getItemIds()) {
-            Item item = m_container.getItem(itemId);
-            String key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
-            String value = localization.getProperty(key);
-            item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == value ? "" : value);
+        Map<String, String> localization = getLocalization(locale);
+        if (hasDescriptor()) {
+            for (Object itemId : m_container.getItemIds()) {
+                Item item = m_container.getItem(itemId);
+                String key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
+                String value = localization.get(key);
+                item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == value ? "" : value);
+            }
+        } else {
+            m_container.removeAllItems();
+            Set<String> keyset = mode.equals(KeySetMode.ALL) ? m_keyset.getKeySet() : localization.keySet();
+            for (String key : keyset) {
+                Object itemId = m_container.addItem();
+                Item item = m_container.getItem(itemId);
+                item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
+                String value = localization.get(key);
+                item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == value ? "" : value);
+            }
+            if (m_container.getItemIds().isEmpty()) {
+                m_container.addItem();
+            }
         }
     }
 
@@ -851,13 +1073,16 @@ public class CmsMessageBundleEditorModel {
      */
     private void saveLocalization() {
 
-        Properties localization = new Properties();
+        Map<String, String> localization = new HashMap<String, String>();
         for (Object itemId : m_container.getItemIds()) {
             Item item = m_container.getItem(itemId);
             String key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
             String value = item.getItemProperty(PROPERTY_ID_TRANSLATION).getValue().toString();
-            localization.setProperty(key, value);
+            if (!(key.isEmpty() || value.isEmpty())) {
+                localization.put(key, value);
+            }
         }
+        m_keyset.updateKeySet(m_localizations.get(m_locale).keySet(), localization.keySet());
         m_localizations.put(m_locale, localization);
 
     }
@@ -868,7 +1093,9 @@ public class CmsMessageBundleEditorModel {
      */
     private void saveToBundleDescriptor() throws CmsException {
 
-        m_descContent.removeLocale(LOCALE_BUNDLE_DESCRIPTOR);
+        if (m_descContent.hasLocale(LOCALE_BUNDLE_DESCRIPTOR)) {
+            m_descContent.removeLocale(LOCALE_BUNDLE_DESCRIPTOR);
+        }
         m_descContent.addLocale(m_cms, LOCALE_BUNDLE_DESCRIPTOR);
         String key;
         String desc;
@@ -904,13 +1131,12 @@ public class CmsMessageBundleEditorModel {
     private void saveToPropertyVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Properties props = m_localizations.get(l);
+            Map<String, String> props = m_localizations.get(l);
             if (null != props) {
                 StringBuffer content = new StringBuffer();
-                for (Object k : props.keySet()) {
-                    String key = (String)k;
+                for (String key : props.keySet()) {
                     if (!key.isEmpty()) {
-                        String value = props.getProperty(key);
+                        String value = props.get(key);
                         if (!value.isEmpty()) {
                             content.append(key).append("=").append(value).append("\n");
                         }
@@ -932,15 +1158,16 @@ public class CmsMessageBundleEditorModel {
     private void saveToXmlVfsBundle() throws CmsException {
 
         for (Locale l : m_locales) {
-            Properties props = m_localizations.get(l);
+            Map<String, String> props = m_localizations.get(l);
             if (null != props) {
-                m_xmlBundle.removeLocale(l);
+                if (m_xmlBundle.hasLocale(l)) {
+                    m_xmlBundle.removeLocale(l);
+                }
                 m_xmlBundle.addLocale(m_cms, l);
                 int i = 0;
-                for (Object k : props.keySet()) {
-                    String key = (String)k;
+                for (String key : props.keySet()) {
                     if (!key.isEmpty()) {
-                        String value = props.getProperty(key);
+                        String value = props.get(key);
                         if (!value.isEmpty()) {
                             m_xmlBundle.addValue(m_cms, "Message", l, i);
                             i++;
