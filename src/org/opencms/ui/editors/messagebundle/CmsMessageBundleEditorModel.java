@@ -35,14 +35,14 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
-import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
-import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.content.CmsXmlContent;
@@ -71,250 +71,6 @@ import com.vaadin.data.util.IndexedContainer;
  */
 public class CmsMessageBundleEditorModel {
 
-    /** Types of bundles editable by the Editor. */
-    public enum BundleType {
-        /** A bundle of type propertyvfsbundle. */
-        PROPERTY, /** A bundle of type xmlvfsbundle. */
-        XML, /** A bundle descriptor. */
-        DESCRIPTOR;
-
-        /**
-         * An adjusted version of what is typically Enum.valueOf().
-         * @param value the resource type name that should be transformed into BundleType
-         * @return The bundle type for the resource type name, or null, if the resource has no bundle type.
-         */
-        public static BundleType toBundleType(String value) {
-
-            if (null == value) {
-                return null;
-            }
-            if (value.equals(PROPERTY.toString())) {
-                return PROPERTY;
-            }
-            if (value.equals(XML.toString())) {
-                return XML;
-            }
-            if (value.equals(DESCRIPTOR.toString())) {
-                return DESCRIPTOR;
-            }
-
-            return null;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-
-            switch (this) {
-                case PROPERTY:
-                    return "propertyvfsbundle";
-                case XML:
-                    return "xmlvfsbundle";
-                case DESCRIPTOR:
-                    return "bundledescriptor";
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    /** The different edit modes. */
-    enum EditMode {
-        /** Editing the messages and the descriptor. */
-        MASTER, /** Only editing messages. */
-        DEFAULT
-    }
-
-    /**
-     * The editor state holds the information on what columns of the editors table
-     * should be editable and if the options column should be shown.
-     * The state depends on the loaded bundle and the edit mode.
-     */
-    final class EditorState {
-
-        /** The editable columns (from left to right).*/
-        private List<String> m_editableColumns;
-        /** Flag, indicating if the options column should be shown. */
-        private boolean m_showOptions;
-
-        /** Constructor, setting all the state information directly.
-         * @param editableColumns the property ids of the editable columns (from left to right)
-         * @param showOptions flag, indicating if the options column should be shown.
-         */
-        public EditorState(List<String> editableColumns, boolean showOptions) {
-            m_editableColumns = editableColumns;
-            m_showOptions = showOptions;
-        }
-
-        /** Returns the editable columns from left to right (as there property ids).
-         * @return the editable columns from left to right (as there property ids).
-         */
-        public List<String> getEditableColumns() {
-
-            return m_editableColumns;
-        }
-
-        /** Returns a flag, indicating if the options column should be shown.
-         * @return a flag, indicating if the options column should be shown.
-         */
-        public boolean isShowOptions() {
-
-            return m_showOptions;
-        }
-    }
-
-    /** Manages the keys used in at least one locale. */
-    static final class KeySet {
-
-        /** Map from keys to the number of locales they are present. */
-        Map<String, Integer> m_keyset;
-
-        /** Default constructor. */
-        public KeySet() {
-            m_keyset = new HashMap<String, Integer>();
-        }
-
-        /**
-         * Returns the current key set.
-         * @return the current key set.
-         */
-        public Set<String> getKeySet() {
-
-            return new HashSet<String>(m_keyset.keySet());
-        }
-
-        /**
-         * Updates the set with all keys that are used in at least one language.
-         * @param oldKeys keys of a locale as registered before
-         * @param newKeys keys of the locale now
-         */
-        public void updateKeySet(Set<String> oldKeys, Set<String> newKeys) {
-
-            // Remove keys that are not present anymore
-            if (null != oldKeys) {
-                Set<String> removedKeys = new HashSet<String>(oldKeys);
-                if (null != newKeys) {
-                    removedKeys.removeAll(newKeys);
-                }
-                for (String key : removedKeys) {
-                    int uses = m_keyset.get(key).intValue();
-                    if (uses > 1) {
-                        m_keyset.put(key, Integer.valueOf(uses - 1));
-                    } else {
-                        m_keyset.remove(key);
-                    }
-                }
-            }
-
-            // Add keys that are new
-            if (null != newKeys) {
-                Set<String> addedKeys = new HashSet<String>(newKeys);
-                if (null != oldKeys) {
-                    addedKeys.removeAll(oldKeys);
-                }
-                for (String key : addedKeys) {
-                    if (m_keyset.containsKey(key)) {
-                        m_keyset.put(key, Integer.valueOf(m_keyset.get(key).intValue() + 1));
-                    } else {
-                        m_keyset.put(key, Integer.valueOf(1));
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    /** The different ways the key set is shown. */
-    enum KeySetMode {
-        /** All keys used in any of the available languages. */
-        ALL, /** Only keys used for the current language. */
-        USED_ONLY;
-    }
-
-    /** Helper to handle the lock reports together with the files. */
-    private static final class LockedFile {
-
-        /** The file that was read. */
-        private CmsFile m_file;
-        /** The lock action record from locking the file. */
-        private CmsLockActionRecord m_lockRecord;
-        /** Flag, indicating if the file was newly created. */
-        private boolean m_new;
-
-        /** Private constructor.
-         * @param cms the cms user context.
-         * @param resource the resource to lock and read.
-         */
-        private LockedFile(CmsObject cms, CmsResource resource) {
-            try {
-                m_lockRecord = CmsLockUtil.ensureLock(cms, resource);
-                m_file = cms.readFile(resource);
-                m_new = false;
-            } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        /**
-         * Lock and read a file.
-         * @param cms the cms user context.
-         * @param resource the resource to lock and read.
-         * @return the read file with the lock action record.
-         */
-        public static LockedFile lockResource(CmsObject cms, CmsResource resource) {
-
-            return new LockedFile(cms, resource);
-        }
-
-        /** Returns the file.
-         * @return the file.
-         */
-        public CmsFile getFile() {
-
-            return m_file;
-        }
-
-        /** Returns the lock action record.
-         * @return the lock action record.
-         */
-        public CmsLockActionRecord getLockActionRecord() {
-
-            return m_lockRecord;
-        }
-
-        /**
-         * Returns a flag, indicating if the file is newly created.
-         * @return flag, indicating if the file is newly created.
-         */
-        public boolean isCreated() {
-
-            return m_new;
-        }
-
-        /**
-         * Set the flag, indicating if the file was newly created.
-         * @param isNew flag, indicating if the file was newly created.
-         */
-        public void setCreated(boolean isNew) {
-
-            m_new = isNew;
-
-        }
-
-    }
-
-    /** Property name for the container column with the keys. */
-    public static final String PROPERTY_ID_KEY = "key";
-    /** Property name for the container column with the descriptions. */
-    public static final String PROPERTY_ID_DESC = "description";
-    /** Property name for the container column with the default values. */
-    public static final String PROPERTY_ID_DEFAULT = "default";
-    /** Property name for the container column with the translations. */
-    public static final String PROPERTY_ID_TRANSLATION = "translation";
     /** Post fix for bundle descriptors, which must obey the name scheme {basename}_desc. */
     private static final String DESCRIPTOR_POSTFIX = "_desc";
     /** The locale of the bundle descriptor. */
@@ -324,7 +80,7 @@ public class CmsMessageBundleEditorModel {
     /** CmsObject for read / write operations. */
     private CmsObject m_cms;
     /** The file currently edited. */
-    private Map<Locale, LockedFile> m_bundleFiles;
+    private Map<Locale, CmsMessageBundleEditorTypes.LockedFile> m_bundleFiles;
     /** The resource that was opened with the editor. */
     private CmsResource m_resource;
     /** The bundle descriptor resource. */
@@ -342,13 +98,13 @@ public class CmsMessageBundleEditorModel {
     /** The currently edited locale. */
     private Locale m_locale;
     /** The type of the loaded bundle. */
-    private BundleType m_bundleType;
+    private CmsMessageBundleEditorTypes.BundleType m_bundleType;
     /** Messages used by the GUI. */
     CmsMessages m_messages;
     /** The currently used key set mode. */
-    KeySetMode m_keysetMode;
+    CmsMessageBundleEditorTypes.KeySetMode m_keysetMode;
     /** The complete key set as map from keys to the number of occurrences. */
-    KeySet m_keyset;
+    CmsMessageBundleEditorTypes.KeySet m_keyset;
 
     /** Containers holding the keys for each locale. */
     private IndexedContainer m_container;
@@ -356,13 +112,13 @@ public class CmsMessageBundleEditorModel {
     /** The available locales. */
     private Collection<Locale> m_locales;
     /** Map from edit mode to the editor state. */
-    private Map<EditMode, EditorState> m_editorState;
+    private Map<CmsMessageBundleEditorTypes.EditMode, EditorState> m_editorState;
     /** Flag, indicating if a master edit mode is available. */
     private boolean m_hasMasterMode;
     /** The current edit mode. */
-    private EditMode m_editMode;
+    private CmsMessageBundleEditorTypes.EditMode m_editMode;
     /** Descriptor file, if edited besides a bundle. */
-    private LockedFile m_descFile;
+    private CmsMessageBundleEditorTypes.LockedFile m_descFile;
 
     /**
      *
@@ -384,26 +140,26 @@ public class CmsMessageBundleEditorModel {
 
         m_cms = cms;
         m_resource = resource;
-        m_editMode = EditMode.DEFAULT;
-        m_keysetMode = KeySetMode.ALL;
+        m_editMode = CmsMessageBundleEditorTypes.EditMode.DEFAULT;
+        m_keysetMode = CmsMessageBundleEditorTypes.KeySetMode.ALL;
 
-        m_bundleFiles = new HashMap<Locale, LockedFile>();
+        m_bundleFiles = new HashMap<Locale, CmsMessageBundleEditorTypes.LockedFile>();
         m_localizations = new HashMap<Locale, Map<String, String>>();
-        m_keyset = new KeySet();
+        m_keyset = new CmsMessageBundleEditorTypes.KeySet();
 
         m_bundleType = initBundleType();
 
-        if (m_bundleType.equals(BundleType.XML)) {
+        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.XML)) {
             initXmlBundle();
         }
 
         setResourceInformation();
 
-        if (m_bundleType.equals(BundleType.PROPERTY)) {
+        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.PROPERTY)) {
             initPropertyBundle();
         }
 
-        if (m_bundleType.equals(BundleType.DESCRIPTOR)) {
+        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
             m_locales = new ArrayList<Locale>(1);
             m_locales.add(LOCALE_BUNDLE_DESCRIPTOR);
         } else {
@@ -471,7 +227,7 @@ public class CmsMessageBundleEditorModel {
      * @param mode the edit mode.
      * @return the editable columns for the provided edit mode.
      */
-    public List<String> getEditableColumns(EditMode mode) {
+    public List<Object> getEditableColumns(CmsMessageBundleEditorTypes.EditMode mode) {
 
         return m_editorState.get(mode).getEditableColumns();
     }
@@ -479,7 +235,7 @@ public class CmsMessageBundleEditorModel {
     /** Returns the current edit mode.
      * @return the current edit mode.
      */
-    public EditMode getEditMode() {
+    public CmsMessageBundleEditorTypes.EditMode getEditMode() {
 
         return m_editMode;
     }
@@ -487,7 +243,7 @@ public class CmsMessageBundleEditorModel {
     /** Returns the current key set mode.
      * @return the current key set mode.
      */
-    public KeySetMode getKeySetMode() {
+    public CmsMessageBundleEditorTypes.KeySetMode getKeySetMode() {
 
         return m_keysetMode;
     }
@@ -517,7 +273,7 @@ public class CmsMessageBundleEditorModel {
      */
     public boolean hasDescriptor() {
 
-        return !m_bundleType.equals(BundleType.DESCRIPTOR) && (m_descContent != null);
+        return !m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR) && (m_descContent != null);
     }
 
     /**
@@ -535,7 +291,7 @@ public class CmsMessageBundleEditorModel {
      * @param mode the edit mode for which the column option is requested.
      * @return a flag, indicating if the options column (with add and delete option for rows)
      */
-    public boolean isShowOptionsColumn(EditMode mode) {
+    public boolean isShowOptionsColumn(CmsMessageBundleEditorTypes.EditMode mode) {
 
         return m_editorState.get(mode).isShowOptions();
     }
@@ -573,20 +329,26 @@ public class CmsMessageBundleEditorModel {
     /**
      * Set the edit mode.
      * @param mode the edit mode to set.
+     * @return flag, indicating if the mode could be changed.
      */
-    public void setEditMode(EditMode mode) {
+    public boolean setEditMode(CmsMessageBundleEditorTypes.EditMode mode) {
 
-        if ((mode == EditMode.MASTER) && (null == m_descFile)) {
-            m_descFile = LockedFile.lockResource(m_cms, m_desc);
+        try {
+            if ((mode == CmsMessageBundleEditorTypes.EditMode.MASTER) && (null == m_descFile)) {
+                m_descFile = CmsMessageBundleEditorTypes.LockedFile.lockResource(m_cms, m_desc);
+            }
+            m_editMode = mode;
+        } catch (@SuppressWarnings("unused") CmsException e) {
+            return false;
         }
-        m_editMode = mode;
+        return true;
     }
 
     /**
      * Sets the currently used key set mode.
      * @param mode the key set mode to set.
      */
-    public void setKeySetMode(KeySetMode mode) {
+    public void setKeySetMode(CmsMessageBundleEditorTypes.KeySetMode mode) {
 
         if (!m_keyset.equals(mode)) {
             try {
@@ -621,7 +383,7 @@ public class CmsMessageBundleEditorModel {
     public void unlock() throws CmsException {
 
         for (Locale l : m_bundleFiles.keySet()) {
-            LockedFile f = m_bundleFiles.get(l);
+            CmsMessageBundleEditorTypes.LockedFile f = m_bundleFiles.get(l);
             if (!f.getLockActionRecord().getChange().equals(LockChange.unchanged) || f.isCreated()) {
                 m_cms.unlockResource(f.getFile());
             }
@@ -641,7 +403,8 @@ public class CmsMessageBundleEditorModel {
      * @throws IOException thrown if a bundle resource must be read and reading fails.
      * @throws CmsException thrown if a bundle resource must be read and reading fails.
      */
-    private void adjustExistingContainer(Locale locale, KeySetMode mode) throws IOException, CmsException {
+    private void adjustExistingContainer(Locale locale, CmsMessageBundleEditorTypes.KeySetMode mode)
+    throws IOException, CmsException {
 
         saveLocalization();
         replaceValues(locale, mode);
@@ -659,7 +422,7 @@ public class CmsMessageBundleEditorModel {
 
         IndexedContainer container = null;
 
-        if (m_bundleType.equals(BundleType.DESCRIPTOR)) {
+        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
             container = createContainerForDescriptorEditing();
         } else {
             if (hasDescriptor()) {
@@ -682,10 +445,10 @@ public class CmsMessageBundleEditorModel {
         IndexedContainer container = new IndexedContainer();
 
         // create properties
-        container.addContainerProperty(PROPERTY_ID_KEY, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_DESC, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_DEFAULT, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_TRANSLATION, String.class, "");
+        container.addContainerProperty(TableProperty.KEY, String.class, "");
+        container.addContainerProperty(TableProperty.DESCRIPTION, String.class, "");
+        container.addContainerProperty(TableProperty.DEFAULT, String.class, "");
+        container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
         Map<String, String> localization = getLocalization(m_locale);
@@ -696,13 +459,13 @@ public class CmsMessageBundleEditorModel {
             Object itemId = container.addItem();
             Item item = container.getItem(itemId);
             String key = m_descContent.getValue(prefix + "Key", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms);
-            item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
-            item.getItemProperty(PROPERTY_ID_DESC).setValue(
+            item.getItemProperty(TableProperty.KEY).setValue(key);
+            item.getItemProperty(TableProperty.DESCRIPTION).setValue(
                 m_descContent.getValue(prefix + "Description", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
-            item.getItemProperty(PROPERTY_ID_DEFAULT).setValue(
+            item.getItemProperty(TableProperty.DEFAULT).setValue(
                 m_descContent.getValue(prefix + "Default", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
             String translation = localization.get(key);
-            item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == translation ? "" : translation);
+            item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
         return container;
@@ -720,8 +483,8 @@ public class CmsMessageBundleEditorModel {
         IndexedContainer container = new IndexedContainer();
 
         // create properties
-        container.addContainerProperty(PROPERTY_ID_KEY, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_TRANSLATION, String.class, "");
+        container.addContainerProperty(TableProperty.KEY, String.class, "");
+        container.addContainerProperty(TableProperty.TRANSLATION, String.class, "");
 
         // add entries
         Map<String, String> localization = getLocalization(m_locale);
@@ -739,9 +502,9 @@ public class CmsMessageBundleEditorModel {
 
             Object itemId = container.addItem();
             Item item = container.getItem(itemId);
-            item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
+            item.getItemProperty(TableProperty.KEY).setValue(key);
             String translation = localization.get(key);
-            item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == translation ? "" : translation);
+            item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
         return container;
@@ -756,9 +519,9 @@ public class CmsMessageBundleEditorModel {
         IndexedContainer container = new IndexedContainer();
 
         // create properties
-        container.addContainerProperty(PROPERTY_ID_KEY, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_DESC, String.class, "");
-        container.addContainerProperty(PROPERTY_ID_DEFAULT, String.class, "");
+        container.addContainerProperty(TableProperty.KEY, String.class, "");
+        container.addContainerProperty(TableProperty.DESCRIPTION, String.class, "");
+        container.addContainerProperty(TableProperty.DEFAULT, String.class, "");
 
         // add entries
         CmsXmlContentValueSequence messages = m_descContent.getValueSequence("/Message", LOCALE_BUNDLE_DESCRIPTOR);
@@ -768,10 +531,10 @@ public class CmsMessageBundleEditorModel {
             Object itemId = container.addItem();
             Item item = container.getItem(itemId);
             String key = m_descContent.getValue(prefix + "Key", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms);
-            item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
-            item.getItemProperty(PROPERTY_ID_DESC).setValue(
+            item.getItemProperty(TableProperty.KEY).setValue(key);
+            item.getItemProperty(TableProperty.DESCRIPTION).setValue(
                 m_descContent.getValue(prefix + "Description", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
-            item.getItemProperty(PROPERTY_ID_DEFAULT).setValue(
+            item.getItemProperty(TableProperty.DEFAULT).setValue(
                 m_descContent.getValue(prefix + "Default", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
         }
 
@@ -809,10 +572,10 @@ public class CmsMessageBundleEditorModel {
      * Init the bundle type member variable.
      * @return the bundle type of the opened resource.
      */
-    private BundleType initBundleType() {
+    private CmsMessageBundleEditorTypes.BundleType initBundleType() {
 
         String resourceTypeName = OpenCms.getResourceManager().getResourceType(m_resource).getTypeName();
-        return BundleType.toBundleType(resourceTypeName);
+        return CmsMessageBundleEditorTypes.BundleType.toBundleType(resourceTypeName);
     }
 
     /**
@@ -822,13 +585,13 @@ public class CmsMessageBundleEditorModel {
      */
     private void initDescriptor() throws CmsXmlException, CmsException {
 
-        if (m_bundleType.equals(BundleType.DESCRIPTOR)) {
+        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
             m_desc = m_resource;
             m_descContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(m_desc));
-            m_descFile = LockedFile.lockResource(m_cms, m_desc);
+            m_descFile = CmsMessageBundleEditorTypes.LockedFile.lockResource(m_cms, m_desc);
         } else {
             CmsSolrQuery query = new CmsSolrQuery();
-            query.setResourceTypes(BundleType.DESCRIPTOR.toString());
+            query.setResourceTypes(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR.toString());
             query.setFilterQueries("filename:\"" + m_basename + DESCRIPTOR_POSTFIX + "\"");
             query.add("fl", "path");
             CmsSolrResultList results = OpenCms.getSearchManager().getIndexSolr("Solr Offline").search(
@@ -865,36 +628,36 @@ public class CmsMessageBundleEditorModel {
      */
     private void initEditorStates() {
 
-        m_editorState = new HashMap<EditMode, EditorState>();
-        List<String> cols = null;
+        m_editorState = new HashMap<CmsMessageBundleEditorTypes.EditMode, EditorState>();
+        List<Object> cols = null;
         switch (m_bundleType) {
             case PROPERTY:
             case XML:
                 if (hasDescriptor()) { // bundle descriptor is present, keys are not editable in default mode, maybe master mode is available
-                    cols = new ArrayList<String>(1);
-                    cols.add(PROPERTY_ID_TRANSLATION);
-                    m_editorState.put(EditMode.DEFAULT, new EditorState(cols, false));
+                    cols = new ArrayList<Object>(1);
+                    cols.add(TableProperty.TRANSLATION);
+                    m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, new EditorState(cols, false));
                     if (hasMasterMode()) { // the bundle descriptor is editable
-                        cols = new ArrayList<String>(4);
-                        cols.add(PROPERTY_ID_KEY);
-                        cols.add(PROPERTY_ID_DESC);
-                        cols.add(PROPERTY_ID_DEFAULT);
-                        cols.add(PROPERTY_ID_TRANSLATION);
-                        m_editorState.put(EditMode.MASTER, new EditorState(cols, true));
+                        cols = new ArrayList<Object>(4);
+                        cols.add(TableProperty.KEY);
+                        cols.add(TableProperty.DESCRIPTION);
+                        cols.add(TableProperty.DEFAULT);
+                        cols.add(TableProperty.TRANSLATION);
+                        m_editorState.put(CmsMessageBundleEditorTypes.EditMode.MASTER, new EditorState(cols, true));
                     }
                 } else { // no bundle descriptor given - implies no master mode
-                    cols = new ArrayList<String>(1);
-                    cols.add(PROPERTY_ID_KEY);
-                    cols.add(PROPERTY_ID_TRANSLATION);
-                    m_editorState.put(EditMode.DEFAULT, new EditorState(cols, true));
+                    cols = new ArrayList<Object>(1);
+                    cols.add(TableProperty.KEY);
+                    cols.add(TableProperty.TRANSLATION);
+                    m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, new EditorState(cols, true));
                 }
                 break;
             case DESCRIPTOR:
-                cols = new ArrayList<String>(3);
-                cols.add(PROPERTY_ID_KEY);
-                cols.add(PROPERTY_ID_DESC);
-                cols.add(PROPERTY_ID_DEFAULT);
-                m_editorState.put(EditMode.DEFAULT, new EditorState(cols, true));
+                cols = new ArrayList<Object>(3);
+                cols.add(TableProperty.KEY);
+                cols.add(TableProperty.DESCRIPTION);
+                cols.add(TableProperty.DEFAULT);
+                m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, new EditorState(cols, true));
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -928,7 +691,8 @@ public class CmsMessageBundleEditorModel {
         Collection<CmsResource> translations = m_cms.readResources(
             m_sitepath,
             CmsResourceFilter.DEFAULT.addRequireType(
-                OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString())));
+                OpenCms.getResourceManager().getResourceType(
+                    CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString())));
         for (CmsResource resource : translations) {
             String baseName = resource.getName();
             String localeSuffix = CmsStringUtil.getLocaleSuffixForName(baseName);
@@ -981,7 +745,9 @@ public class CmsMessageBundleEditorModel {
      */
     private void initXmlBundle() throws CmsException {
 
-        LockedFile bundleFile = LockedFile.lockResource(m_cms, m_resource);
+        CmsMessageBundleEditorTypes.LockedFile bundleFile = CmsMessageBundleEditorTypes.LockedFile.lockResource(
+            m_cms,
+            m_resource);
         m_bundleFiles.put(null, bundleFile);
         m_xmlBundle = CmsXmlContentFactory.unmarshal(m_cms, bundleFile.getFile());
         initKeySetForXmlBundle();
@@ -1003,11 +769,11 @@ public class CmsMessageBundleEditorModel {
         if (!locale.equals(DEFAULT_LOCALE)) {
             sitePath += "_" + locale.toString();
         }
-        LockedFile file = null;
+        CmsMessageBundleEditorTypes.LockedFile file = null;
         if (m_cms.existsResource(sitePath)) {
             CmsResource resource = m_cms.readResource(sitePath);
             if (!OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(
-                BundleType.PROPERTY.toString())) {
+                CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString())) {
                 throw new CmsException(
                     new CmsMessageContainer(
                         Messages.get(),
@@ -1015,12 +781,13 @@ public class CmsMessageBundleEditorModel {
                         locale.getDisplayName(),
                         resource.getRootPath()));
             }
-            file = LockedFile.lockResource(m_cms, resource);
+            file = CmsMessageBundleEditorTypes.LockedFile.lockResource(m_cms, resource);
         } else {
             CmsResource res = m_cms.createResource(
                 sitePath,
-                OpenCms.getResourceManager().getResourceType(BundleType.PROPERTY.toString()));
-            file = LockedFile.lockResource(m_cms, res);
+                OpenCms.getResourceManager().getResourceType(
+                    CmsMessageBundleEditorTypes.BundleType.PROPERTY.toString()));
+            file = CmsMessageBundleEditorTypes.LockedFile.lockResource(m_cms, res);
             file.setCreated(true);
         }
         m_bundleFiles.put(locale, file);
@@ -1057,25 +824,28 @@ public class CmsMessageBundleEditorModel {
      * @throws IOException thrown if loading the localization from a bundle resource fails.
      * @throws CmsException thrown if loading the localization from a bundle resource fails.
      */
-    private void replaceValues(Locale locale, KeySetMode mode) throws IOException, CmsException {
+    private void replaceValues(Locale locale, CmsMessageBundleEditorTypes.KeySetMode mode)
+    throws IOException, CmsException {
 
         Map<String, String> localization = getLocalization(locale);
         if (hasDescriptor()) {
             for (Object itemId : m_container.getItemIds()) {
                 Item item = m_container.getItem(itemId);
-                String key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
+                String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
                 String value = localization.get(key);
-                item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == value ? "" : value);
+                item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
             }
         } else {
             m_container.removeAllItems();
-            Set<String> keyset = mode.equals(KeySetMode.ALL) ? m_keyset.getKeySet() : localization.keySet();
+            Set<String> keyset = mode.equals(CmsMessageBundleEditorTypes.KeySetMode.ALL)
+            ? m_keyset.getKeySet()
+            : localization.keySet();
             for (String key : keyset) {
                 Object itemId = m_container.addItem();
                 Item item = m_container.getItem(itemId);
-                item.getItemProperty(PROPERTY_ID_KEY).setValue(key);
+                item.getItemProperty(TableProperty.KEY).setValue(key);
                 String value = localization.get(key);
-                item.getItemProperty(PROPERTY_ID_TRANSLATION).setValue(null == value ? "" : value);
+                item.getItemProperty(TableProperty.TRANSLATION).setValue(null == value ? "" : value);
             }
             if (m_container.getItemIds().isEmpty()) {
                 m_container.addItem();
@@ -1091,8 +861,8 @@ public class CmsMessageBundleEditorModel {
         Map<String, String> localization = new HashMap<String, String>();
         for (Object itemId : m_container.getItemIds()) {
             Item item = m_container.getItem(itemId);
-            String key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
-            String value = item.getItemProperty(PROPERTY_ID_TRANSLATION).getValue().toString();
+            String key = item.getItemProperty(TableProperty.KEY).getValue().toString();
+            String value = item.getItemProperty(TableProperty.TRANSLATION).getValue().toString();
             if (!(key.isEmpty() || value.isEmpty())) {
                 localization.put(key, value);
             }
@@ -1118,10 +888,10 @@ public class CmsMessageBundleEditorModel {
         int i = 0;
         for (Object itemId : m_container.getItemIds()) {
             Item item = m_container.getItem(itemId);
-            key = item.getItemProperty(PROPERTY_ID_KEY).getValue().toString();
+            key = item.getItemProperty(TableProperty.KEY).getValue().toString();
             if (!key.isEmpty()) {
-                desc = item.getItemProperty(PROPERTY_ID_DESC).getValue().toString();
-                defaultValue = item.getItemProperty(PROPERTY_ID_DEFAULT).getValue().toString();
+                desc = item.getItemProperty(TableProperty.DESCRIPTION).getValue().toString();
+                defaultValue = item.getItemProperty(TableProperty.DEFAULT).getValue().toString();
                 m_descContent.addValue(m_cms, "Message", LOCALE_BUNDLE_DESCRIPTOR, i);
                 i++;
                 m_descContent.getValue("Message[" + i + "]/Key", LOCALE_BUNDLE_DESCRIPTOR).setStringValue(m_cms, key);
@@ -1205,7 +975,8 @@ public class CmsMessageBundleEditorModel {
         int pathEnd = sitePath.lastIndexOf('/') + 1;
         String baseName = sitePath.substring(pathEnd);
         m_sitepath = sitePath.substring(0, pathEnd);
-        switch (BundleType.toBundleType(OpenCms.getResourceManager().getResourceType(m_resource).getTypeName())) {
+        switch (CmsMessageBundleEditorTypes.BundleType.toBundleType(
+            OpenCms.getResourceManager().getResourceType(m_resource).getTypeName())) {
             case PROPERTY:
                 String localeSuffix = CmsStringUtil.getLocaleSuffixForName(baseName);
                 if ((null != localeSuffix) && !localeSuffix.isEmpty()) {
@@ -1231,7 +1002,7 @@ public class CmsMessageBundleEditorModel {
                 throw new IllegalArgumentException(
                     Messages.get().container(
                         Messages.ERR_UNSUPPORTED_BUNDLE_TYPE_1,
-                        BundleType.toBundleType(
+                        CmsMessageBundleEditorTypes.BundleType.toBundleType(
                             OpenCms.getResourceManager().getResourceType(m_resource).getTypeName())).toString());
         }
         m_basename = baseName;
