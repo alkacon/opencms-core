@@ -63,7 +63,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
@@ -862,7 +861,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             }
         });
 
-        table.setCacheRate(3);
+        table.setPageLength(30);
+        table.setCacheRate(1);
         return table;
     }
 
