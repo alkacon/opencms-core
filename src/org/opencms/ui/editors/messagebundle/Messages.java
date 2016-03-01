@@ -22,15 +22,15 @@ public final class Messages extends A_CmsMessageBundle {
     private static final String BUNDLE_NAME = "org.opencms.ui.editors.messagebundle.messages";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_LOADING_BUNDLE_CMS_OBJECT_NULL_0 = "ERROR_LOADING_BUNDLE_CMS_OBJECT_NULL_0";
+    public static final String ERR_LOADING_BUNDLE_CMS_OBJECT_NULL_0 = "ERR_LOADING_BUNDLE_CMS_OBJECT_NULL_0";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_FILE_NOT_A_BUNDLE_1 = "ERROR_FILE_NOT_A_BUNDLE_1";
+    public static final String ERR_FILE_NOT_A_BUNDLE_1 = "ERR_FILE_NOT_A_BUNDLE_1";
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_LOADING_BUNDLE_FILENAME_NULL_0 = "ERROR_LOADING_BUNDLE_FILENAME_NULL_0";
+    public static final String ERR_LOADING_BUNDLE_FILENAME_NULL_0 = "ERR_LOADING_BUNDLE_FILENAME_NULL_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COLUMN_HEADER_KEY_0 = "GUI_COLUMN_HEADER_KEY_0";
     /** Message constant for key in the resource bundle. */
@@ -49,9 +49,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SAVING_CHANGES_0 = "ERR_SAVING_CHANGES_0";
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1 = "ERROR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1";
+    public static final String ERR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1 = "ERR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1";
     /** Message constant for key in the resource bundle. */
-    public static final String ERROR_UNSUPPORTED_BUNDLE_TYPE_1 = "ERROR_UNSUPPORTED_BUNDLE_TYPE_1";
+    public static final String ERR_UNSUPPORTED_BUNDLE_TYPE_1 = "ERR_UNSUPPORTED_BUNDLE_TYPE_1";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LANGUAGE_SWITCHER_LABEL_0 = "GUI_LANGUAGE_SWITCHER_LABEL_0";
     /** Message constant for key in the resource bundle. */
@@ -66,8 +66,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_KEYSET_SWITCHER_MODE_ALL_0 = "GUI_KEYSET_SWITCHER_MODE_ALL_0";
     /** Message constant for key in the resource bundle. */
     public static final String GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0 = "GUI_KEYSET_SWITCHER_MODE_ONLY_USED_0";
-
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COLUMN_HEADER_OPTIONS_0 = "GUI_COLUMN_HEADER_OPTIONS_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ADD_KEY_0 = "GUI_ADD_KEY_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DEFAULT_LOCALE_0 = "GUI_DEFAULT_LOCALE_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_HAS_WRONG_TYPE_2 = "ERR_RESOURCE_HAS_WRONG_TYPE_2";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PLEASE_ADD_VALUE_0 = "GUI_PLEASE_ADD_VALUE_0";
 
     /**
      * Hides the public constructor for this utility class.<p>

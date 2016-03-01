@@ -8,4 +8,8 @@
 		white-space: normal;
 	}
 	
+	.v-table-alert-empty .v-textarea[class*="prompt"], .v-table-alert-empty .v-textfield[class*="prompt"] {
+		color: $o-state-new-color
+	}
+	
 }

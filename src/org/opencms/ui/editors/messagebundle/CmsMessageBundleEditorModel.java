@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockActionRecord;
@@ -318,6 +319,8 @@ public class CmsMessageBundleEditorModel {
     private static final String DESCRIPTOR_POSTFIX = "_desc";
     /** The locale of the bundle descriptor. */
     private static final Locale LOCALE_BUNDLE_DESCRIPTOR = new Locale("en");
+    /** The default locale. */
+    public static final Locale DEFAULT_LOCALE = new Locale("default");
     /** CmsObject for read / write operations. */
     private CmsObject m_cms;
     /** The file currently edited. */
@@ -372,11 +375,11 @@ public class CmsMessageBundleEditorModel {
     throws CmsException, IOException {
 
         if (cms == null) {
-            throw new CmsException(Messages.get().container(Messages.ERROR_LOADING_BUNDLE_CMS_OBJECT_NULL_0));
+            throw new CmsException(Messages.get().container(Messages.ERR_LOADING_BUNDLE_CMS_OBJECT_NULL_0));
         }
 
         if (resource == null) {
-            throw new CmsException(Messages.get().container(Messages.ERROR_LOADING_BUNDLE_FILENAME_NULL_0));
+            throw new CmsException(Messages.get().container(Messages.ERR_LOADING_BUNDLE_FILENAME_NULL_0));
         }
 
         m_cms = cms;
@@ -848,7 +851,7 @@ public class CmsMessageBundleEditorModel {
                         files += " " + res.getRootPath();
                     }
                     throw new CmsException(
-                        Messages.get().container(Messages.ERROR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1, files));
+                        Messages.get().container(Messages.ERR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1, files));
             }
             if (null != desc) {
                 m_desc = desc;
@@ -996,10 +999,22 @@ public class CmsMessageBundleEditorModel {
     private void loadLocalizationFromPropertyBundle(Locale locale) throws IOException, CmsException {
 
         // may throw exception again
-        String sitePath = m_sitepath + m_basename + "_" + locale.toString();
+        String sitePath = m_sitepath + m_basename;
+        if (!locale.equals(DEFAULT_LOCALE)) {
+            sitePath += "_" + locale.toString();
+        }
         LockedFile file = null;
         if (m_cms.existsResource(sitePath)) {
             CmsResource resource = m_cms.readResource(sitePath);
+            if (!OpenCms.getResourceManager().getResourceType(resource).getTypeName().equals(
+                BundleType.PROPERTY.toString())) {
+                throw new CmsException(
+                    new CmsMessageContainer(
+                        Messages.get(),
+                        Messages.ERR_RESOURCE_HAS_WRONG_TYPE_2,
+                        locale.getDisplayName(),
+                        resource.getRootPath()));
+            }
             file = LockedFile.lockResource(m_cms, resource);
         } else {
             CmsResource res = m_cms.createResource(
@@ -1199,7 +1214,7 @@ public class CmsMessageBundleEditorModel {
                         baseName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
                     m_locale = CmsLocaleManager.getLocale(localeSuffix);
                 } else {
-                    m_locale = new Locale("default");
+                    m_locale = DEFAULT_LOCALE;
                 }
                 break;
             case XML:
@@ -1215,7 +1230,7 @@ public class CmsMessageBundleEditorModel {
             default:
                 throw new IllegalArgumentException(
                     Messages.get().container(
-                        Messages.ERROR_UNSUPPORTED_BUNDLE_TYPE_1,
+                        Messages.ERR_UNSUPPORTED_BUNDLE_TYPE_1,
                         BundleType.toBundleType(
                             OpenCms.getResourceManager().getResourceType(m_resource).getTypeName())).toString());
         }
