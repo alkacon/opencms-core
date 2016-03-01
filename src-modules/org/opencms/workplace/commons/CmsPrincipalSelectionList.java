@@ -199,7 +199,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
 
         super(
             jsp,
-            LIST_ID + getParametersHash(jsp.getRequest()),
+            LIST_ID + getListInstanceHash(jsp.getRequest()),
             Messages.get().container(Messages.GUI_PRINCIPALSELECTION_LIST_NAME_0),
             LIST_COLUMN_DISPLAY,
             CmsListOrderEnum.ORDER_ASCENDING,
@@ -218,13 +218,22 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    private static String getParametersHash(HttpServletRequest request) {
+    /**
+     * Gets the hash which is appended to the list name to form the list id.<p>
+     *
+     * @param request the current request
+     * @return the list instance hash
+     */
+    private static String getListInstanceHash(HttpServletRequest request) {
 
-        if (request != null) {
-            return String.valueOf(request.getParameterMap().hashCode());
+        String result;
+        if ((request != null) && (request.getSession(false) != null)) {
+            result = "_" + String.valueOf(request.getSession(false).getId().hashCode());
+
         } else {
-            return "";
+            result = "";
         }
+        return result;
     }
 
     /**
