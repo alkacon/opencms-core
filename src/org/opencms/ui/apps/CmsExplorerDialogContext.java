@@ -117,20 +117,24 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
             CmsResource res = cms.readResource(cmsUUID, CmsResourceFilter.ALL);
             String rootPath = res.getRootPath();
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+            String sitePath = null;
             if (siteRoot == null) {
                 if (OpenCms.getSiteManager().startsWithShared(rootPath)) {
                     siteRoot = OpenCms.getSiteManager().getSharedFolder();
+                    sitePath = CmsResource.getParentFolder(
+                        rootPath.substring(OpenCms.getSiteManager().getSharedFolder().length()));
                 } else {
+                    sitePath = CmsResource.getParentFolder(rootPath);
                     siteRoot = "";
                 }
+            } else {
+                CmsObject otherSiteCms = OpenCms.initCmsObject(cms);
+                otherSiteCms.getRequestContext().setSiteRoot(siteRoot);
+                sitePath = otherSiteCms.getRequestContext().removeSiteRoot(CmsResource.getParentFolder(rootPath));
             }
-            CmsObject otherSiteCms = OpenCms.initCmsObject(cms);
-            otherSiteCms.getRequestContext().setSiteRoot(siteRoot);
-            String sitePath = otherSiteCms.getRequestContext().removeSiteRoot(CmsResource.getParentFolder(rootPath));
             m_explorer.changeSite(siteRoot, sitePath, true);
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog(e);
-
         }
     }
 
