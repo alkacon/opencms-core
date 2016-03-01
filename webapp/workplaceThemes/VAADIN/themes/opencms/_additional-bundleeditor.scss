@@ -1,0 +1,11 @@
+@mixin o-table-bundleeditor {
+
+	.v-table-wrap-lines table.v-table-table .v-table-cell-wrapper {
+		line-height: normal;
+	}
+	
+	.v-table-wrap-lines table.v-table-table .v-table-cell-content {
+		white-space: normal;
+	}
+	
+}

@@ -7,6 +7,7 @@
 @import "buttons";
 @import "loading-spinner";
 @import "permissions";
+@import "additional-bundleeditor";
 
 @include opencmsfont;
 
@@ -19,6 +20,7 @@
    @include o-buttons;
    @include o-loading-spinner;
    @include o-permissions;
+   @include o-table-bundleeditor;
    
    /* Embedded dialogs require the UI to have a transparent background. */
    &.cmsembeddeddialogsui.v-app, &.cmsembeddeddialogsui.v-app-loading {
