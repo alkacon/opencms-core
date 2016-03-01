@@ -8,7 +8,6 @@
 	<inherits name="org.opencms.ade.publish.PublishDialogCommon" />
 	<inherits name="org.opencms.ade.galleries.GalleryCommon" />
 	<inherits name="org.tepi.filtertable.gwt.FilterTableWidgetset" />
-	<inherits name="org.vaadin.hene.expandingtextarea.widgetset.ExpandingtextareaWidgetset" />
 	<stylesheet src="../../../resources/css/toolbar.css"/>
 	<entry-point class="org.opencms.ui.client.CmsWidgetSetEntryPoint" />
 
