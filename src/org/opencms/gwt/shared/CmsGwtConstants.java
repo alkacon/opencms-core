@@ -32,6 +32,37 @@ package org.opencms.gwt.shared;
  */
 public final class CmsGwtConstants {
 
+    /**
+     * Quick launcher constants.<p>
+     */
+    public static final class QuickLaunch {
+
+        /** Context string. */
+        public static final String CONTEXT_PAGE = "page";
+
+        /** Context string. */
+        public static final String CONTEXT_SITEMAP = "sitemap";
+
+        /** Quick launch id. */
+        public static final String Q_ACCOUNTMANAGER = "accountmanager";
+
+        /** Quick launch id. */
+        public static final String Q_EXPLORER = "explorer";
+
+        /** Quick launch id. */
+        public static final String Q_LAUNCHPAD = "launchpad";
+
+        /** Quick launch id. */
+        public static final String Q_PAGEEDITOR = "pageeditor";
+
+        /** Quick launch id. */
+        public static final String Q_SITEMAP = "sitemap";
+
+        /** Quick launch id. */
+        public static final String Q_WORKPLACETOOLS = "workplacetools";
+
+    }
+
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
@@ -85,6 +116,10 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
+
+    public static final String WIN_EDITOR = "opencms_edit_window";
+
+    public static final String WIN_WORKPLACE = "opencms_workplace";
 
     /**
      * Hide constructor.<p>

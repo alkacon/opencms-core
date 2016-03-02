@@ -27,6 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
+import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.util.CmsStringUtil;
@@ -68,18 +69,23 @@ public class CmsToolbar extends Composite {
     @UiField
     protected FlowPanel m_buttonPanelRight;
 
-    /** The title label. */
-    private Label m_titleLabel;
+    /** The quick launcher (initially invisible). */
+    @UiField
+    protected CmsQuickLauncher m_quickLauncher;
 
     /** The user info button HTML. */
     @UiField
     protected CmsUserInfo m_userInfo;
+
+    /** The title label. */
+    private Label m_titleLabel;
 
     /**
      * Constructor.<p>
      */
     public CmsToolbar() {
         initWidget(uiBinder.createAndBindUi(this));
+
     }
 
     /**
@@ -205,5 +211,15 @@ public class CmsToolbar extends Composite {
             }
             m_titleLabel.setText(title);
         }
+    }
+
+    /**
+     * Sets the handler for the quick launch menu and turns that menu visible.<p>
+     *
+     * @param quicklaunchHandler the quick launch handler
+     */
+    public void setQuickLaunchHandler(I_QuickLaunchHandler quicklaunchHandler) {
+
+        m_quickLauncher.setHandler(quicklaunchHandler);
     }
 }

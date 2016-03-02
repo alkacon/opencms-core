@@ -27,21 +27,28 @@
 
 package org.opencms.ade.sitemap.client.toolbar;
 
+import org.opencms.ade.sitemap.client.CmsSitemapView;
 import org.opencms.ade.sitemap.client.control.CmsSitemapController;
 import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
+import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
+import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,6 +57,46 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  */
 public class CmsSitemapToolbar extends CmsToolbar {
+
+    /**
+     * Quick launch handler for the sitemap.<p>
+     */
+    public static class SitemapQuickLaunchHandler implements I_QuickLaunchHandler {
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getContext()
+         */
+        public String getContext() {
+
+            return QuickLaunch.CONTEXT_SITEMAP;
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#handleQuickLaunch(org.opencms.gwt.shared.CmsQuickLaunchData)
+         */
+        public void handleQuickLaunch(CmsQuickLaunchData data) {
+
+            if ((data.getDefaultUrl() != null) && (data.getDefaultTarget() != null)) {
+                CmsShowWorkplace.openWorkplace(data.getDefaultUrl(), data.getDefaultTarget());
+            } else {
+                switch (data.getName()) {
+                    case QuickLaunch.Q_EXPLORER:
+                        CmsUUID rootId = CmsSitemapView.getInstance().getController().getData().getRoot().getId();
+                        CmsShowWorkplace.openWorkplace(rootId, false);
+                        break;
+                    case QuickLaunch.Q_SITEMAP:
+                        Window.alert("ERROR: sitemap button should not be visible in sitemap.");
+                        break;
+                    case QuickLaunch.Q_PAGEEDITOR:
+                        String retcode = CmsSitemapView.getInstance().getController().getData().getReturnCode();
+                        CmsToolbarGoBackButton.goBack(retcode);
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
+    }
 
     /** The sitemap clipboard button. */
     private CmsToolbarClipboardButton m_clipboardButton;
@@ -105,9 +152,9 @@ public class CmsSitemapToolbar extends CmsToolbar {
 
         m_contextMenuButton = new CmsToolbarContextButton(m_toolbarHandler);
         m_contextMenuButton.addClickHandler(clickHandler);
-        addRight(m_contextMenuButton);
-        addRight(new CmsToolbarGoBackButton(this, controller));
+        insertRight(m_contextMenuButton, 0);
         setMode(EditorMode.navigation);
+        setQuickLaunchHandler(new SitemapQuickLaunchHandler());
     }
 
     /**

@@ -256,3 +256,11 @@ div.menuArrowBottom:after {
 	background: value("constants.css.backgroundColorDialog");
 	margin-top: 5px;
 }
+
+.quickLaunchContainer {
+	padding: 10px; 
+	width: 352px;
+	background-color: white;
+}
+
+ 

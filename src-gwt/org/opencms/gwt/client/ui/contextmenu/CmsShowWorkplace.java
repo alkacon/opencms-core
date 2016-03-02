@@ -30,10 +30,9 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
-
-import com.google.gwt.user.client.Window;
 
 /**
  * Provides a method to open the workplace.<p>
@@ -107,12 +106,8 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             protected void onResponse(String result) {
 
                 stop(false);
-                int width = Window.getClientWidth();
-                int height = Window.getClientHeight();
-                int left = Window.getScrollLeft();
-                int top = Window.getScrollTop();
 
-                openWorkplace(result, width, height, left, top);
+                openWorkplace(result, CmsGwtConstants.WIN_WORKPLACE);
             }
         };
         callback.execute();
@@ -127,24 +122,24 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      * @param winLeft the left space of the window
      * @param winTop the top space of the window
      */
-    protected static native void openWorkplace(
-        String path,
-        int winWidth,
-        int winHeight,
-        int winLeft,
-        int winTop) /*-{
-
-        if ($wnd.opener && $wnd.opener != self) {
-            $wnd.opener.location.href = path;
-            $wnd.opener.focus();
-        } else {
-            var openerStr = '';
-            var deWindow = $wnd.open(path, "DirectEditWorkplace", openerStr);
-            if (deWindow) {
-                deWindow.focus();
-            } else {
-                @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-            }
-        }
-    }-*/;
+    public static native void openWorkplace(String path, String defaultTarget) /*-{
+                                                                               
+                                                                               if ($wnd.opener && $wnd.opener != self) {
+                                                                               $wnd.console.log("1111111 myname=" + $wnd.name + "  tname="
+                                                                               + $wnd.opener.name + " url=" + path);
+                                                                               
+                                                                               $wnd.opener.location.href = path;
+                                                                               $wnd.opener.focus();
+                                                                               } else {
+                                                                               $wnd.console.log("2222222 myname=" + $wnd.name + " open " + path
+                                                                               + " on " + defaultTarget);
+                                                                               var openerStr = '';
+                                                                               var deWindow = $wnd.open(path, defaultTarget, openerStr);
+                                                                               if (deWindow) {
+                                                                               deWindow.focus();
+                                                                               } else {
+                                                                               @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+                                                                               }
+                                                                               }
+                                                                               }-*/;
 }

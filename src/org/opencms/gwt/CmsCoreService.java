@@ -829,9 +829,11 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     : "";
                     CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
                     String link = CmsVaadinUtils.getWorkplaceLink()
-                        + "#explorer/"
+                        + "#!explorer/"
+                        + getCmsObject().getRequestContext().getCurrentProject().getUuid()
+                        + "!!"
                         + siteRoot
-                        + "!"
+                        + "!!"
                         + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
                     result = link;
                     break;

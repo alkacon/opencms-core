@@ -52,9 +52,6 @@ import com.google.gwt.user.client.Window;
  */
 public class CmsToolbarGoBackButton extends CmsPushButton {
 
-    /** The return code. */
-    private String m_returnCode;
-
     /**
      * Constructor.<p>
      *
@@ -78,35 +75,26 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
                 CmsToolbarGoBackButton.this.clearHoverState();
                 setDown(false);
                 setEnabled(false);
-                goBack();
+                goBack(controller.getData().getReturnCode());
             }
         });
-        m_returnCode = controller.getData().getReturnCode();
-    }
-
-    /**
-     * Returns the return code.<p>
-     *
-     * @return the return code
-     */
-    protected String getReturnCode() {
-
-        return m_returnCode;
     }
 
     /**
      * Opens the publish dialog without changes check.<p>
+     *
+     * @param returnCode the return code previously passed to the sitemap editor
      */
-    protected void goBack() {
+    public static void goBack(final String returnCode) {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getReturnCode())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(returnCode)) {
             CmsRpcAction<CmsReturnLinkInfo> goBackAction = new CmsRpcAction<CmsReturnLinkInfo>() {
 
                 @Override
                 public void execute() {
 
                     start(300, false);
-                    CmsCoreProvider.getService().getLinkForReturnCode(getReturnCode(), this);
+                    CmsCoreProvider.getService().getLinkForReturnCode(returnCode, this);
                 }
 
                 @Override
@@ -135,4 +123,5 @@ public class CmsToolbarGoBackButton extends CmsPushButton {
             controller.leaveEditor(newPath);
         }
     }
+
 }

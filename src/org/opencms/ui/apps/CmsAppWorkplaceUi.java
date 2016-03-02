@@ -29,6 +29,7 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
@@ -102,7 +103,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /** The editor window name, used for page and sitemap editor. */
-    public static final String EDITOR_WINDOW_NAME = "opencms_edit_window";
+    public static final String EDITOR_WINDOW_NAME = CmsGwtConstants.WIN_EDITOR;
 
     /** The OpenCms window title prefix. */
     public static final String WINDOW_TITLE_PREFIX = "OpenCms - ";

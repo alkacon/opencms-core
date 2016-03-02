@@ -39,7 +39,6 @@ import org.opencms.ade.containerpage.client.ui.CmsToolbarPublishButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarRemoveButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSelectionButton;
 import org.opencms.ade.containerpage.client.ui.CmsToolbarSettingsButton;
-import org.opencms.ade.containerpage.client.ui.CmsToolbarSitemapButton;
 import org.opencms.ade.containerpage.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.A_CmsEntryPoint;
 import org.opencms.gwt.client.CmsBroadcastTimer;
@@ -49,13 +48,17 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsPushButton;
+import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
+import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
+import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
+import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -83,6 +86,44 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Margin-top added to the document body element when the tool-bar is shown. */
     //    private int m_bodyMarginTop;
+
+    /**
+     * Quick launch handler for the page editor.
+     */
+    public static class PageEditorQuickLaunchHandler implements I_QuickLaunchHandler {
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getContext()
+         */
+        public String getContext() {
+
+            return QuickLaunch.CONTEXT_PAGE;
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#handleQuickLaunch(org.opencms.gwt.shared.CmsQuickLaunchData)
+         */
+        public void handleQuickLaunch(CmsQuickLaunchData data) {
+
+            if ((data.getDefaultUrl() != null) && (data.getDefaultTarget() != null)) {
+                CmsShowWorkplace.openWorkplace(data.getDefaultUrl(), data.getDefaultTarget());
+            } else {
+                switch (data.getName()) {
+                    case QuickLaunch.Q_EXPLORER:
+                        CmsShowWorkplace.openWorkplace(CmsCoreProvider.get().getStructureId(), false);
+                        break;
+                    case QuickLaunch.Q_SITEMAP:
+                        CmsContainerpageController.get().getHandler().gotoSitemap();
+                        break;
+                    case QuickLaunch.Q_PAGEEDITOR:
+                        Window.alert("ERROR: page editor button should not be visible in page editor.");
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
+    }
 
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
@@ -131,9 +172,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
     /** Selection button. */
     private CmsToolbarSelectionButton m_selection;
-
-    /** Sitemap button. */
-    private CmsToolbarSitemapButton m_sitemap;
 
     /** The style variable for the display mode for small elements. */
     private CmsStyleVariable m_smallElementsStyle;
@@ -344,6 +382,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         //        m_bodyMarginTop = CmsDomUtil.getCurrentStyleInt(Document.get().getBody(), Style.marginTop);
         m_toolbar = new CmsToolbar();
+        m_toolbar.setQuickLaunchHandler(new PageEditorQuickLaunchHandler());
         m_toolbar.setAppTitle(Messages.get().key(Messages.GUI_PAGE_EDITOR_TITLE_0));
 
         m_publish = new CmsToolbarPublishButton(containerpageHandler);
@@ -383,16 +422,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         m_context = new CmsToolbarContextButton(containerpageHandler);
         m_context.addClickHandler(clickHandler);
-        m_toolbar.addRight(m_context);
+        m_toolbar.insertRight(m_context, 0);
 
-        m_sitemap = new CmsToolbarSitemapButton(containerpageHandler);
-        if (controller.getData().isSitemapManager()) {
-            m_sitemap.addClickHandler(clickHandler);
-            m_toolbar.addRight(m_sitemap);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(controller.getData().getSitemapUri())) {
-                m_sitemap.setEnabled(false);
-            }
-        }
         Window.addCloseHandler(new CloseHandler<Window>() {
 
             public void onClose(CloseEvent<Window> event) {
@@ -442,18 +473,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      * Exports the openMessageDialog method to the page context.<p>
      */
     private native void exportStacktraceDialogMethod() /*-{
-        $wnd.__openStacktraceDialog = function(event) {
-            event = (event) ? event : ((window.event) ? window.event : "");
-            var elem = (event.target) ? event.target : event.srcElement;
-            if (elem != null) {
-                var children = elem.getElementsByTagName("span");
-                if (children.length > 0) {
-                    var title = children[0].getAttribute("title");
-                    var content = children[0].innerHTML;
-                    @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
-                }
-            }
-        }
-    }-*/;
+                                                       $wnd.__openStacktraceDialog = function(event) {
+                                                       event = (event) ? event : ((window.event) ? window.event : "");
+                                                       var elem = (event.target) ? event.target : event.srcElement;
+                                                       if (elem != null) {
+                                                       var children = elem.getElementsByTagName("span");
+                                                       if (children.length > 0) {
+                                                       var title = children[0].getAttribute("title");
+                                                       var content = children[0].innerHTML;
+                                                       @org.opencms.ade.containerpage.client.CmsContainerpageEditor::openMessageDialog(Ljava/lang/String;Ljava/lang/String;)(title,content);
+                                                       }
+                                                       }
+                                                       }
+                                                       }-*/;
 
 }

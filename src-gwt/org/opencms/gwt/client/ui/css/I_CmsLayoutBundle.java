@@ -716,6 +716,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String popupOverlay();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String quickLaunchContainer();
     }
 
     /** The drag and drop CSS used by the base module. */
@@ -2222,6 +2229,41 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String quickButton();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String quickButtonImageContainer();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String quickButtonLegacy();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String quickButtonWrap();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
+        String quickSlot();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String simpleToolbarShow();
 
         /**
@@ -2279,6 +2321,8 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          * @return the CSS class name
          */
         String toolbarContent();
+
+        String toolbarFontButton();
 
         /**
          * Access method.<p>

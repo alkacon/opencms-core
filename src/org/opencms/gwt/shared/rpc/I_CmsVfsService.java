@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -366,6 +367,17 @@ public interface I_CmsVfsService extends RemoteService {
      * @throws CmsRpcException if something goes wrong
      */
     CmsPropertiesBean loadPropertyData(CmsUUID id) throws CmsRpcException;
+
+    /**
+     * Loads the items for the quick launch menu.<p>
+     *
+     * @param context the context string
+     *
+     * @return the list of quick launch items
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    List<CmsQuickLaunchData> loadQuickLaunchItems(String context) throws CmsRpcException;
 
     /**
      * Prepares to edit a file in the XML content editor.<p>

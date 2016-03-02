@@ -401,3 +401,73 @@ div.toolbarToggle{
 .hideButtonShowSmallElements .toolbarButtonShowSmallElements {
 	display: none; 
 }
+
+.toolbarFontButton { 
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	font-family: opencms-font;
+	font-size: 32px; 
+	position: relative;
+	top: 1px; 
+}
+
+.quickButton.quickButton {
+	width: 166px;
+	height: 78px;
+	margin-bottom: 10px;
+	padding-left: 13px; 
+	padding-right: 13px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	display: inline-block;
+	cursor: pointer; 
+}
+
+.quickButton .quickButtonWrap { 
+}
+
+.quickButton .quickButtonWrap > div { 
+  text-align: center;
+}
+
+.quickButton .quickButtonImageContainer {
+  width: 48px;
+  height: 48px;
+  display: inline-block; 
+  text-align:center;
+  position: relative; 
+}
+
+ 
+
+.quickButton .quickButtonImageContainer > img {
+	display: block;
+    position: absolute;
+    margin: auto; 
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+}
+
+.quickButton .quickButtonWrap > div > span {
+	white-space: nowrap;
+	font-family: "Open Sans", sans-serif; 
+	font-size: 12px; 
+	font-weight: 500;
+	color: #34345b;
+}
+
+.quickButton .quickButtonWrap > div:last-child {
+	overflow:hidden;
+	text-overflow: ellipsis;
+}  
+
+ 
+.quickSlot {}
+
+.quickButtonLegacy .quickButtonImageContainer {
+	background-image: radial-gradient(#FFFFFF 30%, #BBBBBB 100%);
+} 
+

@@ -36,6 +36,7 @@ import org.opencms.gwt.shared.CmsListInfoBean;
 import org.opencms.gwt.shared.CmsLockReportInfo;
 import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
+import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -312,6 +313,15 @@ public interface I_CmsVfsServiceAsync {
      * @param callback the asynchronous callback
      */
     void loadPropertyData(CmsUUID id, AsyncCallback<CmsPropertiesBean> callback);
+
+    /**
+     * Loads the items for the quick launch menu.<p>
+     *
+     * @param context the context string
+     *
+     * @param resultCallback the callback for the result
+     */
+    void loadQuickLaunchItems(String context, AsyncCallback<List<CmsQuickLaunchData>> resultCallback);
 
     /**
      * Prepares to edit a file in the XML content editor.<p>
