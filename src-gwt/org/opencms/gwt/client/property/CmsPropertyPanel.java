@@ -361,7 +361,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             @Override
             public void run() {
 
-                if ((tabIndex > 0) && (tabIndex < m_tabPanel.getTabCount())) {
+                if ((tabIndex >= 0) && (tabIndex < m_tabPanel.getTabCount())) {
                     I_CmsFormField markedField = null;
                     m_tabPanel.selectTab(tabIndex);
                     @SuppressWarnings("synthetic-access")
