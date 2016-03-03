@@ -468,5 +468,6 @@ div.toolbarToggle{
 
 .quickButtonLegacy .quickButtonImageContainer {
 	background-image: radial-gradient(#FFFFFF 30%, #BBBBBB 100%);
+	border-radius: 4px;
 } 
 

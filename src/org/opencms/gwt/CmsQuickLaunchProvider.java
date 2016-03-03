@@ -91,7 +91,7 @@ public class CmsQuickLaunchProvider {
                 accountUrl,
                 CmsGwtConstants.WIN_WORKPLACE,
                 wpMessages.key("GUI_ACCOUNTS_ADMIN_TOOL_NAME_0"),
-                CmsWorkplace.getResourceUri("tools/projects/icons/big/projects.png"),
+                CmsWorkplace.getResourceUri("tools/accounts/icons/big/accounts.png"),
                 true));
         String wpToolsUrl = OpenCms.getSystemInfo().getWorkplaceContext() + "#!/workplace";
         m_quickLaunchData.add(
