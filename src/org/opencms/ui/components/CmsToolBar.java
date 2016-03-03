@@ -40,9 +40,13 @@ import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppHierarchyConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsDefaultAppButtonProvider;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
@@ -53,16 +57,16 @@ import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontIcon;
 import com.vaadin.server.Resource;
@@ -469,26 +473,30 @@ public class CmsToolBar extends CssLayout {
                 layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
                 //    layout.setSpacing(true);
                 layout.setMargin(true);
-                List<I_CmsWorkplaceAppConfiguration> configs = new ArrayList<I_CmsWorkplaceAppConfiguration>(
-                    OpenCms.getWorkplaceAppManager().getWorkplaceApps());
 
-                Collections.sort(configs, new Comparator<I_CmsWorkplaceAppConfiguration>() {
+                List<String> names = Arrays.asList(
+                    CmsAppHierarchyConfiguration.APP_ID,
+                    CmsPageEditorConfiguration.APP_ID,
+                    CmsSitemapEditorConfiguration.APP_ID,
+                    CmsFileExplorerConfiguration.APP_ID,
+                    "/accounts",
+                    "/workplace");
+                Map<String, I_CmsWorkplaceAppConfiguration> confMap = Maps.newHashMap();
+                for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getWorkplaceApps()) {
+                    confMap.put(config.getId(), config);
+                }
 
-                    public int compare(I_CmsWorkplaceAppConfiguration cat1, I_CmsWorkplaceAppConfiguration cat2) {
-
-                        return ComparisonChain.start().compare(cat1.getOrder(), cat2.getOrder()).result();
+                List<I_CmsWorkplaceAppConfiguration> configs = Lists.newArrayList();
+                for (String name : names) {
+                    I_CmsWorkplaceAppConfiguration config = confMap.get(name);
+                    if (config == null) {
+                        continue;
                     }
-                });
-
-                for (I_CmsWorkplaceAppConfiguration appConfig : configs) {
-                    CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
+                    CmsAppVisibilityStatus status = config.getVisibility(cms);
                     if (status.isVisible()) {
-                        layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(cms, appConfig, locale));
-                        // show only the top 10
-                        if (layout.getComponentCount() > 9) {
-                            break;
-                        }
+                        layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(cms, config, locale));
                     }
+
                 }
                 return layout;
             }
