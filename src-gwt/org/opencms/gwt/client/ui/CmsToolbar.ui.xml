@@ -12,7 +12,7 @@
 					<span class="{resources.toolbarCss.toolbarLogo}"></span>
 	  			</g:HTMLPanel>
 				<g:FlowPanel ui:field="m_buttonPanelLeft" styleName="{resources.toolbarCss.toolbarButtonsLeft}"></g:FlowPanel>
-			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"><cms:CmsUserInfo ui:field="m_userInfo" /><cms:CmsQuickLauncher ui:field="m_quickLauncher" /></g:FlowPanel>
+			 	<g:FlowPanel ui:field="m_buttonPanelRight" styleName="{resources.toolbarCss.toolbarButtonsRight}"><cms:CmsQuickLauncher ui:field="m_quickLauncher" /><cms:CmsUserInfo ui:field="m_userInfo" /></g:FlowPanel>
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:FlowPanel>

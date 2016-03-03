@@ -301,8 +301,7 @@
 
 .toolbarBackground div.userInfo{
 	padding: 0px;
-    float: right;
-    display: block;
+    display: inline-block;
     position: relative;
 }
 
