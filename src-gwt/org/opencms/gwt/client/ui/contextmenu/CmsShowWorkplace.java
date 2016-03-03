@@ -123,23 +123,19 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      * @param winTop the top space of the window
      */
     public static native void openWorkplace(String path, String defaultTarget) /*-{
-                                                                               
-                                                                               if ($wnd.opener && $wnd.opener != self) {
-                                                                               $wnd.console.log("1111111 myname=" + $wnd.name + "  tname="
-                                                                               + $wnd.opener.name + " url=" + path);
-                                                                               
-                                                                               $wnd.opener.location.href = path;
-                                                                               $wnd.opener.focus();
-                                                                               } else {
-                                                                               $wnd.console.log("2222222 myname=" + $wnd.name + " open " + path
-                                                                               + " on " + defaultTarget);
-                                                                               var openerStr = '';
-                                                                               var deWindow = $wnd.open(path, defaultTarget, openerStr);
-                                                                               if (deWindow) {
-                                                                               deWindow.focus();
-                                                                               } else {
-                                                                               @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-                                                                               }
-                                                                               }
-                                                                               }-*/;
+
+        if ($wnd.opener && $wnd.opener != self) {
+
+            $wnd.opener.location.href = path;
+            $wnd.opener.focus();
+        } else {
+            var openerStr = '';
+            var deWindow = $wnd.open(path, defaultTarget, openerStr);
+            if (deWindow) {
+                deWindow.focus();
+            } else {
+                @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
+            }
+        }
+    }-*/;
 }
