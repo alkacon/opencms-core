@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ElementViews xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.ade.config/schemas/element_view.xsd">
+  <ElementView language="en">
+    <Title><![CDATA[System elements]]></Title>
+    <TitleKey><![CDATA[GUI_ELEMENT_VIEW_SYSTEM_TITLE_0]]></TitleKey>
+    <Order><![CDATA[2000]]></Order>
+    <Parent/>
+  </ElementView>
+</ElementViews>
