@@ -227,6 +227,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                         }
                     }
                     CmsAppWorkplaceUi.get().enableGlobalShortcuts();
+                    m_fileTable.clearSelection();
                 }
             } catch (CmsException e) {
                 LOG.error("Exception while saving changed " + m_editProperty + " to resource " + m_editId, e);
