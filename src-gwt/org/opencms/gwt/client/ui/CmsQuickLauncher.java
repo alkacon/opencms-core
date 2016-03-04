@@ -28,6 +28,7 @@
 package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsToolbarCss;
@@ -85,6 +86,7 @@ public class CmsQuickLauncher extends CmsMenuButton {
         public QuickLaunchButton(final CmsQuickLaunchData data) {
             super();
             I_CmsToolbarCss toolbarCss = I_CmsLayoutBundle.INSTANCE.toolbarCss();
+
             initWidget(
                 div(toolbarCss.quickButton(), div(
                     toolbarCss.quickButtonWrap(),
@@ -148,6 +150,9 @@ public class CmsQuickLauncher extends CmsMenuButton {
         getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
         getPopup().setWidth(0);
         m_button.getUpFace().setHTML(BUTTON_HTML);
+
+        m_button.setTitle(Messages.get().key(Messages.GUI_QUICK_LAUCNH_0));
+
         setToolbarMode(true);
 
         FlowPanel panel = new FlowPanel();
