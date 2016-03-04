@@ -54,6 +54,8 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapEditorConfiguration.class);
 
+    public static final String APP_ID = "sitemapeditor";
+
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
      */
@@ -117,7 +119,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
      */
     public String getId() {
 
-        return "myapp";
+        return APP_ID;
     }
 
     /**
