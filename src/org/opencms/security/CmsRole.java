@@ -47,6 +47,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Sets;
+
 /**
  * A role is used in the OpenCms security system to check if a user has access to a certain system function.<p>
  *
@@ -119,33 +122,6 @@ public final class CmsRole {
     /** The list of system roles. */
     private static final List<CmsRole> SYSTEM_ROLES;
 
-    /** The child roles of this role. */
-    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
-
-    /** The distinct group names of this role. */
-    private List<String> m_distictGroupNames = new ArrayList<String>();
-
-    /** The name of the group this role is mapped to in the OpenCms database.*/
-    private final String m_groupName;
-
-    /** The id of the role, does not differentiate for organizational units. */
-    private final CmsUUID m_id;
-
-    /** Indicates if this role is organizational unit dependent. */
-    private boolean m_ouDependent;
-
-    /** The organizational unit this role applies to. */
-    private String m_ouFqn;
-
-    /** The parent role of this role. */
-    private final CmsRole m_parentRole;
-
-    /** The name of this role. */
-    private final String m_roleName;
-
-    /** Indicates if this role is a system role or a user defined role. */
-    private boolean m_systemRole;
-
     /** Prefix for individual user confirmation runtime property. */
     public static final String CONFIRM_ROLE_PREFIX = "confirm.role.";
 
@@ -201,6 +177,33 @@ public final class CmsRole {
             (SYSTEM_ROLES.get(i)).initialize();
         }
     }
+
+    /** The child roles of this role. */
+    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
+
+    /** The distinct group names of this role. */
+    private List<String> m_distictGroupNames = new ArrayList<String>();
+
+    /** The name of the group this role is mapped to in the OpenCms database.*/
+    private final String m_groupName;
+
+    /** The id of the role, does not differentiate for organizational units. */
+    private final CmsUUID m_id;
+
+    /** Indicates if this role is organizational unit dependent. */
+    private boolean m_ouDependent;
+
+    /** The organizational unit this role applies to. */
+    private String m_ouFqn;
+
+    /** The parent role of this role. */
+    private final CmsRole m_parentRole;
+
+    /** The name of this role. */
+    private final String m_roleName;
+
+    /** Indicates if this role is a system role or a user defined role. */
+    private boolean m_systemRole;
 
     /**
      * Creates a user defined role.<p>
@@ -781,12 +784,42 @@ public final class CmsRole {
      */
     private Set<String> getAllGroupNames() {
 
-        Set<String> result = new HashSet<String>();
-        // add role group name
-        result.add(getGroupName());
-        if (getParentRole() != null) {
-            // add parent roles group names
-            result.addAll(getParentRole().getAllGroupNames());
+        // First get the topmost role (should be root admin)
+
+        CmsRole root = this;
+        while (root.getParentRole() != null) {
+            root = root.getParentRole();
+        }
+        List<CmsRole> allRoles = root.getChildren(true);
+        allRoles.add(root);
+
+        // now build multimap from children to parent roles for all roles reachable from root
+
+        HashMultimap<CmsRole, CmsRole> mapOfParents = HashMultimap.create();
+        for (CmsRole parent : allRoles) {
+            for (CmsRole child : parent.getChildren(false)) {
+                mapOfParents.put(child, parent);
+            }
+        }
+
+        // now traverse the parent map, starting from this role, to find all parent roles
+        // (we can't just use the getParentRole() method instead of the parent map here,
+        // since roles may have multiple logical parents (roles which have them as a child).
+
+        Set<CmsRole> visited = Sets.newHashSet();
+        Set<CmsRole> workingSet = Sets.newHashSet();
+        Set<String> result = Sets.newHashSet();
+        workingSet.add(this);
+        while (!workingSet.isEmpty()) {
+            CmsRole current = workingSet.iterator().next();
+            result.add(current.getGroupName());
+            workingSet.remove(current);
+            for (CmsRole parent : mapOfParents.get(current)) {
+                if (!visited.contains(parent)) {
+                    workingSet.add(parent);
+                }
+            }
+            visited.add(current);
         }
         return result;
     }
