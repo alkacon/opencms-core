@@ -232,7 +232,7 @@ public class CmsResourceTableProperty {
         GUI_INPUT_TYPE_0,
         true,
         0,
-        0);
+        180);
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_SITE_PATH = new CmsResourceTableProperty(
@@ -281,7 +281,7 @@ public class CmsResourceTableProperty {
         null,
         GUI_INPUT_TITLE_0,
         true,
-        2,
+        3,
         0);
 
     /** Resoure table property. */
@@ -312,7 +312,7 @@ public class CmsResourceTableProperty {
         GUI_INPUT_USERCREATED_0,
         true,
         0,
-        0);
+        150);
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_LOCKED = new CmsResourceTableProperty(
@@ -322,7 +322,7 @@ public class CmsResourceTableProperty {
         GUI_INPUT_LOCKEDBY_0,
         true,
         0,
-        0);
+        150);
 
     /** Resource table property. */
     public static final CmsResourceTableProperty PROPERTY_USER_MODIFIED = new CmsResourceTableProperty(
@@ -332,7 +332,7 @@ public class CmsResourceTableProperty {
         GUI_INPUT_USERLASTMODIFIED_0,
         true,
         0,
-        0);
+        150);
 
     /** Map to keep track of default columns by name. */
     private static Map<String, CmsResourceTableProperty> m_columnsByName;

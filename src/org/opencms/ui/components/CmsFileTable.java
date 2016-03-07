@@ -69,6 +69,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -556,6 +557,41 @@ public class CmsFileTable extends CmsResourceTable {
     }
 
     /**
+     * Updates the column widths.<p>
+     *
+     * The reason this is needed is that the Vaadin table does not support minimum widths for columns,
+     * so expanding columns get squished when most of the horizontal space is used by other columns.
+     * So we try to determine whether the expanded columns would have enough space, and if not, give them a
+     * fixed width.
+     *
+     * @param estimatedSpace the estimated horizontal space available for the table.
+     */
+    public void updateColumnWidths(int estimatedSpace) {
+
+        Object[] cols = m_fileTable.getVisibleColumns();
+        List<CmsResourceTableProperty> expandCols = Lists.newArrayList();
+        int nonExpandWidth = 0;
+        int totalExpandMinWidth = 0;
+        for (Object colObj : cols) {
+            if (m_fileTable.isColumnCollapsed(colObj)) {
+                continue;
+            }
+            CmsResourceTableProperty prop = (CmsResourceTableProperty)colObj;
+            if (0 < m_fileTable.getColumnExpandRatio(prop)) {
+                expandCols.add(prop);
+                totalExpandMinWidth += getAlternativeWidthForExpandingColumns(prop);
+            } else {
+                nonExpandWidth += prop.getColumnWidth();
+            }
+        }
+        if (estimatedSpace < (totalExpandMinWidth + nonExpandWidth)) {
+            for (CmsResourceTableProperty expandCol : expandCols) {
+                m_fileTable.setColumnWidth(expandCol, getAlternativeWidthForExpandingColumns(expandCol));
+            }
+        }
+    }
+
+    /**
      * Updates the file table sorting.<p>
      */
     public void updateSorting() {
@@ -607,6 +643,27 @@ public class CmsFileTable extends CmsResourceTable {
         m_editProperty = null;
         m_editHandler = null;
         updateSorting();
+    }
+
+    /**
+     * Gets alternative width for expanding table columns which is used when there is not enough space for
+     * all visible columns.<p>
+     *
+     * @param prop the table property
+     * @return the alternative column width
+     */
+    private int getAlternativeWidthForExpandingColumns(CmsResourceTableProperty prop) {
+
+        if (prop.getId().equals(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME.getId())) {
+            return 200;
+        }
+        if (prop.getId().equals(CmsResourceTableProperty.PROPERTY_TITLE.getId())) {
+            return 300;
+        }
+        if (prop.getId().equals(CmsResourceTableProperty.PROPERTY_NAVIGATION_TEXT.getId())) {
+            return 200;
+        }
+        return 200;
     }
 
     /**

@@ -1025,7 +1025,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
             LOG.error("Error while reading file explorer settings from user.", e);
         }
         sp.setSecondComponent(m_fileTable);
-        sp.setSplitPosition(400 - 1, Unit.PIXELS);
+        int splitLeft = 399;
+        sp.setSplitPosition(splitLeft, Unit.PIXELS);
 
         context.setAppContent(sp);
         context.showInfoArea(true);
@@ -1051,6 +1052,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         initToolbarButtons(context);
         populateFolderTree();
+        m_fileTable.updateColumnWidths(A_CmsUI.get().getPage().getBrowserWindowWidth() - splitLeft);
     }
 
     /**
