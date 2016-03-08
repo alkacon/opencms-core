@@ -53,6 +53,8 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -75,6 +77,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -151,6 +154,9 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
 
     /** The popup panel inside which the selector will be shown.<p> */
     protected PopupPanel m_popup = new PopupPanel(true);
+
+    /** Handler registration for mouse wheel handlers. */
+    protected HandlerRegistration m_mousewheelRegistration;
 
     /** The preview handler registration. */
     protected HandlerRegistration m_previewHandlerRegistration;
@@ -245,7 +251,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
                 close();
             }
         });
-
         initOpener();
     }
 
@@ -573,6 +578,27 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             }
         });
 
+        // native event preview of mousewheel events doesn't seem to work in newer Chrome versions
+        m_mousewheelRegistration = RootPanel.get().addDomHandler(new MouseWheelHandler() {
+
+            public void onMouseWheel(MouseWheelEvent event) {
+
+                close();
+            }
+        }, MouseWheelEvent.getType());
+
+    }
+
+    /**
+     * @see com.google.gwt.user.client.ui.Widget#onUnload()
+     */
+    @Override
+    protected void onUnload() {
+
+        super.onUnload();
+        if (m_mousewheelRegistration != null) {
+            m_mousewheelRegistration.removeHandler();
+        }
     }
 
     /**
@@ -682,7 +708,6 @@ implements I_CmsFormWidget, HasValueChangeHandlers<String>, HasFocusHandlers, I_
             m_selectorState.setValue(I_CmsLayoutBundle.INSTANCE.generalCss().cornerBottom());
         }
         // m_selectBoxState.setValue(CSS.selectBoxOpen());
-
         m_previewHandlerRegistration = Event.addNativePreviewHandler(new ScrollEventPreviewHandler());
     }
 
