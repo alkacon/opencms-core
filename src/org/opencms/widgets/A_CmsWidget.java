@@ -29,6 +29,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -328,6 +329,10 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append("<td>");
             result.append("<img id=\"img");
             result.append(locKey);
+            result.append("\" ");
+            result.append("title=\"");
+            result.append(CmsEncoder.escapeXml(locValue));
+            result.append("\" ");
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
             result.append("\" alt=\"\" border=\"0\"");
