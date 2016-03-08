@@ -76,7 +76,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     private static CmsJspLoader m_jspLoader;
 
     /** The max allowed recursive include number.*/
-    private static final int MAX_INCLUDE_RECURSION = 5;
+    private static final int MAX_INCLUDE_RECURSION = 7;
 
     /** Map of attributes from the original request. */
     private Map<String, Object> m_attributes;

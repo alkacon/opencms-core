@@ -110,7 +110,7 @@ import com.google.common.collect.Sets;
 public class CmsElementUtil {
 
     /** The maximum number of nested container levels. */
-    public static final int MAX_NESTING_LEVEL = 5;
+    public static final int MAX_NESTING_LEVEL = 7;
 
     /** Static reference to the log. */
     private static final Log LOG = CmsLog.getLog(org.opencms.ade.containerpage.CmsElementUtil.class);
@@ -624,7 +624,11 @@ public class CmsElementUtil {
             ? containersByName.get(parentName).getParentContainerName()
             : null;
         }
-        return MAX_NESTING_LEVEL > level;
+        boolean result = MAX_NESTING_LEVEL > level;
+        if (!result && LOG.isWarnEnabled()) {
+            LOG.warn("Max container nesting exceeded for " + container.getName() + ": " + level);
+        }
+        return result;
     }
 
     /**
