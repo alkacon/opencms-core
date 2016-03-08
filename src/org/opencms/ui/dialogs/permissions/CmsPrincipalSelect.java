@@ -28,6 +28,7 @@
 package org.opencms.ui.dialogs.permissions;
 
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -36,6 +37,7 @@ import org.opencms.ui.components.CmsBasicDialog;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.vaadin.data.Item;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.BrowserFrame;
@@ -110,6 +112,7 @@ public class CmsPrincipalSelect extends CustomComponent {
             I_CmsPrincipal.PRINCIPAL_GROUP,
             CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_GROUP_0));
         CmsVaadinUtils.prepareComboBox(m_principalTypeSelect, principalTypes);
+
         m_principalTypeSelect.setNewItemsAllowed(false);
         m_principalTypeSelect.setNullSelectionAllowed(false);
         m_principalTypeSelect.select(I_CmsPrincipal.PRINCIPAL_USER);
@@ -147,6 +150,22 @@ public class CmsPrincipalSelect extends CustomComponent {
         main.addComponent(m_addPermissionSetButton);
 
         new CmsPrincipalSelectExtension(this);
+    }
+
+    /**
+     * Enables/disables selection of the 'Roles' prinipal type.<p>
+     *
+     * @param editRoles true if the user should be allowed to select roles
+     */
+    public void setRoleSelectionAllowed(boolean editRoles) {
+
+        m_principalTypeSelect.removeItem(CmsRole.PRINCIPAL_ROLE);
+        if (editRoles) {
+            Item item = m_principalTypeSelect.addItem(CmsRole.PRINCIPAL_ROLE);
+            String roleText = CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_ROLE_0);
+            item.getItemProperty(CmsVaadinUtils.PROPERTY_LABEL).setValue(roleText);
+        }
+
     }
 
     /**

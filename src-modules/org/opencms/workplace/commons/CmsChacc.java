@@ -1938,8 +1938,9 @@ public class CmsChacc extends CmsDialog {
      */
     private boolean isRoleEditable() {
 
-        return OpenCms.getRoleManager().hasRoleForResource(getCms(), CmsRole.VFS_MANAGER, getParamResource())
-            && (getParamResource().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
-                && getParamResource().startsWith(CmsWorkplace.VFS_PATH_SYSTEM));
+        CmsObject cms = getCms();
+        String path = getParamResource();
+        return CmsWorkplace.canEditPermissionsForRoles(cms, path);
+
     }
 }

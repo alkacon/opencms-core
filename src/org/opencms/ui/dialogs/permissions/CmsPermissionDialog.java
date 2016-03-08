@@ -50,6 +50,7 @@ import org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHand
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalSelectHandler;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.Messages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -144,9 +145,11 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
         m_context = context;
         m_cms = context.getCms();
         m_resource = context.getResources().get(0);
+        boolean editRoles = CmsWorkplace.canEditPermissionsForRoles(m_cms, m_resource.getRootPath());
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_main.setHeightUndefined();
         m_principalSelect.setSelectHandler(this);
+        m_principalSelect.setRoleSelectionAllowed(editRoles);
         displayResourceInfo(Collections.singletonList(m_resource));
         displayUserPermissions(m_cms.getRequestContext().getCurrentUser());
         displayInheritedPermissions();

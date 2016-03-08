@@ -407,6 +407,19 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Checks if permissions for roles should be editable for the current user on the resource with the given path.<p>
+     *
+     * @param cms the CMS context
+     * @param path the path of a resource
+     * @return
+     */
+    public static boolean canEditPermissionsForRoles(CmsObject cms, String path) {
+
+        return OpenCms.getRoleManager().hasRoleForResource(cms, CmsRole.VFS_MANAGER, path)
+            && path.startsWith(VFS_PATH_SYSTEM);
+    }
+
+    /**
      * Returns the style sheets for the report.<p>
      *
      * @param cms the current users context
