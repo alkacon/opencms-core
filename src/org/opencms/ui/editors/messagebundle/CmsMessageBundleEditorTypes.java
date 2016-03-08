@@ -29,10 +29,14 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockUtil;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.FontOpenCms;
 
 import java.util.ArrayList;
@@ -241,6 +245,8 @@ public class CmsMessageBundleEditorTypes {
         private CmsLockActionRecord m_lockRecord;
         /** Flag, indicating if the file was newly created. */
         private boolean m_new;
+        /** The encoding of the file. */
+        private String m_encoding;
 
         /** Private constructor.
          * @param cms the cms user context.
@@ -252,6 +258,13 @@ public class CmsMessageBundleEditorTypes {
             m_lockRecord = CmsLockUtil.ensureLock(cms, resource);
             m_file = cms.readFile(resource);
             m_new = false;
+            CmsProperty encodingProperty = cms.readPropertyObject(
+                m_file,
+                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                true);
+            m_encoding = CmsEncoder.lookupEncoding(
+                encodingProperty.getValue(""),
+                OpenCms.getSystemInfo().getDefaultEncoding());
         }
 
         /**
@@ -264,6 +277,15 @@ public class CmsMessageBundleEditorTypes {
         public static LockedFile lockResource(CmsObject cms, CmsResource resource) throws CmsException {
 
             return new LockedFile(cms, resource);
+        }
+
+        /**
+         * Returns the encoding used for the file.
+         * @return the encoding used for the file.
+         */
+        public String getEncoding() {
+
+            return m_encoding;
         }
 
         /** Returns the file.

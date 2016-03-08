@@ -37,11 +37,13 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.solr.CmsSolrQuery;
 import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.LockedFile;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
@@ -52,6 +54,8 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +66,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 
@@ -70,6 +76,9 @@ import com.vaadin.data.util.IndexedContainer;
  * In particular it reads / writes the involved files and provides the contents as {@link IndexedContainer}.
  */
 public class CmsMessageBundleEditorModel {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorModel.class);
 
     /** Post fix for bundle descriptors, which must obey the name scheme {basename}_desc. */
     private static final String DESCRIPTOR_POSTFIX = "_desc";
@@ -792,8 +801,9 @@ public class CmsMessageBundleEditorModel {
         }
         m_bundleFiles.put(locale, file);
         Properties props = new Properties();
-        props.load(new ByteArrayInputStream(file.getFile().getContents()));
-        m_localizations.put(locale, propertiesToMap(props));
+        props.load(new InputStreamReader(new ByteArrayInputStream(file.getFile().getContents()), file.getEncoding()));
+        Map<String, String> properties = propertiesToMap(props);
+        m_localizations.put(locale, properties);
 
     }
 
@@ -927,8 +937,16 @@ public class CmsMessageBundleEditorModel {
                         }
                     }
                 }
-                byte[] contentBytes = content.toString().getBytes();
-                CmsFile file = m_bundleFiles.get(l).getFile();
+                LockedFile f = m_bundleFiles.get(l);
+                byte[] contentBytes;
+                try {
+                    contentBytes = content.toString().getBytes(f.getEncoding());
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Improve
+                    LOG.error("Could not get content in ISO-8859-1.", e);
+                    contentBytes = content.toString().getBytes();
+                }
+                CmsFile file = f.getFile();
                 file.setContents(contentBytes);
                 m_cms.writeFile(file);
             }
