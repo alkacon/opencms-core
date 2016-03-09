@@ -265,19 +265,29 @@
 
 .toolbarButtonsRight, .toolbarButtonsLeft{
 	margin: 5px 0;
-	width: 49%;
 	z-index: 10;
 }
 
+.toolbarButtonsRight > * {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+
 .toolbarButtonsLeft{
 	float: left;
+	width: 49%;
 }
+
+
 
 .toolbarButtonsRight{
 	text-align: right;
 	vertical-align:middle;
 	float: right;
+	display: flex; 
 }
+
 
 .toolbarButtonsLeft>div{
 	margin-right: 10px;
@@ -303,6 +313,8 @@
 	padding: 0px;
     display: inline-block;
     position: relative;
+    -ms-order: 99;
+    order: 99;
 }
 
 .toolbarBackground div.userInfo > div {
