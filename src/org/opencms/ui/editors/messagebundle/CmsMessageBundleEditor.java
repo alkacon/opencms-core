@@ -587,6 +587,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         table.setPageLength(30);
         table.setCacheRate(1);
+        table.sort(new Object[] {TableProperty.KEY}, new boolean[] {true});
         return table;
     }
 
