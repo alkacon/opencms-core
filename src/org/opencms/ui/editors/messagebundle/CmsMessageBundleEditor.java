@@ -90,6 +90,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     /** Messages used by the GUI. */
     static CmsMessages m_messages;
 
+    /** Configurable Messages. */
+    CmsMessages m_configurableMessages;
+
     /** The field factories for the different modes. */
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory> m_fieldFactories = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory>(
         2);
@@ -155,6 +158,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         try {
             m_model = new CmsMessageBundleEditorModel(m_cms, m_resource);
+            m_configurableMessages = m_model.getConfigurableMessages(m_messages, UI.getCurrent().getLocale());
 
             fillToolBar(context);
             fillAppInfo(context);
@@ -467,7 +471,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
                 m_table.setColumnHeader(
                     TableProperty.TRANSLATION,
-                    m_messages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0) + " (" + locale + ")");
+                    m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0) + " (" + locale + ")");
             }
         });
         languages.addComponent(languageLabel);
@@ -534,7 +538,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
      * @throws IOException thrown if reading the properties file fails.
      * @throws CmsException thrown if some read action for getting the table contentFilter fails.
      */
-    @SuppressWarnings("serial")
     private FilterTable createTable() throws IOException, CmsException {
 
         final FilterTable table = new FilterTable();
@@ -546,16 +549,18 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
             table.addItem();
         }
-        table.setColumnHeader(TableProperty.KEY, m_messages.key(Messages.GUI_COLUMN_HEADER_KEY_0));
-        table.setColumnHeader(TableProperty.DEFAULT, m_messages.key(Messages.GUI_COLUMN_HEADER_DEFAULT_0));
-        table.setColumnHeader(TableProperty.DESCRIPTION, m_messages.key(Messages.GUI_COLUMN_HEADER_DESCRIPTION_0));
+        table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getString(Messages.GUI_COLUMN_HEADER_KEY_0));
+        table.setColumnHeader(TableProperty.DEFAULT, m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_DEFAULT_0));
+        table.setColumnHeader(
+            TableProperty.DESCRIPTION,
+            m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_DESCRIPTION_0));
         table.setColumnHeader(
             TableProperty.TRANSLATION,
-            m_messages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0)
+            m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0)
                 + " ("
                 + m_model.getLocale().getDisplayName()
                 + ")");
-        table.setColumnHeader(TableProperty.OPTIONS, m_messages.key(Messages.GUI_COLUMN_HEADER_OPTIONS_0));
+        table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_OPTIONS_0));
 
         table.setFilterBarVisible(true);
         table.setFilterFieldVisible(TableProperty.OPTIONS, false);

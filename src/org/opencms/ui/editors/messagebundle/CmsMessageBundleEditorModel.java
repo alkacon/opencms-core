@@ -29,6 +29,7 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
@@ -86,6 +87,9 @@ public class CmsMessageBundleEditorModel {
     private static final Locale LOCALE_BUNDLE_DESCRIPTOR = new Locale("en");
     /** The default locale. */
     public static final Locale DEFAULT_LOCALE = new Locale("default");
+
+    /** The property for configuring the message bundle used for localizing the bundle descriptors entries. */
+    public static final String PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION = "bundle.descriptor.messages";
     /** CmsObject for read / write operations. */
     private CmsObject m_cms;
     /** The file currently edited. */
@@ -128,6 +132,9 @@ public class CmsMessageBundleEditorModel {
     private CmsMessageBundleEditorTypes.EditMode m_editMode;
     /** Descriptor file, if edited besides a bundle. */
     private CmsMessageBundleEditorTypes.LockedFile m_descFile;
+
+    /** The configured resource bundle used for the column headings of the bundle descriptor. */
+    private String m_configuredBundle;
 
     /**
      *
@@ -215,6 +222,25 @@ public class CmsMessageBundleEditorModel {
     public Object getBundleType() {
 
         return m_bundleType;
+    }
+
+    /**
+     * Returns the configured bundle, or the provided default bundle.
+     * @param defaultMessages the default bundle
+     * @param locale the preferred locale
+     * @return the configured bundle or, if not found, the default bundle.
+     */
+    public CmsMessages getConfigurableMessages(CmsMessages defaultMessages, Locale locale) {
+
+        if (null != m_configuredBundle) {
+            CmsMessages bundle = new CmsMessages(m_configuredBundle, locale);
+            if (null != bundle.getResourceBundle()) {
+                return bundle;
+            }
+        }
+
+        return defaultMessages;
+
     }
 
     /**
@@ -628,6 +654,13 @@ public class CmsMessageBundleEditorModel {
             if (null != desc) {
                 m_desc = desc;
                 m_descContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(desc));
+            }
+        }
+        // configure messages if wanted
+        if (null != m_desc) {
+            CmsProperty bundleProp = m_cms.readPropertyObject(m_desc, PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION, true);
+            if (!(bundleProp.isNullProperty() || bundleProp.getValue().trim().isEmpty())) {
+                m_configuredBundle = bundleProp.getValue();
             }
         }
     }
