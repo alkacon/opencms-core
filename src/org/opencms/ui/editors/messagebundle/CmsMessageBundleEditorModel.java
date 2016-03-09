@@ -495,12 +495,12 @@ public class CmsMessageBundleEditorModel {
             Item item = container.getItem(itemId);
             String key = m_descContent.getValue(prefix + "Key", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms);
             item.getItemProperty(TableProperty.KEY).setValue(key);
+            String translation = localization.get(key);
+            item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
             item.getItemProperty(TableProperty.DESCRIPTION).setValue(
                 m_descContent.getValue(prefix + "Description", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
             item.getItemProperty(TableProperty.DEFAULT).setValue(
                 m_descContent.getValue(prefix + "Default", LOCALE_BUNDLE_DESCRIPTOR).getStringValue(m_cms));
-            String translation = localization.get(key);
-            item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
         }
 
         return container;
