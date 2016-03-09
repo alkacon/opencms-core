@@ -3636,6 +3636,13 @@ public final class CmsObject {
         if (CmsUUID.isValidUUID(principalName)) {
             // principal name is in fact a UUID, probably the user was already deleted
             m_securityManager.removeAccessControlEntry(m_context, res, new CmsUUID(principalName));
+        } else if (CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME.equals(principalName)) {
+            m_securityManager.removeAccessControlEntry(m_context, res, CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID);
+        } else if (CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME.equals(principalName)) {
+            m_securityManager.removeAccessControlEntry(
+                m_context,
+                res,
+                CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID);
         } else {
             try {
                 // principal name not a UUID, assume this is a normal group or user name
@@ -3917,7 +3924,7 @@ public final class CmsObject {
      *
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
-
+    
      * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
