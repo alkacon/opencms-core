@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * One element of a container in a container page.<p>
@@ -166,7 +167,7 @@ public class CmsContainerElementBean implements Cloneable {
         m_inMemoryOnly = inMemoryOnly;
         m_releasedAndNotExpired = releasedAndNotExpired;
         m_resource = resource;
-        m_settings = settings;
+        m_settings = new ConcurrentHashMap<String, String>(settings);
         m_sitePath = sitePath;
         m_temporaryContent = temporaryContent;
     }
@@ -470,7 +471,7 @@ public class CmsContainerElementBean implements Cloneable {
             }
         }
         if (m_settings == null) {
-            m_settings = new HashMap<String, String>(getIndividualSettings());
+            m_settings = new ConcurrentHashMap<String, String>(getIndividualSettings());
         }
         // redo on every init call to ensure sitepath is calculated for current site
         m_sitePath = cms.getSitePath(m_resource);
@@ -494,7 +495,7 @@ public class CmsContainerElementBean implements Cloneable {
                 getIndividualSettings());
         }
         if (m_settings == null) {
-            m_settings = mergedSettings;
+            m_settings = new ConcurrentHashMap<String, String>(mergedSettings);
         } else {
             m_settings.putAll(mergedSettings);
         }
