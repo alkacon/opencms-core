@@ -95,6 +95,15 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         writepermisssion,
         inproject);
 
+    /** Default visibility check for 'edit-like' operations on folders. */
+    public static final CmsStandardVisibilityCheck DEFAULT_FOLDERS = new CmsStandardVisibilityCheck(
+        folder,
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        inproject);
+
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT = new CmsStandardVisibilityCheck(
         file,

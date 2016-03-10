@@ -48,7 +48,7 @@ public class CmsRestoreDeletedAction extends A_CmsWorkplaceAction {
     public static final String ACTION_ID = "restoredeleted";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT;
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.DEFAULT_FOLDERS;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
