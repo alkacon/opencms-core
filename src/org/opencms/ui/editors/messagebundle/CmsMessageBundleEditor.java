@@ -440,9 +440,9 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         // set Locales
         if (m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.PROPERTY)) {
-            languageSelect.addItem(CmsMessageBundleEditorModel.DEFAULT_LOCALE);
+            languageSelect.addItem(CmsMessageBundleEditorTypes.DEFAULT_LOCALE);
             languageSelect.setItemCaption(
-                CmsMessageBundleEditorModel.DEFAULT_LOCALE,
+                CmsMessageBundleEditorTypes.DEFAULT_LOCALE,
                 m_messages.key(Messages.GUI_DEFAULT_LOCALE_0));
         }
         for (Locale locale : m_model.getLocales()) {
@@ -465,7 +465,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     e.printStackTrace();
                 }
 
-                String locale = m_model.getLocale().equals(CmsMessageBundleEditorModel.DEFAULT_LOCALE)
+                String locale = m_model.getLocale().equals(CmsMessageBundleEditorTypes.DEFAULT_LOCALE)
                 ? m_messages.key(Messages.GUI_DEFAULT_LOCALE_0)
                 : m_model.getLocale().getDisplayName(UI.getCurrent().getLocale());
 

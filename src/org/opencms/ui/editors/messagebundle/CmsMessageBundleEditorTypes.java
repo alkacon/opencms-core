@@ -27,16 +27,14 @@
 
 package org.opencms.ui.editors.messagebundle;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.lock.CmsLockActionRecord;
-import org.opencms.lock.CmsLockUtil;
-import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearchException;
+import org.opencms.search.solr.CmsSolrIndex;
+import org.opencms.search.solr.CmsSolrQuery;
+import org.opencms.search.solr.CmsSolrResultList;
 import org.opencms.ui.FontOpenCms;
 
 import java.util.ArrayList;
@@ -44,8 +42,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
 
 import org.tepi.filtertable.FilterTable;
 
@@ -71,7 +72,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
 /** Types and helper classes used by the message bundle editor. */
-public class CmsMessageBundleEditorTypes {
+public final class CmsMessageBundleEditorTypes {
 
     /** Types of bundles editable by the Editor. */
     public enum BundleType {
@@ -120,6 +121,22 @@ public class CmsMessageBundleEditorTypes {
                     throw new IllegalArgumentException();
             }
         }
+    }
+
+    /** Helper for accessing Bundle descriptor XML contents. */
+    public static final class Descriptor {
+
+        /** Message node. */
+        public static final String N_MESSAGE = "Message";
+        /** Key node. */
+        public static final String N_KEY = "Key";
+        /** Description node. */
+        public static final String N_DESCRIPTION = "Description";
+        /** Default node. */
+        public static final String N_DEFAULT = "Default";
+        /** Locale in which the content is available. */
+        public static final Locale LOCALE = new Locale("en");
+
     }
 
     /** The different edit modes. */
@@ -234,95 +251,6 @@ public class CmsMessageBundleEditorTypes {
         /** All keys used in any of the available languages. */
         ALL, /** Only keys used for the current language. */
         USED_ONLY;
-    }
-
-    /** Helper to handle the lock reports together with the files. */
-    static final class LockedFile {
-
-        /** The file that was read. */
-        private CmsFile m_file;
-        /** The lock action record from locking the file. */
-        private CmsLockActionRecord m_lockRecord;
-        /** Flag, indicating if the file was newly created. */
-        private boolean m_new;
-        /** The encoding of the file. */
-        private String m_encoding;
-
-        /** Private constructor.
-         * @param cms the cms user context.
-         * @param resource the resource to lock and read.
-         * @throws CmsException thrown if locking fails.
-         */
-        private LockedFile(CmsObject cms, CmsResource resource)
-        throws CmsException {
-            m_lockRecord = CmsLockUtil.ensureLock(cms, resource);
-            m_file = cms.readFile(resource);
-            m_new = false;
-            CmsProperty encodingProperty = cms.readPropertyObject(
-                m_file,
-                CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                true);
-            m_encoding = CmsEncoder.lookupEncoding(
-                encodingProperty.getValue(""),
-                OpenCms.getSystemInfo().getDefaultEncoding());
-        }
-
-        /**
-         * Lock and read a file.
-         * @param cms the cms user context.
-         * @param resource the resource to lock and read.
-         * @return the read file with the lock action record.
-         * @throws CmsException thrown if locking fails
-         */
-        public static LockedFile lockResource(CmsObject cms, CmsResource resource) throws CmsException {
-
-            return new LockedFile(cms, resource);
-        }
-
-        /**
-         * Returns the encoding used for the file.
-         * @return the encoding used for the file.
-         */
-        public String getEncoding() {
-
-            return m_encoding;
-        }
-
-        /** Returns the file.
-         * @return the file.
-         */
-        public CmsFile getFile() {
-
-            return m_file;
-        }
-
-        /** Returns the lock action record.
-         * @return the lock action record.
-         */
-        public CmsLockActionRecord getLockActionRecord() {
-
-            return m_lockRecord;
-        }
-
-        /**
-         * Returns a flag, indicating if the file is newly created.
-         * @return flag, indicating if the file is newly created.
-         */
-        public boolean isCreated() {
-
-            return m_new;
-        }
-
-        /**
-         * Set the flag, indicating if the file was newly created.
-         * @param isNew flag, indicating if the file was newly created.
-         */
-        public void setCreated(boolean isNew) {
-
-            m_new = isNew;
-
-        }
-
     }
 
     /** A column generator that additionally adjusts the appearance of the options buttons to selection changes on the table. */
@@ -617,4 +545,58 @@ public class CmsMessageBundleEditorTypes {
         }
     }
 
+    /** The log object for this class. */
+    static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorTypes.class);
+
+    /** Post fix for bundle descriptors, which must obey the name scheme {basename}_desc. */
+    public static final String DESCRIPTOR_POSTFIX = "_desc";
+
+    /** The default locale. */
+    public static final Locale DEFAULT_LOCALE = new Locale("default");
+
+    /** Hide default constructor. */
+    private CmsMessageBundleEditorTypes() {
+        //noop
+    }
+
+    /**
+     * Returns the bundle descriptor for the bundle with the provided base name.
+     * @param cms {@link CmsObject} used for searching.
+     * @param basename the bundle base name, for which the descriptor is searched.
+     * @return the bundle descriptor, or <code>null</code> if it does not exist or searching fails.
+     */
+    public static CmsResource getDescriptor(CmsObject cms, String basename) {
+
+        CmsSolrQuery query = new CmsSolrQuery();
+        query.setResourceTypes(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR.toString());
+        query.setFilterQueries("filename:\"" + basename + CmsMessageBundleEditorTypes.DESCRIPTOR_POSTFIX + "\"");
+        query.add("fl", "path");
+        CmsSolrResultList results;
+        try {
+            results = OpenCms.getSearchManager().getIndexSolr(CmsSolrIndex.DEFAULT_INDEX_NAME_OFFLINE).search(
+                cms,
+                query,
+                true,
+                null,
+                true,
+                null);
+        } catch (CmsSearchException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0), e);
+            return null;
+        }
+
+        switch (results.size()) {
+            case 0:
+                return null;
+            case 1:
+                return results.get(0);
+            default:
+                String files = "";
+                for (CmsResource res : results) {
+                    files += " " + res.getRootPath();
+                }
+                LOG.warn(Messages.get().getBundle().key(Messages.ERR_BUNDLE_DESCRIPTOR_NOT_UNIQUE_1, files));
+                return results.get(0);
+        }
+    }
 }
