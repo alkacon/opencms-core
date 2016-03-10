@@ -85,7 +85,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
                         CmsShowWorkplace.openWorkplace(rootId, false);
                         break;
                     case QuickLaunch.Q_SITEMAP:
-                        Window.alert("ERROR: sitemap button should not be visible in sitemap.");
+                        Window.Location.reload();
                         break;
                     case QuickLaunch.Q_PAGEEDITOR:
                         String retcode = CmsSitemapView.getInstance().getController().getData().getReturnCode();

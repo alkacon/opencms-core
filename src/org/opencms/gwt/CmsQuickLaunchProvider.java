@@ -27,8 +27,6 @@
 
 package org.opencms.gwt;
 
-import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.CONTEXT_PAGE;
-import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.CONTEXT_SITEMAP;
 import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_ACCOUNTMANAGER;
 import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_EXPLORER;
 import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_LAUNCHPAD;
@@ -148,21 +146,13 @@ public class CmsQuickLaunchProvider {
     private boolean checkAvailable(String context, String name) {
 
         CmsUserSettings settings = new CmsUserSettings(m_cms);
-
-        if (Q_PAGEEDITOR.equals(name)) {
-            if (CONTEXT_PAGE.equals(context)) {
-                return false;
-            }
-        } else if (Q_EXPLORER.equals(name)) {
+        if (Q_EXPLORER.equals(name)) {
             return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.WORKPLACE_USER);
         } else if (Q_LAUNCHPAD.equals(name)) {
             return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.WORKPLACE_USER) && settings.usesNewWorkplace();
         } else if (Q_ACCOUNTMANAGER.equals(name)) {
             return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER) && settings.usesNewWorkplace();
         } else if (Q_SITEMAP.equals(name)) {
-            if (CONTEXT_SITEMAP.equals(context)) {
-                return false;
-            }
             return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.EDITOR);
         } else if (Q_WORKPLACETOOLS.equals(name)) {
             return OpenCms.getRoleManager().hasRole(m_cms, CmsRole.WORKPLACE_MANAGER) && settings.usesNewWorkplace();

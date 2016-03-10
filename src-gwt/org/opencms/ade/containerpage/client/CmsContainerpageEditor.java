@@ -112,11 +112,11 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
                     case QuickLaunch.Q_EXPLORER:
                         CmsShowWorkplace.openWorkplace(CmsCoreProvider.get().getStructureId(), false);
                         break;
+                    case QuickLaunch.Q_PAGEEDITOR:
+                        Window.Location.reload();
+                        break;
                     case QuickLaunch.Q_SITEMAP:
                         CmsContainerpageController.get().getHandler().gotoSitemap();
-                        break;
-                    case QuickLaunch.Q_PAGEEDITOR:
-                        Window.alert("ERROR: page editor button should not be visible in page editor.");
                         break;
                     default:
                         return;
