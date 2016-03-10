@@ -228,9 +228,14 @@ public class CmsVfsFileWidget extends A_CmsWidget implements I_CmsADEWidget {
 
         StringBuffer result = new StringBuffer();
         String referenceSitePath = cms.getSitePath(resource);
-        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(
-            cms,
-            cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri()));
+        String configPath;
+        if (resource == null) {
+            // not sure if this can ever happen?
+            configPath = cms.addSiteRoot(cms.getRequestContext().getUri());
+        } else {
+            configPath = resource.getRootPath();
+        }
+        CmsADEConfigData config = OpenCms.getADEManager().lookupConfiguration(cms, configPath);
         Set<String> detailPageTypes = OpenCms.getADEManager().getDetailPageTypes(cms);
         for (CmsResourceTypeConfig typeConfig : config.getResourceTypes()) {
             String typeName = typeConfig.getTypeName();
