@@ -160,7 +160,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
                 CmsResource res = cms.readDefaultFile("/");
                 if (res != null) {
                     String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                    A_CmsUI.get().openPageOrWarn(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                    A_CmsUI.get().getPage().setLocation(link);
                     return;
                 }
             } catch (CmsException e) {

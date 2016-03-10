@@ -77,7 +77,7 @@ public class CmsSitemapToolbar extends CmsToolbar {
         public void handleQuickLaunch(CmsQuickLaunchData data) {
 
             if ((data.getDefaultUrl() != null) && (data.getDefaultTarget() != null)) {
-                CmsShowWorkplace.openWorkplace(data.getDefaultUrl(), data.getDefaultTarget());
+                Window.Location.assign(data.getDefaultUrl());
             } else {
                 switch (data.getName()) {
                     case QuickLaunch.Q_EXPLORER:

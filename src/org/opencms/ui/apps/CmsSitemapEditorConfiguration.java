@@ -170,7 +170,7 @@ public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguratio
             try {
                 CmsResource res = cms.readResource(CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
                 String link = OpenCms.getLinkManager().substituteLink(cms, res);
-                A_CmsUI.get().openPageOrWarn(link, CmsAppWorkplaceUi.EDITOR_WINDOW_NAME);
+                A_CmsUI.get().getPage().setLocation(link);
                 return;
             } catch (CmsException e) {
                 LOG.debug("Unable to open sitemap editor.", e);

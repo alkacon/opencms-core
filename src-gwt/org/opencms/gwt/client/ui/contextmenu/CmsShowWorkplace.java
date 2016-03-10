@@ -30,9 +30,10 @@ package org.opencms.gwt.client.ui.contextmenu;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsWorkplaceLinkMode;
 import org.opencms.util.CmsUUID;
+
+import com.google.gwt.user.client.Window;
 
 /**
  * Provides a method to open the workplace.<p>
@@ -106,8 +107,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
             protected void onResponse(String result) {
 
                 stop(false);
-
-                openWorkplace(result, CmsGwtConstants.WIN_WORKPLACE);
+                Window.Location.assign(result);
             }
         };
         callback.execute();
@@ -123,6 +123,7 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
      * @param winTop the top space of the window
      */
     public static native void openWorkplace(String path, String defaultTarget) /*-{
+        $wnd.location.href = path;
 
         if ($wnd.opener && $wnd.opener != self) {
 
