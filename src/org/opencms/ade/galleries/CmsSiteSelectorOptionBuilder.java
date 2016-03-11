@@ -69,14 +69,14 @@ public class CmsSiteSelectorOptionBuilder {
         public String getSortKey(CmsSiteSelectorOption o) {
 
             String prefix = "";
-            if (o.isCurrentSite()) {
+            if (o.getType() == Type.currentSubsite) {
                 prefix = "0_";
             } else if (o.getType() == Type.shared) {
-                prefix = "1_";
-            } else if (o.getType() == Type.currentSubsite) {
                 prefix = "2_";
-            } else {
+            } else if ("".equals(o.getSiteRoot())) {
                 prefix = "3_";
+            } else {
+                prefix = "1_";
             }
             return prefix + o.getSiteRoot();
         }

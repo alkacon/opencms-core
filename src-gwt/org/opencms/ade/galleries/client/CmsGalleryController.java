@@ -1792,6 +1792,11 @@ public class CmsGalleryController implements HasValueChangeHandlers<CmsGallerySe
         if (m_startSite != null) {
             return m_startSite;
         } else if ((options != null) && (!options.isEmpty())) {
+            for (CmsSiteSelectorOption option : options) {
+                if (option.isCurrentSite()) {
+                    return option.getSiteRoot();
+                }
+            }
             return options.get(0).getSiteRoot();
         } else {
             return CmsCoreProvider.get().getSiteRoot();
