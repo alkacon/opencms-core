@@ -166,7 +166,13 @@ public class CmsSiteSelectorOptionBuilder {
                 }
                 if (siteRoot != null) {
                     Type type = Type.site;
-                    String message = siteRoot;
+                    String message = null;
+                    String title = site.getTitle();
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
+                        message = title;
+                    } else {
+                        message = siteRoot;
+                    }
                     if (siteRoot.equals("")) {
                         type = Type.root;
                         message = "/";
