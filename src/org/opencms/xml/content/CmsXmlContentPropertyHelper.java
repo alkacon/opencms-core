@@ -82,15 +82,24 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
     public enum JsonProperty {
 
         /** Property's default value. */
-        defaultValue, /** Property's description. */
-        description, /** Property's error message. */
-        error, /** Property's nice name. */
-        niceName, /** Property's validation regular expression. */
-        ruleRegex, /** Property's validation rule type. */
-        ruleType, /** Property's type. */
-        type, /** Property's value. */
-        value, /** Property's widget. */
-        widget, /** Property's widget configuration. */
+        defaultValue,
+        /** Property's description. */
+        description,
+        /** Property's error message. */
+        error,
+        /** Property's nice name. */
+        niceName,
+        /** Property's validation regular expression. */
+        ruleRegex,
+        /** Property's validation rule type. */
+        ruleType,
+        /** Property's type. */
+        type,
+        /** Property's value. */
+        value,
+        /** Property's widget. */
+        widget,
+        /** Property's widget configuration. */
         widgetConf;
     }
 
@@ -423,7 +432,10 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
         if (propertyConfig != null) {
             for (Map.Entry<String, CmsXmlContentProperty> entry : propertyConfig.entrySet()) {
                 CmsXmlContentProperty prop = entry.getValue();
-                result.put(entry.getKey(), getPropValueIds(cms, prop.getType(), prop.getDefault()));
+                String value = getPropValueIds(cms, prop.getType(), prop.getDefault());
+                if (value != null) {
+                    result.put(entry.getKey(), value);
+                }
             }
         }
         result.putAll(properties);

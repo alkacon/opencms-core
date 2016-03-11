@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsNullIgnoringConcurrentMap;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.content.CmsXmlContent;
@@ -116,6 +117,7 @@ public class CmsContainerElementBean implements Cloneable {
         if (!newSettings.containsKey(CmsContainerElement.ELEMENT_INSTANCE_ID)) {
             newSettings.put(CmsContainerElement.ELEMENT_INSTANCE_ID, new CmsUUID().toString());
         }
+        newSettings.values().removeAll(Collections.singletonList(null));
         m_individualSettings = Collections.unmodifiableMap(newSettings);
         m_editorHash = m_elementId.toString() + getSettingsHash();
         m_createNew = createNew;
@@ -166,7 +168,7 @@ public class CmsContainerElementBean implements Cloneable {
         m_inMemoryOnly = inMemoryOnly;
         m_releasedAndNotExpired = releasedAndNotExpired;
         m_resource = resource;
-        m_settings = settings;
+        setSettings(settings);
         m_sitePath = sitePath;
         m_temporaryContent = temporaryContent;
     }
@@ -470,7 +472,7 @@ public class CmsContainerElementBean implements Cloneable {
             }
         }
         if (m_settings == null) {
-            m_settings = new HashMap<String, String>(getIndividualSettings());
+            setSettings(new HashMap<String, String>(getIndividualSettings()));
         }
         // redo on every init call to ensure sitepath is calculated for current site
         m_sitePath = cms.getSitePath(m_resource);
@@ -494,7 +496,7 @@ public class CmsContainerElementBean implements Cloneable {
                 getIndividualSettings());
         }
         if (m_settings == null) {
-            m_settings = mergedSettings;
+            setSettings(mergedSettings);
         } else {
             m_settings.putAll(mergedSettings);
         }
@@ -682,5 +684,19 @@ public class CmsContainerElementBean implements Cloneable {
             return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
         }
         return "";
+    }
+
+    /**
+     * Sets the settings map.<p>
+     *
+     * @param settings the settings
+     */
+    private void setSettings(Map<String, String> settings) {
+
+        if (settings == null) {
+            m_settings = null;
+        } else {
+            m_settings = new CmsNullIgnoringConcurrentMap<String, String>(settings);
+        }
     }
 }
