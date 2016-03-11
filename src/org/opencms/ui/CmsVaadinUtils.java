@@ -54,6 +54,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.ClassUtils;
 import org.apache.log4j.Logger;
 
@@ -63,6 +65,7 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -276,6 +279,16 @@ public final class CmsVaadinUtils {
             projectItem.getItemProperty(captionPropertyName).setValue(projectName);
         }
         return result;
+    }
+
+    /**
+     * Gets the current Vaadin request, cast to a HttpServletRequest.<p>
+     *
+     * @return the current request
+     */
+    public static HttpServletRequest getRequest() {
+
+        return (HttpServletRequest)VaadinService.getCurrentRequest();
     }
 
     /**
