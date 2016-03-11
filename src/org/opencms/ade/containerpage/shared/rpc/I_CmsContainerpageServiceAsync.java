@@ -426,6 +426,15 @@ public interface I_CmsContainerpageServiceAsync {
     void setElementView(CmsUUID elementView, AsyncCallback<Void> callback);
 
     /**
+     * Stores information about the container page last edited.<p>
+     *
+     * @param pageId the page id
+     * @param detailId the detail content id
+     * @param callback the callback
+     */
+    void setLastPage(CmsUUID pageId, CmsUUID detailId, AsyncCallback<Void> callback);
+
+    /**
      * Generates request builder to make a synchronized RPC call saving the container-page.<p>
      *
      * @param pageStructureId the container page structure id

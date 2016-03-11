@@ -52,11 +52,71 @@ import org.apache.commons.logging.Log;
  */
 public final class CmsADESessionCache {
 
-    /** The log instance for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
+    /**
+     * Stores information about the container page which was last edited, so we can jump back to it later.<p>
+     */
+    public static class LastPageBean {
+
+        /** The detail id (may be null). */
+        private CmsUUID m_detailId;
+
+        /** The page structure id. */
+        private CmsUUID m_pageId;
+
+        /** The site root. */
+        private String m_siteRoot;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param siteRoot the site root
+         * @param pageId the page id
+         * @param detailId the detail content id (may be null)
+         */
+        public LastPageBean(String siteRoot, CmsUUID pageId, CmsUUID detailId) {
+            super();
+            m_siteRoot = siteRoot;
+            m_pageId = pageId;
+            m_detailId = detailId;
+        }
+
+        /**
+         * Returns the detailId.<p>
+         *
+         * @return the detailId
+         */
+        public CmsUUID getDetailId() {
+
+            return m_detailId;
+        }
+
+        /**
+         * Returns the pageId.<p>
+         *
+         * @return the pageId
+         */
+        public CmsUUID getPageId() {
+
+            return m_pageId;
+        }
+
+        /**
+         * Returns the siteRoot.<p>
+         *
+         * @return the siteRoot
+         */
+        public String getSiteRoot() {
+
+            return m_siteRoot;
+        }
+
+    }
 
     /** Session attribute name constant. */
     public static final String SESSION_ATTR_ADE_CACHE = "__OCMS_ADE_CACHE__";
+
+    /** The log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsADESessionCache.class);
 
     /** The container elements. */
     private Map<String, CmsContainerElementBean> m_containerElements;
@@ -66,6 +126,9 @@ public final class CmsADESessionCache {
 
     /** Flag which controls whether small elements should be shown. */
     private boolean m_isEditSmallElements;
+
+    /** Bean containing last page info. */
+    private LastPageBean m_lastPage;
 
     /** The sitemap editor mode. */
     private EditorMode m_sitemapEditorMode;
@@ -137,6 +200,14 @@ public final class CmsADESessionCache {
     }
 
     /**
+     * Removes the information about the last edited container page.<p>
+     */
+    public void clearLastPage() {
+
+        m_lastPage = null;
+    }
+
+    /**
      * Returns the cached container element under the given key.<p>
      *
      * @param key the cache key
@@ -168,6 +239,16 @@ public final class CmsADESessionCache {
     public CmsUUID getElementView() {
 
         return m_elementView;
+    }
+
+    /**
+     * Returns the lastPage.<p>
+     *
+     * @return the lastPage
+     */
+    public LastPageBean getLastPage() {
+
+        return m_lastPage;
     }
 
     /**
@@ -261,6 +342,19 @@ public final class CmsADESessionCache {
     public void setElementView(CmsUUID elementView) {
 
         m_elementView = elementView;
+    }
+
+    /**
+     * Stores information about the last edited container page.<p>
+     *
+     * @param cms the CMS context
+     * @param pageId the page id
+     * @param detailId the detail content id
+     */
+    public void setLastPage(CmsObject cms, CmsUUID pageId, CmsUUID detailId) {
+
+        m_lastPage = new LastPageBean(cms.getRequestContext().getSiteRoot(), pageId, detailId);
+
     }
 
     /**

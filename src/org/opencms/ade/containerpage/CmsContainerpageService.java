@@ -1339,6 +1339,22 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
     }
 
     /**
+     * @see org.opencms.ade.containerpage.shared.rpc.I_CmsContainerpageService#setLastPage(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void setLastPage(CmsUUID pageId, CmsUUID detailId) throws CmsRpcException {
+
+        try {
+            HttpServletRequest req = getRequest();
+            CmsObject cms = getCmsObject();
+            CmsADESessionCache cache = CmsADESessionCache.getCache(req, cms);
+            cache.setLastPage(cms, pageId, detailId);
+        } catch (Exception e) {
+            error(e);
+        }
+
+    }
+
+    /**
      * Sets the session cache.<p>
      *
      * @param cache the session cache

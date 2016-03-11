@@ -29,14 +29,21 @@ package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.gwt.CmsCoreService;
+import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.containerpage.CmsADESessionCache;
+import org.opencms.xml.containerpage.CmsADESessionCache.LastPageBean;
 
 import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -154,6 +161,27 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
 
         CmsObject cms = A_CmsUI.getCmsObject();
         String siteRoot = cms.getRequestContext().getSiteRoot();
+        HttpServletRequest req = CmsVaadinUtils.getRequest();
+        CmsADESessionCache cache = CmsADESessionCache.getCache(req, cms);
+        LastPageBean lastPage = cache.getLastPage();
+        if (lastPage != null) {
+            if (cms.getRequestContext().getSiteRoot().equals(lastPage.getSiteRoot())) {
+                String returncode = lastPage.getDetailId() != null
+                ? lastPage.getPageId() + ":" + lastPage.getDetailId()
+                : "" + lastPage.getPageId();
+                try {
+                    CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(cms, returncode);
+                    A_CmsUI.get().getPage().setLocation(linkInfo.getLink());
+                    return;
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                    cache.clearLastPage();
+                }
+            } else {
+                // Switching sites clears the last page
+                cache.clearLastPage();
+            }
+        }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(siteRoot)
             && !OpenCms.getSiteManager().getSharedFolder().equals(siteRoot)) {
             try {

@@ -314,6 +314,58 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * Implementation method for getting the link for a given return code.<p>
+     *
+     * @param cms the CMS context
+     * @param returnCode the return code
+     * @return the link for the return code
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsReturnLinkInfo internalGetLinkForReturnCode(CmsObject cms, String returnCode) throws CmsException {
+
+        if (CmsUUID.isValidUUID(returnCode)) {
+            try {
+                CmsResource pageRes = cms.readResource(new CmsUUID(returnCode), CmsResourceFilter.IGNORE_EXPIRATION);
+                return new CmsReturnLinkInfo(
+                    OpenCms.getLinkManager().substituteLink(cms, pageRes),
+                    CmsReturnLinkInfo.Status.ok);
+            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+                return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
+            }
+        } else {
+            int colonIndex = returnCode.indexOf(':');
+            if (colonIndex >= 0) {
+                String before = returnCode.substring(0, colonIndex);
+                String after = returnCode.substring(colonIndex + 1);
+
+                if (CmsUUID.isValidUUID(before) && CmsUUID.isValidUUID(after)) {
+                    try {
+                        CmsUUID pageId = new CmsUUID(before);
+                        CmsUUID detailId = new CmsUUID(after);
+                        CmsResource pageRes = cms.readResource(pageId);
+                        CmsResource folder = pageRes.isFolder()
+                        ? pageRes
+                        : cms.readParentFolder(pageRes.getStructureId());
+                        String pageLink = OpenCms.getLinkManager().substituteLink(cms, folder);
+                        CmsResource detailRes = cms.readResource(detailId);
+                        String detailName = cms.getDetailName(
+                            detailRes,
+                            cms.getRequestContext().getLocale(),
+                            OpenCms.getLocaleManager().getDefaultLocales());
+                        String link = CmsFileUtil.removeTrailingSeparator(pageLink) + "/" + detailName;
+                        return new CmsReturnLinkInfo(link, CmsReturnLinkInfo.Status.ok);
+                    } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+                        return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
+
+                    }
+                }
+            }
+            throw new IllegalArgumentException("return code has wrong format");
+        }
+    }
+
+    /**
      * Fetches the core data.<p>
      *
      * @param request the current request
@@ -765,7 +817,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public CmsReturnLinkInfo getLinkForReturnCode(String returnCode) throws CmsRpcException {
 
         try {
-            return internalGetLinkForReturnCode(returnCode);
+            return internalGetLinkForReturnCode(getCmsObject(), returnCode);
         } catch (Throwable e) {
             error(e);
             return null;
@@ -851,59 +903,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             error(e);
         }
         return result;
-    }
-
-    /**
-     * Implementation method for getting the link for a given return code.<p>
-     *
-     * @param returnCode the return code
-     * @return the link for the return code
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public CmsReturnLinkInfo internalGetLinkForReturnCode(String returnCode) throws CmsException {
-
-        CmsObject cms = getCmsObject();
-
-        if (CmsUUID.isValidUUID(returnCode)) {
-            try {
-                CmsResource pageRes = cms.readResource(new CmsUUID(returnCode), CmsResourceFilter.IGNORE_EXPIRATION);
-                return new CmsReturnLinkInfo(
-                    OpenCms.getLinkManager().substituteLink(cms, pageRes),
-                    CmsReturnLinkInfo.Status.ok);
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
-                return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
-            }
-        } else {
-            int colonIndex = returnCode.indexOf(':');
-            if (colonIndex >= 0) {
-                String before = returnCode.substring(0, colonIndex);
-                String after = returnCode.substring(colonIndex + 1);
-
-                if (CmsUUID.isValidUUID(before) && CmsUUID.isValidUUID(after)) {
-                    try {
-                        CmsUUID pageId = new CmsUUID(before);
-                        CmsUUID detailId = new CmsUUID(after);
-                        CmsResource pageRes = cms.readResource(pageId);
-                        CmsResource folder = pageRes.isFolder()
-                        ? pageRes
-                        : cms.readParentFolder(pageRes.getStructureId());
-                        String pageLink = OpenCms.getLinkManager().substituteLink(cms, folder);
-                        CmsResource detailRes = cms.readResource(detailId);
-                        String detailName = cms.getDetailName(
-                            detailRes,
-                            cms.getRequestContext().getLocale(),
-                            OpenCms.getLocaleManager().getDefaultLocales());
-                        String link = CmsFileUtil.removeTrailingSeparator(pageLink) + "/" + detailName;
-                        return new CmsReturnLinkInfo(link, CmsReturnLinkInfo.Status.ok);
-                    } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
-                        return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
-
-                    }
-                }
-            }
-            throw new IllegalArgumentException("return code has wrong format");
-        }
     }
 
     /**

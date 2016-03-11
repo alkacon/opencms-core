@@ -1959,6 +1959,18 @@ public final class CmsContainerpageController {
                 }
             }
         });
+        AsyncCallback<Void> doNothing = new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+
+            }
+
+            public void onSuccess(Void result) {
+
+            }
+        };
+        getContainerpageService().setLastPage(CmsCoreProvider.get().getStructureId(), m_data.getDetailId(), doNothing);
+
         // check if there is already a history item available
         String historyToken = History.getToken();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(historyToken)) {

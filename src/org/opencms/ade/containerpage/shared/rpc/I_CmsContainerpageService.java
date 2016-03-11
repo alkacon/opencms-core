@@ -455,6 +455,16 @@ public interface I_CmsContainerpageService extends RemoteService {
     void setElementView(CmsUUID elementView) throws CmsRpcException;
 
     /**
+     * Stores information about the container page last edited.<p>
+     *
+     * @param pageId the page id
+     * @param detailId the detail content id
+     *
+     * @throws CmsRpcException if something goes wrong
+     */
+    void setLastPage(CmsUUID pageId, CmsUUID detailId) throws CmsRpcException;
+
+    /**
      * Saves the container-page in a synchronized RPC call.<p>
      *
      * @param pageStructureId the container page structure id
