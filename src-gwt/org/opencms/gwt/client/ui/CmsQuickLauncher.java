@@ -37,6 +37,7 @@ import org.opencms.gwt.shared.CmsQuickLaunchData;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -152,6 +153,7 @@ public class CmsQuickLauncher extends CmsMenuButton {
         m_button.getUpFace().setHTML(BUTTON_HTML);
 
         m_button.setTitle(Messages.get().key(Messages.GUI_QUICK_LAUCNH_0));
+        m_button.getElement().getStyle().setBottom(1, Unit.PX);
 
         setToolbarMode(true);
 

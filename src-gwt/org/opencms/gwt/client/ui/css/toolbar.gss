@@ -474,6 +474,8 @@ div.toolbarToggle{
 .quickButton .quickButtonWrap > div:last-child {
 	overflow:hidden;
 	text-overflow: ellipsis;
+	position: relative;
+	top: -1px; 
 }  
 
  
