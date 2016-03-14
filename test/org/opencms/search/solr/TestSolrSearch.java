@@ -760,7 +760,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setText(queryText);
 
         CmsSolrResultList result = index.search(cms, query);
-        assertTrue(!result.contains(master));
+        assertTrue(result.contains(master));
         assertTrue(!result.contains(en));
         assertTrue(result.contains(de));
         assertTrue(!result.contains(fr));
@@ -769,7 +769,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setLocales(Collections.singletonList(Locale.GERMAN));
         query.setText(queryText);
         result = index.search(cms, query);
-        assertTrue(!result.contains(master));
+        assertTrue(result.contains(master));
         assertTrue(!result.contains(en));
         assertTrue(result.contains(de));
         assertTrue(!result.contains(fr));
@@ -778,7 +778,7 @@ public class TestSolrSearch extends OpenCmsTestCase {
         query.setLocales(Collections.singletonList(Locale.FRENCH));
         query.setText(queryText);
         result = index.search(cms, query);
-        assertTrue(!result.contains(master));
+        assertTrue(result.contains(master));
         assertTrue(!result.contains(en));
         assertTrue(!result.contains(de));
         assertTrue(result.contains(fr));

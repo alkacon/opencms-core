@@ -609,8 +609,9 @@ public class CmsSolrFieldConfiguration extends CmsSearchFieldConfiguration {
             // take the found locale
             result.add(detectedLocale);
         } else {
-            // take the first configured OpenCms default locale for this resource as fall-back
-            result.add(OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0));
+
+            // take all locales set via locale-available or the configured default locales as fall-back for this resource
+            result.addAll(OpenCms.getLocaleManager().getAvailableLocales(cms, resource));
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_LANGUAGE_DETECTION_FAILED_1, resource));
         }
         return result;

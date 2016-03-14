@@ -50,7 +50,6 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsRequestUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -277,13 +276,18 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
     public void testContentLocalesField() throws Throwable {
 
         Map<String, List<String>> filenames = new HashMap<String, List<String>>();
+        List<Locale> defaultLocales = OpenCms.getLocaleManager().getDefaultLocales();
+        List<String> defaultLocalesString = new ArrayList<String>(defaultLocales.size());
+        for (Locale l : defaultLocales) {
+            defaultLocalesString.add(l.toString());
+        }
         filenames.put("rabbit_en_GB.html", Collections.singletonList("en_GB"));
         filenames.put("rabbit_en_GB", Collections.singletonList("en_GB"));
         filenames.put("rabbit_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_en", Collections.singletonList("en"));
         filenames.put("rabbit_en.", Collections.singletonList("en"));
-        filenames.put("rabbit_enr", Arrays.asList(new String[] {"en"}));
-        filenames.put("rabbit_en.tar.gz", Arrays.asList(new String[] {"en"}));
+        filenames.put("rabbit_enr", defaultLocalesString);
+        filenames.put("rabbit_en.tar.gz", defaultLocalesString); //shouldn't this work differently?
         filenames.put("rabbit_de_en_GB.html", Collections.singletonList("en_GB"));
         filenames.put("rabbit_de_DE_EN_DE_en.html", Collections.singletonList("en"));
         filenames.put("rabbit_de_DE_EN_en_DE.html", Collections.singletonList("en_DE"));
@@ -492,11 +496,11 @@ public class TestSolrFieldConfiguration extends OpenCmsTestCase {
         result = index.search(cms, query);
         assertTrue(result.contains(master));
 
-        // Now test the other way around: German locale property with English content
+        // Now test the other way around: German locale-available property with English content
         // Should be detected as German
         // This is the OpenCms default behavior: property wins!
         index.setLanguageDetection(false);
-        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, "de", "de"));
+        props.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_AVAILABLE_LOCALES, "de", "de"));
         CmsResource master2 = importTestResource(
             cms,
             "org/opencms/search/solr/lang-detect-doc.pdf",
