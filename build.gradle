@@ -33,10 +33,7 @@ repositories {
             maven { url repo }
         }
     }
-    mavenCentral()
-    maven {
-    	url 'http://maven.restlet.org'
-    }
+    jcenter()
 }
 
 if (!project.hasProperty('max_heap_size')){
