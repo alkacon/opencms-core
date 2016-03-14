@@ -110,7 +110,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             id,
             settings,
             true,
-            false,
+            true,
             isDetail,
             isDisplay,
             false,
