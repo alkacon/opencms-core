@@ -471,6 +471,7 @@ public class CmsToolBar extends CssLayout {
                 Locale locale = UI.getCurrent().getLocale();
                 HorizontalLayout layout = new HorizontalLayout();
                 layout.addStyleName(ValoTheme.LAYOUT_HORIZONTAL_WRAPPING);
+                layout.addStyleName(OpenCmsTheme.QUICK_LAUNCH);
                 //    layout.setSpacing(true);
                 layout.setMargin(true);
 

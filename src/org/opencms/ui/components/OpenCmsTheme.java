@@ -224,6 +224,9 @@ public class OpenCmsTheme {
     /** CSS style name. */
     public static final String WORKPLACE_MAXWIDTH = "o-workplace-maxwidth";
 
+    /** CSS style name. */
+    protected static final String QUICK_LAUNCH = "o-quicklaunch";
+
     /**
      * Hidden default constructor.
      */
