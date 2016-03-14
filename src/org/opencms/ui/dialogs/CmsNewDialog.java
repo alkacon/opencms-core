@@ -48,6 +48,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.Messages;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsResourceInfo2;
@@ -400,6 +401,7 @@ public class CmsNewDialog extends CmsBasicDialog {
 
                 m_dialogContext.finish(new ArrayList<CmsUUID>());
                 if (createdResource != null) {
+                    CmsAppWorkplaceUi.get().disableGlobalShortcuts();
                     gwtDialogExt.editProperties(createdResource.getStructureId(), true);
                 }
 
@@ -423,7 +425,7 @@ public class CmsNewDialog extends CmsBasicDialog {
                     fileName,
                     6,
                     explorerNameGenerationMode);
-            } catch (CmsException e1) {
+            } catch (@SuppressWarnings("unused") CmsException e1) {
                 realCreatePath = CmsStringUtil.joinPaths(sitePath, RandomStringUtils.randomAlphabetic(8));
             }
 
@@ -457,6 +459,7 @@ public class CmsNewDialog extends CmsBasicDialog {
                         }
                     });
                 m_dialogContext.finish(new ArrayList<CmsUUID>());
+                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
                 gwtDialogExt.editProperties(createdResource.getStructureId(), true);
             } catch (Exception e) {
                 m_dialogContext.error(e);

@@ -132,7 +132,7 @@ public class CmsGwtDialogExtension extends AbstractExtension implements I_CmsGwt
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (@SuppressWarnings("unused") InterruptedException e) {
                 // ignore
             }
         }

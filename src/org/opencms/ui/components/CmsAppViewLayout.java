@@ -93,6 +93,7 @@ public class CmsAppViewLayout extends CssLayout implements I_CmsAppUIContext {
 
             public void buttonClick(ClickEvent event) {
 
+                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
                 CmsGwtDialogExtension extension = new CmsGwtDialogExtension(A_CmsUI.get(), updateListener);
                 extension.openPublishDialog(A_CmsUI.getCmsObject().getRequestContext().getCurrentProject());
             }

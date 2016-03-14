@@ -30,6 +30,7 @@ package org.opencms.ui.actions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.contextmenu.I_CmsContextMenuItem;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
@@ -73,6 +74,7 @@ public class CmsContextMenuActionItem implements I_CmsContextMenuItem {
      */
     public void executeAction(I_CmsDialogContext context) {
 
+        CmsAppWorkplaceUi.get().disableGlobalShortcuts();
         m_action.executeAction(context);
     }
 

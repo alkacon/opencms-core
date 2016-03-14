@@ -116,7 +116,7 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (@SuppressWarnings("unused") InterruptedException e) {
                 // ignore
             }
         }

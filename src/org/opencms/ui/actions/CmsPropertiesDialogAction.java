@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.extensions.CmsPropertyDialogExtension;
 import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
@@ -78,7 +77,6 @@ public class CmsPropertiesDialogAction extends A_CmsWorkplaceAction {
                             context.finish(updatedIds);
                         }
                     });
-                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
                 dialogExtension.editProperties(
                     context.getResources().get(0).getStructureId(),
                     context.getAllStructureIdsInView(),
