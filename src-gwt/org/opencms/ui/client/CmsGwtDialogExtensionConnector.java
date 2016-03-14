@@ -215,7 +215,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
 
                 public void run() {
 
-                    close(0);
+                    close(100);
                 }
             },
             false,

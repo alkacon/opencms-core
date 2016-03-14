@@ -100,7 +100,7 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
             List<String> changed = Lists.newArrayList();
             changed.add("" + structureId);
             m_changed = changed;
-            close(0);
+            close(100);
         }
 
         /**
