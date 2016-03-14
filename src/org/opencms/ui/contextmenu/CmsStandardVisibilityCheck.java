@@ -27,6 +27,7 @@
 
 package org.opencms.ui.contextmenu;
 
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.controlpermission;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.folder;
@@ -152,6 +153,15 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         notdeleted,
         notinproject);
+
+    /** Visibility check for the permissions dialog. */
+    public static final I_CmsHasMenuItemVisibility PERMISSIONS = new CmsStandardVisibilityCheck(
+        roleeditor,
+        notonline,
+        notdeleted,
+        writepermisssion,
+        controlpermission,
+        inproject);
 
     /** Visibility check for publish option. */
     public static final CmsStandardVisibilityCheck PUBLISH = new CmsStandardVisibilityCheck(
@@ -368,6 +378,21 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                     }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+
+            if (flag(controlpermission)) {
+                try {
+                    if (!cms.hasPermissions(
+                        resource,
+                        CmsPermissionSet.ACCESS_CONTROL,
+                        false,
+                        CmsResourceFilter.IGNORE_EXPIRATION)) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+                    }
+                } catch (CmsException e) {
+                    LOG.warn("Error checking context menu entry permissions", e);
+                    return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
                 }
             }
 

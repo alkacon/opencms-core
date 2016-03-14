@@ -97,6 +97,9 @@ public enum CmsVisibilityCheckFlag {
     /** Check that we have write permission. */
     writepermisssion,
 
+    /** Check that we have control permission. */
+    controlpermission,
+
     /** Checks if resource is xml content. */
     xml;
 }
