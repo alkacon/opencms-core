@@ -29,6 +29,7 @@ package org.opencms.ui.components;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -38,28 +39,33 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Locale;
 
+import org.apache.commons.logging.Log;
+
+import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 
 /**
  * Resource info box.<p>
  */
-public class CmsResourceInfo extends Panel {
+public class CmsResourceInfo extends CustomLayout {
+
+    /** Logger instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsResourceInfo.class);
 
     /** The serial version id. */
     private static final long serialVersionUID = -1715926038770100307L;
 
     /** The sub title label. */
-    private Label m_bottomText;
+    private Label m_bottomText = new Label();
 
     /** The button label. */
-    private Label m_buttonLabel;
+    private Label m_buttonLabel = new Label();
 
     /** The resource icon. */
-    private CmsResourceIcon m_icon;
+    private CmsResourceIcon m_icon = new CmsResourceIcon();
 
     /** The title label. */
-    private Label m_topText;
+    private Label m_topText = new Label();
 
     /**
      * Constructor.<p>
@@ -68,6 +74,7 @@ public class CmsResourceInfo extends Panel {
      */
     public CmsResourceInfo(CmsResource resource) {
         this();
+
         Locale locale = A_CmsUI.get().getLocale();
         CmsResourceUtil resUtil = new CmsResourceUtil(A_CmsUI.getCmsObject(), resource);
         resUtil.setAbbrevLength(100);
@@ -79,7 +86,7 @@ public class CmsResourceInfo extends Panel {
             resUtil,
             CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
             resource.getState());
-        m_buttonLabel.setVisible(false);
+        //        m_buttonLabel.setVisible(false);
     }
 
     /**
@@ -102,8 +109,16 @@ public class CmsResourceInfo extends Panel {
      * Constructor.<p>
      */
     private CmsResourceInfo() {
-
-        CmsVaadinUtils.readAndLocalizeDesign(this, null, null);
+        super();
+        try {
+            initTemplateContentsFromInputStream(CmsVaadinUtils.readCustomLayout(getClass(), "resourceinfo.html"));
+            addComponent(m_topText, "topLabel");
+            addComponent(m_bottomText, "bottomLabel");
+            addComponent(m_icon, "icon");
+            addComponent(m_buttonLabel, "buttonContainer");
+        } catch (Exception e) {
+            LOG.error(e.getLocalizedMessage(), e);
+        }
     }
 
     /**

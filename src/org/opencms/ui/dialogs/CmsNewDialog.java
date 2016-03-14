@@ -51,7 +51,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
-import org.opencms.ui.components.CmsResourceInfo2;
+import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
 import org.opencms.util.CmsStringUtil;
@@ -276,7 +276,7 @@ public class CmsNewDialog extends CmsBasicDialog {
             CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName);
             String iconUri = explorerType.getBigIconIfAvailable();
             title = CmsVaadinUtils.getMessageText(explorerType.getKey());
-            CmsResourceInfo2 info = new CmsResourceInfo2(
+            CmsResourceInfo info = new CmsResourceInfo(
                 title,
                 subtitle,
                 CmsWorkplace.getResourceUri("filetypes/" + iconUri));
