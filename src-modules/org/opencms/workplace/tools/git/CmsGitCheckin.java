@@ -955,7 +955,7 @@ public class CmsGitCheckin {
                 if (nextModule != null) {
                     sortedModules.add(nextModule);
                     unsortedModules.remove(nextModule);
-                    for (String key : dependencies.keySet()) {
+                    for (String key : Sets.newHashSet(dependencies.keySet())) { // copy key set to avoid concurrent modification exception
                         dependencies.get(key).remove(nextModule);
                     }
                 }
