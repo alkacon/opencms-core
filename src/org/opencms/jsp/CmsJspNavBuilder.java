@@ -32,8 +32,11 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 
 import java.util.ArrayList;
@@ -64,8 +67,10 @@ public class CmsJspNavBuilder {
     /** The visibility mode. */
     public static enum Visibility {
         /** All entries. */
-        all, /** Navigation including hidden entries. */
-        includeHidden, /** Navigation only. */
+        all,
+        /** Navigation including hidden entries. */
+        includeHidden,
+        /** Navigation only. */
         navigation
     }
 
@@ -236,6 +241,33 @@ public class CmsJspNavBuilder {
     public static List<CmsJspNavElement> getSiteNavigation(CmsObject cms, String folder, int endLevel) {
 
         return new CmsJspNavBuilder(cms).getSiteNavigation(folder, endLevel);
+    }
+
+    /**
+     * Returns whether the given resource is a folder and is marked to be a navigation level folder.<p>
+     *
+     * @param cms the cms context
+     * @param resource the resource
+     *
+     * @return <code>true</code> if the resource is marked to be a navigation level folder
+     */
+    public static boolean isNavLevelFolder(CmsObject cms, CmsResource resource) {
+
+        if (resource.isFolder()) {
+            I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
+            if (CmsResourceTypeFolder.RESOURCE_TYPE_NAME.equals(type.getTypeName())) {
+                try {
+                    CmsProperty prop = cms.readPropertyObject(
+                        resource,
+                        CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                        false);
+                    return !prop.isNullProperty() && NAVIGATION_LEVEL_FOLDER.equals(prop.getValue());
+                } catch (CmsException e) {
+                    LOG.debug(e.getMessage(), e);
+                }
+            }
+        }
+        return false;
     }
 
     /**

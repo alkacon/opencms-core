@@ -164,18 +164,18 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
 
             CmsExplorerTypeSettings navlevel = new CmsExplorerTypeSettings();
             navlevel.setName(CmsGwtConstants.TYPE_NAVLEVEL);
-            navlevel.setIcon("navlevel.png");
-            navlevel.setBigIcon("navlevel_big.png");
+            navlevel.setIcon(ICON_NAV_LEVEL_SMALL);
+            navlevel.setBigIcon(ICON_NAV_LEVEL_BIG);
             addCssForType(navlevel);
             CmsExplorerTypeSettings modelgroupReuse = new CmsExplorerTypeSettings();
             modelgroupReuse.setName(CmsGwtConstants.TYPE_MODELGROUP_REUSE);
-            modelgroupReuse.setIcon("modelgroup_reuse.png");
-            modelgroupReuse.setBigIcon("modelgroup_reuse_big.png");
+            modelgroupReuse.setIcon(ICON_MODEL_GROUP_REUSE_SMALL);
+            modelgroupReuse.setBigIcon(ICON_MODEL_GROUP_REUSE_BIG);
             addCssForType(modelgroupReuse);
             CmsExplorerTypeSettings modelgroupPage = new CmsExplorerTypeSettings();
             modelgroupPage.setName(CmsGwtConstants.TYPE_MODELGROUP_PAGE);
-            modelgroupPage.setIcon("modelpage_groups.png");
-            modelgroupPage.setBigIcon("modelpage_groups_big.png");
+            modelgroupPage.setIcon(ICON_MODEL_GROUP_SMALL);
+            modelgroupPage.setBigIcon(ICON_MODEL_GROUP_BIG);
             addCssForType(modelgroupPage);
         }
 
@@ -208,6 +208,24 @@ public final class CmsIconUtil extends org.opencms.gwt.shared.CmsIconUtil implem
         }
 
     }
+
+    /** Pseudo type icon. */
+    public static final String ICON_MODEL_GROUP_BIG = "modelpage_groups_big.png";
+
+    /** Pseudo type icon. */
+    public static final String ICON_MODEL_GROUP_REUSE_BIG = "modelgroup_reuse_big.png";
+
+    /** Pseudo type icon. */
+    public static final String ICON_MODEL_GROUP_REUSE_SMALL = "modelgroup_reuse.png";
+
+    /** Pseudo type icon. */
+    public static final String ICON_MODEL_GROUP_SMALL = "modelpage_groups.png";
+
+    /** Pseudo type icon. */
+    public static final String ICON_NAV_LEVEL_BIG = "navlevel_big.png";
+
+    /** Pseudo type icon. */
+    public static final String ICON_NAV_LEVEL_SMALL = "navlevel.png";
 
     /** The big resource not found icon name. */
     public static final String NOT_FOUND_ICON_BIG = "resourceNotFoundBig.png";

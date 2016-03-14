@@ -38,7 +38,9 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.gwt.CmsIconUtil;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -277,11 +279,15 @@ public final class CmsResourceUtil {
 
     /**
      * Gets the full path for the big icon.<p>
-     * @return
+     *
+     * @return the full path for the big icon
      */
     public String getBigIconPath() {
 
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(m_resource);
+        if (CmsJspNavBuilder.isNavLevelFolder(m_cms, m_resource)) {
+            return CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + CmsIconUtil.ICON_NAV_LEVEL_BIG);
+        }
+        I_CmsResourceType type = getResourceType();
         CmsExplorerTypeSettings explorerType = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         String typeIcon = "";
         if (explorerType != null) {

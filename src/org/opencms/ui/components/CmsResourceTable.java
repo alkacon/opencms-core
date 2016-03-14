@@ -60,9 +60,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.Arrays;
@@ -310,18 +308,9 @@ public class CmsResourceTable extends A_CmsCustomComponent {
         }
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-        if (settings == null) {
-            LOG.error("Could not read explorer type settings for resource type " + type.getTypeName());
-            return;
-        }
-
         if (resourceItem.getItemProperty(PROPERTY_TYPE_ICON) != null) {
             resourceItem.getItemProperty(PROPERTY_TYPE_ICON).setValue(
-                new CmsResourceIcon(
-                    resUtil,
-                    CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable()),
-                    resource.getState()));
+                new CmsResourceIcon(resUtil, resUtil.getBigIconPath(), resource.getState()));
         } else {
             LOG.error("Error redering item, property " + PROPERTY_TYPE_ICON.getId() + " is null");
         }

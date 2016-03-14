@@ -34,7 +34,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
@@ -76,8 +75,6 @@ import org.opencms.ui.dialogs.CmsNewDialog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsTreeNode;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
@@ -1657,16 +1654,13 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RESOURCE_NAME).setValue(
             parentId == null ? resource.getRootPath() : resource.getName());
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_STATE).setValue(resource.getState());
-        I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(resource);
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_INSIDE_PROJECT).setValue(
             Boolean.valueOf(resUtil.isInsideProject()));
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_RELEASED_NOT_EXPIRED).setValue(
             Boolean.valueOf(resUtil.isReleasedAndNotExpired()));
-        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
         resourceItem.getItemProperty(CmsResourceTableProperty.PROPERTY_TYPE_ICON_RESOURCE).setValue(
-            new ExternalResource(
-                CmsWorkplace.getResourceUri(CmsWorkplace.RES_PATH_FILETYPES + settings.getBigIconIfAvailable())));
+            new ExternalResource(resUtil.getBigIconPath()));
         if (parentId != null) {
             container.setChildrenAllowed(parentId, true);
             container.setParent(resource.getStructureId(), parentId);
