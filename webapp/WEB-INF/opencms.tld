@@ -1182,7 +1182,7 @@
 
     <tag>
         <description><![CDATA[
-            The tag can be used to place edit buttons around some HTML fragment. It allows to edit, add or delete XML contents.
+            The tag can be used to place edit buttons around arbitrary HTML fragment. It allows to edit, add or delete XML contents.
             Typically it is used in the contexts of lists, e.g., news lists, where each list entry should be editable.           
         ]]></description>
         <name>edit</name>
@@ -1201,7 +1201,7 @@
         <attribute>
             <description><![CDATA[
               <p>If set to <code>true</code> the "Create" option is added to the edit buttons - provided that the attribute
-              <code>uuid</code> is specified.
+              <code>uuid</code> is specified. Otherwise the "Create" option can only be enabled by specifying <code>createType</code>.
               Newly created resources have the same type as the resource specified via attribute <code>uuid</code>.
               If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
               <em>Default: <code>false</code>.</em>
@@ -1849,30 +1849,72 @@
         </attribute>
     </tag>        
     <tag>
-    	<description></description>
+    	<description><![CDATA[
+    		<p>Via this tag, you can render an XML content with a given formatter from inside a (formatter) JSP.</p>
+    		<p> 
+    		In particular, the tag is useful for rendering list items from within a list formatter.
+    		The tag can be configured to work for contents of different type - thus it also for lists of mixed resources.
+    		</p>
+    		<p>Optionally, you can display edit points at the output. They facilitate similar editing functionality as <code>&lt;cms:edit&gt;</code>.
+    		</p>
+    		<p>In the body of the <code>&lt;cms:display&gt;</code> two other tags can be used</p>
+    		<ul>
+    			<li>
+    				<code>&lt;cms:displayFormatter&gt;</code>
+    				<p>Via this tag you can specify which formatters are used for which content types by the <code>&lt;cms:display&gt;</code>-tag. The choice can also be performed via the <code>displayFormatters</code> attribute (see the attribute's description below).
+    				</p>
+    				<p>If nothing is specified, the formatter with the highest rank, from within the formatters that have "Use as display formatter" enabled, is chosen.
+    				</p>
+    			</li>
+    			<li>
+    				<code>&lt;cms:param&gt;</code>
+    				<p>This tag, contrary to it's default purpose, is used to pass element settings.</p>
+    				<p>To pass a setting, write:</p>
+    				<p>
+    				<code>&lt;cms:param name="settingName"&gt;settingValue&lt;/cms:param&gt;</code>
+    				</p>
+    				</p>
+    				The setting values specified here, overwrite the values that are possibly passed from the settings of the surrounding formatter (see the attribute <code>passSettings</code>.
+    			</li>
+    	]]></description>
     	<name>display</name>
     	<tag-class>org.opencms.jsp.CmsJspTagDisplay</tag-class>
     	<body-content>JSP</body-content>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			If you use the tag inside a formatter that already has settings, you can pass these settings to the formatter used by the display tag.
+    		]]></description>
     		<name>passSettings</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>      
     	</attribute>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			<p>The attribute takes the value of one, or the value list of several, schema elements of type <code>OpenCmsDisplayFormatter</code>.
+    			Use it, if you choose the formatter of the displayed content via a content value in the surrounding (list) content.
+    			</p>
+    			<p>The display formatters can alternatively be specified via <code>&lt;cms:displayFormatter&gt;</code> tags, used in the body of <code>cms:display</code>.
+    			</p>
+    			<p>If not specified, the formatter with the highest rank, from within the formatters that have "Use as display formatter" enabled, is chosen.</p>
+    			</p>   
+    		]]></description>
     		<name>displayFormatters</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>            
     	</attribute>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			<p>If set to <code>true</code>, the "Edit" button is added to the edit buttons.</p>
+    			<p><em>Default: <code>false</code></em></p>
+    		]]></description>
     		<name>editable</name>
     		<required>false</required>
     		<rtexprvalue>true</rtexprvalue>       
     	</attribute>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			Site path to the XML content that should be rendered via the <code>&lt;cms:display&gt;</code>-tag.
+    		]]></description>
     		<name>value</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>            
@@ -1881,7 +1923,8 @@
             <description><![CDATA[
               <p>If set to <code>true</code> the "Create" option is added to the edit buttons.
               Newly created resources have the same type as the resource displayed.
-              If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
+              </p>
+              <p>If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
               <em>Default: <code>false</code>.</em>
             ]]></description>
             <name>create</name>
@@ -1930,18 +1973,26 @@
         </attribute>
     </tag>
     <tag>
-    	<description></description>
+    	<description><![CDATA[
+    		<p>This tag can be used only inside <code>&lt;cms:display&gt;</code>. It specifies which formatter should be used to format a content of a special resource type.
+    		</p>
+    		<p>Note that alternatively, the attribute <code>displayFormatters</code> of the tag <code>&lt;cms:display&gt;</code> can be used to specify these formatters.</p>
+    	]]></description>
     	<name>displayFormatter</name>
     	<tag-class>org.opencms.jsp.CmsJspTagDisplayFormatter</tag-class>
     	<body-content>empty</body-content>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			The name of the resource type the formatter should be used for.
+    		]]></description>
     		<name>type</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>            
     	</attribute>
     	<attribute>
-    		<description></description>
+    		<description><![CDATA[
+    			The path to the formatter configuration of the formatter that should be used.
+    		]]></description>
     		<name>path</name>
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>            
@@ -2208,10 +2259,15 @@
     
     <tag>
       	<description><![CDATA[
-            This tag provides support to generate search forms and result lists for a server-side handled Solr search.
-            It takes an (XML or JSON) configuration file and essentially exposes an object with the search results
+            <p>This tag provides support to generate search forms and result lists for a server-side handled Solr search.
+            It takes an (XML or JSON) configuration file or a JSON configuration String and essentially exposes an object with the search results
             and also the necessary information to suitably build up your search form. 
-            It supports facets and highlighting.
+            It supports facets and highlighting.</p>
+            <p>If you do not specify a search index explicitly, the tag uses "Solr Offline" and "Solr Online",
+            depending on the current project.</p>
+            <p>To get detailed information on the configuraiton options, 
+            	just have a look at an XML content of type <code>jsp-search-form</code> or look up the JavaDoc of the JSON configuration parser
+            	<code>org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser</code>.
        	]]></description>
         <name>search</name>
         <tag-class>org.opencms.jsp.CmsJspTagSearch</tag-class>
@@ -2251,8 +2307,7 @@
         </attribute>
         <attribute>
             <description><![CDATA[
-              <p>If you do not specify a search index explicitly, so that the tag uses "Solr Offline" and "Solr Online",
-              depending on the current project, the tag allows for detection of changes on resources collected by the
+              <p>The tag allows for detection of changes on resources collected by the
               search tag  (editing, creation, deletion). If <code>addContentInfo</code> is set to true, these changes are taken into account when publishing
               changes for the current web page.</p>
               <p>This feature makes only sense if you use the tag to display (editable) lists of contents. By default,
