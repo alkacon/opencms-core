@@ -6,11 +6,12 @@
 			display: block;
 			table-layout: fixed;
 		}
-	table.main tr td.iconCol{
+		table.main tr td.iconCol{
 			vertical-align: middle;
 			padding: 0px;
 			width: 60px;
 			text-align: center;
+			height: 90px;
 		}
 		table.main div.message{
 			vertical-align: middle;
