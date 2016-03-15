@@ -31,7 +31,9 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.apps.I_CmsAppUIContext;
+import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBrowserFrame;
 
 import com.vaadin.server.ExternalResource;
@@ -50,17 +52,22 @@ public abstract class A_CmsFrameEditor implements I_CmsEditor {
     public void initUI(I_CmsAppUIContext context, CmsResource resource, String backLink) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
+        String sitepath = cms.getSitePath(resource);
         String link = OpenCms.getLinkManager().substituteLinkForRootPath(cms, getEditorUri());
         m_frame = new CmsBrowserFrame();
         m_frame.setDescription("Editor");
         m_frame.setName("edit");
-        m_frame.setSource(
-            new ExternalResource(link + "?resource=" + cms.getSitePath(resource) + "&backlink=" + backLink));
+        m_frame.setSource(new ExternalResource(link + "?resource=" + sitepath + "&backlink=" + backLink));
         m_frame.setSizeFull();
         context.showInfoArea(false);
         context.hideToolbar();
         m_frame.addStyleName("o-editor-frame");
         context.setAppContent(m_frame);
+        context.setAppTitle(
+            CmsVaadinUtils.getMessageText(
+                Messages.GUI_CONTENT_EDITOR_TITLE_2,
+                resource.getName(),
+                CmsResource.getParentFolder(sitepath)));
     }
 
     /**
