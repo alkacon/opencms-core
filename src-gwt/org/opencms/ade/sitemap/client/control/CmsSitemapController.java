@@ -327,7 +327,7 @@ public class CmsSitemapController implements I_CmsSitemapController {
         String parameter,
         boolean isNewSitemap) {
 
-        assert(getEntry(newEntry.getSitePath()) == null);
+        assert (getEntry(newEntry.getSitePath()) == null);
 
         CmsSitemapChange change = new CmsSitemapChange(null, newEntry.getSitePath(), ChangeType.create);
         change.setDefaultFileId(newEntry.getDefaultFileId());
@@ -1939,7 +1939,8 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 @Override
                 public void onResponse(CmsSitemapChange result) {
 
-                    stop(true);
+                    stop(false);
+
                     applyChange(result);
                     if (callback != null) {
                         callback.execute();
