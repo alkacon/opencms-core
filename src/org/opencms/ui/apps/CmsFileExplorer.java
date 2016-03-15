@@ -111,6 +111,7 @@ import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
@@ -1700,6 +1701,9 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 }
             }
         });
+        if (Page.getCurrent().getBrowserWindowHeight() > 650) {
+            combo.setPageLength(20);
+        }
         return combo;
     }
 
