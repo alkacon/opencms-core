@@ -66,6 +66,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinService;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -459,6 +460,26 @@ public final class CmsVaadinUtils {
             layoutClass.getResourceAsStream(relativeName),
             resolver.toFunction());
         return layoutStream;
+    }
+
+    /**
+     * Sets the value of a text field which may be set to read-only mode.<p>
+     *
+     * When setting a Vaadin field to read-only, you also can't set its value programmatically anymore.
+     * So we need to temporarily disable read-only mode, set the value, and then switch back to read-only mode.
+     *
+     * @param field the field
+     * @param value the value to set
+     */
+    public static <T> void setReadonlyValue(AbstractField<T> field, T value) {
+
+        boolean readonly = field.isReadOnly();
+        try {
+            field.setReadOnly(false);
+            field.setValue(value);
+        } finally {
+            field.setReadOnly(readonly);
+        }
     }
 
     /**

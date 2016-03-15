@@ -34,6 +34,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.A_CmsUI;
+import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.util.CmsStringUtil;
 
 import org.apache.commons.logging.Log;
@@ -60,6 +61,7 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
      * Creates a new instance.<p>
      */
     public CmsResourceSelectField() {
+        m_textField.setReadOnly(true);
         m_textField.addTextChangeListener(new TextChangeListener() {
 
             private static final long serialVersionUID = 1L;
@@ -110,8 +112,7 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
         } else {
             path = m_value.getRootPath();
         }
-
-        m_textField.setValue(path);
+        CmsVaadinUtils.setReadonlyValue(m_textField, path);
     }
 
     /**
