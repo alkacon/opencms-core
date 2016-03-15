@@ -422,7 +422,18 @@ public class CmsPermissionView extends CssLayout {
                 m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_DISPLAY_ALLOWED, PROPERTY_DISPLAY_DENIED);
             }
         }
+    }
 
+    /**
+     * Hides the denied permissions column.<p>
+     */
+    public void hideDeniedColumn() {
+
+        if (m_editable) {
+            m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_ALLOWED);
+        } else {
+            m_permissions.setVisibleColumns(PROPERTY_LABEL, PROPERTY_DISPLAY_ALLOWED);
+        }
     }
 
     /**

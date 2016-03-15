@@ -351,8 +351,9 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      */
     void displayUserPermissions(CmsUser user) {
 
-        m_userPermissions.addComponent(
-            buildPermissionEntryForm(user.getId(), buildPermissionsForCurrentUser(), false, false));
+        CmsPermissionView view = buildPermissionEntryForm(user.getId(), buildPermissionsForCurrentUser(), false, false);
+        view.hideDeniedColumn();
+        m_userPermissions.addComponent(view);
     }
 
     /**
@@ -417,12 +418,11 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      * @param inheritRes the resource name from which the ace is inherited
      * @return StringBuffer with HTML code of the form
      */
-    private Component buildPermissionEntryForm(
+    private CmsPermissionView buildPermissionEntryForm(
         CmsAccessControlEntry entry,
         boolean editable,
         boolean extendedView,
         String inheritRes) {
-        //TODO: respect view type and add inherited info
 
         return new CmsPermissionView(entry, editable, m_resource.isFolder(), inheritRes, this);
     }
@@ -436,7 +436,7 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
      * @param extendedView boolean to determine if the view is selectable with DHTML
      * @return String with HTML code of the form
      */
-    private Component buildPermissionEntryForm(
+    private CmsPermissionView buildPermissionEntryForm(
         CmsUUID id,
         CmsPermissionSet curSet,
         boolean editable,
