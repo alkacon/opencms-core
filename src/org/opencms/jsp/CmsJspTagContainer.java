@@ -1202,13 +1202,15 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 errorBox.append(
                     "<span onclick=\"__openStacktraceDialog(event);\" style=\"border: 1px solid black; cursor: pointer;\">");
                 errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
+                String title = Messages.get().getBundle().key(
+                    Messages.ERR_CONTAINER_PAGE_ELEMENT_RENDER_ERROR_2,
+                    elementSitePath,
+                    formatterSitePath);
                 errorBox.append("<span title=\"");
-                errorBox.append(Messages.get().getBundle().key(Messages.GUI_LABEL_STACKTRACE_0));
-                errorBox.append("\" class=\"hiddenStacktrace\" style=\"display:none;\"><pre><b>");
-                errorBox.append(exception.getLocalizedMessage());
-                errorBox.append("</b>\n\n");
+                errorBox.append(CmsEncoder.escapeXml(title));
+                errorBox.append("\" class=\"hiddenStacktrace\" style=\"display:none;\">");
                 errorBox.append(stacktrace);
-                errorBox.append("</pre></span></span>");
+                errorBox.append("</span></span>");
             }
             errorBox.append("</div>");
             pageContext.getOut().print(errorBox.toString());

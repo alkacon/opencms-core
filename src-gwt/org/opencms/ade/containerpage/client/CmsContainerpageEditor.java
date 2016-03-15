@@ -46,7 +46,7 @@ import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.dnd.CmsCompositeDNDController;
 import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
-import org.opencms.gwt.client.ui.CmsPopup;
+import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToolbar;
@@ -65,15 +65,11 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -197,16 +193,7 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     private static void openMessageDialog(String title, String displayHtmlContent) {
 
-        HTMLPanel content = new HTMLPanel(displayHtmlContent);
-        content.getElement().getStyle().setOverflow(Overflow.AUTO);
-        content.getElement().getStyle().setPosition(Position.RELATIVE);
-        CmsPopup dialog = new CmsPopup(title, content);
-        content.getElement().getStyle().setProperty("maxHeight", dialog.getAvailableHeight(100), Unit.PX);
-        dialog.setWidth(-1);
-        dialog.addDialogClose(null);
-        dialog.setModal(true);
-        dialog.setGlassEnabled(true);
-        dialog.centerHorizontally(100);
+        new CmsErrorDialog(title, displayHtmlContent).center();
     }
 
     /**
