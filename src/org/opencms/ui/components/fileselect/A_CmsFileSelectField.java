@@ -45,7 +45,6 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
@@ -108,7 +107,7 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
      * @see com.vaadin.ui.CustomField#initContent()
      */
     @Override
-    protected Component initContent() {
+    protected HorizontalLayout initContent() {
 
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth("100%");
@@ -136,7 +135,6 @@ public abstract class A_CmsFileSelectField<T> extends CustomField<T> {
                 openFileSelector();
             }
         });
-
         return layout;
     }
 

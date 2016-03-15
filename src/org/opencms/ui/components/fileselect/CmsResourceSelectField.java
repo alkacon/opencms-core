@@ -41,7 +41,10 @@ import org.apache.commons.logging.Log;
 
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.server.UserError;
+import com.vaadin.ui.HorizontalLayout;
 
 /**
  * Resource select field. Uses {@link CmsResource} as value type. Will allow existing VFS resources only.<p>
@@ -113,6 +116,29 @@ public class CmsResourceSelectField extends A_CmsFileSelectField<CmsResource> {
             path = m_value.getRootPath();
         }
         CmsVaadinUtils.setReadonlyValue(m_textField, path);
+    }
+
+    /**
+     * @see org.opencms.ui.components.fileselect.A_CmsFileSelectField#initContent()
+     */
+    @Override
+    protected HorizontalLayout initContent() {
+
+        HorizontalLayout result = super.initContent();
+        result.addLayoutClickListener(new LayoutClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void layoutClick(LayoutClickEvent event) {
+
+                if (event.getClickedComponent() == m_textField) {
+                    openFileSelector();
+                }
+            }
+
+        });
+        return result;
+
     }
 
     /**
