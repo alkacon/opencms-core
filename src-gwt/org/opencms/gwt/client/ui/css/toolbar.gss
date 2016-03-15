@@ -266,6 +266,8 @@
 .toolbarButtonsRight, .toolbarButtonsLeft{
 	margin: 5px 0;
 	z-index: 10;
+	height: 40px;
+	overflow: hidden;
 }
 
 .toolbarButtonsRight > * {
