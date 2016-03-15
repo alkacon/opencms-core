@@ -1924,22 +1924,10 @@
               <p>If set to <code>true</code> the "Create" option is added to the edit buttons.
               Newly created resources have the same type as the resource displayed.
               </p>
-              <p>If <code>createType</code> is specified, <code>create</code> has no influence at all.</p>
-              <em>Default: <code>false</code>.</em>
             ]]></description>
             <name>create</name>
             <required>false</required>              
             <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description><![CDATA[
-              <p>The type of resources (XML contents) that should be created, specified via the resource type name.</p>
-              <em>Default: The type of the resource displayed.</em>
-            ]]></description>
-            <name>createType</name>
-            <required>false</required>                     
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description><![CDATA[

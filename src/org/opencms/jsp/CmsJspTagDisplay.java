@@ -75,9 +75,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /** Flag, indicating if the delete option should be displayed. */
     private boolean m_canDelete;
 
-    /** The type of the resource that should be created. */
-    private String m_createType;
-
     /** The tag attribute's value, specifying the path to the (sub)sitemap where new content should be created. */
     private String m_creationSiteMap;
 
@@ -120,7 +117,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * @param editable if editable
      * @param canCreate if new resources may be created
      * @param canDelete if the resource may be deleted
-     * @param createType the create new resource type
      * @param creationSiteMap the create location sub site
      * @param postCreateHandler the post create handler
      * @param context the page context
@@ -134,7 +130,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         boolean editable,
         boolean canCreate,
         boolean canDelete,
-        String createType,
         String creationSiteMap,
         String postCreateHandler,
         PageContext context,
@@ -165,7 +160,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             elementResource,
                             canCreate,
                             canDelete,
-                            createType,
+                            null,
                             creationSiteMap,
                             postCreateHandler);
                     }
@@ -224,7 +219,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             false,
             null,
             null,
-            null,
             context,
             request,
             response);
@@ -276,7 +270,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                     m_editable,
                     m_canCreate,
                     m_canDelete,
-                    m_createType,
                     m_creationSiteMap,
                     m_postCreateHandler,
                     pageContext,
@@ -366,15 +359,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     public void setCreate(String canCreate) {
 
         m_canCreate = Boolean.valueOf(canCreate).booleanValue();
-    }
-
-    /** Setter for the "createType" attribute of the tag.<p>
-     *
-     * @param typeName value of the "createType" attribute of the tag.
-     */
-    public void setCreateType(String typeName) {
-
-        m_createType = typeName;
     }
 
     /** Setter for the "creationSiteMap" attribute of the tag.
