@@ -32,6 +32,7 @@ import org.opencms.gwt.client.property.CmsActiveFieldData;
 import org.opencms.gwt.client.property.CmsPropertySubmitHandler;
 import org.opencms.gwt.client.property.CmsSimplePropertyEditorHandler;
 import org.opencms.gwt.client.property.CmsVfsModePropertyEditor;
+import org.opencms.gwt.client.property.I_CmsPropertySaver;
 import org.opencms.gwt.client.property.definition.CmsPropertyDefinitionButton;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPushButton;
@@ -98,6 +99,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         /** The file navigation. */
         private I_MultiFileNavigation m_multiFileNavigation;
 
+        /** The property saver. */
+        private I_CmsPropertySaver m_propertySaver;
+
         /**
          * Creates the property definition button.<p>
          *
@@ -127,6 +131,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         public CmsFormDialog getDialog() {
 
             return m_formDialog;
+        }
+
+        /**
+         * Gets the property saver.<p>
+         *
+         * @return the property saver
+         */
+        public I_CmsPropertySaver getPropertySaver() {
+
+            return m_propertySaver;
         }
 
         /**
@@ -185,6 +199,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         public void setMultiFileNavigation(I_MultiFileNavigation nav) {
 
             m_multiFileNavigation = nav;
+        }
+
+        /**
+         * Sets the property saver.<p>
+         *
+         * @param saver the property saver
+         */
+        public void setPropertySaver(I_CmsPropertySaver saver) {
+
+            m_propertySaver = saver;
         }
 
         /**
@@ -360,37 +384,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
             @Override
             protected void onResponse(CmsPropertiesBean result) {
 
-                PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
-                handler.setEnableAdeTemplateSelect(enableAdeTemplateSelect);
-                editContext.setCancelHandler(cancelHandler);
-
-                handler.setPropertiesBean(result);
-                handler.setEditableName(editName);
-                CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(
-                    result.getPropertyDefinitions(),
-                    handler);
-
-                editor.setShowResourceProperties(!handler.isFolder());
-                editor.setReadOnly(result.isReadOnly());
                 stop(false);
-                final CmsFormDialog dialog = new PropertiesFormDialog(handler.getDialogTitle(), editor.getForm());
-                editContext.setDialog(dialog);
-
-                CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
-
-                defButton.installOnDialog(dialog);
-                defButton.getElement().getStyle().setFloat(Float.LEFT);
-                final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
-                editContext.setFormHandler(formHandler);
-                editContext.initCloseHandler();
-                formHandler.setDialog(dialog);
-                I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
-                formHandler.setSubmitHandler(submitHandler);
-                editor.getForm().setFormHandler(formHandler);
-                editor.initializeWidgets(dialog);
-                dialog.centerHorizontally(50);
-                dialog.catchNotifications();
+                openPropertyDialog(
+                    result,
+                    contextMenuHandler,
+                    editName,
+                    cancelHandler,
+                    enableAdeTemplateSelect,
+                    editContext);
             }
+
         };
         action.execute();
     }
@@ -595,6 +598,55 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                 return false;
             }
         };
+    }
+
+    /**
+     * Opens the property dialog and populates it with the data from a given CmsPropertiesBean.<p>
+     *
+     * @param result the property data
+     * @param contextMenuHandler the context menu handler
+     * @param editName true if the name should be editable
+     * @param cancelHandler the cancel handler
+     * @param enableAdeTemplateSelect true if template selection should be enabled
+     * @param editContext the edit context
+     */
+    public static void openPropertyDialog(
+        CmsPropertiesBean result,
+        final I_CmsContextMenuHandler contextMenuHandler,
+        final boolean editName,
+        final Runnable cancelHandler,
+        final boolean enableAdeTemplateSelect,
+        final PropertyEditingContext editContext) {
+
+        PropertyEditorHandler handler = new PropertyEditorHandler(contextMenuHandler);
+        handler.setPropertySaver(editContext.getPropertySaver());
+        handler.setEnableAdeTemplateSelect(enableAdeTemplateSelect);
+        editContext.setCancelHandler(cancelHandler);
+
+        handler.setPropertiesBean(result);
+        handler.setEditableName(editName);
+        CmsVfsModePropertyEditor editor = new CmsVfsModePropertyEditor(result.getPropertyDefinitions(), handler);
+
+        editor.setShowResourceProperties(!handler.isFolder());
+        editor.setReadOnly(result.isReadOnly());
+
+        final CmsFormDialog dialog = new PropertiesFormDialog(handler.getDialogTitle(), editor.getForm());
+        editContext.setDialog(dialog);
+
+        CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
+
+        defButton.installOnDialog(dialog);
+        defButton.getElement().getStyle().setFloat(Float.LEFT);
+        final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
+        editContext.setFormHandler(formHandler);
+        editContext.initCloseHandler();
+        formHandler.setDialog(dialog);
+        I_CmsFormSubmitHandler submitHandler = new CmsPropertySubmitHandler(handler);
+        formHandler.setSubmitHandler(submitHandler);
+        editor.getForm().setFormHandler(formHandler);
+        editor.initializeWidgets(dialog);
+        dialog.centerHorizontally(50);
+        dialog.catchNotifications();
     }
 
 }

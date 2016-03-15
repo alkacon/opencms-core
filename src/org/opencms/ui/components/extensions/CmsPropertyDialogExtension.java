@@ -30,6 +30,10 @@ package org.opencms.ui.components.extensions;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.gwt.CmsPrefetchSerializationPolicy;
+import org.opencms.gwt.shared.property.CmsPropertiesBean;
+import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
+import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.ui.A_CmsUI;
@@ -37,6 +41,7 @@ import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
 import org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc;
+import org.opencms.ui.util.CmsNewResourceBuilder;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
@@ -46,6 +51,8 @@ import org.apache.commons.logging.Log;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.UI;
 
@@ -69,11 +76,14 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
     /** Current position in the ID list. */
     int m_position;
 
-    /** The update listener. */
-    private I_CmsUpdateListener<String> m_updateListener;
+    /** Helper used to create a new resource after entering its properties. */
+    private CmsNewResourceBuilder m_newResourceBuilder;
 
     /** The structure ids of possibly updated resources. */
     private HashSet<CmsUUID> m_updatedIds = Sets.newHashSet();
+
+    /** The update listener. */
+    private I_CmsUpdateListener<String> m_updateListener;
 
     /**
      * Creates a new instance and binds it to a UI instance.<p>
@@ -108,6 +118,26 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
     }
 
     /**
+     * Opens the property dialog for a resource to be created with the 'New' dialog.<p>
+     *
+     * @param builder the resource builder used by the 'New' dialog to create the resource
+     */
+    public void editPropertiesForNewResource(CmsNewResourceBuilder builder) {
+
+        try {
+            CmsPropertiesBean propData = builder.getPropertyData();
+            String serializedPropData = RPC.encodeResponseForSuccess(
+                I_CmsVfsService.class.getMethod("loadPropertyData", CmsUUID.class),
+                propData,
+                CmsPrefetchSerializationPolicy.instance());
+            getRpcProxy(I_CmsPropertyClientRpc.class).editPropertiesForNewResource(serializedPropData);
+            m_newResourceBuilder = builder;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * @see org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc#onClose(long)
      */
     public void onClose(long delayMillis) {
@@ -116,7 +146,7 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
         if (delayMillis > 0) {
             try {
                 Thread.sleep(delayMillis);
-            } catch (@SuppressWarnings("unused") InterruptedException e) {
+            } catch (InterruptedException e) {
                 // ignore
             }
         }
@@ -125,6 +155,14 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
             updates.add("" + id);
         }
         m_updateListener.onUpdate(updates);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc#removeExtension()
+     */
+    public void removeExtension() {
+
+        remove();
     }
 
     /**
@@ -147,6 +185,28 @@ public class CmsPropertyDialogExtension extends AbstractExtension implements I_C
         CmsUUID nextId = m_ids.get(m_position);
         m_updatedIds.add(nextId);
         getRpcProxy(I_CmsPropertyClientRpc.class).sendNextId("" + nextId);
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc#savePropertiesForNewResource(java.lang.String)
+     */
+    public void savePropertiesForNewResource(String data) {
+
+        try {
+            getRpcProxy(I_CmsPropertyClientRpc.class).confirmSaveForNew();
+            ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(
+                Thread.currentThread().getContextClassLoader(),
+                null);
+            // Filling stream reader with data
+            streamReader.prepareToRead(data);
+            // Reading deserialized object from the stream
+            CmsPropertyChangeSet changes = (CmsPropertyChangeSet)(streamReader.readObject());
+            m_newResourceBuilder.setPropertyChanges(changes);
+            m_newResourceBuilder.safeCreateResource();
+            remove();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

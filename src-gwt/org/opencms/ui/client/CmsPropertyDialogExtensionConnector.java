@@ -27,10 +27,15 @@
 
 package org.opencms.ui.client;
 
+import org.opencms.gwt.client.property.I_CmsPropertySaver;
+import org.opencms.gwt.client.rpc.CmsRpcPrefetcher;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.shared.property.CmsPropertiesBean;
+import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
+import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.ui.components.extensions.CmsPropertyDialogExtension;
 import org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc;
 import org.opencms.ui.shared.rpc.I_CmsPropertyServerRpc;
@@ -40,7 +45,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.SerializationStreamFactory;
+import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
 import com.vaadin.shared.ui.Connect;
@@ -120,14 +129,52 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
         }
     }
 
+    /**
+     * The property saver.<p>
+     */
+    public class PropertySaver implements I_CmsPropertySaver {
+
+        /**
+         * @see org.opencms.gwt.client.property.I_CmsPropertySaver#saveProperties(org.opencms.gwt.shared.property.CmsPropertyChangeSet, com.google.gwt.user.client.rpc.AsyncCallback)
+         */
+        @SuppressWarnings("synthetic-access")
+        public void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback) {
+
+            try {
+                m_propertySaveCallback = callback;
+                SerializationStreamFactory streamFactory = (SerializationStreamFactory)GWT.create(
+                    I_CmsVfsService.class);
+                SerializationStreamWriter streamWriter = streamFactory.createStreamWriter();
+                streamWriter.writeObject(changes);
+                String serializedData = streamWriter.toString();
+                getRpcProxy(I_CmsPropertyServerRpc.class).savePropertiesForNewResource(serializedData);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
     /** Changed ids. */
     protected List<String> m_changed = Lists.newArrayList();
 
+    /** Callback to be called after the properties have been saved. */
+    protected AsyncCallback<Void> m_propertySaveCallback;
+
     /** Stored callback. */
     private AsyncCallback<CmsUUID> m_currentCallback;
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc#confirmSaveForNew()
+     */
+    public void confirmSaveForNew() {
+
+        m_propertySaveCallback.onSuccess(null);
+    }
 
     /**
      * @see org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc#editProperties(java.lang.String, boolean, boolean)
@@ -152,6 +199,32 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
             false,
             context,
             null);
+
+    }
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsPropertyClientRpc#editPropertiesForNewResource(java.lang.String)
+     */
+    public void editPropertiesForNewResource(String propertyDataString) {
+
+        try {
+            CmsPropertiesBean propData = (CmsPropertiesBean)(CmsRpcPrefetcher.getSerializedObjectFromString(
+                GWT.create(I_CmsVfsService.class),
+                propertyDataString));
+            CmsEditProperties.PropertyEditingContext context = new CmsEditProperties.PropertyEditingContext();
+            context.setPropertySaver(new PropertySaver());
+            CmsEditProperties.openPropertyDialog(propData, new ContextMenuHandler(), true, new Runnable() {
+
+                @SuppressWarnings("synthetic-access")
+                public void run() {
+
+                    getRpcProxy(I_CmsPropertyServerRpc.class).removeExtension();
+                }
+            }, false, context);
+
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

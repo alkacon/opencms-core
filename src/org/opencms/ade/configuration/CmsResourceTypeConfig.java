@@ -43,6 +43,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.util.CmsNewResourceBuilder;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -284,6 +285,31 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
             LOG.error(e.getLocalizedMessage(), e);
             return false;
         }
+    }
+
+    /**
+     * Similar to createNewElement, but just sets parameters on a resource builder instead of actually creating the resource.<p>
+     *
+     * @param cms the CMS context
+     * @param pageFolderRootPath the page folder root path
+     * @param builder the resource builder
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void configureCreateNewElement(CmsObject cms, String pageFolderRootPath, CmsNewResourceBuilder builder)
+    throws CmsException {
+
+        checkOffline(cms);
+        checkInitialized();
+        String folderPath = getFolderPath(cms, pageFolderRootPath);
+        CmsObject folderCreateCms = OpenCms.initCmsObject(m_cms);
+        folderCreateCms.getRequestContext().setCurrentProject(cms.getRequestContext().getCurrentProject());
+        createFolder(folderCreateCms, folderPath);
+        String destination = CmsStringUtil.joinPaths(folderPath, getNamePattern(true));
+        builder.setSiteRoot("");
+        builder.setPatternPath(destination);
+        builder.setType(getTypeName());
+        builder.setLocale(cms.getRequestContext().getLocale());
     }
 
     /**

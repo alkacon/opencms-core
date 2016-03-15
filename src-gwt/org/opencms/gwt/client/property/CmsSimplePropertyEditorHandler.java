@@ -37,13 +37,14 @@ import org.opencms.gwt.shared.property.CmsClientTemplateBean;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.property.CmsPropertyModification;
-import org.opencms.gwt.shared.rpc.I_CmsVfsServiceAsync;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * A simpler implementation of the property editor handler interface which only provides
@@ -62,6 +63,9 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
     /** Flag controlling whether the file name is editable. */
     private boolean m_hasEditableName;
+
+    /** Object used to save the properties, i.e. send the changed properties to the server. */
+    private I_CmsPropertySaver m_propertySaver;
 
     /**
      * Creates a new instance.<p>
@@ -190,19 +194,19 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
         final String newUrlName,
         String vfsPath,
         final List<CmsPropertyModification> propertyChanges,
-        boolean editedName,
+        final boolean editedName,
         CmsReloadMode reloadMode) {
 
         // ignore reloadMode; it's only relevant for the sitemap editor
 
-        final I_CmsVfsServiceAsync vfsService = CmsCoreProvider.getVfsService();
         CmsRpcAction<Void> saveAction = new CmsRpcAction<Void>() {
 
             @Override
             public void execute() {
 
                 start(300, false);
-                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(newUrlName)) {
+
+                if (!CmsStringUtil.isEmptyOrWhitespaceOnly(newUrlName) && editedName) {
                     propertyChanges.add(
                         new CmsPropertyModification(
                             null,
@@ -213,7 +217,7 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
                 CmsPropertyChangeSet changeBean = new CmsPropertyChangeSet(
                     m_propertiesBean.getStructureId(),
                     propertyChanges);
-                vfsService.saveProperties(changeBean, this);
+                saveProperties(changeBean, this);
             }
 
             @Override
@@ -281,6 +285,16 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
     }
 
     /**
+     * Sets the property saver.<p>
+     *
+     * @param saver the property saver
+     */
+    public void setPropertySaver(I_CmsPropertySaver saver) {
+
+        m_propertySaver = saver;
+    }
+
+    /**
      * @see org.opencms.gwt.client.property.I_CmsPropertyEditorHandler#useAdeTemplates()
      */
     public boolean useAdeTemplates() {
@@ -305,6 +319,21 @@ public class CmsSimplePropertyEditorHandler implements I_CmsPropertyEditorHandle
 
         if (getContextMenuHandler() != null) {
             getContextMenuHandler().refreshResource(m_propertiesBean.getStructureId());
+        }
+    }
+
+    /**
+     * Save properties.<p>
+     *
+     * @param changes the property changes
+     * @param callback the result callback
+     */
+    protected void saveProperties(CmsPropertyChangeSet changes, AsyncCallback<Void> callback) {
+
+        if (m_propertySaver != null) {
+            m_propertySaver.saveProperties(changes, callback);
+        } else {
+            CmsCoreProvider.getVfsService().saveProperties(changes, callback);
         }
     }
 

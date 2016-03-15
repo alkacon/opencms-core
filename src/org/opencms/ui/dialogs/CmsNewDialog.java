@@ -36,25 +36,21 @@ import org.opencms.ade.galleries.shared.CmsResourceTypeBean.Origin;
 import org.opencms.configuration.preferences.CmsElementViewPreference;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
-import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
-import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
+import org.opencms.ui.components.extensions.CmsPropertyDialogExtension;
+import org.opencms.ui.util.CmsNewResourceBuilder;
+import org.opencms.ui.util.CmsNewResourceBuilder.I_Callback;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -68,7 +64,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 
 import com.google.common.base.Predicate;
@@ -91,7 +86,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 
@@ -373,116 +367,69 @@ public class CmsNewDialog extends CmsBasicDialog {
     /**
      * Handles selection of a type.<p>
      *
-     * @param typeFinal the selected type
+     * @param selectedType the selected type
      */
-    protected void handleSelection(final CmsResourceTypeBean typeFinal) {
+    protected void handleSelection(final CmsResourceTypeBean selectedType) {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        m_selectedType = typeFinal;
+        m_selectedType = selectedType;
+        try {
 
-        Boolean useDefaultLocation = m_defaultLocationCheckbox.getValue();
-        if (useDefaultLocation.booleanValue() && (m_selectedType.getCreatePath() != null)) {
-            try {
-                CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
-                    cms,
-                    m_folderResource.getRootPath());
+            CmsNewResourceBuilder builder = new CmsNewResourceBuilder(cms);
+            builder.addCallback(new I_Callback() {
 
-                CmsResourceTypeConfig typeConfig = configData.getResourceType(m_selectedType.getType());
-                CmsResource createdResource = null;
-                if (typeConfig != null) {
-                    createdResource = typeConfig.createNewElement(cms, m_folderResource.getRootPath());
-                }
-                m_createdResource = createdResource;
-                CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
-                    UI.getCurrent(),
-                    new I_CmsUpdateListener<String>() {
+                public void onError(Exception e) {
 
-                        @SuppressWarnings("synthetic-access")
-                        public void onUpdate(List<String> updatedItems) {
-
-                            List<CmsUUID> ids = Lists.newArrayList();
-                            if (updatedItems.isEmpty()) {
-                                removeResource();
-                            } else {
-                                for (String item : updatedItems) {
-                                    CmsUUID id = new CmsUUID(item);
-                                    ids.add(id);
-                                }
-                            }
-                            finish(ids);
-
-                        }
-
-                    });
-
-                m_dialogContext.finish(new ArrayList<CmsUUID>());
-                if (createdResource != null) {
-                    CmsAppWorkplaceUi.get().disableGlobalShortcuts();
-                    gwtDialogExt.editProperties(createdResource.getStructureId(), true);
+                    m_dialogContext.error(e);
                 }
 
-            } catch (Exception e) {
-                m_dialogContext.error(e);
-            }
+                public void onResourceCreated(CmsNewResourceBuilder builderParam) {
 
-        } else {
-            boolean explorerNameGenerationMode = false;
-            String sitePath = cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath());
-            String namePattern = m_selectedType.getNamePattern();
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePattern)) {
-                namePattern = OpenCms.getWorkplaceManager().getDefaultNamePattern(m_selectedType.getType());
-                explorerNameGenerationMode = true;
-            }
-            String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
-            String realCreatePath;
-            try {
-                realCreatePath = OpenCms.getResourceManager().getNameGenerator().getNewFileName(
-                    cms,
-                    fileName,
-                    6,
-                    explorerNameGenerationMode);
-            } catch (@SuppressWarnings("unused") CmsException e1) {
-                realCreatePath = CmsStringUtil.joinPaths(sitePath, RandomStringUtils.randomAlphabetic(8));
-            }
-
-            try {
-                CmsResource createdResource = cms.createResource(
-                    realCreatePath,
-                    OpenCms.getResourceManager().getResourceType(m_selectedType.getType()),
-                    null,
-                    Lists.<CmsProperty> newArrayList());
-                if (!cms.getLock(createdResource).isInherited()) {
-                    cms.unlockResource(createdResource);
+                    finish(Lists.newArrayList(builderParam.getCreatedResource().getStructureId()));
                 }
-                m_createdResource = createdResource;
-                CmsGwtDialogExtension gwtDialogExt = new CmsGwtDialogExtension(
-                    UI.getCurrent(),
-                    new I_CmsUpdateListener<String>() {
+            });
 
-                        @SuppressWarnings("synthetic-access")
-                        public void onUpdate(List<String> updatedItems) {
+            m_selectedType = selectedType;
 
-                            List<CmsUUID> ids = Lists.newArrayList();
-                            if (updatedItems.isEmpty()) {
-                                removeResource();
-                            } else {
-                                for (String item : updatedItems) {
-                                    CmsUUID id = new CmsUUID(item);
-                                    ids.add(id);
-                                }
-                            }
-                            finish(ids);
-                        }
-                    });
-                m_dialogContext.finish(new ArrayList<CmsUUID>());
-                CmsAppWorkplaceUi.get().disableGlobalShortcuts();
-                gwtDialogExt.editProperties(createdResource.getStructureId(), true);
-            } catch (Exception e) {
-                m_dialogContext.error(e);
+            Boolean useDefaultLocation = m_defaultLocationCheckbox.getValue();
+            if (useDefaultLocation.booleanValue() && (m_selectedType.getCreatePath() != null)) {
+                try {
+                    CmsADEConfigData configData = OpenCms.getADEManager().lookupConfiguration(
+                        cms,
+                        m_folderResource.getRootPath());
+
+                    CmsResourceTypeConfig typeConfig = configData.getResourceType(m_selectedType.getType());
+                    if (typeConfig != null) {
+                        typeConfig.configureCreateNewElement(cms, m_folderResource.getRootPath(), builder);
+                    }
+                } catch (Exception e) {
+                    m_dialogContext.error(e);
+                }
+
+            } else {
+                boolean explorerNameGenerationMode = false;
+                String sitePath = cms.getRequestContext().removeSiteRoot(m_folderResource.getRootPath());
+                String namePattern = m_selectedType.getNamePattern();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(namePattern)) {
+                    namePattern = OpenCms.getWorkplaceManager().getDefaultNamePattern(m_selectedType.getType());
+                    explorerNameGenerationMode = true;
+                }
+                String fileName = CmsStringUtil.joinPaths(sitePath, namePattern);
+                builder.setPatternPath(fileName);
+                builder.setType(m_selectedType.getType());
+                builder.setExplorerNameGeneration(explorerNameGenerationMode);
+
             }
+            CmsPropertyDialogExtension ext = new CmsPropertyDialogExtension(A_CmsUI.get(), null);
+            CmsAppWorkplaceUi.get().disableGlobalShortcuts();
+            ext.editPropertiesForNewResource(builder);
+            finish(new ArrayList<CmsUUID>());
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-    } // end
+
+    }
 
     /**
      * Initializes the view selector, using the given view id as an initial value.<p>
@@ -572,27 +519,4 @@ public class CmsNewDialog extends CmsBasicDialog {
         }
     }
 
-    /**
-     * Deletes the resource when the user cancels the creation.<p>
-     */
-    private void removeResource() {
-
-        try {
-            CmsObject cms = A_CmsUI.getCmsObject();
-            if (m_createdResource != null) {
-                CmsResource res = cms.readResource(m_createdResource.getStructureId(), CmsResourceFilter.ALL);
-                if (res.getState().isNew()) {
-                    CmsLock lock = cms.getLock(res);
-                    if (lock.isUnlocked()) {
-                        cms.lockResource(res);
-                    }
-                    cms.deleteResource(res, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                }
-
-            }
-        } catch (CmsException e) {
-            CmsErrorDialog.showErrorDialog(e);
-            return;
-        }
-    }
 }

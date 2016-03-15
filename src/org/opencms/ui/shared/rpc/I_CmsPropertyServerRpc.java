@@ -42,9 +42,21 @@ public interface I_CmsPropertyServerRpc extends ServerRpc {
     void onClose(long delayMillis);
 
     /**
+     * Removes the extension on the server side.<p>
+     */
+    void removeExtension();
+
+    /**
      * Requests the id of the next file.<p>
      *
      * @param offset should be +1 for the next file, or -1 for the previous file
      */
     void requestNextFile(int offset);
+
+    /**
+     * Saves the properties for a new resource.<p>
+     *
+     * @param data the serialized property data (CmsPropertyChangeSet)
+     */
+    void savePropertiesForNewResource(String data);
 }
