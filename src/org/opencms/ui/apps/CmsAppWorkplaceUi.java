@@ -259,8 +259,9 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
             Notification notification = new Notification(
                 CmsVaadinUtils.getMessageText(Messages.GUI_BROADCAST_TITLE_0),
                 broadcasts.toString(),
-                Type.ERROR_MESSAGE,
+                Type.WARNING_MESSAGE,
                 true);
+            notification.setDelayMsec(-1);
             notification.show(getPage());
         }
     }
