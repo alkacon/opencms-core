@@ -2234,7 +2234,7 @@ public final class CmsContainerpageController {
             viewIdFromElement = CmsUUID.getNullUUID();
         }
         CmsElementViewInfo viewFromElement = getView(viewIdFromElement.toString());
-        return viewFromElement.getRootViewId().equals(m_elementView.getRootViewId());
+        return (viewFromElement != null) && viewFromElement.getRootViewId().equals(m_elementView.getRootViewId());
     }
 
     /**
@@ -2928,26 +2928,28 @@ public final class CmsContainerpageController {
      */
     public void setElementView(CmsElementViewInfo viewInfo, Runnable nextAction) {
 
-        m_elementView = viewInfo;
+        if (viewInfo != null) {
+            m_elementView = viewInfo;
 
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
+            CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
 
-            @SuppressWarnings("synthetic-access")
-            @Override
-            public void execute() {
+                @SuppressWarnings("synthetic-access")
+                @Override
+                public void execute() {
 
-                getContainerpageService().setElementView(m_elementView.getElementViewId(), this);
-            }
+                    getContainerpageService().setElementView(m_elementView.getElementViewId(), this);
+                }
 
-            @Override
-            protected void onResponse(Void result) {
+                @Override
+                protected void onResponse(Void result) {
 
-                // nothing to do
-            }
-        };
-        action.execute();
-        reinitializeButtons();
-        updateGalleryData(nextAction);
+                    // nothing to do
+                }
+            };
+            action.execute();
+            reinitializeButtons();
+            updateGalleryData(nextAction);
+        }
     }
 
     /**
