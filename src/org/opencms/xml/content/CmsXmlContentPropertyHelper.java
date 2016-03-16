@@ -215,18 +215,27 @@ public final class CmsXmlContentPropertyHelper implements Cloneable {
             public String getMacroValue(String macro) {
 
                 if (macro.startsWith(PAGE_PROPERTY_PREFIX)) {
-                    String propName = macro.substring(PAGE_PROPERTY_PREFIX.length());
+                    String remainder = macro.substring(PAGE_PROPERTY_PREFIX.length());
+                    int secondColonPos = remainder.indexOf(":");
+                    String defaultValue = "";
+                    String propName = null;
+                    if (secondColonPos >= 0) {
+                        propName = remainder.substring(0, secondColonPos);
+                        defaultValue = remainder.substring(secondColonPos + 1);
+                    } else {
+                        propName = remainder;
+                    }
                     if (containerPage != null) {
                         try {
                             CmsProperty prop = cms.readPropertyObject(containerPage, propName, true);
                             String propValue = prop.getValue();
                             if ((propValue == null) || PROPERTY_EMPTY_MARKER.equals(propValue)) {
-                                propValue = "";
+                                propValue = defaultValue;
                             }
                             return propValue;
                         } catch (CmsException e) {
                             LOG.error(e.getLocalizedMessage(), e);
-                            return "";
+                            return defaultValue;
                         }
                     }
 
