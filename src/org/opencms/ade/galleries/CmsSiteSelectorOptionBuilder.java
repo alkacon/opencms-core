@@ -40,8 +40,6 @@ import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,32 +53,6 @@ public class CmsSiteSelectorOptionBuilder {
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteSelectorOptionBuilder.class.getName());
-
-    /**
-     * Comparator used for ordering the options in the site selector.<p>
-     */
-    private static Comparator<CmsSiteSelectorOption> optionOrder = new Comparator<CmsSiteSelectorOption>() {
-
-        public int compare(CmsSiteSelectorOption o1, CmsSiteSelectorOption o2) {
-
-            return getSortKey(o1).compareTo(getSortKey(o2));
-        }
-
-        public String getSortKey(CmsSiteSelectorOption o) {
-
-            String prefix = "";
-            if (o.getType() == Type.currentSubsite) {
-                prefix = "0_";
-            } else if (o.getType() == Type.shared) {
-                prefix = "2_";
-            } else if ("".equals(o.getSiteRoot())) {
-                prefix = "3_";
-            } else {
-                prefix = "1_";
-            }
-            return prefix + o.getSiteRoot();
-        }
-    };
 
     /** The CMS context used by this object. */
     private CmsObject m_cms;
@@ -211,7 +183,6 @@ public class CmsSiteSelectorOptionBuilder {
      */
     public List<CmsSiteSelectorOption> getOptions() {
 
-        Collections.sort(m_options, optionOrder);
         return m_options;
     }
 
