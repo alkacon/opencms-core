@@ -73,13 +73,14 @@
   
 	.v-Notification.error {
 		@include valo-notification-error-style(v-Notification);
+		
+	}
+	
+	div.v-Notification {
 		@include valo-notification-closable-style(v-Notification);
 		&:after{
 			top: 20px;
 		}
-	}
-	
-	div.v-Notification {
 		max-width: 600px;
 		
 		.v-Notification-caption{
@@ -498,7 +499,7 @@
 			display: inline-block;
   			height: 42px;
   			width: 170px;
-  			background: url("img/opencmsLogo.png") no-repeat transparent; 
+  			background: $o-opencms-logo;
 		}
 	}
 	 
