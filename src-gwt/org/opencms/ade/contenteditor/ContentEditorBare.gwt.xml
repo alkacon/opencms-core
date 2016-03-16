@@ -4,7 +4,7 @@
 	 This module does not have an entry point.
 	 Inherit this module for external custom widgets. --> 
 	<inherits name="org.opencms.ade.galleries.Gallery" />
-	<inherits name="org.opencms.ade.publish.PublishDialogHeadless" />
+	<inherits name="org.opencms.ade.publish.PublishDialog" />
 	<inherits name="org.opencms.ade.contenteditor.WidgetRegistry" />
 	
 	<!--  Using a special linker to enable dynamic module injection. -->
