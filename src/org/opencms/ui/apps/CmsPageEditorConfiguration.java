@@ -62,7 +62,7 @@ import com.vaadin.ui.Notification.Type;
 public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration
 implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
 
-    /** App id. */
+    /** The app id. */
     public static final String APP_ID = "pageeditor";
 
     /** Logger instance for this class. */

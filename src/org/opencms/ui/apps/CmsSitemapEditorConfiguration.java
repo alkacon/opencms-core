@@ -57,6 +57,7 @@ import com.vaadin.ui.Notification.Type;
 public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguration
 implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
 
+    /** The app id. */
     public static final String APP_ID = "sitemapeditor";
 
     /** Logger instance for this class. */

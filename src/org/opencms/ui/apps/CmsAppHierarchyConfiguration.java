@@ -143,13 +143,4 @@ public class CmsAppHierarchyConfiguration extends A_CmsWorkplaceAppConfiguration
 
         return 0;
     }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getVisibility(org.opencms.file.CmsObject)
-     */
-    @Override
-    public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
-
-        return new CmsAppVisibilityStatus(true, true, null);
-    }
 }

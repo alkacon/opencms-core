@@ -34,6 +34,7 @@ import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinErrorHandler;
 import org.opencms.ui.CmsVaadinUtils;
@@ -517,6 +518,13 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     protected void init(VaadinRequest req) {
 
         super.init(req);
+        if (!OpenCms.getRoleManager().hasRole(getCmsObject(), CmsRole.WORKPLACE_USER)) {
+            Notification.show(
+                CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_MESSAGE_0),
+                Type.ERROR_MESSAGE);
+            return;
+        }
         getSession().setErrorHandler(new CmsVaadinErrorHandler(this));
         m_cachedViews = new HashMap<String, I_CmsAppView>();
         m_navigationStateManager = new Navigator.UriFragmentManager(getPage());
