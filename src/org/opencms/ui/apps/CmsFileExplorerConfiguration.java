@@ -27,21 +27,48 @@
 
 package org.opencms.ui.apps;
 
+import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_EXPLORER;
+
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.components.OpenCmsTheme;
 
 import java.util.Locale;
 
+import com.google.common.base.Optional;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
  * The file explorer app configuration.<p>
  */
-public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration {
+public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration implements I_CmsHasADEQuickLaunchData {
 
     /** The app id. */
     public static final String APP_ID = "explorer";
+
+    /**
+     * @see org.opencms.ui.apps.I_CmsHasADEQuickLaunchData#getADEQuickLaunchData(org.opencms.file.CmsObject, java.lang.String)
+     */
+    public Optional<CmsQuickLaunchData> getADEQuickLaunchData(CmsObject cms, String context) {
+
+        CmsUserSettings settings = new CmsUserSettings(cms);
+        if (!settings.usesNewWorkplace() || !getVisibility(cms).isActive()) {
+            return Optional.absent();
+        } else {
+            return Optional.of(
+                new CmsQuickLaunchData(
+                    Q_EXPLORER,
+                    null,
+                    null,
+                    getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
+                    getImageLink(),
+                    false));
+        }
+
+    }
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -83,7 +110,7 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/explorer.png"));
+        return new ExternalResource(getImageLink());
     }
 
     /**
@@ -92,6 +119,11 @@ public class CmsFileExplorerConfiguration extends A_CmsWorkplaceAppConfiguration
     public String getId() {
 
         return APP_ID;
+    }
+
+    public String getImageLink() {
+
+        return OpenCmsTheme.getImageLink("apps/explorer.png");
     }
 
     /**

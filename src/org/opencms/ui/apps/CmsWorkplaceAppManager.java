@@ -134,9 +134,6 @@ public class CmsWorkplaceAppManager {
     /** The logger for this class. */
     protected static Log LOG = CmsLog.getLog(CmsWorkplaceAppManager.class.getName());
 
-    /** Legacy apps explicitly hidden from new workplace. */
-    private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
-
     /** The available editors. */
     private static final I_CmsEditor[] EDITORS = new I_CmsEditor[] {
         new CmsAcaciaEditor(),
@@ -144,14 +141,17 @@ public class CmsWorkplaceAppManager {
         new CmsXmlContentEditor(),
         new CmsXmlPageEditor()};
 
+    /** Legacy apps explicitly hidden from new workplace. */
+    private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
+
+    /** The admin cms context. */
+    private CmsObject m_adminCms;
+
     /** The app categories. */
     private List<CmsAppCategory> m_appCategories = Lists.newArrayList();
 
     /** The configured apps. */
     private Map<String, I_CmsWorkplaceAppConfiguration> m_appsById = Maps.newHashMap();
-
-    /** The admin cms context. */
-    private CmsObject m_adminCms;
 
     /** The user icon helper. */
     private CmsUserIconHelper m_iconHelper;
@@ -270,6 +270,48 @@ public class CmsWorkplaceAppManager {
     public I_CmsContextMenuItemProvider getMenuItemProvider() {
 
         return m_workplaceMenuItemProvider;
+    }
+
+    /**
+     * Gets all configured quick launch apps, independent of the current user.<p>
+     *
+     * @return the quick launch apps
+     */
+    public List<I_CmsWorkplaceAppConfiguration> getQuickLaunchConfigurations() {
+
+        List<String> names = Arrays.asList(
+            CmsAppHierarchyConfiguration.APP_ID,
+            CmsPageEditorConfiguration.APP_ID,
+            CmsSitemapEditorConfiguration.APP_ID,
+            CmsFileExplorerConfiguration.APP_ID,
+            "/accounts",
+            "/workplace");
+
+        List<I_CmsWorkplaceAppConfiguration> result = Lists.newArrayList();
+        for (String name : names) {
+            I_CmsWorkplaceAppConfiguration config = OpenCms.getWorkplaceAppManager().getAppConfiguration(name);
+            if (config != null) {
+                result.add(config);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Gets the configured quick launch apps which are visible for the current user.<p>
+     *
+     * @param cms the current CMS context
+     * @return the list of available quick launch apps
+     */
+    public List<I_CmsWorkplaceAppConfiguration> getQuickLaunchConfigurations(CmsObject cms) {
+
+        List<I_CmsWorkplaceAppConfiguration> result = Lists.newArrayList();
+        for (I_CmsWorkplaceAppConfiguration appConfig : getQuickLaunchConfigurations()) {
+            if (appConfig.getVisibility(cms).isActive()) {
+                result.add(appConfig);
+            }
+        }
+        return result;
     }
 
     /**
