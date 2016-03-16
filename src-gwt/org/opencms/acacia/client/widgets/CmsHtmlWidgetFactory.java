@@ -153,6 +153,11 @@ public class CmsHtmlWidgetFactory implements I_CmsWidgetFactory, I_CmsHasInit {
                 options.content_css = config.content_css;
             }
             options.importcss_append = true;
+            if (config.importCss) {
+                options.importcss_selector_filter = ""; // always matches 
+            } else {
+                options.importcss_selector_filter = new $wnd.RegExp("$.^"); // never matches
+            }
             if (config.height) {
                 options.editorHeight = config.height;
             }

@@ -71,18 +71,18 @@ import com.google.common.collect.Sets;
  */
 public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlWidget.class);
-
-    /** The editor widget to use depending on the current users settings, current browser and installed editors. */
-    private I_CmsWidget m_editorWidget;
-
     /** Labels for the default block format options. */
     public static final Map<String, String> TINYMCE_DEFAULT_BLOCK_FORMAT_LABELS = Collections.unmodifiableMap(
         CmsStringUtil.splitAsMap(
             "p:Paragraph|address:Address|pre:Pre|h1:Header 1|h2:Header 2|h3:Header 3|h4:Header 4|h5:Header 5|h6:Header 6",
             "|",
             ":"));
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlWidget.class);
+
+    /** The editor widget to use depending on the current users settings, current browser and installed editors. */
+    private I_CmsWidget m_editorWidget;
 
     /**
      * Creates a new html editing widget.<p>
@@ -387,6 +387,9 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget implements I_CmsADEWidget {
                 } catch (UnsupportedEncodingException ex) {
                     LOG.error(ex);
                 }
+            }
+            if (widgetOptions.isImportCss()) {
+                result.put("importCss", true);
             }
             String formatSelectOptions = widgetOptions.getFormatSelectOptions();
             if (!CmsStringUtil.isEmpty(formatSelectOptions)

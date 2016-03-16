@@ -197,6 +197,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "image" dialog. */
     public static final String OPTION_IMAGE = "image";
 
+    /** Option to import styles from stylesheet into the style selector. */
+    public static final String OPTION_IMPORTCSS = "importcss";
+
     /** Option for the "mark text as insertion" button. */
     public static final String OPTION_INS = "ins";
 
@@ -368,6 +371,9 @@ public class CmsHtmlWidgetOption {
     /** The hidden buttons. */
     private List<String> m_hiddenButtons;
 
+    /** True if styles from stylesheet should be imported into the style selector. */
+    private boolean m_importCss;
+
     /** The path for custom styles. */
     private String m_stylesFormatPath;
 
@@ -454,6 +460,13 @@ public class CmsHtmlWidgetOption {
             }
             result.append(OPTION_BUTTONBAR);
             result.append(option.getButtonBarOptionString());
+            added = true;
+        }
+        if (option.isImportCss()) {
+            if (added) {
+                result.append(DELIMITER_OPTION);
+            }
+            result.append(OPTION_IMPORTCSS);
             added = true;
         }
         if (CmsStringUtil.isNotEmpty(option.getFormatSelectOptions())) {
@@ -886,6 +899,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Return true if the content stylesheet's styles should be imported into the style selector.<p>
+     *
+     * @return true if the content stylesheet's styles should be imported into the style selector
+     */
+    public boolean isImportCss() {
+
+        return m_importCss;
+    }
+
+    /**
      * Sets the buttons to show additionally as list with button names.<p>
      *
      * @param buttons the buttons to show additionally as list with button names
@@ -1166,6 +1189,8 @@ public class CmsHtmlWidgetOption {
                     // the button bar definition string
                     option = option.substring(OPTION_BUTTONBAR.length());
                     setButtonBarOptionString(option);
+                } else if (option.startsWith(OPTION_IMPORTCSS)) {
+                    m_importCss = true;
                 } else {
                     // check if option describes an additional button
                     if (OPTIONAL_BUTTONS_LIST.contains(option)) {
