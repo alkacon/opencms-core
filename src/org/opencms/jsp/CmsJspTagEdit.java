@@ -319,7 +319,7 @@ public class CmsJspTagEdit extends CmsJspScopedVarBodyTagSuport {
             cms,
             pageContext,
             getResourceToEdit(cms),
-            m_canCreate,
+            m_canCreate || (null != m_createType),
             m_canDelete,
             m_createType,
             m_creationSiteMap,
