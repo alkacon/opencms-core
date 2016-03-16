@@ -48,17 +48,16 @@ import org.opencms.gwt.client.dnd.CmsDNDHandler;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.AnimationType;
 import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
+import org.opencms.gwt.client.ui.CmsQuickLauncher.A_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsStyleVariable;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
-import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Map;
@@ -86,39 +85,18 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /**
      * Quick launch handler for the page editor.
      */
-    public static class PageEditorQuickLaunchHandler implements I_QuickLaunchHandler {
+    public static class PageEditorQuickLaunchHandler extends A_QuickLaunchHandler {
 
-        /**
-         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getContext()
-         */
-        public String getContext() {
+        public CmsQuickLaunchParams getParameters() {
 
-            return QuickLaunch.CONTEXT_PAGE;
+            return new CmsQuickLaunchParams(
+                QuickLaunch.CONTEXT_PAGE,
+                CmsCoreProvider.get().getStructureId(),
+                CmsContainerpageController.get().getData().getDetailId(),
+                null,
+                CmsCoreProvider.get().getUri());
         }
 
-        /**
-         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#handleQuickLaunch(org.opencms.gwt.shared.CmsQuickLaunchData)
-         */
-        public void handleQuickLaunch(CmsQuickLaunchData data) {
-
-            if ((data.getDefaultUrl() != null) && (data.getDefaultTarget() != null)) {
-                Window.Location.assign(data.getDefaultUrl());
-            } else {
-                switch (data.getName()) {
-                    case QuickLaunch.Q_EXPLORER:
-                        CmsShowWorkplace.openWorkplace(CmsCoreProvider.get().getStructureId(), false);
-                        break;
-                    case QuickLaunch.Q_PAGEEDITOR:
-                        Window.Location.reload();
-                        break;
-                    case QuickLaunch.Q_SITEMAP:
-                        CmsContainerpageController.get().getHandler().gotoSitemap();
-                        break;
-                    default:
-                        return;
-                }
-            }
-        }
     }
 
     /** The Z index manager. */

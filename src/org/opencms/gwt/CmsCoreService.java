@@ -246,6 +246,36 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         return result;
     }
 
+    public static String getVaadinWorkplaceLink(CmsObject cms, CmsUUID structureId) throws CmsException {
+
+        String resourceRootFolder = structureId != null
+        ? CmsResource.getFolderPath(cms.readResource(structureId).getRootPath())
+        : cms.getRequestContext().getSiteRoot();
+        return getVaadinWorkplaceLink(cms, resourceRootFolder);
+
+    }
+
+    public static String getVaadinWorkplaceLink(CmsObject cms, String resourceRootFolder) throws CmsException {
+
+        String result;
+        CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
+        String siteRoot = site != null
+        ? site.getSiteRoot()
+        : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
+        ? OpenCms.getSiteManager().getSharedFolder()
+        : "";
+        CmsObject siteCms = OpenCms.initCmsObject(cms);
+        String link = CmsVaadinUtils.getWorkplaceLink()
+            + "#!explorer/"
+            + cms.getRequestContext().getCurrentProject().getUuid()
+            + "!!"
+            + siteRoot
+            + "!!"
+            + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
+        result = link;
+        return result;
+    }
+
     /**
      * Internal helper method for getting a validation service.<p>
      *
@@ -862,37 +892,23 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     public String getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode) throws CmsRpcException {
 
         String result = null;
-
+        CmsObject cms = getCmsObject();
         try {
             String resourceRootFolder = structureId != null
-            ? CmsResource.getFolderPath(getCmsObject().readResource(structureId).getRootPath())
-            : getCmsObject().getRequestContext().getSiteRoot();
+            ? CmsResource.getFolderPath(cms.readResource(structureId).getRootPath())
+            : cms.getRequestContext().getSiteRoot();
 
             switch (linkMode) {
                 case oldWorkplace:
-                    result = CmsWorkplace.getWorkplaceExplorerLink(getCmsObject(), resourceRootFolder);
+                    result = CmsWorkplace.getWorkplaceExplorerLink(cms, resourceRootFolder);
                     break;
                 case newWorkplace:
-                    CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
-                    String siteRoot = site != null
-                    ? site.getSiteRoot()
-                    : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
-                    ? OpenCms.getSiteManager().getSharedFolder()
-                    : "";
-                    CmsObject siteCms = OpenCms.initCmsObject(getCmsObject());
-                    String link = CmsVaadinUtils.getWorkplaceLink()
-                        + "#!explorer/"
-                        + getCmsObject().getRequestContext().getCurrentProject().getUuid()
-                        + "!!"
-                        + siteRoot
-                        + "!!"
-                        + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
-                    result = link;
+                    result = getVaadinWorkplaceLink(cms, resourceRootFolder);
                     break;
                 case auto:
                 default:
                     boolean newWp = CmsWorkplace.getWorkplaceSettings(
-                        getCmsObject(),
+                        cms,
                         getRequest()).getUserSettings().usesNewWorkplace();
                     result = getWorkplaceLink(
                         structureId,

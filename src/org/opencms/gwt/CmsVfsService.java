@@ -65,6 +65,7 @@ import org.opencms.gwt.shared.CmsPrepareEditResponse;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.gwt.shared.CmsPrincipalBean;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
 import org.opencms.gwt.shared.CmsRenameInfoBean;
 import org.opencms.gwt.shared.CmsReplaceInfo;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
@@ -146,9 +147,6 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     /** Serialization id. */
     private static final long serialVersionUID = -383483666952834348L;
 
-    /** A helper object containing the implementations of the alias-related service methods. */
-    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
-
     /** Initialize the preview mime types. */
     static {
         CollectionUtils.addAll(
@@ -160,6 +158,9 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
                 "application/mspowerpoint",
                 "application/zip"}));
     }
+
+    /** A helper object containing the implementations of the alias-related service methods. */
+    private CmsAliasHelper m_aliasHelper = new CmsAliasHelper();
 
     /**
      * Adds the lock state information to the resource info bean.<p>
@@ -1177,13 +1178,13 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadQuickLaunchItems(java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#loadQuickLaunchItems(org.opencms.gwt.shared.CmsQuickLaunchParams)
      */
-    public List<CmsQuickLaunchData> loadQuickLaunchItems(String context) throws CmsRpcException {
+    public List<CmsQuickLaunchData> loadQuickLaunchItems(CmsQuickLaunchParams params) throws CmsRpcException {
 
         try {
             CmsQuickLaunchProvider provider = new CmsQuickLaunchProvider(getCmsObject());
-            return provider.getQuickLaunchData(context);
+            return provider.getQuickLaunchData(params);
         } catch (Exception e) {
             error(e);
             return null;

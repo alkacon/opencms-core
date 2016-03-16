@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.I_CmsToolbarCss;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.List;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -53,18 +55,34 @@ import com.google.gwt.user.client.ui.Widget;
 public class CmsQuickLauncher extends CmsMenuButton {
 
     /**
+     * Abstract class for standard handling of quick launh items.<p>
+     */
+    public abstract static class A_QuickLaunchHandler implements I_QuickLaunchHandler {
+
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#handleQuickLaunch(org.opencms.gwt.shared.CmsQuickLaunchData)
+         */
+        public void handleQuickLaunch(CmsQuickLaunchData data) {
+
+            if (data.isReload()) {
+                Window.Location.reload();
+            } else {
+                Window.Location.assign(data.getDefaultUrl());
+            }
+        }
+    }
+
+    /**
      * The quick launch handler interface.<p>
      */
     public static interface I_QuickLaunchHandler {
 
         /**
-         * Gets the context string.
+         * Gets the quick launch parameters.<p>
          *
-         * The context string should identify the context from which a quick launch menu is opened (container page or sitemap).
-         *
-         * @return the context string
-         **/
-        String getContext();
+         * @return the quick launch parameters
+         */
+        CmsQuickLaunchParams getParameters();
 
         /**
          * Processes a click on a quick launch item.
@@ -210,7 +228,7 @@ public class CmsQuickLauncher extends CmsMenuButton {
                 public void execute() {
 
                     start(150, false);
-                    CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_handler.getContext(), this);
+                    CmsCoreProvider.getVfsService().loadQuickLaunchItems(m_handler.getParameters(), this);
                 }
 
                 @Override

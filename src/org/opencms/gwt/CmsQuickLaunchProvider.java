@@ -27,21 +27,36 @@
 
 package org.opencms.gwt;
 
+import org.opencms.ade.configuration.CmsADEManager;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.gwt.shared.CmsQuickLaunchData;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
+import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.ui.apps.I_CmsHasADEQuickLaunchData;
+import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.apps.CmsLegacyAppConfiguration;
+import org.opencms.ui.apps.CmsPageEditorConfiguration;
+import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 
 import java.util.List;
 
-import com.google.common.base.Optional;
+import org.apache.commons.logging.Log;
+
 import com.google.common.collect.Lists;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 
 /**
  * Provides the data for the buttons in the quick launch menu.<p>
  */
 public class CmsQuickLaunchProvider {
+
+    /** Log instance for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsQuickLaunchProvider.class);
 
     /** Current CMS context. */
     private CmsObject m_cms;
@@ -61,23 +76,79 @@ public class CmsQuickLaunchProvider {
      *
      * The context is a string which identifies where the quick launch menu is located
      *
-     * @param context the context string
+     * @param params the quick launch parameters
      *
      * @return the list of available quick launch items
      */
-    public List<CmsQuickLaunchData> getQuickLaunchData(String context) {
+    public List<CmsQuickLaunchData> getQuickLaunchData(CmsQuickLaunchParams params) {
 
         List<CmsQuickLaunchData> result = Lists.newArrayList();
+        CmsUserSettings userSettings = new CmsUserSettings(m_cms);
+        boolean usesNewWorkplace = userSettings.usesNewWorkplace();
         for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
-            m_cms)) {
-            if (config instanceof I_CmsHasADEQuickLaunchData) {
-                Optional<CmsQuickLaunchData> optItem = ((I_CmsHasADEQuickLaunchData)config).getADEQuickLaunchData(
-                    m_cms,
-                    context);
-                if (optItem.isPresent()) {
-                    result.add(optItem.get());
-                }
 
+            m_cms)) {
+            try {
+                boolean reload = false;
+                String link = null;
+                if (CmsFileExplorerConfiguration.APP_ID.equals(config.getId())) {
+                    if (!usesNewWorkplace) {
+                        continue;
+                    }
+                    link = CmsCoreService.getVaadinWorkplaceLink(m_cms, params.getPageId());
+                } else if (CmsPageEditorConfiguration.APP_ID.equals(config.getId())) {
+                    if (params.isPageContext()) {
+                        reload = true;
+                    } else if (params.isSitemapContext()) {
+                        if (params.getReturnCode() != null) {
+                            CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(
+                                m_cms,
+                                params.getReturnCode());
+                            link = linkInfo.getLink();
+                        } else {
+                            CmsResource resource = m_cms.readDefaultFile("/");
+                            CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(
+                                m_cms,
+                                "" + resource.getStructureId());
+                            link = linkInfo.getLink();
+
+                        }
+                    }
+                } else if (CmsSitemapEditorConfiguration.APP_ID.equals(config.getId())) {
+                    if (params.isSitemapContext()) {
+                        reload = true;
+                    } else if (params.isPageContext()) {
+                        String sitemapLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                            m_cms,
+                            CmsADEManager.PATH_SITEMAP_EDITOR_JSP);
+                        String returnCode = params.getDetailId() != null
+                        ? "" + params.getPageId() + ":" + params.getDetailId()
+                        : "" + params.getPageId();
+                        link = sitemapLink + "?path=" + params.getPath() + "&returncode=" + returnCode;
+                    }
+                } else {
+                    if (!usesNewWorkplace) {
+                        continue;
+                    }
+                    link = OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + config.getId();
+                }
+                Resource icon = config.getIcon();
+                String imageLink = "";
+                if (icon instanceof ExternalResource) {
+                    imageLink = ((ExternalResource)icon).getURL();
+                    // no icon if not an external resource
+                }
+                String name = config.getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms));
+                CmsQuickLaunchData data = new CmsQuickLaunchData(
+                    link,
+                    name,
+                    imageLink,
+                    config instanceof CmsLegacyAppConfiguration,
+                    reload);
+                result.add(data);
+            } catch (Exception e) {
+                LOG.error(e.getLocalizedMessage());
+                throw new RuntimeException(e);
             }
         }
         return result;

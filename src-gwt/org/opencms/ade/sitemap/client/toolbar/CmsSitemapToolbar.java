@@ -33,22 +33,19 @@ import org.opencms.ade.sitemap.shared.CmsGalleryType;
 import org.opencms.ade.sitemap.shared.CmsSitemapData.EditorMode;
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.ui.CmsPushButton;
-import org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler;
+import org.opencms.gwt.client.ui.CmsQuickLauncher.A_QuickLaunchHandler;
 import org.opencms.gwt.client.ui.CmsToggleButton;
 import org.opencms.gwt.client.ui.CmsToolbar;
 import org.opencms.gwt.client.ui.CmsToolbarContextButton;
 import org.opencms.gwt.client.ui.I_CmsToolbarButton;
-import org.opencms.gwt.client.ui.contextmenu.CmsShowWorkplace;
 import org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch;
-import org.opencms.gwt.shared.CmsQuickLaunchData;
-import org.opencms.util.CmsUUID;
+import org.opencms.gwt.shared.CmsQuickLaunchParams;
 
 import java.util.Collection;
 
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -61,41 +58,21 @@ public class CmsSitemapToolbar extends CmsToolbar {
     /**
      * Quick launch handler for the sitemap.<p>
      */
-    public static class SitemapQuickLaunchHandler implements I_QuickLaunchHandler {
+    public static class SitemapQuickLaunchHandler extends A_QuickLaunchHandler {
 
         /**
-         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getContext()
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getParameters()
          */
-        public String getContext() {
+        public CmsQuickLaunchParams getParameters() {
 
-            return QuickLaunch.CONTEXT_SITEMAP;
+            return new CmsQuickLaunchParams(
+                QuickLaunch.CONTEXT_SITEMAP,
+                null,
+                null,
+                CmsSitemapView.getInstance().getController().getData().getReturnCode(),
+                CmsCoreProvider.get().getUri());
         }
 
-        /**
-         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#handleQuickLaunch(org.opencms.gwt.shared.CmsQuickLaunchData)
-         */
-        public void handleQuickLaunch(CmsQuickLaunchData data) {
-
-            if ((data.getDefaultUrl() != null) && (data.getDefaultTarget() != null)) {
-                Window.Location.assign(data.getDefaultUrl());
-            } else {
-                switch (data.getName()) {
-                    case QuickLaunch.Q_EXPLORER:
-                        CmsUUID rootId = CmsSitemapView.getInstance().getController().getData().getRoot().getId();
-                        CmsShowWorkplace.openWorkplace(rootId, false);
-                        break;
-                    case QuickLaunch.Q_SITEMAP:
-                        Window.Location.reload();
-                        break;
-                    case QuickLaunch.Q_PAGEEDITOR:
-                        String retcode = CmsSitemapView.getInstance().getController().getData().getReturnCode();
-                        CmsToolbarGoBackButton.goBack(retcode);
-                        break;
-                    default:
-                        return;
-                }
-            }
-        }
     }
 
     /** The sitemap clipboard button. */

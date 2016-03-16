@@ -27,12 +27,9 @@
 
 package org.opencms.ui.apps;
 
-import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_PAGEEDITOR;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsCoreService;
-import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -50,7 +47,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.base.Optional;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -59,34 +55,13 @@ import com.vaadin.ui.Notification.Type;
 /**
  * The page editor app configuration.<p>
  */
-public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration
-implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
+public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration implements I_CmsHasAppLaunchCommand {
 
     /** The app id. */
     public static final String APP_ID = "pageeditor";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPageEditorConfiguration.class);
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsHasADEQuickLaunchData#getADEQuickLaunchData(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public Optional<CmsQuickLaunchData> getADEQuickLaunchData(CmsObject cms, String context) {
-
-        if (!getVisibility(cms).isActive()) {
-            return Optional.absent();
-        } else {
-            return Optional.of(
-                new CmsQuickLaunchData(
-                    Q_PAGEEDITOR,
-                    null,
-                    null,
-                    getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
-                    getImageLink(),
-                    false));
-        }
-
-    }
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -142,7 +117,7 @@ implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(getImageLink());
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/editor.png"));
     }
 
     /**
@@ -151,11 +126,6 @@ implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
     public String getId() {
 
         return APP_ID;
-    }
-
-    public String getImageLink() {
-
-        return OpenCmsTheme.getImageLink("apps/editor.png");
     }
 
     /**

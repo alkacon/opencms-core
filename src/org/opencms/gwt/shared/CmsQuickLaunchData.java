@@ -34,11 +34,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class CmsQuickLaunchData implements IsSerializable {
 
-    /** Default target (may be null). */
-    private String m_defaultTarget;
-
     /** Default URL (may be null). */
     private String m_defaultUrl;
+
+    /** Flag to force page reload. */
+    private boolean m_reload;
 
     /** The icon URL. */
     private String m_iconUrl;
@@ -46,36 +46,31 @@ public class CmsQuickLaunchData implements IsSerializable {
     /** True if this is a legacy tool (necessary because the icons for legacy tools are smaller). */
     private boolean m_legacy;
 
-    /** Internal name of the quick launch item. */
-    private String m_name;
-
     /** User readable title of the quick launch item. */
     private String m_title;
 
     /**
      * Creates a new instance.<p>
      *
-     * @param name the internal name
      * @param defaultUrl the default URL
-     * @param defaultTarget the default target
      * @param title the title
      * @param iconUrl the icon URL
      * @param legacy true if this is a legacy dialog
+     * @param reload true if the page should just be reloaded when this is selected
      */
     public CmsQuickLaunchData(
-        String name,
+
         String defaultUrl,
-        String defaultTarget,
         String title,
         String iconUrl,
-        boolean legacy) {
-        super();
-        m_name = name;
+        boolean legacy,
+        boolean reload) {
+
         m_title = title;
         m_defaultUrl = defaultUrl;
-        m_defaultTarget = defaultTarget;
         m_iconUrl = iconUrl;
         m_legacy = legacy;
+        m_reload = reload;
 
     }
 
@@ -84,16 +79,6 @@ public class CmsQuickLaunchData implements IsSerializable {
      */
     protected CmsQuickLaunchData() {
         // Default constructor for serialization
-    }
-
-    /**
-     * Returns the defaultTarget.<p>
-     *
-     * @return the defaultTarget
-     */
-    public String getDefaultTarget() {
-
-        return m_defaultTarget;
     }
 
     /**
@@ -117,16 +102,6 @@ public class CmsQuickLaunchData implements IsSerializable {
     }
 
     /**
-     * Returns the name.<p>
-     *
-     * @return the name
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
      * Returns the title.<p>
      *
      * @return the title
@@ -144,6 +119,26 @@ public class CmsQuickLaunchData implements IsSerializable {
     public boolean isLegacy() {
 
         return m_legacy;
+    }
+
+    /**
+     * Return true if the page should be reloaded when this is selected.<p>
+     *
+     * @return true if the page should be reloaded
+     */
+    public boolean isReload() {
+
+        return m_reload;
+    }
+
+    /**
+     * Sets the 'reload' flag.<p>
+     *
+     * @param reload the new value for the 'reload' flag
+     */
+    public void setReload(boolean reload) {
+
+        m_reload = reload;
     }
 
 }

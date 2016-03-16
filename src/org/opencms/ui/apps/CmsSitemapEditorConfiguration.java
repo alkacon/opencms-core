@@ -27,16 +27,12 @@
 
 package org.opencms.ui.apps;
 
-import static org.opencms.gwt.shared.CmsGwtConstants.QuickLaunch.Q_SITEMAP;
-
 import org.opencms.ade.configuration.CmsADEManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.util.CmsStringUtil;
@@ -45,7 +41,6 @@ import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
-import com.google.common.base.Optional;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 import com.vaadin.ui.Notification;
@@ -54,34 +49,13 @@ import com.vaadin.ui.Notification.Type;
 /**
  * The sitemap editor app configuration.<p>
  */
-public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguration
-implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
+public class CmsSitemapEditorConfiguration extends A_CmsWorkplaceAppConfiguration implements I_CmsHasAppLaunchCommand {
 
     /** The app id. */
     public static final String APP_ID = "sitemapeditor";
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSitemapEditorConfiguration.class);
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsHasADEQuickLaunchData#getADEQuickLaunchData(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public Optional<CmsQuickLaunchData> getADEQuickLaunchData(CmsObject cms, String context) {
-
-        if (!getVisibility(cms).isActive() || !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
-            return Optional.absent();
-        } else {
-            return Optional.of(
-                new CmsQuickLaunchData(
-                    Q_SITEMAP,
-                    null,
-                    null,
-                    getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
-                    getImageLink(),
-                    false));
-        }
-
-    }
 
     /**
      * @see org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration#getAppCategory()
@@ -138,7 +112,7 @@ implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
      */
     public Resource getIcon() {
 
-        return new ExternalResource(getImageLink());
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/sitemap.png"));
     }
 
     /**
@@ -147,11 +121,6 @@ implements I_CmsHasAppLaunchCommand, I_CmsHasADEQuickLaunchData {
     public String getId() {
 
         return APP_ID;
-    }
-
-    public String getImageLink() {
-
-        return OpenCmsTheme.getImageLink("apps/sitemap.png");
     }
 
     /**

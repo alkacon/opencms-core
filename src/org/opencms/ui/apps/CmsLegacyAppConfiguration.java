@@ -27,10 +27,7 @@
 
 package org.opencms.ui.apps;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
-import org.opencms.gwt.shared.CmsGwtConstants;
-import org.opencms.gwt.shared.CmsQuickLaunchData;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.workplace.CmsWorkplace;
@@ -38,14 +35,13 @@ import org.opencms.workplace.tools.I_CmsToolHandler;
 
 import java.util.Locale;
 
-import com.google.common.base.Optional;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Resource;
 
 /**
  * Holding configuration for legacy admin tools.<p>
  */
-public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration, I_CmsHasADEQuickLaunchData {
+public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration {
 
     /** The tool handler. */
     private I_CmsToolHandler m_toolHandler;
@@ -58,27 +54,6 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
     public CmsLegacyAppConfiguration(I_CmsToolHandler toolHandler) {
 
         m_toolHandler = toolHandler;
-    }
-
-    /**
-     * @see org.opencms.ui.apps.I_CmsHasADEQuickLaunchData#getADEQuickLaunchData(org.opencms.file.CmsObject, java.lang.String)
-     */
-    public Optional<CmsQuickLaunchData> getADEQuickLaunchData(CmsObject cms, String context) {
-
-        CmsUserSettings settings = new CmsUserSettings(cms);
-        if (!settings.usesNewWorkplace() || !getVisibility(cms).isActive()) {
-            return Optional.absent();
-        } else {
-            String wpToolsUrl = OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + m_toolHandler.getPath();
-            return Optional.of(
-                new CmsQuickLaunchData(
-                    m_toolHandler.getPath(),
-                    wpToolsUrl,
-                    CmsGwtConstants.WIN_WORKPLACE,
-                    getName(OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
-                    getImageLink(),
-                    true));
-        }
     }
 
     /**
@@ -119,7 +94,7 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public Resource getIcon() {
 
-        return new ExternalResource(getImageLink());
+        return new ExternalResource(CmsWorkplace.getSkinUri() + m_toolHandler.getIconPath());
     }
 
     /**
@@ -128,11 +103,6 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
     public String getId() {
 
         return m_toolHandler.getPath();
-    }
-
-    public String getImageLink() {
-
-        return CmsWorkplace.getSkinUri() + m_toolHandler.getIconPath();
     }
 
     /**
