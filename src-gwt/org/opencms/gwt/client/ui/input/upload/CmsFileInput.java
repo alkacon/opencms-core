@@ -35,9 +35,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.CmsWidget;
 import com.google.gwt.user.client.ui.HasName;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -45,16 +44,13 @@ import com.google.gwt.user.client.ui.Widget;
  *
  * @since 8.0.0
  */
-public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
+public class CmsFileInput extends CmsWidget implements HasName, HasChangeHandlers {
 
     /** The concrete file input implementation. */
     private I_CmsFileInputService m_impl;
 
     /** The input element. */
     private InputElement m_inputElement;
-
-    /** The widget parent. */
-    private Widget m_parent;
 
     /**
      * The default constructor.<p>
@@ -101,17 +97,6 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
     }
 
     /**
-     * Gets this widget's parent panel.
-     *
-     * @return the widget's parent panel
-     */
-    @Override
-    public Widget getParent() {
-
-        return m_parent;
-    }
-
-    /**
      * Returns <code>true</code> if multiple file selection is allowed, <code>false</code> otherwise.<p>
      *
      * @return <code>true</code> if multiple file selection is allowed, <code>false</code> otherwise
@@ -150,25 +135,6 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
     }
 
     /**
-     * @see com.google.gwt.user.client.ui.Widget#removeFromParent()
-     */
-    @Override
-    public void removeFromParent() {
-
-        if (m_parent == null) {
-            // If the widget had no parent, check to see if it was in the detach list
-            // and remove it if necessary.
-            if (RootPanel.isInDetachList(this)) {
-                RootPanel.detachNow(this);
-            }
-        } else if (m_parent instanceof HasWidgets) {
-            ((HasWidgets)m_parent).remove(this);
-        } else if (m_parent != null) {
-            throw new IllegalStateException("This widget's parent does not implement HasWidgets");
-        }
-    }
-
-    /**
      * Sets the the flag for allowing multiple file selection.<p>
      *
      * @param allow <code>true</code> if the multiple file selection should be allowed
@@ -198,33 +164,12 @@ public class CmsFileInput extends Widget implements HasName, HasChangeHandlers {
     }
 
     /**
-     * Sets the widget parent.<p>
-     *
-     * @param parent the new parent
+     * @see com.google.gwt.user.client.ui.CmsWidget#setParent(com.google.gwt.user.client.ui.Widget)
      */
+    @Override
     public void setParent(Widget parent) {
 
-        Widget oldParent = m_parent;
-        if (parent == null) {
-            try {
-                if ((oldParent != null) && oldParent.isAttached()) {
-                    onDetach();
-                    assert !isAttached() : "Failure of " + this.getClass().getName() + " to call super.onDetach()";
-                }
-            } finally {
-                // Put this in a finally in case onDetach throws an exception.
-                m_parent = null;
-            }
-        } else {
-            if (oldParent != null) {
-                throw new IllegalStateException("Cannot set a new parent without first clearing the old parent");
-            }
-            m_parent = parent;
-            if (parent.isAttached()) {
-                onAttach();
-                assert isAttached() : "Failure of " + this.getClass().getName() + " to call super.onAttach()";
-            }
-        }
+        super.setParent(parent);
     }
 
     /**
