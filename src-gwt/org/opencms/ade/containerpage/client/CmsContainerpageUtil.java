@@ -504,7 +504,7 @@ public class CmsContainerpageUtil {
             elementData.isModelGroup(),
             elementData.isWasModelGroup(),
             elementData.getElementView());
-        dragElement.setCreateNew(elementData.isCreateNew());
+        dragElement.setCreateNew(elementData.isCreateNew() && m_controller.getData().isModelPage());
         if (m_controller.requiresOptionBar(dragElement, dragParent)) {
             addOptionBar(dragElement);
         }
