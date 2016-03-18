@@ -108,7 +108,7 @@ public class CmsResourceIcon extends Label {
                 + " "
                 + resUtil.getUserLastModified()
             : null;
-            if (state.isChanged()) {
+            if (state.isChanged() || state.isDeleted()) {
                 content += getOverlaySpan(OpenCmsTheme.STATE_CHANGED, title);
             } else if (state.isNew()) {
                 content += getOverlaySpan(OpenCmsTheme.STATE_NEW, title);
