@@ -468,7 +468,7 @@ public class CmsToolBar extends CssLayout {
                 layout.setMargin(true);
                 for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
                     cms)) {
-                    layout.addComponent(CmsDefaultAppButtonProvider.createAppIconWidget(cms, config, locale));
+                    layout.addComponent(CmsDefaultAppButtonProvider.createAppButton(cms, config, locale));
                 }
                 return layout;
             }

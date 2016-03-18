@@ -106,6 +106,10 @@
 	div.v-panel-caption {
 		@include valo-panel-caption-style($o-dark-background-color);
 	}
+	
+	div.v-panel-v-disabled{
+		background: $o-medium-background-color;
+	}
 
 	.v-formlayout .v-caption{
 		font-size: $v-font-size;

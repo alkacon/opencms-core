@@ -31,6 +31,8 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -144,6 +146,19 @@ public class CmsWorkplaceAppManager {
     /** Legacy apps explicitly hidden from new workplace. */
     private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
 
+    /** The standard quick launch apps. */
+    private static final String[] STANDARD_APPS = new String[] {
+        CmsPageEditorConfiguration.APP_ID,
+        CmsSitemapEditorConfiguration.APP_ID,
+        CmsFileExplorerConfiguration.APP_ID,
+        CmsAppHierarchyConfiguration.APP_ID};
+
+    /** The default quick launch apps, these can be overridden by the user. */
+    private static final String[] DEFAULT_USER_APPS = new String[] {"/accounts", "/modules"};
+
+    /** The additional info key for the user quick launch apps. */
+    private static final String QUICK_LAUCH_APPS_KEY = "quick_launch_apps";
+
     /** The admin cms context. */
     private CmsObject m_adminCms;
 
@@ -158,6 +173,9 @@ public class CmsWorkplaceAppManager {
 
     /** Menu item manager. */
     private CmsContextMenuItemProviderGroup m_workplaceMenuItemProvider;
+
+    /** The standard quick launch apps. */
+    private List<I_CmsWorkplaceAppConfiguration> m_standardQuickLaunchApps;
 
     /**
      * Constructor.<p>
@@ -190,6 +208,25 @@ public class CmsWorkplaceAppManager {
     public I_CmsWorkplaceAppConfiguration getAppConfiguration(String appId) {
 
         return m_appsById.get(appId);
+    }
+
+    /**
+     * Returns the app configuration instances for the given ids.<p>
+     *
+     * @param appIds the app ids
+     *
+     * @return the app configurations
+     */
+    public List<I_CmsWorkplaceAppConfiguration> getAppConfigurations(String... appIds) {
+
+        List<I_CmsWorkplaceAppConfiguration> result = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+        for (int i = 0; i < appIds.length; i++) {
+            I_CmsWorkplaceAppConfiguration config = getAppConfiguration(appIds[i]);
+            if (config != null) {
+                result.add(config);
+            }
+        }
+        return result;
     }
 
     /**
@@ -273,31 +310,6 @@ public class CmsWorkplaceAppManager {
     }
 
     /**
-     * Gets all configured quick launch apps, independent of the current user.<p>
-     *
-     * @return the quick launch apps
-     */
-    public List<I_CmsWorkplaceAppConfiguration> getQuickLaunchConfigurations() {
-
-        List<String> names = Arrays.asList(
-            CmsAppHierarchyConfiguration.APP_ID,
-            CmsPageEditorConfiguration.APP_ID,
-            CmsSitemapEditorConfiguration.APP_ID,
-            CmsFileExplorerConfiguration.APP_ID,
-            "/accounts",
-            "/workplace");
-
-        List<I_CmsWorkplaceAppConfiguration> result = Lists.newArrayList();
-        for (String name : names) {
-            I_CmsWorkplaceAppConfiguration config = OpenCms.getWorkplaceAppManager().getAppConfiguration(name);
-            if (config != null) {
-                result.add(config);
-            }
-        }
-        return result;
-    }
-
-    /**
      * Gets the configured quick launch apps which are visible for the current user.<p>
      *
      * @param cms the current CMS context
@@ -305,10 +317,14 @@ public class CmsWorkplaceAppManager {
      */
     public List<I_CmsWorkplaceAppConfiguration> getQuickLaunchConfigurations(CmsObject cms) {
 
-        List<I_CmsWorkplaceAppConfiguration> result = Lists.newArrayList();
-        for (I_CmsWorkplaceAppConfiguration appConfig : getQuickLaunchConfigurations()) {
-            if (appConfig.getVisibility(cms).isActive()) {
-                result.add(appConfig);
+        List<I_CmsWorkplaceAppConfiguration> result = new ArrayList<I_CmsWorkplaceAppConfiguration>();
+        result.addAll(getDefaultQuickLaunchConfigurations());
+        result.addAll(getUserQuickLauchConfigurations(cms));
+        Iterator<I_CmsWorkplaceAppConfiguration> it = result.iterator();
+        while (it.hasNext()) {
+            I_CmsWorkplaceAppConfiguration appConfig = it.next();
+            if (!appConfig.getVisibility(cms).isActive()) {
+                it.remove();
             }
         }
         return result;
@@ -379,6 +395,62 @@ public class CmsWorkplaceAppManager {
     }
 
     /**
+     * Gets all configured quick launch apps, independent of the current user.<p>
+     *
+     * @return the quick launch apps
+     */
+    protected List<I_CmsWorkplaceAppConfiguration> getDefaultQuickLaunchConfigurations() {
+
+        if (m_standardQuickLaunchApps == null) {
+
+            m_standardQuickLaunchApps = Collections.unmodifiableList(getAppConfigurations(STANDARD_APPS));
+        }
+        return m_standardQuickLaunchApps;
+    }
+
+    /**
+     * Returns the quick launch apps set for the current user.<p>
+     *
+     * @param cms the cms context
+     *
+     * @return the quick launch app configurations
+     */
+    protected List<I_CmsWorkplaceAppConfiguration> getUserQuickLauchConfigurations(CmsObject cms) {
+
+        String apps_info = (String)cms.getRequestContext().getCurrentUser().getAdditionalInfo(QUICK_LAUCH_APPS_KEY);
+        String[] appIds = null;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(apps_info)) {
+            try {
+                JSONArray ids = new JSONArray(apps_info);
+                appIds = new String[ids.length()];
+                for (int i = 0; i < appIds.length; i++) {
+                    appIds[i] = ids.getString(i);
+                }
+            } catch (JSONException e) {
+                LOG.error("Error parsing user quick launch apps setting.", e);
+                appIds = null;
+            }
+        }
+        return getAppConfigurations(appIds != null ? appIds : DEFAULT_USER_APPS);
+    }
+
+    /**
+     * Writes the user quick launch apps setting to the user additional info.<p>
+     *
+     * @param cms the cms context
+     * @param apps the app ids
+     *
+     * @throws CmsException in case writing the user fails
+     */
+    protected void setUserQuickLaunchApps(CmsObject cms, List<String> apps) throws CmsException {
+
+        JSONArray appIds = new JSONArray(apps);
+        CmsUser user = cms.getRequestContext().getCurrentUser();
+        user.setAdditionalInfo(QUICK_LAUCH_APPS_KEY, appIds.toString());
+        cms.writeUser(user);
+    }
+
+    /**
      * Adds the given app configuration.<p>
      *
      * @param appConfigs the app configuration
@@ -428,7 +500,8 @@ public class CmsWorkplaceAppManager {
                 new CmsFileExplorerConfiguration(),
                 new CmsScheduledJobsAppConfig(),
                 new CmsAppHierarchyConfiguration(),
-                new CmsEditorConfiguration()));
+                new CmsEditorConfiguration(),
+                new CmsQuickLaunchEditorConfiguration()));
         return result;
     }
 

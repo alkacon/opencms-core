@@ -55,12 +55,12 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
      *
      * @return the button component
      */
-    public static Component createAppIconWidget(
+    public static Component createAppButton(
         CmsObject cms,
         final I_CmsWorkplaceAppConfiguration appConfig,
         Locale locale) {
 
-        Button button = new Button(appConfig.getName(locale));
+        Button button = createAppIconButton(appConfig, locale);
         button.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
@@ -76,12 +76,6 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
                 }
             }
         });
-        Resource icon = appConfig.getIcon();
-        button.setIcon(icon, appConfig.getName(locale));
-        button.addStyleName(OpenCmsTheme.APP_BUTTON);
-        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
-        button.addStyleName(appConfig.getButtonStyle());
         CmsAppVisibilityStatus status = appConfig.getVisibility(cms);
         if (!status.isActive()) {
             button.setEnabled(false);
@@ -94,10 +88,30 @@ public class CmsDefaultAppButtonProvider implements I_CmsAppButtonProvider {
     }
 
     /**
+     * Creates a properly styled button for the given app, without adding a click handler or checking visibility settings.<p>
+     *
+     * @param appConfig the app configuration
+     * @param locale the locale
+     *
+     * @return the button component
+     */
+    public static Button createAppIconButton(I_CmsWorkplaceAppConfiguration appConfig, Locale locale) {
+
+        Button button = new Button(appConfig.getName(locale));
+        Resource icon = appConfig.getIcon();
+        button.setIcon(icon, appConfig.getName(locale));
+        button.addStyleName(OpenCmsTheme.APP_BUTTON);
+        button.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        button.addStyleName(ValoTheme.BUTTON_ICON_ALIGN_TOP);
+        button.addStyleName(appConfig.getButtonStyle());
+        return button;
+    }
+
+    /**
      * @see org.opencms.ui.apps.I_CmsAppButtonProvider#createAppButton(org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration)
      */
     public Component createAppButton(I_CmsWorkplaceAppConfiguration appConfig) {
 
-        return createAppIconWidget(A_CmsUI.getCmsObject(), appConfig, UI.getCurrent().getLocale());
+        return createAppButton(A_CmsUI.getCmsObject(), appConfig, UI.getCurrent().getLocale());
     }
 }

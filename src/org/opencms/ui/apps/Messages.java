@@ -87,6 +87,24 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_BUTTON_TITLE_0 = "GUI_PUBLISH_BUTTON_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_AVAILABLE_0 = "GUI_QUICK_LAUNCH_EDITOR_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_HELP_0 = "GUI_QUICK_LAUNCH_EDITOR_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_INFO_0 = "GUI_QUICK_LAUNCH_EDITOR_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_STANDARD_APPS_0 = "GUI_QUICK_LAUNCH_EDITOR_STANDARD_APPS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_TITLE_0 = "GUI_QUICK_LAUNCH_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_QUICK_LAUNCH_EDITOR_USER_APPS_0 = "GUI_QUICK_LAUNCH_EDITOR_USER_APPS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_QUICK_LAUNCH_TITLE_0 = "GUI_QUICK_LAUNCH_TITLE_0";
 
     /** Message constant for key in the resource bundle. */

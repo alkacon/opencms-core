@@ -51,7 +51,6 @@ public abstract class A_CmsWorkplaceAppConfiguration implements I_CmsWorkplaceAp
      */
     public String getButtonStyle() {
 
-        // TODO Auto-generated method stub
         return null;
     }
 
