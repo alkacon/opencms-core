@@ -29,6 +29,8 @@ package org.opencms.ui.actions;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
@@ -37,10 +39,15 @@ import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * The copy move dialog action.<p>
  */
 public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
+
+    /** The logger for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCopyMoveDialogAction.class);
 
     /** The action id. */
     public static final String ACTION_ID = "copymove";
@@ -54,7 +61,19 @@ public class CmsCopyMoveDialogAction extends A_CmsWorkplaceAction {
     public void executeAction(I_CmsDialogContext context) {
 
         if (!hasBlockingLocks(context)) {
-            openDialog(new CmsCopyMoveDialog(context), context);
+            CmsCopyMoveDialog dialog = new CmsCopyMoveDialog(context);
+            if (!context.getResources().isEmpty()) {
+                CmsResource res = context.getResources().get(0);
+                CmsResource parent;
+                try {
+                    parent = context.getCms().readParentFolder(res.getStructureId());
+
+                    dialog.setTargetForlder(parent);
+                } catch (CmsException e) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            openDialog(dialog, context);
         }
     }
 

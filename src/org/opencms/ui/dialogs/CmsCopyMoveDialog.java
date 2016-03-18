@@ -159,13 +159,23 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
 
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsResource res = cms.readResource(structureId);
-        if (res.isFolder()) {
-            m_targetFolder.setValue(res);
+        setTargetForlder(res);
+    }
+
+    /**
+     * Preselects the target folder.<p>
+     *
+     * @param resource the target resource
+     */
+    public void setTargetForlder(CmsResource resource) {
+
+        if (resource.isFolder()) {
+            m_targetFolder.setValue(resource);
         } else {
             throw new CmsIllegalArgumentException(
                 Messages.get().container(
                     org.opencms.workplace.commons.Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1,
-                    cms.getSitePath(res)));
+                    A_CmsUI.getCmsObject().getSitePath(resource)));
         }
     }
 
