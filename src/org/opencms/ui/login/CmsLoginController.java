@@ -238,7 +238,7 @@ public class CmsLoginController {
     public static String getLoginTarget(CmsObject currentCms, CmsWorkplaceSettings settings, String requestedResource)
     throws CmsException {
 
-        String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings());
+        String directEditPath = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings(), false);
         String target = "";
         boolean checkRole = false;
         String fragment = UI.getCurrent() != null ? UI.getCurrent().getPage().getUriFragment() : "";
@@ -266,14 +266,19 @@ public class CmsLoginController {
                 + "="
                 + target;
         }
+        if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
+            workplace2 = false;
+            target = CmsLoginHelper.getDirectEditPath(currentCms, settings.getUserSettings(), true);
+            if (target == null) {
+                throw new CmsCustomLoginException(
+                    org.opencms.workplace.Messages.get().container(
+                        org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
+            }
+        }
         if (!workplace2) {
             target = OpenCms.getLinkManager().substituteLink(currentCms, target);
         }
-        if (checkRole && !OpenCms.getRoleManager().hasRole(currentCms, CmsRole.WORKPLACE_USER)) {
-            throw new CmsCustomLoginException(
-                org.opencms.workplace.Messages.get().container(
-                    org.opencms.workplace.Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0));
-        }
+
         if (workplace2
             && CmsStringUtil.isEmptyOrWhitespaceOnly(fragment)
             && CmsWorkplace.VIEW_WORKPLACE.equals(settings.getUserSettings().getStartView())) {

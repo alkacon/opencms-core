@@ -314,12 +314,13 @@ public class CmsLoginHelper extends CmsJspLoginBean {
      *
      * @param cms the CMS context to use
      * @param userSettings the user settings
+     * @param forceDirectEdit <code>true</code> to ignore the start view
      *
      * @return the direct edit path
      */
-    public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings) {
+    public static String getDirectEditPath(CmsObject cms, CmsUserSettings userSettings, boolean forceDirectEdit) {
 
-        if (userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
+        if (forceDirectEdit || userSettings.getStartView().equals(CmsWorkplace.VIEW_DIRECT_EDIT)) {
 
             try {
                 CmsObject cloneCms = OpenCms.initCmsObject(cms);
