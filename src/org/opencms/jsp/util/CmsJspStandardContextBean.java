@@ -681,8 +681,14 @@ public final class CmsJspStandardContextBean {
     /** The lazy initialized map for the function detail pages. */
     private Map<String, String> m_functionDetailPage;
 
+    /** Indicates if in drag mode. */
+    private boolean m_isDragMode;
+
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
+
+    /** The current container page resource, lazy initialized. */
+    private CmsResource m_pageResource;
 
     /** The parent containers to the given element instance ids. */
     private Map<String, CmsContainerBean> m_parentContainers;
@@ -695,9 +701,6 @@ public final class CmsJspStandardContextBean {
 
     /** The VFS content access bean. */
     private CmsJspVfsAccessBean m_vfsBean;
-
-    /** The current container page resource, lazy initialized. */
-    private CmsResource m_pageResource;
 
     /**
      * Creates an empty instance.<p>
@@ -1244,6 +1247,16 @@ public final class CmsJspStandardContextBean {
     }
 
     /**
+     * Returns if the page is in drag mode.<p>
+     *
+     * @return if the page is in drag mode
+     */
+    public boolean isDragMode() {
+
+        return m_isDragMode;
+    }
+
+    /**
      * Returns the flag to indicate if in drag and drop mode.<p>
      *
      * @return <code>true</code> if in drag and drop mode
@@ -1294,6 +1307,16 @@ public final class CmsJspStandardContextBean {
 
         m_detailOnlyPage = detailOnlyPage;
         clearPageData();
+    }
+
+    /**
+     * Sets if the page is in drag mode.<p>
+     *
+     * @param isDragMode if the page is in drag mode
+     */
+    public void setDragMode(boolean isDragMode) {
+
+        m_isDragMode = isDragMode;
     }
 
     /**

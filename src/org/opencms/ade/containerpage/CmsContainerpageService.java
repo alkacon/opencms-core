@@ -168,6 +168,11 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             // do nothing
         }
 
+        /**
+         * Returns the default view info.<p>
+         *
+         * @return the default view info
+         */
         public CmsElementViewInfo getDefaultView() {
 
             return getViewMap().get(getDefaultViewId());
@@ -369,6 +374,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             null,
             request,
             response,
+            false,
             cms.getRequestContext().getLocale());
         util.setElementInfo(elementBean, result);
         return CmsGwtActionElement.serialize(I_CmsContainerpageService.class.getMethod("getElementInfo"), result);
@@ -666,6 +672,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containers,
                 allowNested,
                 dndSource,
+                CmsStringUtil.isNotEmptyOrWhitespaceOnly(dndSource),
                 CmsLocaleManager.getLocale(locale));
         } catch (Throwable e) {
             error(e);
@@ -702,6 +709,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 getRequest(),
                 getResponse(),
+                false,
                 contentLocale);
 
             CmsContainerElementBean elementBean = getCachedElement(clientId, pageResource.getRootPath());
@@ -1174,6 +1182,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 detailContentId,
                 getRequest(),
                 getResponse(),
+                false,
                 contentLocale);
             element = elemUtil.getElementData(pageResource, elementBean, containers, allowNested);
         } catch (Throwable e) {
@@ -1293,6 +1302,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                 containers,
                 false,
                 null,
+                false,
                 requestedLocale);
         } catch (Exception e) {
             error(e);
@@ -1730,6 +1740,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
      * @param containers the containers for which the element data should be fetched
      * @param allowNested if nested containers are allowed
      * @param dndOriginContainer the container from which an element was dragged (null if this method is not called for DND)
+     * @param isDragMode if the page is in drag mode
      * @param locale the locale to use
      *
      * @return the elements data
@@ -1744,6 +1755,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
         Collection<CmsContainer> containers,
         boolean allowNested,
         String dndOriginContainer,
+        boolean isDragMode,
         Locale locale) throws CmsException {
 
         CmsObject cms = getCmsObject();
@@ -1781,6 +1793,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             detailContentId,
             getRequest(),
             getResponse(),
+            isDragMode,
             locale);
         Map<String, CmsContainerElementData> result = new HashMap<String, CmsContainerElementData>();
         Set<String> ids = new HashSet<String>();
@@ -1810,6 +1823,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
                         containers,
                         allowNested,
                         null,
+                        isDragMode,
                         locale);
                     result.putAll(dndResults);
                 }
@@ -1991,6 +2005,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             detailContentId,
             getRequest(),
             getResponse(),
+            true,
             locale);
         CmsADESessionCache cache = getSessionCache();
         List<CmsContainerElementData> result = new ArrayList<CmsContainerElementData>();
@@ -2068,6 +2083,7 @@ public class CmsContainerpageService extends CmsGwtService implements I_CmsConta
             detailContentId,
             getRequest(),
             getResponse(),
+            true,
             locale);
         CmsContainerElementBean elementBean = getSessionCache().getCacheContainerElement(resourceTypeName);
         if (elementBean == null) {

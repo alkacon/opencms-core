@@ -153,6 +153,7 @@ public class CmsElementUtil {
      * @param detailContentId the detail content structure id
      * @param req the http request
      * @param res the http response
+     * @param isDragMode if the page is in drag mode
      * @param locale the content locale
      *
      * @throws CmsException if something goes wrong
@@ -164,6 +165,7 @@ public class CmsElementUtil {
         CmsUUID detailContentId,
         HttpServletRequest req,
         HttpServletResponse res,
+        boolean isDragMode,
         Locale locale)
         throws CmsException {
 
@@ -181,6 +183,7 @@ public class CmsElementUtil {
         m_standardContext = CmsJspStandardContextBean.getInstance(req);
         m_page = m_cms.readResource(currentPageUri);
         m_standardContext.setPage(containerPage);
+        m_standardContext.setDragMode(isDragMode);
     }
 
     /**
