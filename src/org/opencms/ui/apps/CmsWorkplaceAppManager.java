@@ -144,7 +144,8 @@ public class CmsWorkplaceAppManager {
         new CmsXmlPageEditor()};
 
     /** Legacy apps explicitly hidden from new workplace. */
-    private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(Arrays.asList("/git", "/scheduler"));
+    private static final Set<String> LEGACY_BLACKLIST = Sets.newConcurrentHashSet(
+        Arrays.asList("/git", "/scheduler", "/galleryoverview"));
 
     /** The standard quick launch apps. */
     private static final String[] STANDARD_APPS = new String[] {
