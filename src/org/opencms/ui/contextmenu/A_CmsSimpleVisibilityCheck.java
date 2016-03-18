@@ -67,12 +67,16 @@ public abstract class A_CmsSimpleVisibilityCheck implements I_CmsHasMenuItemVisi
             if (m_singleResourceOnly) {
                 return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
             }
-            CmsMenuItemVisibilityMode currentVisibility = CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+            CmsMenuItemVisibilityMode currentVisibility = null;
             for (CmsResource resource : resources) {
                 CmsMenuItemVisibilityMode visibilityForResource = getSingleVisibility(cms, resource);
-                if (getPriority(visibilityForResource) > getPriority(currentVisibility)) {
+                if ((currentVisibility == null)
+                    || (getPriority(visibilityForResource) > getPriority(currentVisibility))) {
                     currentVisibility = visibilityForResource;
                 }
+            }
+            if (currentVisibility == null) {
+                currentVisibility = CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
             }
             if (currentVisibility.isInActive()) {
                 // In the multi-selection case, different resources may cause the menu item to be inactive for different reasons,
@@ -94,14 +98,16 @@ public abstract class A_CmsSimpleVisibilityCheck implements I_CmsHasMenuItemVisi
      */
     private int getPriority(CmsMenuItemVisibilityMode mode) {
 
-        if (mode.isActive()) {
-            return 0;
+        if (mode.isPrioritized()) {
+            return 4;
         }
         if (mode.isInActive()) {
+            return 0;
+        }
+        if (mode.isActive()) {
             return 1;
         }
         // invisible
         return 2;
     }
-
 }

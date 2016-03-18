@@ -51,6 +51,9 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     /** The name of the message key for the visibility mode. */
     private String m_messageKey;
 
+    /** The prioritization flag. */
+    private boolean m_prioritized;
+
     /**
      * Private constructor.<p>
      *
@@ -92,7 +95,7 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
      */
     public CmsMenuItemVisibilityMode addMessageKey(String messageKey) {
 
-        CmsMenuItemVisibilityMode mode = (CmsMenuItemVisibilityMode)clone();
+        CmsMenuItemVisibilityMode mode = clone();
         mode.m_messageKey = messageKey;
         return mode;
     }
@@ -140,10 +143,38 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     }
 
     /**
+     * Returns the prioritization flag.<p>
+     *
+     * @return prioritization flag
+     */
+    public boolean isPrioritized() {
+
+        return m_prioritized;
+    }
+
+    /**
+     * Returns a prioritized instance of the visibility mode.<p>
+     *
+     * @param prioritized <code>true</code> to prioritize
+     *
+     * @return the new visibility mode instance
+     */
+    public CmsMenuItemVisibilityMode prioritize(boolean prioritized) {
+
+        if (m_prioritized != prioritized) {
+            CmsMenuItemVisibilityMode result = clone();
+            result.m_prioritized = prioritized;
+            return result;
+        } else {
+            return this;
+        }
+    }
+
+    /**
      * @see java.lang.Object#clone()
      */
     @Override
-    protected Object clone() {
+    protected CmsMenuItemVisibilityMode clone() {
 
         return new CmsMenuItemVisibilityMode(getMode());
     }

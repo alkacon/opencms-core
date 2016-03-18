@@ -258,6 +258,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     @Override
     public CmsMenuItemVisibilityMode getSingleVisibility(CmsObject cms, CmsResource resource) {
 
+        boolean prioritize = false;
         String inActiveKey = null;
         if (flag(roleeditor) && !OpenCms.getRoleManager().hasRole(cms, CmsRole.EDITOR)) {
             return VISIBILITY_INVISIBLE;
@@ -322,6 +323,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
                 if (lock.isUnlocked() || lock.isOwnedBy(cms.getRequestContext().getCurrentUser())) {
                     return VISIBILITY_INVISIBLE;
                 }
+                prioritize = true;
             }
 
             if (flag(nootherlock)) {
@@ -430,9 +432,9 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
         }
         if (inActiveKey != null) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(inActiveKey);
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(inActiveKey).prioritize(prioritize);
         }
-        return VISIBILITY_ACTIVE;
+        return VISIBILITY_ACTIVE.prioritize(prioritize);
     }
 
     /**
