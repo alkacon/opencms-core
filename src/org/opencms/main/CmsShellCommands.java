@@ -269,6 +269,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsUser createUser(String name, String password, String description) throws Exception {
 
+        if (existsUser(name)) {
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_USER_ALREADY_EXISTS_1, name));
+            return null;
+        }
         return m_cms.createUser(name, password, description, new Hashtable<String, Object>());
     }
 
@@ -295,6 +299,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         String lastname,
         String email) throws Exception {
 
+        if (existsUser(name)) {
+            m_shell.getOut().println(getMessages().key(Messages.GUI_SHELL_USER_ALREADY_EXISTS_1, name));
+            return null;
+        }
         CmsUser user = m_cms.createUser(name, password, description, new Hashtable<String, Object>());
         user.setEmail(email);
         user.setFirstname(firstname);
@@ -1328,5 +1336,23 @@ class CmsShellCommands implements I_CmsShellCommands {
     protected CmsMessages getMessages() {
 
         return m_shell.getMessages();
+    }
+
+    /**
+     * Checks whether the given user already exists.<p>
+     *
+     * @param name the user name
+     *
+     * @return <code>true</code> if the given user already exists
+     */
+    private boolean existsUser(String name) {
+
+        CmsUser user = null;
+        try {
+            user = m_cms.readUser(name);
+        } catch (@SuppressWarnings("unused") CmsException e) {
+            // this will happen, if the user does not exist
+        }
+        return user != null;
     }
 }

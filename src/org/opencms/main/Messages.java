@@ -235,6 +235,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_SHELL_USAGE_1 = "GUI_SHELL_USAGE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_SHELL_USER_ALREADY_EXISTS_1 = "GUI_SHELL_USER_ALREADY_EXISTS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHELL_VERSION_1 = "GUI_SHELL_VERSION_1";
 
     /** Message constant for key in the resource bundle. */
