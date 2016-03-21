@@ -30,7 +30,6 @@ package org.opencms.ui.apps;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
@@ -175,6 +174,7 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
 
         CmsAppWorkplaceUi.get();
         CmsObject cms = A_CmsUI.getCmsObject();
+        final String backlink = getBackLinkFromState(state);
         try {
             CmsResource resource;
             if (resId != null) {
@@ -185,12 +185,18 @@ public class CmsEditor implements I_CmsWorkplaceApp, ViewChangeListener, I_CmsWi
             I_CmsEditor editor = OpenCms.getWorkplaceAppManager().getEditorForResource(resource, isPlainText(state));
             if (editor != null) {
                 m_editorInstance = editor.newInstance();
-                m_editorInstance.initUI(m_context, resource, getBackLinkFromState(state));
+                m_editorInstance.initUI(m_context, resource, backlink);
             }
 
-        } catch (CmsException e) {
+        } catch (Exception e) {
             LOG.error("Error initializing the editor.", e);
-            CmsErrorDialog.showErrorDialog(e);
+            CmsErrorDialog.showErrorDialog(e, new Runnable() {
+
+                public void run() {
+
+                    openBackLink(backlink);
+                }
+            });
         }
     }
 
