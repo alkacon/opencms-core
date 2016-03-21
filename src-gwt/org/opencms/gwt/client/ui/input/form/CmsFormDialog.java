@@ -38,7 +38,16 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * A dialog containing a form.<p>
@@ -61,6 +70,9 @@ public class CmsFormDialog extends CmsPopup {
 
     /** The OK button of this dialog. */
     private CmsPushButton m_okButton;
+
+    /** The event preview handler registration. */
+    private HandlerRegistration m_previewHandlerRegistration;
 
     /**
      * Constructs a new form dialog with a given title.<p>
@@ -102,6 +114,14 @@ public class CmsFormDialog extends CmsPopup {
         m_okButton = createOkButton();
         addButton(m_okButton);
         m_form = form;
+
+        addCloseHandler(new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
+
+                removePreviewHandler();
+            }
+        });
     }
 
     /**
@@ -111,6 +131,7 @@ public class CmsFormDialog extends CmsPopup {
     public void center() {
 
         initContent();
+        registerPreviewHandler();
         super.center();
         notifyWidgetsOfOpen();
     }
@@ -174,6 +195,7 @@ public class CmsFormDialog extends CmsPopup {
     public void show() {
 
         initContent();
+        registerPreviewHandler();
         super.show();
         notifyWidgetsOfOpen();
     }
@@ -200,6 +222,40 @@ public class CmsFormDialog extends CmsPopup {
     protected void onClickOk() {
 
         m_form.validateAndSubmit();
+    }
+
+    /**
+     * Registers the 'Enter' and 'Esc' shortcut action handler.<p>
+     */
+    protected void registerPreviewHandler() {
+
+        NativePreviewHandler eventPreviewHandler = new NativePreviewHandler() {
+
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+                Event nativeEvent = Event.as(event.getNativeEvent());
+                if (DOM.eventGetType(nativeEvent) == Event.ONKEYDOWN) {
+                    int keyCode = nativeEvent.getKeyCode();
+                    if (keyCode == KeyCodes.KEY_ESCAPE) {
+                        onClickCancel();
+                    } else if (keyCode == KeyCodes.KEY_ENTER) {
+                        onClickOk();
+                    }
+                }
+            }
+        };
+        m_previewHandlerRegistration = Event.addNativePreviewHandler(eventPreviewHandler);
+    }
+
+    /**
+     * Removes the 'Enter' and 'Esc' shortcut action handler.<p>
+     */
+    protected void removePreviewHandler() {
+
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
+        }
     }
 
     /**
