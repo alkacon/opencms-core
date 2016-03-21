@@ -231,7 +231,7 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
 
             public void buttonClick(ClickEvent event) {
 
-                cancel();
+                close();
             }
         });
     }
@@ -258,12 +258,9 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
     /**
      * Cancels editing and restores the previous quick launch apps setting.<p>
      */
-    void cancel() {
+    void close() {
 
-        m_standardApps.removeAllComponents();
-        m_userApps.getWrappedLayout().removeAllComponents();
-        m_availableApps.getWrappedLayout().removeAllComponents();
-        initAppIcons();
+        CmsAppWorkplaceUi.get().getNavigator().navigateTo(CmsAppHierarchyConfiguration.APP_ID);
     }
 
     /**
@@ -284,6 +281,7 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
         } catch (CmsException e) {
             CmsErrorDialog.showErrorDialog("Could not write user Quicklaunch apps", e);
         }
+        close();
     }
 
     /**
@@ -297,19 +295,28 @@ public class CmsQuickLaunchEditor extends VerticalLayout implements I_CmsWorkpla
         Collection<I_CmsWorkplaceAppConfiguration> standardApps = OpenCms.getWorkplaceAppManager().getDefaultQuickLaunchConfigurations();
         Collection<I_CmsWorkplaceAppConfiguration> userApps = OpenCms.getWorkplaceAppManager().getUserQuickLauchConfigurations(
             cms);
-        for (I_CmsWorkplaceAppConfiguration config : allApps) {
+        for (I_CmsWorkplaceAppConfiguration config : standardApps) {
             CmsAppVisibilityStatus visibility = config.getVisibility(cms);
             if (visibility.isVisible() && visibility.isActive()) {
                 Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
-                if (standardApps.contains(config)) {
-                    m_standardApps.addComponent(button);
-                } else if (userApps.contains(config)) {
-                    m_userApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
-                } else {
-                    m_availableApps.getWrappedLayout().addComponent(
-                        new WrappedDraggableComponent(button, config.getId()));
-                }
-
+                m_standardApps.addComponent(button);
+            }
+        }
+        for (I_CmsWorkplaceAppConfiguration config : userApps) {
+            CmsAppVisibilityStatus visibility = config.getVisibility(cms);
+            if (visibility.isVisible() && visibility.isActive()) {
+                Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
+                m_userApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
+            }
+        }
+        for (I_CmsWorkplaceAppConfiguration config : allApps) {
+            CmsAppVisibilityStatus visibility = config.getVisibility(cms);
+            if (!standardApps.contains(config)
+                && !userApps.contains(config)
+                && visibility.isVisible()
+                && visibility.isActive()) {
+                Button button = CmsDefaultAppButtonProvider.createAppIconButton(config, locale);
+                m_availableApps.getWrappedLayout().addComponent(new WrappedDraggableComponent(button, config.getId()));
             }
         }
     }
