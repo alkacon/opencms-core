@@ -135,7 +135,8 @@ public class CmsLegacyAppConfiguration implements I_CmsWorkplaceAppConfiguration
      */
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(m_toolHandler.isVisible(cms), m_toolHandler.isEnabled(cms), "");
+        boolean visible = cms.existsResource(m_toolHandler.getLink()) && m_toolHandler.isVisible(cms);
+        return new CmsAppVisibilityStatus(visible, m_toolHandler.isEnabled(cms), "");
     }
 
 }

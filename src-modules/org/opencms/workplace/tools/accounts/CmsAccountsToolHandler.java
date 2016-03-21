@@ -235,10 +235,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     }
 
     /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     * @see org.opencms.workplace.tools.CmsDefaultToolHandler#isVisible(org.opencms.file.CmsObject)
      */
     @Override
-    public boolean isVisible(CmsWorkplace wp) {
+    public boolean isVisible(CmsObject cms) {
 
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
@@ -251,8 +251,20 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         }
 
-        CmsObject cms = wp.getCms();
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
+     */
+    @Override
+    public boolean isVisible(CmsWorkplace wp) {
+
+        CmsObject cms = wp.getCms();
+        if (!isVisible(cms)) {
             return false;
         }
 
@@ -264,7 +276,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         }
         String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
         try {
-            m_webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(wp.getCms(), ouFqn).hasFlagWebuser();
+            m_webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ouFqn).hasFlagWebuser();
         } catch (CmsException e) {
             // ignore
             if (LOG.isErrorEnabled()) {
@@ -321,13 +333,13 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         } else if (getLink().equals(getPath(OUROLES_FILE))) {
             return !m_webuserOu;
         } else if (getLink().equals(getPath(SWITCHUSER_FILE))) {
-            boolean visible = OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN);
+            boolean visible = OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN);
             CmsUUID userId = new CmsUUID(
                 CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
                 visible &= OpenCms.getRoleManager().hasRole(
-                    wp.getCms(),
-                    wp.getCms().readUser(userId).getName(),
+                    cms,
+                    cms.readUser(userId).getName(),
                     CmsRole.WORKPLACE_USER);
             } catch (CmsException e) {
                 // should never happen
@@ -338,32 +350,32 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return visible;
         } else if (getPath().indexOf("/users/edit/") > -1) {
             // check if the current user is the root administrator
-            if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN) && !PATH_UNLOCK.equals(getPath())) {
+            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ROOT_ADMIN) && !PATH_UNLOCK.equals(getPath())) {
                 return true;
             }
 
             if (PATH_KILL_SESSIONS.equals(getPath())) {
-                return OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ACCOUNT_MANAGER);
+                return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
             }
             CmsUUID userId = new CmsUUID(
                 CmsRequestUtil.getNotEmptyDecodedParameter(wp.getJsp().getRequest(), A_CmsEditUserDialog.PARAM_USERID));
             try {
-                CmsUser user = wp.getCms().readUser(userId);
+                CmsUser user = cms.readUser(userId);
                 if (PATH_UNLOCK.equals(getPath())) {
-                    return OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ACCOUNT_MANAGER)
+                    return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)
                         && OpenCms.getLoginManager().isUserLocked(user);
                 }
 
                 // check if the user to change is root administrator
-                if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
+                if (OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
                     return false;
                 }
                 // check if the current user is an administrator
-                if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
+                if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)) {
                     return true;
                 }
                 // check if the user to change is an administrator
-                return !OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ADMINISTRATOR);
+                return !OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ADMINISTRATOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -379,7 +391,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 return false;
             }
             try {
-                return !wp.getCms().readUser(new CmsUUID(userId)).isWebuser();
+                return !cms.readUser(new CmsUUID(userId)).isWebuser();
             } catch (Exception e) {
                 // ignore
                 if (LOG.isErrorEnabled()) {

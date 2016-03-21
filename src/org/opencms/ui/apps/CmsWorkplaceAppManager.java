@@ -324,7 +324,8 @@ public class CmsWorkplaceAppManager {
         Iterator<I_CmsWorkplaceAppConfiguration> it = result.iterator();
         while (it.hasNext()) {
             I_CmsWorkplaceAppConfiguration appConfig = it.next();
-            if (!appConfig.getVisibility(cms).isActive()) {
+            CmsAppVisibilityStatus visibility = appConfig.getVisibility(cms);
+            if (!visibility.isVisible() || !visibility.isActive()) {
                 it.remove();
             }
         }
