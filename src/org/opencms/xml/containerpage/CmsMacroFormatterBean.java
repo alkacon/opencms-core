@@ -68,6 +68,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
      * @param id the configuration id
      * @param settings the settings configuration
      * @param isDetail <code>true</code> if detail formatter
+     * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDisplay the display flag
      * @param macroInput the macro input
      * @param referencedFormatters the referenced formatters
@@ -86,6 +87,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
         int rank,
         String id,
         Map<String, CmsXmlContentProperty> settings,
+        boolean isAutoEnabled,
         boolean isDetail,
         boolean isDisplay,
         String macroInput,
@@ -110,7 +112,7 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             id,
             settings,
             true,
-            true,
+            isAutoEnabled,
             isDetail,
             isDisplay,
             false,

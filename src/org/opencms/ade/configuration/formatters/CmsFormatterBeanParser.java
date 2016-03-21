@@ -301,12 +301,14 @@ public class CmsFormatterBeanParser {
         String isStrictContainersStr = getString(root, N_STRICT_CONTAINERS, "false");
         boolean isStrictContainers = Boolean.parseBoolean(isStrictContainersStr);
 
+        String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
+        m_autoEnabled = Boolean.parseBoolean(autoEnabled);
+
         parseMatch(root);
         boolean hasNestedContainers;
         CmsFormatterBean formatterBean;
         if (isMacroFromatter) {
             // setting macro formatter defaults
-            m_autoEnabled = false;
             m_formatterResource = content.getFile();
             m_preview = false;
             m_extractContent = true;
@@ -326,14 +328,13 @@ public class CmsFormatterBeanParser {
                 rank,
                 id,
                 m_settings,
+                m_autoEnabled,
                 isDetail,
                 isDisplay,
                 macroInput,
                 referencedFormatters,
                 m_cms.getRequestContext().getCurrentProject().isOnlineProject());
         } else {
-            String autoEnabled = getString(root, N_AUTO_ENABLED, "false");
-            m_autoEnabled = Boolean.parseBoolean(autoEnabled);
             I_CmsXmlContentValueLocation jspLoc = root.getSubValue(N_JSP);
             CmsXmlVfsFileValue jspValue = (CmsXmlVfsFileValue)(jspLoc.getValue());
             CmsLink link = jspValue.getLink(m_cms);
