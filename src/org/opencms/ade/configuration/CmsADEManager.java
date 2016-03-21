@@ -152,7 +152,7 @@ public class CmsADEManager {
     public static final String CONTENT_FOLDER_NAME = ".content";
 
     /** Default favorite/recent list size constant. */
-    public static final int DEFAULT_ELEMENT_LIST_SIZE = 25;
+    public static final int DEFAULT_ELEMENT_LIST_SIZE = 10;
 
     /** The name of the element view configuration file type. */
     public static final String ELEMENT_VIEW_TYPE = "elementview";
