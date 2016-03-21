@@ -647,7 +647,7 @@ public class CmsPermissionView extends CssLayout {
         if (value.booleanValue()) {
             content = "<input type='checkbox' disabled='true' checked='true' />";
         } else {
-            content = "<input type='checkbox' disabled='true' checked='false' />";
+            content = "<input type='checkbox' disabled='true' />";
         }
 
         return new Label(content, ContentMode.HTML);
