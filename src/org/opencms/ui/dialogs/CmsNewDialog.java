@@ -51,6 +51,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -227,7 +228,22 @@ public class CmsNewDialog extends CmsBasicDialog {
                 handleSelection(clickedType);
             }
         });
+        setActionHandler(new CmsOkCancelActionHandler() {
 
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                finish(new ArrayList<CmsUUID>());
+            }
+
+            @Override
+            protected void ok() {
+
+                // nothing to do
+            }
+        });
         init(initView, true);
     }
 

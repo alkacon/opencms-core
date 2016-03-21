@@ -48,8 +48,10 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
@@ -234,18 +236,9 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                if (validate()) {
-                    try {
-
-                        changeAvailability();
-                        m_dialogContext.finish(null);
-                    } catch (Throwable t) {
-                        m_dialogContext.error(t);
-                    }
-                }
+                submit();
             }
 
         });
@@ -254,13 +247,29 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_dialogContext.finish(null);
+                cancel();
             }
         });
         displayResourceInfo(m_dialogContext.getResources());
+
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsAvailabilityDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**
@@ -323,6 +332,30 @@ public class CmsAvailabilityDialog extends CmsBasicDialog {
 
         }
 
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_dialogContext.finish(new ArrayList<CmsUUID>());
+    }
+
+    /**
+     * Submits the dialog.<p>
+     */
+    void submit() {
+
+        if (validate()) {
+            try {
+
+                changeAvailability();
+                m_dialogContext.finish(null);
+            } catch (Throwable t) {
+                m_dialogContext.error(t);
+            }
+        }
     }
 
     /**

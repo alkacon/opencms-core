@@ -344,8 +344,7 @@ public class CmsHistoryDialog extends CmsBasicDialog {
 
             public void onUpdate(List<String> updatedItems) {
 
-                // TODO Auto-generated method stub
-
+                // nothing to do
             }
         });
         OfflineOnline offOnline = null;

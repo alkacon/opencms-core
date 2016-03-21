@@ -42,6 +42,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.fileselect.CmsResourceSelectField;
 import org.opencms.util.CmsUUID;
 
@@ -145,7 +146,22 @@ public class CmsCopyMoveDialog extends CmsBasicDialog {
             }
         });
         addButton(m_cancelButton);
+        setActionHandler(new CmsOkCancelActionHandler() {
 
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsCopyMoveDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**

@@ -40,6 +40,10 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
+import org.opencms.util.CmsUUID;
+
+import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 
@@ -85,7 +89,7 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.finish(null);
+                cancel();
             }
 
         });
@@ -96,12 +100,23 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    undelete();
-                    m_context.finish(null);
-                } catch (Exception e) {
-                    m_context.error(e);
-                }
+                submit();
+            }
+        });
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsUndeleteDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
             }
         });
     }
@@ -131,6 +146,27 @@ public class CmsUndeleteDialog extends CmsBasicDialog {
             }
         }
 
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_context.finish(new ArrayList<CmsUUID>());
+    }
+
+    /**
+     * Submits the dialog.<p>
+     */
+    void submit() {
+
+        try {
+            undelete();
+            m_context.finish(null);
+        } catch (Exception e) {
+            m_context.error(e);
+        }
     }
 
 }

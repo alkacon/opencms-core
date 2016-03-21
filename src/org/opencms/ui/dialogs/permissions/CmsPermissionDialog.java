@@ -46,6 +46,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.dialogs.permissions.CmsPermissionView.PermissionChangeHandler;
 import org.opencms.ui.dialogs.permissions.CmsPrincipalSelect.PrincipalSelectHandler;
 import org.opencms.util.CmsStringUtil;
@@ -171,6 +172,22 @@ public class CmsPermissionDialog extends CmsBasicDialog implements PermissionCha
             public void selectedTabChange(SelectedTabChangeEvent event) {
 
                 onViewChange();
+            }
+        });
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                close();
+            }
+
+            @Override
+            protected void ok() {
+
+                // nothing to do
             }
         });
     }

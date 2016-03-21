@@ -45,6 +45,7 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsUUID;
 
@@ -91,16 +92,18 @@ public class CmsDeleteDialog extends CmsBasicDialog {
     /** The cancel button. */
     private Button m_cancelButton;
 
+    /** The dialog context. */
+    private I_CmsDialogContext m_context;
+
     /**
      * Creates a new instance.<p>
      *
      * @param context the dialog context
      */
-    public CmsDeleteDialog(final I_CmsDialogContext context) {
+    public CmsDeleteDialog(I_CmsDialogContext context) {
+        m_context = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        displayResourceInfo(context.getResources());
-
-        final CmsObject cms = A_CmsUI.getCmsObject();
+        displayResourceInfo(m_context.getResources());
 
         m_cancelButton.addClickListener(new ClickListener() {
 
@@ -109,7 +112,7 @@ public class CmsDeleteDialog extends CmsBasicDialog {
 
             public void buttonClick(Button.ClickEvent event) {
 
-                context.finish(new ArrayList<CmsUUID>());
+                cancel();
             }
         });
 
@@ -120,39 +123,15 @@ public class CmsDeleteDialog extends CmsBasicDialog {
 
             public void buttonClick(Button.ClickEvent event) {
 
-                try {
-                    List<CmsUUID> changedIds = Lists.newArrayList();
-                    for (CmsResource resource : context.getResources()) {
-                        changedIds.add(resource.getStructureId());
-                        CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
-                        try {
-                            cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                        } finally {
-                            if (lockRecord.getChange().equals(LockChange.locked)) {
-                                if (!resource.getState().isNew()) {
-                                    try {
-                                        cms.unlockResource(resource);
-                                    } catch (CmsVfsResourceNotFoundException e) {
-                                        LOG.warn(e.getLocalizedMessage(), e);
-                                    } catch (CmsLockException e) {
-                                        LOG.warn(e.getLocalizedMessage(), e);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    context.finish(changedIds);
-                } catch (Exception e) {
-                    context.error(e);
-                }
-
+                submit();
             }
         });
 
+        CmsObject cms = A_CmsUI.getCmsObject();
         boolean canIgnoreBrokenLinks = OpenCms.getWorkplaceManager().getDefaultUserSettings().isAllowBrokenRelations()
             || OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
         try {
-            Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(cms, context.getResources());
+            Multimap<CmsResource, CmsResource> brokenLinks = getBrokenLinks(cms, m_context.getResources());
             if (brokenLinks.isEmpty()) {
                 m_linksLabel.setVisible(false);
                 String noLinksBroken = CmsVaadinUtils.getMessageText(
@@ -171,10 +150,26 @@ public class CmsDeleteDialog extends CmsBasicDialog {
                 }
             }
         } catch (CmsException e) {
-            context.error(e);
+            m_context.error(e);
             return;
         }
 
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsDeleteDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**
@@ -219,6 +214,47 @@ public class CmsDeleteDialog extends CmsBasicDialog {
             }
         }
         return linkMap;
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_context.finish(new ArrayList<CmsUUID>());
+    }
+
+    /**
+     * Submits the dialog.<p>
+     */
+    void submit() {
+
+        CmsObject cms = A_CmsUI.getCmsObject();
+        try {
+            List<CmsUUID> changedIds = Lists.newArrayList();
+            for (CmsResource resource : m_context.getResources()) {
+                changedIds.add(resource.getStructureId());
+                CmsLockActionRecord lockRecord = CmsLockUtil.ensureLock(cms, resource);
+                try {
+                    cms.deleteResource(cms.getSitePath(resource), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                } finally {
+                    if (lockRecord.getChange().equals(LockChange.locked)) {
+                        if (!resource.getState().isNew()) {
+                            try {
+                                cms.unlockResource(resource);
+                            } catch (CmsVfsResourceNotFoundException e) {
+                                LOG.warn(e.getLocalizedMessage(), e);
+                            } catch (CmsLockException e) {
+                                LOG.warn(e.getLocalizedMessage(), e);
+                            }
+                        }
+                    }
+                }
+            }
+            m_context.finish(changedIds);
+        } catch (Exception e) {
+            m_context.error(e);
+        }
     }
 
     /**

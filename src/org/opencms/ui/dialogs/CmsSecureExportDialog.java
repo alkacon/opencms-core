@@ -43,8 +43,11 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +156,7 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.finish(null);
+                cancel();
             }
 
         });
@@ -164,15 +167,27 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                try {
-                    saveData();
-                    m_context.finish(null);
-                } catch (Exception e) {
-                    m_context.error(e);
-                }
+                submit();
             }
         });
         displayResourceInfo(m_context.getResources());
+
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsSecureExportDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**
@@ -236,6 +251,27 @@ public class CmsSecureExportDialog extends CmsBasicDialog {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_context.finish(new ArrayList<CmsUUID>());
+    }
+
+    /**
+     * Submits the dialog.<p>
+     */
+    void submit() {
+
+        try {
+            saveData();
+            m_context.finish(null);
+        } catch (Exception e) {
+            m_context.error(e);
         }
     }
 

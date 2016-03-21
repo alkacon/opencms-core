@@ -166,7 +166,10 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
             m_window = CmsBasicDialog.prepareWindow(style);
             m_window.setCaption(title);
             m_window.setContent(dialog);
-            A_CmsUI.get().addWindow(m_window);
+            CmsAppWorkplaceUi.get().addWindow(m_window);
+            if (dialog instanceof CmsBasicDialog) {
+                ((CmsBasicDialog)dialog).initActionHandler(m_window);
+            }
         }
     }
 

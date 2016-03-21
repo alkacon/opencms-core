@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -86,6 +87,9 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
     /** The OK button. */
     private Button m_okButton;
 
+    /** The resource. */
+    private CmsResource m_resource;
+
     /** Check box to select all resources. */
     private CheckBox m_selectAllField;
 
@@ -102,20 +106,19 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
     throws CmsException {
         m_dialogContext = context;
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        final CmsResource resource = context.getResources().get(0);
-        final CmsObject cms = context.getCms();
+        m_resource = context.getResources().get(0);
+        CmsObject cms = context.getCms();
         List<I_CmsHistoryResource> deletedResources = cms.readDeletedResources(
-            cms.getSitePath(resource),
+            cms.getSitePath(m_resource),
             m_includeSubfoldersField.getValue().booleanValue());
         initDeletedResources(cms, deletedResources);
         m_cancelButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                m_dialogContext.finish(new ArrayList<CmsUUID>());
+                cancel();
             }
         });
 
@@ -123,18 +126,9 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
-                Boolean value = (Boolean)(event.getProperty().getValue());
-                List<I_CmsHistoryResource> historyResources;
-                try {
-                    historyResources = cms.readDeletedResources(cms.getSitePath(resource), value.booleanValue());
-                    initDeletedResources(cms, historyResources);
-                } catch (CmsException e) {
-                    m_dialogContext.error(e);
-                }
-
+                onSubFolderChange((Boolean)event.getProperty().getValue());
             }
         });
 
@@ -142,33 +136,35 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void valueChange(ValueChangeEvent event) {
 
-                Boolean selectAll = (Boolean)(event.getProperty().getValue());
-                for (Object id : m_selectionContainer.getItemIds()) {
-                    m_selectionContainer.getItem(id).getItemProperty(PROP_SELECTED).setValue(selectAll);
-                }
+                onSelectAllChange((Boolean)(event.getProperty().getValue()));
             }
         });
         m_okButton.addClickListener(new ClickListener() {
 
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                List<CmsUUID> selectedIds = getSelectedIds();
-                List<CmsUUID> updated = Lists.newArrayList();
-                try {
-                    for (CmsUUID selectedId : selectedIds) {
-                        cms.restoreDeletedResource(selectedId);
-                        updated.add(selectedId);
-                    }
-                    m_dialogContext.finish(updated);
-                } catch (CmsException e) {
-                    m_dialogContext.error(e);
-                }
+                submit();
+            }
+        });
+
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsRestoreDeletedDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
             }
         });
     }
@@ -190,6 +186,62 @@ public class CmsRestoreDeletedDialog extends CmsBasicDialog {
             }
         }
         return result;
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_dialogContext.finish(new ArrayList<CmsUUID>());
+    }
+
+    /**
+     * Called on select all change.<p>
+     *
+     * @param value the new value
+     */
+    void onSelectAllChange(Boolean value) {
+
+        for (Object id : m_selectionContainer.getItemIds()) {
+            m_selectionContainer.getItem(id).getItemProperty(PROP_SELECTED).setValue(value);
+        }
+    }
+
+    /**
+     * Called on include sub folders change.<p>
+     *
+     * @param value the new value
+     */
+    void onSubFolderChange(Boolean value) {
+
+        List<I_CmsHistoryResource> historyResources;
+        try {
+            CmsObject cms = m_dialogContext.getCms();
+            historyResources = cms.readDeletedResources(cms.getSitePath(m_resource), value.booleanValue());
+            initDeletedResources(cms, historyResources);
+        } catch (CmsException e) {
+            m_dialogContext.error(e);
+        }
+    }
+
+    /**
+     * Submits the dialog.<p>
+     */
+    void submit() {
+
+        List<CmsUUID> selectedIds = getSelectedIds();
+        List<CmsUUID> updated = Lists.newArrayList();
+        CmsObject cms = m_dialogContext.getCms();
+        try {
+            for (CmsUUID selectedId : selectedIds) {
+                cms.restoreDeletedResource(selectedId);
+                updated.add(selectedId);
+            }
+            m_dialogContext.finish(updated);
+        } catch (CmsException e) {
+            m_dialogContext.error(e);
+        }
     }
 
     /**

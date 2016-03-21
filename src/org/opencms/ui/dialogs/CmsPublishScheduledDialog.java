@@ -46,6 +46,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsDateField;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -128,6 +129,23 @@ public class CmsPublishScheduledDialog extends CmsBasicDialog {
             }
         });
         addButton(m_cancelButton);
+
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsPublishScheduledDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**

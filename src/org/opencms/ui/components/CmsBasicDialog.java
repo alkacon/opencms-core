@@ -39,14 +39,18 @@ import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 
 import com.google.common.collect.Lists;
+import com.vaadin.event.Action.Handler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.declarative.DesignContext;
 
 /**
@@ -89,6 +93,9 @@ public class CmsBasicDialog extends VerticalLayout {
 
     /** The left button panel. */
     private HorizontalLayout m_buttonPanelLeft;
+
+    /** The shortcut action handler. */
+    private Handler m_actionHandler;
 
     /**
      * Creates new instance.<p>
@@ -240,6 +247,27 @@ public class CmsBasicDialog extends VerticalLayout {
     }
 
     /**
+     * Initializes action handler.<p>
+     *
+     * @param window the parent window
+     */
+    public void initActionHandler(Window window) {
+
+        if (m_actionHandler != null) {
+            UI.getCurrent().addActionHandler(m_actionHandler);
+            window.addCloseListener(new CloseListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void windowClose(CloseEvent e) {
+
+                    clearActionHandler();
+                }
+            });
+        }
+    }
+
+    /**
      * @see com.vaadin.ui.AbstractOrderedLayout#readDesign(org.jsoup.nodes.Element, com.vaadin.ui.declarative.DesignContext)
      */
     @Override
@@ -285,6 +313,17 @@ public class CmsBasicDialog extends VerticalLayout {
         } else {
             m_mainPanel.replaceComponent(m_mainPanel.getComponent(0), aboveContent);
         }
+    }
+
+    /**
+     * Sets the shortcut action handler.<p>
+     * Set this before opening the window, so it will be initialized properly.<p>
+     *
+     * @param actionHandler the action handler
+     */
+    public void setActionHandler(Handler actionHandler) {
+
+        m_actionHandler = actionHandler;
     }
 
     /**
@@ -358,6 +397,16 @@ public class CmsBasicDialog extends VerticalLayout {
             resourcePanel.addComponent(new CmsResourceInfo(resource));
         }
         return result;
+    }
+
+    /**
+     * Removes the action handler.<p>
+     */
+    void clearActionHandler() {
+
+        if (m_actionHandler != null) {
+            UI.getCurrent().removeActionHandler(m_actionHandler);
+        }
     }
 
     /**

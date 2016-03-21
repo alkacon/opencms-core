@@ -43,9 +43,11 @@ import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -149,7 +151,7 @@ public class CmsUndoDialog extends CmsBasicDialog {
 
             public void buttonClick(ClickEvent event) {
 
-                m_context.finish(null);
+                cancel();
             }
 
         });
@@ -165,6 +167,23 @@ public class CmsUndoDialog extends CmsBasicDialog {
             }
         });
         displayResourceInfo(m_context.getResources());
+
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsUndoDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                undo();
+            }
+        });
     }
 
     /**
@@ -209,6 +228,14 @@ public class CmsUndoDialog extends CmsBasicDialog {
             m_context.error(e);
         }
 
+    }
+
+    /**
+     * Cancels the dialog.<p>
+     */
+    void cancel() {
+
+        m_context.finish(new ArrayList<CmsUUID>());
     }
 
     /**

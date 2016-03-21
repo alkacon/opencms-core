@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.workplace.commons.Messages;
 
 import java.util.ArrayList;
@@ -132,6 +133,22 @@ public class CmsCopyToProjectDialog extends CmsBasicDialog {
             }
         });
         addButton(cancelButton);
+        setActionHandler(new CmsOkCancelActionHandler() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void cancel() {
+
+                CmsCopyToProjectDialog.this.cancel();
+            }
+
+            @Override
+            protected void ok() {
+
+                submit();
+            }
+        });
     }
 
     /**
