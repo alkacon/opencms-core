@@ -28,6 +28,8 @@
 package org.opencms.workplace.tools.git.ui;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.apps.A_CmsWorkplaceAppConfiguration;
 import org.opencms.ui.apps.CmsAppVisibilityStatus;
@@ -136,7 +138,8 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        return new CmsAppVisibilityStatus(true, true, "");
+        boolean isDeveloper = OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
+        return new CmsAppVisibilityStatus(isDeveloper, isDeveloper, "");
     }
 
 }
