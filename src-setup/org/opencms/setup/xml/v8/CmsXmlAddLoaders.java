@@ -30,6 +30,7 @@ package org.opencms.setup.xml.v8;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.loader.CmsMacroFormatterLoader;
 import org.opencms.loader.CmsRedirectLoader;
 import org.opencms.loader.CmsSeoFileLoader;
 import org.opencms.loader.CmsXmlContainerPageLoader;
@@ -55,7 +56,8 @@ public class CmsXmlAddLoaders extends A_CmsXmlVfs {
     private static final Class<?>[] LOADER_CLASSES = new Class[] {
         CmsXmlContainerPageLoader.class,
         CmsRedirectLoader.class,
-        CmsSeoFileLoader.class};
+        CmsSeoFileLoader.class,
+        CmsMacroFormatterLoader.class};
 
     /** List of xpaths to update. */
     private List<String> m_xpaths;

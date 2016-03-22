@@ -33,11 +33,10 @@ package org.opencms.setup.xml.v9;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.setup.xml.A_CmsXmlSearch;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,6 +50,35 @@ import org.dom4j.Node;
  */
 public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
 
+    public static final String[] REMOVE_PATHS = new String[] {
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_FIELDCONFIGURATIONS
+            + "/"
+            + CmsSearchConfiguration.N_FIELDCONFIGURATION
+            + "[@class='org.opencms.search.solr.CmsGallerySolrFieldConfiguration']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_FIELDCONFIGURATIONS
+            + "/"
+            + CmsSearchConfiguration.N_FIELDCONFIGURATION
+            + "[@class='org.opencms.search.galleries.CmsGallerySearchFieldConfiguration']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_INDEXES
+            + "/"
+            + CmsSearchConfiguration.N_INDEX
+            + "[@class='org.opencms.search.galleries.CmsGallerySearchIndex']"};
+
     /** List of xpaths to remove. */
     private List<String> m_xpaths;
 
@@ -59,32 +87,7 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
      */
     public String getName() {
 
-        return "Remove unnecessary Solr Gallery Index";
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
-     */
-    @Override
-    protected List<String> getXPathsToRemove() {
-
-        if (m_xpaths == null) {
-            // /opencms/search/indexes/index[name='System folder']
-            StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_SEARCH);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATIONS);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_FIELDCONFIGURATION);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='solr_gallery_fields']");
-            m_xpaths = Collections.singletonList(xp.toString());
-        }
-        return m_xpaths;
+        return "Remove unnecessary Gallery Index";
     }
 
     /**
@@ -125,5 +128,17 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
             // if an error occurs here nothing will get damaged
         }
         return super.executeUpdate(document, xpath, forReal);
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
+     */
+    @Override
+    protected List<String> getXPathsToRemove() {
+
+        if (m_xpaths == null) {
+            m_xpaths = Arrays.asList(REMOVE_PATHS);
+        }
+        return m_xpaths;
     }
 }
