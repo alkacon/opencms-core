@@ -64,7 +64,7 @@ public class CmsQuickLaunchEditorConfiguration extends A_CmsWorkplaceAppConfigur
      */
     public Resource getIcon() {
 
-        return new ExternalResource(OpenCmsTheme.getImageLink("apps/launchpad.png"));
+        return new ExternalResource(OpenCmsTheme.getImageLink("apps/quicklaunch-editor.png"));
     }
 
     /**
