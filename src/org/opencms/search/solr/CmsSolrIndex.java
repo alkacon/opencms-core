@@ -349,7 +349,7 @@ public class CmsSolrIndex extends CmsSearchIndex {
     public I_CmsDocumentFactory getDocumentFactory(CmsResource res) {
 
         if (isIndexing(res)) {
-            if (CmsResourceTypeXmlContainerPage.isContainerPage(res)) {
+            if (OpenCms.getResourceManager().getResourceType(res) instanceof CmsResourceTypeXmlContainerPage) {
                 return OpenCms.getSearchManager().getDocumentFactory(
                     CmsSolrDocumentContainerPage.TYPE_CONTAINERPAGE_SOLR,
                     "text/html");
