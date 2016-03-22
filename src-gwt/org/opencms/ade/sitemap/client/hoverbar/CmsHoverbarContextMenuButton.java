@@ -128,7 +128,6 @@ public class CmsHoverbarContextMenuButton extends CmsMenuButton implements I_Cms
         result.add(new CmsEditMenuEntry(hoverbar));
         result.add(new CmsCreateGalleryMenuEntry(hoverbar));
         result.add(new CmsResourceInfoMenuEntry(hoverbar));
-        result.add(new CmsSeoMenuEntry(hoverbar));
         result.add(new CmsParentSitemapMenuEntry(hoverbar));
         result.add(new CmsGotoSubSitemapMenuEntry(hoverbar));
         result.add(new CmsNewChoiceMenuEntry(hoverbar));

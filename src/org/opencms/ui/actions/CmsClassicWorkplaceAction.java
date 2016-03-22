@@ -32,8 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
@@ -44,9 +42,6 @@ import java.util.List;
  * Action for showing locked resources by opening the GWT lock report.<p>
  */
 public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
-
-    /** The visibility check for this action. */
-    private I_CmsHasMenuItemVisibility m_visibility = CmsStandardVisibilityCheck.MAIN_MENU;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -86,6 +81,8 @@ public final class CmsClassicWorkplaceAction extends A_CmsWorkplaceAction {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        return m_visibility.getVisibility(cms, resources);
+        boolean visible = ((resources == null) || resources.isEmpty())
+            && cms.existsResource(CmsWorkplace.JSP_WORKPLACE_URI);
+        return visible ? CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE : CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
     }
 }

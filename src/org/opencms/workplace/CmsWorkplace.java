@@ -756,7 +756,8 @@ public abstract class CmsWorkplace {
         }
 
         StringBuilder link2Source = new StringBuilder();
-        link2Source.append("/system/workplace/views/workplace.jsp?");
+        link2Source.append(JSP_WORKPLACE_URI);
+        link2Source.append("?");
         link2Source.append(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE);
         link2Source.append("=");
         link2Source.append(targetVfsFolder);
