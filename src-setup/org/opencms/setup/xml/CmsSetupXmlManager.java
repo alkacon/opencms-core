@@ -228,6 +228,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlCleanUpSearchConfiguration());
 
         m_plugins.add(new org.opencms.setup.xml.v9.CmsXmlUpdateContextMenuEntries());
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlUpdateFiletypeIcons());
 
         setup();
     }
