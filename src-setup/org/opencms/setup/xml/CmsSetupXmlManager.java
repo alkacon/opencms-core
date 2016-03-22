@@ -181,6 +181,8 @@ public class CmsSetupXmlManager {
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlUpdateFlexcache());
         m_plugins.add(new org.opencms.setup.xml.v8.CmsXmlAddSharedFolderConfiguration());
 
+        m_plugins.add(new org.opencms.setup.xml.v10.CmsXmlAddRequestHandlers());
+
         // vfs
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceLoaders());
         m_plugins.add(new org.opencms.setup.xml.v7.CmsXmlRemoveResourceTypes());
