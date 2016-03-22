@@ -23,7 +23,7 @@ Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <script type="text/javascript">
 function openWin() {
-	var theWindow = window.open("<%= openLink %>", "OpenCms", "top=10,left=10,width=980,height=550,location=yes,menubar=yes,resizable=yes,scrollbars=yes,status=yes,toolbar=yes");
+	var theWindow = window.open("<%= openLink %>", "OpenCms", "top=10,left=10,width=1200,height=700,location=yes,menubar=yes,resizable=yes,scrollbars=yes,status=yes,toolbar=yes");
 	theWindow.focus();
 }
 <% if (Bean.isInitialized()) { 
