@@ -2378,8 +2378,6 @@ public final class CmsContainerpageController {
                 public void execute() {
 
                     if (lockContainerpage()) {
-                        setLoadingMessage(
-                            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_SAVING_0));
                         start(500, true);
                         getContainerpageService().saveElementSettings(
                             getData().getRpcContext(),
@@ -2719,8 +2717,6 @@ public final class CmsContainerpageController {
                             getPageContent(),
                             this);
                     } else if (lockContainerpage()) {
-                        setLoadingMessage(
-                            org.opencms.gwt.client.Messages.get().key(org.opencms.gwt.client.Messages.GUI_SAVING_0));
                         start(500, true);
                         getContainerpageService().saveContainerpage(
                             CmsCoreProvider.get().getStructureId(),

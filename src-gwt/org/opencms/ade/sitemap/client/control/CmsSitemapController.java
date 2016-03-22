@@ -1927,7 +1927,6 @@ public class CmsSitemapController implements I_CmsSitemapController {
                 @Override
                 public void execute() {
 
-                    setLoadingMessage(Messages.get().key(Messages.GUI_SAVING_0));
                     start(0, true);
                     getService().saveSync(getEntryPoint(), change, this);
 

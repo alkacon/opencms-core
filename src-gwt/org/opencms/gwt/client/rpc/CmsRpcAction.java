@@ -51,7 +51,7 @@ public abstract class CmsRpcAction<T> implements AsyncCallback<T> {
     public static final String SYNC_TOKEN = "this_is_a_synchronous_rpc_call";
 
     /** The message displayed when loading. */
-    private String m_loadingMessage = Messages.get().key(Messages.GUI_LOADING_0);
+    private String m_loadingMessage;
 
     /** The current notification. */
     private CmsNotificationMessage m_notification;

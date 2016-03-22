@@ -380,7 +380,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
                 getService().lockTemp(structureId, this);
             }
@@ -421,7 +420,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
                 getService().lockTemp(structureId, this);
             }
@@ -463,7 +461,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
                 getService().lockIfExists(sitePath, this);
             }
@@ -507,7 +504,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_LOCKING_0));
                 start(200, false);
                 getService().lockTempAndCheckModification(structureId, modification, this);
             }
@@ -635,7 +631,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_UNLOCKING_0));
                 start(200, false);
                 getService().unlock(structureId, this);
             }
@@ -677,7 +672,6 @@ public final class CmsCoreProvider extends CmsCoreData {
             @Override
             public void execute() {
 
-                setLoadingMessage(Messages.get().key(Messages.GUI_UNLOCKING_0));
                 start(200, false);
                 getService().unlock(sitePath, this);
             }

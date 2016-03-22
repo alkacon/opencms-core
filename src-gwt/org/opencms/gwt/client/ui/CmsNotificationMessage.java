@@ -31,6 +31,7 @@ import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.css.I_CmsImageBundle;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.util.CmsStringUtil;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -77,12 +78,16 @@ public class CmsNotificationMessage extends Composite {
         m_closeButton = new CmsPushButton(I_CmsImageBundle.INSTANCE.style().dialogCloseIcon());
         m_closeButton.setButtonStyle(ButtonStyle.TRANSPARENT, null);
         initWidget(uiBinder.createAndBindUi(this));
-        m_messageContent.setInnerHTML(message);
-        addStyleName(classForType(type));
-        m_mode = mode;
-        if (!CmsNotification.Mode.BROADCAST.equals(m_mode)) {
-            m_closeButton.setVisible(false);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(message)) {
+            m_messageContent.setInnerHTML(message);
+            addStyleName(classForType(type));
+            if (!CmsNotification.Mode.BROADCAST.equals(m_mode)) {
+                m_closeButton.setVisible(false);
+            }
+        } else {
+            setVisible(false);
         }
+        m_mode = mode;
     }
 
     /**

@@ -114,7 +114,6 @@ public class CmsPublishDialog extends CmsPopup {
         @Override
         public void execute() {
 
-            setLoadingMessage(Messages.get().key(Messages.GUI_PUBLISHING_0));
             start(0, true);
             setLastAction(m_action);
             CmsWorkflowActionParams actionParams = getWorkflowActionParams();
