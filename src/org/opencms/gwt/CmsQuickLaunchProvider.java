@@ -43,6 +43,7 @@ import org.opencms.ui.apps.CmsSitemapEditorConfiguration;
 import org.opencms.ui.apps.I_CmsWorkplaceAppConfiguration;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
@@ -83,6 +84,7 @@ public class CmsQuickLaunchProvider {
     public List<CmsQuickLaunchData> getQuickLaunchData(CmsQuickLaunchParams params) {
 
         List<CmsQuickLaunchData> result = Lists.newArrayList();
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
         CmsUserSettings userSettings = new CmsUserSettings(m_cms);
         boolean usesNewWorkplace = userSettings.usesNewWorkplace();
         for (I_CmsWorkplaceAppConfiguration config : OpenCms.getWorkplaceAppManager().getQuickLaunchConfigurations(
@@ -91,6 +93,8 @@ public class CmsQuickLaunchProvider {
             try {
                 boolean reload = false;
                 String link = null;
+                String errorTitle = null;
+                String errorMessage = null;
                 if (CmsFileExplorerConfiguration.APP_ID.equals(config.getId())) {
                     if (!usesNewWorkplace) {
                         continue;
@@ -105,6 +109,13 @@ public class CmsQuickLaunchProvider {
                                 m_cms,
                                 params.getReturnCode());
                             link = linkInfo.getLink();
+                            if (link == null) {
+                                errorTitle = Messages.get().getBundle(locale).key(
+                                    Messages.GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0);
+
+                                errorMessage = Messages.get().getBundle(locale).key(
+                                    Messages.GUI_QUICKLAUNCH_PAGE_NOT_FOUND_0);
+                            }
                         } else {
                             CmsResource resource = m_cms.readDefaultFile("/");
                             CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(
@@ -143,6 +154,8 @@ public class CmsQuickLaunchProvider {
                     link,
                     name,
                     imageLink,
+                    errorTitle,
+                    errorMessage,
                     config instanceof CmsLegacyAppConfiguration,
                     reload);
                 result.add(data);

@@ -172,8 +172,12 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
                 : "" + lastPage.getPageId();
                 try {
                     CmsReturnLinkInfo linkInfo = CmsCoreService.internalGetLinkForReturnCode(cms, returncode);
-                    A_CmsUI.get().getPage().setLocation(linkInfo.getLink());
-                    return;
+                    if (linkInfo.getLink() != null) {
+                        A_CmsUI.get().getPage().setLocation(linkInfo.getLink());
+                        return;
+                    } else {
+                        cache.clearLastPage();
+                    }
                 } catch (CmsException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                     cache.clearLastPage();
@@ -197,7 +201,8 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
             }
 
         }
-        Notification.show("The page editor is not available for the current site.", Type.WARNING_MESSAGE);
+        String message = CmsVaadinUtils.getMessageText(org.opencms.ui.Messages.GUI_PAGE_EDITOR_NOT_AVAILABLE_0);
+        Notification.show(message, Type.WARNING_MESSAGE);
     }
 
 }

@@ -37,14 +37,20 @@ public class CmsQuickLaunchData implements IsSerializable {
     /** Default URL (may be null). */
     private String m_defaultUrl;
 
-    /** Flag to force page reload. */
-    private boolean m_reload;
+    /** Content for error alert box. */
+    private String m_errorMessage;
+
+    /** Title for error alert box. */
+    private String m_errorTitle;
 
     /** The icon URL. */
     private String m_iconUrl;
 
     /** True if this is a legacy tool (necessary because the icons for legacy tools are smaller). */
     private boolean m_legacy;
+
+    /** Flag to force page reload. */
+    private boolean m_reload;
 
     /** User readable title of the quick launch item. */
     private String m_title;
@@ -55,6 +61,8 @@ public class CmsQuickLaunchData implements IsSerializable {
      * @param defaultUrl the default URL
      * @param title the title
      * @param iconUrl the icon URL
+     * @param errorTitle the title for the error alert box
+     * @param errorMessage the content for the error alert box
      * @param legacy true if this is a legacy dialog
      * @param reload true if the page should just be reloaded when this is selected
      */
@@ -63,6 +71,8 @@ public class CmsQuickLaunchData implements IsSerializable {
         String defaultUrl,
         String title,
         String iconUrl,
+        String errorTitle,
+        String errorMessage,
         boolean legacy,
         boolean reload) {
 
@@ -71,6 +81,8 @@ public class CmsQuickLaunchData implements IsSerializable {
         m_iconUrl = iconUrl;
         m_legacy = legacy;
         m_reload = reload;
+        m_errorTitle = errorTitle;
+        m_errorMessage = errorMessage;
 
     }
 
@@ -89,6 +101,26 @@ public class CmsQuickLaunchData implements IsSerializable {
     public String getDefaultUrl() {
 
         return m_defaultUrl;
+    }
+
+    /**
+     * Gets the error message.<p>
+     *
+     * @return the error message
+     */
+    public String getErrorMessage() {
+
+        return m_errorMessage;
+    }
+
+    /**
+     * Gets the title for the error alert box.<p>
+     *
+     * @return the title for the error alert box
+     */
+    public String getErrorTitle() {
+
+        return m_errorTitle;
     }
 
     /**

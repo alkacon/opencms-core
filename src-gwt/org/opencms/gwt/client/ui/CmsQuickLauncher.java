@@ -64,7 +64,10 @@ public class CmsQuickLauncher extends CmsMenuButton {
          */
         public void handleQuickLaunch(CmsQuickLaunchData data) {
 
-            if (data.isReload()) {
+            if (data.getErrorMessage() != null) {
+                CmsAlertDialog alert = new CmsAlertDialog("" + data.getErrorTitle(), data.getErrorMessage());
+                alert.center();
+            } else if (data.isReload()) {
                 Window.Location.reload();
             } else {
                 Window.Location.assign(data.getDefaultUrl());
