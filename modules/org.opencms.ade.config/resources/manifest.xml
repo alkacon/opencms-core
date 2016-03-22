@@ -294,6 +294,10 @@
 						<value><![CDATA[en]]></value>
 					</property>
 					<property>
+						<name>cache</name>
+						<value><![CDATA[container-element;locale;uri]]></value>
+					</property>
+					<property>
 						<name>search.exclude</name>
 						<value><![CDATA[all]]></value>
 					</property>
