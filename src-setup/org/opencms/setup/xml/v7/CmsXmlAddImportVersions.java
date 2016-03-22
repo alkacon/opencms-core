@@ -88,6 +88,11 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
                     "org.opencms.importexport.CmsImportVersion7");
+            } else if (xpath.equals(getXPathsToUpdate().get(3))) {
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
+                    "org.opencms.importexport.CmsImportVersion10");
             }
             return true;
         }
@@ -129,6 +134,7 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
             m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion5']");
             m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion6']");
             m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion7']");
+            m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion10']");
         }
         return m_xpaths;
     }
