@@ -1182,6 +1182,8 @@
                 <preference name="galleryShowInvalidDefault" value="false" nice-name="%(key.GUI_PREF_GALLERY_SHOW_INVALID_DEFAULT_0)" widget="checkbox" />
 			</preference-tab>
 			<preference-tab name="extended">
+	 		   <preference name="workplaceMode" value="new" nice-name="%(key.GUI_PREF_WORKPLACE_MODE_0)" 
+                	widget="select" widget-config="old:%(key.GUI_PREF_WORKPLACE_MODE_OLD_0)|new:%(key.GUI_PREF_WORKPLACE_MODE_NEW_0)" /> 
 				<preference name="allowBrokenRelations" value="false"
 					widget="checkbox" />
 				<preference name="dialogCopyFileMode" value="createresource"
