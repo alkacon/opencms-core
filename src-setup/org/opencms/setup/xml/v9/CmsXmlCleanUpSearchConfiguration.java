@@ -34,22 +34,19 @@ package org.opencms.setup.xml.v9;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.setup.xml.A_CmsXmlSearch;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 
 /**
  * Updates the opencms-serach.xml.<p>
  */
 public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
 
+    /** The XPaths to remove. */
     public static final String[] REMOVE_PATHS = new String[] {
         "/"
             + CmsConfigurationManager.N_ROOT
@@ -77,7 +74,70 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
             + CmsSearchConfiguration.N_INDEXES
             + "/"
             + CmsSearchConfiguration.N_INDEX
-            + "[@class='org.opencms.search.galleries.CmsGallerySearchIndex']"};
+            + "[@class='org.opencms.search.galleries.CmsGallerySearchIndex']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_DOCUMENTTYPES
+            + "/"
+            + CmsSearchConfiguration.N_DOCUMENTTYPE
+            + "[name='xmlcontent-galleries']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_DOCUMENTTYPES
+            + "/"
+            + CmsSearchConfiguration.N_DOCUMENTTYPE
+            + "[name='xmlpage-galleries']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_ANALYZERS
+            + "/"
+            + CmsSearchConfiguration.N_ANALYZER
+            + "[class='org.opencms.search.galleries.CmsGallerySearchAnalyzer']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCES
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCE
+            + "[name='gallery_source']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCES
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCE
+            + "[name='gallery_modules_source']",
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCES
+            + "/"
+            + CmsSearchConfiguration.N_INDEXSOURCE
+            + "[name='gallery_source_all']"};
+
+    /** The XPaths to update. */
+    public static final String[] UPDATE_PATHS = new String[] {
+        "/"
+            + CmsConfigurationManager.N_ROOT
+            + "/"
+            + CmsSearchConfiguration.N_SEARCH
+            + "/"
+            + CmsSearchConfiguration.N_ANALYZERS};
 
     /** List of xpaths to remove. */
     private List<String> m_xpaths;
@@ -96,38 +156,25 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
     @Override
     protected boolean executeUpdate(Document document, String xpath, boolean forReal) {
 
-        StringBuffer xp = new StringBuffer(256);
-        xp.append("/");
-        xp.append(CmsConfigurationManager.N_ROOT);
-        xp.append("/");
-        xp.append(CmsSearchConfiguration.N_SEARCH);
-        xp.append("/");
-        xp.append(CmsSearchConfiguration.N_INDEXES);
-        try {
-            Iterator<Node> it = CmsCollectionsGenericWrapper.<Node> list(
-                document.selectNodes(xp.toString())).iterator();
-            while (it.hasNext()) {
-                Node node = it.next();
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element e = (Element)node;
-                    // iterate through child elements of root
-                    Iterator<Node> it2 = CmsCollectionsGenericWrapper.<Node> list(e.nodeIterator()).iterator();
-                    while (it2.hasNext()) {
-                        Node iNode = it2.next();
-                        if (iNode.getNodeType() == Node.COMMENT_NODE) {
-                            Comment com = (Comment)iNode;
-                            if (com.getText().contains("<name>Solr Gallery Index</name>")) {
-                                document.remove(com);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Throwable t) {
-            // only tried to remove a comment
-            // if an error occurs here nothing will get damaged
+        boolean changed = false;
+        if (document.selectSingleNode(
+            xpath
+                + "/"
+                + CmsSearchConfiguration.N_ANALYZER
+                + "["
+                + CmsSearchConfiguration.N_CLASS
+                + "='org.apache.lucene.analysis.standard.StandardAnalyzer']["
+                + CmsSearchConfiguration.N_LOCALE
+                + "='all']") == null) {
+            Element analyzers = (Element)document.selectSingleNode(xpath);
+            Element analyzer = analyzers.addElement(CmsSearchConfiguration.N_ANALYZER);
+            Element clazz = analyzer.addElement(CmsSearchConfiguration.N_CLASS);
+            clazz.setText("org.apache.lucene.analysis.standard.StandardAnalyzer");
+            Element locale = analyzer.addElement(CmsSearchConfiguration.N_LOCALE);
+            locale.setText("all");
+            changed = true;
         }
-        return super.executeUpdate(document, xpath, forReal);
+        return changed;
     }
 
     /**
@@ -140,5 +187,14 @@ public class CmsXmlCleanUpSearchConfiguration extends A_CmsXmlSearch {
             m_xpaths = Arrays.asList(REMOVE_PATHS);
         }
         return m_xpaths;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
+     */
+    @Override
+    protected List<String> getXPathsToUpdate() {
+
+        return Arrays.asList(UPDATE_PATHS);
     }
 }
