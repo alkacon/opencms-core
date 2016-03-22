@@ -609,6 +609,17 @@ public class CmsUserSettingsStringPropertyWrapper {
     }
 
     /**
+     * Gets the workplace mode.<p>
+     *
+     * @return the workplace mode
+     */
+    @PrefMetadata(type = CmsWorkplaceModePreference.class)
+    public String getWorkplaceMode() {
+
+        return m_settings.getAdditionalPreference(CmsWorkplaceModePreference.PREFERENCE_NAME, false);
+    }
+
+    /**
      * Gets the workplace report type.
      *
      * @return the workplace report type
@@ -1153,6 +1164,16 @@ public class CmsUserSettingsStringPropertyWrapper {
     public void setWorkplaceButtonStyle(String s) {
 
         m_settings.setWorkplaceButtonStyle(s);
+    }
+
+    /**
+     * Sets the workplace mode.<p>
+     *
+     * @param workplaceMode the workplace mode
+     */
+    public void setWorkplaceMode(String workplaceMode) {
+
+        m_settings.setAdditionalPreference(CmsWorkplaceModePreference.PREFERENCE_NAME, workplaceMode);
     }
 
     /**
