@@ -617,7 +617,8 @@ public class CmsModuleManager {
             Iterator<CmsExportPoint> it = exportPoints.iterator();
             while (it.hasNext()) {
                 CmsExportPoint point = it.next();
-                if (point.getUri().endsWith(module.getName() + "/lib/")
+                if ((point.getUri().endsWith(module.getName() + "/lib/")
+                    || point.getUri().endsWith(module.getName() + "/lib"))
                     && point.getConfiguredDestination().equals("WEB-INF/lib/")) {
                     it.remove();
                 }
