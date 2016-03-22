@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.cs</name>
-		<nicename><![CDATA[OpenCms 9 Czech localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 10 Czech localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[OpenCms Localization]]></description>

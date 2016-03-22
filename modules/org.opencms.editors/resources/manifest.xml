@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.editors</name>
-		<nicename><![CDATA[OpenCms 9 Common editors]]></nicename>
+		<nicename><![CDATA[OpenCms 10 Common editors]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>

@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.it</name>
-		<nicename><![CDATA[OpenCms 9.5 Italian localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 10 Italian localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the Italian language localization files for the OpenCms workplace.</p>

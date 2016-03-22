@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.es</name>
-		<nicename><![CDATA[OpenCms 9 Spanish localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 10 Spanish localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the Spanish language localization files for the OpenCms workplace.</p>

@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.ru</name>
-		<nicename><![CDATA[OpenCms 9.5.1 Russian localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 10 Russian localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[OpenCms Localization]]></description>
