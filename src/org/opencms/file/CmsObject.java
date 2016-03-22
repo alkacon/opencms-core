@@ -63,7 +63,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsPair;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.content.CmsNumberSuffixNameSequence;
 
 import java.util.ArrayList;
@@ -323,7 +322,7 @@ public final class CmsObject {
                 // check for role
                 CmsRole role = CmsRole.valueOfRoleName(principalName);
                 // role based permissions can only be set in the system folder
-                if ((role == null) || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM))) {
+                if (role == null) {
                     throw e;
                 }
                 acEntry = new CmsAccessControlEntry(
@@ -385,10 +384,7 @@ public final class CmsObject {
                 // check for role
                 CmsRole role = CmsRole.valueOfRoleName(principalName);
                 // role based permissions can only be set in the system folder
-                if ((role == null)
-                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
-                        && !res.getRootPath().equals("/")
-                        && !res.getRootPath().equals("/system"))) {
+                if (role == null) {
                     throw e;
                 }
                 acEntry = new CmsAccessControlEntry(res.getResourceId(), role.getId(), permissionString);

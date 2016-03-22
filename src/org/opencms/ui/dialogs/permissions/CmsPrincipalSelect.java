@@ -165,6 +165,7 @@ public class CmsPrincipalSelect extends CustomComponent {
             String roleText = CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_ROLE_0);
             item.getItemProperty(CmsVaadinUtils.PROPERTY_LABEL).setValue(roleText);
         }
+        m_principalTypeSelect.setNewItemsAllowed(!editRoles);
 
     }
 
@@ -220,7 +221,12 @@ public class CmsPrincipalSelect extends CustomComponent {
     void onSelect() {
 
         if (m_selectHandler != null) {
-            m_selectHandler.onPrincipalSelect((String)m_principalTypeSelect.getValue(), m_principalName.getValue());
+            String principalType = (String)m_principalTypeSelect.getValue();
+            if (CmsVaadinUtils.getMessageText(org.opencms.workplace.commons.Messages.GUI_LABEL_ROLE_0).equals(
+                principalType)) {
+                principalType = CmsRole.PRINCIPAL_ROLE;
+            }
+            m_selectHandler.onPrincipalSelect(principalType, m_principalName.getValue());
         }
     }
 
