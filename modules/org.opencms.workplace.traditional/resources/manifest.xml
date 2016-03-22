@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>10.0.0</opencms_version>
+		<createdate>Mo, 21 March 2016 13:17:19 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.traditional</name>
+		<nicename><![CDATA[OpenCms Workplace traditional]]></nicename>
+		<group>OpenCms Workplace</group>
+		<class>org.opencms.workplace.CmsWorkplaceAction</class>
+		<description><![CDATA[<p>This module contains the traditional OpenCms Workplace.</p>
+<p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
+<p><i>&copy; 2015 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>10.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/views/top_foot.jsp"/>
+			<resource uri="/system/workplace/views/top_fs.jsp"/>
+			<resource uri="/system/workplace/views/workplace.jsp"/>
+			<resource uri="/system/workplace/views/top_head.jsp"/>
+			<resource uri="/system/workplace/views/top_js.jsp"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>4cdb0212-762a-11e0-b520-5b4e51806a5b</uuidstructure>
+			<datelastmodified>Wed, 04 May 2011 08:41:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 May 2011 08:41:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/views</destination>
+			<type>folder</type>
+			<uuidstructure>8405a06e-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/workplace/views/top_foot.jsp</source>
+			<destination>system/workplace/views/top_foot.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>84081170-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>955f798a-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset - Foot Frame]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/top_fs.jsp</source>
+			<destination>system/workplace/views/top_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>840a8274-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>9c0a79be-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset Definition]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/top_head.jsp</source>
+			<destination>system/workplace/views/top_head.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>840f3d69-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>9fa61712-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset - Head Frame]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/top_js.jsp</source>
+			<destination>system/workplace/views/top_js.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>8411ae6d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>0e1e6273-4142-11da-b7df-4714cf95dde1</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Oct 2005 08:18:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset - JavaScript]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views/workplace.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>840ccc67-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>9c0a79be-f058-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 29 Jan 2007 10:25:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset Definition]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
