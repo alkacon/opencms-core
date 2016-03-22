@@ -87,6 +87,9 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
      */
     public static class PropertyEditingContext {
 
+        /** Enable/disable property definition button. */
+        private boolean m_allowCreateProperties = true;
+
         /** The cancel handler. */
         protected Runnable m_cancelHandler;
 
@@ -101,6 +104,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
 
         /** The property saver. */
         private I_CmsPropertySaver m_propertySaver;
+
+        /**
+         * Returns true if the property definition button should be enabled.<p>
+         *
+         * @return true if the user should be able to define new properties
+         */
+        public boolean allowCreateProperties() {
+
+            return m_allowCreateProperties;
+        }
 
         /**
          * Creates the property definition button.<p>
@@ -159,6 +172,16 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
                     }
                 });
             }
+        }
+
+        /**
+         * Enables / disables the 'define property' functionality.<p>
+         *
+         * @param allowCreateProperties true if the user should be able to create new properties
+         */
+        public void setAllowCreateProperties(boolean allowCreateProperties) {
+
+            m_allowCreateProperties = allowCreateProperties;
         }
 
         /**
@@ -633,10 +656,11 @@ public final class CmsEditProperties implements I_CmsHasContextMenuCommand {
         final CmsFormDialog dialog = new PropertiesFormDialog(handler.getDialogTitle(), editor.getForm());
         editContext.setDialog(dialog);
 
-        CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
-
-        defButton.installOnDialog(dialog);
-        defButton.getElement().getStyle().setFloat(Float.LEFT);
+        if (editContext.allowCreateProperties()) {
+            CmsPropertyDefinitionButton defButton = editContext.createPropertyDefinitionButton();
+            defButton.installOnDialog(dialog);
+            defButton.getElement().getStyle().setFloat(Float.LEFT);
+        }
         final CmsDialogFormHandler formHandler = new CmsDialogFormHandler();
         editContext.setFormHandler(formHandler);
         editContext.initCloseHandler();

@@ -213,6 +213,7 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
                 propertyDataString));
             CmsEditProperties.PropertyEditingContext context = new CmsEditProperties.PropertyEditingContext();
             context.setPropertySaver(new PropertySaver());
+            context.setAllowCreateProperties(false);
             CmsEditProperties.openPropertyDialog(propData, new ContextMenuHandler(), true, new Runnable() {
 
                 @SuppressWarnings("synthetic-access")
