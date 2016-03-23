@@ -29,7 +29,7 @@ OpenCms 10.0.0 Final - March 23, 2016
 * Fixed issue in permission dialog where it was not possible to add role based entries
 * Fixed issue in permission dialog where inherited entries where not displayed correctly
 * Fixed issue with "Create new" dialog where resources where created to early
-* Fixing issue in the Page editor where elements where wrongly marked as new
+* Fixed issue in the Page editor where elements where wrongly marked as new
 * Fixed issue with invisible scroll bars in select boxes on Mac OS
  
 OpenCms 10.0.0 Beta - February 25, 2016

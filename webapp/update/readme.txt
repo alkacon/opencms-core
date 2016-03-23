@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 7.x and 8.x to @OPENCMS_VERSION@
+            Instructions for updating OpenCms 8.x and 9.x to @OPENCMS_VERSION@
 
 
                                     WARNING:
@@ -16,12 +16,12 @@ existing OpenCms installation when using this upgrade wizard.
 IMPORTANT: Before using this upgrade wizard, make sure you have a full backup 
            of your OpenCms installation and database.
 
-IMPORTANT: Alkacon OCEE versions less than 4 will not work with OpenCms 9.   
+IMPORTANT: Alkacon OCEE versions less than 5 will not work with OpenCms 10.   
 
 IMPORTANT: The updater is only compatible with the database engines MySQL, 
            Oracle and PostgreSQL.
            
-IMPORTANT: This version of OpenCms requires at least Java 6.
+IMPORTANT: This version of OpenCms requires at least Java 7.
 
 IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modules.
            If you made modifications to these modules, their changes will be lost.
@@ -30,7 +30,7 @@ IMPORTANT: The upgrade wizard will replace all VFS resources of the updated modu
            Administration to export all the changes you have done after installing 
            OpenCms.
 
-Follow the following steps to update from OpenCms 7.x and 8.x to @OPENCMS_VERSION@:
+Follow the following steps to update from OpenCms 8.x and 9.x to @OPENCMS_VERSION@:
 
 
 1. Shutdown your OpenCms servlet container
