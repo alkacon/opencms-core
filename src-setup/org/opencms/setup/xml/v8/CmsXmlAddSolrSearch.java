@@ -82,6 +82,118 @@ public class CmsXmlAddSolrSearch extends A_CmsXmlSearch {
             }
             solrElement.addComment(solrComment);
         }
+
+        try {
+
+            tryToAddMissingElement(
+                doc,
+                "//index[name='Solr Offline']",
+                "//indexes",
+                "<index class=\"org.opencms.search.solr.CmsSolrIndex\">\n"
+                    + "                <name>Solr Offline</name>\n"
+                    + "                <rebuild>offline</rebuild>\n"
+                    + "                <project>Offline</project>\n"
+                    + "                <locale>all</locale>\n"
+                    + "                <configuration>solr_fields</configuration>\n"
+                    + "                <sources>\n"
+                    + "                    <source>solr_source</source>\n"
+                    + "                </sources>\n"
+                    + "                <param name=\"search.solr.postProcessor\">org.opencms.search.solr.CmsSolrLinkProcessor</param>\n"
+                    + "            </index>");
+
+            tryToAddMissingElement(
+                doc,
+                "//index[name='Solr Online']",
+                "//indexes",
+                "<index class=\"org.opencms.search.solr.CmsSolrIndex\">\n"
+                    + "                <name>Solr Online</name>\n"
+                    + "                <rebuild>auto</rebuild>\n"
+                    + "                <project>Online</project>\n"
+                    + "                <locale>all</locale>\n"
+                    + "                <configuration>solr_fields</configuration>\n"
+                    + "                <sources>\n"
+                    + "                    <source>solr_source</source>\n"
+                    + "                </sources>\n"
+                    + "                <param name=\"search.solr.postProcessor\">org.opencms.search.solr.CmsSolrLinkProcessor</param>\n"
+                    + "            </index>");
+
+            Element solrSource = (Element)(doc.selectSingleNode("//indexsource[name='solr_source']"));
+            // will be added again in next step
+            if (solrSource != null) {
+                solrSource.detach();
+            }
+
+            tryToAddMissingElement(
+                doc,
+                "//indexsource[name='solr_source']",
+                "//indexsources",
+                "<indexsource>\n"
+                    + "                <name>solr_source</name>\n"
+                    + "                <indexer class=\"org.opencms.search.CmsVfsIndexer\" />\n"
+                    + "                <resources>\n"
+                    + "                    <resource>/</resource>\n"
+                    + "                </resources>\n"
+                    + "                <documenttypes-indexed>\n"
+                    + "                    <name>xmlcontent-solr</name>\n"
+                    + "                    <name>containerpage-solr</name>\n"
+                    + "                    <name>xmlpage</name>\n"
+                    + "                    <name>text</name>\n"
+                    + "                    <name>jsp</name>\n"
+                    + "                    <name>pdf</name>\n"
+                    + "                    <name>rtf</name>\n"
+                    + "                    <name>html</name>\n"
+                    + "                    <name>image</name>\n"
+                    + "                    <name>generic</name>\n"
+                    + "                    <name>msoffice-ole2</name>\n"
+                    + "                    <name>msoffice-ooxml</name>\n"
+                    + "                    <name>openoffice</name>\n"
+                    + "                </documenttypes-indexed>\n"
+                    + "            </indexsource>");
+
+            tryToAddMissingElement(
+                doc,
+                "//fieldconfiguration[name='solr_fields']",
+                "//fieldconfigurations",
+                "<fieldconfiguration class=\"org.opencms.search.solr.CmsSolrFieldConfiguration\">\n"
+                    + "                <name>solr_fields</name>\n"
+                    + "                <description>The Solr search index field configuration.</description>\n"
+                    + "                <fields />\n"
+                    + "            </fieldconfiguration>");
+
+            tryToAddMissingElement(
+                doc,
+                "//documenttype[name='xmlcontent-solr']",
+                "//documenttypes",
+                "<documenttype>\n"
+                    + "                <name>xmlcontent-solr</name>\n"
+                    + "                <class>org.opencms.search.solr.CmsSolrDocumentXmlContent</class>\n"
+                    + "                <mimetypes>\n"
+                    + "                    <mimetype>text/html</mimetype>\n"
+                    + "                </mimetypes>\n"
+                    + "                <resourcetypes>\n"
+                    + "                    <resourcetype>xmlcontent-solr</resourcetype>\n"
+                    + "                </resourcetypes>\n"
+                    + "            </documenttype>");
+
+            tryToAddMissingElement(
+                doc,
+                "//documenttype[name='containerpage-solr']",
+                "//documenttypes",
+                "<documenttype>\n"
+                    + "                <name>containerpage-solr</name>\n"
+                    + "                <class>org.opencms.search.solr.CmsSolrDocumentContainerPage</class>\n"
+                    + "                <mimetypes>\n"
+                    + "                    <mimetype>text/html</mimetype>\n"
+                    + "                </mimetypes>\n"
+                    + "                <resourcetypes>\n"
+                    + "                    <resourcetype>containerpage-solr</resourcetype>\n"
+                    + "                </resourcetypes>\n"
+                    + "            </documenttype>");
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -94,12 +206,34 @@ public class CmsXmlAddSolrSearch extends A_CmsXmlSearch {
     }
 
     /**
+     * Adds an XML configuration element if it is missing.<p>
+     *
+     * @param doc the document
+     * @param checkPath the xpath of the element
+     * @param parentPath the xpath of the parent to which the element should be added if it's not found
+     * @param xmlToAdd the XML of the element to add
+     *
+     * @throws DocumentException if something goes wrong
+     */
+    public void tryToAddMissingElement(Document doc, String checkPath, String parentPath, String xmlToAdd)
+    throws DocumentException {
+
+        if (doc.selectSingleNode(checkPath) == null) {
+            Element parent = (Element)(doc.selectSingleNode(parentPath));
+            if (parent != null) {
+                parent.add(createElementFromXml(xmlToAdd));
+            } else {
+                System.err.println("Failed to add missing element: checkPath = " + checkPath);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
     @Override
     protected String getCommonPath() {
 
-        // /opencms/system/internationalization
         return "/opencms/search";
 
     }
