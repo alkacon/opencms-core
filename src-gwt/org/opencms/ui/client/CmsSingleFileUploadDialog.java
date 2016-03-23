@@ -197,7 +197,7 @@ public class CmsSingleFileUploadDialog extends CmsPopup implements I_CmsUploadDi
     @Override
     public void hide() {
 
-        if (m_fileInput != null) {
+        if ((m_fileInput != null) && RootPanel.get().getElement().isOrHasChild(m_fileInput.getElement())) {
             m_fileInput.removeFromParent();
         }
         super.hide();
