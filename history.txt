@@ -15,7 +15,23 @@ Legend:
 * Bug fixed
 - General comment
 
-
+OpenCms 10.0.0 Final - March 23, 2016
+! Added user info dialog and quick launch menu to Page and Sitemap editor toolbar
+! Added editor to allow individual customization of the quick launch menu
+! Added option to upload a personal image in the user info dialog
+- Improved workplace dialog key bindings with 'Enter' and 'Esc' shortcuts
+- Improved binary and image file indexing for all configured locales
+- Improved error dialog in direct edit view with "Copy to clipboard" function
+- Improved site selector paging in the Explorer
+- Improved copy/move dialog to preset target folder to current folder
+* Fixed issue with role checks and permission for the new workplace apps
+* Fixed issue with visibility check in explorer context menu in case of multi selects
+* Fixed issue in permission dialog where it was not possible to add role based entries
+* Fixed issue in permission dialog where inherited entries where not displayed correctly
+* Fixed issue with "Create new" dialog where resources where created to early
+* Fixing issue in the Page editor where elements where wrongly marked as new
+* Fixed issue with invisible scroll bars in select boxes on Mac OS
+ 
 OpenCms 10.0.0 Beta - February 25, 2016
 ! Added permission dialog to the new explorer
 ! Added history dialog to the new explorer
@@ -93,6 +109,63 @@ OpenCms 10.0.0 Alpha 1 - September 28, 2015
 * Fixed issue with null pointers during inline editing.
 * Fixed issue with null pointers when reading search document dependencies.
 * Fixed issue where validation messages were not displayed in the workplace locale.
+
+OpenCms 9.5.3 - January 13, 2016
+! Added Java 8 support.
+! Improved the source code editor in WYSIWYG fields.
+! Gallery dialog now memorizes the last search result sort order.
+! Demo template updated to Bootstrap 3.3.6 and jQuery 1.11.3.
+* Fixed issue #231 where lower case SQL statements failed on MSSQL DBs.
+* Fixed issue #240/#307 where invalid dates were not handled properly by the content editor.
+* Fixed issue #279 related to Java 8 support.
+* Fixed issue #282 with MySQLSyntaxErrorException for DROP DATABASE in setup.sh (pr #346 by gallardo).
+* Fixed issue #296 with wrong order of choice elements after XSD change or saving in control code editor (fix by mwxwidmann).
+* Fixed issue #321 where download galleries would not show any images.
+* Fixed issue #331 where permalinks to resources beneath /shared/ where not generated properly.
+* Fixed issue #333 where non VFS documents in Solr indices where not considered in the result size calculation (fix by kartobi).
+* Fixed issue #339 where "stylesformat" setting would not always work for TinyMCE widget.
+* Fixed issue #340 where the log file viewer failed due to spaces in the web application path.
+* Fixed issue #344 where malformed HTML was inserted in direct edit mode.
+* Fixed issue #350 where direct editing of collector list content would fail in Firefox 41.
+* Fixed issue #353 by improving login cookie generation.
+* Fixed issue #357 by improving default file name generation.
+* Fixed issue #359 where some context menu entries did have the wrong visibility settings.
+* Fixed issue #360 where quick search within the category widget failed.
+* Fixed issue #365 where link excludes where not considered during link generation.
+* Fixed issue #369 where sort by title did not work for images in gallery dialog.
+* Pull request #188 adds support for specifying a custom charset for notification mails (pr by t-nasu).
+* Pull request #338 fixes issue with sourceSets in Gradle scripts (pr by gallardo).
+* Pull request #351 adds support for JPA enhancement of java 8 classes (pr by gallardo).
+* Pull request #354 fixes an issue with NPE in log during shutdown when Solr is disabled (pr by gallardo).
+* Pull request #356 fixes another issue with NPE in log during shutdown (pr by gallardo).
+* Updated the source code editor to latest version of CodeMirror (5.10).
+* Updated the WYSIWYG editor to latest version of TinyMCE (4.3.2).
+* Security: Fixed advisory SYSS-2015-063 regarding XSS vulnerabilities in workplace login (reported by SySS GmbH).
+* Security: Updated "Commons Collections" dependency to avoid deserialization security issue.
+* Security: Fixed several XSS issues, mostly in the demo content.
+* Security: Added stronger role checks when users access an editor.
+* Solr: Added "decodeUrl" option to Solr collector.
+* Solr: Added field-to-containerpage mapping in Solr indexer.
+* Solr: Improved Solr shutdown to avoid memory leaks.
+* Solr: Fixed URL decoding issue in content collector.
+* Solr: Fixed NPE when reading document dependencies while indexing.
+* Solr: renamed field/type _cs to _comma to avoid conflict with Czech locale.
+* Fixed issue with the login-form property not working correctly for detail pages.
+* Fixed issue with editor change handlers not being able to change values of invisible fields.
+* Fixed issue where links were invalidated in the content editor and thus became uneditable.
+* Fixed issue with pointers / htmlredirects not working for internationalized domain names.
+* Fixed issue with type name replacement in module clone dialog.
+* Fixed issue where toolbar buttons would become enabled for non editable resources.
+* Fixed issue with content editor fields becoming unselectable in IE11.
+* Fixed issue with limited Lucene date range queries.
+* Fixed issue with widget for selection of organizational units.
+* Fixed issue with NPE during formatter selection.
+* Fixed issue with NPE during inline editing.
+* Fixed issue where users could not be added to a virtual group if already member of a related role.
+* Fixed issue with selecting multiple formatters defined in schema.
+* Fixed issue with caching of formatter configurations defined in schema.
+* Fixed issue with language detection for locales having the same language like en_GB and en_US.
+* Fixed issue where import failed due to missing principals.
 
 OpenCms 9.5.2 - June 24, 2015
 ! Added Japanese localization (provided by Yuta Aoki).
