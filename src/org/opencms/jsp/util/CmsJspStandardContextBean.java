@@ -782,16 +782,19 @@ public final class CmsJspStandardContextBean {
      */
     public String elementCachingHash() {
 
-        if ((m_element != null) && (m_container != null)) {
-            return m_element.editorHash()
-                + "w:"
-                + m_container.getWidth()
-                + "cName:"
-                + m_container.getName()
-                + "cType:"
-                + m_container.getType();
+        String result = "";
+        if (m_element != null) {
+            result = m_element.editorHash();
+            if (m_container != null) {
+                result += "w:"
+                    + m_container.getWidth()
+                    + "cName:"
+                    + m_container.getName()
+                    + "cType:"
+                    + m_container.getType();
+            }
         }
-        return "";
+        return result;
     }
 
     /**
