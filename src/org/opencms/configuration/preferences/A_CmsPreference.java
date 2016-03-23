@@ -74,6 +74,14 @@ public abstract class A_CmsPreference implements I_CmsPreference {
     }
 
     /**
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     */
+    public boolean isDisabled() {
+
+        return false;
+    }
+
+    /**
      * Gets the user-independent property configuration.<p>
      *
      * This is what is used to write the preference back to the workplace configuration.

@@ -126,6 +126,14 @@ public class CmsWrapperPreference implements I_CmsPreference {
     }
 
     /**
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     */
+    public boolean isDisabled() {
+
+        return m_wrappedPreference.isDisabled();
+    }
+
+    /**
      * @see org.opencms.configuration.preferences.I_CmsPreference#setValue(org.opencms.configuration.CmsDefaultUserSettings, java.lang.String)
      */
     public void setValue(CmsDefaultUserSettings settings, String value) {

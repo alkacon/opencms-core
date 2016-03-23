@@ -83,6 +83,13 @@ public interface I_CmsPreference {
     String getValue(CmsDefaultUserSettings userSettings);
 
     /**
+     * Returns true if the preference is disabled.<p>
+     *
+     * @return true if the preference is disabled
+     */
+    boolean isDisabled();
+
+    /**
      * Sets the value of the preference in a CmsDefaultUserSettings instance.<p>
      *
      * @param settings the settings used to store the preference value

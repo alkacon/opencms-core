@@ -146,7 +146,7 @@ public class CmsClientUserSettingConverter {
         currentSettings.init(m_currentPreferences.getUser());
         for (I_CmsPreference pref : OpenCms.getWorkplaceManager().getDefaultUserSettings().getPreferences().values()) {
             String tab = pref.getTab();
-            if (CmsGwtConstants.TAB_HIDDEN.equals(tab)) {
+            if (CmsGwtConstants.TAB_HIDDEN.equals(tab) || pref.isDisabled()) {
                 continue;
             }
             CmsXmlContentProperty prop2 = pref.getPropertyDefinition(m_cms);

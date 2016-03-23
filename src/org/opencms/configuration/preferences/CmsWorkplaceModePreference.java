@@ -28,6 +28,7 @@
 package org.opencms.configuration.preferences;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
 /**
@@ -103,5 +104,14 @@ public class CmsWorkplaceModePreference extends CmsBuiltinPreference {
     public CmsXmlContentProperty getPropertyDefinition(CmsObject cms) {
 
         return getPropertyDefinition();
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.A_CmsPreference#isDisabled()
+     */
+    @Override
+    public boolean isDisabled() {
+
+        return !OpenCms.getModuleManager().hasModule("org.opencms.workplace.traditional");
     }
 }

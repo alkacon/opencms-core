@@ -254,6 +254,9 @@ public class CmsUserSettings {
     /** Preference value for new workplace. */
     public static final String WORKPLACE_MODE_NEW = "new";
 
+    /** Preference value for new workplace. */
+    public static final String WORKPLACE_MODE_OLD = "old";
+
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
 
@@ -2483,7 +2486,12 @@ public class CmsUserSettings {
      */
     public boolean usesNewWorkplace() {
 
-        return WORKPLACE_MODE_NEW.equals(getAdditionalPreference(PREF_WORKPLACE_MODE, true));
+        boolean traditionalWorkplaceExists = OpenCms.getModuleManager().hasModule("org.opencms.workplace.traditional");
+        if (!traditionalWorkplaceExists) {
+            return true;
+        } else {
+            return !(WORKPLACE_MODE_OLD.equals(getAdditionalPreference(PREF_WORKPLACE_MODE, true)));
+        }
 
     }
 

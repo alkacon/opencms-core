@@ -35,11 +35,11 @@ import org.opencms.xml.content.CmsXmlContentProperty;
  */
 public class CmsEditorPreference extends A_CmsPreference {
 
-    /** The preference default value. */
-    private String m_value;
-
     /** Prefix used for editor preference settings. */
     public static final String EDITOR_PREFIX = "editor.";
+
+    /** The preference default value. */
+    private String m_value;
 
     /** The resource type for which this preference controls the editor to use. */
     private String m_editorType;
@@ -109,6 +109,15 @@ public class CmsEditorPreference extends A_CmsPreference {
     public String getValue(CmsDefaultUserSettings userSettings) {
 
         return userSettings.getPreferredEditor(m_editorType);
+    }
+
+    /**
+     * @see org.opencms.configuration.preferences.I_CmsPreference#isDisabled()
+     */
+    @Override
+    public boolean isDisabled() {
+
+        return false;
     }
 
     /**
