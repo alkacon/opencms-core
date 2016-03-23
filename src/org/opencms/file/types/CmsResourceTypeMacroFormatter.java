@@ -35,6 +35,16 @@ import org.opencms.loader.CmsMacroFormatterLoader;
 public class CmsResourceTypeMacroFormatter extends CmsResourceTypeXmlAdeConfiguration {
 
     /**
+     * @see org.opencms.file.types.CmsResourceTypeXmlContent#getCachePropertyDefault()
+     */
+    @Override
+    public String getCachePropertyDefault() {
+
+        // return null to disable caching if cache property not set
+        return null;
+    }
+
+    /**
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getLoaderId()
      */
     @Override
