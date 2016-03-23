@@ -29,15 +29,12 @@ package org.opencms.lock;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.gwt.Messages;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 
 import java.util.List;
 
@@ -85,23 +82,14 @@ public final class CmsLockUtil {
 
         /**
          * Returns the encoding used for the file.
+         *
+         * @see CmsFileUtil#getEncoding(CmsObject, CmsResource)
+         *
          * @return the encoding used for the file.
          */
         public String getEncoding() {
 
-            CmsProperty encodingProperty = CmsProperty.getNullProperty();
-            try {
-                encodingProperty = m_cms.readPropertyObject(
-                    m_file,
-                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                    true);
-            } catch (CmsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return CmsEncoder.lookupEncoding(
-                encodingProperty.getValue(""),
-                OpenCms.getSystemInfo().getDefaultEncoding());
+            return CmsFileUtil.getEncoding(m_cms, m_file);
 
         }
 

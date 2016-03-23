@@ -28,13 +28,17 @@
 package org.opencms.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.ByteArrayInputStream;
@@ -58,6 +62,7 @@ import java.util.ListIterator;
 import java.util.Locale;
 
 import org.apache.commons.collections.Closure;
+import org.apache.commons.logging.Log;
 
 /**
  * Provides File utility functions.<p>
@@ -126,6 +131,9 @@ public final class CmsFileUtil {
             return m_files;
         }
     }
+
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsFileUtil.class);
 
     /**
      * Hides the public constructor.<p>
@@ -271,6 +279,26 @@ public final class CmsFileUtil {
             }
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the encoding of the file.
+     * Encoding is read from the content-encoding property and defaults to the systems default encoding.
+     * Since properties can change without rewriting content, the actual encoding can differ.
+     *
+     * @param cms {@link CmsObject} used to read properties of the given file.
+     * @param file the file for which the encoding is requested
+     * @return the file's encoding according to the content-encoding property, or the system's default encoding as default.
+     */
+    public static String getEncoding(CmsObject cms, CmsResource file) {
+
+        CmsProperty encodingProperty = CmsProperty.getNullProperty();
+        try {
+            encodingProperty = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true);
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
+        }
+        return CmsEncoder.lookupEncoding(encodingProperty.getValue(""), OpenCms.getSystemInfo().getDefaultEncoding());
     }
 
     /**
