@@ -957,6 +957,11 @@ task updater (dependsOn: [setupJar, widgetSetJar, allModules], type: Zip){
         include 'wsdl/**'
         include 'spellcheck/**'
     }
+    from ("${projectDir}/webapp/resources"){
+        into '/resources'
+        include '*'
+        include '**/*'
+    }
     from ("${project.buildDir}/libs") {
         include 'opencms.jar'
         include 'opencms-setup.jar'
