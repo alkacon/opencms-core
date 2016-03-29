@@ -34,6 +34,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessageException;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockUtil.LockedFile;
@@ -75,6 +76,77 @@ import com.vaadin.data.util.IndexedContainer;
  * In particular it reads / writes the involved files and provides the contents as {@link IndexedContainer}.
  */
 public class CmsMessageBundleEditorModel {
+
+    /** Wrapper for the configurable messages for the column headers of the message bundle editor. */
+    static final class ConfigurableMessages {
+
+        /** The messages from the default message bundle. */
+        CmsMessages m_defaultMessages;
+        /** The messages from a configured messageb bundle, overwriting the ones from the default bundle. */
+        CmsMessages m_configuredMessages;
+
+        /**
+         * Default constructor.
+         * @param defaultMessages the default messages.
+         * @param locale the locale in which the messages are requested.
+         * @param configuredBundle the base name of the configured message bundle (can be <code>null</code>).
+         */
+        private ConfigurableMessages(CmsMessages defaultMessages, Locale locale, String configuredBundle) {
+            m_defaultMessages = defaultMessages;
+            if (null != configuredBundle) {
+                CmsMessages bundle = new CmsMessages(configuredBundle, locale);
+                if (null != bundle.getResourceBundle()) {
+                    m_configuredMessages = bundle;
+                }
+            }
+        }
+
+        /**
+         * Returns the localized column header.
+         * @param column the column's property (name).
+         * @return the localized columen header.
+         */
+        public String getColumnHeader(TableProperty column) {
+
+            switch (column) {
+                case DEFAULT:
+                    return getMessage(Messages.GUI_COLUMN_HEADER_DEFAULT_0);
+                case DESCRIPTION:
+                    return getMessage(Messages.GUI_COLUMN_HEADER_DESCRIPTION_0);
+                case KEY:
+                    return getMessage(Messages.GUI_COLUMN_HEADER_KEY_0);
+                case OPTIONS:
+                    return getMessage(Messages.GUI_COLUMN_HEADER_OPTIONS_0);
+                case TRANSLATION:
+                    return getMessage(Messages.GUI_COLUMN_HEADER_TRANSLATION_0);
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        /**
+         * Returns the message for the key, either from the configured bundle, or - if not found - from the default bundle.
+         *
+         * @param key message key.
+         * @return the message for the key.
+         */
+        private String getMessage(String key) {
+
+            if (null != m_configuredMessages) {
+                try {
+                    return m_configuredMessages.getString(key);
+                } catch (@SuppressWarnings("unused") CmsMessageException e) {
+                    // do nothing - use default messages
+                }
+            }
+            try {
+                return m_defaultMessages.getString(key);
+            } catch (@SuppressWarnings("unused") CmsMessageException e) {
+                return "???" + key + "???";
+            }
+        }
+
+    }
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMessageBundleEditorModel.class);
@@ -221,16 +293,10 @@ public class CmsMessageBundleEditorModel {
      * @param locale the preferred locale
      * @return the configured bundle or, if not found, the default bundle.
      */
-    public CmsMessages getConfigurableMessages(CmsMessages defaultMessages, Locale locale) {
+    @SuppressWarnings("synthetic-access")
+    public ConfigurableMessages getConfigurableMessages(CmsMessages defaultMessages, Locale locale) {
 
-        if (null != m_configuredBundle) {
-            CmsMessages bundle = new CmsMessages(m_configuredBundle, locale);
-            if (null != bundle.getResourceBundle()) {
-                return bundle;
-            }
-        }
-
-        return defaultMessages;
+        return new ConfigurableMessages(defaultMessages, locale, m_configuredBundle);
 
     }
 

@@ -4,13 +4,6 @@ package org.opencms.ui.editors.messagebundle;
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
-/*
- package org.opencms.workplace;
-
-import org.opencms.db.CmsResourceState;
-import org.opencms.i18n.A_CmsMessageBundle;
-import org.opencms.i18n.I_CmsMessageBundle;
-
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p>
  *
@@ -78,7 +71,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PLEASE_ADD_VALUE_0 = "GUI_PLEASE_ADD_VALUE_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODE_CHANGE_NOT_POSSIBLE_0 = "ERR_MODE_CHANGE_NOT_POSSIBLE_0";
-
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0 = "ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0";
 
     /**

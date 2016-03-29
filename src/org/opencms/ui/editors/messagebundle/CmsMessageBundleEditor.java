@@ -40,10 +40,10 @@ import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsToolBar;
 import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.editors.I_CmsEditor;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorModel.ConfigurableMessages;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -78,7 +78,7 @@ import com.vaadin.ui.UI;
 @Theme("opencms")
 public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseListener, ViewChangeListener {
 
-    /** Used to implement {@link Serializable}. */
+    /** Used to implement {@link java.io.Serializable}. */
     private static final long serialVersionUID = 5366955716462191580L;
 
     /** The log object for this class. */
@@ -91,7 +91,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     static CmsMessages m_messages;
 
     /** Configurable Messages. */
-    CmsMessages m_configurableMessages;
+    ConfigurableMessages m_configurableMessages;
 
     /** The field factories for the different modes. */
     private final Map<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory> m_fieldFactories = new HashMap<CmsMessageBundleEditorTypes.EditMode, CmsMessageBundleEditorTypes.TranslateTableFieldFactory>(
@@ -471,7 +471,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
                 m_table.setColumnHeader(
                     TableProperty.TRANSLATION,
-                    m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0) + " (" + locale + ")");
+                    m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION) + " (" + locale + ")");
             }
         });
         languages.addComponent(languageLabel);
@@ -549,18 +549,18 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
             table.addItem();
         }
-        table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getString(Messages.GUI_COLUMN_HEADER_KEY_0));
-        table.setColumnHeader(TableProperty.DEFAULT, m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_DEFAULT_0));
+        table.setColumnHeader(TableProperty.KEY, m_configurableMessages.getColumnHeader(TableProperty.KEY));
+        table.setColumnHeader(TableProperty.DEFAULT, m_configurableMessages.getColumnHeader(TableProperty.DEFAULT));
         table.setColumnHeader(
             TableProperty.DESCRIPTION,
-            m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_DESCRIPTION_0));
+            m_configurableMessages.getColumnHeader(TableProperty.DESCRIPTION));
         table.setColumnHeader(
             TableProperty.TRANSLATION,
-            m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_TRANSLATION_0)
+            m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION)
                 + " ("
                 + m_model.getLocale().getDisplayName()
                 + ")");
-        table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.key(Messages.GUI_COLUMN_HEADER_OPTIONS_0));
+        table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.getColumnHeader(TableProperty.OPTIONS));
 
         table.setFilterBarVisible(true);
         table.setFilterFieldVisible(TableProperty.OPTIONS, false);
@@ -683,6 +683,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
     }
 
     /** Generates the options column for the table.
+     * @param table table instance passed to the option column generator
      * @return the options column
      */
     private CmsMessageBundleEditorTypes.OptionColumnGenerator generateOptionsColumn(CustomTable table) {
