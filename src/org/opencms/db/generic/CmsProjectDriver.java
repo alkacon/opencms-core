@@ -993,7 +993,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READMODE_ONLY_FILES);
+                CmsDriverManager.READMODE_INCLUDE_TREE);
 
             for (CmsResource delFile : movedFiles) {
                 try {
@@ -1002,22 +1002,39 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentProject().getUuid(),
                         delFile.getStructureId(),
                         true);
-                    CmsFile offlineFile = new CmsFile(offlineResource);
-                    offlineFile.setContents(
-                        vfsDriver.readContent(dbc, dbc.currentProject().getUuid(), offlineFile.getResourceId()));
-                    internalWriteHistory(
-                        dbc,
-                        offlineFile,
-                        CmsResource.STATE_DELETED,
-                        null,
-                        publishHistoryId,
-                        publishTag);
-                    vfsDriver.deletePropertyObjects(
-                        dbc,
-                        onlineProject.getUuid(),
-                        delFile,
-                        CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
-                    vfsDriver.removeFile(dbc, onlineProject.getUuid(), delFile);
+                    if (offlineResource.isFile()) {
+                        CmsFile offlineFile = new CmsFile(offlineResource);
+                        offlineFile.setContents(
+                            vfsDriver.readContent(dbc, dbc.currentProject().getUuid(), offlineFile.getResourceId()));
+                        internalWriteHistory(
+                            dbc,
+                            offlineFile,
+                            CmsResource.STATE_DELETED,
+                            null,
+                            publishHistoryId,
+                            publishTag);
+                        vfsDriver.deletePropertyObjects(
+                            dbc,
+                            onlineProject.getUuid(),
+                            delFile,
+                            CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                        vfsDriver.removeFile(dbc, onlineProject.getUuid(), delFile);
+                    } else if (offlineResource.isFolder()) {
+
+                        internalWriteHistory(
+                            dbc,
+                            offlineResource,
+                            CmsResource.STATE_DELETED,
+                            null,
+                            publishHistoryId,
+                            publishTag);
+                        vfsDriver.deletePropertyObjects(
+                            dbc,
+                            onlineProject.getUuid(),
+                            delFile,
+                            CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                        vfsDriver.removeFolder(dbc, onlineProject, delFile);
+                    }
                 } catch (CmsDataAccessException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(
