@@ -65,6 +65,26 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
     private static final String OPENCMS_PATH_PREFIX = "OPENCMS/";
 
     /**
+     * Returns the URL to a static resource.<p>
+     *
+     * @param resourcePath the static resource path
+     *
+     * @return the resource URL
+     */
+    public static URL getStaticResourceURL(String resourcePath) {
+
+        URL resourceURL = null;
+        String prefix = OpenCmsServlet.HANDLE_PATH + HANDLER_NAME + "/";
+        int index = resourcePath.indexOf(prefix);
+        if (index >= 0) {
+            String path = resourcePath.substring(index + prefix.length());
+            path = CmsStringUtil.joinPaths(OPENCMS_PATH_PREFIX, path);
+            resourceURL = OpenCms.getSystemInfo().getClass().getClassLoader().getResource(path);
+        }
+        return resourceURL;
+    }
+
+    /**
      * @see org.opencms.main.I_CmsRequestHandler#getHandlerNames()
      */
     public String[] getHandlerNames() {
@@ -77,14 +97,8 @@ public class CmsStaticResourceHandler implements I_CmsRequestHandler {
      */
     public void handle(HttpServletRequest request, HttpServletResponse response, String name) throws IOException {
 
-        int prefixLength = OpenCmsServlet.HANDLE_PATH.length() + name.length() + 1;
         String path = OpenCmsCore.getInstance().getPathInfo(request);
-        URL resourceURL = null;
-        if (path.length() > prefixLength) {
-            path = path.substring(prefixLength);
-            path = CmsStringUtil.joinPaths(OPENCMS_PATH_PREFIX, path);
-            resourceURL = getClass().getClassLoader().getResource(path);
-        }
+        URL resourceURL = getStaticResourceURL(path);
         if (resourceURL != null) {
             setResponseHeaders(request, response, path, resourceURL);
             writeStaticResourceResponse(request, response, resourceURL);

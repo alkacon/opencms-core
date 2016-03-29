@@ -32,6 +32,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsStaticResourceHandler;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsCollectionsGenericWrapper;
@@ -44,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.List;
 
@@ -231,22 +233,29 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
         SerializationPolicy serializationPolicy = null;
 
         // Open the RPC resource file and read its contents
-        InputStream is;
+        InputStream is = null;
         try {
-            // first try reading from the RFS
-            String rfsPath = m_serializationPolicyPath;
-
-            if (rfsPath.startsWith(OpenCms.getSystemInfo().getContextPath())) {
-                rfsPath = rfsPath.substring(OpenCms.getSystemInfo().getContextPath().length());
-            }
-            rfsPath = CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getWebApplicationRfsPath(), rfsPath);
-            File policyFile = new File(rfsPath);
-            if (policyFile.exists() && policyFile.canRead()) {
-                is = new FileInputStream(policyFile);
+            // check if this is a static resource request
+            if (m_serializationPolicyPath.startsWith(OpenCms.getSystemInfo().getStaticResourceContext())) {
+                URL resourceURL = CmsStaticResourceHandler.getStaticResourceURL(m_serializationPolicyPath);
+                URLConnection connection;
+                connection = resourceURL.openConnection();
+                is = connection.getInputStream();
             } else {
-                // the file does not exist in the RFS, try the VFS
-                String policyPath = OpenCms.getLinkManager().getRootPath(cms, rfsPath);
-                is = new ByteArrayInputStream(cms.readFile(policyPath).getContents());
+                // try reading from the RFS
+                String rfsPath = m_serializationPolicyPath;
+                if (rfsPath.startsWith(OpenCms.getSystemInfo().getContextPath())) {
+                    rfsPath = rfsPath.substring(OpenCms.getSystemInfo().getContextPath().length());
+                }
+                rfsPath = CmsStringUtil.joinPaths(OpenCms.getSystemInfo().getWebApplicationRfsPath(), rfsPath);
+                File policyFile = new File(rfsPath);
+                if (policyFile.exists() && policyFile.canRead()) {
+                    is = new FileInputStream(policyFile);
+                } else {
+                    // the file does not exist in the RFS, try the VFS
+                    String policyPath = OpenCms.getLinkManager().getRootPath(cms, m_serializationPolicyPath);
+                    is = new ByteArrayInputStream(cms.readFile(policyPath).getContents());
+                }
             }
         } catch (Exception ex) {
             // most likely file not found
@@ -255,6 +264,9 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
                 + "' was not found; did you forget to include it in this deployment?";
             LOG.warn(message);
             LOG.warn(ex.getLocalizedMessage(), ex);
+
+        }
+        if (is == null) {
             return new CmsDummySerializationPolicy();
         }
 
@@ -268,7 +280,7 @@ public class CmsGwtServiceContext implements I_CmsEventListener {
         } finally {
             try {
                 is.close();
-            } catch (IOException e) {
+            } catch (@SuppressWarnings("unused") IOException e) {
                 // Ignore this error
             }
         }

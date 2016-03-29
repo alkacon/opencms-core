@@ -118,6 +118,7 @@ public class CmsSystemInfo {
     /** Name of the config folder property provides as Java VM parameter -Dopencms.config=.*/
     public static final String CONFIG_FOLDER_PROPERTY = "opencms.config";
 
+    /** The static resource prefix '/handleStatic/'. */
     public static final String STATIC_RESOURCE_PREFIX = OpenCmsServlet.HANDLE_PATH
         + CmsStaticResourceHandler.HANDLER_NAME;
 
@@ -828,7 +829,7 @@ public class CmsSystemInfo {
         Properties props = new Properties();
         try {
             props.load(this.getClass().getClassLoader().getResourceAsStream("org/opencms/main/version.properties"));
-        } catch (Throwable t) {
+        } catch (@SuppressWarnings("unused") Throwable t) {
             // no properties found - we just use the defaults
             return;
         }
