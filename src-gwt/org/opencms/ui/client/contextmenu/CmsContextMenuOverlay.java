@@ -21,6 +21,7 @@ import com.vaadin.client.ui.VOverlay;
  *
  * Adapted from ContextMenu by Peter Lehto / Vaadin Ltd.<p>
  */
+@SuppressWarnings("deprecation")
 class CmsContextMenuOverlay extends VOverlay {
 
     /** The close handler. */
@@ -39,7 +40,6 @@ class CmsContextMenuOverlay extends VOverlay {
     /** The menu items. */
     private final List<CmsContextMenuItemWidget> m_menuItems;
 
-    // tooltips
     /** The root panel. */
     private final FlowPanel m_root;
 

@@ -119,7 +119,7 @@ public class CmsContextMenuItemWidgetHandler implements ClickHandler, MouseOverH
             m_widget.setFocus(true);
 
             if (m_widget.hasSubMenu() && !m_widget.isSubmenuOpen()) {
-                m_openTimer.schedule(500);
+                m_openTimer.schedule(100);
             }
         }
     }
