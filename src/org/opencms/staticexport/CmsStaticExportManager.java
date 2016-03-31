@@ -48,11 +48,11 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -1626,25 +1626,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
         }
 
-        Map<String, String> lruMap1 = CmsCollectionsGenericWrapper.createLRUMap(2048);
-        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
-        // map must be of type "LRUMap" so that memory monitor can acecss all information
-        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheOnlineLinks", lruMap1);
+        m_cacheOnlineLinks = CmsMemoryMonitor.createLRUCacheMap(2048);
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheOnlineLinks", m_cacheOnlineLinks);
 
-        Map<String, CmsStaticExportData> lruMap2 = CmsCollectionsGenericWrapper.createLRUMap(2048);
-        m_cacheExportUris = Collections.synchronizedMap(lruMap2);
-        // map must be of type "LRUMap" so that memory monitor can acecss all information
-        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", lruMap2);
+        m_cacheExportUris = CmsMemoryMonitor.createLRUCacheMap(2048);
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", m_cacheExportUris);
 
-        Map<String, String> lruMap3 = CmsCollectionsGenericWrapper.createLRUMap(2048);
-        m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
-        // map must be of type "LRUMap" so that memory monitor can acecss all information
-        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", lruMap3);
+        m_cacheSecureLinks = CmsMemoryMonitor.createLRUCacheMap(2048);
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", m_cacheSecureLinks);
 
-        Map<String, Boolean> lruMap4 = CmsCollectionsGenericWrapper.createLRUMap(2048);
-        m_cacheExportLinks = Collections.synchronizedMap(lruMap4);
-        // map must be of type "LRUMap" so that memory monitor can acecss all information
-        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportLinks", lruMap4);
+        m_cacheExportLinks = CmsMemoryMonitor.createLRUCacheMap(2048);
+        OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportLinks", m_cacheExportLinks);
 
         // register this object as event listener
         OpenCms.addCmsEventListener(
@@ -1726,17 +1718,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
                 }
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_EXPORT_EXPORT_HANDLER_1,
-                    getHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_EXPORT_EXPORT_HANDLER_1,
+                        getHandler().getClass().getName()));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
                 CmsLog.INIT.info(
                     Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
-                    getLinkSubstitutionHandler().getClass().getName()));
+                CmsLog.INIT.info(
+                    Messages.get().getBundle().key(
+                        Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
+                        getLinkSubstitutionHandler().getClass().getName()));
             } else {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
@@ -2806,7 +2800,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String exportPath,
         String rfsName,
         CmsResource resource,
-        byte[] content) throws CmsException {
+        byte[] content)
+    throws CmsException {
 
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
 

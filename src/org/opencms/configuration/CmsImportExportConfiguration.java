@@ -461,12 +461,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
         // resources to export rule
         digester.addCallMethod(
             "*/"
-                + N_STATICEXPORT
-                + "/"
-                + N_STATICEXPORT_RENDERSETTINGS
-                + "/"
-                + N_STATICEXPORT_RESOURCESTORENDER
-                + "/"
+            + N_STATICEXPORT
+            + "/"
+            + N_STATICEXPORT_RENDERSETTINGS
+            + "/"
+            + N_STATICEXPORT_RESOURCESTORENDER
+            + "/"
                 + N_STATICEXPORT_REGEX,
             "setExportFolderPattern",
             0);
@@ -610,23 +610,23 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             0);
         digester.addCallMethod(
             "*/"
-                + N_EXTHTMLIMPORT
-                + "/"
-                + N_EXTHTMLIMPORT_SETTINGS
-                + "/"
-                + N_EXTHTMLIMPORT_PATTERN
-                + "/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN
+            + "/"
                 + N_EXTHTMLIMPORT_PATTERN_START,
             "setStartPattern",
             0);
         digester.addCallMethod(
             "*/"
-                + N_EXTHTMLIMPORT
-                + "/"
-                + N_EXTHTMLIMPORT_SETTINGS
-                + "/"
-                + N_EXTHTMLIMPORT_PATTERN
-                + "/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN
+            + "/"
                 + N_EXTHTMLIMPORT_PATTERN_END,
             "setEndPattern",
             0);

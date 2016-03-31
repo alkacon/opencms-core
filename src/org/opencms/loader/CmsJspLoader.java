@@ -49,11 +49,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -1092,10 +1092,8 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     protected void initCaches(int cacheSize) {
 
-        Map<String, Boolean> map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
-        m_offlineJsps = Collections.synchronizedMap(map);
-        map = CmsCollectionsGenericWrapper.createLRUMap(cacheSize);
-        m_onlineJsps = Collections.synchronizedMap(map);
+        m_offlineJsps = CmsMemoryMonitor.createLRUCacheMap(cacheSize);
+        m_onlineJsps = CmsMemoryMonitor.createLRUCacheMap(cacheSize);
     }
 
     /**

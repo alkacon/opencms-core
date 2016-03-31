@@ -34,16 +34,15 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsUUID;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +66,11 @@ public class CmsExplorerTypeAccess {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
 
+    static {
+        flushListener = new CmsExplorerTypeAccessFlushListener();
+        flushListener.install();
+    }
+
     /** The map of configured access control entries. */
     private Map<String, String> m_accessControl;
 
@@ -83,11 +87,6 @@ public class CmsExplorerTypeAccess {
 
         m_accessControl = new HashMap<String, String>();
         flushListener.add(this);
-    }
-
-    static {
-        flushListener = new CmsExplorerTypeAccessFlushListener();
-        flushListener.install();
     }
 
     /**
@@ -121,9 +120,8 @@ public class CmsExplorerTypeAccess {
             return;
         }
         if (m_permissionsCache == null) {
-            Map<String, CmsPermissionSetCustom> lruMap = CmsCollectionsGenericWrapper.createLRUMap(2048);
-            m_permissionsCache = Collections.synchronizedMap(lruMap);
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + resourceType, lruMap);
+            m_permissionsCache = CmsMemoryMonitor.createLRUCacheMap(2048);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + resourceType, m_permissionsCache);
         } else {
             m_permissionsCache.clear();
         }

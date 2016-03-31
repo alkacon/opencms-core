@@ -110,8 +110,8 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
             @Override
             public Boolean load(CmsResource key) throws Exception {
 
-                if (m_state == null) {
-                    // this can only happen before the ADE manager is initialized
+    if(m_state==null){
+    // this can only happen before the ADE manager is initialized
                     return Boolean.FALSE;
                 }
                 try {
@@ -558,7 +558,7 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
         } else if (m_state.getFolderTypes().containsKey(rootPath)) {
             m_updateSet.add(ID_UPDATE_FOLDERTYPES);
         }
-    }
+            }
 
     /**
      * Parses a sitemap configuration from a resource given its structure id, and either returns
@@ -567,30 +567,30 @@ class CmsConfigurationCache implements I_CmsGlobalConfigurationCache {
      *
      * @param id the structure id of a resource
      * @return the sitemap configuration parsed from the resource, or null on failure
-     */
+    */
     CmsADEConfigDataInternal parseSitemapConfiguration(CmsUUID id) {
 
-        try {
-            CmsResource configResource = m_cms.readResource(id);
-            // Path or type may have changed in the meantime, so need to check if it's still a sitemap configuration
-            if (isSitemapConfiguration(configResource.getRootPath(), configResource.getTypeId())) {
-                CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
-                String basePath = getBasePath(configResource.getRootPath());
-                CmsADEConfigDataInternal result = reader.parseSitemapConfiguration(basePath, configResource);
-                return result;
-            } else {
-                LOG.info("Not a valid sitemap configuration anymore: " + configResource.getRootPath());
-                return null;
-            }
-        } catch (Exception e) {
-            if (e instanceof CmsVfsResourceNotFoundException) {
-                LOG.info("Configuration file with ID " + id + " was not found.");
-            } else {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
+                try {
+        CmsResource configResource = m_cms.readResource(id);
+        // Path or type may have changed in the meantime, so need to check if it's still a sitemap configuration
+        if (isSitemapConfiguration(configResource.getRootPath(), configResource.getTypeId())) {
+            CmsConfigurationReader reader = new CmsConfigurationReader(m_cms);
+            String basePath = getBasePath(configResource.getRootPath());
+            CmsADEConfigDataInternal result = reader.parseSitemapConfiguration(basePath, configResource);
+            return result;
+        } else {
+            LOG.info("Not a valid sitemap configuration anymore: " + configResource.getRootPath());
             return null;
-
         }
+        } catch (Exception e) {
+        if (e instanceof CmsVfsResourceNotFoundException) {
+            LOG.info("Configuration file with ID " + id + " was not found.");
+        } else {
+            LOG.warn(e.getLocalizedMessage(), e);
+        }
+        return null;
+
+    }
     }
 
     /**

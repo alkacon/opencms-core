@@ -38,6 +38,7 @@ import org.opencms.xml.content.CmsXmlContent;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -78,8 +79,7 @@ public final class CmsADESessionCache {
     protected CmsADESessionCache(CmsObject cms, HttpServletRequest request) {
 
         // container element cache
-        Map<String, CmsContainerElementBean> lruMapCntElem = new HashMap<String, CmsContainerElementBean>();
-        m_containerElements = Collections.synchronizedMap(lruMapCntElem);
+        m_containerElements = new ConcurrentHashMap<String, CmsContainerElementBean>();
 
         // XML content cache, used during XML content edit
         m_xmlContents = Collections.synchronizedMap(new HashMap<CmsUUID, CmsXmlContent>());
