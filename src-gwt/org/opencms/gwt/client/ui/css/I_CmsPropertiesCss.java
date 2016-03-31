@@ -49,6 +49,18 @@ public interface I_CmsPropertiesCss extends CssResource {
     String propertyDefinitionButton();
 
     /** Access method.<p>
+    *
+    * @return the CSS class name
+    */
+    String propertyPanel();
+
+    /** Access method.<p>
+    *
+    * @return the CSS class name
+    */
+    String propertyParentLoading();
+
+    /** Access method.<p>
      *
      * @return the CSS class name
      */

@@ -84,6 +84,8 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
     /** The interval used for updating the height. */
     public static final int UPDATE_HEIGHT_INTERVAL = 200;
 
+    protected static boolean m_resizeDisabled;
+
     /** The map of tab names. */
     private static BiMap<CmsClientProperty.Mode, String> tabs;
 
@@ -128,6 +130,16 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
         tabs.put(Mode.effective, CmsPropertyPanel.TAB_SIMPLE);
         tabs.put(Mode.structure, CmsPropertyPanel.TAB_INDIVIDUAL);
         tabs.put(Mode.resource, CmsPropertyPanel.TAB_SHARED);
+    }
+
+    /** 
+     * Disables resizing.<p>
+     * 
+     * @param disabled true if resizing should be disabled 
+     */
+    public static void disableResize(boolean disabled) {
+
+        m_resizeDisabled = disabled;
     }
 
     /**
@@ -196,7 +208,9 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 if (!getPropertyPanel().getTabPanel().isAttached() || !getPropertyPanel().getTabPanel().isVisible()) {
                     return false;
                 }
-                updateHeight(dialog);
+                if (!m_resizeDisabled) {
+                    updateHeight(dialog);
+                }
                 return true;
             }
         }, UPDATE_HEIGHT_INTERVAL);
@@ -290,7 +304,6 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
                 handleSwitchTab(target);
             }
         });
-
         m_form.setWidget(m_panel);
 
     }
@@ -315,6 +328,7 @@ public class CmsVfsModePropertyEditor extends A_CmsPropertyEditor {
             m_panel.getTabPanel().setHeight(newHeight + "px");
             int selectedIndex = m_panel.getTabPanel().getSelectedIndex();
             CmsScrollPanel widget = m_panel.getTabPanel().getWidget(selectedIndex);
+
             widget.setHeight((newHeight - 34) + "px");
             widget.onResizeDescendant();
             //dialog.center();

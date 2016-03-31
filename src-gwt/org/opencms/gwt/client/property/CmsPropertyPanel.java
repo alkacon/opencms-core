@@ -169,6 +169,7 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             m_tabPanel.add(scrollPanel, Messages.get().key(Messages.GUI_PROPERTY_TAB_COMPLETE_0));
         }
         initWidget(m_tabPanel);
+        addStyleName(org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.propertiesCss().propertyPanel());
         m_tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {

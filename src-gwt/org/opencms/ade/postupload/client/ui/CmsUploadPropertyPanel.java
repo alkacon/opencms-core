@@ -134,6 +134,15 @@ public class CmsUploadPropertyPanel extends FlowPanel implements I_CmsFormHandle
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#isSubmitting()
+     */
+    public boolean isSubmitting() {
+
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
      */
     public void onSubmitValidationResult(CmsForm form, boolean ok) {

@@ -35,6 +35,13 @@ package org.opencms.gwt.client.ui.input.form;
 public interface I_CmsFormHandler {
 
     /**
+     * Returns true if properties are currently being submitted.<p>
+     *
+     * @return true if properties are being submitted
+     */
+    boolean isSubmitting();
+
+    /**
      * This method is called when the validation triggered by an attempt to submit the form has finished.<p>
      *
      * @param form the form

@@ -204,6 +204,12 @@ public class CmsSeoOptionsDialog extends CmsPopup implements I_CmsFormHandler {
         action.execute();
     }
 
+    public boolean isSubmitting() {
+
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     /**
      * @see org.opencms.gwt.client.ui.input.form.I_CmsFormHandler#onSubmitValidationResult(org.opencms.gwt.client.ui.input.form.CmsForm, boolean)
      */
