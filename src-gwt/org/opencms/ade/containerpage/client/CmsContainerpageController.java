@@ -93,6 +93,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -1962,11 +1963,11 @@ public final class CmsContainerpageController {
         AsyncCallback<Void> doNothing = new AsyncCallback<Void>() {
 
             public void onFailure(Throwable caught) {
-
+                // nothing to do
             }
 
             public void onSuccess(Void result) {
-
+                // nothing to do
             }
         };
         getContainerpageService().setLastPage(CmsCoreProvider.get().getStructureId(), m_data.getDetailId(), doNothing);
@@ -3274,16 +3275,15 @@ public final class CmsContainerpageController {
 
     /**
     * Previews events. Shows the leaving page dialog, if the page has changed and an anchor has been clicked.<p>
+    * Also triggers an element view change on 'Ctrl+E'.<p>
     *
     * @param event the native event
     */
     protected void previewNativeEvent(NativePreviewEvent event) {
 
         Event nativeEvent = Event.as(event.getNativeEvent());
-        if (!hasPageChanged()) {
-            return;
-        }
-        if ((nativeEvent.getTypeInt() == Event.ONCLICK)) {
+
+        if ((nativeEvent.getTypeInt() == Event.ONCLICK) && hasPageChanged()) {
             EventTarget target = nativeEvent.getEventTarget();
             if (!Element.is(target)) {
                 return;
@@ -3305,11 +3305,17 @@ public final class CmsContainerpageController {
             nativeEvent.stopPropagation();
             m_handler.leavePage(uri);
         }
-        if ((event.getTypeInt() == Event.ONKEYDOWN) && (nativeEvent.getKeyCode() == 116)) {
-            // user pressed F5
-            nativeEvent.preventDefault();
-            nativeEvent.stopPropagation();
-            m_handler.leavePage(Window.Location.getHref());
+        if (event.getTypeInt() == Event.ONKEYDOWN) {
+            int keyCode = nativeEvent.getKeyCode();
+            if ((keyCode == KeyCodes.KEY_F5) && hasPageChanged()) {
+                // user pressed F5
+                nativeEvent.preventDefault();
+                nativeEvent.stopPropagation();
+                m_handler.leavePage(Window.Location.getHref());
+            }
+            if (nativeEvent.getCtrlKey() && (keyCode == KeyCodes.KEY_E)) {
+                openNextElementView();
+            }
         }
     }
 
@@ -3661,6 +3667,61 @@ public final class CmsContainerpageController {
             }
         }
         return result;
+    }
+
+    /**
+     * Opens the next available root element view.<p>
+     */
+    private void openNextElementView() {
+
+        List<CmsElementViewInfo> views = getData().getElementViews();
+        if (views.size() > 1) {
+            CmsUUID current = m_elementView.getRootViewId();
+
+            // look for the current view index
+            int currentIndex = -1;
+            for (int i = 0; i < views.size(); i++) {
+                CmsElementViewInfo view = views.get(i);
+                if (view.isRoot() && current.equals(view.getElementViewId())) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+            if (currentIndex != -1) {
+                CmsElementViewInfo target = null;
+                // look for the next root view
+                for (int i = currentIndex + 1; i < views.size(); i++) {
+                    CmsElementViewInfo view = views.get(i);
+                    if (view.isRoot()) {
+                        target = view;
+                        break;
+                    }
+                }
+                if (target == null) {
+                    // start at the beginning
+                    for (int i = 0; i < currentIndex; i++) {
+                        CmsElementViewInfo view = views.get(i);
+                        if (view.isRoot()) {
+                            target = view;
+                            break;
+                        }
+                    }
+                }
+                if (target != null) {
+                    final String viewName = target.getTitle();
+                    Runnable action = new Runnable() {
+
+                        public void run() {
+
+                            CmsNotification.get().send(
+                                Type.NORMAL,
+                                Messages.get().key(Messages.GUI_SWITCH_ELEMENT_VIEW_NOTIFICATION_1, viewName));
+                        }
+                    };
+                    setElementView(target, action);
+                }
+            }
+        }
     }
 
     /**

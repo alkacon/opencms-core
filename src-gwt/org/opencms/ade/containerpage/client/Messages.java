@@ -190,10 +190,10 @@ public final class Messages {
     public static final String GUI_MODEL_GROUP_DESCRIPTION_0 = "GUI_MODEL_GROUP_DESCRIPTION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_OPTION_DISABLED_0 = "GUI_MODEL_GROUP_OPTION_DISABLED_0";
+    public static final String GUI_MODEL_GROUP_OPTION_COPY_0 = "GUI_MODEL_GROUP_OPTION_COPY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_MODEL_GROUP_OPTION_COPY_0 = "GUI_MODEL_GROUP_OPTION_COPY_0";
+    public static final String GUI_MODEL_GROUP_OPTION_DISABLED_0 = "GUI_MODEL_GROUP_OPTION_DISABLED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_MODEL_GROUP_OPTION_REUSE_0 = "GUI_MODEL_GROUP_OPTION_REUSE_0";
@@ -254,6 +254,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SETTINGS_LEGEND_0 = "GUI_SETTINGS_LEGEND_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SWITCH_ELEMENT_VIEW_NOTIFICATION_1 = "GUI_SWITCH_ELEMENT_VIEW_NOTIFICATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAB_FAVORITES_DESCRIPTION_0 = "GUI_TAB_FAVORITES_DESCRIPTION_0";

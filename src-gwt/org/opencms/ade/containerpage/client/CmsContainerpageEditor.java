@@ -87,6 +87,9 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
      */
     public static class PageEditorQuickLaunchHandler extends A_QuickLaunchHandler {
 
+        /**
+         * @see org.opencms.gwt.client.ui.CmsQuickLauncher.I_QuickLaunchHandler#getParameters()
+         */
         public CmsQuickLaunchParams getParameters() {
 
             return new CmsQuickLaunchParams(
