@@ -464,14 +464,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
-                String locale = m_model.getLocale().equals(CmsMessageBundleEditorTypes.DEFAULT_LOCALE)
-                ? m_messages.key(Messages.GUI_DEFAULT_LOCALE_0)
-                : m_model.getLocale().getDisplayName(UI.getCurrent().getLocale());
-
-                m_table.setColumnHeader(
-                    TableProperty.TRANSLATION,
-                    m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION) + " (" + locale + ")");
             }
         });
         languages.addComponent(languageLabel);
@@ -556,10 +548,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             m_configurableMessages.getColumnHeader(TableProperty.DESCRIPTION));
         table.setColumnHeader(
             TableProperty.TRANSLATION,
-            m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION)
-                + " ("
-                + m_model.getLocale().getDisplayName()
-                + ")");
+            m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION));
         table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.getColumnHeader(TableProperty.OPTIONS));
 
         table.setFilterBarVisible(true);
