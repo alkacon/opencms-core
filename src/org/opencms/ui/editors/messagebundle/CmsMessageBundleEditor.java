@@ -439,33 +439,35 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         languageSelect.setNullSelectionAllowed(false);
 
         // set Locales
-        if (m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.PROPERTY)) {
-            languageSelect.addItem(CmsMessageBundleEditorTypes.DEFAULT_LOCALE);
-            languageSelect.setItemCaption(
-                CmsMessageBundleEditorTypes.DEFAULT_LOCALE,
-                m_messages.key(Messages.GUI_DEFAULT_LOCALE_0));
-        }
         for (Locale locale : m_model.getLocales()) {
             languageSelect.addItem(locale);
-            languageSelect.setItemCaption(locale, locale.getDisplayName(UI.getCurrent().getLocale()));
+            String caption = CmsMessageBundleEditorTypes.DEFAULT_LOCALE.equals(locale)
+            ? Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
+            : locale.getDisplayName(UI.getCurrent().getLocale());
+            languageSelect.setItemCaption(locale, caption);
         }
         languageSelect.setValue(m_model.getLocale());
         languageSelect.setNewItemsAllowed(false);
         languageSelect.setTextInputAllowed(false);
 
-        languageSelect.addValueChangeListener(new ValueChangeListener() {
+        if (m_model.getLocales().size() > 1) {
+            languageSelect.addValueChangeListener(new ValueChangeListener() {
 
-            public void valueChange(ValueChangeEvent event) {
+                public void valueChange(ValueChangeEvent event) {
 
-                try {
-                    m_table.clearFilters();
-                    m_model.setLocale((Locale)event.getProperty().getValue());
-                } catch (IOException | CmsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    try {
+                        m_table.clearFilters();
+                        m_model.setLocale((Locale)event.getProperty().getValue());
+                    } catch (IOException | CmsException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+
+        } else {
+            languageSelect.setEnabled(false);
+        }
         languages.addComponent(languageLabel);
         languages.addComponent(languageSelect);
         return languages;
@@ -635,10 +637,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_appInfo = new HorizontalLayout();
         m_appInfo.setSizeFull();
         m_appInfo.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
-        if (m_model.getLocales().size() > 1) {
-            Component languages = createLanguageSwitcher();
-            m_appInfo.addComponent(languages);
-        }
+        Component languages = createLanguageSwitcher();
+        m_appInfo.addComponent(languages);
         if (!(m_model.hasDescriptor()
             || m_model.getBundleType().equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR))) {
             Component keysetSwitcher = createKeysetSwitcher();

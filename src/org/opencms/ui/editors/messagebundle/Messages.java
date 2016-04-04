@@ -73,6 +73,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MODE_CHANGE_NOT_POSSIBLE_0 = "ERR_MODE_CHANGE_NOT_POSSIBLE_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0 = "ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_READING_PROPERTY_FOR_DEFAULT_LOCALE_2 = "ERR_READING_PROPERTY_FOR_DEFAULT_LOCALE_2";
 
     /**
      * Hides the public constructor for this utility class.<p>

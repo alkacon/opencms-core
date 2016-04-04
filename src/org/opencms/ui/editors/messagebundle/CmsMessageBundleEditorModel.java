@@ -31,6 +31,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
@@ -42,8 +43,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.Descriptor;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.EditorState;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.KeySetMode;
 import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.TableProperty;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
@@ -58,6 +62,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +74,8 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.DefaultItemSorter;
 import com.vaadin.data.util.IndexedContainer;
 
 /**
@@ -78,11 +85,11 @@ import com.vaadin.data.util.IndexedContainer;
 public class CmsMessageBundleEditorModel {
 
     /** Wrapper for the configurable messages for the column headers of the message bundle editor. */
-    static final class ConfigurableMessages {
+    public static final class ConfigurableMessages {
 
         /** The messages from the default message bundle. */
         CmsMessages m_defaultMessages;
-        /** The messages from a configured messageb bundle, overwriting the ones from the default bundle. */
+        /** The messages from a configured message bundle, overwriting the ones from the default bundle. */
         CmsMessages m_configuredMessages;
 
         /**
@@ -91,7 +98,7 @@ public class CmsMessageBundleEditorModel {
          * @param locale the locale in which the messages are requested.
          * @param configuredBundle the base name of the configured message bundle (can be <code>null</code>).
          */
-        private ConfigurableMessages(CmsMessages defaultMessages, Locale locale, String configuredBundle) {
+        public ConfigurableMessages(CmsMessages defaultMessages, Locale locale, String configuredBundle) {
             m_defaultMessages = defaultMessages;
             if (null != configuredBundle) {
                 CmsMessages bundle = new CmsMessages(configuredBundle, locale);
@@ -116,7 +123,7 @@ public class CmsMessageBundleEditorModel {
                 case KEY:
                     return getMessage(Messages.GUI_COLUMN_HEADER_KEY_0);
                 case OPTIONS:
-                    return getMessage(Messages.GUI_COLUMN_HEADER_OPTIONS_0);
+                    return "";
                 case TRANSLATION:
                     return getMessage(Messages.GUI_COLUMN_HEADER_TRANSLATION_0);
                 default:
@@ -146,6 +153,40 @@ public class CmsMessageBundleEditorModel {
             }
         }
 
+    }
+
+    /** Comparator that compares strings case insensitive. */
+    static class CmsCaseInsensitivePropertyValueComparator implements Comparator<Object> {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @SuppressWarnings("unchecked")
+        public int compare(Object o1, Object o2) {
+
+            int r = 0;
+            // Normal non-null comparison
+            if ((o1 != null) && (o2 != null)) {
+                if ((o1 instanceof String) && (o2 instanceof String)) {
+                    return ((String)o1).compareToIgnoreCase((String)o2);
+                } else {
+                    // Assume the objects can be cast to Comparable, throw
+                    // ClassCastException otherwise.
+                    r = ((Comparable<Object>)o1).compareTo(o2);
+                }
+            } else if (o1 == o2) {
+                // Objects are equal if both are null
+                r = 0;
+            } else {
+                if (o1 == null) {
+                    r = -1; // null is less than non-null
+                } else {
+                    r = 1; // non-null is greater than null
+                }
+            }
+
+            return r;
+        }
     }
 
     /** The log object for this class. */
@@ -199,6 +240,18 @@ public class CmsMessageBundleEditorModel {
     /** The configured resource bundle used for the column headings of the bundle descriptor. */
     private String m_configuredBundle;
 
+    /** Flag, indicating if the locale of the bundle that is edited has switched on opening. */
+    private boolean m_switchedLocaleOnOpening;
+
+    /** Flag, indicating if at least one default value is present in the current descriptor. */
+    private boolean m_hasDefault;
+
+    /** Flag, indicating if at least one description is present in the current descriptor. */
+    private boolean m_hasDescription;
+
+    /** Flag, indicating if the descriptor should be removed when editing is cancelled. */
+    private boolean m_removeDescriptorOnCancel;
+
     /**
      *
      * @param cms the {@link CmsObject} used for reading / writing.
@@ -228,24 +281,21 @@ public class CmsMessageBundleEditorModel {
 
         m_bundleType = initBundleType();
 
+        m_locales = initLocales();
+
+        //IMPORTANT: The order of the following method calls is important.
+
         if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.XML)) {
             initXmlBundle();
         }
 
         setResourceInformation();
 
+        initDescriptor();
+
         if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.PROPERTY)) {
             initPropertyBundle();
         }
-
-        if (m_bundleType.equals(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR)) {
-            m_locales = new ArrayList<Locale>(1);
-            m_locales.add(Descriptor.LOCALE);
-        } else {
-            m_locales = OpenCms.getLocaleManager().getAvailableLocales(m_cms, resource);
-        }
-
-        initDescriptor();
 
         initHasMasterMode();
 
@@ -271,6 +321,62 @@ public class CmsMessageBundleEditorModel {
         return map;
     }
 
+    /**
+     * Creates a descriptor for the currently edited message bundle.
+     * @return <code>true</code> if the descriptor could be created, <code>false</code> otherwise.
+     */
+    public boolean addDescriptor() {
+
+        saveLocalization();
+        IndexedContainer oldContainer = m_container;
+        KeySetMode oldKeySetMode = getKeySetMode();
+        try {
+            setKeySetMode(KeySetMode.ALL);
+            createAndLockDescriptorFile();
+            unmarshalDescriptor();
+            updateBundleDescriptorContent();
+            m_hasMasterMode = true;
+            m_container = createContainer();
+            m_editorState.put(EditMode.DEFAULT, getDefaultState());
+            m_editorState.put(EditMode.MASTER, getMasterState());
+        } catch (CmsException | IOException e) {
+            LOG.error(e.getLocalizedMessage(), e);
+            if (m_descContent != null) {
+                m_descContent = null;
+            }
+            if (m_descFile != null) {
+                m_descFile = null;
+            }
+            if (m_desc != null) {
+                try {
+                    m_cms.deleteResource(m_desc, CmsResourceDeleteMode.valueOf(1));
+                } catch (CmsException ex) {
+                    LOG.error(ex.getLocalizedMessage(), ex);
+                }
+                m_desc = null;
+            }
+            m_hasMasterMode = false;
+            m_container = oldContainer;
+            setKeySetMode(oldKeySetMode);
+            return false;
+        }
+        m_removeDescriptorOnCancel = true;
+        return true;
+    }
+
+    /**
+     * When the descriptor was added while editing, but the change was not saved, it has to be removed
+     * when the editor is closed.
+     * @throws CmsException thrown when deleting the descriptor resource fails
+     */
+    public void deleteDescriptorIfNecessary() throws CmsException {
+
+        if (m_removeDescriptorOnCancel && (m_desc != null)) {
+            m_cms.deleteResource(m_desc, CmsResourceDeleteMode.valueOf(2));
+        }
+
+    }
+
     /** Returns the a set with all keys that are used at least in one translation.
      * @return the a set with all keys that are used at least in one translation.
      */
@@ -282,7 +388,7 @@ public class CmsMessageBundleEditorModel {
     /** Returns the type of the currently edited bundle.
      * @return the type of the currently edited bundle.
      */
-    public Object getBundleType() {
+    public BundleType getBundleType() {
 
         return m_bundleType;
     }
@@ -293,7 +399,6 @@ public class CmsMessageBundleEditorModel {
      * @param locale the preferred locale
      * @return the configured bundle or, if not found, the default bundle.
      */
-    @SuppressWarnings("synthetic-access")
     public ConfigurableMessages getConfigurableMessages(CmsMessages defaultMessages, Locale locale) {
 
         return new ConfigurableMessages(defaultMessages, locale, m_configuredBundle);
@@ -315,13 +420,43 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Returns the editable columns for the current edit mode.
+     * @return the editable columns for the current edit mode.
+     */
+    public List<TableProperty> getEditableColumns() {
+
+        return m_editorState.get(m_editMode).getEditableColumns();
+    }
+
+    /**
      * Returns the editable columns for the provided edit mode.
      * @param mode the edit mode.
      * @return the editable columns for the provided edit mode.
      */
-    public List<Object> getEditableColumns(CmsMessageBundleEditorTypes.EditMode mode) {
+    public List<TableProperty> getEditableColumns(CmsMessageBundleEditorTypes.EditMode mode) {
 
         return m_editorState.get(mode).getEditableColumns();
+    }
+
+    /**
+     * Returns the site path for the edited bundle file.
+     *
+     * @return the site path for the edited bundle file.
+     */
+    public String getEditedFilePath() {
+
+        switch (getBundleType()) {
+            case DESCRIPTOR:
+                return m_cms.getSitePath(m_desc);
+            case PROPERTY:
+                return null != m_bundleFiles.get(getLocale())
+                ? m_cms.getSitePath(m_bundleFiles.get(getLocale()).getFile())
+                : m_cms.getSitePath(m_resource);
+            case XML:
+                return m_cms.getSitePath(m_resource);
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     /** Returns the current edit mode.
@@ -358,6 +493,33 @@ public class CmsMessageBundleEditorModel {
     public Collection<Locale> getLocales() {
 
         return m_locales;
+    }
+
+    /**
+     * Returns a flag, indicating if the locale has been switched on opening.
+     * @return a flag, indicating if the locale has been switched on opening.
+     */
+    public boolean getSwitchedLocaleOnOpening() {
+
+        return m_switchedLocaleOnOpening;
+    }
+
+    /**
+     * Returns a flag, indicating if the descriptor specifies any default values.
+     * @return flag, indicating if the descriptor specifies any default values.
+     */
+    public boolean hasDefaultValues() {
+
+        return m_hasDefault;
+    }
+
+    /**
+     * Returns a flag, indicating if the descriptor specifies any descriptions.
+     * @return a flag, indicating if the descriptor specifies any descriptions.
+     */
+    public boolean hasDescriptionValues() {
+
+        return m_hasDescription;
     }
 
     /** Returns a flag, indicating if a bundle descriptor is present.
@@ -447,8 +609,7 @@ public class CmsMessageBundleEditorModel {
                 adjustExistingContainer(m_locale, mode);
             } catch (IOException | CmsException e) {
                 // Should never happen
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error(e.getLocalizedMessage(), e);
             }
             m_keysetMode = mode;
         }
@@ -500,6 +661,20 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Creates a descriptor for the bundle in the same folder where the bundle files are located.
+     * @throws CmsException thrown if creation fails.
+     */
+    private void createAndLockDescriptorFile() throws CmsException {
+
+        String sitePath = m_sitepath + m_basename + CmsMessageBundleEditorTypes.Descriptor.POSTFIX;
+        m_desc = m_cms.createResource(
+            sitePath,
+            OpenCms.getResourceManager().getResourceType(CmsMessageBundleEditorTypes.BundleType.DESCRIPTOR.toString()));
+        m_descFile = LockedFile.lockResource(m_cms, m_desc);
+        m_descFile.setCreated(true);
+    }
+
+    /**
      * Initializes the IndexedContainer shown in the table for the current locale.
      * Therefore, the involved {@link CmsResource}s will be read, if not already done.
      * @return the created container
@@ -519,6 +694,7 @@ public class CmsMessageBundleEditorModel {
                 container = createContainerForBundleWithoutDescriptor();
             }
         }
+        container.setItemSorter(new DefaultItemSorter(new CmsCaseInsensitivePropertyValueComparator()));
         return container;
     }
 
@@ -541,6 +717,10 @@ public class CmsMessageBundleEditorModel {
         // add entries
         Map<String, String> localization = getLocalization(m_locale);
         CmsXmlContentValueSequence messages = m_descContent.getValueSequence(Descriptor.N_MESSAGE, Descriptor.LOCALE);
+        String descValue;
+        boolean hasDescription = false;
+        String defaultValue;
+        boolean hasDefault = false;
         for (int i = 0; i < messages.getElementCount(); i++) {
 
             String prefix = messages.getValue(i).getPath() + "/";
@@ -550,12 +730,18 @@ public class CmsMessageBundleEditorModel {
             item.getItemProperty(TableProperty.KEY).setValue(key);
             String translation = localization.get(key);
             item.getItemProperty(TableProperty.TRANSLATION).setValue(null == translation ? "" : translation);
-            item.getItemProperty(TableProperty.DESCRIPTION).setValue(
-                m_descContent.getValue(prefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).getStringValue(m_cms));
-            item.getItemProperty(TableProperty.DEFAULT).setValue(
-                m_descContent.getValue(prefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).getStringValue(m_cms));
+            descValue = m_descContent.getValue(prefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).getStringValue(
+                m_cms);
+            item.getItemProperty(TableProperty.DESCRIPTION).setValue(descValue);
+            hasDescription = hasDescription || !descValue.isEmpty();
+            defaultValue = m_descContent.getValue(prefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).getStringValue(
+                m_cms);
+            item.getItemProperty(TableProperty.DEFAULT).setValue(defaultValue);
+            hasDefault = hasDefault || !defaultValue.isEmpty();
         }
 
+        m_hasDefault = hasDefault;
+        m_hasDescription = hasDescription;
         return container;
 
     }
@@ -633,6 +819,18 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Creates the default editor state for editing a bundle with descriptor.
+     * @return the default editor state for editing a bundle with descriptor.
+     */
+    private EditorState getDefaultState() {
+
+        List<TableProperty> cols = new ArrayList<TableProperty>(1);
+        cols.add(TableProperty.TRANSLATION);
+
+        return new EditorState(cols, false);
+    }
+
+    /**
      * Reads the current properties for a language. If not already done, the properties are read from the respective file.
      * @param locale the locale for which the localization should be returned.
      * @return the properties.
@@ -659,6 +857,20 @@ public class CmsMessageBundleEditorModel {
     }
 
     /**
+     * Returns the master mode's editor state for editing a bundle with descriptor.
+     * @return the master mode's editor state for editing a bundle with descriptor.
+     */
+    private EditorState getMasterState() {
+
+        List<TableProperty> cols = new ArrayList<TableProperty>(4);
+        cols.add(TableProperty.KEY);
+        cols.add(TableProperty.DESCRIPTION);
+        cols.add(TableProperty.DEFAULT);
+        cols.add(TableProperty.TRANSLATION);
+        return new EditorState(cols, true);
+    }
+
+    /**
      * Init the bundle type member variable.
      * @return the bundle type of the opened resource.
      */
@@ -681,17 +893,8 @@ public class CmsMessageBundleEditorModel {
         } else {
             m_desc = CmsMessageBundleEditorTypes.getDescriptor(m_cms, m_basename);
         }
-        if (null != m_desc) {
 
-            // unmarshall descriptor
-            m_descContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(m_desc));
-
-            // configure messages if wanted
-            CmsProperty bundleProp = m_cms.readPropertyObject(m_desc, PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION, true);
-            if (!(bundleProp.isNullProperty() || bundleProp.getValue().trim().isEmpty())) {
-                m_configuredBundle = bundleProp.getValue();
-            }
-        }
+        unmarshalDescriptor();
 
     }
 
@@ -701,31 +904,24 @@ public class CmsMessageBundleEditorModel {
     private void initEditorStates() {
 
         m_editorState = new HashMap<CmsMessageBundleEditorTypes.EditMode, EditorState>();
-        List<Object> cols = null;
+        List<TableProperty> cols = null;
         switch (m_bundleType) {
             case PROPERTY:
             case XML:
                 if (hasDescriptor()) { // bundle descriptor is present, keys are not editable in default mode, maybe master mode is available
-                    cols = new ArrayList<Object>(1);
-                    cols.add(TableProperty.TRANSLATION);
-                    m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, new EditorState(cols, false));
+                    m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, getDefaultState());
                     if (hasMasterMode()) { // the bundle descriptor is editable
-                        cols = new ArrayList<Object>(4);
-                        cols.add(TableProperty.KEY);
-                        cols.add(TableProperty.DESCRIPTION);
-                        cols.add(TableProperty.DEFAULT);
-                        cols.add(TableProperty.TRANSLATION);
-                        m_editorState.put(CmsMessageBundleEditorTypes.EditMode.MASTER, new EditorState(cols, true));
+                        m_editorState.put(CmsMessageBundleEditorTypes.EditMode.MASTER, getMasterState());
                     }
                 } else { // no bundle descriptor given - implies no master mode
-                    cols = new ArrayList<Object>(1);
+                    cols = new ArrayList<TableProperty>(1);
                     cols.add(TableProperty.KEY);
                     cols.add(TableProperty.TRANSLATION);
                     m_editorState.put(CmsMessageBundleEditorTypes.EditMode.DEFAULT, new EditorState(cols, true));
                 }
                 break;
             case DESCRIPTOR:
-                cols = new ArrayList<Object>(3);
+                cols = new ArrayList<TableProperty>(3);
                 cols.add(TableProperty.KEY);
                 cols.add(TableProperty.DESCRIPTION);
                 cols.add(TableProperty.DEFAULT);
@@ -775,7 +971,6 @@ public class CmsMessageBundleEditorModel {
             }
             if (baseName.equals(m_basename)) {
                 Properties props = new Properties();
-                //TODO: Check for lock problems
                 props.load(new ByteArrayInputStream(m_cms.readFile(resource).getContents()));
                 m_keyset.updateKeySet(null, propertiesToMap(props).keySet());
             }
@@ -795,6 +990,29 @@ public class CmsMessageBundleEditorModel {
             }
             m_keyset.updateKeySet(null, keys);
         }
+
+    }
+
+    /**
+     * Initializes the locales that can be selected via the language switcher in the bundle editor.
+     * @return the locales for which keys can be edited.
+     */
+    private Collection<Locale> initLocales() {
+
+        Collection<Locale> locales = null;
+        switch (m_bundleType) {
+            case DESCRIPTOR:
+                locales = new ArrayList<Locale>(1);
+                locales.add(Descriptor.LOCALE);
+                break;
+            case XML:
+            case PROPERTY:
+                locales = OpenCms.getLocaleManager().getAvailableLocales(m_cms, m_resource);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return locales;
 
     }
 
@@ -835,10 +1053,7 @@ public class CmsMessageBundleEditorModel {
     private void loadLocalizationFromPropertyBundle(Locale locale) throws IOException, CmsException {
 
         // may throw exception again
-        String sitePath = m_sitepath + m_basename;
-        if (!locale.equals(CmsMessageBundleEditorTypes.DEFAULT_LOCALE)) {
-            sitePath += "_" + locale.toString();
-        }
+        String sitePath = m_sitepath + m_basename + "_" + locale.toString();
         LockedFile file = null;
         if (m_cms.existsResource(sitePath)) {
             CmsResource resource = m_cms.readResource(sitePath);
@@ -949,32 +1164,8 @@ public class CmsMessageBundleEditorModel {
      */
     private void saveToBundleDescriptor() throws CmsException {
 
-        if (m_descContent.hasLocale(Descriptor.LOCALE)) {
-            m_descContent.removeLocale(Descriptor.LOCALE);
-        }
-        m_descContent.addLocale(m_cms, Descriptor.LOCALE);
-        String key;
-        String desc;
-        String defaultValue;
-        int i = 0;
-        for (Object itemId : m_container.getItemIds()) {
-            Item item = m_container.getItem(itemId);
-            key = item.getItemProperty(TableProperty.KEY).getValue().toString();
-            if (!key.isEmpty()) {
-                desc = item.getItemProperty(TableProperty.DESCRIPTION).getValue().toString();
-                defaultValue = item.getItemProperty(TableProperty.DEFAULT).getValue().toString();
-                m_descContent.addValue(m_cms, Descriptor.N_MESSAGE, Descriptor.LOCALE, i);
-                i++;
-                String messagePrefix = Descriptor.N_MESSAGE + "[" + i + "]/";
-                m_descContent.getValue(messagePrefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(m_cms, key);
-                m_descContent.getValue(messagePrefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).setStringValue(
-                    m_cms,
-                    desc);
-                m_descContent.getValue(messagePrefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).setStringValue(
-                    m_cms,
-                    defaultValue);
-            }
-        }
+        m_removeDescriptorOnCancel = false;
+        updateBundleDescriptorContent();
         m_descFile.getFile().setContents(m_descContent.marshal());
         m_cms.writeFile(m_descFile.getFile());
 
@@ -1004,8 +1195,12 @@ public class CmsMessageBundleEditorModel {
                 try {
                     contentBytes = content.toString().getBytes(f.getEncoding());
                 } catch (UnsupportedEncodingException e) {
-                    // TODO Improve
-                    LOG.error("Could not get content in ISO-8859-1.", e);
+                    LOG.error(
+                        m_messages.key(
+                            Messages.ERR_READING_FILE_UNSUPPORTED_ENCODING_2,
+                            f.getFile().getRootPath(),
+                            f.getEncoding()),
+                        e);
                     contentBytes = content.toString().getBytes();
                 }
                 CmsFile file = f.getFile();
@@ -1064,8 +1259,10 @@ public class CmsMessageBundleEditorModel {
                         0,
                         baseName.lastIndexOf(localeSuffix) - (1 /* cut off trailing underscore, too*/));
                     m_locale = CmsLocaleManager.getLocale(localeSuffix);
-                } else {
-                    m_locale = CmsMessageBundleEditorTypes.DEFAULT_LOCALE;
+                }
+                if ((null == m_locale) || !m_locales.contains(m_locale)) {
+                    m_switchedLocaleOnOpening = true;
+                    m_locale = m_locales.iterator().next();
                 }
                 break;
             case XML:
@@ -1077,7 +1274,7 @@ public class CmsMessageBundleEditorModel {
             case DESCRIPTOR:
                 m_basename = baseName.substring(
                     0,
-                    baseName.length() - CmsMessageBundleEditorTypes.DESCRIPTOR_POSTFIX.length());
+                    baseName.length() - CmsMessageBundleEditorTypes.Descriptor.POSTFIX.length());
                 m_locale = new Locale("en");
                 break;
             default:
@@ -1088,6 +1285,74 @@ public class CmsMessageBundleEditorModel {
                             OpenCms.getResourceManager().getResourceType(m_resource).getTypeName())).toString());
         }
         m_basename = baseName;
+
+    }
+
+    /**
+     * Unmarshals the descriptor content.
+     *
+     * @throws CmsXmlException thrown if the XML structure of the descriptor is wrong.
+     * @throws CmsException thrown if reading the descriptor file fails.
+     */
+    private void unmarshalDescriptor() throws CmsXmlException, CmsException {
+
+        if (null != m_desc) {
+
+            // unmarshall descriptor
+            m_descContent = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(m_desc));
+
+            // configure messages if wanted
+            CmsProperty bundleProp = m_cms.readPropertyObject(m_desc, PROPERTY_BUNDLE_DESCRIPTOR_LOCALIZATION, true);
+            if (!(bundleProp.isNullProperty() || bundleProp.getValue().trim().isEmpty())) {
+                m_configuredBundle = bundleProp.getValue();
+            }
+        }
+
+    }
+
+    /**
+     * Update the descriptor content with values from the editor.
+     * @throws CmsXmlException thrown if update fails due to a wrong XML structure (should never happen)
+     */
+    private void updateBundleDescriptorContent() throws CmsXmlException {
+
+        if (m_descContent.hasLocale(Descriptor.LOCALE)) {
+            m_descContent.removeLocale(Descriptor.LOCALE);
+        }
+        m_descContent.addLocale(m_cms, Descriptor.LOCALE);
+        String key;
+        Property<Object> descProp;
+        String desc;
+        Property<Object> defaultValueProp;
+        String defaultValue;
+        int i = 0;
+        for (Object itemId : m_container.getItemIds()) {
+            Item item = m_container.getItem(itemId);
+            key = item.getItemProperty(TableProperty.KEY).getValue().toString();
+            if (!key.isEmpty()) {
+                m_descContent.addValue(m_cms, Descriptor.N_MESSAGE, Descriptor.LOCALE, i);
+                i++;
+                String messagePrefix = Descriptor.N_MESSAGE + "[" + i + "]/";
+
+                m_descContent.getValue(messagePrefix + Descriptor.N_KEY, Descriptor.LOCALE).setStringValue(m_cms, key);
+
+                descProp = item.getItemProperty(TableProperty.DESCRIPTION);
+                if (null != descProp.getValue()) {
+                    desc = descProp.getValue().toString();
+                    m_descContent.getValue(messagePrefix + Descriptor.N_DESCRIPTION, Descriptor.LOCALE).setStringValue(
+                        m_cms,
+                        desc);
+                }
+
+                defaultValueProp = item.getItemProperty(TableProperty.DEFAULT);
+                if (null != defaultValueProp.getValue()) {
+                    defaultValue = defaultValueProp.getValue().toString();
+                    m_descContent.getValue(messagePrefix + Descriptor.N_DEFAULT, Descriptor.LOCALE).setStringValue(
+                        m_cms,
+                        defaultValue);
+                }
+            }
+        }
 
     }
 }
