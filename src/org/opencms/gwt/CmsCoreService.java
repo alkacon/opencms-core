@@ -78,6 +78,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSite;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.components.CmsUserInfo;
+import org.opencms.ui.dialogs.CmsEmbeddedDialogsUI;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -887,6 +888,28 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     }
 
     /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getUserInfo()
+     */
+    public UserInfo getUserInfo() {
+
+        CmsObject cms = getCmsObject();
+        CmsRoleManager roleManager = OpenCms.getRoleManager();
+        boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
+        boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
+        boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
+        UserInfo userInfo = new UserInfo(
+            cms.getRequestContext().getCurrentUser().getName(),
+            OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
+                cms,
+                cms.getRequestContext().getCurrentUser()),
+            CmsUserInfo.generateUserInfoHtml(cms, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
+            isAdmin,
+            isDeveloper,
+            isCategoryManager);
+        return userInfo;
+    }
+
+    /**
      * @see org.opencms.gwt.shared.rpc.I_CmsCoreService#getWorkplaceLink(org.opencms.util.CmsUUID, org.opencms.gwt.shared.CmsWorkplaceLinkMode)
      */
     public String getWorkplaceLink(CmsUUID structureId, CmsWorkplaceLinkMode linkMode) throws CmsRpcException {
@@ -1053,21 +1076,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             log(e.getLocalizedMessage(), e);
         }
         String defaultWorkplaceLink = CmsWorkplace.getWorkplaceExplorerLink(cms, cms.getRequestContext().getSiteRoot());
-        CmsRoleManager roleManager = OpenCms.getRoleManager();
-        boolean isAdmin = roleManager.hasRole(cms, CmsRole.ADMINISTRATOR);
-        boolean isDeveloper = roleManager.hasRole(cms, CmsRole.DEVELOPER);
-        boolean isCategoryManager = roleManager.hasRole(cms, CmsRole.CATEGORY_EDITOR);
         Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-
-        UserInfo userInfo = new UserInfo(
-            cms.getRequestContext().getCurrentUser().getName(),
-            OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(
-                cms,
-                cms.getRequestContext().getCurrentUser()),
-            CmsUserInfo.generateUserInfoHtml(cms, wpLocale),
-            isAdmin,
-            isDeveloper,
-            isCategoryManager);
+        UserInfo userInfo = getUserInfo();
         String aboutLink = OpenCms.getLinkManager().substituteLink(
             getCmsObject(),
             "/system/modules/org.opencms.gwt/about.jsp");
@@ -1078,6 +1088,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
             OpenCms.getSystemInfo().getStaticResourceContext(),
+            CmsEmbeddedDialogsUI.getEmbeddedDialogsContextPath(),
             cms.getRequestContext().getSiteRoot(),
             cms.getRequestContext().getLocale().toString(),
             wpLocale.toString(),

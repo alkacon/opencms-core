@@ -29,7 +29,13 @@ package org.opencms.gwt.client.ui;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.Messages;
+import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
+import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
+import org.opencms.gwt.shared.CmsCoreData.UserInfo;
+import org.opencms.util.CmsUUID;
+
+import java.util.Collections;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,6 +48,9 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public class CmsUserInfo extends CmsMenuButton {
 
+    /** The user info HTML. */
+    HTML m_infoHtml;
+
     /**
      * Constructor.<p>
      */
@@ -49,16 +58,29 @@ public class CmsUserInfo extends CmsMenuButton {
         super();
         getPopup().addStyleName(I_CmsLayoutBundle.INSTANCE.dialogCss().contextMenu());
         getPopup().setWidth(0);
+
         addStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfo());
         m_button.getUpFace().setHTML("<img src=\"" + CmsCoreProvider.get().getUserInfo().getUserIcon() + "\" />");
         setToolbarMode(true);
 
         FlowPanel panel = new FlowPanel();
         panel.setStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfoDialog());
-        HTML html = new HTML(CmsCoreProvider.get().getUserInfo().getInfoHtml());
-        panel.add(html);
+        m_infoHtml = new HTML(CmsCoreProvider.get().getUserInfo().getInfoHtml());
+        panel.add(m_infoHtml);
         FlowPanel buttonBar = new FlowPanel();
         buttonBar.setStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfoButtons());
+        CmsPushButton editUser = new CmsPushButton();
+        editUser.setText(Messages.get().key(Messages.GUI_EDIT_USER_0));
+        buttonBar.add(editUser);
+        editUser.addClickHandler(new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+
+                new CmsEmbeddedDialogHandler().openDialog("edituserdata", Collections.<CmsUUID> emptyList());
+                closeMenu();
+            }
+        });
+
         CmsPushButton logout = new CmsPushButton();
         logout.setText(Messages.get().key(Messages.GUI_LOGOUT_0));
         buttonBar.add(logout);
@@ -79,6 +101,30 @@ public class CmsUserInfo extends CmsMenuButton {
                 toggleUserInfo();
             }
         });
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.CmsMenuButton#openMenu()
+     */
+    @Override
+    public void openMenu() {
+
+        CmsRpcAction<UserInfo> action = new CmsRpcAction<UserInfo>() {
+
+            @Override
+            public void execute() {
+
+                CmsCoreProvider.getService().getUserInfo(this);
+            }
+
+            @Override
+            protected void onResponse(UserInfo result) {
+
+                m_infoHtml.setHTML(result.getInfoHtml());
+            }
+        };
+        action.execute();
+        super.openMenu();
     }
 
     /**

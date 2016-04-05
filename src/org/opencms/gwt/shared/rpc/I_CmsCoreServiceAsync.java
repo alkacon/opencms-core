@@ -34,6 +34,7 @@ import org.opencms.gwt.shared.CmsCategoryTreeEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsCoreData.UserInfo;
 import org.opencms.gwt.shared.CmsLockInfo;
 import org.opencms.gwt.shared.CmsResourceCategoryInfo;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
@@ -159,6 +160,13 @@ public interface I_CmsCoreServiceAsync {
      */
     @SynchronizedRpcRequest
     void getUniqueFileName(String parentFolder, String baseName, AsyncCallback<String> callback);
+
+    /**
+     * Returns the user info.<p>
+     *
+     * @param callback the callback
+     */
+    void getUserInfo(AsyncCallback<UserInfo> callback);
 
     /**
      * Returns a link for the OpenCms workplace that will reload the whole workplace, switch to the explorer view, the

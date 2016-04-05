@@ -271,6 +271,9 @@ public final class Messages {
     public static final String GUI_EDIT_LINK_NO_LINK_0 = "GUI_EDIT_LINK_NO_LINK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDIT_USER_0 = "GUI_EDIT_USER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_CLOSE_CAPTION_0 = "GUI_EDITOR_CLOSE_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

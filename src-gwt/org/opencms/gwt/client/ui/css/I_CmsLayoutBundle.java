@@ -631,6 +631,13 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          *
          * @return the CSS class name
          */
+        String embeddedDialogFrame();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String frameDialog();
 
         /**
@@ -2322,6 +2329,11 @@ public interface I_CmsLayoutBundle extends ClientBundle {
          */
         String toolbarContent();
 
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS class name
+         */
         String toolbarFontButton();
 
         /**

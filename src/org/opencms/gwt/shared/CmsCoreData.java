@@ -283,6 +283,9 @@ public class CmsCoreData implements IsSerializable {
     /** The current workplace locale. */
     private String m_wpLocale;
 
+    /** The embedded dialogs URL. */
+    private String m_embeddedDialogsUrl;
+
     /**
      * Constructor.<p>
      */
@@ -305,6 +308,7 @@ public class CmsCoreData implements IsSerializable {
             clone.getLoginURL(),
             clone.getVfsPrefix(),
             clone.getWorkplaceResourcesPrefix(),
+            clone.getEmbeddedDialogsUrl(),
             clone.getSiteRoot(),
             clone.getLocale(),
             clone.getWpLocale(),
@@ -332,6 +336,7 @@ public class CmsCoreData implements IsSerializable {
      * @param loginUrl the login JSP URL
      * @param vfsPrefix the OpenCms VFS prefix
      * @param workplaceResourcesPrefix the workplace resources path prefix
+     * @param embeddedDialogsUrl the embedded dialogs URL
      * @param siteRoot the current site root
      * @param locale the current request locale
      * @param wpLocale the workplace locale
@@ -356,6 +361,7 @@ public class CmsCoreData implements IsSerializable {
         String loginUrl,
         String vfsPrefix,
         String workplaceResourcesPrefix,
+        String embeddedDialogsUrl,
         String siteRoot,
         String locale,
         String wpLocale,
@@ -379,6 +385,7 @@ public class CmsCoreData implements IsSerializable {
         m_loginURL = loginUrl;
         m_vfsPrefix = vfsPrefix;
         m_workplaceResourcesPrefix = workplaceResourcesPrefix;
+        m_embeddedDialogsUrl = embeddedDialogsUrl;
         m_siteRoot = siteRoot;
         m_locale = locale;
         m_wpLocale = wpLocale;
@@ -455,6 +462,16 @@ public class CmsCoreData implements IsSerializable {
     public String getDefaultWorkplaceLink() {
 
         return m_defaultWorkplaceLink;
+    }
+
+    /**
+     * Returns the embeddedDialogsUrl.<p>
+     *
+     * @return the embeddedDialogsUrl
+     */
+    public String getEmbeddedDialogsUrl() {
+
+        return m_embeddedDialogsUrl;
     }
 
     /**

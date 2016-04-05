@@ -263,4 +263,15 @@ div.menuArrowBottom:after {
 	background-color: white;
 }
 
+iframe.embeddedDialogFrame{
+	position: fixed; 
+	height: 100%; 
+	width: 100%; 
+	background: transparent; 
+	z-index: value("constants.css.zIndexPopup");
+	top: 0; 
+	left: 0; 
+	border: none;
+}
+
  

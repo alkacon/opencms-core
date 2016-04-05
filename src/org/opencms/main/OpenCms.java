@@ -576,6 +576,11 @@ public final class OpenCms {
         return OpenCmsCore.getInstance().getWorkflowManager();
     }
 
+    /**
+     * Returns the workplace app manager.<p>
+     *
+     * @return the app manager
+     */
     public static CmsWorkplaceAppManager getWorkplaceAppManager() {
 
         return OpenCmsCore.getInstance().getWorkplaceAppManager();
