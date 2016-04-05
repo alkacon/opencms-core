@@ -98,5 +98,8 @@ public enum CmsVisibilityCheckFlag {
     controlpermission,
 
     /** Checks if resource is xml content. */
-    xml;
+    xml,
+
+    /** Checks if a sourcecode editor is available. */
+    hassourcecodeeditor;
 }

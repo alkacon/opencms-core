@@ -32,6 +32,7 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.deleted;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.folder;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
+import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.hassourcecodeeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mylock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.noinheritedlock;
@@ -49,7 +50,6 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.roleeditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.rolewpuser;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.unlocked;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.writepermisssion;
-import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.xml;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
 import static org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
 
@@ -69,6 +69,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.editors.messagebundle.CmsMessageBundleEditorTypes.BundleType;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 import org.opencms.workplace.explorer.menu.Messages;
@@ -117,7 +118,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
     /** Like DEFAULT, but only active for files. */
     public static final CmsStandardVisibilityCheck EDIT_CODE = new CmsStandardVisibilityCheck(
         file,
-        xml,
+        hassourcecodeeditor,
         roleeditor,
         notonline,
         notdeleted,
@@ -307,10 +308,14 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
 
             }
 
-            if (flag(xml)) {
+            if (flag(hassourcecodeeditor)) {
                 I_CmsResourceType type = resUtil.getResourceType();
-                boolean isXml = (type instanceof CmsResourceTypeXmlContent) || (type instanceof CmsResourceTypeXmlPage);
-                if (!isXml) {
+                boolean hasSourcecodeEditor = (type instanceof CmsResourceTypeXmlContent)
+                    || (type instanceof CmsResourceTypeXmlPage)
+                    || OpenCms.getResourceManager().matchResourceType(
+                        BundleType.PROPERTY.toString(),
+                        resource.getTypeId());
+                if (!hasSourcecodeEditor) {
                     return VISIBILITY_INVISIBLE;
                 }
             }
