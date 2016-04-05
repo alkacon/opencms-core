@@ -70,6 +70,9 @@ public abstract class A_CmsAttributeDiff implements I_CmsDiffProvider {
         }
     }
 
+    /** CSS class to mark the compare table. */
+    private static final String COMPARE_TABLE_MARKER = "cms-compare-table-marker";
+
     /**
      * Only selects the attributes comparisons that actually represent differences.<p>
      *
@@ -149,6 +152,7 @@ public abstract class A_CmsAttributeDiff implements I_CmsDiffProvider {
         table.setSortEnabled(false);
         table.setWidth("100%");
         table.setPageLength(Math.min(12, compareBeans.size()));
+        table.setStyleName(COMPARE_TABLE_MARKER);
         VerticalLayout vl = new VerticalLayout();
         vl.setMargin(true);
         vl.addComponent(table);
