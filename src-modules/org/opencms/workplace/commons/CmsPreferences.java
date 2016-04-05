@@ -51,6 +51,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.site.CmsSite;
 import org.opencms.synchronize.CmsSynchronizeSettings;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsTabDialog;
@@ -537,6 +538,63 @@ public class CmsPreferences extends CmsTabDialog {
         }
         SelectOptions selectOptions = new SelectOptions(options, values, selectedIndex);
         return selectOptions;
+    }
+
+    /**
+     * Gets the select options for the view selector.<p>
+     *
+     * @param cms the CMS context
+     * @param value the current value
+     * @return the select options
+     */
+    public static SelectOptions getViewSelectOptions(CmsObject cms, String value) {
+
+        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
+
+        List<String> options = new ArrayList<String>();
+        List<String> values = new ArrayList<String>();
+        int selectedIndex = 0;
+
+        // loop through the vectors and fill the result vectors
+        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
+        CmsWorkplaceView directEditView = new CmsWorkplaceView(
+            Messages.get().getBundle(locale).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
+            CmsWorkplace.VIEW_DIRECT_EDIT,
+            Float.valueOf(100));
+        list.add(directEditView);
+
+        Iterator<CmsWorkplaceView> i = list.iterator();
+        int count = -1;
+        while (i.hasNext()) {
+            count++;
+            CmsWorkplaceView view = i.next();
+
+            boolean visible = true;
+
+            try {
+                cms.readResource(view.getUri());
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
+                visible = false;
+            }
+
+            if (visible) {
+                CmsMacroResolver resolver = new CmsMacroResolver();
+                resolver.setCmsObject(cms);
+                resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
+                String localizedKey = resolver.resolveMacros(view.getKey());
+                options.add(localizedKey);
+                values.add(view.getUri());
+                if (view.getUri().equals(value)) {
+                    selectedIndex = count;
+                }
+            }
+        }
+        SelectOptions optionBean = new SelectOptions(options, values, selectedIndex);
+        return optionBean;
     }
 
     /**
@@ -1073,48 +1131,8 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectView(String htmlAttributes) {
 
-        List<String> options = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-        int selectedIndex = 0;
-
-        // loop through the vectors and fill the result vectors
-        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
-        CmsWorkplaceView directEditView = new CmsWorkplaceView(
-            Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
-            CmsWorkplace.VIEW_DIRECT_EDIT,
-            Float.valueOf(100));
-        list.add(directEditView);
-
-        Iterator<CmsWorkplaceView> i = list.iterator();
-        int count = -1;
-        while (i.hasNext()) {
-            count++;
-            CmsWorkplaceView view = i.next();
-
-            boolean visible = true;
-
-            try {
-                getCms().readResource(view.getUri());
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-                visible = false;
-            }
-
-            if (visible) {
-                String localizedKey = resolveMacros(view.getKey());
-                options.add(localizedKey);
-                values.add(view.getUri());
-                if (view.getUri().equals(getParamTabWpView())) {
-                    selectedIndex = count;
-                }
-            }
-        }
-        return
-
-        buildSelect(htmlAttributes, options, values, selectedIndex);
+        SelectOptions optionBean = getViewSelectOptions(getCms(), getParamTabWpView());
+        return buildSelect(htmlAttributes, optionBean);
     }
 
     /**

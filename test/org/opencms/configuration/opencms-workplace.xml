@@ -1248,7 +1248,7 @@
 				<preference name="showUploadTypeDialog" value="true"
 					widget="checkbox" />
 				<preference name="startView"
-					value="/system/workplace/views/explorer/directEdit.jsp" />
+					value="/system/workplace/views/explorer/directEdit.jsp" nice-name="%(key.GUI_PREF_STARTUP_VIEW_0)" />
 				<preference name="uploadVariant" value="gwt" widget="select"
 					widget-config="basic:%(key.GUI_PREF_USE_UPLOAD_BASIC_0)|gwt:%(key.GUI_PREF_USE_UPLOAD_GWT_0)" />
 				<preference name="workplaceReportType" value="extended" />

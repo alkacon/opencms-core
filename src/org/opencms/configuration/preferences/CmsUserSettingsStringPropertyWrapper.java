@@ -547,6 +547,7 @@ public class CmsUserSettingsStringPropertyWrapper {
      *
      * @return the start view
      */
+    @PrefMetadata(type = CmsStartViewPreference.class)
     public String getStartView() {
 
         return m_settings.getStartView();
