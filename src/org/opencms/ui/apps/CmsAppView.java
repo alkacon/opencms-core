@@ -45,7 +45,6 @@ import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -253,7 +252,7 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /**
      * @see org.opencms.ui.I_CmsAppView#getComponent()
      */
-    public Component getComponent() {
+    public CmsAppViewLayout getComponent() {
 
         if (m_app == null) {
             return reinitComponent();
@@ -303,7 +302,7 @@ public class CmsAppView implements ViewChangeListener, I_CmsWindowCloseListener,
     /**
      * @see org.opencms.ui.I_CmsAppView#reinitComponent()
      */
-    public Component reinitComponent() {
+    public CmsAppViewLayout reinitComponent() {
 
         if (m_app != null) {
             beforeViewChange(

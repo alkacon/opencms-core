@@ -33,8 +33,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsUserIconHelper;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.components.CmsUploadButton.I_UploadListener;
+import org.opencms.ui.dialogs.CmsUserDataDialog;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.shared.components.CmsUploadState.UploadType;
 import org.opencms.util.CmsStringUtil;
@@ -73,18 +75,22 @@ public class CmsUserInfo extends VerticalLayout {
     private Button m_logout;
 
     /** The preferences. */
-    private Button m_preferences;
+    private Button m_editData;
+
+    /** The dialog context. */
+    private I_CmsDialogContext m_context;
 
     /**
      * Constructor.<p>
      *
      * @param uploadListener the user image upload listener
+     * @param context the dialog context
      */
-    public CmsUserInfo(I_UploadListener uploadListener) {
+    public CmsUserInfo(I_UploadListener uploadListener, I_CmsDialogContext context) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         CmsObject cms = A_CmsUI.getCmsObject();
         CmsUser user = cms.getRequestContext().getCurrentUser();
-
+        m_context = context;
         m_info.setContentMode(ContentMode.HTML);
         m_info.setValue(generateInfo(cms, UI.getCurrent().getLocale()));
         m_infoPanel.addComponent(createImageButton(cms, user, uploadListener), 0);
@@ -97,18 +103,19 @@ public class CmsUserInfo extends VerticalLayout {
                 logout();
             }
         });
-        m_preferences.addClickListener(new Button.ClickListener() {
+        if (cms.getRequestContext().getCurrentUser().isManaged()) {
+            m_editData.setVisible(false);
+        } else {
+            m_editData.addClickListener(new Button.ClickListener() {
 
-            private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-            public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
 
-                showPreferences();
-            }
-        });
-
-        // hiding the button for now
-        m_preferences.setVisible(false);
+                    editUserData();
+                }
+            });
+        }
     }
 
     /**
@@ -211,17 +218,20 @@ public class CmsUserInfo extends VerticalLayout {
     }
 
     /**
+     * Shows the user preferences dialog.<p>
+     */
+    void editUserData() {
+
+        CmsAppWorkplaceUi.get().closeWindows();
+        CmsUserDataDialog dialog = new CmsUserDataDialog(m_context);
+        m_context.start(CmsVaadinUtils.getMessageText(Messages.GUI_USER_EDIT_0), dialog);
+    }
+
+    /**
      * Executes the logout.<p>
      */
     void logout() {
 
         CmsLoginController.logout();
-    }
-
-    /**
-     * Shows the user preferences dialog.<p>
-     */
-    void showPreferences() {
-        //TODO: implement
     }
 }

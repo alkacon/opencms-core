@@ -268,6 +268,19 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
+     * Closes all opened dialog windows.<p>
+     */
+    public void closeWindows() {
+
+        for (Window window : getWindows()) {
+            window.close();
+        }
+        if (m_currentView instanceof CmsAppView) {
+            ((CmsAppView)m_currentView).getComponent().closePopupViews();
+        }
+    }
+
+    /**
      * @see com.vaadin.ui.UI#detach()
      */
     @Override
@@ -492,9 +505,7 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
      */
     public void showView(View view) {
 
-        for (Window window : A_CmsUI.get().getWindows()) {
-            window.close();
-        }
+        closeWindows();
 
         // remove current component form the view change listeners
         m_currentView = view;

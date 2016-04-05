@@ -509,7 +509,7 @@ public class CmsToolBar extends CssLayout {
 
                         handleUpload(uploadedFiles);
                     }
-                });
+                }, getDialogContext());
             }
         });
         pv.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_USER_INFO_TITLE_0));

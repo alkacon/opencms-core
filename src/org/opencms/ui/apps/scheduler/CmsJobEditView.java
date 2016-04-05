@@ -49,20 +49,18 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.Messages;
 import org.opencms.ui.components.OpenCmsTheme;
 import org.opencms.ui.components.fileselect.CmsPathSelectField;
+import org.opencms.ui.util.CmsComboNullToEmptyConverter;
+import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
-import org.restlet.engine.util.StringUtils;
-
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractField;
@@ -165,98 +163,6 @@ public class CmsJobEditView extends VerticalLayout {
 
             }
         }
-    }
-
-    /**
-     * Converts null values to an empty string for the input widgets.<p>
-     */
-    class ComboNullToEmpty implements Converter<Object, String> {
-
-        /** Serial version id. */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
-         */
-        public String convertToModel(Object value, Class<? extends String> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
-
-            return (String)value;
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
-         */
-        public Object convertToPresentation(String value, Class<? extends Object> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
-
-            if (value == null) {
-                return "";
-            }
-            return value;
-
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#getModelType()
-         */
-        public Class<String> getModelType() {
-
-            return String.class;
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
-         */
-        public Class<Object> getPresentationType() {
-
-            return Object.class;
-        }
-
-    }
-
-    /**
-     * Converts null values to an empty string for the input widgets.<p>
-     */
-    class NullToEmpty implements Converter<String, String> {
-
-        /** Serial version id. */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#convertToModel(java.lang.Object, java.lang.Class, java.util.Locale)
-         */
-        public String convertToModel(String value, Class<? extends String> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
-
-            return value;
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#convertToPresentation(java.lang.Object, java.lang.Class, java.util.Locale)
-         */
-        public String convertToPresentation(String value, Class<? extends String> targetType, Locale locale)
-        throws com.vaadin.data.util.converter.Converter.ConversionException {
-
-            return StringUtils.nullToEmpty(value);
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#getModelType()
-         */
-        public Class<String> getModelType() {
-
-            return String.class;
-        }
-
-        /**
-         * @see com.vaadin.data.util.converter.Converter#getPresentationType()
-         */
-        public Class<String> getPresentationType() {
-
-            return String.class;
-        }
-
     }
 
     /**
@@ -403,9 +309,9 @@ public class CmsJobEditView extends VerticalLayout {
         bindField(m_fieldEncoding, "contextInfo.encoding");
         bindField(m_fieldRemoteAddress, "contextInfo.remoteAddr");
 
-        m_fieldJobName.setConverter(new NullToEmpty());
-        m_fieldJobClass.setConverter(new ComboNullToEmpty());
-        m_fieldCron.setConverter(new ComboNullToEmpty());
+        m_fieldJobName.setConverter(new CmsNullToEmptyConverter());
+        m_fieldJobClass.setConverter(new CmsComboNullToEmptyConverter());
+        m_fieldCron.setConverter(new CmsComboNullToEmptyConverter());
 
         m_buttonAddParam.addClickListener(new ClickListener() {
 

@@ -38,6 +38,33 @@ public class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0 = "GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIALOG_0 = "GUI_DIALOG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_ADDRESS_0 = "GUI_USER_DATA_ADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_CITY_0 = "GUI_USER_DATA_CITY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_COUNTRY_0 = "GUI_USER_DATA_COUNTRY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_EMAIL_0 = "GUI_USER_DATA_EMAIL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_FIRSTNAME_0 = "GUI_USER_DATA_FIRSTNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_INSTITUTION_0 = "GUI_USER_DATA_INSTITUTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_LASTNAME_0 = "GUI_USER_DATA_LASTNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_ZIPCODE_0 = "GUI_USER_DATA_ZIPCODE_0";
+
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.ui.dialogs.messages";
 
