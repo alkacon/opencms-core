@@ -31,6 +31,8 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.main.CmsLog;
 import org.opencms.xml.content.CmsXmlContentProperty;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 
@@ -38,6 +40,86 @@ import org.apache.commons.logging.Log;
  * Preference subclass for built-in preferences accessed with a getter/setter pair via reflection.<p>
  */
 public class CmsBuiltinPreference extends A_CmsPreference {
+
+    /**
+     * A bean representing a set of select options.<p>
+     */
+    public static class SelectOptions {
+
+        /** The list of user-readable option labels. */
+        private List<String> m_options;
+
+        /** The currently selected index. */
+        private int m_selectedIndex;
+
+        /** The list of option values. */
+        private List<String> m_values;
+
+        /**
+         * Creates a new instance.<p>
+         *
+         * @param options the option labels
+         * @param values the option values
+         * @param selectedIndex the currently selected index
+         */
+        public SelectOptions(List<String> options, List<String> values, int selectedIndex) {
+
+            m_options = options;
+            m_values = values;
+            m_selectedIndex = selectedIndex;
+        }
+
+        /**
+         * Gets the select option labels.<p>
+         *
+         * @return the select option labels
+         */
+        public List<String> getOptions() {
+
+            return m_options;
+        }
+
+        /**
+         * Gets the selected index.<p>
+         *
+         * @return the selected index
+         */
+        public int getSelectedIndex() {
+
+            return m_selectedIndex;
+        }
+
+        /**
+         * Gets the select widget values.<p>
+         *
+         * @return the select widget values
+         */
+        public List<String> getValues() {
+
+            return m_values;
+        }
+
+        /**
+         * Creates a configuration string for client-side select widgets from the options.<p>
+         *
+         * @return the widget configuration string
+         */
+        public String toClientSelectWidgetConfiguration() {
+
+            StringBuffer resultBuffer = new StringBuffer();
+            for (int i = 0; i < m_values.size(); i++) {
+                String value = m_values.get(i);
+                String option = i < m_options.size() ? m_options.get(i) : value;
+                if (i != 0) {
+                    resultBuffer.append("|");
+                }
+                resultBuffer.append(value);
+                resultBuffer.append(":");
+                resultBuffer.append(option);
+            }
+            return resultBuffer.toString();
+        }
+    }
 
     /** The logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsBuiltinPreference.class);

@@ -28,6 +28,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.configuration.CmsDefaultUserSettings;
+import org.opencms.configuration.preferences.CmsStartViewPreference;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.db.CmsUserSettings.UploadVariant;
@@ -51,7 +52,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.site.CmsSite;
 import org.opencms.synchronize.CmsSynchronizeSettings;
-import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.workplace.CmsTabDialog;
@@ -59,10 +59,11 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+
+import static org.opencms.configuration.preferences.CmsBuiltinPreference.SelectOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,85 +99,6 @@ import org.apache.commons.logging.Log;
  */
 public class CmsPreferences extends CmsTabDialog {
 
-    /**
-     * A bean representing a set of select options.<p>
-     */
-    public static class SelectOptions {
-
-        /** The list of user-readable option labels. */
-        private List<String> m_options;
-
-        /** The currently selected index. */
-        private int m_selectedIndex;
-
-        /** The list of option values. */
-        private List<String> m_values;
-
-        /**
-         * Creates a new instance.<p>
-         *
-         * @param options the option labels
-         * @param values the option values
-         * @param selectedIndex the currently selected index
-         */
-        public SelectOptions(List<String> options, List<String> values, int selectedIndex) {
-
-            m_options = options;
-            m_values = values;
-            m_selectedIndex = selectedIndex;
-        }
-
-        /**
-         * Gets the select option labels.<p>
-         *
-         * @return the select option labels
-         */
-        public List<String> getOptions() {
-
-            return m_options;
-        }
-
-        /**
-         * Gets the selected index.<p>
-         *
-         * @return the selected index
-         */
-        public int getSelectedIndex() {
-
-            return m_selectedIndex;
-        }
-
-        /**
-         * Gets the select widget values.<p>
-         *
-         * @return the select widget values
-         */
-        public List<String> getValues() {
-
-            return m_values;
-        }
-
-        /**
-         * Creates a configuration string for client-side select widgets from the options.<p>
-         *
-         * @return the widget configuration string
-         */
-        public String toClientSelectWidgetConfiguration() {
-
-            StringBuffer resultBuffer = new StringBuffer();
-            for (int i = 0; i < m_values.size(); i++) {
-                String value = m_values.get(i);
-                String option = i < m_options.size() ? m_options.get(i) : value;
-                if (i != 0) {
-                    resultBuffer.append("|");
-                }
-                resultBuffer.append(value);
-                resultBuffer.append(":");
-                resultBuffer.append(option);
-            }
-            return resultBuffer.toString();
-        }
-    }
 
     /** Value for the action: change the password. */
     public static final int ACTION_CHPWD = 202;
@@ -538,63 +460,6 @@ public class CmsPreferences extends CmsTabDialog {
         }
         SelectOptions selectOptions = new SelectOptions(options, values, selectedIndex);
         return selectOptions;
-    }
-
-    /**
-     * Gets the select options for the view selector.<p>
-     *
-     * @param cms the CMS context
-     * @param value the current value
-     * @return the select options
-     */
-    public static SelectOptions getViewSelectOptions(CmsObject cms, String value) {
-
-        Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
-
-        List<String> options = new ArrayList<String>();
-        List<String> values = new ArrayList<String>();
-        int selectedIndex = 0;
-
-        // loop through the vectors and fill the result vectors
-        List<CmsWorkplaceView> list = new ArrayList<CmsWorkplaceView>(OpenCms.getWorkplaceManager().getViews());
-        CmsWorkplaceView directEditView = new CmsWorkplaceView(
-            Messages.get().getBundle(locale).key(Messages.GUI_LABEL_DIRECT_EDIT_VIEW_0),
-            CmsWorkplace.VIEW_DIRECT_EDIT,
-            Float.valueOf(100));
-        list.add(directEditView);
-
-        Iterator<CmsWorkplaceView> i = list.iterator();
-        int count = -1;
-        while (i.hasNext()) {
-            count++;
-            CmsWorkplaceView view = i.next();
-
-            boolean visible = true;
-
-            try {
-                cms.readResource(view.getUri());
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-                visible = false;
-            }
-
-            if (visible) {
-                CmsMacroResolver resolver = new CmsMacroResolver();
-                resolver.setCmsObject(cms);
-                resolver.setMessages(OpenCms.getWorkplaceManager().getMessages(locale));
-                String localizedKey = resolver.resolveMacros(view.getKey());
-                options.add(localizedKey);
-                values.add(view.getUri());
-                if (view.getUri().equals(value)) {
-                    selectedIndex = count;
-                }
-            }
-        }
-        SelectOptions optionBean = new SelectOptions(options, values, selectedIndex);
-        return optionBean;
     }
 
     /**
@@ -1131,7 +996,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectView(String htmlAttributes) {
 
-        SelectOptions optionBean = getViewSelectOptions(getCms(), getParamTabWpView());
+        SelectOptions optionBean = CmsStartViewPreference.getViewSelectOptions(getCms(), getParamTabWpView());
         return buildSelect(htmlAttributes, optionBean);
     }
 
