@@ -501,6 +501,13 @@ public interface I_CmsConstantsBundle extends ClientBundle {
          *
          * @return the CSS constant value
          */
+        String overlayOpacity();
+
+        /**
+         * Access method.<p>
+         *
+         * @return the CSS constant value
+         */
         String textColor();
 
         /**

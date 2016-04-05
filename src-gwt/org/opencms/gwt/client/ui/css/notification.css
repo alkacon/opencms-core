@@ -35,7 +35,7 @@ div.notificationOverlay {
 }
 
 .notificationOverlay { 
-	opacity: 0.5; 
+	opacity: value("constants.css.overlayOpacity");
 }
 .popup div.notificationContainer{
 	top: 0px;

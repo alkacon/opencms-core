@@ -210,7 +210,7 @@ div.menuArrowBottom:after {
 }
 
 .popupOverlay{
-    opacity: 0.5;
+    opacity: value("constants.css.overlayOpacity");
 }
 
 
