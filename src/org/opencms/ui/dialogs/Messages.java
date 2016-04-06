@@ -36,6 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_DAILOG_INSTANTIATION_FAILED_1 = "ERR_DAILOG_INSTANTIATION_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DIALOG_NOT_AVAILABLE_1 = "ERR_DIALOG_NOT_AVAILABLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0 = "GUI_COPY_MOVE_SELECT_TARGET_CAPTION_0";
 
     /** Message constant for key in the resource bundle. */

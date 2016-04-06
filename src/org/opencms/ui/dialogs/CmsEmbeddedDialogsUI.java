@@ -92,39 +92,45 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
         super.init(request);
         final I_CmsDialogContext context = new CmsEmbeddedDialogContext(Collections.<CmsResource> emptyList());
+        Throwable t = null;
+        String errorMessage = null;
         try {
             OpenCms.getRoleManager().checkRole(getCmsObject(), CmsRole.ELEMENT_AUTHOR);
 
             try {
                 Component dialog = getDialog(request, context);
-                String title;
-                if (dialog instanceof I_CmsHasTitle) {
-                    title = ((I_CmsHasTitle)dialog).getTitle(getLocale());
-                } else {
-                    title = CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_DIALOG_0);
-                }
-                context.start(title, dialog);
-            } catch (Throwable e) {
-                CmsErrorDialog.showErrorDialog("Could not instantiate requested dialog", e, new Runnable() {
-
-                    public void run() {
-
-                        context.finish(null);
+                if (dialog != null) {
+                    String title;
+                    if (dialog instanceof I_CmsHasTitle) {
+                        title = ((I_CmsHasTitle)dialog).getTitle(getLocale());
+                    } else {
+                        title = CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_DIALOG_0);
                     }
-                });
+                    context.start(title, dialog);
+                } else {
+                    errorMessage = CmsVaadinUtils.getMessageText(
+                        org.opencms.ui.dialogs.Messages.ERR_DIALOG_NOT_AVAILABLE_1,
+                        request.getPathInfo());
+                }
+            } catch (Throwable e) {
+                t = e;
+                errorMessage = CmsVaadinUtils.getMessageText(
+                    org.opencms.ui.dialogs.Messages.ERR_DAILOG_INSTANTIATION_FAILED_1,
+                    request.getPathInfo());
             }
         } catch (CmsRoleViolationException ex) {
-            CmsErrorDialog.showErrorDialog(
-                CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0),
-                ex,
-                new Runnable() {
+            t = ex;
+            errorMessage = CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0);
+        }
+        if (errorMessage != null) {
+            CmsErrorDialog.showErrorDialog(errorMessage, t, new Runnable() {
 
-                    public void run() {
+                public void run() {
 
-                        context.finish(null);
+                    context.finish(null);
 
-                    }
-                });
+                }
+            });
         }
     }
 
