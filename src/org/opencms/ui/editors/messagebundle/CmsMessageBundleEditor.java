@@ -29,6 +29,7 @@ package org.opencms.ui.editors.messagebundle;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -183,6 +184,16 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             context.setAppContent(main);
 
             adjustFocus();
+
+            if (m_model.getSwitchedLocaleOnOpening()) {
+                String caption = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0);
+                String description = m_messages.key(
+                    Messages.GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0);
+                Notification warningSwitchedLocale = new Notification(caption, description, Type.WARNING_MESSAGE, true);
+                warningSwitchedLocale.setDelayMsec(-1);
+                warningSwitchedLocale.show(UI.getCurrent().getPage());
+            }
 
         } catch (IOException | CmsException e) {
             LOG.error(m_messages.key(Messages.ERR_LOADING_RESOURCES_0), e);
@@ -441,10 +452,13 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         // set Locales
         for (Locale locale : m_model.getLocales()) {
             languageSelect.addItem(locale);
-            String caption = CmsMessageBundleEditorTypes.DEFAULT_LOCALE.equals(locale)
-            ? Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
-            : locale.getDisplayName(UI.getCurrent().getLocale());
-            languageSelect.setItemCaption(locale, caption);
+            String caption = locale.getDisplayName(UI.getCurrent().getLocale());
+            if (CmsLocaleManager.getDefaultLocale().equals(locale)) {
+                caption += " ("
+                    + Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
+                    + ")";
+                languageSelect.setItemCaption(locale, caption);
+            }
         }
         languageSelect.setValue(m_model.getLocale());
         languageSelect.setNewItemsAllowed(false);

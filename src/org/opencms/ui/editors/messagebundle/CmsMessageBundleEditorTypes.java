@@ -551,12 +551,6 @@ public final class CmsMessageBundleEditorTypes {
     /** Post fix for bundle descriptors, which must obey the name scheme {basename}_desc. */
     public static final String DESCRIPTOR_POSTFIX = "_desc";
 
-    /** The default locale. */
-    public static final Locale DEFAULT_LOCALE = new Locale("default");
-
-    /** Value of property 'locale-available' to set for only showing the "default" locale for property vfs bundles. */
-    public static final Object PROP_VALUE_SHOW_ONLY_DEFAULT_LOCALE = "default";
-
     /** Hide default constructor. */
     private CmsMessageBundleEditorTypes() {
         //noop

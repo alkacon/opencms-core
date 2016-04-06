@@ -75,6 +75,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0 = "ERR_BUNDLE_DESCRIPTOR_SEARCH_ERROR_0";
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READING_PROPERTY_FOR_DEFAULT_LOCALE_2 = "ERR_READING_PROPERTY_FOR_DEFAULT_LOCALE_2";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_CAPTION_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0 = "GUI_NOTIFICATION_MESSAGEBUNDLEEDITOR_SWITCHED_LOCALE_DESCRIPTION_0";
 
     /**
      * Hides the public constructor for this utility class.<p>
