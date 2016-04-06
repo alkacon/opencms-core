@@ -27,6 +27,7 @@
 
 package org.opencms.i18n;
 
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
@@ -445,6 +446,9 @@ public final class CmsResourceBundleLoader {
         String bundleName = sb.toString();
         I_CmsResourceBundle first = null; // The most specialized bundle.
         I_CmsResourceBundle last = null; // The least specialized bundle.
+        // Flag, indicating if the bundle with the default locale should be used as base.
+        // This is only the case if the base bundle is not found.
+        boolean tryDefaultLocaleAsBase = false;
 
         while (true) {
             I_CmsResourceBundle foundBundle = tryBundle(bundleName);
@@ -459,14 +463,26 @@ public final class CmsResourceBundleLoader {
                 foundBundle.setLocale(locale);
 
                 last = foundBundle;
+            } else {
+                if (baseName.length() == bundleName.length()) {
+                    // The base bundle was searched, but is missing - try the bundle with the default locale instead.
+                    tryDefaultLocaleAsBase = true;
+                }
             }
             int idx = bundleName.lastIndexOf('_');
             // Try the non-localized base name only if we already have a
             // localized child bundle, or wantBase is true.
-            if ((idx > baseLen) || ((idx == baseLen) && ((first != null) || wantBase))) {
+            // if tryDefaultLocaleAsBase is true, we already tried the base bundle before.
+            if (!tryDefaultLocaleAsBase && ((idx > baseLen) || ((idx == baseLen) && ((first != null) || wantBase)))) {
                 bundleName = bundleName.substring(0, idx);
             } else {
-                break;
+                // if the tryDefaultLocaleAsBase and idx >= baseLen, we already tried the default locale as base.
+                if (tryDefaultLocaleAsBase && (idx < baseLen)) {
+                    OpenCms.getLocaleManager();
+                    bundleName = baseName + "_" + CmsLocaleManager.getDefaultLocale().toString();
+                } else {
+                    break;
+                }
             }
         }
 
