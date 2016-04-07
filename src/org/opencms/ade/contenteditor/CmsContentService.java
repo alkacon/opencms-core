@@ -279,7 +279,6 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
 
         CmsContentDefinition result = null;
         CmsUUID structureId = CmsContentDefinition.entityIdToUuid(editedLocaleEntity.getId());
-
         if (structureId != null) {
             CmsObject cms = getCmsObject();
             CmsResource resource = null;
@@ -288,7 +287,7 @@ public class CmsContentService extends CmsGwtService implements I_CmsContentServ
                 resource = cms.readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
                 ensureLock(resource);
                 CmsFile file = cms.readFile(resource);
-                CmsXmlContent content = getContentDocument(file, true);
+                CmsXmlContent content = getContentDocument(file, true).clone();
                 checkAutoCorrection(cms, content);
                 synchronizeLocaleIndependentForEntity(file, content, skipPaths, editedLocaleEntity);
                 for (I_CmsXmlContentEditorChangeHandler handler : content.getContentDefinition().getContentHandler().getEditorChangeHandlers()) {

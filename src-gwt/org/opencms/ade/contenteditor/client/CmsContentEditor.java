@@ -169,21 +169,33 @@ public final class CmsContentEditor extends CmsEditorBase {
          */
         public void onValueChange(ValueChangeEvent<CmsEntity> event) {
 
-            CmsEntity entity = event.getValue();
-            Set<String> changedScopes = new HashSet<String>();
-            for (String scope : m_scopeValues.keySet()) {
-                String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
-                String previousValue = m_scopeValues.get(scope);
-                if (((scopeValue != null) && !scopeValue.equals(previousValue))
-                    || ((scopeValue == null) && (previousValue != null))) {
-                    // the value within this scope has changed, notify all listeners
-                    changedScopes.add(scope);
-                    m_scopeValues.put(scope, scopeValue);
+            final CmsEntity entity = event.getValue();
+            m_needsValueChangeProcessing = true;
+            Scheduler.get().scheduleFinally(new ScheduledCommand() {
+
+                public void execute() {
+
+                    if (m_needsValueChangeProcessing) {
+                        m_needsValueChangeProcessing = false;
+                        Set<String> changedScopes = new HashSet<String>();
+                        for (String scope : m_scopeValues.keySet()) {
+                            String scopeValue = CmsContentDefinition.getValueForPath(entity, scope);
+                            String previousValue = m_scopeValues.get(scope);
+                            if (((scopeValue != null) && !scopeValue.equals(previousValue))
+                                || ((scopeValue == null) && (previousValue != null))) {
+                                // the value within this scope has changed, notify all listeners
+
+                                changedScopes.add(scope);
+                                m_scopeValues.put(scope, scopeValue);
+                            }
+                        }
+                        if (!changedScopes.isEmpty()) {
+                            callEditorChangeHandlers(changedScopes);
+                        }
+
+                    }
                 }
-            }
-            if (!changedScopes.isEmpty()) {
-                callEditorChangeHanlders(changedScopes);
-            }
+            });
         }
     }
 
@@ -196,6 +208,9 @@ public final class CmsContentEditor extends CmsEditorBase {
     /** The in-line editor instance. */
     private static CmsContentEditor INSTANCE;
 
+    /** Flag indicating that an AJAX call for the editor change handler is running. */
+    protected boolean m_callingChangeHandlers;
+
     /** The current content locale. */
     protected String m_locale;
 
@@ -204,6 +219,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The edit tool-bar. */
     protected CmsToolbar m_toolbar;
+
+    /** Flag indicating that we need to collect changed values. */
+    boolean m_needsValueChangeProcessing;
 
     /** Value of the auto-unlock option from the configuration. */
     private boolean m_autoUnlock;
@@ -219,6 +237,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The id's of the changed entities. */
     private Set<String> m_changedEntityIds;
+
+    /** Changed scopes which still haven't been sent to the editor change handlers. */
+    private Set<String> m_changedScopes = new HashSet<String>();
 
     /** The window closing handler registration. */
     private HandlerRegistration m_closingHandlerRegistration;
@@ -509,7 +530,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
+                ();
     }-*/;
 
     /**
@@ -1100,27 +1122,48 @@ public final class CmsContentEditor extends CmsEditorBase {
      *
      * @param changedScopes the changed content value scopes
      */
-    void callEditorChangeHanlders(final Set<String> changedScopes) {
+    void callEditorChangeHandlers(final Set<String> changedScopes) {
 
-        final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
-        final org.opencms.acacia.shared.CmsEntity currentState = entity.createDeepCopy(m_entityId);
-        CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
+        m_changedScopes.addAll(changedScopes);
+        if (!m_callingChangeHandlers && (m_changedScopes.size() > 0)) {
+            m_callingChangeHandlers = true;
+            final Set<String> scopesToSend = new HashSet<String>(m_changedScopes);
+            m_changedScopes.clear();
+            final CmsEntity entity = m_entityBackend.getEntity(m_entityId);
+            final org.opencms.acacia.shared.CmsEntity currentState = entity.createDeepCopy(m_entityId);
+            CmsRpcAction<CmsContentDefinition> action = new CmsRpcAction<CmsContentDefinition>() {
 
-            @Override
-            public void execute() {
+                @Override
+                public void execute() {
 
-                start(200, true);
-                getService().callEditorChangeHandlers(getEntityId(), currentState, getSkipPaths(), changedScopes, this);
-            }
+                    start(200, true);
+                    getService().callEditorChangeHandlers(
+                        getEntityId(),
+                        currentState,
+                        getSkipPaths(),
+                        scopesToSend,
+                        this);
+                }
 
-            @Override
-            protected void onResponse(CmsContentDefinition result) {
+                @Override
+                public void onFailure(Throwable t) {
 
-                stop(false);
-                updateEditorValues(currentState, result.getEntity());
-            }
-        };
-        action.execute();
+                    m_callingChangeHandlers = false;
+                    super.onFailure(t);
+
+                }
+
+                @Override
+                protected void onResponse(CmsContentDefinition result) {
+
+                    m_callingChangeHandlers = false;
+                    stop(false);
+                    updateEditorValues(currentState, result.getEntity());
+                    callEditorChangeHandlers(new HashSet<String>());
+                }
+            };
+            action.execute();
+        }
     }
 
     /**
@@ -1881,8 +1924,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     private native void exportObserver()/*-{
         var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(listener,
-                scope) {
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
+                listener, scope) {
             var wrapper = {
                 onChange : listener.onChange
             }
