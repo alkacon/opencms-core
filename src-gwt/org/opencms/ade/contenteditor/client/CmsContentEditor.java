@@ -375,7 +375,7 @@ public final class CmsContentEditor extends CmsEditorBase {
             if (isObserverExported()) {
                 CmsDebugLog.getInstance().printLine("registration is available");
                 try {
-                    addNativeListsner(changeListener, changeScope);
+                    addNativeListener(changeListener, changeScope);
                 } catch (Exception e) {
 
                     CmsDebugLog.getInstance().printLine(
@@ -504,7 +504,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @param changeListener the change listener
      * @param changeScope the change scope
      */
-    static native void addNativeListsner(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
+    static native void addNativeListener(I_CmsEntityChangeListener changeListener, String changeScope)/*-{
         var instance = changeListener;
         var nat = {
             onChange : function(entity) {
