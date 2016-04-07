@@ -39,6 +39,8 @@ import org.opencms.main.OpenCms;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,6 +61,9 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Provides utility functions for dealing with values a <code>{@link HttpServletRequest}</code>.<p>
@@ -628,6 +633,47 @@ public final class CmsRequestUtil {
             result.put(key, new String[paramValue.length()]);
             for (int i = 0, l = paramValue.length(); i < l; i++) {
                 result.get(key)[i] = paramValue.optString(i);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Parses parameter map from the given URI.<p>
+     *
+     * @param uri the URI
+     * @return the parameter map
+     */
+    public static Multimap<String, String> getParameters(URI uri) {
+
+        return getParametersFromRawQuery(uri.getRawQuery());
+    }
+
+    /**
+     * Parses the parameter map from a raw query string.<p>
+     *
+     * @param rawQuery the raw query string
+     *
+     * @return the parameter map
+     */
+    public static Multimap<String, String> getParametersFromRawQuery(String rawQuery) {
+
+        Multimap<String, String> result = ArrayListMultimap.create();
+        if (rawQuery != null) {
+            for (String keyValuePair : CmsStringUtil.splitAsList(rawQuery, "&")) {
+                try {
+                    String decodedKeyValue = URLDecoder.decode(keyValuePair, "UTF-8");
+                    int eqPos = decodedKeyValue.indexOf("=");
+                    if (eqPos < 0) {
+                        decodedKeyValue = decodedKeyValue + "=";
+                        eqPos = decodedKeyValue.indexOf("=");
+                    }
+                    String key = decodedKeyValue.substring(0, eqPos);
+                    String value = decodedKeyValue.substring(eqPos + 1);
+                    result.put(key, value);
+                } catch (UnsupportedEncodingException e) {
+                    // UTF8 should be present
+                }
             }
         }
         return result;
