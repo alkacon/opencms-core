@@ -457,8 +457,8 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
                 caption += " ("
                     + Messages.get().getBundle(UI.getCurrent().getLocale()).key(Messages.GUI_DEFAULT_LOCALE_0)
                     + ")";
-                languageSelect.setItemCaption(locale, caption);
             }
+            languageSelect.setItemCaption(locale, caption);
         }
         languageSelect.setValue(m_model.getLocale());
         languageSelect.setNewItemsAllowed(false);
