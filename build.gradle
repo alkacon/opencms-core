@@ -230,8 +230,6 @@ javadoc {
         version="true"
         source= java_target_version
         linkSource="false"
-        noDeprecatedList="false"
-        noDeprecated="false"
         overview="${sourceSets.main.output.resourcesDir}/org/opencms/main/overview.html"
         docTitle="OpenCms Core API, version $ocmsVersion"
         windowTitle="OpenCms Core API, version $ocmsVersion"
@@ -288,8 +286,6 @@ task javadocModules(type: Javadoc, dependsOn: jar) {
         version="true"
         source= java_target_version
         linkSource="false"
-        noDeprecatedList="false"
-        noDeprecated="false"
         docTitle="OpenCms Workplace Modules API, version $ocmsVersion"
         windowTitle="OpenCms Workplace Modules API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
@@ -327,8 +323,6 @@ task javadocGwt(type: Javadoc, dependsOn: jar) {
         version="true"
         source= java_target_version
         linkSource="false"
-        noDeprecatedList="false"
-        noDeprecated="false"
         docTitle="OpenCms GWT Components API, version $ocmsVersion"
         windowTitle="OpenCms GWT Components API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
@@ -515,8 +509,6 @@ task javadocSetup(type: Javadoc, dependsOn: jar) {
         version="true"
         source= java_target_version
         linkSource="false"
-        noDeprecatedList="false"
-        noDeprecated="false"
         docTitle="OpenCms Setup API, version $ocmsVersion"
         windowTitle="OpenCms Setup API, version $ocmsVersion"
         stylesheetFile= file("${projectDir}/doc/javadoc/stylesheet.css")
