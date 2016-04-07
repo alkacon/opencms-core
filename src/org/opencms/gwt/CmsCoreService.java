@@ -62,7 +62,6 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -1064,7 +1063,9 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsResource requestedResource = cms.readResource(cms.getRequestContext().getUri());
             structureId = requestedResource.getStructureId();
         } catch (CmsException e) {
-            throw new CmsRuntimeException(e.getMessageContainer(), e);
+            // may happen in case of VAADIN UI
+            LOG.debug("Could not read resource for URI.", e);
+            structureId = CmsUUID.getNullUUID();
         }
         String loginUrl = DEFAULT_LOGIN_URL;
         try {
