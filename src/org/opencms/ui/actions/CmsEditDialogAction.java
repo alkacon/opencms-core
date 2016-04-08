@@ -37,6 +37,7 @@ import org.opencms.ui.apps.CmsAppView;
 import org.opencms.ui.apps.CmsAppView.CacheStatus;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
@@ -60,7 +61,8 @@ public class CmsEditDialogAction extends A_CmsWorkplaceAction {
     public static final String ACTION_ID = "edit";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT;
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
+        CmsStandardVisibilityCheck.EDIT);
 
     /** Log instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditDialogAction.class);
