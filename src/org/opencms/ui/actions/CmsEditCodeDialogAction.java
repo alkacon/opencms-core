@@ -34,6 +34,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsEditor;
+import org.opencms.ui.contextmenu.CmsMenuItemVisibilitySingleOnly;
 import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
 import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
@@ -59,7 +60,8 @@ public class CmsEditCodeDialogAction extends A_CmsWorkplaceAction {
     public static final String ACTION_ID = "editcode";
 
     /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.EDIT_CODE;
+    public static final I_CmsHasMenuItemVisibility VISIBILITY = new CmsMenuItemVisibilitySingleOnly(
+        CmsStandardVisibilityCheck.EDIT_CODE);
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
