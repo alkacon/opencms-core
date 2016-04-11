@@ -2321,6 +2321,14 @@ public final class CmsContainerpageController {
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                // first remove inline editors
+                for (Widget element : container) {
+                    if ((element instanceof CmsContainerPageElementPanel)) {
+                        ((CmsContainerPageElementPanel)element).removeInlineEditor();
+                    }
+                }
+
+                // add inline editors only on suitable elements
                 if (isContainerEditable(container) && matchesCurrentEditLevel(container)) {
                     for (Widget element : container) {
                         if ((element instanceof CmsContainerPageElementPanel)
@@ -2957,6 +2965,7 @@ public final class CmsContainerpageController {
             action.execute();
             m_currentEditLevel = -1;
             reinitializeButtons();
+            reInitInlineEditing();
             updateGalleryData(nextAction);
         }
     }
