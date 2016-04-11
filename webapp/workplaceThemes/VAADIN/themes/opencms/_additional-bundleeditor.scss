@@ -1,15 +1,24 @@
 @mixin o-table-bundleeditor {
 
-	.v-table-wrap-lines table.v-table-table .v-table-cell-wrapper {
+	.o-message-bundle-editor table.v-table-table .v-table-cell-wrapper {
 		line-height: normal;
 	}
 	
-	.v-table-wrap-lines table.v-table-table .v-table-cell-content {
+	.o-message-bundle-editor table.v-table-table .v-table-cell-content {
 		white-space: normal;
 	}
 	
-	.v-table-alert-empty .v-textarea[class*="prompt"], .v-table-alert-empty .v-textfield[class*="prompt"] {
+	.o-message-bundle-editor .v-table-body .v-textarea[class*="prompt"], .v-table-alert-empty .v-table-body .v-textfield[class*="prompt"] {
 		color: $o-state-new-color
 	}
 	
+	.o-message-bundle-editor .v-table .filters-panel input.v-textfield.v-widget {
+		height: $v-unit-size;
+		border-radius: $v-border-radius;
+		padding: 3px 7px;
+	}
+	
+	.o-message-bundle-editor .v-table .filters-panel {
+		height: unset;
+	}
 }

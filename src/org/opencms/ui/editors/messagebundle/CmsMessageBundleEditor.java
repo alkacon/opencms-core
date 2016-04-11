@@ -500,6 +500,7 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
         m_navigator.setSizeFull();
         m_navigator.setContent(m_table);
         m_navigator.addActionHandler(new CmsMessageBundleEditorTypes.TableKeyboardHandler(m_table));
+        m_navigator.addStyleName("o-message-bundle-editor");
 
         return m_navigator;
     }
@@ -550,8 +551,6 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
 
         final FilterTable table = new FilterTable();
         table.setSizeFull();
-        table.addStyleName("v-table-wrap-lines");
-        table.addStyleName("v-table-alert-empty");
 
         table.setContainerDataSource(m_model.getContainerForCurrentLocale());
         if (table.getItemIds().isEmpty() && !m_model.hasDescriptor()) {
@@ -566,9 +565,11 @@ public class CmsMessageBundleEditor implements I_CmsEditor, I_CmsWindowCloseList
             TableProperty.TRANSLATION,
             m_configurableMessages.getColumnHeader(TableProperty.TRANSLATION));
         table.setColumnHeader(TableProperty.OPTIONS, m_configurableMessages.getColumnHeader(TableProperty.OPTIONS));
+        table.setFilterDecorator(new CmsMessageBundleEditorFilterDecorator());
 
         table.setFilterBarVisible(true);
         table.setFilterFieldVisible(TableProperty.OPTIONS, false);
+
         table.setSortEnabled(true);
         table.setEditable(true);
 
