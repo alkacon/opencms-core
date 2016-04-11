@@ -204,6 +204,9 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     /** Name of a special property for the container id. */
     public static final String PROP_CONTAINER_MARKER = "opencmsContainerId";
 
+    /** The container level. */
+    private int m_containerLevel;
+
     /** The container data. */
     private CmsContainer m_containerData;
 
@@ -432,6 +435,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
     }
 
     /**
+     * Returns the container level.<p>
+     *
+     * @return the container level
+     */
+    public int getContainerLevel() {
+
+        return m_containerLevel;
+    }
+
+    /**
      * Returns the container type.<p>
      *
      * @return the container type
@@ -483,6 +496,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
             parent = parent.getParentElement();
         }
         return result;
+    }
+
+    /**
+     * Returns the parent container id.<p>
+     *
+     * @return the container parent id
+     */
+    public String getParentContainerId() {
+
+        return m_containerData.getParentContainerName();
     }
 
     /**
@@ -690,6 +713,16 @@ public class CmsContainerPageContainer extends ComplexPanel implements I_CmsDrop
         int newPlaceholderIndex = internalRepositionPlaceholder(x, y);
         m_requiresPositionUpdate = newPlaceholderIndex != m_placeholderIndex;
         m_placeholderIndex = newPlaceholderIndex;
+    }
+
+    /**
+     * Sets the container level.<p>
+     *
+     * @param level the container level
+     */
+    public void setContainerLevel(int level) {
+
+        m_containerLevel = level;
     }
 
     /**

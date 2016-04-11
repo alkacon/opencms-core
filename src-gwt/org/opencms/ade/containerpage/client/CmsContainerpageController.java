@@ -31,6 +31,7 @@ import org.opencms.ade.containerpage.client.CmsContainerpageEvent.EventType;
 import org.opencms.ade.containerpage.client.ui.CmsConfirmRemoveDialog;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer;
 import org.opencms.ade.containerpage.client.ui.CmsContainerPageElementPanel;
+import org.opencms.ade.containerpage.client.ui.CmsElementOptionBar;
 import org.opencms.ade.containerpage.client.ui.CmsGroupContainerElementPanel;
 import org.opencms.ade.containerpage.client.ui.CmsRemovedElementDeletionDialog;
 import org.opencms.ade.containerpage.client.ui.CmsSmallElementsHandler;
@@ -777,6 +778,12 @@ public final class CmsContainerpageController {
 
     /** Handler for small elements. */
     private CmsSmallElementsHandler m_smallElementsHandler;
+
+    /** The current edit container level. */
+    private int m_currentEditLevel = -1;
+
+    /** The max container level. */
+    private int m_maxContainerLevel;
 
     /**
      * Constructor.<p>
@@ -1929,6 +1936,7 @@ public final class CmsContainerpageController {
         // ensure any embedded flash players are set opaque so UI elements may be placed above them
         CmsDomUtil.fixFlashZindex(RootPanel.getBodyElement());
         m_targetContainers = m_containerpageUtil.consumeContainers(m_containers, RootPanel.getBodyElement());
+        updateContainerLevelInfo();
         for (CmsContainerPageContainer cont : m_targetContainers.values()) {
             Element elem = cont.getElement();
             CmsContainerpageEditor.getZIndexManager().addContainer(cont.getContainerId(), elem);
@@ -1990,6 +1998,7 @@ public final class CmsContainerpageController {
 
         int containerCount = m_targetContainers.size();
         m_targetContainers.putAll(m_containerpageUtil.consumeContainers(m_containers, containerElement.getElement()));
+        updateContainerLevelInfo();
         if (m_targetContainers.size() > containerCount) {
             // in case new containers have been added, the gallery data needs to be updated
             scheduleGalleryUpdate();
@@ -2069,6 +2078,7 @@ public final class CmsContainerpageController {
             && hasActiveSelection()
             && matchRootView(elemView)
             && isContainerEditable(dragParent)
+            && matchesCurrentEditLevel((CmsContainerPageContainer)dragParent)
             && (getData().isModelGroup() || !element.hasModelGroupParent())
             && (!(dragParent instanceof CmsGroupContainerElementPanel) || isGroupcontainerEditing());
     }
@@ -2311,7 +2321,7 @@ public final class CmsContainerpageController {
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
-                if (isContainerEditable(container)) {
+                if (isContainerEditable(container) && matchesCurrentEditLevel(container)) {
                     for (Widget element : container) {
                         if ((element instanceof CmsContainerPageElementPanel)
                             && isInlineEditable((CmsContainerPageElementPanel)element, container)) {
@@ -2542,7 +2552,8 @@ public final class CmsContainerpageController {
         return element.hasViewPermission()
             && (!element.hasModelGroupParent() || getData().isModelGroup())
             && (matchRootView(element.getElementView()) || isGroupcontainerEditing())
-            && isContainerEditable(dragParent);
+            && isContainerEditable(dragParent)
+            && matchesCurrentEditLevel((CmsContainerPageContainer)dragParent);
     }
 
     /**
@@ -2944,6 +2955,7 @@ public final class CmsContainerpageController {
                 }
             };
             action.execute();
+            m_currentEditLevel = -1;
             reinitializeButtons();
             updateGalleryData(nextAction);
         }
@@ -3313,8 +3325,18 @@ public final class CmsContainerpageController {
                 nativeEvent.stopPropagation();
                 m_handler.leavePage(Window.Location.getHref());
             }
-            if (nativeEvent.getCtrlKey() && (keyCode == KeyCodes.KEY_E)) {
-                openNextElementView();
+            if (nativeEvent.getCtrlKey()) {
+                // look for short cuts
+                if (keyCode == KeyCodes.KEY_E) {
+                    openNextElementView();
+                    nativeEvent.preventDefault();
+                    nativeEvent.stopPropagation();
+                }
+                if (keyCode == KeyCodes.KEY_K) {
+                    circleContainerEditLayers();
+                    nativeEvent.preventDefault();
+                    nativeEvent.stopPropagation();
+                }
             }
         }
     }
@@ -3615,6 +3637,33 @@ public final class CmsContainerpageController {
     }
 
     /**
+     * Selects the next container edit level.<p>
+     */
+    private void circleContainerEditLayers() {
+
+        if (m_isContentEditing || isGroupcontainerEditing() || (m_maxContainerLevel == 0)) {
+            return;
+        }
+        boolean hasEditables = false;
+        int previousLevel = m_currentEditLevel;
+        String message = "";
+        while (!hasEditables) {
+            if (m_currentEditLevel == m_maxContainerLevel) {
+                m_currentEditLevel = -1;
+                message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_ALL_0);
+            } else {
+                m_currentEditLevel++;
+                message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_1, Integer.valueOf(m_currentEditLevel));
+            }
+            reinitializeButtons();
+            hasEditables = !CmsDomUtil.getElementsByClass(CmsElementOptionBar.CSS_CLASS).isEmpty();
+        }
+        if (previousLevel != m_currentEditLevel) {
+            CmsNotification.get().send(Type.NORMAL, message);
+        }
+    }
+
+    /**
      * Collects all present model group elements.<p>
      *
      * @return the model group elements
@@ -3666,6 +3715,22 @@ public final class CmsContainerpageController {
                 }
             }
         }
+        return result;
+    }
+
+    /**
+     * Checks whether the given container matches the current edit level.<p>
+     *
+     * @param container the container to check
+     *
+     * @return <code>true</code> if the given container matches the current edit level
+     */
+    private boolean matchesCurrentEditLevel(
+        org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container) {
+
+        boolean result = (m_currentEditLevel == -1) || (m_currentEditLevel == container.getContainerLevel());
+        CmsDebugLog.consoleLog(
+            "container " + container.getContainerId() + " matches level " + m_currentEditLevel + " " + result);
         return result;
     }
 
@@ -3735,4 +3800,36 @@ public final class CmsContainerpageController {
         }
     }
 
+    /**
+     * Updates the container level info on the present containers.<p>
+     */
+    private void updateContainerLevelInfo() {
+
+        Map<String, CmsContainerPageContainer> containers = new HashMap<String, CmsContainerPageContainer>();
+        List<CmsContainerPageContainer> temp = new ArrayList<CmsContainerPageContainer>(m_targetContainers.values());
+        m_maxContainerLevel = 0;
+        boolean progress = true;
+        while (!temp.isEmpty() && progress) {
+            int size = containers.size();
+            Iterator<CmsContainerPageContainer> it = temp.iterator();
+            while (it.hasNext()) {
+                CmsContainerPageContainer container = it.next();
+                int level = -1;
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(container.getParentContainerId())) {
+                    level = 0;
+                } else if (containers.containsKey(container.getParentContainerId())) {
+                    level = containers.get(container.getParentContainerId()).getContainerLevel() + 1;
+                }
+                if (level > -1) {
+                    container.setContainerLevel(level);
+                    containers.put(container.getContainerId(), container);
+                    it.remove();
+                    if (level > m_maxContainerLevel) {
+                        m_maxContainerLevel = level;
+                    }
+                }
+            }
+            progress = containers.size() > size;
+        }
+    }
 }
