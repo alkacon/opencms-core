@@ -1665,6 +1665,7 @@ public final class CmsContainerpageController {
                     m_elements.put(result.getClientId(), result);
                     callback.execute(result);
                 }
+
             };
             action.execute();
         }
@@ -2310,6 +2311,13 @@ public final class CmsContainerpageController {
             }
         } else {
             for (org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container : m_targetContainers.values()) {
+                // first remove inline editors
+                for (Widget element : container) {
+                    if ((element instanceof CmsContainerPageElementPanel)) {
+                        ((CmsContainerPageElementPanel)element).removeInlineEditor();
+                    }
+                }
+                // add inline editors only on suitable elements
                 if (isContainerEditable(container)) {
                     for (Widget element : container) {
                         if ((element instanceof CmsContainerPageElementPanel)
@@ -2944,6 +2952,7 @@ public final class CmsContainerpageController {
             };
             action.execute();
             reinitializeButtons();
+            reInitInlineEditing();
             updateGalleryData(nextAction);
         }
     }
