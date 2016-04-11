@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsAccountInfo;
 import org.opencms.workplace.CmsWorkplaceCustomFoot;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
@@ -98,6 +99,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the attribute for file extensions in icon rules. */
     public static final String A_EXTENSION = "extension";
+
+    /** The name of the attribute field for account infos. */
+    public static final String A_FIELD = "field";
+
+    /** The name of the attribute addinfo-key for account infos. */
+    public static final String A_ADD_INFO_KEY = "addinfo-key";
+
+    /** The name of the attribute editable for account infos. */
+    public static final String A_EDITABLE = "editable";
 
     /** The "info" attribute. */
     public static final String A_INFO = "info";
@@ -182,6 +192,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the access entry node. */
     public static final String N_ACCESSENTRY = "accessentry";
+
+    /** The name of the account infos node. */
+    public static final String N_ACCOUNTINFOS = "account-infos";
+
+    /** The name of the account info node. */
+    public static final String N_ACCOUNTINFO = "account-info";
 
     /** The name of the "allow broken relations" node. */
     public static final String N_ALLOWBROKENRELATIONS = "allowbrokenrelations";
@@ -1056,6 +1072,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         addMultiContextMenuRules(digester);
         addContextMenuRules(digester);
         addUserInfoRules(digester);
+        addAccountInfoRules(digester);
         addDefaultPreferencesRules(digester);
 
         // the customized workplace foot
@@ -1312,218 +1329,21 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             }
         }
 
+        List<CmsAccountInfo> accountInfos = m_workplaceManager.getConfiguredAccountInfos();
+        if (accountInfos != null) {
+            Element infosElement = workplaceElement.addElement(N_ACCOUNTINFOS);
+            for (CmsAccountInfo info : accountInfos) {
+                Element infoElement = infosElement.addElement(N_ACCOUNTINFO);
+                infoElement.addAttribute(A_FIELD, info.getField().name());
+                if (info.isAdditionalInfo()) {
+                    infoElement.addAttribute(A_ADD_INFO_KEY, info.getAddInfoKey());
+                }
+                infoElement.addAttribute(A_EDITABLE, Boolean.toString(info.isEditable()));
+            }
+        }
+
         // add the <default-preferences> user settings main node
         Element defaultPreferences = workplaceElement.addElement(N_DEFAULTPREFERENCES);
-        //        // add the <workplace-preferences> node
-        //        Element workplacePreferences = defaultPreferences.addElement(N_WORKPLACEPREFERENCES);
-        //        // add the <workplace-generaloptions> node
-        //        Element workplaceGeneraloptions = workplacePreferences.addElement(N_WORKPLACEGENERALOPTIONS);
-        //        // add the <buttonstyle> node
-        //        workplaceGeneraloptions.addElement(N_BUTTONSTYLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getWorkplaceButtonStyleString());
-        //        // add the <reporttype> node
-        //        workplaceGeneraloptions.addElement(N_REPORTTYPE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getWorkplaceReportType());
-        //        // add the <uploadapplet> node
-        //        workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getUploadVariant().toString());
-        //        // add the <publishbuttonappearance> node if not empty
-        //        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
-        //            workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
-        //                m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
-        //        }
-        //        // add the list all projects option
-        //        workplaceGeneraloptions.addElement(N_LISTALLPROJECTS).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getListAllProjectsString());
-        //        // add the <publishnotification> node
-        //        workplaceGeneraloptions.addElement(N_PUBLISHNOTIFICATION).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowPublishNotificationString());
-        //        // add the <show-fileuploadbutton> node
-        //        workplaceGeneraloptions.addElement(N_SHOWFILEUPLOADBUTTON).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowFileUploadButtonString());
-        //        // add the <allowbrokenrelations> node
-        //        workplaceGeneraloptions.addElement(N_ALLOWBROKENRELATIONS).setText(
-        //            String.valueOf(m_workplaceManager.getDefaultUserSettings().isAllowBrokenRelations()));
-        //        // add the <publishrelatedresources> node
-        //        if (m_workplaceManager.getDefaultUserSettings().getPublishRelatedResources() != null) {
-        //            workplaceGeneraloptions.addElement(N_PUBLISHRELATEDRESOURCES).setText(
-        //                m_workplaceManager.getDefaultUserSettings().getPublishRelatedResources().toString());
-        //        }
-        //        // add the configuration for new folders
-        //        // <newfolder-editproperties>
-        //        workplaceGeneraloptions.addElement(N_NEWFOLDEREDITPROPERTIES).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getNewFolderEditProperties().toString());
-        //        // <newfolder-createindexpage>
-        //        workplaceGeneraloptions.addElement(N_NEWFOLDERCREATEINDEXPAGE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getNewFolderCreateIndexPage().toString());
-        //        // <show-uploadtypedialog>
-        //        workplaceGeneraloptions.addElement(N_SHOWUPLOADTYPEDIALOG).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowUploadTypeDialog().toString());
-        //
-        //        CmsDefaultUserSettings.SubsitemapCreationMode subsitemapCreationMode = m_workplaceManager.getDefaultUserSettings().getSubsitemapCreationMode(
-        //            null);
-        //        if (subsitemapCreationMode != null) {
-        //            workplaceGeneraloptions.addElement(N_SUBSITEMAP_CREATION_MODE).setText(subsitemapCreationMode.toString());
-        //        }
-        //
-        //        // add the <workplace-startupsettings> node
-        //        Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
-        //        // add the <locale> node
-        //        workplaceStartupsettings.addElement(N_LOCALE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getLocale().toString());
-        //        // add the <project> node
-        //        workplaceStartupsettings.addElement(N_PROJECT).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getStartProject());
-        //        // add the <view> node
-        //        workplaceStartupsettings.addElement(N_WORKPLACEVIEW).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getStartView());
-        //        // add the <folder> node
-        //        workplaceStartupsettings.addElement(N_FOLDER).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getStartFolder());
-        //        // add the <site> node
-        //        workplaceStartupsettings.addElement(N_SITE).setText(m_workplaceManager.getDefaultUserSettings().getStartSite());
-        //        // add the <restrictexplorerview> node
-        //        workplaceStartupsettings.addElement(N_RESTRICTEXPLORERVIEW).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getRestrictExplorerViewString());
-        //
-        //        // add the <workplace-search> node
-        //        Element workplaceSearch = workplacePreferences.addElement(N_WORKPLACESEARCH);
-        //        // add the <searchindex-name> node
-        //        workplaceSearch.addElement(N_SEARCHINDEXNAME).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getWorkplaceSearchIndexName());
-        //        // add the <searchview-explorer> node
-        //        workplaceSearch.addElement(N_SEARCHVIEWSTYLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getWorkplaceSearchViewStyle().toString());
-        //
-        //        // add the <explorer-preferences> node
-        //        Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
-        //        // add the <explorer-generaloptions> node
-        //        Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERGENERALOPTIONS);
-        //        // add the <buttonstyle> node
-        //        explorerGeneraloptions.addElement(N_BUTTONSTYLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getExplorerButtonStyleString());
-        //        // add the <reporttype> node
-        //        explorerGeneraloptions.addElement(N_ENTRIES).setText(
-        //            "" + m_workplaceManager.getDefaultUserSettings().getExplorerFileEntries());
-        //        // add the <entryoptions> node
-        //        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getExplorerFileEntryOptions())) {
-        //            explorerGeneraloptions.addElement(N_ENTRYOPTIONS).setText(
-        //                m_workplaceManager.getDefaultUserSettings().getExplorerFileEntryOptions());
-        //        }
-        //        // add the <explorer-displayoption> node
-        //        Element explorerDisplayoptions = explorerPreferences.addElement(N_EXPLORERDISPLAYOPTIONS);
-        //        // add the <show-title> node
-        //        explorerDisplayoptions.addElement(N_TITLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileTitle());
-        //        // add the <show-navtext> node
-        //        explorerDisplayoptions.addElement(N_NAVTEXT).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileNavText());
-        //        // add the <show-type> node
-        //        explorerDisplayoptions.addElement(N_TYPE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileType());
-        //        // add the <show-datelastmodified> node
-        //        explorerDisplayoptions.addElement(N_DATELASTMODIFIED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateLastModified());
-        //        // add the <show-datecreated> node
-        //        explorerDisplayoptions.addElement(N_DATECREATED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateCreated());
-        //        // add the <show-lockedby> node
-        //        explorerDisplayoptions.addElement(N_LOCKEDBY).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileLockedBy());
-        //        // add the <show-permissions> node
-        //        explorerDisplayoptions.addElement(N_PERMISSIONS).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFilePermissions());
-        //        // add the <show-size> node
-        //        explorerDisplayoptions.addElement(N_SIZE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileSize());
-        //        // add the <show-state> node
-        //        explorerDisplayoptions.addElement(N_STATE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileState());
-        //        // add the <show-userlastmodified> node
-        //        explorerDisplayoptions.addElement(N_USERLASTMODIFIED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserLastModified());
-        //        // add the <show-usercreated> node
-        //        explorerDisplayoptions.addElement(N_USERCREATED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
-        //        // add the <show-datereleased> node
-        //        explorerDisplayoptions.addElement(N_DATERELEASED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateReleased());
-        //        // add the <show-dateexpired> node
-        //        explorerDisplayoptions.addElement(N_DATEEXPIRED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateExpired());
-        //
-        //        // add the <dialog-preferences> node
-        //        Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);
-        //        // add the <dialog-defaultsettings> node
-        //        Element dialogDefaultSettings = dialogPreferences.addElement(N_DIALOGSDEFAULTSETTINGS);
-        //        // add the <filecopy> node
-        //        dialogDefaultSettings.addElement(N_FILECOPY).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogCopyFileModeString());
-        //        // add the <foldercopy> node
-        //        dialogDefaultSettings.addElement(N_FOLDERCOPY).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogCopyFolderModeString());
-        //        // add the <filedeletion> node
-        //        dialogDefaultSettings.addElement(N_FILEDELETION).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogDeleteFileModeString());
-        //        // add the <directpublish> node
-        //        dialogDefaultSettings.addElement(N_DIRECTPUBLISH).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogPublishSiblingsString());
-        //        // add the <showlock> node
-        //        dialogDefaultSettings.addElement(N_SHOWLOCK).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
-        //        // add the <showexportsettings> node
-        //        dialogDefaultSettings.addElement(N_SHOWEXPORTSETTINGS).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogShowExportSettingsString());
-        //        // add the <expand-permissionsuser> node
-        //        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSUSER).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogExpandUserPermissionsString());
-        //        // add the <expand-permissionsinherited> node
-        //        dialogDefaultSettings.addElement(N_EXPANDPERMISSIONSINHERITED).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogExpandInheritedPermissionsString());
-        //        // add the <permissions-inheritonfolder> node
-        //        dialogDefaultSettings.addElement(N_PERMISSIONSINHERITONFOLDER).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDialogPermissionsInheritOnFolderString());
-        //
-        //        // add the <editors-preferences> node
-        //        Element editorsPreferences = defaultPreferences.addElement(N_EDITORPREFERENCES);
-        //        // add the <editors-generaloptions> node
-        //        Element editorGeneraloptions = editorsPreferences.addElement(N_EDITORGENERALOPTIONS);
-        //        // add the <buttonstyle> node
-        //        editorGeneraloptions.addElement(N_BUTTONSTYLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getEditorButtonStyleString());
-        //        // add the <directedit> node
-        //        editorGeneraloptions.addElement(N_DIRECTEDITSTYLE).setText(
-        //            m_workplaceManager.getDefaultUserSettings().getDirectEditButtonStyleString());
-        //        // add the <editors-preferrededitors> node
-        //        Element editorPreferrededitors = editorsPreferences.addElement(N_EDITORPREFERREDEDITORS);
-        //        // add the <editor> nodes
-        //        Iterator<Entry<String, String>> editors = m_workplaceManager.getDefaultUserSettings().getEditorSettings().entrySet().iterator();
-        //        while (editors.hasNext()) {
-        //            Entry<String, String> e = editors.next();
-        //            String type = e.getKey();
-        //            String value = e.getValue();
-        //            Element editor = editorPreferrededitors.addElement(N_EDITOR);
-        //            editor.addAttribute(A_TYPE, type);
-        //            editor.addAttribute(A_VALUE, value);
-        //        }
-        //
-        //        if (!m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().isEmpty()) {
-        //            //add the <galleries-preferences> node
-        //            Element galleriesPreferences = defaultPreferences.addElement(N_GALLERIESPREFERENCES);
-        //            //add the <startgalleries> node
-        //            Element galleryStartGalleries = galleriesPreferences.addElement(N_STARTGALLERIES);
-        //            //add the <startgallery> nodes
-        //            Iterator<Entry<String, String>> startGalleries = m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().entrySet().iterator();
-        //            while (startGalleries.hasNext()) {
-        //                Entry<String, String> e = startGalleries.next();
-        //                String type = e.getKey();
-        //                String path = e.getValue();
-        //                Element startGallery = galleryStartGalleries.addElement(N_STARTGALLERY);
-        //                startGallery.addAttribute(A_TYPE, type);
-        //                startGallery.addAttribute(A_PATH, path);
-        //
-        //            }
-        //        }
 
         Multimap<String, I_CmsPreference> prefsByTab = Multimaps.index(
             m_workplaceManager.getDefaultUserSettings().getPreferences().values(),
@@ -1632,6 +1452,21 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
         }
+    }
+
+    /**
+     * Adds the digester rules for account info nodes.<p>
+     *
+     * @param digester the digester
+     */
+    protected void addAccountInfoRules(Digester digester) {
+
+        // add account info
+        String rulePath = "*/" + N_ACCOUNTINFOS + "/" + N_ACCOUNTINFO;
+        digester.addCallMethod(rulePath, "addAccountInfo", 3);
+        digester.addCallParam(rulePath, 0, A_FIELD);
+        digester.addCallParam(rulePath, 1, A_ADD_INFO_KEY);
+        digester.addCallParam(rulePath, 2, A_EDITABLE);
     }
 
     /**

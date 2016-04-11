@@ -40,6 +40,8 @@ import org.opencms.ui.dialogs.CmsUserDataDialog;
 import org.opencms.ui.login.CmsLoginController;
 import org.opencms.ui.shared.components.CmsUploadState.UploadType;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsAccountInfo;
+import org.opencms.workplace.CmsAccountInfo.Field;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -155,23 +157,13 @@ public class CmsUserInfo extends VerticalLayout {
         CmsUser user = cms.getRequestContext().getCurrentUser();
         StringBuffer infoHtml = new StringBuffer(128);
         infoHtml.append("<b>").append(user.getFullName()).append("</b>").append(LINE_BREAK);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getEmail())) {
-            infoHtml.append(user.getEmail()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getInstitution())) {
-            infoHtml.append(user.getInstitution()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getAddress())) {
-            infoHtml.append(user.getAddress()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getZipcode())) {
-            infoHtml.append(user.getZipcode()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCity())) {
-            infoHtml.append(user.getCity()).append(LINE_BREAK);
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(user.getCountry())) {
-            infoHtml.append(user.getCountry()).append(LINE_BREAK);
+        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
+            if (!info.getField().equals(Field.firstname) && !info.getField().equals(Field.lastname)) {
+                String value = info.getValue(user);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+                    infoHtml.append(value).append(LINE_BREAK);
+                }
+            }
         }
         infoHtml.append(
             Messages.get().getBundle(locale).key(

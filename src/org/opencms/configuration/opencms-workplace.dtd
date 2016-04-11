@@ -34,6 +34,7 @@
 	rfsfileviewsettings?,
 	explorertypes+,
 	user-infos?,
+	account-infos?,
 	default-preferences,
 	workplace-customfoot?,
 	tool-manager?,
@@ -73,6 +74,12 @@
 		  			widget CDATA #IMPLIED
 		  			params CDATA #IMPLIED
 		  			optional (true|TRUE|false|FALSE) #IMPLIED >
+		  			
+<!ELEMENT account-infos (account-info+) >
+<!ELEMENT account-info EMPTY >
+<!ATTLIST account-info  field (lastname|firstname|email|institution|address|zipcode|city|country|addinfo) #REQUIRED
+                        addinfo-key CDATA #IMPLIED
+						editable (true|TRUE|false|FALSE) #IMPLIED >
 
 <!--
 # The workplace foot is customizable, color and background-color can be changed to have a better overview when
@@ -486,9 +493,9 @@
 
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 
-# for the user workplace preferences. The xml data is subdifeded into four major knots,
+# for the user workplace preferences. The xml data is sub-divided into four major nodes,
 # representing the different tabs in the preferences screen in the workplace. 
-# The knot for start setting of the galleries is optional.
+# The node for start setting of the galleries is optional.
 -->
 <!ELEMENT default-preferences (workplace-preferences?,
 				explorer-preferences?,

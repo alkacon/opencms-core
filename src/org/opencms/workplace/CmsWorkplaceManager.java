@@ -69,6 +69,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsAccountInfo.Field;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
@@ -87,6 +88,7 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -180,6 +182,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         "imagegallery,downloadgallery,linkgallery,subsitemap,content_folder:view_folders",
         "formatter_config,xmlvfsbundle,propertyvfsbundle,sitemap_config,sitemap_master_config,module_config,elementview,seo_file,containerpage_template,inheritance_config,macro_formatter:view_configs",
         "xmlcontent,pointer:view_other");
+
+    /** The default account infos. */
+    private static final CmsAccountInfo[] DEFAULT_ACCOUNT_INFOS = new CmsAccountInfo[] {
+        new CmsAccountInfo(Field.firstname, null, false),
+        new CmsAccountInfo(Field.lastname, null, false),
+        new CmsAccountInfo(Field.email, null, false),
+        new CmsAccountInfo(Field.institution, null, false)};
 
     /** Value of the acacia-unlock configuration option (may be null if not set). */
     private String m_acaciaUnlock;
@@ -328,6 +337,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The XML content auto correction flag. */
     private boolean m_xmlContentAutoCorrect;
 
+    /** The configured account infos. */
+    private List<CmsAccountInfo> m_accountInfos;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -391,6 +403,31 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
         // no session means no workplace use
         return false;
+    }
+
+    /**
+     * Adds an account info.<p>
+     *
+     * @param info the account info to add
+     */
+    public void addAccountInfo(CmsAccountInfo info) {
+
+        if (m_accountInfos == null) {
+            m_accountInfos = new ArrayList<CmsAccountInfo>();
+        }
+        m_accountInfos.add(info);
+    }
+
+    /**
+     * Adds an account info.<p>
+     *
+     * @param field the field
+     * @param addInfoKey the additional info key
+     * @param editable the editable flag
+     */
+    public void addAccountInfo(String field, String addInfoKey, String editable) {
+
+        addAccountInfo(new CmsAccountInfo(field, addInfoKey, editable));
     }
 
     /**
@@ -788,6 +825,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
+     * Returns the account infos.<p>
+     *
+     * @return the account infos
+     */
+    public List<CmsAccountInfo> getAccountInfos() {
+
+        if (m_accountInfos == null) {
+            return Collections.unmodifiableList(Arrays.asList(DEFAULT_ACCOUNT_INFOS));
+        } else {
+            return Collections.unmodifiableList(m_accountInfos);
+        }
+    }
+
+    /**
      * Returns the name of the local category folder(s).<p>
      *
      * @return the name of the local category folder(s)
@@ -795,6 +846,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public String getCategoryFolder() {
 
         return m_categoryFolder;
+    }
+
+    /**
+     * Returns the configured account infos.<p>
+     *
+     * @return the configured account infos
+     */
+    public List<CmsAccountInfo> getConfiguredAccountInfos() {
+
+        return m_accountInfos;
     }
 
     /**

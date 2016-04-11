@@ -29,6 +29,7 @@ package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -37,30 +38,42 @@ import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsAccountInfo;
+import org.opencms.workplace.CmsAccountInfo.Field;
 
 import java.util.Collections;
 import java.util.Locale;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import org.apache.commons.beanutils.PropertyUtilsBean;
+
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog to edit the user data.<p>
  */
 public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
 
-    /** The serial version id. */
-    private static final long serialVersionUID = 8907786853232656944L;
-
     /** The embedded dialog id. */
     public static final String DIALOG_ID = "edituserdata";
 
+    /** The serial version id. */
+    private static final long serialVersionUID = 8907786853232656944L;
+
     /** The field binder. */
-    private BeanFieldGroup<CmsUser> m_binder;
+    private FieldGroup m_binder;
 
     /** The Cancel button. */
     private Button m_cancelButton;
@@ -71,11 +84,17 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The form layout. */
     private FormLayout m_form;
 
+    /** The property item. */
+    private PropertysetItem m_infos;
+
     /** The OK  button. */
     private Button m_okButton;
 
     /** The edited user. */
     private CmsUser m_user;
+
+    /** Displays the user icon and name. */
+    private Label m_userInfo;
 
     /**
      * Creates a new instance.<p>
@@ -90,6 +109,14 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
+        m_userInfo.setContentMode(ContentMode.HTML);
+        m_userInfo.addStyleName(ValoTheme.LABEL_H2);
+        m_userInfo.setValue(
+            "<img src=\""
+                + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(cms, m_user)
+                + "\" style=\"vertical-align:middle; margin: -4px 10px 0 0;\" />"
+                + m_user.getName());
+
         initFields();
 
         m_cancelButton.addClickListener(new ClickListener() {
@@ -153,9 +180,24 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     void submit() {
 
         try {
-            m_binder.commit();
-            m_context.getCms().writeUser(m_user);
-            m_context.finish(Collections.<CmsUUID> emptyList());
+            if (isValid()) {
+                m_binder.commit();
+                PropertyUtilsBean propUtils = new PropertyUtilsBean();
+                for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
+                    if (info.isEditable()) {
+                        if (info.isAdditionalInfo()) {
+                            m_user.setAdditionalInfo(info.getAddInfoKey(), m_infos.getItemProperty(info).getValue());
+                        } else {
+                            propUtils.setProperty(
+                                m_user,
+                                info.getField().name(),
+                                m_infos.getItemProperty(info).getValue());
+                        }
+                    }
+                }
+                m_context.getCms().writeUser(m_user);
+                m_context.finish(Collections.<CmsUUID> emptyList());
+            }
         } catch (Exception e) {
             m_context.error(e);
         }
@@ -165,15 +207,47 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
      * Builds the text field for the given property.<p>
      *
      * @param label the field label
-     * @param name the property name
+     * @param info the property name
      *
      * @return the field
      */
-    private TextField buildField(String label, String name) {
+    private TextField buildField(String label, CmsAccountInfo info) {
 
-        TextField field = (TextField)m_binder.buildAndBind(label, name);
+        TextField field = (TextField)m_binder.buildAndBind(label, info);
         field.setConverter(new CmsNullToEmptyConverter());
+        field.setWidth("100%");
+        field.setEnabled(info.isEditable());
+        if (info.getField().equals(Field.firstname) || info.getField().equals(Field.lastname)) {
+            StringLengthValidator validator = new StringLengthValidator("The field " + label + "should not be empty.");
+            validator.setMinLength(Integer.valueOf(1));
+            field.addValidator(validator);
+        } else if (info.getField().equals(Field.email)) {
+            EmailValidator validator = new EmailValidator("Please enter a valid email address.");
+            field.addValidator(validator);
+        }
+        field.setImmediate(true);
         return field;
+    }
+
+    /**
+     * Returns the field label.<p>
+     *
+     * @param info the info
+     *
+     * @return the label
+     */
+    private String getLabel(CmsAccountInfo info) {
+
+        if (info.isAdditionalInfo()) {
+            String label = CmsVaadinUtils.getMessageText("GUI_USER_DATA_" + info.getAddInfoKey().toUpperCase() + "_0");
+            if (CmsMessages.isUnknownKey(label)) {
+                return info.getAddInfoKey();
+            } else {
+                return label;
+            }
+        } else {
+            return CmsVaadinUtils.getMessageText("GUI_USER_DATA_" + info.getField().name().toUpperCase() + "_0");
+        }
     }
 
     /**
@@ -181,19 +255,34 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
      */
     private void initFields() {
 
-        m_binder = new BeanFieldGroup<CmsUser>(CmsUser.class);
-        m_binder.setItemDataSource(m_user);
+        m_infos = new PropertysetItem();
+        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
+            String value = info.getValue(m_user);
+            if (value == null) {
+                value = "";
+            }
+            m_infos.addItemProperty(info, new ObjectProperty<String>(value));
+        }
 
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_FIRSTNAME_0), "firstname"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_LASTNAME_0), "lastname"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_EMAIL_0), "email"));
-        m_form.addComponent(
-            buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_INSTITUTION_0), "institution"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_ADDRESS_0), "address"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_ZIPCODE_0), "zipcode"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_CITY_0), "city"));
-        m_form.addComponent(buildField(CmsVaadinUtils.getMessageText(Messages.GUI_USER_DATA_COUNTRY_0), "country"));
-        // Buffer the form content
-        m_binder.setBuffered(true);
+        m_binder = new FieldGroup(m_infos);
+        for (CmsAccountInfo info : OpenCms.getWorkplaceManager().getAccountInfos()) {
+            m_form.addComponent(buildField(getLabel(info), info));
+        }
+    }
+
+    /**
+     * Returns whether the form fields are valid.<p>
+     *
+     * @return <code>true</code> if the form fields are valid
+     */
+    private boolean isValid() {
+
+        boolean valid = true;
+        for (Component comp : m_form) {
+            if (comp instanceof TextField) {
+                valid = valid && ((TextField)comp).isValid();
+            }
+        }
+        return valid;
     }
 }
