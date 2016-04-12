@@ -552,6 +552,37 @@ public class CmsGitCheckin {
     }
 
     /**
+     * Adds the configuration from <code>configFile</code> to the {@link Collection} of {@link CmsGitConfiguration},
+     * if a valid configuration is read. Otherwise it logs the failure.
+     * @param configurations Collection of configurations where the new configuration should be added.
+     * @param configFile file to read the new configuration from.
+     */
+    private void addConfigurationIfValid(final Collection<CmsGitConfiguration> configurations, final File configFile) {
+
+        CmsGitConfiguration config = null;
+        try {
+            if (configFile.isFile()) {
+                config = new CmsGitConfiguration(configFile);
+                if (config.isValid()) {
+                    configurations.add(config);
+                } else {
+                    throw new Exception(
+                        "Could not read git configuration file" + config.getConfigurationFile().getAbsolutePath());
+                }
+            }
+        } catch (NullPointerException npe) {
+            LOG.error("Could not read git configuration.", npe);
+        } catch (Exception e) {
+            String file = (null != config)
+                && (null != config.getConfigurationFile())
+                && (null != config.getConfigurationFile().getAbsolutePath())
+                ? config.getConfigurationFile().getAbsolutePath()
+                : "<unknown>";
+            LOG.warn("Trying to read invalid git configuration from " + file + ".", e);
+        }
+    }
+
+    /**
      * Export modules and check them in. Assumes the log stream already open.
      * @return exit code of the commit-script.
      */
