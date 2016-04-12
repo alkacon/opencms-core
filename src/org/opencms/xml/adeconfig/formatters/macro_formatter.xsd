@@ -22,6 +22,8 @@
         	<xsd:element name="Display" type="OpenCmsBoolean" />
         	<xsd:element name="Macro" type="OpenCmsString" />
         	<xsd:element name="Formatters" type="OpenCmsFormatterReference" minOccurs="0" maxOccurs="unbounded" />
+        	<xsd:element name="PlaceholderMacro" type="OpenCmsString" minOccurs="0" />
+        	<xsd:element name="DefaultContent" type="OpenCmsVfsFile" minOccurs="0" />
         	<xsd:element name="Setting" type="OpenCmsFormatterSetting" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -40,10 +42,12 @@
         <layouts>
         	<layout element="Type" widget="org.opencms.widgets.CmsTypeComboWidget"  />
         	<layout element="Macro" widget="TextareaWidgetPlaintext" configuration="20" />
+        	<layout element="PlaceholderMacro" widget="TextareaWidgetPlaintext" configuration="20" />
         </layouts>
         <tabs>
 			<tab element="NiceName" name="TabBasic" collapse="false" />
 			<tab element="Macro" name="TabMacro" collapse="false" />
+			<tab element="PlaceholderMacro" name="NewContent" collapse="false" />
 			<tab element="Setting" name="TabSettings" collapse="false" />
 		</tabs>
         </xsd:appinfo> 

@@ -111,9 +111,8 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * Includes the formatter rendering the given element.<p>
      *
-     * @param elementResource the element resource
+     * @param element the element
      * @param formatter the formatter configuration bean
-     * @param settings the element settings
      * @param editable if editable
      * @param canCreate if new resources may be created
      * @param canDelete if the resource may be deleted
@@ -124,9 +123,8 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
      * @param response the response
      */
     public static void displayAction(
-        CmsResource elementResource,
+        CmsContainerElementBean element,
         I_CmsFormatterBean formatter,
-        Map<String, String> settings,
         boolean editable,
         boolean canCreate,
         boolean canDelete,
@@ -145,11 +143,6 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
 
             try {
                 if (formatter != null) {
-                    CmsContainerElementBean element = new CmsContainerElementBean(
-                        elementResource.getStructureId(),
-                        formatter.getJspStructureId(),
-                        settings,
-                        false);
                     element.initResource(cms);
                     element.initSettings(cms, formatter);
                     boolean openedEditable = false;
@@ -157,7 +150,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                         openedEditable = CmsJspTagEdit.insertDirectEditStart(
                             cms,
                             context,
-                            elementResource,
+                            element.getResource(),
                             canCreate,
                             canDelete,
                             null,
@@ -195,9 +188,33 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * Includes the formatter rendering the given element.<p>
      *
+     * @param element the element
+     * @param formatter the formatter configuration bean
+     * @param context the page context
+     * @param request the request
+     * @param response the response
+     */
+    public static void displayAction(
+        CmsContainerElementBean element,
+        I_CmsFormatterBean formatter,
+        PageContext context,
+        ServletRequest request,
+        ServletResponse response) {
+
+        displayAction(element, formatter, false, false, false, null, null, context, request, response);
+    }
+
+    /**
+     * Includes the formatter rendering the given element.<p>
+     *
      * @param elementResource the element resource
      * @param formatter the formatter configuration bean
      * @param settings the element settings
+     * @param editable if editable
+     * @param canCreate if new resources may be created
+     * @param canDelete if the resource may be deleted
+     * @param creationSiteMap the create location sub site
+     * @param postCreateHandler the post create handler
      * @param context the page context
      * @param request the request
      * @param response the response
@@ -206,19 +223,28 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
         CmsResource elementResource,
         I_CmsFormatterBean formatter,
         Map<String, String> settings,
+        boolean editable,
+        boolean canCreate,
+        boolean canDelete,
+        String creationSiteMap,
+        String postCreateHandler,
         PageContext context,
         ServletRequest request,
         ServletResponse response) {
 
-        displayAction(
-            elementResource,
-            formatter,
+        CmsContainerElementBean element = new CmsContainerElementBean(
+            elementResource.getStructureId(),
+            formatter.getJspStructureId(),
             settings,
-            false,
-            false,
-            false,
-            null,
-            null,
+            false);
+        displayAction(
+            element,
+            formatter,
+            editable,
+            canCreate,
+            canDelete,
+            creationSiteMap,
+            postCreateHandler,
             context,
             request,
             response);

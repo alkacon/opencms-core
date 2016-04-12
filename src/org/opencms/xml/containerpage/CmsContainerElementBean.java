@@ -98,6 +98,29 @@ public class CmsContainerElementBean implements Cloneable {
     /**
      * Creates a new container page element bean.<p>
      *
+     * @param file the element's file
+     * @param formatterId the formatter's structure id, could be <code>null</code>
+     * @param individualSettings the element settings as a map of name/value pairs
+     * @param inMemoryOnly the in memory flag
+     * @param editorHash the editor hash to use
+     * @param createNew <code>true</code> if a new element should be created replacing the given one on first edit of a container-page
+     **/
+    public CmsContainerElementBean(
+        CmsFile file,
+        CmsUUID formatterId,
+        Map<String, String> individualSettings,
+        boolean inMemoryOnly,
+        String editorHash,
+        boolean createNew) {
+        this(file.getStructureId(), formatterId, individualSettings, createNew);
+        m_inMemoryOnly = inMemoryOnly;
+        m_editorHash = editorHash;
+        m_resource = file;
+    }
+
+    /**
+     * Creates a new container page element bean.<p>
+     *
      * @param elementId the element's structure id
      * @param formatterId the formatter's structure id, could be <code>null</code>
      * @param individualSettings the element settings as a map of name/value pairs
@@ -174,6 +197,21 @@ public class CmsContainerElementBean implements Cloneable {
     }
 
     /**
+     * Clones the given element bean with a different formatter.<p>
+     *
+     * @param source the element to clone
+     * @param formatterId the new formatter id
+     *
+     * @return the element bean
+     */
+    public static CmsContainerElementBean cloneWithFormatter(CmsContainerElementBean source, CmsUUID formatterId) {
+
+        CmsContainerElementBean result = source.clone();
+        result.m_formatterId = formatterId;
+        return result;
+    }
+
+    /**
      * Clones the given element bean with a different set of settings.<p>
      *
      * @param source the element to clone
@@ -237,13 +275,7 @@ public class CmsContainerElementBean implements Cloneable {
         if (!(resourceType instanceof CmsResourceTypeXmlContent)) {
             throw new IllegalArgumentException();
         }
-        CmsContainerElementBean elementBean = new CmsContainerElementBean(
-            CmsUUID.getNullUUID(),
-            null,
-            individualSettings,
-            !isCopyModels);
-        elementBean.m_inMemoryOnly = true;
-        elementBean.m_editorHash = resourceType.getTypeName() + elementBean.getSettingsHash();
+
         byte[] content = new byte[0];
         String schema = ((CmsResourceTypeXmlContent)resourceType).getSchema();
         if (schema != null) {
@@ -266,8 +298,7 @@ public class CmsContainerElementBean implements Cloneable {
             }
             content = xmlContent.marshal();
         }
-
-        elementBean.m_resource = new CmsFile(
+        CmsFile file = new CmsFile(
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             targetFolder + "~",
@@ -286,7 +317,31 @@ public class CmsContainerElementBean implements Cloneable {
             0,
             0,
             content);
+        CmsContainerElementBean elementBean = new CmsContainerElementBean(
+            file,
+            null,
+            individualSettings,
+            true,
+            resourceType.getTypeName() + getSettingsHash(individualSettings, !isCopyModels),
+            !isCopyModels);
         return elementBean;
+    }
+
+    /**
+     * Gets the hash code for the element settings.<p>
+     *
+     * @param individualSettings the individual settings
+     * @param createNew the create new flag
+     *
+     * @return the hash code for the element settings
+     */
+    private static String getSettingsHash(Map<String, String> individualSettings, boolean createNew) {
+
+        if (!individualSettings.isEmpty() || createNew) {
+            int hash = (individualSettings.toString() + createNew).hashCode();
+            return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
+        }
+        return "";
     }
 
     /**
@@ -679,11 +734,7 @@ public class CmsContainerElementBean implements Cloneable {
      */
     private String getSettingsHash() {
 
-        if (!getIndividualSettings().isEmpty() || m_createNew) {
-            int hash = (getIndividualSettings().toString() + m_createNew).hashCode();
-            return CmsADEManager.CLIENT_ID_SEPERATOR + hash;
-        }
-        return "";
+        return getSettingsHash(getIndividualSettings(), m_createNew);
     }
 
     /**

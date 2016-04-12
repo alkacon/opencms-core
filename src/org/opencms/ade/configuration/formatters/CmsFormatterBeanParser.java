@@ -129,6 +129,9 @@ public class CmsFormatterBeanParser {
     public static final String N_HEAD_INCLUDE_JS = "HeadIncludeJs";
 
     /** Content value node name. */
+    public static final String N_DEFAULT_CONTENT = "DefaultContent";
+
+    /** Content value node name. */
     public static final String N_JAVASCRIPT_INLINE = "JavascriptInline";
 
     /** Content value node name. */
@@ -154,6 +157,9 @@ public class CmsFormatterBeanParser {
 
     /** Content value node name. */
     public static final String N_NICE_NAME = "NiceName";
+
+    /** Content value node name. */
+    public static final String N_PLACEHOLDER_MACRO = "PlaceholderMacro";
 
     /** Content value node name. */
     public static final String N_PREVIEW = "Preview";
@@ -305,6 +311,7 @@ public class CmsFormatterBeanParser {
         m_autoEnabled = Boolean.parseBoolean(autoEnabled);
 
         parseMatch(root);
+
         boolean hasNestedContainers;
         CmsFormatterBean formatterBean;
         if (isMacroFromatter) {
@@ -313,7 +320,18 @@ public class CmsFormatterBeanParser {
             m_preview = false;
             m_extractContent = true;
             hasNestedContainers = false;
+            CmsResource defContentRes = null;
+            I_CmsXmlContentValueLocation defContentLoc = root.getSubValue(N_DEFAULT_CONTENT);
+            if (defContentLoc != null) {
+                CmsXmlVfsFileValue defContentValue = (CmsXmlVfsFileValue)(defContentLoc.getValue());
+                CmsLink defContentLink = defContentValue.getLink(m_cms);
+                if (defContentLink != null) {
+                    CmsUUID defContentID = defContentLink.getStructureId();
+                    defContentRes = m_cms.readResource(defContentID);
+                }
+            }
             String macroInput = getString(root, N_MACRO, "");
+            String placeholderMacroInput = getString(root, N_PLACEHOLDER_MACRO, "");
             Map<String, CmsUUID> referencedFormatters = readReferencedFormatters(content);
             formatterBean = new CmsMacroFormatterBean(
                 m_containerTypes,
@@ -327,11 +345,14 @@ public class CmsFormatterBeanParser {
                 m_resourceType,
                 rank,
                 id,
+                defContentRes != null ? defContentRes.getRootPath() : null,
+                defContentRes != null ? defContentRes.getStructureId() : null,
                 m_settings,
                 m_autoEnabled,
                 isDetail,
                 isDisplay,
                 macroInput,
+                placeholderMacroInput,
                 referencedFormatters,
                 m_cms.getRequestContext().getCurrentProject().isOnlineProject());
         } else {

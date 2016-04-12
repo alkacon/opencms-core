@@ -46,6 +46,15 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
     /** The macro input. */
     private String m_macroInput;
 
+    /** The placeholder macro input. */
+    private String m_placeholderMacroInput;
+
+    /** The root path to the default content. */
+    private String m_defaultContentRootPath;
+
+    /** The UUID of the default content resource. */
+    private CmsUUID m_defaultContentStructureId;
+
     /** The online flag. */
     private boolean m_online;
 
@@ -66,11 +75,14 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
      * @param resourceTypeNames the resource type names
      * @param rank the configuration rank
      * @param id the configuration id
+     * @param defaultContentRootPath the root path to the default content
+     * @param defaultContentStructureId the UUID of the default content resource
      * @param settings the settings configuration
      * @param isDetail <code>true</code> if detail formatter
      * @param isAutoEnabled <code>true</code> if auto enabled
      * @param isDisplay the display flag
      * @param macroInput the macro input
+     * @param placeholderMacroInput the placeholder macro input
      * @param referencedFormatters the referenced formatters
      * @param online if this is the online version
      */
@@ -86,11 +98,14 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
         Collection<String> resourceTypeNames,
         int rank,
         String id,
+        String defaultContentRootPath,
+        CmsUUID defaultContentStructureId,
         Map<String, CmsXmlContentProperty> settings,
         boolean isAutoEnabled,
         boolean isDetail,
         boolean isDisplay,
         String macroInput,
+        String placeholderMacroInput,
         Map<String, CmsUUID> referencedFormatters,
         boolean online) {
         super(
@@ -118,8 +133,31 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
             false,
             false);
         m_macroInput = macroInput;
+        m_placeholderMacroInput = placeholderMacroInput;
         m_referencedFormatters = Collections.unmodifiableMap(referencedFormatters);
         m_online = online;
+        m_defaultContentRootPath = defaultContentRootPath;
+        m_defaultContentStructureId = defaultContentStructureId;
+    }
+
+    /**
+     * Returns the root path to the default content.<p>
+     *
+     * @return the root path to the default content
+     */
+    public String getDefaultContentRootPath() {
+
+        return m_defaultContentRootPath;
+    }
+
+    /**
+     * Returns the UUID of the default content.<p>
+     *
+     * @return the UUID of the default content
+     */
+    public CmsUUID getDefaultContentStructureId() {
+
+        return m_defaultContentStructureId;
     }
 
     /**
@@ -130,6 +168,16 @@ public class CmsMacroFormatterBean extends CmsFormatterBean {
     public String getMacroInput() {
 
         return m_macroInput;
+    }
+
+    /**
+     * Returns the placeholder macro input.<p>
+     *
+     * @return the placeholder macro input
+     */
+    public String getPlaceholderMacroInput() {
+
+        return m_placeholderMacroInput;
     }
 
     /**

@@ -1048,6 +1048,9 @@ public final class CmsContainerpageController {
         if (!element.isNew()) {
             return;
         }
+
+        final CmsContainer container = m_containers.get(element.getParentTarget().getContainerId());
+
         m_handler.showPageOverlay();
         CmsRpcAction<CmsCreateElementData> action = new CmsRpcAction<CmsCreateElementData>() {
 
@@ -1061,6 +1064,7 @@ public final class CmsContainerpageController {
                     CmsCoreProvider.get().getStructureId(),
                     element.getId(),
                     element.getNewType(),
+                    container,
                     getLocale(),
                     this);
 

@@ -190,7 +190,6 @@ public class CmsFormatterBean implements I_CmsFormatterBean {
 
         m_jspRootPath = jspRootPath;
         m_jspStructureId = jspStructureId;
-
         m_containerTypes = containerTypes;
         m_minWidth = minWidth;
         m_maxWidth = maxWidth;

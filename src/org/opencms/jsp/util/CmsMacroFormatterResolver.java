@@ -29,6 +29,7 @@ package org.opencms.jsp.util;
 
 import org.opencms.ade.configuration.formatters.CmsFormatterBeanParser;
 import org.opencms.ade.configuration.formatters.CmsFormatterConfigurationCache;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -41,6 +42,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.xml.containerpage.CmsContainerElementBean;
@@ -125,7 +127,6 @@ public class CmsMacroFormatterResolver {
         m_cms = controller.getCmsObject();
         CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(m_reqest);
         m_element = contextBean.getElement();
-
     }
 
     /**
@@ -300,9 +301,8 @@ public class CmsMacroFormatterResolver {
             if (formatter != null) {
                 try {
                     CmsJspTagDisplay.displayAction(
-                        m_element.getResource(),
+                        CmsContainerElementBean.cloneWithFormatter(m_element, formatter.getJspStructureId()),
                         formatter,
-                        m_element.getSettings(),
                         m_context,
                         m_reqest,
                         m_response);
@@ -336,8 +336,30 @@ public class CmsMacroFormatterResolver {
             m_cms.getRequestContext().getCurrentProject().isOnlineProject()).getFormatters().get(
                 m_element.getFormatterId());
         if (formatterConfig instanceof CmsMacroFormatterBean) {
-            m_input = ((CmsMacroFormatterBean)formatterConfig).getMacroInput();
-            m_formatterReferences = ((CmsMacroFormatterBean)formatterConfig).getReferencedFormatters();
+            CmsMacroFormatterBean config = (CmsMacroFormatterBean)formatterConfig;
+            m_input = config.getMacroInput();
+            m_formatterReferences = config.getReferencedFormatters();
+            if (m_element.isInMemoryOnly()) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getPlaceholderMacroInput())) {
+                    m_input = config.getPlaceholderMacroInput();
+                }
+                if (config.getDefaultContentStructureId() != null) {
+                    try {
+                        CmsResource defaultContent = m_cms.readResource(
+                            ((CmsMacroFormatterBean)formatterConfig).getDefaultContentStructureId());
+                        CmsFile defaultFile = m_cms.readFile(defaultContent);
+                        m_element = new CmsContainerElementBean(
+                            defaultFile,
+                            m_element.getFormatterId(),
+                            m_element.getIndividualSettings(),
+                            true,
+                            m_element.editorHash(),
+                            m_element.isCreateNew());
+                    } catch (CmsException e) {
+                        LOG.error("Error reading default content for new resource", e);
+                    }
+                }
+            }
         } else {
             // only as a fall back, should not be used
             m_formatterReferences = new HashMap<String, CmsUUID>();

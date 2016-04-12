@@ -92,6 +92,7 @@ public interface I_CmsContainerpageServiceAsync {
      * @param pageStructureId the container page structure id
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
+     * @param container the parent container
      * @param locale the content locale
      * @param callback the call-back executed on response
      */
@@ -99,6 +100,7 @@ public interface I_CmsContainerpageServiceAsync {
         CmsUUID pageStructureId,
         String clientId,
         String resourceType,
+        CmsContainer container,
         String locale,
         AsyncCallback<CmsCreateElementData> callback);
 

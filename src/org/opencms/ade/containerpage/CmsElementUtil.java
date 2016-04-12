@@ -265,6 +265,40 @@ public class CmsElementUtil {
         return !Sets.intersection(CmsContainer.splitType(containerType), groupContainer.getTypes()).isEmpty();
     }
 
+    public static I_CmsFormatterBean getFormatterForContainer(
+        CmsContainerElementBean element,
+        CmsContainer container,
+        CmsFormatterConfiguration configs,
+        boolean allowNested) {
+
+        I_CmsFormatterBean formatter;
+
+        String formatterId = element.getSettings().get(
+            CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
+        if (formatterId != null) {
+            Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
+                container.getType(),
+                container.getWidth(),
+                allowNested);
+            formatter = formatters.get(formatterId);
+            if (formatter == null) {
+                for (I_CmsFormatterBean currentFormatter : formatters.values()) {
+                    if ((currentFormatter.getJspStructureId() != null)
+                        && currentFormatter.getJspStructureId().equals(element.getFormatterId())) {
+                        formatter = currentFormatter;
+                        break;
+                    }
+                }
+            }
+            if (formatter == null) {
+                formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
+            }
+        } else {
+            formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
+        }
+        return formatter;
+    }
+
     /**
      * Returns the HTML content for the given resource and container.<p>
      *
@@ -664,31 +698,7 @@ public class CmsElementUtil {
         boolean allowNested) {
 
         String content = null;
-        I_CmsFormatterBean formatter;
-
-        String formatterId = element.getSettings().get(
-            CmsFormatterConfig.getSettingsKeyForContainer(container.getName()));
-        if (formatterId != null) {
-            Map<String, I_CmsFormatterBean> formatters = configs.getFormatterSelection(
-                container.getType(),
-                container.getWidth(),
-                allowNested);
-            formatter = formatters.get(formatterId);
-            if (formatter == null) {
-                for (I_CmsFormatterBean currentFormatter : formatters.values()) {
-                    if ((currentFormatter.getJspStructureId() != null)
-                        && currentFormatter.getJspStructureId().equals(element.getFormatterId())) {
-                        formatter = currentFormatter;
-                        break;
-                    }
-                }
-            }
-            if (formatter == null) {
-                formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
-            }
-        } else {
-            formatter = configs.getDefaultFormatter(container.getType(), container.getWidth(), allowNested);
-        }
+        I_CmsFormatterBean formatter = getFormatterForContainer(element, container, configs, allowNested);
         if (formatter != null) {
             element.initSettings(m_cms, formatter);
             try {

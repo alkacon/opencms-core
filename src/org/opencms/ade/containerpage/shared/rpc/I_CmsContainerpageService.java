@@ -93,6 +93,7 @@ public interface I_CmsContainerpageService extends RemoteService {
      * @param pageStructureId the container page structure id
      * @param clientId the client id of the new element (this will be the structure id of the configured new resource)
      * @param resourceType the resource tape of the new element
+     * @param container the parent container
      * @param locale the content locale
      *
      * @return the bean containing either the new element data or a list of model resources to select
@@ -103,6 +104,7 @@ public interface I_CmsContainerpageService extends RemoteService {
         CmsUUID pageStructureId,
         String clientId,
         String resourceType,
+        CmsContainer container,
         String locale) throws CmsRpcException;
 
     /**
