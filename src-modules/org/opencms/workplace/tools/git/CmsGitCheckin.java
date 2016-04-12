@@ -33,7 +33,6 @@ import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -47,22 +46,19 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -87,48 +83,21 @@ import com.google.common.collect.Sets;
  *   */
 public class CmsGitCheckin {
 
-    /** The variable under which the default commit message is set. */
-    private static final String DEFAULT_COMMIT_MESSAGE = "COMMIT_MESSAGE";
-
-    /** The variable under which the default commit mode is set. */
-    private static final String DEFAULT_COMMIT_MODE = "GIT_COMMIT";
-
-    /** The default configuration file used for the git check in. */
-    private static final String DEFAULT_CONFIG_FILENAME = "module-checkin.conf";
-    /** The variable under which the default copy-and-unzip mode is set. */
-    private static final String DEFAULT_COPY_AND_UNZIP = "COPY_AND_UNZIP";
-    /** The variable under which the default exclude libs option is set. */
-    private static final String DEFAULT_EXCLUDE_LIBS = "DEFAULT_EXCLUDE_LIBS";
-    /** The variable under which the export mode is set. */
-    private static final String DEFAULT_EXPORT_MODE = "MODULE_EXPORT_MODE";
-    /** The variable under which the default git user email is set. */
-    private static final String DEFAULT_GIT_USER_EMAIL = "GIT_USER_EMAIL";
-    /** The variable under which the default git user name is set. */
-    private static final String DEFAULT_GIT_USER_NAME = "GIT_USER_NAME";
-    /** The variable under which the default commit mode is set. */
-    private static final String DEFAULT_IGNORE_UNCLEAN = "GIT_IGNORE_UNCLEAN";
     /** The log file for the git check in. */
-    private static final String DEFAULT_LOGFILE_PATH = "logs/git.log";
+    private static final String DEFAULT_LOGFILE_PATH = OpenCms.getSystemInfo().getWebInfRfsPath() + "logs/git.log";
     /** The variable under which the export path is set. */
-    private static final String DEFAULT_MODULE_EXPORT_PATH = "MODULE_EXPORT_FOLDER";
-    /** The variable under which the default modules are listed in the configuration file. */
-    private static final String DEFAULT_MODULES_TO_EXPORT = "DEFAULT_MODULES_TO_EXPORT";
-    /** The variable under which the default pull mode is set for pulling after the commit. */
-    private static final String DEFAULT_PULL_MODE_AFTER = "GIT_PULL_AFTER";
-    /** The variable under which the default pull mode is set for pulling before any other action. */
-    private static final String DEFAULT_PULL_MODE_BEFORE = "GIT_PULL_BEFORE";
-    /** The variable under which the default push mode is set. */
-    private static final String DEFAULT_PUSH_MODE = "GIT_PUSH";
-    /** The variable under which the repository path is set. */
-    private static final String DEFAULT_REPOSITORY_PATH = "REPOSITORY_HOME";
-    /** The default path under <code>WEB-INF/</code> to the script and configuration file. */
-    private static final String DEFAULT_RFS_PATH = "git-scripts/";
+    /** The default path to the script. */
+    private static final String DEFAULT_RFS_PATH = OpenCms.getSystemInfo().getWebInfRfsPath() + "git-scripts/";
+    /** The default folder for configuration files. */
+    private static final String DEFAULT_CONFIG_FOLDER = DEFAULT_RFS_PATH + "config/";
     /** The default script file used for the git check in. */
-    private static final String DEFAULT_SCRIPT_FILENAME = "module-checkin.sh";
+    private static final String DEFAULT_SCRIPT_FILE = DEFAULT_RFS_PATH + "module-checkin.sh";
+    /** The default configuration file used for the git check in. */
+    private static final String DEFAULT_CONFIG_FILE = DEFAULT_RFS_PATH + "module-checkin.conf";
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsGitCheckin.class);
     /** Lock used to prevent simultaneous execution of checkIn method. */
-    private static final Object staticLock = new Object();
+    private static final Object STATIC_LOCK = new Object();
 
     /** Flag, indicating if an automatic pull should be performed after commit. */
     private Boolean m_autoPullAfter;
@@ -142,6 +111,8 @@ public class CmsGitCheckin {
     private CmsObject m_cms;
     /** The commit message. */
     private String m_commitMessage;
+    /** Flag, indicating if modules should be exported and unzipped. */
+    private Boolean m_copyAndUnzip;
 
     /** The commit mode. */
     private Boolean m_commitMode;
@@ -149,40 +120,18 @@ public class CmsGitCheckin {
     /** Fetch and reset option. */
     private boolean m_fetchAndResetBeforeImport;
 
-    /** Flag, indicating if the config-file is missing. */
-    private boolean m_configFileReadable;
+    /** Stream for the log file. */
+    private PrintStream m_logStream;
 
-    /** Path to the configuration file. */
-    private String m_configPath;
+    /** The modules that should really be exported and checked in. */
+    private Collection<String> m_modulesToExport;
 
-    /** Collection of the modules to export and check in, as configured in the config file. */
-    private Collection<String> m_configuredModules = new ArrayList<String>();
-    /** Flag, indicating if modules should be exported and unzipped. */
-    private Boolean m_copyAndUnzip;
-    /** The commit message as configured. */
-    private String m_defaultCommitMessage = "Autocommit of exported modules.";
-    /** The default commit mode. */
-    private boolean m_defaultCommitMode;
-    /** The default copy and unzip mode. */
-    private boolean m_defaultCopyAndUnzip = true;
-    /** Flag, indicating if the lib/ folders of the modules should be removed before the commit. */
-    private boolean m_defaultExcludeLibs;
-    /** The export mode as configured - is ignored if the system export folder is chosen. */
-    private int m_defaultExportMode;
-    /** The git user email as configured. */
-    private String m_defaultGitUserEmail;
-    /** The git user name as configured. */
-    private String m_defaultGitUserName;
-    /** Flag, indicating if execution of the script should go on for an unclean repository. */
-    private boolean m_defaultIgnoreUnclean;
-    /** The default module export path as configured. */
-    private String m_defaultModuleExportPath = "";
-    /** The pull mode as configured. */
-    private boolean m_defaultPullModeAfter;
-    /** The pull mode as configured. */
-    private boolean m_defaultPullModeBefore;
-    /** The push mode as configured. */
-    private boolean m_defaultPushMode;
+    /** Flag, indicating if reset on HEAD should be performed. */
+    private boolean m_resetHead;
+
+    /** Flag, indicating if reset on ${origin}/${branch} should be performed. */
+    private boolean m_resetRemoteHead;
+
     /** Flag, indicating if the lib/ folder of the modules should be deleted before the commit. */
     private Boolean m_excludeLibs;
     /** The git user email. */
@@ -191,33 +140,11 @@ public class CmsGitCheckin {
     private String m_gitUserName;
     /** Flag, indicating if execution of the script should go on for an unclean repository. */
     private Boolean m_ignoreUnclean;
-    /** Path to the log file. */
-    private String m_logFilePath;
 
-    /** Stream for the log file. */
-    private PrintStream m_logStream;
-
-    /** The path to the folder containing the modules. */
-    private String m_modulesPath;
-
-    /** The modules that should really be exported and checked in. */
-    private Collection<String> m_modulesToExport;
-
-    /** The repository path as configured. */
-    private String m_repositoryPath = "";
-    /** Flag, indicating if reset on HEAD should be performed. */
-    private boolean m_resetHead;
-
-    /** Flag, indicating if reset on ${origin}/${branch} should be performed. */
-    private boolean m_resetRemoteHead;
-
-    /** The configured resources sub folder of a module. */
-    private String m_resourcesSubfolder;
-
-    /** Path to the script for git check in. */
-    private String m_scriptPath;
-    /** The module export path as used by the OpenCms installation. */
-    private String m_systemModuleExportPath;
+    /** The current configuration. */
+    private CmsGitConfiguration m_currentConfiguration;
+    /** The available configurations. */
+    private List<CmsGitConfiguration> m_configurations = new LinkedList<CmsGitConfiguration>();
 
     /**
      * Default constructor. Initializing member variables with default values.
@@ -226,13 +153,13 @@ public class CmsGitCheckin {
      */
     public CmsGitCheckin(CmsObject cms) {
         m_cms = cms;
-        String webinfPath = OpenCms.getSystemInfo().getWebInfRfsPath();
-        String scriptsPath = webinfPath + DEFAULT_RFS_PATH;
-        m_configPath = scriptsPath + DEFAULT_CONFIG_FILENAME;
-        m_scriptPath = scriptsPath + DEFAULT_SCRIPT_FILENAME;
-        m_logFilePath = webinfPath + DEFAULT_LOGFILE_PATH;
-        readConfigFile();
-        m_systemModuleExportPath = OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES;
+        m_configurations = readConfigFiles();
+        for (CmsGitConfiguration config : m_configurations) {
+            if (config.isValid()) {
+                m_currentConfiguration = config;
+                break;
+            }
+        }
     }
 
     /**
@@ -305,8 +232,8 @@ public class CmsGitCheckin {
     public int checkIn() {
 
         try {
-            synchronized (staticLock) {
-                m_logStream = new PrintStream(new FileOutputStream(m_logFilePath, false));
+            synchronized (STATIC_LOCK) {
+                m_logStream = new PrintStream(new FileOutputStream(DEFAULT_LOGFILE_PATH, false));
                 CmsObject cms = getCmsObject();
                 if (cms != null) {
                     return checkInInternal();
@@ -361,100 +288,21 @@ public class CmsGitCheckin {
         return m_commitMessage;
     }
 
-    /** Returns the modules specified in the config file.
-     * @return the modules specified in the config file.
+    /** Returns the available configurations.
+     * @return the available configurations.
      */
-    public Collection<String> getConfiguredModules() {
+    public Collection<CmsGitConfiguration> getConfigurations() {
 
-        return m_configuredModules;
+        return m_configurations;
     }
 
-    /** Returns a flag, indicating if automatic commit is enabled by default.
-     * @return a flag, indicating if automatic commit is enabled by default.
+    /**
+     * Returns the currently used configuration.
+     * @return the currently used configuration.
      */
-    public boolean getDefaultAutoCommit() {
+    public CmsGitConfiguration getCurrentConfiguration() {
 
-        return m_defaultCommitMode;
-    }
-
-    /** Returns a flag, indicating if automatic pulling after the commit is enabled by default.
-     * @return a flag, indicating if automatic pulling after the commit is enabled by default.
-     */
-    public boolean getDefaultAutoPullAfter() {
-
-        return m_defaultPullModeAfter;
-    }
-
-    /** Returns a flag, indicating if automatic pulling first is enabled by default.
-     * @return a flag, indicating if automatic pulling first is enabled by default.
-     */
-    public boolean getDefaultAutoPullBefore() {
-
-        return m_defaultPullModeBefore;
-    }
-
-    /** Returns a flag, indicating if automatic pushing is enabled by default.
-     * @return a flag, indicating if automatic pushing is enabled by default.
-     */
-    public boolean getDefaultAutoPush() {
-
-        return m_defaultPushMode;
-    }
-
-    /** Returns the default commit message.
-     * @return the default commit message.
-     */
-    public String getDefaultCommitMessage() {
-
-        return m_defaultCommitMessage;
-    }
-
-    /** Returns the default copy-and-unzip flag.
-     * @return the default copy-and-unzip flag.
-     */
-    public boolean getDefaultCopyAndUnzip() {
-
-        return m_defaultCopyAndUnzip;
-    }
-
-    /** Returns the default exclude libs flag.
-     * @return the default exclude libs flag.
-     */
-    public boolean getDefaultExcludeLibs() {
-
-        return m_defaultExcludeLibs;
-    }
-
-    /** Returns the configured default git user email, or <code>null</code> if the email is by default not adjusted at all.
-     * @return the configured default git user email, or <code>null</code> if the email is by default not adjusted at all.
-     */
-    public String getDefaultGitUserEmail() {
-
-        return m_defaultGitUserEmail;
-    }
-
-    /** Returns the configured default git user name, or <code>null</code> if the name is by default not adjusted at all.
-     * @return the configured default git user name, or <code>null</code> if the name is by default not adjusted at all.
-     */
-    public String getDefaultGitUserName() {
-
-        return m_defaultGitUserName;
-    }
-
-    /** Returns the default ignore-unclean flag.
-     * @return the default ignore-unclean flag.
-     */
-    public boolean getDefaultIngoreUnclean() {
-
-        return m_defaultIgnoreUnclean;
-    }
-
-    /** Returns the export mode.
-     * @return the export mode.
-     */
-    public int getExportMode() {
-
-        return m_defaultModuleExportPath.isEmpty() ? 1 : m_defaultExportMode;
+        return m_currentConfiguration;
     }
 
     /**
@@ -491,7 +339,7 @@ public class CmsGitCheckin {
      */
     public String getLogFilePath() {
 
-        return m_logFilePath;
+        return DEFAULT_LOGFILE_PATH;
     }
 
     /**
@@ -506,33 +354,18 @@ public class CmsGitCheckin {
             String logFilePath = getLogFilePath();
             byte[] logData = CmsFileUtil.readFully(new FileInputStream(logFilePath));
             return new String(logData, "UTF-8");
-        } catch (IOException e) {
+        } catch (@SuppressWarnings("unused") IOException e) {
             return "Error reading log file: " + getLogFilePath();
         }
     }
 
-    /** Returns the RFS path where module .zip-files are read before check in.
-     * @return the RFS path where module .zip-files are read before check in.
+    /**
+     * Returns true if at least one valid configuration is present.
+     * @return true if at least one valid configuration is present.
      */
-    public String getModuleExportPath() {
+    public boolean hasValidConfiguration() {
 
-        return m_defaultModuleExportPath.isEmpty() ? m_systemModuleExportPath : m_defaultModuleExportPath;
-    }
-
-    /** Returns the path to the home directory of the repository where the modules are checked in.
-     * @return the path to the home directory of the repository where the modules are checked in.
-     */
-    public String getRepositoryPath() {
-
-        return m_repositoryPath;
-    }
-
-    /** Returns a flag, indicating if the config file could be read.
-     * @return a flag, indicating if the config file could be read.
-     */
-    public boolean isConfigFileReadable() {
-
-        return m_configFileReadable;
+        return !m_configurations.isEmpty();
     }
 
     /**
@@ -586,6 +419,20 @@ public class CmsGitCheckin {
     public void setCopyAndUnzip(final boolean copyAndUnzip) {
 
         m_copyAndUnzip = Boolean.valueOf(copyAndUnzip);
+    }
+
+    /**
+     * Sets the current configuration if it is a valid configuration. Otherwise the configuration is not set.
+     * @param configuration the configuration to set.
+     * @return flag, indicating if the configuration is set.
+     */
+    public boolean setCurrentConfiguration(CmsGitConfiguration configuration) {
+
+        if ((null != configuration) && configuration.isValid()) {
+            m_currentConfiguration = configuration;
+            return true;
+        }
+        return false;
     }
 
     /** Setter for the exclude libs flag.
@@ -671,6 +518,37 @@ public class CmsGitCheckin {
     public void setResetRemoteHead(final boolean reset) {
 
         m_resetRemoteHead = reset;
+    }
+
+    /**
+     * Adds the configuration from <code>configFile</code> to the {@link Collection} of {@link CmsGitConfiguration},
+     * if a valid configuration is read. Otherwise it logs the failure.
+     * @param configurations Collection of configurations where the new configuration should be added.
+     * @param configFile file to read the new configuration from.
+     */
+    private void addConfigurationIfValid(final Collection<CmsGitConfiguration> configurations, final File configFile) {
+
+        CmsGitConfiguration config = null;
+        try {
+            if (configFile.isFile()) {
+                config = new CmsGitConfiguration(configFile);
+                if (config.isValid()) {
+                    configurations.add(config);
+                } else {
+                    throw new Exception(
+                        "Could not read git configuration file" + config.getConfigurationFile().getAbsolutePath());
+                }
+            }
+        } catch (NullPointerException npe) {
+            LOG.error("Could not read git configuration.", npe);
+        } catch (Exception e) {
+            String file = (null != config)
+                && (null != config.getConfigurationFile())
+                && (null != config.getConfigurationFile().getAbsolutePath())
+                ? config.getConfigurationFile().getAbsolutePath()
+                : "<unknown>";
+            LOG.warn("Trying to read invalid git configuration from " + file + ".", e);
+        }
     }
 
     /**
@@ -774,8 +652,8 @@ public class CmsGitCheckin {
         if (m_autoPush != null) {
             autoPush = m_autoPush.booleanValue() ? " --push " : " --no-push";
         }
-        String exportFolder = " --export-folder \"" + getModuleExportPath() + "\"";
-        String exportMode = " --export-mode " + getExportMode();
+        String exportFolder = " --export-folder \"" + m_currentConfiguration.getModuleExportPath() + "\"";
+        String exportMode = " --export-mode " + m_currentConfiguration.getExportMode();
         String excludeLibs = "";
         if (m_excludeLibs != null) {
             excludeLibs = m_excludeLibs.booleanValue() ? " --exclude-libs" : " --no-exclude-libs";
@@ -793,8 +671,10 @@ public class CmsGitCheckin {
             copyAndUnzip = m_copyAndUnzip.booleanValue() ? " --copy-and-unzip" : " --no-copy-and-unzip";
         }
 
+        String configFilePath = m_currentConfiguration.getFilePath();
+
         return "\""
-            + m_scriptPath
+            + DEFAULT_SCRIPT_FILE
             + "\""
             + exportModules
             + commitMessage
@@ -810,7 +690,7 @@ public class CmsGitCheckin {
             + ignoreUncleanMode
             + copyAndUnzip
             + " \""
-            + m_configPath
+            + configFilePath
             + "\"";
     }
 
@@ -819,7 +699,8 @@ public class CmsGitCheckin {
      */
     private String checkoutScriptCommand() {
 
-        return "\"" + m_scriptPath + "\"" + " --checkout " + " \"" + m_configPath + "\"";
+        String configFilePath = m_currentConfiguration.getFilePath();
+        return "\"" + DEFAULT_SCRIPT_FILE + "\"" + " --checkout " + " \"" + configFilePath + "\"";
     }
 
     /**
@@ -829,7 +710,7 @@ public class CmsGitCheckin {
 
         // avoid to export modules if unnecessary
         if (((null != m_copyAndUnzip) && !m_copyAndUnzip.booleanValue())
-            || ((null == m_copyAndUnzip) && !m_defaultCopyAndUnzip)) {
+            || ((null == m_copyAndUnzip) && !m_currentConfiguration.getDefaultCopyAndUnzip())) {
             m_logStream.println();
             m_logStream.println("NOT EXPORTING MODULES - you disabled copy and unzip.");
             m_logStream.println();
@@ -838,7 +719,7 @@ public class CmsGitCheckin {
         CmsModuleManager moduleManager = OpenCms.getModuleManager();
 
         Collection<String> modulesToExport = ((m_modulesToExport == null) || m_modulesToExport.isEmpty())
-        ? m_configuredModules
+        ? m_currentConfiguration.getConfiguredModules()
         : m_modulesToExport;
 
         for (String moduleName : modulesToExport) {
@@ -858,21 +739,6 @@ public class CmsGitCheckin {
                 }
             }
         }
-    }
-
-    /** Helper to read a line from the config file.
-     * @param line the line to read.
-     * @return the value of the variable set at this line.
-     */
-    private String getValueFromLine(final String line) {
-
-        String value = line.substring(line.indexOf("=") + 1);
-        // remove quotes
-        value = value.trim();
-        if ((value.startsWith("\"") && value.endsWith("\"")) || (value.startsWith("'") && value.endsWith("'"))) {
-            value = value.substring(1, value.length() - 1);
-        }
-        return value;
     }
 
     /**
@@ -923,9 +789,9 @@ public class CmsGitCheckin {
             Set<String> unsortedModules = Sets.newHashSet(m_modulesToExport);
             for (String module : m_modulesToExport) {
                 String manifestPath = CmsStringUtil.joinPaths(
-                    m_modulesPath,
+                    m_currentConfiguration.getModulesPath(),
                     module,
-                    m_resourcesSubfolder,
+                    m_currentConfiguration.getResourcesSubFolder(),
                     "manifest.xml");
                 Document doc = CmsXmlUtils.unmarshalHelper(
                     CmsFileUtil.readFully(new FileInputStream(manifestPath)),
@@ -962,7 +828,10 @@ public class CmsGitCheckin {
             }
             m_logStream.println("Modules sorted by dependencies: " + sortedModules);
             for (String moduleName : sortedModules) {
-                String dir = CmsStringUtil.joinPaths(m_modulesPath, moduleName, m_resourcesSubfolder);
+                String dir = CmsStringUtil.joinPaths(
+                    m_currentConfiguration.getModulesPath(),
+                    moduleName,
+                    m_currentConfiguration.getResourcesSubFolder());
                 File dirEntry = new File(dir);
                 if (!dirEntry.exists()) {
                     continue;
@@ -991,111 +860,25 @@ public class CmsGitCheckin {
         return result;
     }
 
-    /** Reads the config file and stores configured values in member variables. */
-    private void readConfigFile() {
+    /**
+     * Read all configuration files.
+     * @return the list with all available configurations
+     */
+    private List<CmsGitConfiguration> readConfigFiles() {
 
-        File configFile = new File(m_configPath);
-        if (configFile.exists()) {
-            if (configFile.canRead()) {
-                BufferedReader configReader = null;
-                try {
-                    configReader = new BufferedReader(new FileReader(configFile));
-                    String line = configReader.readLine();
-                    while (line != null) {
-                        if (line.startsWith(DEFAULT_MODULES_TO_EXPORT)) {
-                            String value = getValueFromLine(line);
-                            if (value.contains(",")) {
-                                m_configuredModules = Arrays.asList(value.split(","));
-                            } else {
-                                m_configuredModules = Arrays.asList(value.split(" "));
-                            }
-                        }
+        List<CmsGitConfiguration> configurations = new LinkedList<CmsGitConfiguration>();
 
-                        if (line.startsWith("MODULE_PATH")) {
-                            m_modulesPath = getValueFromLine(line).trim();
-                        }
+        // Default configuration file for backwards compatibility
+        addConfigurationIfValid(configurations, new File(DEFAULT_CONFIG_FILE));
 
-                        if (line.startsWith("MODULE_RESOURCES_SUBFOLDER")) {
-                            m_resourcesSubfolder = getValueFromLine(line).trim();
-                        }
-
-                        if (line.startsWith(DEFAULT_PULL_MODE_BEFORE)) {
-                            String value = getValueFromLine(line);
-                            value = value.trim();
-                            if (value.equals("1")) {
-                                m_defaultPullModeBefore = true;
-                            }
-                        }
-                        if (line.startsWith(DEFAULT_PULL_MODE_AFTER)) {
-                            String value = getValueFromLine(line);
-                            value = value.trim();
-                            if (value.equals("1")) {
-                                m_defaultPullModeAfter = true;
-                            }
-                        }
-                        if (line.startsWith(DEFAULT_PUSH_MODE)) {
-                            String value = getValueFromLine(line);
-                            value = value.trim();
-                            if (value.equals("1")) {
-                                m_defaultPushMode = true;
-                            }
-                        }
-                        if (line.startsWith(DEFAULT_MODULE_EXPORT_PATH)) {
-                            String value = getValueFromLine(line);
-                            m_defaultModuleExportPath = value.trim();
-                        }
-                        if (line.startsWith(DEFAULT_REPOSITORY_PATH)) {
-                            String value = getValueFromLine(line);
-                            m_repositoryPath = value.trim();
-                        }
-                        if (line.startsWith(DEFAULT_EXPORT_MODE)) {
-                            String value = getValueFromLine(line);
-                            m_defaultExportMode = (value.trim().equals("1")) ? 1 : 0;
-                        }
-                        if (line.startsWith(DEFAULT_COMMIT_MESSAGE)) {
-                            String value = getValueFromLine(line);
-                            m_defaultCommitMessage = value;
-                        }
-                        if (line.startsWith(DEFAULT_GIT_USER_NAME)) {
-                            String value = getValueFromLine(line);
-                            m_defaultGitUserName = value;
-                        }
-                        if (line.startsWith(DEFAULT_GIT_USER_EMAIL)) {
-                            String value = getValueFromLine(line);
-                            m_defaultGitUserEmail = value;
-                        }
-                        if (line.startsWith(DEFAULT_EXCLUDE_LIBS)) {
-                            String value = getValueFromLine(line);
-                            m_defaultExcludeLibs = (value.trim().equals("1")) ? true : false;
-                        }
-                        if (line.startsWith(DEFAULT_COMMIT_MODE)) {
-                            String value = getValueFromLine(line);
-                            m_defaultCommitMode = (value.trim().equals("1")) ? true : false;
-                        }
-                        if (line.startsWith(DEFAULT_IGNORE_UNCLEAN)) {
-                            String value = getValueFromLine(line);
-                            m_defaultIgnoreUnclean = (value.trim().equals("1")) ? true : false;
-                        }
-                        if (line.startsWith(DEFAULT_COPY_AND_UNZIP)) {
-                            String value = getValueFromLine(line);
-                            m_defaultCopyAndUnzip = (value.trim().equals("1")) ? true : false;
-                        }
-                        line = configReader.readLine();
-                    }
-                    m_configFileReadable = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (null != configReader) {
-                        try {
-                            configReader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+        // All files in the config folder
+        File configFolder = new File(DEFAULT_CONFIG_FOLDER);
+        if (configFolder.isDirectory()) {
+            for (File configFile : configFolder.listFiles()) {
+                addConfigurationIfValid(configurations, configFile);
             }
         }
+        return configurations;
     }
 
     /** Returns the command to run by the shell to reset to HEAD.
@@ -1103,7 +886,9 @@ public class CmsGitCheckin {
      */
     private String resetHeadScriptCommand() {
 
-        return "\"" + m_scriptPath + "\" --reset-head" + " \"" + m_configPath + "\"";
+        String configFilePath = m_currentConfiguration.getFilePath();
+
+        return "\"" + DEFAULT_SCRIPT_FILE + "\" --reset-head" + " \"" + configFilePath + "\"";
     }
 
     /** Returns the command to run by the shell to reset to ${origin}/${branch}.
@@ -1111,7 +896,9 @@ public class CmsGitCheckin {
      */
     private String resetRemoteHeadScriptCommand() {
 
-        return "\"" + m_scriptPath + "\" --reset-remote-head" + " \"" + m_configPath + "\"";
+        String configFilePath = m_currentConfiguration.getFilePath();
+
+        return "\"" + DEFAULT_SCRIPT_FILE + "\" --reset-remote-head" + " \"" + configFilePath + "\"";
     }
 
     /**
@@ -1143,13 +930,13 @@ public class CmsGitCheckin {
             ProcessBuilder builder = new ProcessBuilder(cmd);
             m_logStream.close();
             m_logStream = null;
-            Redirect redirect = Redirect.appendTo(new File(m_logFilePath));
+            Redirect redirect = Redirect.appendTo(new File(DEFAULT_LOGFILE_PATH));
             builder.redirectOutput(redirect);
             builder.redirectError(redirect);
             Process scriptProcess = builder.start();
             int exitCode = scriptProcess.waitFor();
             scriptProcess.getOutputStream().close();
-            m_logStream = new PrintStream(new FileOutputStream(m_logFilePath, true));
+            m_logStream = new PrintStream(new FileOutputStream(DEFAULT_LOGFILE_PATH, true));
             return exitCode;
         } catch (InterruptedException | IOException e) {
             e.printStackTrace(m_logStream);

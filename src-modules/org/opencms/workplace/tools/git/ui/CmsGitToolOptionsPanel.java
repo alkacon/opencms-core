@@ -39,6 +39,7 @@ import org.opencms.ui.components.CmsResourceInfo;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.git.CmsGitCheckin;
+import org.opencms.workplace.tools.git.CmsGitConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +67,9 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
@@ -140,8 +144,11 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
     /** Checkbox for the 'fetch and reset' option. */
     private CheckBox m_fetchAndReset;
+
+    /** Email field for module import. */
     private TextField m_fakeEmailField;
 
+    /** User field for module import. */
     private TextField m_fakeUserField;
 
     /** The check-in bean. */
@@ -177,8 +184,17 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Selected mode. */
     private ActionType m_mode = ActionType.checkIn;
 
+    /** Configuration selector. */
+    private ComboBox m_configurationSelector;
+
     /** Container for the module selector. */
     private VerticalLayout m_moduleSelectionContainer;
+
+    /** Panel for the configuration selection. */
+    private Panel m_configurationSelectionPanel;
+
+    /** Container for all the components. */
+    private VerticalLayout m_mainContainer;
 
     /** Module selector. */
     private ComboBox m_moduleSelector;
@@ -208,37 +224,25 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
      */
     public CmsGitToolOptionsPanel(CmsGitCheckin checkinBean) {
         m_checkinBean = checkinBean;
-        if (!checkinBean.isConfigFileReadable()) {
+        if (!checkinBean.hasValidConfiguration()) {
             setMargin(true);
             Label errorLabel = new Label(
                 "<h1>\n"
                     + "        Git plugin is not configured correctly.\n"
                     + "    </h1>\n"
                     + "    <p>\n"
-                    + "        There were problems reading the configuration file <code>module-checkin.conf</code> under <code>WEB-INF/git-scripts/</code>.\n"
+                    + "        There were problems reading the configuration file <code>module-checkin.conf</code> under <code>WEB-INF/git-scripts/</code> or other configurations under <code>WEB-INF/git-scripts/config/</code>.\n"
                     + "    </p>\n"
                     + "    <p>\n"
-                    + "        Please ensure that the file is present and contains a valid configuration. You may use the file <code>module-checkin.conf.demo</code> under <code>WEB-INF/git-scripts/</code> as template for your own configuration.\n"
+                    + "        Please ensure that at least one file is present and contains a valid configuration. You may use the file <code>module-checkin.conf.demo</code> under <code>WEB-INF/git-scripts/</code> as template for your own configuration.\n"
                     + "    </p>");
             errorLabel.setContentMode(ContentMode.HTML);
             addComponent(errorLabel);
             return;
         }
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
-        for (final String moduleName : m_checkinBean.getConfiguredModules()) {
-            addSelectableModule(moduleName);
-        }
-        updateNewModuleSelector();
-        m_pullFirst.setValue(Boolean.valueOf(m_checkinBean.getDefaultAutoPullBefore()));
-        m_pullAfterCommit.setValue(Boolean.valueOf(m_checkinBean.getDefaultAutoPullAfter()));
-        m_addAndCommit.setValue(Boolean.valueOf(m_checkinBean.getDefaultAutoCommit()));
-        m_pushAutomatically.setValue(Boolean.valueOf(m_checkinBean.getDefaultAutoPush()));
-        m_commitMessage.setValue(Strings.nullToEmpty(m_checkinBean.getDefaultCommitMessage()));
-        m_copyAndUnzip.setValue(Boolean.valueOf(m_checkinBean.getDefaultCopyAndUnzip()));
-        m_excludeLib.setValue(Boolean.valueOf(m_checkinBean.getDefaultExcludeLibs()));
-        m_ignoreUnclean.setValue(Boolean.valueOf(m_checkinBean.getDefaultIngoreUnclean()));
-        m_userField.setValue(Strings.nullToEmpty(m_checkinBean.getDefaultGitUserName()));
-        m_emailField.setValue(Strings.nullToEmpty(m_checkinBean.getDefaultGitUserEmail()));
+        configureConfigurationSelector();
+        updateForNewConfiguration(m_checkinBean.getCurrentConfiguration());
 
         CmsUser user = A_CmsUI.getCmsObject().getRequestContext().getCurrentUser();
         String savedEmail = (String)(user.getAdditionalInfo().get(ADDINFO_EMAIL));
@@ -630,6 +634,70 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     }
 
     /**
+     * Updates the options panel for a special configuration.
+     * @param gitConfig the git configuration.
+     */
+    protected void updateForNewConfiguration(CmsGitConfiguration gitConfig) {
+
+        if (!m_checkinBean.setCurrentConfiguration(gitConfig)) {
+            Notification.show(
+                "Configuration could not be switched.",
+                "Please check the OpenCms log-file for details.",
+                Type.ERROR_MESSAGE);
+            m_configurationSelector.select(m_checkinBean.getCurrentConfiguration());
+            return;
+        }
+
+        resetSelectableModules();
+        for (final String moduleName : gitConfig.getConfiguredModules()) {
+            addSelectableModule(moduleName);
+        }
+        updateNewModuleSelector();
+        m_pullFirst.setValue(Boolean.valueOf(gitConfig.getDefaultAutoPullBefore()));
+        m_pullAfterCommit.setValue(Boolean.valueOf(gitConfig.getDefaultAutoPullAfter()));
+        m_addAndCommit.setValue(Boolean.valueOf(gitConfig.getDefaultAutoCommit()));
+        m_pushAutomatically.setValue(Boolean.valueOf(gitConfig.getDefaultAutoPush()));
+        m_commitMessage.setValue(Strings.nullToEmpty(gitConfig.getDefaultCommitMessage()));
+        m_copyAndUnzip.setValue(Boolean.valueOf(gitConfig.getDefaultCopyAndUnzip()));
+        m_excludeLib.setValue(Boolean.valueOf(gitConfig.getDefaultExcludeLibs()));
+        m_ignoreUnclean.setValue(Boolean.valueOf(gitConfig.getDefaultIngoreUnclean()));
+        m_userField.setValue(Strings.nullToEmpty(gitConfig.getDefaultGitUserName()));
+        m_emailField.setValue(Strings.nullToEmpty(gitConfig.getDefaultGitUserEmail()));
+
+    }
+
+    /**
+     * Configures the configuration selector.
+     */
+    private void configureConfigurationSelector() {
+
+        if (m_checkinBean.getConfigurations().size() < 2) {
+            // Do not show the configuration selection at all.
+            m_mainContainer.removeComponent(m_configurationSelectionPanel);
+        } else {
+            for (CmsGitConfiguration configuration : m_checkinBean.getConfigurations()) {
+                m_configurationSelector.addItem(configuration);
+                m_configurationSelector.setItemCaption(configuration, configuration.getName());
+            }
+            m_configurationSelector.setNullSelectionAllowed(false);
+            m_configurationSelector.setWidth("350px");
+            m_configurationSelector.select(m_checkinBean.getCurrentConfiguration());
+
+            // There is really a choice between configurations
+            m_configurationSelector.addValueChangeListener(new ValueChangeListener() {
+
+                private static final long serialVersionUID = 1L;
+
+                public void valueChange(ValueChangeEvent event) {
+
+                    updateForNewConfiguration((CmsGitConfiguration)event.getProperty().getValue());
+
+                }
+            });
+        }
+    }
+
+    /**
      * Creates a new module selector, containing only the modules for which no check box is already displayed.<p>
      *
      * @return the new module selector
@@ -672,6 +740,18 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
             m_pullAfterCommit,
             m_pushAutomatically,
             m_excludeLib);
+    }
+
+    /**
+     * Removes all currently selectable modules.
+     */
+    private void resetSelectableModules() {
+
+        m_moduleCheckboxes.clear();
+
+        m_moduleSelectionContainer.removeAllComponents();
+        m_moduleSelectionContainer.addComponent(m_moduleSelector);
+
     }
 
     /**
