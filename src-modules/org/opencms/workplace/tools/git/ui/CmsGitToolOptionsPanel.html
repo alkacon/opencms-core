@@ -6,7 +6,14 @@
 </head>
 <body>
 	<v-vertical-layout margin>
-		<v-vertical-layout :center spacing style-name="o-workplace-maxwidth">
+		<v-vertical-layout _id="m_mainContainer" :center spacing style-name="o-workplace-maxwidth">
+			<v-panel id=m_configurationSelectionPanel" caption="Configuration selection" caption="Configuration selection">
+				<v-vertical-layout _id="m_configurationSelectionContainer" margin spacing>
+					<v-horizontal-layout spacing>
+						<v-combo-box _id="m_configurationSelector" />
+					</v-horizontal-layout>
+				</v-vertical-layout>
+			</v-panel>
 			<v-panel caption="Module selection">
 				<v-vertical-layout _id="m_moduleSelectionContainer" margin spacing>
 					<v-horizontal-layout spacing>
