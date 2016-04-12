@@ -38,11 +38,24 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
 
+/** Dialog that prints the result of the execution of a git action. */
 public class CmsGitActionResultPanel extends CmsBasicDialog {
 
+    /** Serial version id. */
+    private static final long serialVersionUID = 1L;
+
+    /** Label showing the result message. */
     private Label m_messageLabel;
+    /** Label showing the log output. */
     private Label m_logLabel;
 
+    /**
+     * Creates a dialog window with the git action result.
+     * @param message the message written at top.
+     * @param log the log output
+     * @param isError flag, indicating if an error occurred.
+     * @param buttons the buttons to show at the bottom of the dialog.
+     */
     public CmsGitActionResultPanel(String message, String log, boolean isError, List<Button> buttons) {
         CmsVaadinUtils.readAndLocalizeDesign(this, CmsVaadinUtils.getWpMessagesForCurrentLocale(), null);
         m_logLabel.setContentMode(ContentMode.PREFORMATTED);
