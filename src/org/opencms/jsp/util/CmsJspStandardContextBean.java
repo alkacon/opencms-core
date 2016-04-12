@@ -684,6 +684,9 @@ public final class CmsJspStandardContextBean {
     /** Indicates if in drag mode. */
     private boolean m_isDragMode;
 
+    /** Stores the edit mode info. */
+    private Boolean m_isEditMode;
+
     /** The currently displayed container page. */
     private CmsContainerPageBean m_page;
 
@@ -990,7 +993,10 @@ public final class CmsJspStandardContextBean {
      */
     public boolean getIsEditMode() {
 
-        return CmsJspTagEditable.isEditableRequest(m_request);
+        if (m_isEditMode == null) {
+            m_isEditMode = Boolean.valueOf(CmsJspTagEditable.isEditableRequest(m_request));
+        }
+        return m_isEditMode.booleanValue();
     }
 
     /**

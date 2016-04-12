@@ -383,7 +383,7 @@ public class CmsResourceTypeConfig implements I_CmsConfigurationObject<CmsResour
         }
         CmsResource createdResource = rootCms.createResource(
             creationPath,
-            getType().getTypeId(),
+            getType(),
             null,
             new ArrayList<CmsProperty>(0));
         try {
