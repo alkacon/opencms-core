@@ -57,6 +57,7 @@ import org.opencms.gwt.client.ui.CmsErrorDialog;
 import org.opencms.gwt.client.ui.CmsInfoHeader;
 import org.opencms.gwt.client.ui.CmsModelSelectDialog;
 import org.opencms.gwt.client.ui.CmsNotification;
+import org.opencms.gwt.client.ui.CmsNotification.Type;
 import org.opencms.gwt.client.ui.CmsNotificationMessage;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsToggleButton;
@@ -97,12 +98,16 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -285,6 +290,9 @@ public final class CmsContentEditor extends CmsEditorBase {
 
     /** The open form button. */
     private CmsPushButton m_openFormButton;
+
+    /** The event preview handler registration. */
+    private HandlerRegistration m_previewHandlerRegistration;
 
     /** The publish button. */
     private CmsPushButton m_publishButton;
@@ -530,8 +538,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      * @return the current entity
      */
     private static native JavaScriptObject nativeGetEntity()/*-{
-        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]
-                ();
+        return $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::GET_CURRENT_ENTITY_METHOD]();
     }-*/;
 
     /**
@@ -753,6 +760,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         Command onClose) {
 
         m_onClose = onClose;
+        initEventPreviewHandler();
         CmsUUID structureId = new CmsUUID(elementId);
         // make sure the resource is locked, if we are not creating a new one
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newLink) || CmsCoreProvider.get().lock(structureId)) {
@@ -796,6 +804,7 @@ public final class CmsContentEditor extends CmsEditorBase {
         final I_CmsInlineFormParent panel,
         Command onClose) {
 
+        initEventPreviewHandler();
         String entityId = CmsContentDefinition.uuidToEntityId(elementId, locale);
         m_locale = locale;
         m_onClose = onClose;
@@ -819,6 +828,7 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     public void openStandAloneFormEditor(final CmsEditorContext context) {
 
+        initEventPreviewHandler();
         final CmsContentDefinition definition;
         try {
             definition = (CmsContentDefinition)CmsRpcPrefetcher.getSerializedObjectFromDictionary(
@@ -1056,6 +1066,10 @@ public final class CmsContentEditor extends CmsEditorBase {
         } else {
             RootPanel.getBodyElement().getParentElement().getStyle().clearOverflow();
         }
+        if (m_previewHandlerRegistration != null) {
+            m_previewHandlerRegistration.removeHandler();
+            m_previewHandlerRegistration = null;
+        }
     }
 
     /**
@@ -1181,6 +1195,26 @@ public final class CmsContentEditor extends CmsEditorBase {
         clearEditor();
         // restore the scroll position
         RootPanel.getBodyElement().getOwnerDocument().setScrollTop(scrollTop);
+    }
+
+    /**
+     * Checks if the content is valid and sends a notification if not.<p>
+     * This will not trigger a validation run, but will use the latest state.<p>
+     *
+     * @return <code>true</code> in case there are no validation issues
+     */
+    boolean checkValidation() {
+
+        boolean result;
+        if (m_changedEntityIds.isEmpty()) {
+            result = true;
+        } else if (m_saveButton.isEnabled()) {
+            result = true;
+        } else {
+            result = false;
+            CmsNotification.get().send(Type.ERROR, m_saveButton.getDisabledReason());
+        }
+        return result;
     }
 
     /**
@@ -1343,10 +1377,12 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     void exitWithSaving() {
 
-        if (m_saveExitButton.isEnabled()) {
-            saveAndExit();
-        } else {
-            cancelEdit();
+        if (checkValidation()) {
+            if (m_saveExitButton.isEnabled()) {
+                saveAndExit();
+            } else {
+                cancelEdit();
+            }
         }
     }
 
@@ -1536,6 +1572,41 @@ public final class CmsContentEditor extends CmsEditorBase {
             org.opencms.gwt.client.Messages.GUI_MODEL_SELECT_MESSAGE_0);
         CmsModelSelectDialog dialog = new CmsModelSelectDialog(handler, definition.getModelInfos(), title, message);
         dialog.center();
+    }
+
+    /**
+     * Previews the native event to enable keyboard short cuts.<p>
+     *
+     * @param event the event
+     */
+    void previewNativeEvent(NativePreviewEvent event) {
+
+        Event nativeEvent = Event.as(event.getNativeEvent());
+        if (event.getTypeInt() == Event.ONKEYDOWN) {
+            int keyCode = nativeEvent.getKeyCode();
+            if (nativeEvent.getCtrlKey()) {
+                // look for short cuts
+                if (nativeEvent.getShiftKey()) {
+                    if (keyCode == KeyCodes.KEY_S) {
+
+                        exitWithSaving();
+                        nativeEvent.preventDefault();
+                        nativeEvent.stopPropagation();
+                    } else if (keyCode == KeyCodes.KEY_X) {
+                        confirmCancel();
+                        nativeEvent.preventDefault();
+                        nativeEvent.stopPropagation();
+                    }
+                } else if (keyCode == KeyCodes.KEY_S) {
+                    if (checkValidation()) {
+                        save();
+                    }
+                    nativeEvent.preventDefault();
+                    nativeEvent.stopPropagation();
+                }
+
+            }
+        }
     }
 
     /**
@@ -1924,8 +1995,8 @@ public final class CmsContentEditor extends CmsEditorBase {
      */
     private native void exportObserver()/*-{
         var self = this;
-        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(
-                listener, scope) {
+        $wnd[@org.opencms.ade.contenteditor.client.CmsContentEditor::ADD_CHANGE_LISTENER_METHOD] = function(listener,
+                scope) {
             var wrapper = {
                 onChange : listener.onChange
             }
@@ -1979,6 +2050,20 @@ public final class CmsContentEditor extends CmsEditorBase {
             public void onWindowClosing(ClosingEvent event) {
 
                 unlockResource();
+            }
+        });
+    }
+
+    /**
+     * Initializes the event preview handler.<p>
+     */
+    private void initEventPreviewHandler() {
+
+        m_previewHandlerRegistration = Event.addNativePreviewHandler(new NativePreviewHandler() {
+
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+
+                previewNativeEvent(event);
             }
         });
     }

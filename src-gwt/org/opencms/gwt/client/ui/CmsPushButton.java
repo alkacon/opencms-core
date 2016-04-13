@@ -76,6 +76,9 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
     /** Use minimum width flag. */
     private boolean m_useMinWidth;
 
+    /** The disabled reason. */
+    private String m_disabledReason;
+
     /**
      * The constructor.<p>
      */
@@ -129,6 +132,7 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
         setDown(false);
         setEnabled(false);
+        m_disabledReason = disabledReason;
         super.setTitle(disabledReason);
     }
 
@@ -139,7 +143,18 @@ public class CmsPushButton extends PushButton implements HasHorizontalAlignment 
 
         m_isReenabled = true;
         setEnabled(true);
+        m_disabledReason = null;
         super.setTitle(m_title);
+    }
+
+    /**
+     * Returns the disabled reason.<p>
+     *
+     * @return the disabled reason
+     */
+    public String getDisabledReason() {
+
+        return m_disabledReason;
     }
 
     /**
