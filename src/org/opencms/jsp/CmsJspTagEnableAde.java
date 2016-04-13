@@ -32,10 +32,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.gwt.CmsGwtActionElement;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
+
+import java.io.IOException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +55,54 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  */
 public class CmsJspTagEnableAde extends BodyTagSupport {
 
+    /** The preview mode JavaScript include. */
+    private static final String PREVIEW_INCLUDE_SCRIPT = "<script type=\"text/javascript\">\n"
+        + "function openEditor(){\n"
+        + "var target=window.location.href;"
+        + "target=target.replace(\""
+        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+        + "=true\",\"\");\n"
+        + "window.location.href=target;\n"
+        + "}\n"
+        + "function injectButton(){\n"
+        + "if (self === top){\n"
+        + "var injectElement=document.createElement(\"div\");\n"
+        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()'></button>\";\n"
+        + "document.body.appendChild(injectElement);\n"
+        + "}"
+        + "}\n"
+        + "document.addEventListener(\"DOMContentLoaded\",injectButton);\n"
+        + "\n</script>\n";
+
+    /** The preview mode CSS include. */
+    private static final String PREVIEW_INCLUDE_STYLE = "\n<style type=\"text/css\">\n"
+        + "button#opencms-leave-preview{\n"
+        + "font-size:32px;\n"
+        + "color:#474747;\n"
+        + "border:none;\n"
+        + "background:transparent;\n"
+        + "position:fixed;\n"
+        + "top:5px;\n"
+        + "left:20%;\n"
+        + "z-index:1000000;"
+        + "padding: 4px;\n"
+        + "}\n"
+        + "button#opencms-leave-preview:hover{\n"
+        + "color:#356EE1;\n"
+        + "}\n"
+        + "button#opencms-leave-preview:after{\n"
+        + "content:\"\";"
+        + "position:absolute;\n"
+        + "z-index:-1;\n"
+        + "background: #fff;\n"
+        + "top:0;\n"
+        + "left:0;\n"
+        + "right:0;\n"
+        + "bottom:0;\n"
+        + "opacity:0.7;\n"
+        + "border-radius:4px;\n"
+        + "</style>\n";
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8447599916548975733L;
 
@@ -64,8 +116,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     public static void enableAdeTagAction(PageContext context) throws JspException {
 
         ServletRequest req = context.getRequest();
-        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
-            // don't display advanced direct edit buttons on an historical resource or in case direct edit has been disabled for the request
+        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
+            // don't display advanced direct edit buttons on an historical resource
             return;
         }
 
@@ -82,19 +134,43 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             return;
         }
 
-        I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
-        eb.init(cms, CmsDirectEditMode.TRUE, "");
-        CmsJspTagEditable.setDirectEditProvider(context, eb);
+        if (CmsJspTagEditable.isDirectEditDisabled(req)) {
+            try {
+                context.getResponse().getWriter().print(getPreviewInclude());
+            } catch (IOException e) {
+                throw new JspException(e);
+            }
+        } else {
 
-        try {
-            CmsContainerpageActionElement actionEl = new CmsContainerpageActionElement(
-                context,
-                (HttpServletRequest)req,
-                (HttpServletResponse)context.getResponse());
-            context.getResponse().getWriter().print(actionEl.exportAll());
-        } catch (Exception e) {
-            throw new JspException(e);
+            I_CmsDirectEditProvider eb = new CmsAdvancedDirectEditProvider();
+            eb.init(cms, CmsDirectEditMode.TRUE, "");
+            CmsJspTagEditable.setDirectEditProvider(context, eb);
+
+            try {
+                CmsContainerpageActionElement actionEl = new CmsContainerpageActionElement(
+                    context,
+                    (HttpServletRequest)req,
+                    (HttpServletResponse)context.getResponse());
+                context.getResponse().getWriter().print(actionEl.exportAll());
+            } catch (Exception e) {
+                throw new JspException(e);
+            }
         }
+    }
+
+    /**
+     * Returns the preview mode include.<p>
+     *
+     * @return the preview mode include
+     */
+    private static String getPreviewInclude() {
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("\n<style type=\"text/css\">\n @import url(\"").append(
+            CmsGwtActionElement.getFontIconCssLink()).append("\");\n </style>\n");
+        buffer.append(PREVIEW_INCLUDE_STYLE);
+        buffer.append(PREVIEW_INCLUDE_SCRIPT);
+        return buffer.toString();
     }
 
     /**

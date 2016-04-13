@@ -211,6 +211,16 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     }
 
     /**
+     * Returns the OpenCms font icon CSS link.<p>
+     *
+     * @return the CSS link
+     */
+    public static String getFontIconCssLink() {
+
+        return CmsWorkplace.getStaticResourceUri("gwt/css/opencmsFont.css");
+    }
+
+    /**
      * Serializes the result of the given method for RPC-prefetching.<p>
      *
      * @param method the method
@@ -237,16 +247,6 @@ public class CmsGwtActionElement extends CmsJspActionElement {
     public static String wrapScript(String... s) {
 
         return SCRIPT_TAG_OPEN + CmsStringUtil.listAsString(Arrays.asList(s), "") + SCRIPT_TAG_CLOSE;
-    }
-
-    /**
-     * Returns the OpenCms font icon CSS link.<p>
-     *
-     * @return the CSS link
-     */
-    private static String getFontIconCssLink() {
-
-        return CmsWorkplace.getStaticResourceUri("gwt/css/opencmsFont.css");
     }
 
     /**

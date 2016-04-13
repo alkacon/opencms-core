@@ -93,6 +93,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
@@ -924,6 +925,16 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * Toggles the tool-bars visibility.<p>
+     */
+    public void showPreview() {
+
+        UrlBuilder location = Window.Location.createUrlBuilder();
+        location.setParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT, Boolean.toString(true));
+        Window.Location.assign(location.buildString());
+    }
+
+    /**
      * Shows the publish dialog.<p>
      */
     public void showPublishDialog() {
@@ -972,22 +983,6 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             leavingDialog.center();
         } else {
             openPublish();
-        }
-    }
-
-    /**
-     * Toggles the tool-bars visibility.<p>
-     *
-     * @param show <code>true</code> to show the toolbar
-     */
-    public void showToolbar(boolean show) {
-
-        if (show) {
-            m_editor.showToolbar(true);
-            m_controller.setToolbarVisible(true);
-        } else {
-            m_editor.showToolbar(false);
-            m_controller.setToolbarVisible(false);
         }
     }
 
