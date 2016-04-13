@@ -153,6 +153,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /** The container width as a string. */
     private String m_width;
 
+    /** Indicating that the container page editor is active for the current request. */
+    private boolean m_editableRequest;
+
     /**
      * Ensures the appropriate formatter configuration ID is set in the element settings.<p>
      *
@@ -497,6 +500,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 String requestUri = cms.getRequestContext().getUri();
                 Locale locale = cms.getRequestContext().getLocale();
                 CmsJspStandardContextBean standardContext = CmsJspStandardContextBean.getInstance(req);
+                m_editableRequest = standardContext.getIsEditMode();
                 m_parentElement = standardContext.getElement();
                 m_parentContainer = standardContext.getContainer();
                 CmsContainerPageBean containerPage = standardContext.getPage();
@@ -552,16 +556,13 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 }
                 // create tag for container
                 String tagName = CmsStringUtil.isEmptyOrWhitespaceOnly(getTag()) ? DEFAULT_TAG_NAME : getTag();
-                boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-
-                pageContext.getOut().print(
-                    getTagOpen(
-                        tagName,
-                        getName(),
-                        getTagClass(),
-                        isNested(),
-                        isOnline,
-                        isOnline ? null : getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly)));
+                pageContext.getOut().print(getTagOpen(
+                    tagName,
+                    getName(),
+                    getTagClass(),
+                    isNested(),
+                    !m_editableRequest,
+                    m_editableRequest ? getContainerData(cms, maxElements, isUsedAsDetailView, detailOnly) : null));
 
                 standardContext.setContainer(container);
                 // validate the type
@@ -985,14 +986,13 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /**
      * Prints the closing tag for an element wrapper if in online mode.<p>
      *
-     * @param isOnline if true, we are online
      * @param isGroupcontainer <code>true</code> if element is a group-container
      *
      * @throws IOException if the output fails
      */
-    protected void printElementWrapperTagEnd(boolean isOnline, boolean isGroupcontainer) throws IOException {
+    protected void printElementWrapperTagEnd(boolean isGroupcontainer) throws IOException {
 
-        if (!isOnline) {
+        if (m_editableRequest) {
             String result;
             if (isGroupcontainer) {
                 result = "</div>";
@@ -1008,7 +1008,6 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /**
      * Prints the opening element wrapper tag for the container page editor if we are in Offline mode.<p>
      *
-     * @param isOnline true if we are in Online mode
      * @param cms the Cms context
      * @param elementBean the element bean
      * @param page the container page
@@ -1017,13 +1016,12 @@ public class CmsJspTagContainer extends BodyTagSupport {
      * @throws Exception if something goes wrong
      */
     protected void printElementWrapperTagStart(
-        boolean isOnline,
         CmsObject cms,
         CmsContainerElementBean elementBean,
         CmsContainerPageBean page,
         boolean isGroupContainer) throws Exception {
 
-        if (!isOnline) {
+        if (m_editableRequest) {
             StringBuffer result = new StringBuffer("<div class='");
             if (isGroupContainer) {
                 result.append(CmsContainerElement.CLASS_GROUP_CONTAINER_ELEMENT_MARKER);
@@ -1165,20 +1163,16 @@ public class CmsJspTagContainer extends BodyTagSupport {
     /**
      * Prints an element error tag to the response out.<p>
      *
-     * @param isOnline true if we are in Online mode
      * @param elementSitePath the element site path
      * @param formatterSitePath the formatter site path
      * @param exception the exception causing the error
      *
      * @throws IOException if something goes wrong writing to response out
      */
-    private void printElementErrorTag(
-        boolean isOnline,
-        String elementSitePath,
-        String formatterSitePath,
-        Exception exception) throws IOException {
+    private void printElementErrorTag(String elementSitePath, String formatterSitePath, Exception exception)
+    throws IOException {
 
-        if (!isOnline) {
+        if (m_editableRequest) {
             String stacktrace = CmsException.getStackTraceAsString(exception);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(stacktrace)) {
                 stacktrace = null;
@@ -1254,11 +1248,11 @@ public class CmsJspTagContainer extends BodyTagSupport {
         }
         boolean showInContext = shouldShowInContext(element, context != null ? context.getKey() : null);
         boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-        if (isOnline && !showInContext) {
+        if (!m_editableRequest && !showInContext) {
             return false;
         }
         element.initResource(cms);
-        if (isOnline && !element.isReleasedAndNotExpired()) {
+        if (!m_editableRequest && !element.isReleasedAndNotExpired()) {
             // do not render expired resources for the online project
             return false;
         }
@@ -1285,7 +1279,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
             element.initSettings(cms, formatterConfig);
         }
         // writing elements to the session cache to improve performance of the container-page editor in offline project
-        if (!isOnline) {
+        if (m_editableRequest) {
             getSessionCache(cms).setCacheContainerElement(element.editorHash(), element);
         }
 
@@ -1301,13 +1295,14 @@ public class CmsJspTagContainer extends BodyTagSupport {
                 subElements = getInheritedContainerElements(cms, element);
             }
             // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
-            printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), true);
+            printElementWrapperTagStart(cms, element, standardContext.getPage(), true);
             for (CmsContainerElementBean subelement : subElements) {
 
                 try {
                     subelement.initResource(cms);
                     boolean shouldShowSubElementInContext = shouldShowInContext(subelement, contextKey);
-                    if (isOnline && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
+                    if (!m_editableRequest
+                        && (!shouldShowSubElementInContext || !subelement.isReleasedAndNotExpired())) {
                         continue;
                     }
                     I_CmsFormatterBean subElementFormatterConfig = ensureValidFormatterSettings(
@@ -1320,7 +1315,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                         false);
                     subelement.initSettings(cms, subElementFormatterConfig);
                     // writing elements to the session cache to improve performance of the container-page editor
-                    if (!isOnline) {
+                    if (m_editableRequest) {
                         getSessionCache(cms).setCacheContainerElement(subelement.editorHash(), subelement);
                     }
                     if (subElementFormatterConfig == null) {
@@ -1339,7 +1334,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     }
                     // execute the formatter JSP for the given element URI
                     // wrapping the elements with DIV containing initial element data. To be removed by the container-page editor
-                    printElementWrapperTagStart(isOnline, cms, subelement, standardContext.getPage(), false);
+                    printElementWrapperTagStart(cms, subelement, standardContext.getPage(), false);
                     standardContext.setElement(subelement);
                     try {
                         String formatterSitePath;
@@ -1376,29 +1371,25 @@ public class CmsJspTagContainer extends BodyTagSupport {
                                     subElementFormatterConfig),
                                 e);
                         }
-                        printElementErrorTag(
-                            isOnline,
-                            subelement.getSitePath(),
-                            subElementFormatterConfig.getJspRootPath(),
-                            e);
+                        printElementErrorTag(subelement.getSitePath(), subElementFormatterConfig.getJspRootPath(), e);
                     }
-                    printElementWrapperTagEnd(isOnline, false);
+                    printElementWrapperTagEnd(false);
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(e);
                     }
                 }
             }
-            printElementWrapperTagEnd(isOnline, true);
+            printElementWrapperTagEnd(true);
             return true;
         } else {
             boolean result = true;
             if (alreadyFull) {
                 result = false;
                 if (!showInContext) {
-                    printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), false);
+                    printElementWrapperTagStart(cms, element, standardContext.getPage(), false);
                     pageContext.getOut().print(DUMMY_ELEMENT);
-                    printElementWrapperTagEnd(isOnline, false);
+                    printElementWrapperTagEnd(false);
                 }
             } else {
                 String formatter = null;
@@ -1446,7 +1437,7 @@ public class CmsJspTagContainer extends BodyTagSupport {
                     }
                 }
 
-                printElementWrapperTagStart(isOnline, cms, element, standardContext.getPage(), false);
+                printElementWrapperTagStart(cms, element, standardContext.getPage(), false);
                 standardContext.setElement(element);
                 try {
                     if (!showInContext) {
@@ -1476,9 +1467,9 @@ public class CmsJspTagContainer extends BodyTagSupport {
                                 formatter),
                             e);
                     }
-                    printElementErrorTag(isOnline, element.getSitePath(), formatter, e);
+                    printElementErrorTag(element.getSitePath(), formatter, e);
                 }
-                printElementWrapperTagEnd(isOnline, false);
+                printElementWrapperTagEnd(false);
             }
             return result;
         }

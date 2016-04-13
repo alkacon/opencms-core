@@ -139,14 +139,15 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             CmsObject cms = CmsFlexController.getCmsObject(request);
             Locale locale = cms.getRequestContext().getLocale();
             boolean isOnline = cms.getRequestContext().getCurrentProject().isOnlineProject();
-            CmsContainerElementBean parentElement = CmsJspStandardContextBean.getInstance(request).getElement();
+            CmsJspStandardContextBean contextBean = CmsJspStandardContextBean.getInstance(request);
+            CmsContainerElementBean parentElement = contextBean.getElement();
 
             try {
                 if (formatter != null) {
                     element.initResource(cms);
                     element.initSettings(cms, formatter);
                     boolean openedEditable = false;
-                    if (editable) {
+                    if (editable && contextBean.getIsEditMode()) {
                         openedEditable = CmsJspTagEdit.insertDirectEditStart(
                             cms,
                             context,
@@ -157,7 +158,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
                             creationSiteMap,
                             postCreateHandler);
                     }
-                    CmsJspStandardContextBean.getInstance(request).setElement(element);
+                    contextBean.setElement(element);
                     try {
                         CmsJspTagInclude.includeTagAction(
                             context,
@@ -180,7 +181,7 @@ public class CmsJspTagDisplay extends BodyTagSupport implements I_CmsJspTagParam
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
-            CmsJspStandardContextBean.getInstance(request).setElement(parentElement);
+            contextBean.setElement(parentElement);
         }
 
     }

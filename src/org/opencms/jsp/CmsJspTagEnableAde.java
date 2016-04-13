@@ -64,8 +64,8 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     public static void enableAdeTagAction(PageContext context) throws JspException {
 
         ServletRequest req = context.getRequest();
-        if (CmsHistoryResourceHandler.isHistoryRequest(req)) {
-            // don't display advanced direct edit buttons on an historical resource
+        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
+            // don't display advanced direct edit buttons on an historical resource or in case direct edit has been disabled for the request
             return;
         }
 
@@ -79,11 +79,6 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
         if (CmsResource.isTemporaryFileName(cms.getRequestContext().getUri())) {
             // don't display advanced direct edit buttons if a temporary file is displayed
-            return;
-        }
-
-        if (CmsJspTagEditable.isDirectEditDisabled(req)) {
-            // direct edit has been disabled for this request
             return;
         }
 
