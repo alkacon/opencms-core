@@ -292,7 +292,7 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            if ((getCmsObject() != null) && !getCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+            if (CmsJspContentAccessValueWrapper.isDirectEditEnabled(getCmsObject())) {
                 return CmsContentService.getRdfaAttributes(getRawContent(), m_selectedLocale, String.valueOf(input));
             } else {
                 return "";

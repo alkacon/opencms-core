@@ -40,8 +40,10 @@ import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsEvent;
@@ -522,12 +524,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     CmsJspStandardContextBean.getInstance(controller.getCurrentRequest());
                     // once in forward mode, always in forward mode (for this request)
                     controller.setForwardMode(true);
-                    // bypass Flex cache for this page, update the JSP first if necessary            
+                    // bypass Flex cache for this page, update the JSP first if necessary
                     String target = updateJsp(file, controller, new HashSet<String>());
                     // dispatch to external JSP
                     req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
                 } else {
-                    // Flex cache not bypassed, dispatch to internal JSP  
+                    // Flex cache not bypassed, dispatch to internal JSP
                     dispatchJsp(controller);
                 }
             } finally {
@@ -675,10 +677,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
     }
 
-    /** 
+    /**
      * Triggers an asynchronous purge of the JSP repository.<p>
-     *  
-     * @param afterPurgeAction the action to execute after purging 
+     *
+     * @param afterPurgeAction the action to execute after purging
      */
     public void triggerPurge(final Runnable afterPurgeAction) {
 
@@ -1069,16 +1071,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         return result;
     }
 
-    /** 
+    /**
      * Purges the JSP repository.<p<
-     * 
-     * @param afterPurgeAction the action to execute after purging 
+     *
+     * @param afterPurgeAction the action to execute after purging
      */
     protected void doPurge(Runnable afterPurgeAction) {
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(org.opencms.flex.Messages.get().getBundle().key(
-                org.opencms.flex.Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
+            LOG.info(
+                org.opencms.flex.Messages.get().getBundle().key(
+                    org.opencms.flex.Messages.LOG_FLEXCACHE_WILL_PURGE_JSP_REPOSITORY_0));
         }
 
         File d;
@@ -1092,8 +1095,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(org.opencms.flex.Messages.get().getBundle().key(
-                org.opencms.flex.Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
+            LOG.info(
+                org.opencms.flex.Messages.get().getBundle().key(
+                    org.opencms.flex.Messages.LOG_FLEXCACHE_PURGED_JSP_REPOSITORY_0));
         }
 
     }
@@ -1144,6 +1148,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         if (controller == null) {
             // create new request / response wrappers
+            if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
+                && (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req))) {
+                cms.getRequestContext().setAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT, Boolean.TRUE);
+            }
             controller = new CmsFlexController(cms, resource, m_cache, req, res, streaming, top);
             CmsFlexController.setController(req, controller);
             CmsFlexRequest f_req = new CmsFlexRequest(req, controller);

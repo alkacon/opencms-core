@@ -29,6 +29,7 @@ package org.opencms.jsp.util;
 
 import org.opencms.ade.contenteditor.CmsContentService;
 import org.opencms.file.CmsObject;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.util.CmsCollectionsGenericWrapper;
 import org.opencms.util.CmsConstantMap;
@@ -89,8 +90,7 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         @Override
         public Object transform(Object input) {
 
-            if ((obtainCmsObject() != null)
-                && !obtainCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+            if (isDirectEditEnabled(obtainCmsObject())) {
                 return CmsContentService.getRdfaAttributes(getContentValue(), String.valueOf(input));
             } else {
                 return "";
@@ -296,6 +296,19 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
         }
         // if no value is available,
         return NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * Returns if direct edit is enabled.<p>
+     *
+     * @param cms the current cms context
+     *
+     * @return <code>true</code> if direct edit is enabled
+     */
+    static boolean isDirectEditEnabled(CmsObject cms) {
+
+        return !cms.getRequestContext().getCurrentProject().isOnlineProject()
+            && (cms.getRequestContext().getAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT) == null);
     }
 
     /**
@@ -594,8 +607,9 @@ public final class CmsJspContentAccessValueWrapper extends A_CmsJspValueWrapper 
     public String getRdfaAttr() {
 
         String result = "";
-        if ((obtainCmsObject() != null) && (m_contentValue != null)) {
-            if (!obtainCmsObject().getRequestContext().getCurrentProject().isOnlineProject()) {
+        CmsObject cms = obtainCmsObject();
+        if ((cms != null) && (m_contentValue != null)) {
+            if (isDirectEditEnabled(cms)) {
                 // within the offline project return the OpenCms specific entity id's and property names
                 result = "about=\"" + CmsContentService.getEntityId(m_contentValue) + "\" ";
                 result += "property=\"" + CmsContentService.getAttributeName(m_contentValue) + "\"";
