@@ -28,13 +28,9 @@
 package org.opencms.gwt.client.ui.preferences;
 
 import org.opencms.gwt.client.Messages;
-import org.opencms.gwt.client.ui.CmsChangePasswordWidget;
-import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonColor;
-import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
 import org.opencms.gwt.client.ui.I_CmsTruncable;
 import org.opencms.gwt.client.ui.input.I_CmsFormField;
 import org.opencms.gwt.client.ui.input.form.A_CmsFormFieldPanel;
@@ -43,18 +39,14 @@ import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
 
 import java.util.Collection;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,14 +78,6 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     /** The ui binder instance for this class. */
     public I_CmsUserSettingsFormFieldPanelUiBinder uiBinder = GWT.create(I_CmsUserSettingsFormFieldPanelUiBinder.class);
 
-    /** Panel for account info. */
-    @UiField
-    protected FlowPanel m_accountInfoPanel;
-
-    /** Tab. */
-    @UiField
-    protected CmsScrollPanel m_accountInfoTab;
-
     /** Form field container. */
     @UiField
     protected FlowPanel m_basicSettingsPanel;
@@ -109,10 +93,6 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     /** Tab. */
     @UiField
     protected CmsScrollPanel m_extendedTab;
-
-    /** Button for changing the password. */
-    @UiField
-    protected CmsPushButton m_passwordButton;
 
     /**
      * The style from the ui.xml  file. (Note: the field needs to
@@ -132,43 +112,16 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     public CmsUserSettingsFormFieldPanel(CmsUserSettingsBean userSettings) {
 
         uiBinder.createAndBindUi(this); // don't use the return value, since we use the created widgets as tabs for the tab panel
-
-        m_passwordButton.setText(Messages.get().key(Messages.GUI_CHANGE_PASSWORD_BUTTON_0));
-        m_passwordButton.setButtonStyle(ButtonStyle.TEXT, ButtonColor.BLUE);
-        m_passwordButton.setUseMinWidth(true);
-
-        m_passwordButton.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                CmsChangePasswordWidget.showDialog();
-            }
-        });
         m_tabPanel.add(m_basicTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_BASIC_0));
         m_tabPanel.add(m_extendedTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_EXTENDED_0));
-        m_tabPanel.add(m_accountInfoTab, Messages.get().key(Messages.GUI_USERSETTINGS_TAB_ACCOUNT_0));
 
-        FlexTable table = new FlexTable();
-        table.setCellSpacing(5);
-        table.setWidth("500px");
-        m_accountInfoPanel.add(table);
-        int i = 0;
-        for (Map.Entry<String, String> entry : userSettings.getAccountInfo().entrySet()) {
-            table.getCellFormatter().addStyleName(i, 0, style.titleColumn());
-            table.setText(i, 0, entry.getKey());
-            table.setText(i, 1, entry.getValue());
-            i += 1;
-        }
-        final FlowPanel[] tabs = {m_basicSettingsPanel, m_extendedSettingsPanel, null};
+        final FlowPanel[] tabs = {m_basicSettingsPanel, m_extendedSettingsPanel};
 
         m_tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {
 
                 final Widget constTarget = tabs[event.getSelectedItem().intValue()];
-                if (constTarget == null) {
-                    return;
-                }
                 Timer timer = new Timer() {
 
                     @Override
@@ -190,7 +143,6 @@ public class CmsUserSettingsFormFieldPanel extends A_CmsFormFieldPanel {
     @Override
     public String getDefaultGroup() {
 
-        // TODO Auto-generated method stub
         return null;
     }
 

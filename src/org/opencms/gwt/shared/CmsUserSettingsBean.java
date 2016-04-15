@@ -49,9 +49,6 @@ public class CmsUserSettingsBean implements IsSerializable {
     /** Map of the current values of the user settings. */
     private Map<String, String> m_values = new HashMap<String, String>();
 
-    /** Account information which should be displayed to the user. */
-    private LinkedHashMap<String, String> m_accountInfo = new LinkedHashMap<String, String>();
-
     /** Set of keys of the "basic" (as opposed to "extended") options. */
     private Set<String> m_basicOptions = new HashSet<String>();
 
@@ -62,17 +59,6 @@ public class CmsUserSettingsBean implements IsSerializable {
 
         // do nothing
 
-    }
-
-    /**
-     * Adds an account info item.<p>
-     *
-     * @param label the label
-     * @param value the value
-     */
-    public void addAccountInfo(String label, String value) {
-
-        m_accountInfo.put(label, value);
     }
 
     /**
@@ -90,16 +76,6 @@ public class CmsUserSettingsBean implements IsSerializable {
         if (basic) {
             m_basicOptions.add(config.getName());
         }
-    }
-
-    /**
-     * Gets the account information to display.<p>
-     *
-     * @return the account info
-     */
-    public Map<String, String> getAccountInfo() {
-
-        return Collections.unmodifiableMap(m_accountInfo);
     }
 
     /**

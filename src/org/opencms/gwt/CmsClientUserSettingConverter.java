@@ -30,10 +30,8 @@ package org.opencms.gwt;
 import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.configuration.preferences.I_CmsPreference;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsUserSettingsBean;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.CmsMultiMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
@@ -156,7 +154,6 @@ public class CmsClientUserSettingConverter {
                 m_macroResolver);
             result.addSetting(value, resolvedProp, CmsGwtConstants.TAB_BASIC.equals(tab));
         }
-        addAccountInfo(result);
         return result;
     }
 
@@ -176,33 +173,6 @@ public class CmsClientUserSettingConverter {
         }
         m_currentPreferences.save(m_cms);
         CmsWorkplace.updateUserPreferences(m_cms, m_request);
-    }
-
-    /**
-     * Adds the account information to a user settings bean.<p>
-     *
-     * @param prefs the user settings bean to which the information should be added
-     */
-    private void addAccountInfo(CmsUserSettingsBean prefs) {
-
-        Locale wpLocale = OpenCms.getWorkplaceManager().getWorkplaceLocale(m_cms);
-        CmsMessages wpMessages = org.opencms.workplace.commons.Messages.get().getBundle(wpLocale);
-        CmsUser user = m_currentPreferences.getUser();
-
-        prefs.addAccountInfo(wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_USER_0), user.getName());
-        prefs.addAccountInfo(wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_EMAIL_0), user.getEmail());
-        prefs.addAccountInfo(
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_LASTNAME_0),
-            user.getLastname());
-        prefs.addAccountInfo(
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_FIRSTNAME_0),
-            user.getFirstname());
-        prefs.addAccountInfo(
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_INPUT_ADRESS_0),
-            user.getAddress());
-        prefs.addAccountInfo(
-            wpMessages.key(org.opencms.workplace.commons.Messages.GUI_LABEL_DESCRIPTION_0),
-            user.getDescription(wpLocale));
     }
 
     /**

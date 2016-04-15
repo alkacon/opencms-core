@@ -118,9 +118,6 @@ public final class Messages {
     public static final String GUI_CATEGORIES_IS_EMPTY_0 = "GUI_CATEGORIES_IS_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_CHANGE_PASSWORD_BUTTON_0 = "GUI_CHANGE_PASSWORD_BUTTON_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -867,9 +864,6 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USAGE_EMPTY_0 = "GUI_USAGE_EMPTY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_USERSETTINGS_TAB_ACCOUNT_0 = "GUI_USERSETTINGS_TAB_ACCOUNT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERSETTINGS_TAB_BASIC_0 = "GUI_USERSETTINGS_TAB_BASIC_0";

@@ -78,16 +78,5 @@
 
 			</g:FlowPanel>
 		</cms:CmsScrollPanel>
-
-		<cms:CmsScrollPanel ui:field="m_accountInfoTab"
-			addStyleNames="{style.tab}">
-			<g:FlowPanel
-				addStyleNames="{style.border} {inputRes.inputCss.formGradientBackground}">
-				<g:FlowPanel ui:field="m_accountInfoPanel"
-					addStyleNames="{style.accountInfo}"></g:FlowPanel>
-				<cms:CmsPushButton addStyleNames="{style.passwordButton}"
-					ui:field="m_passwordButton" />
-			</g:FlowPanel>
-		</cms:CmsScrollPanel>
 	</g:FlowPanel>
 </ui:UiBinder> 
