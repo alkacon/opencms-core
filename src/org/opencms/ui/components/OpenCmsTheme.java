@@ -112,16 +112,16 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String FULL_WIDTH_PADDING = "o-full-width-padding";
+
     /** CSS style name. */
     public static final String HIDDEN = "hidden";
+
     /** CSS style name. */
     public static final String HIDDEN_TOOLBAR = "o-hidden-toolbar";
     /** CSS style name. */
     public static final String HOVER_COLUMN = "o-hover-column";
-
     /** CSS style name. */
     public static final String INLINE_TEXTFIELD = "o-inline-textfield";
-
     /** CSS style name. */
     public static final String LABEL_ERROR = "o-label-error";
 
@@ -175,6 +175,12 @@ public class OpenCmsTheme {
 
     /** CSS style name. */
     public static final String RESPONSIVE = "o-responsive";
+
+    /** CSS style name. */
+    public static final String SEC_INDICATOR = "o-sec-indicator";
+
+    /** CSS style name. */
+    public static final String SEC_LEVEL_PREFIX = "o-sec-level-";
 
     /** CSS style name. */
     public static final String SIBLING = "o-sibling";

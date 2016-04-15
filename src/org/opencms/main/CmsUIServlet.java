@@ -36,6 +36,7 @@ import org.opencms.ui.Messages;
 import org.opencms.ui.login.CmsLoginUI;
 import org.opencms.ui.shared.CmsVaadinConstants;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class CmsUIServlet extends VaadinServlet implements SystemMessagesProvide
 
                 String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                     ((CmsUIServlet)getCurrent()).getCmsObject(),
-                    "/system/login/index.html");
+                    CmsWorkplaceLoginHandler.LOGIN_FORM);
                 link += "?"
                     + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
                     + URLEncoder.encode(((HttpServletRequest)request).getRequestURI(), "UTF-8");

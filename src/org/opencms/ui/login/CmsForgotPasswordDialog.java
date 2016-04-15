@@ -39,6 +39,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsHasButtons;
 import org.opencms.ui.Messages;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -147,7 +148,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
                             A_CmsUI.get().getPage().setLocation(
                                 OpenCms.getLinkManager().substituteLinkForUnknownTarget(
                                     CmsLoginUI.m_adminCms,
-                                    "/system/login", //$NON-NLS-1$
+                                    CmsWorkplaceLoginHandler.LOGIN_HANDLER,
                                     false));
 
                         }
@@ -169,7 +170,7 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
      */
     public static boolean sendPasswordResetLink(CmsObject cms, String fullUserName, String email) {
 
-        LOG.info("Trying to find user for email " + email); //$NON-NLS-1$
+        LOG.info("Trying to find user for email " + email);
         email = email.trim();
 
         try {
@@ -193,8 +194,10 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
             long expiration = OpenCms.getLoginManager().getTokenLifetime() + now;
             String expirationStr = CmsVfsService.formatDateTime(cms, expiration);
             String token = CmsTokenValidator.createToken(cms, foundUser, now);
-            String link = OpenCms.getLinkManager().getWorkplaceLink(cms, "/system/login", false) + "?at=" + token; //$NON-NLS-1$ //$NON-NLS-2$
-            LOG.info("Sending password reset link to user " + foundUser.getName() + ": " + link); //$NON-NLS-1$ //$NON-NLS-2$
+            String link = OpenCms.getLinkManager().getWorkplaceLink(cms, CmsWorkplaceLoginHandler.LOGIN_HANDLER, false)
+                + "?at="
+                + token;
+            LOG.info("Sending password reset link to user " + foundUser.getName() + ": " + link);
             CmsPasswordChangeNotification notification = new CmsPasswordChangeNotification(
                 cms,
                 foundUser,
@@ -224,7 +227,10 @@ public class CmsForgotPasswordDialog extends VerticalLayout implements I_CmsHasB
     public void cancel() {
 
         CmsObject cms = A_CmsUI.getCmsObject();
-        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
+        String link = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+            false);
         A_CmsUI.get().getPage().setLocation(link);
     }
 

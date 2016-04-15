@@ -616,6 +616,7 @@
 		margin-bottom: 10px; 
 	}	
 	
+	/* history compare dialog styles */
 	
 	div.df-add {
 		font-family: monospace;
@@ -676,6 +677,40 @@
 		color: red; 
 	}
 	
-	
-	 
+	/* password security indicator styles */
+	.v-progressbar.o-sec-indicator{
+		.v-progressbar-wrapper{
+			height: round($v-unit-size - 2);
+		}
+		&.o-sec-level-0 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style($red);
+		}
+		&.o-sec-level-1 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#af251b);
+		}
+		&.o-sec-level-2 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#ac461c);
+		}
+		&.o-sec-level-3 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#a9661d);
+		}
+		&.o-sec-level-4 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#a6841d);
+		}
+		&.o-sec-level-5 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#a3a11e);
+		}
+		&.o-sec-level-6 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#84a01e);
+		}
+		&.o-sec-level-7 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#659d1f);
+		}
+		&.o-sec-level-8 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style(#489a1f);
+		}
+		&.o-sec-level-9 .v-progressbar-indicator{
+			@include valo-progressbar-indicator-style($green);
+		}
+	}
 }

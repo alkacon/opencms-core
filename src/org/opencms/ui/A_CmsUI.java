@@ -140,6 +140,23 @@ public abstract class A_CmsUI extends UI {
     /**
      * Replaces the ui content with a single dialog.<p>
      *
+     * @param caption the caption
+     * @param dialog the dialog content
+     */
+    public void setContentToDialog(String caption, CmsBasicDialog dialog) {
+
+        setContent(new Label());
+        Window window = CmsBasicDialog.prepareWindow(DialogWidth.narrow);
+        window.setContent(dialog);
+        window.setCaption(caption);
+        window.setClosable(false);
+        addWindow(window);
+        window.center();
+    }
+
+    /**
+     * Replaces the ui content with a single dialog.<p>
+     *
      * TODO: In the future this should only handle window creation, refactor dialog contents to CmsBasicDialog
      *
      * @param caption the caption

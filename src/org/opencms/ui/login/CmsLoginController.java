@@ -47,6 +47,7 @@ import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsLoginUserAgreement;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -221,7 +222,10 @@ public class CmsLoginController {
      */
     public static String getFormLink(CmsObject cms) {
 
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+            false);
     }
 
     /**
@@ -302,7 +306,10 @@ public class CmsLoginController {
             ((CmsAppWorkplaceUi)UI.getCurrent()).onWindowClose();
         }
         UI.getCurrent().getSession().close();
-        String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(cms, "/system/login", false);
+        String loginLink = OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            cms,
+            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+            false);
         VaadinService.getCurrentRequest().getWrappedSession().invalidate();
         Page.getCurrent().setLocation(loginLink);
     }
@@ -359,9 +366,10 @@ public class CmsLoginController {
      */
     public String getResetPasswordLink() {
 
-        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(CmsLoginUI.m_adminCms, "/system/login", false)
-            + "?"
-            + CmsLoginHelper.PARAM_RESET_PASSWORD;
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+            CmsLoginUI.m_adminCms,
+            CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+            false) + "?" + CmsLoginHelper.PARAM_RESET_PASSWORD;
     }
 
     /**
@@ -411,7 +419,7 @@ public class CmsLoginController {
 
         try {
             try {
-                userObj = currentCms.readUser(realUser);
+                userObj = currentCms.readUser(realUser, password);
             } catch (CmsException e) {
                 LOG.warn(e.getLocalizedMessage(), e);
                 message = org.opencms.workplace.Messages.get().container(

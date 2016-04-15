@@ -232,9 +232,6 @@ public class CmsCoreData implements IsSerializable {
     /** The XML content editor back-link URL. */
     private String m_contentEditorBacklinkUrl;
 
-    /** The XML content editor delete-link URL. */
-    private String m_contentEditorDeleteLinkUrl;
-
     /** The XML content editor URL. */
     private String m_contentEditorUrl;
 
@@ -304,7 +301,6 @@ public class CmsCoreData implements IsSerializable {
         this(
             clone.getContentEditorUrl(),
             clone.getContentEditorBacklinkUrl(),
-            clone.getContentEditorDeleteLinkUrl(),
             clone.getLoginURL(),
             clone.getVfsPrefix(),
             clone.getWorkplaceResourcesPrefix(),
@@ -357,7 +353,6 @@ public class CmsCoreData implements IsSerializable {
     public CmsCoreData(
         String contentEditorUrl,
         String contentEditorBacklinkUrl,
-        String contentEditorDeleteLinkUrl,
         String loginUrl,
         String vfsPrefix,
         String workplaceResourcesPrefix,
@@ -381,7 +376,6 @@ public class CmsCoreData implements IsSerializable {
 
         m_contentEditorUrl = contentEditorUrl;
         m_contentEditorBacklinkUrl = contentEditorBacklinkUrl;
-        m_contentEditorDeleteLinkUrl = contentEditorDeleteLinkUrl;
         m_loginURL = loginUrl;
         m_vfsPrefix = vfsPrefix;
         m_workplaceResourcesPrefix = workplaceResourcesPrefix;
@@ -432,16 +426,6 @@ public class CmsCoreData implements IsSerializable {
     public String getContentEditorBacklinkUrl() {
 
         return m_contentEditorBacklinkUrl;
-    }
-
-    /**
-     * Returns the XML content editor delete-link URL.<p>
-     *
-     * @return the XML content editor delete-link URL
-     */
-    public String getContentEditorDeleteLinkUrl() {
-
-        return m_contentEditorDeleteLinkUrl;
     }
 
     /**

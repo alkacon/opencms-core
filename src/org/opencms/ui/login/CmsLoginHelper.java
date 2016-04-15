@@ -41,6 +41,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.Messages;
@@ -600,7 +601,10 @@ public class CmsLoginHelper extends CmsJspLoginBean {
         }
         cookie.setMaxAge(maxAge);
         // set the path
-        cookie.setPath(CmsStringUtil.joinPaths(OpenCms.getStaticExportManager().getVfsPrefix(), "/system/login"));
+        cookie.setPath(
+            CmsStringUtil.joinPaths(
+                OpenCms.getStaticExportManager().getVfsPrefix(),
+                CmsWorkplaceLoginHandler.LOGIN_HANDLER));
         // set the cookie
         response.addCookie(cookie);
     }

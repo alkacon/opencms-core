@@ -32,28 +32,33 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsPasswordSecurityEvaluator;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
-import org.opencms.ui.I_CmsHasButtons;
 import org.opencms.ui.Messages;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsSecurityIndicator;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog used to change the password.<p>
  */
-public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButtons {
+public class CmsSetPasswordDialog extends CmsBasicDialog {
 
     /** Logger instance for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSetPasswordDialog.class);
@@ -79,6 +84,12 @@ public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButt
     /** The user. */
     protected CmsUser m_user;
 
+    /** Label to display the security hint. */
+    private Label m_securityHint;
+
+    /** The security level indicator. */
+    private CmsSecurityIndicator m_securityIndicator;
+
     /**
      * Creates a new instance.<p>
      *
@@ -92,71 +103,104 @@ public class CmsSetPasswordDialog extends VerticalLayout implements I_CmsHasButt
         m_cms = cms;
         m_user = user;
 
+        if (OpenCms.getPasswordHandler() instanceof I_CmsPasswordSecurityEvaluator) {
+            m_securityHint.setValue(
+                ((I_CmsPasswordSecurityEvaluator)OpenCms.getPasswordHandler()).getPasswordSecurityHint(m_locale));
+        } else {
+            m_securityHint.setVisible(false);
+        }
+
         m_passwordChangeButton.addClickListener(new ClickListener() {
 
             /** Serial versino id. */
             private static final long serialVersionUID = 1L;
 
-            @SuppressWarnings("synthetic-access")
             public void buttonClick(ClickEvent event) {
 
-                if ((m_user != null) && m_user.isManaged()) {
-                    return;
-                }
-                m_passwordField1.setComponentError(null);
-                m_passwordField2.setComponentError(null);
-                String password1 = m_passwordField1.getValue();
-                String password2 = m_passwordField2.getValue();
-                String error = null;
-                if (password1.equals(password2)) {
-                    try {
-                        m_cms.setPassword(m_user.getName(), password1);
-                        CmsTokenValidator.clearToken(CmsLoginUI.m_adminCms, m_user);
-                    } catch (CmsException e) {
-                        error = e.getLocalizedMessage(m_locale);
-                        LOG.debug(e.getLocalizedMessage(), e);
-                    } catch (Exception e) {
-                        error = e.getLocalizedMessage();
-                        LOG.error(e.getLocalizedMessage(), e);
-                    }
-
-                } else {
-                    error = Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
-                        Messages.GUI_PWCHANGE_PASSWORD_MISMATCH_0);
-                }
-                if (error != null) {
-                    m_passwordField1.setComponentError(new UserError(error));
-                } else {
-                    CmsVaadinUtils.showAlert(
-                        Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_SUCCESS_HEADER_0),
-                        Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
-                            Messages.GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0),
-                        new Runnable() {
-
-                        public void run() {
-
-                            A_CmsUI.get().getPage().setLocation(
-                                OpenCms.getLinkManager().substituteLinkForUnknownTarget(
-                                    CmsLoginUI.m_adminCms,
-                                    "/system/login", //$NON-NLS-1$
-                                    false));
-                        }
-
-                    });
-
-                }
-
+                submit();
             }
         });
 
+        m_passwordField1.addTextChangeListener(new TextChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void textChange(TextChangeEvent event) {
+
+                checkSecurity(event.getText());
+            }
+        });
     }
 
     /**
-     * @see org.opencms.ui.I_CmsHasButtons#getButtons()
+     * Checks the security level of the given password.<p>
+     *
+     * @param password the password
      */
-    public List<Button> getButtons() {
+    void checkSecurity(String password) {
 
-        return Arrays.asList(m_passwordChangeButton);
+        I_CmsPasswordHandler handler = OpenCms.getPasswordHandler();
+        try {
+            handler.validatePassword(password);
+            m_passwordField1.setComponentError(null);
+            if (handler instanceof I_CmsPasswordSecurityEvaluator) {
+                float level = ((I_CmsPasswordSecurityEvaluator)handler).evaluatePasswordSecurity(password);
+                m_securityIndicator.setValue(Float.valueOf(level));
+            } else {
+                m_securityIndicator.setValue(Float.valueOf(1));
+            }
+        } catch (CmsSecurityException e) {
+            m_passwordField1.setComponentError(new UserError(e.getLocalizedMessage(m_locale)));
+            m_securityIndicator.setValue(Float.valueOf(0));
+        }
     }
 
+    /**
+     * Submits the password.<p>
+     */
+    void submit() {
+
+        if ((m_user != null) && m_user.isManaged()) {
+            return;
+        }
+        m_passwordField1.setComponentError(null);
+        m_passwordField2.setComponentError(null);
+        String password1 = m_passwordField1.getValue();
+        String password2 = m_passwordField2.getValue();
+        String error = null;
+        if (password1.equals(password2)) {
+            try {
+                m_cms.setPassword(m_user.getName(), password1);
+                CmsTokenValidator.clearToken(CmsLoginUI.m_adminCms, m_user);
+            } catch (CmsException e) {
+                error = e.getLocalizedMessage(m_locale);
+                LOG.debug(e.getLocalizedMessage(), e);
+            } catch (Exception e) {
+                error = e.getLocalizedMessage();
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+        } else {
+            error = Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_PASSWORD_MISMATCH_0);
+        }
+        if (error != null) {
+            m_passwordField1.setComponentError(new UserError(error));
+        } else {
+            CmsVaadinUtils.showAlert(
+                Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_SUCCESS_HEADER_0),
+                Messages.get().getBundle(A_CmsUI.get().getLocale()).key(
+                    Messages.GUI_PWCHANGE_GUI_PWCHANGE_SUCCESS_CONTENT_0),
+                new Runnable() {
+
+                    public void run() {
+
+                        A_CmsUI.get().getPage().setLocation(
+                            OpenCms.getLinkManager().substituteLinkForUnknownTarget(
+                                CmsLoginUI.m_adminCms,
+                                CmsWorkplaceLoginHandler.LOGIN_HANDLER,
+                                false));
+                    }
+                });
+        }
+    }
 }

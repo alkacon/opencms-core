@@ -84,6 +84,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplaceLoginHandler;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
@@ -124,14 +125,8 @@ import org.apache.commons.logging.Log;
  */
 public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
-    /** The default login URL. */
-    private static final String DEFAULT_LOGIN_URL = "/system/login/index.html";
-
     /** The editor back-link URI. */
     private static final String EDITOR_BACKLINK_URI = "/system/modules/org.opencms.gwt/editor-backlink.html";
-
-    /** The uri used for deleting. */
-    private static final String EDITOR_DELETE_URI = "/system/workplace/commons/delete.jsp";
 
     /** The xml-content editor URI. */
     private static final String EDITOR_URI = "/system/workplace/editors/editor.jsp";
@@ -1067,12 +1062,12 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             LOG.debug("Could not read resource for URI.", e);
             structureId = CmsUUID.getNullUUID();
         }
-        String loginUrl = DEFAULT_LOGIN_URL;
+        String loginUrl = CmsWorkplaceLoginHandler.LOGIN_FORM;
         try {
             loginUrl = cms.readPropertyObject(
                 cms.getRequestContext().getUri(),
                 CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
-                true).getValue(DEFAULT_LOGIN_URL);
+                true).getValue(loginUrl);
         } catch (CmsException e) {
             log(e.getLocalizedMessage(), e);
         }
@@ -1085,7 +1080,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         CmsCoreData data = new CmsCoreData(
             EDITOR_URI,
             EDITOR_BACKLINK_URI,
-            EDITOR_DELETE_URI,
             loginUrl,
             OpenCms.getStaticExportManager().getVfsPrefix(),
             OpenCms.getSystemInfo().getStaticResourceContext(),

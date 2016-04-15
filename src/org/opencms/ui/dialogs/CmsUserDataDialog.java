@@ -34,8 +34,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
+import org.opencms.ui.login.CmsChangePasswordDialog;
 import org.opencms.ui.util.CmsNullToEmptyConverter;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsAccountInfo;
@@ -59,7 +61,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Dialog to edit the user data.<p>
@@ -90,6 +91,9 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     /** The OK  button. */
     private Button m_okButton;
 
+    /** The change password button. */
+    private Button m_changePassword;
+
     /** The edited user. */
     private CmsUser m_user;
 
@@ -110,7 +114,6 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
             null);
         m_userInfo.setContentMode(ContentMode.HTML);
-        m_userInfo.addStyleName(ValoTheme.LABEL_H2);
         m_userInfo.setValue(
             "<img src=\""
                 + OpenCms.getWorkplaceAppManager().getUserIconHelper().getSmallIconPath(cms, m_user)
@@ -139,6 +142,16 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
                 submit();
             }
         });
+        m_changePassword.addClickListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                openChangePassword();
+            }
+        });
+
         setActionHandler(new CmsOkCancelActionHandler() {
 
             private static final long serialVersionUID = 1L;
@@ -172,6 +185,16 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     void cancel() {
 
         m_context.finish(Collections.<CmsUUID> emptyList());
+    }
+
+    /**
+     * Opens the change password dialog.<p>
+     */
+    void openChangePassword() {
+
+        cancel();
+        m_context.start(Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
+            + m_user.getSimpleName(), new CmsChangePasswordDialog(m_context));
     }
 
     /**
