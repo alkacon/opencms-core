@@ -137,10 +137,14 @@ public class TestCmsStringUtil extends OpenCmsTestCase {
         long hour = 60 * minute;
         long day = 24 * hour;
 
-        assertEquals(day + (5 * minute), CmsStringUtil.parseDuration("   1d 5m  "));
-        assertEquals(hour + 5, CmsStringUtil.parseDuration("1h5ms"));
-        assertEquals(3 * hour, CmsStringUtil.parseDuration("4x3h5y"));
-        assertEquals((5 * second) + 16, CmsStringUtil.parseDuration("5s16ms"));
+        assertEquals(day + (5 * minute), CmsStringUtil.parseDuration("   1d 5m  ", 0));
+        assertEquals(hour + 5, CmsStringUtil.parseDuration("1h5ms", 0));
+        assertEquals(3 * hour, CmsStringUtil.parseDuration("4x3h5y", 0));
+        assertEquals((5 * second) + 16, CmsStringUtil.parseDuration("5s16ms", 0));
+
+        // check default value
+        assertEquals(0, CmsStringUtil.parseDuration("0s", 10));
+        assertEquals(10, CmsStringUtil.parseDuration("4440", 10));
     }
 
     /**

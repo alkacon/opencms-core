@@ -93,7 +93,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** Enum for the user session mode. */
     public enum UserSessionMode {
         /** Only a single session per user is allowed. */
-        single, /** Any number of sessions for a user are allowed. */
+        single,
+        /** Any number of sessions for a user are allowed. */
         standard
     }
 
@@ -1898,7 +1899,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 CmsLoginManager.DISABLE_MINUTES_DEFAULT,
                 CmsLoginManager.MAX_BAD_ATTEMPTS_DEFAULT,
                 CmsLoginManager.ENABLE_SECURITY_DEFAULT,
-                "" + CmsLoginManager.DEFAULT_TOKEN_LIFETIME,
+                null,
                 null,
                 null);
         }
