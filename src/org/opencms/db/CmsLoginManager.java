@@ -260,7 +260,7 @@ public class CmsLoginManager {
         }
 
         try {
-            long maxInactive = CmsStringUtil.parseDuration(m_maxInactive);
+            long maxInactive = CmsStringUtil.parseDuration(m_maxInactive, Long.MAX_VALUE);
             return (System.currentTimeMillis() - user.getLastlogin()) > maxInactive;
         } catch (Exception e) {
             LOG.warn(e.getLocalizedMessage(), e);
@@ -369,7 +369,7 @@ public class CmsLoginManager {
         if (m_passwordChangeInterval == null) {
             return Long.MAX_VALUE;
         } else {
-            return CmsStringUtil.parseDuration(m_passwordChangeInterval);
+            return CmsStringUtil.parseDuration(m_passwordChangeInterval, Long.MAX_VALUE);
         }
     }
 
@@ -393,7 +393,7 @@ public class CmsLoginManager {
         if (m_tokenLifetimeStr == null) {
             return DEFAULT_TOKEN_LIFETIME;
         }
-        return CmsStringUtil.parseDuration(m_tokenLifetimeStr);
+        return CmsStringUtil.parseDuration(m_tokenLifetimeStr, DEFAULT_TOKEN_LIFETIME);
     }
 
     /**

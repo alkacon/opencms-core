@@ -167,6 +167,15 @@ public final class CmsStringUtil {
     /** Regex that matches an xml head. */
     private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
+    /** Units used for duration parsing. */
+    private static final String[] DURATION_UNTIS = {"d", "h", "m", "s", "ms"};
+
+    /** Multipliers used for duration parsing. */
+    private static final long[] DURATION_MULTIPLIERS = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000L, 1L};
+
+    /** Number and unit pattern for duration parsing. */
+    private static final Pattern DURATION_NUMBER_AND_UNIT_PATTERN = Pattern.compile("([0-9]+)([a-z]+)");
+
     /**
      * Default constructor (empty), private because this class has only
      * static methods.<p>
@@ -1264,31 +1273,34 @@ public final class CmsStringUtil {
      * for example 1d 5m. The available units are d (days), h (hours), m (months), s (seconds), ms (milliseconds).<p>
      *
      * @param durationStr the duration string
+     * @param defaultValue the default value to return in case the pattern does not match
      * @return the corresponding number of milliseconds
      */
-    public static final long parseDuration(String durationStr) {
+    public static final long parseDuration(String durationStr, long defaultValue) {
 
         durationStr = durationStr.toLowerCase().trim();
-        String[] units = {"d", "h", "m", "s", "ms"};
-        long[] multipliers = {24L * 60 * 60 * 1000, 60L * 60 * 1000, 60L * 1000, 1000L, 1L};
-        String numberAndUnitStr = "([0-9]+)([a-z]+)";
-        Pattern numberAndUnit = Pattern.compile(numberAndUnitStr);
-        Matcher matcher = numberAndUnit.matcher(durationStr);
+        Matcher matcher = DURATION_NUMBER_AND_UNIT_PATTERN.matcher(durationStr);
         long millis = 0;
+        boolean matched = false;
         while (matcher.find()) {
             long number = Long.valueOf(matcher.group(1)).longValue();
             String unit = matcher.group(2);
             long multiplier = 0;
-            for (int j = 0; j < units.length; j++) {
-                if (unit.equals(units[j])) {
-                    multiplier = multipliers[j];
+            for (int j = 0; j < DURATION_UNTIS.length; j++) {
+                if (unit.equals(DURATION_UNTIS[j])) {
+                    multiplier = DURATION_MULTIPLIERS[j];
                     break;
                 }
             }
             if (multiplier == 0) {
                 LOG.warn("parseDuration: Unknown unit " + unit);
+            } else {
+                matched = true;
             }
             millis += number * multiplier;
+        }
+        if (!matched) {
+            millis = defaultValue;
         }
         return millis;
     }
