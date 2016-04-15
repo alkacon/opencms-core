@@ -36,6 +36,7 @@ import org.opencms.acacia.client.widgets.CmsStringWidget;
 import org.opencms.acacia.client.widgets.CmsTinyMCEWidget;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
+import org.opencms.acacia.client.widgets.complex.CmsDataViewWidgetRenderer;
 import org.opencms.acacia.shared.CmsContentDefinition;
 import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityHtml;
@@ -187,6 +188,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
         // we may want to explicitly use the default renderer for specific attributes.
         m_widgetService.addRenderer(new CmsRenderer(CmsEntityBackend.getInstance(), getWidgetService()));
         m_widgetService.addRenderer(new CmsNativeComplexWidgetRenderer());
+        m_widgetService.addRenderer(new CmsDataViewWidgetRenderer());
         m_validationHandler = new CmsValidationHandler();
         m_validationHandler.setContentService(m_service);
     }
@@ -369,7 +371,7 @@ public class CmsEditorBase implements I_CmsInlineHtmlUpdateHandler {
      * @param tabInfos the tab informations
      * @param context the context element
      * @param scrollParent the scroll element to be used for automatic scrolling during drag and drop
-    
+
      */
     public void renderEntityForm(String entityId, List<CmsTabInfo> tabInfos, Panel context, Element scrollParent) {
 

@@ -31,7 +31,8 @@ package org.opencms.widgets.dataview;
  * Interface describing a data item retrieved by an implementation of I_CmsDataView.<p>
  *
  * This interface provides both the data to display the data item in the widget used to select data items,
- * as well as the data which should be stored by OpenCms when the data item is selected by the user.
+ * as well as the data which should be stored by OpenCms when the data item is selected by the user (its ID, title,
+ * description and an additional data string for other information)
  */
 public interface I_CmsDataViewItem {
 
@@ -46,7 +47,7 @@ public interface I_CmsDataViewItem {
     Object getColumnData(String colName);
 
     /**
-     * Returns the additional data to store by OpenCms.<p>
+     * Returns the additional data which should be stored by OpenCms.
      *
      * @return the additional data to be stored
      */

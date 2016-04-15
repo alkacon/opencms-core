@@ -2498,6 +2498,13 @@
     </function>
     
     <function>
+    	<description>Converts a JSON string to a map with string keys/values.</description>
+    	<name>jsonToMap</name>
+    	<function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+    	<function-signature>java.util.Map jsonToMap(java.lang.String)</function-signature>
+    </function>
+    
+    <function>
         <description>
             Decodes a String in a way that is compatible with the JavaScript unescape function.
         </description>    

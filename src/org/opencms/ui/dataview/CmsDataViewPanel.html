@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta name="package-mapping" content="u:org.opencms.ui" />
+  	<meta name="package-mapping" content="o:org.opencms.ui.components" />
+  	<meta name="package-mapping" content="f:org.opencms.ui.components.fileselect" />
+  	<meta name="package-mapping" content="d:org.opencms.ui.dataview" />
+</head>
+<body>
+	<v-vertical-layout width="100%" spacing size-full> 
+		<v-form-layout> 
+			<v-text-field _id="m_fullTextSearch" width="200px" caption="%(key.GUI_DATAVIEW_QUERY_0)"/>
+			<v-horizontal-layout _id="m_filterContainer" width="-1px" spacing caption="%(key.GUI_DATAVIEW_FILTERS_0)"/>
+		</v-form-layout>
+		<v-panel _id="m_tablePanel" height="500px">
+			<v-css-layout _id="m_tableContainer" width="100%"/>
+		</v-panel>
+		<d-cms-paging-controls _id="m_pagingControls" width="-1px" />
+	</v-vertical-layout>
+</body>
+</html>

@@ -45,6 +45,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BUTTON_CLOSE_DIALOG_0 = "GUI_BUTTON_CLOSE_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_QUERY_0 = "GUI_DATAVIEW_QUERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATAVIEW_FILTERS_0 = "GUI_DATAVIEW_FILTERS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0 = "GUI_CANT_PERFORM_OPERATION_BECAUSE_OF_LOCKED_RESOURCES_0";
 
     /** Message constant for key in the resource bundle. */

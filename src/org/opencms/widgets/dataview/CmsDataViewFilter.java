@@ -58,19 +58,29 @@ public class CmsDataViewFilter {
     /** The user-readable name for the filter. */
     private String m_niceName;
 
+    /** The help text for the filter. */
+    private String m_helpText;
+
     /**
      * Creates a new filter.<p>
      *
      * @param id the filter id
      * @param niceName the nice name
+     * @param helpText the help text for the filter
      * @param options the ordered map of options
      * @param value the current value
      */
-    public CmsDataViewFilter(String id, String niceName, LinkedHashMap<String, String> options, String value) {
+    public CmsDataViewFilter(
+        String id,
+        String niceName,
+        String helpText,
+        LinkedHashMap<String, String> options,
+        String value) {
         m_options = new LinkedHashMap<String, String>(options);
         m_id = id;
         m_niceName = niceName;
         m_value = value;
+        m_helpText = helpText;
         if (!m_options.containsKey(value)) {
             throw new IllegalArgumentException("Option value " + value + " not found in " + options);
         }
@@ -83,7 +93,7 @@ public class CmsDataViewFilter {
      */
     public CmsDataViewFilter copy() {
 
-        return new CmsDataViewFilter(m_id, m_niceName, m_options, m_value);
+        return new CmsDataViewFilter(m_id, m_niceName, m_helpText, m_options, m_value);
     }
 
     /**
@@ -94,7 +104,7 @@ public class CmsDataViewFilter {
      */
     public CmsDataViewFilter copyWithValue(String value) {
 
-        return new CmsDataViewFilter(m_id, m_niceName, m_options, value);
+        return new CmsDataViewFilter(m_id, m_niceName, m_helpText, m_options, value);
     }
 
     /**
@@ -130,6 +140,16 @@ public class CmsDataViewFilter {
             }
         }
         return true;
+    }
+
+    /**
+     * Gets the help text for the filter.<p>
+     *
+     * @return the help text for the filter
+     */
+    public String getHelpText() {
+
+        return m_helpText;
     }
 
     /**

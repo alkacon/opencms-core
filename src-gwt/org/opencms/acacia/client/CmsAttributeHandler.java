@@ -247,7 +247,7 @@ public class CmsAttributeHandler extends CmsRootHandler {
         int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
         CmsEntityAttribute attribute = m_entity.getAttribute(m_attributeName);
         boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
-        if (mayHaveMore && value.getTypeName().equals(m_attributeType)) {
+        if (mayHaveMore && value.getTypeName().equals(m_attributeType.getId())) {
             m_entity.addAttributeValue(m_attributeName, value);
             int valueIndex = m_entity.getAttribute(m_attributeName).getValueCount() - 1;
             CmsAttributeValueView valueView = null;
@@ -591,6 +591,46 @@ public class CmsAttributeHandler extends CmsRootHandler {
     public boolean hasValueView(int valueIndex) {
 
         return m_attributeValueViews.size() > valueIndex;
+    }
+
+    /**
+     * Adds a new attribute value and adds the required widgets to the editor DOM.<p>
+     *
+     * @param value the value entity
+     * @param index the position in which to insert the new value
+     */
+    public void insertNewAttributeValue(CmsEntity value, int index) {
+
+        // make sure not to add more values than allowed
+        int maxOccurrence = getEntityType().getAttributeMaxOccurrence(m_attributeName);
+        CmsEntityAttribute attribute = m_entity.getAttribute(m_attributeName);
+        boolean mayHaveMore = ((attribute == null) || (attribute.getValueCount() < maxOccurrence));
+        if (mayHaveMore && value.getTypeName().equals(m_attributeType.getId())) {
+            m_entity.insertAttributeValue(m_attributeName, value, index);
+            int valueIndex = index;
+            CmsAttributeValueView valueView = null;
+            if ((m_attributeValueViews.size() == 1) && !m_attributeValueViews.get(0).hasValue()) {
+                valueView = m_attributeValueViews.get(0);
+            } else {
+                valueView = new CmsAttributeValueView(
+                    this,
+                    m_widgetService.getAttributeLabel(m_attributeName),
+                    m_widgetService.getAttributeHelp(m_attributeName));
+            }
+
+            CmsRenderer.setAttributeChoice(m_widgetService, valueView, getAttributeType());
+            m_attributeValueViews.add(index, valueView);
+            ((FlowPanel)m_attributeValueViews.get(0).getParent()).insert(valueView, index);
+
+            insertHandlers(valueIndex);
+            I_CmsEntityRenderer renderer = m_widgetService.getRendererForAttribute(m_attributeName, getAttributeType());
+            valueView.setValueEntity(renderer, value);
+
+            CmsUndoRedoHandler handler = CmsUndoRedoHandler.getInstance();
+            if (handler.isIntitalized()) {
+                handler.addChange(m_entity.getId(), m_attributeName, valueIndex, ChangeType.add);
+            }
+        }
     }
 
     /**
@@ -1186,10 +1226,13 @@ public class CmsAttributeHandler extends CmsRootHandler {
             CmsRenderer.setAttributeChoice(m_widgetService, valueWidget, getAttributeType());
             if (valueIndex == -1) {
                 ((FlowPanel)reference.getParent()).add(valueWidget);
+                m_attributeValueViews.add(valueWidget);
             } else {
                 ((FlowPanel)reference.getParent()).insert(valueWidget, valueIndex);
+                m_attributeValueViews.add(valueIndex, valueWidget);
                 m_widgetService.addChangedOrderPath(getSimplePath(-1));
             }
+
         }
         valueIndex = valueWidget.getValueIndex();
         insertHandlers(valueIndex);

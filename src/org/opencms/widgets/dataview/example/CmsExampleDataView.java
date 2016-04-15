@@ -253,26 +253,31 @@ public class CmsExampleDataView implements I_CmsDataView {
         for (int i : new int[] {0, 5, 10, 15, 20, 25, 30}) {
             options.put("" + i, "" + i);
         }
-        m_minValueFilter = new CmsDataViewFilter("minSize", "Minimum size", options, "");
+        m_minValueFilter = new CmsDataViewFilter(
+            "minSize",
+            "Minimum size",
+            "Tooltip for minimum size filter",
+            options,
+            "");
         LinkedHashMap<String, String> superCategoryChoices = new LinkedHashMap<String, String>();
         superCategoryChoices.put("", "(no filter)");
         superCategoryChoices.put("foo", "Foo");
         superCategoryChoices.put("bar", "Bar");
-        m_categoryFilter = new CmsDataViewFilter("superCategory", "Category", superCategoryChoices, "");
+        m_categoryFilter = new CmsDataViewFilter("superCategory", "Category", null, superCategoryChoices, "");
 
         LinkedHashMap<String, String> fooChoices = new LinkedHashMap<String, String>();
         fooChoices.put("", "(no filter)");
         fooChoices.put("foo1", "Foo.1");
         fooChoices.put("foo2", "Foo.2");
         fooChoices.put("foo3", "Foo.3");
-        m_fooFilter = new CmsDataViewFilter("subCategory", "Subcategory", fooChoices, "");
+        m_fooFilter = new CmsDataViewFilter("subCategory", "Subcategory", null, fooChoices, "");
 
         LinkedHashMap<String, String> barChoices = new LinkedHashMap<String, String>();
         barChoices.put("", "(no filter)");
         barChoices.put("bar1", "Bar.1");
         barChoices.put("bar2", "Bar.2");
         barChoices.put("bar3", "Bar.3");
-        m_barFilter = new CmsDataViewFilter("subCategory", "Subcategory", barChoices, "");
+        m_barFilter = new CmsDataViewFilter("subCategory", "Subcategory", null, barChoices, "");
 
     }
 

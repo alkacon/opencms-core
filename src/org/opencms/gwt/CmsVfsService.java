@@ -51,6 +51,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.gwt.shared.CmsAvailabilityInfoBean;
 import org.opencms.gwt.shared.CmsBrokenLinkBean;
 import org.opencms.gwt.shared.CmsClientDateBean;
+import org.opencms.gwt.shared.CmsDataViewConstants;
 import org.opencms.gwt.shared.CmsDeleteResourceBean;
 import org.opencms.gwt.shared.CmsExternalLinkInfoBean;
 import org.opencms.gwt.shared.CmsGwtConstants;
@@ -77,6 +78,7 @@ import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspTagContainer;
 import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.CmsLoaderException;
@@ -96,6 +98,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.widgets.dataview.I_CmsDataView;
 import org.opencms.workplace.comparison.CmsHistoryListUtil;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.containerpage.CmsXmlContainerPageFactory;
@@ -625,6 +628,24 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
             error(e);
         }
         return null;
+    }
+
+    /**
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getDataViewThumbnail(java.lang.String, java.lang.String)
+     */
+    public String getDataViewThumbnail(String config, String id) throws CmsRpcException {
+
+        try {
+            JSONObject obj = new JSONObject(config);
+            String className = obj.optString(CmsDataViewConstants.CONFIG_VIEW_CLASS);
+            String classArg = obj.optString(CmsDataViewConstants.CONFIG_VIEW_ARG);
+            I_CmsDataView data = (I_CmsDataView)(Class.forName(className).newInstance());
+            data.initialize(getCmsObject(), classArg, OpenCms.getWorkplaceManager().getWorkplaceLocale(getCmsObject()));
+            return data.getItemById(id).getImage();
+        } catch (Exception e) {
+            error(e);
+            return null;
+        }
     }
 
     /**
