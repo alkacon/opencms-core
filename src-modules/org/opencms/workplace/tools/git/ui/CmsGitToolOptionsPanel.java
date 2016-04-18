@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.git.CmsGitCheckin;
 import org.opencms.workplace.tools.git.CmsGitConfiguration;
+import org.opencms.workplace.tools.git.Messages;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -190,6 +191,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
     /** Container for the module selector. */
     private VerticalLayout m_moduleSelectionContainer;
 
+    /** Container for the module selector drop-down and the "Deselect all" button. */
+    private HorizontalLayout m_moduleSelectorContainer;
+
     /** Panel for the configuration selection. */
     private Panel m_configurationSelectionPanel;
 
@@ -226,16 +230,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_checkinBean = checkinBean;
         if (!checkinBean.hasValidConfiguration()) {
             setMargin(true);
-            Label errorLabel = new Label(
-                "<h1>\n"
-                    + "        Git plugin is not configured correctly.\n"
-                    + "    </h1>\n"
-                    + "    <p>\n"
-                    + "        There were problems reading the configuration file <code>module-checkin.conf</code> under <code>WEB-INF/git-scripts/</code> or other configurations under <code>WEB-INF/git-scripts/config/</code>.\n"
-                    + "    </p>\n"
-                    + "    <p>\n"
-                    + "        Please ensure that at least one file is present and contains a valid configuration. You may use the file <code>module-checkin.conf.demo</code> under <code>WEB-INF/git-scripts/</code> as template for your own configuration.\n"
-                    + "    </p>");
+            Label errorLabel = new Label(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_APP_UNCONFIGURED_0));
             errorLabel.setContentMode(ContentMode.HTML);
             addComponent(errorLabel);
             return;
@@ -348,7 +343,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
         Window window = new Window();
         window.setContent(component);
-        window.setCaption("Git script results");
+        window.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_SCRIPT_RESULTS_0));
         window.setWidth("1000px");
         window.setModal(true);
         window.setResizable(false);
@@ -454,9 +449,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
                 List<Button> resetButtons = new ArrayList<Button>();
 
-                Button resetHead = new Button("Reset head");
-                resetHead.setDescription(
-                    "Reset local repository to HEAD. You lose uncommitted changes but get a clean repository.");
+                Button resetHead = new Button(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_RESET_HEAD_0));
+                resetHead.setDescription(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_RESET_HEAD_DESC_0));
                 resetHead.addClickListener(new ClickListener() {
 
                     private static final long serialVersionUID = 1L;
@@ -467,9 +461,10 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                     }
                 });
 
-                Button resetRemoteHead = new Button("Reset remote head");
+                Button resetRemoteHead = new Button(
+                    CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_RESET_REMOTE_HEAD_0));
                 resetRemoteHead.setDescription(
-                    "Reset local repository to the head of the remote branch for conflict resolving. You lose all local changes, even committed, but unpushed ones.");
+                    CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_RESET_REMOTE_HEAD_DESC_0));
                 resetRemoteHead.addClickListener(new ClickListener() {
 
                     private static final long serialVersionUID = 1L;
@@ -481,14 +476,14 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 });
 
                 if (result == 0) {
-                    message = "Modules exported and checked in successfully.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_CHECKIN_SUCCESSFUL_0);
                 } else if (result == 10) {
-                    message = "Export and check in failed because of an unclean repository. Please consult the log file.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_CHECKIN_FAILED_0);
                     error = true;
                     resetButtons.add(resetRemoteHead);
                     resetButtons.add(resetHead);
                 } else {
-                    message = "Export and check in failed. Please consult the log file.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_CHECKIN_FAILED_0);
                     error = true;
                     resetButtons.add(resetRemoteHead);
                 }
@@ -497,9 +492,9 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 break;
             case checkOut:
                 if (result == 0) {
-                    message = "Import successful.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_IMPORT_SUCCESSFUL_0);
                 } else {
-                    message = "Import failed, please see the log file for details.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_IMPORT_FAILED_0);
                 }
                 CmsGitActionResultPanel checkoutResult = new CmsGitActionResultPanel(
                     message,
@@ -510,10 +505,10 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 break;
             case resetHead:
                 if (result == 0) {
-                    message = "The repository was reset. You can repeat your commit with the \"Pull first\" option (WARNING: Be aware that you may overwrite changes from the remote repository.)";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_RESET_SUCCESSFUL_0);
                 } else {
                     error = true;
-                    message = "Reset failed. You may have an incorrect configuration or you have to manually resolve a Git conflict.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_RESET_FAILED_0);
                 }
                 CmsGitActionResultPanel resetResult = new CmsGitActionResultPanel(
                     message,
@@ -524,10 +519,10 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 break;
             case resetRemoteHead:
                 if (result == 0) {
-                    message = "The repository was reset. You can repeat your commit. Maybe you need the \"Pull first\" option to avoid conflicts.";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_RESET_SUCCESSFUL_0);
                 } else {
                     error = true;
-                    message = "Reset failed. You may have an incorrect configuration or you have to manually resolve a GIT conflict. ";
+                    message = CmsVaadinUtils.getMessageText(Messages.GUI_GIT_RESET_FAILED_0);
                 }
                 CmsGitActionResultPanel resetRemoteResult = new CmsGitActionResultPanel(
                     message,
@@ -585,7 +580,10 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
             component.setVisible(visible);
         }
         m_advancedVisible = visible;
-        m_toggleOptions.setCaption(visible ? "Hide options" : "Show options");
+        m_toggleOptions.setCaption(
+            visible
+            ? CmsVaadinUtils.getMessageText(Messages.GUI_GIT_OPTIONS_HIDE_0)
+            : CmsVaadinUtils.getMessageText(Messages.GUI_GIT_OPTIONS_SHOW_0));
     }
 
     /**
@@ -599,12 +597,12 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         switch (dialogTab) {
             case checkIn:
                 enableCheckboxesForNotInstalledModules(false);
-                m_okButton.setCaption("Check in");
+                m_okButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_CHECK_IN_0));
                 break;
             case checkOut:
                 m_fakeEmailField.setValue(m_emailField.getValue());
                 m_fakeUserField.setValue(m_userField.getValue());
-                m_okButton.setCaption("Import");
+                m_okButton.setCaption(CmsVaadinUtils.getMessageText(Messages.GUI_GIT_BUTTON_IMPORT_0));
                 enableCheckboxesForNotInstalledModules(true);
                 break;
             default:
@@ -641,8 +639,8 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
 
         if (!m_checkinBean.setCurrentConfiguration(gitConfig)) {
             Notification.show(
-                "Configuration could not be switched.",
-                "Please check the OpenCms log-file for details.",
+                CmsVaadinUtils.getMessageText(Messages.GUI_GIT_CONFIGURATION_SWITCH_FAILED_0),
+                CmsVaadinUtils.getMessageText(Messages.GUI_GIT_CONFIGURATION_SWITCH_FAILED_DESC_0),
                 Type.ERROR_MESSAGE);
             m_configurationSelector.select(m_checkinBean.getCurrentConfiguration());
             return;
@@ -750,7 +748,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
         m_moduleCheckboxes.clear();
 
         m_moduleSelectionContainer.removeAllComponents();
-        m_moduleSelectionContainer.addComponent(m_moduleSelector);
+        m_moduleSelectionContainer.addComponent(m_moduleSelectorContainer);
 
     }
 
