@@ -899,7 +899,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             CmsUserInfo.generateUserInfoHtml(cms, OpenCms.getWorkplaceManager().getWorkplaceLocale(cms)),
             isAdmin,
             isDeveloper,
-            isCategoryManager);
+            isCategoryManager,
+            cms.getRequestContext().getCurrentUser().isManaged());
         return userInfo;
     }
 

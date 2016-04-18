@@ -25,42 +25,56 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.security;
+package org.opencms.ui.util;
 
-import java.util.Locale;
+import org.opencms.util.CmsStringUtil;
+
+import com.vaadin.ui.Component;
 
 /**
- * Password handler implementing this interface allow the password security to be evaluated.<p>
+ *
  */
-public interface I_CmsPasswordSecurityEvaluator {
+public class CmsStyleVariable {
 
-    /** Password security levels. */
-    public enum SecurityLevel {
-        /** Invalid. */
-        invalid,
+    /** The component to set the CSS class to. */
+    private Component m_component;
 
-        /** Strong. */
-        strong,
+    /** The current value. */
+    private String m_style;
 
-        /** Weak. */
-        weak
+    /**
+     * Constructor.<p>
+     *
+     * @param component the component
+     */
+    public CmsStyleVariable(Component component) {
+        m_component = component;
     }
 
     /**
-     * Evaluates the given password security.<p>
+     * Returns the style.<p>
      *
-     * @param password the password
-     *
-     * @return the security level as a number between 0 and 1, 0 meaning a low security and 1 a strong security
+     * @return the style
      */
-    SecurityLevel evaluatePasswordSecurity(String password);
+    public String getStyle() {
+
+        return m_style;
+    }
 
     /**
-     * Returns a hint describing how to set a secure password.<p>
+     * Sets the style.<p>
      *
-     * @param locale the locale
-     *
-     * @return the password security hint
+     * @param style the style to set
      */
-    String getPasswordSecurityHint(Locale locale);
+    public void setStyle(String style) {
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_style)) {
+            m_component.removeStyleName(m_style);
+        }
+        m_style = style;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_style)) {
+            m_component.addStyleName(m_style);
+        }
+    }
+
 }

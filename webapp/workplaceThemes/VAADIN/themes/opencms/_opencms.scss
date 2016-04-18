@@ -677,40 +677,37 @@
 		color: red; 
 	}
 	
-	/* password security indicator styles */
-	.v-progressbar.o-sec-indicator{
-		.v-progressbar-wrapper{
-			height: round($v-unit-size - 2);
+	.v-formlayout .o-form-row div.v-caption{
+		position: absolute;
+		top: 0;
+		left: -($v-font-size + 2);
+	}
+	
+	.o-security{
+		position:relative;
+		&:after{
+			font-family: opencms-font;
+    		font-size: 16px;
+		    position: absolute;
+    		right: 6px;
+		    top: 2px;
 		}
-		&.o-sec-level-0 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style($red);
+		&.o-security-invalid:after{
+			content: "\ed50";
+			color: $red;
 		}
-		&.o-sec-level-1 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#af251b);
+		&.o-security-weak:after{
+			content: "\e61f";
+			color: $orange;
 		}
-		&.o-sec-level-2 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#ac461c);
+		&.o-security-strong:after{
+			content: "\e61f";
+			color: $green;
 		}
-		&.o-sec-level-3 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#a9661d);
-		}
-		&.o-sec-level-4 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#a6841d);
-		}
-		&.o-sec-level-5 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#a3a11e);
-		}
-		&.o-sec-level-6 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#84a01e);
-		}
-		&.o-sec-level-7 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#659d1f);
-		}
-		&.o-sec-level-8 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style(#489a1f);
-		}
-		&.o-sec-level-9 .v-progressbar-indicator{
-			@include valo-progressbar-indicator-style($green);
+		div.v-caption{
+			position: absolute;
+			top: 0;
+			left: -($v-font-size + 2);
 		}
 	}
 }

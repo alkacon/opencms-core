@@ -35,8 +35,8 @@ import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
-import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.ui.components.CmsErrorDialog;
+import org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collection;
@@ -78,12 +78,25 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * Closes the dialog window.<p>
+     *
+     * @param keepFrame <code>true</code> to keep the embedded iFrame.<p>
+     */
+    public void closeWindow(boolean keepFrame) {
+
+        if (m_window != null) {
+            m_keepFrameOnClose = keepFrame;
+            m_window.close();
+            m_window = null;
+        }
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#error(java.lang.Throwable)
      */
     public void error(Throwable error) {
 
-        m_keepFrameOnClose = true;
-        closeWindow();
+        closeWindow(true);
         CmsErrorDialog.showErrorDialog(error, new Runnable() {
 
             public void run() {
@@ -110,8 +123,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     public void finish(Collection<CmsUUID> result) {
 
-        m_keepFrameOnClose = true;
-        closeWindow();
+        closeWindow(true);
         String resources = "";
         if (result != null) {
             for (CmsUUID id : result) {
@@ -176,8 +188,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     public void reload() {
 
-        m_keepFrameOnClose = true;
-        closeWindow();
+        closeWindow(true);
         reloadParent();
     }
 
@@ -195,6 +206,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public void start(String title, Component dialog, DialogWidth width) {
 
         if (dialog != null) {
+            m_keepFrameOnClose = false;
             m_window = CmsBasicDialog.prepareWindow(width);
             m_window.setCaption(title);
             m_window.setContent(dialog);
@@ -211,17 +223,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
             if (dialog instanceof CmsBasicDialog) {
                 ((CmsBasicDialog)dialog).initActionHandler(m_window);
             }
-        }
-    }
-
-    /**
-     * Closes the dialog window.<p>
-     */
-    protected void closeWindow() {
-
-        if (m_window != null) {
-            m_window.close();
-            m_window = null;
         }
     }
 

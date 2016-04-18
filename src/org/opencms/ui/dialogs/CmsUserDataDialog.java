@@ -30,6 +30,7 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
@@ -109,6 +110,10 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
         m_context = context;
         CmsObject cms = context.getCms();
         m_user = cms.getRequestContext().getCurrentUser();
+        if (m_user.isManaged()) {
+            throw new CmsRuntimeException(
+                Messages.get().container(Messages.ERR_USER_NOT_SELF_MANAGED_1, m_user.getName()));
+        }
         CmsVaadinUtils.readAndLocalizeDesign(
             this,
             OpenCms.getWorkplaceManager().getMessages(A_CmsUI.get().getLocale()),
@@ -192,9 +197,15 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
      */
     void openChangePassword() {
 
-        cancel();
-        m_context.start(Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
-            + m_user.getSimpleName(), new CmsChangePasswordDialog(m_context));
+        if (m_context instanceof CmsEmbeddedDialogContext) {
+            ((CmsEmbeddedDialogContext)m_context).closeWindow(true);
+        } else {
+            m_context.finish(Collections.<CmsUUID> emptyList());
+        }
+        m_context.start(
+            Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
+                + m_user.getSimpleName(),
+            new CmsChangePasswordDialog(m_context));
     }
 
     /**

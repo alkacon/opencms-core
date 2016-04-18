@@ -72,6 +72,8 @@ import com.vaadin.shared.Version;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -440,11 +442,17 @@ public class CmsLoginUI extends A_CmsUI implements I_CmsLoginUI {
                 OpenCms.getLoginManager().getTokenLifetime());
             if (validationResult == null) {
                 CmsUser user = validator.getUser();
-                CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
-                A_CmsUI.get().setContentToDialog(
-                    Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
-                        + user.getName(),
-                    dlg);
+                if (!user.isManaged()) {
+                    CmsSetPasswordDialog dlg = new CmsSetPasswordDialog(m_adminCms, user, getLocale());
+                    A_CmsUI.get().setContentToDialog(
+                        Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_HEADER_0)
+                            + user.getName(),
+                        dlg);
+                } else {
+                    Notification.show(
+                        CmsVaadinUtils.getMessageText(Messages.ERR_USER_NOT_SELF_MANAGED_1, user.getName()),
+                        Type.ERROR_MESSAGE);
+                }
             } else {
                 A_CmsUI.get().setError(
                     Messages.get().getBundle(A_CmsUI.get().getLocale()).key(Messages.GUI_PWCHANGE_INVALID_TOKEN_0));

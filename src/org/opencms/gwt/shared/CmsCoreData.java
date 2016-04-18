@@ -101,6 +101,9 @@ public class CmsCoreData implements IsSerializable {
         /** True if the user is a template developer. */
         private boolean m_isDeveloper;
 
+        /** True if the user is managed. */
+        private boolean m_isManaged;
+
         /** The user name. */
         private String m_name;
 
@@ -116,6 +119,7 @@ public class CmsCoreData implements IsSerializable {
          * @param isAdmin true if the user is an administrator
          * @param isDeveloper true if the user is a template developer
          * @param isCategoryManager true if the user is a category manager
+         * @param isManaged true if the user is managed
          */
         public UserInfo(
             String name,
@@ -123,11 +127,13 @@ public class CmsCoreData implements IsSerializable {
             String infoHtml,
             boolean isAdmin,
             boolean isDeveloper,
-            boolean isCategoryManager) {
+            boolean isCategoryManager,
+            boolean isManaged) {
 
             m_isDeveloper = isDeveloper;
             m_isCategoryManager = isCategoryManager;
             m_isAdmin = isAdmin;
+            m_isManaged = isManaged;
             m_name = name;
             m_userIcon = userIcon;
             m_infoHtml = infoHtml;
@@ -200,6 +206,16 @@ public class CmsCoreData implements IsSerializable {
 
             return m_isDeveloper;
         }
+
+        /**
+         * Returns if the user is managed.<p>
+         *
+         * @return <code>true</code> if the user is managed
+         */
+        public boolean isManaged() {
+
+            return m_isManaged;
+        }
     }
 
     /** Name of the used js variable. */
@@ -237,6 +253,9 @@ public class CmsCoreData implements IsSerializable {
 
     /** The default link to use for opening the workplace. */
     private String m_defaultWorkplaceLink;
+
+    /** The embedded dialogs URL. */
+    private String m_embeddedDialogsUrl;
 
     /** The mappings of file extensions to resource types. */
     private Map<String, String> m_extensionMapping;
@@ -279,9 +298,6 @@ public class CmsCoreData implements IsSerializable {
 
     /** The current workplace locale. */
     private String m_wpLocale;
-
-    /** The embedded dialogs URL. */
-    private String m_embeddedDialogsUrl;
 
     /**
      * Constructor.<p>
@@ -328,7 +344,6 @@ public class CmsCoreData implements IsSerializable {
      *
      * @param contentEditorUrl the XML content editor URL
      * @param contentEditorBacklinkUrl the XML content editor back-link URL
-     * @param contentEditorDeleteLinkUrl the XML content editor delete-link URL
      * @param loginUrl the login JSP URL
      * @param vfsPrefix the OpenCms VFS prefix
      * @param workplaceResourcesPrefix the workplace resources path prefix

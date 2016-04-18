@@ -69,18 +69,19 @@ public class CmsUserInfo extends CmsMenuButton {
         panel.add(m_infoHtml);
         FlowPanel buttonBar = new FlowPanel();
         buttonBar.setStyleName(I_CmsLayoutBundle.INSTANCE.toolbarCss().userInfoButtons());
-        CmsPushButton editUser = new CmsPushButton();
-        editUser.setText(Messages.get().key(Messages.GUI_EDIT_USER_0));
-        buttonBar.add(editUser);
-        editUser.addClickHandler(new ClickHandler() {
+        if (!CmsCoreProvider.get().getUserInfo().isManaged()) {
+            CmsPushButton editUser = new CmsPushButton();
+            editUser.setText(Messages.get().key(Messages.GUI_EDIT_USER_0));
+            buttonBar.add(editUser);
+            editUser.addClickHandler(new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+                public void onClick(ClickEvent event) {
 
-                new CmsEmbeddedDialogHandler().openDialog("edituserdata", Collections.<CmsUUID> emptyList());
-                closeMenu();
-            }
-        });
-
+                    new CmsEmbeddedDialogHandler().openDialog("edituserdata", Collections.<CmsUUID> emptyList());
+                    closeMenu();
+                }
+            });
+        }
         CmsPushButton logout = new CmsPushButton();
         logout.setText(Messages.get().key(Messages.GUI_LOGOUT_0));
         buttonBar.add(logout);

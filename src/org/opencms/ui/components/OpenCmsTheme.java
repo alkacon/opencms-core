@@ -177,10 +177,16 @@ public class OpenCmsTheme {
     public static final String RESPONSIVE = "o-responsive";
 
     /** CSS style name. */
-    public static final String SEC_INDICATOR = "o-sec-indicator";
+    public static final String SECURITY = "o-security";
 
     /** CSS style name. */
-    public static final String SEC_LEVEL_PREFIX = "o-sec-level-";
+    public static final String SECURITY_INVALID = SECURITY + "-invalid";
+
+    /** CSS style name. */
+    public static final String SECURITY_STRONG = SECURITY + "-strong";
+
+    /** CSS style name. */
+    public static final String SECURITY_WEAK = SECURITY + "-weak";
 
     /** CSS style name. */
     public static final String SIBLING = "o-sibling";
