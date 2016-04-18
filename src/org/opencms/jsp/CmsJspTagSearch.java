@@ -40,6 +40,7 @@ import org.opencms.jsp.search.config.I_CmsSearchConfiguration;
 import org.opencms.jsp.search.config.parser.CmsJSONSearchConfigurationParser;
 import org.opencms.jsp.search.config.parser.CmsXMLSearchConfigurationParser;
 import org.opencms.jsp.search.controller.CmsSearchController;
+import org.opencms.jsp.search.controller.I_CmsSearchControllerCommon;
 import org.opencms.jsp.search.controller.I_CmsSearchControllerMain;
 import org.opencms.jsp.search.result.CmsSearchResultWrapper;
 import org.opencms.jsp.search.result.I_CmsSearchResultWrapper;
@@ -393,6 +394,11 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
 
         // The second parameter is just ignored - so it does not matter
         m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);
+        I_CmsSearchControllerCommon common = m_searchController.getCommon();
+        // Do not search for empty query, if configured
+        if (common.getState().getQuery().isEmpty() && !common.getConfig().getSearchForEmptyQueryParam()) {
+            return new CmsSearchResultWrapper(m_searchController, null, null, m_cms, null);
+        }
         CmsSolrQuery query = new CmsSolrQuery();
         m_searchController.addQueryParts(query);
         try {
