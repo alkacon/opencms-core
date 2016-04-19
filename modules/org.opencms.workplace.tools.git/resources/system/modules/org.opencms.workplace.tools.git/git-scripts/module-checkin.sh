@@ -632,8 +632,8 @@ if [[ $commit == 1 ]]; then
 	adjustGitConfig
 	echo "   * Step 2: git add -v --all $MODULE_PATH/*"
 	git add -v --all $MODULE_PATH/* | awk '$0="   "$0'
-	echo "   * Step 3: bash -c \"git commit -v -m \\\"$commitMessage\\\" \""
-	bash -c "git commit -v -m \"$commitMessage\"" | awk '$0="     "$0'
+	echo "   * Step 3: bash -c \"git commit -v -m \\\"${commitMessage//\"/\\\\\\\"}\\\" \""
+	bash -c "git commit -v -m \"${commitMessage//\"/\\\"}\"" | awk '$0="     "$0'
 	resetGitConfig
 else
 	echo " * Auto-commit disabled. Nothing to do."
