@@ -45,6 +45,7 @@ props.load(new FileInputStream("$projectDir/modules/all-modules.properties"))
 project.ext.allModuleNames = props['modules.common.all']
 project.ext.allExternalModuleNames = ''
 project.ext.modulesDistsDir = file("${project.buildDir}/modulesZip")
+def altExternalStructure = false
 if (project.hasProperty('external_directories')){
     def externalPropFile =file(external_directories+'/modules/all-modules.properties')
     if (externalPropFile.exists()){
@@ -54,7 +55,17 @@ if (project.hasProperty('external_directories')){
         project.ext.allExternalModuleNames = externalprops['modules.common.all']
         project.ext.allModuleNames += ','+allExternalModuleNames
     }else{
-        println "Can\'t read from external module properties modules/all-modules.properties from directory $external_directories"
+    	externalPropFile =file(external_directories+'/all-modules.properties')
+    	if (externalPropFile.exists()){
+    		Properties externalprops = new Properties()
+        	println "reading external modules from ${external_directories}/all-modules.properties"
+        	externalprops.load(new FileInputStream(externalPropFile))
+        	project.ext.allExternalModuleNames = externalprops['modules.common.all']
+        	project.ext.allModuleNames += ','+allExternalModuleNames
+        	altExternalStructure = true
+    	}else{
+        	println "Can\'t read from external module properties from directory $external_directories"
+        }
     }
 }
 
@@ -540,9 +551,17 @@ allModuleNames.split(',').each{ moduleName ->
     def isExternal = allExternalModuleNames.contains(moduleName)
 
     if (isExternal.toBoolean()){
-    	moduleFolder = file("${external_directories}/modules/${moduleName}")
-        srcGwtDir = file("${external_directories}/src-gwt/")
-        moduleSrcFolder = file("${external_directories}/src")
+    	if (altExternalStructure.toBoolean()){
+    		println "configuring alt external module ${moduleName}"
+    		moduleFolder = file("${external_directories}/${moduleName}")
+        	srcGwtDir = file("${moduleFolder}/src-gwt/")
+        	moduleSrcFolder = file("${moduleFolder}/src")
+    	}else{
+    		println "configuring alt external module ${moduleName}"
+    		moduleFolder = file("${external_directories}/modules/${moduleName}")
+        	srcGwtDir = file("${external_directories}/src-gwt/")
+        	moduleSrcFolder = file("${external_directories}/src")
+        }
     }
     def propertyFile = file("${moduleFolder}/module.properties")
     def gwtRename = null
@@ -577,11 +596,7 @@ allModuleNames.split(',').each{ moduleName ->
 	    // check if there are any java packages to include into the module's jar
 	    modulePackages.split(',').each{ pack ->
 	        def packageFolder
-	        if (isExternal.toBoolean()){
-	        	packageFolder= file("${external_directories}/src/"+ pack.replaceAll('\\.','/'))
-	        }else{
-	            packageFolder= file("${projectDir}/src-modules/"+ pack.replaceAll('\\.','/'))
-	        }
+	        packageFolder= file("${moduleSrcFolder}/"+ pack.replaceAll('\\.','/'))
 	        if (packageFolder.exists()&&packageFolder.isDirectory()){
 	        	packageFolder.listFiles().each{ file ->
 	                if (file.isFile()){
