@@ -62,6 +62,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Dialog to edit the user data.<p>
@@ -176,6 +177,24 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
     }
 
     /**
+     * Creates a new instance.<p>
+     *
+     * @param context the dialog context
+     * @param forcedCheck <code>true</code> in case of a forced user data check after login
+     */
+    public CmsUserDataDialog(I_CmsDialogContext context, boolean forcedCheck) {
+        this(context);
+        if (forcedCheck) {
+            ((VerticalLayout)m_userInfo.getParent()).addComponent(
+                new Label(CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_USER_DATA_CHECK_INFO_0)),
+                1);
+
+            m_cancelButton.setVisible(false);
+            m_changePassword.setVisible(false);
+        }
+    }
+
+    /**
      * @see org.opencms.ui.dialogs.I_CmsHasTitle#getTitle(java.util.Locale)
      */
     public String getTitle(Locale locale) {
@@ -251,13 +270,20 @@ public class CmsUserDataDialog extends CmsBasicDialog implements I_CmsHasTitle {
         field.setConverter(new CmsNullToEmptyConverter());
         field.setWidth("100%");
         field.setEnabled(info.isEditable());
-        if (info.getField().equals(Field.firstname) || info.getField().equals(Field.lastname)) {
-            StringLengthValidator validator = new StringLengthValidator("The field " + label + "should not be empty.");
-            validator.setMinLength(Integer.valueOf(1));
-            field.addValidator(validator);
-        } else if (info.getField().equals(Field.email)) {
-            EmailValidator validator = new EmailValidator("Please enter a valid email address.");
-            field.addValidator(validator);
+        if (info.isEditable()) {
+            if (info.getField().equals(Field.firstname) || info.getField().equals(Field.lastname)) {
+                StringLengthValidator validator = new StringLengthValidator(
+                    CmsVaadinUtils.getMessageText(
+                        org.opencms.ui.dialogs.Messages.GUI_USER_DATA_NOT_EMPTY_VALIDATION_ERROR_1,
+                        label));
+                validator.setMinLength(Integer.valueOf(1));
+                field.addValidator(validator);
+            } else if (info.getField().equals(Field.email)) {
+                EmailValidator validator = new EmailValidator(
+                    CmsVaadinUtils.getMessageText(
+                        org.opencms.ui.dialogs.Messages.GUI_USER_DATA_EMAIL_VALIDATION_ERROR_0));
+                field.addValidator(validator);
+            }
         }
         field.setImmediate(true);
         return field;

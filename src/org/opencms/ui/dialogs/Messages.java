@@ -51,6 +51,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_USER_DATA_ADDRESS_0 = "GUI_USER_DATA_ADDRESS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_CHECK_INFO_0 = "GUI_USER_DATA_CHECK_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_CITY_0 = "GUI_USER_DATA_CITY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -60,6 +63,9 @@ public class Messages extends A_CmsMessageBundle {
     public static final String GUI_USER_DATA_EMAIL_0 = "GUI_USER_DATA_EMAIL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_EMAIL_VALIDATION_ERROR_0 = "GUI_USER_DATA_EMAIL_VALIDATION_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_FIRSTNAME_0 = "GUI_USER_DATA_FIRSTNAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -67,6 +73,9 @@ public class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_LASTNAME_0 = "GUI_USER_DATA_LASTNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USER_DATA_NOT_EMPTY_VALIDATION_ERROR_1 = "GUI_USER_DATA_NOT_EMPTY_VALIDATION_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_DATA_ZIPCODE_0 = "GUI_USER_DATA_ZIPCODE_0";

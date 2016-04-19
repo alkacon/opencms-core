@@ -170,6 +170,9 @@ public class CmsUserSettings {
     /** Key for last password change additional info. */
     public static final String ADDITIONAL_INFO_LAST_PASSWORD_CHANGE = "LAST_PASSWORD_CHANGE";
 
+    /** Key for last user data check additional info. */
+    public static final String ADDITIONAL_INFO_LAST_USER_DATA_CHECK = "ADDITIONAL_INFO_LAST_USER_DATA_CHECK";
+
     /** Key for additional info flags. */
     public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";
 

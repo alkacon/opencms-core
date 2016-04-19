@@ -182,6 +182,9 @@ public class CmsLoginManager {
     /** Password change interval. */
     private String m_passwordChangeInterval;
 
+    /** User data check interval. */
+    private String m_userDateCheckInterval;
+
     /**
      * Creates a new storage for invalid logins.<p>
      *
@@ -191,6 +194,7 @@ public class CmsLoginManager {
      * @param tokenLifetime the lifetime of authorization tokens, i.e. the time for which they are valid
      * @param maxInactive maximum inactivity time
      * @param passwordChangeInterval the password change interval
+     * @param userDataCheckInterval the user data check interval
      */
     public CmsLoginManager(
         int disableMinutes,
@@ -198,7 +202,8 @@ public class CmsLoginManager {
         boolean enableSecurity,
         String tokenLifetime,
         String maxInactive,
-        String passwordChangeInterval) {
+        String passwordChangeInterval,
+        String userDataCheckInterval) {
 
         m_maxBadAttempts = maxBadAttempts;
         if (m_maxBadAttempts >= 0) {
@@ -211,6 +216,7 @@ public class CmsLoginManager {
         m_tokenLifetimeStr = tokenLifetime;
         m_maxInactive = maxInactive;
         m_passwordChangeInterval = passwordChangeInterval;
+        m_userDateCheckInterval = userDataCheckInterval;
     }
 
     /**
@@ -407,6 +413,30 @@ public class CmsLoginManager {
     }
 
     /**
+     * Gets the user data check interval.<p>
+     *
+     * @return the user data check interval
+     */
+    public long getUserDataCheckInterval() {
+
+        if (m_userDateCheckInterval == null) {
+            return Long.MAX_VALUE;
+        } else {
+            return CmsStringUtil.parseDuration(m_userDateCheckInterval, Long.MAX_VALUE);
+        }
+    }
+
+    /**
+     * Gets the raw user data check interval string.<p>
+     *
+     * @return the configured string for the user data check interval
+     */
+    public String getUserDataCheckIntervalStr() {
+
+        return m_userDateCheckInterval;
+    }
+
+    /**
      * Returns if the security option ahould be enabled on the login dialog.<p>
      *
      * @return <code>true</code> if the security option ahould be enabled on the login dialog, otherwise <code>false</code>
@@ -471,12 +501,39 @@ public class CmsLoginManager {
         if (lastPasswordChangeStr == null) {
             return false;
         }
-        long lastPasswordChange = Long.valueOf(lastPasswordChangeStr).longValue();
+        long lastPasswordChange = Long.parseLong(lastPasswordChangeStr);
         if ((System.currentTimeMillis() - lastPasswordChange) > getPasswordChangeInterval()) {
             return true;
         }
         return false;
+    }
 
+    /**
+     * Checks if a user is required to change his password now.<p>
+     *
+     * @param cms the current CMS context
+     * @param user the user to check
+     *
+     * @return true if the user should be asked to change his password
+     */
+    public boolean requiresUserDataCheck(CmsObject cms, CmsUser user) {
+
+        if (user.isManaged()
+            || user.isWebuser()
+            || OpenCms.getDefaultUsers().isDefaultUser(user.getName())
+            || OpenCms.getRoleManager().hasRole(cms, user.getName(), CmsRole.ROOT_ADMIN)) {
+            return false;
+        }
+        String lastCheckStr = (String)user.getAdditionalInfo().get(
+            CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK);
+        if (lastCheckStr == null) {
+            return false;
+        }
+        long lastCheck = Long.parseLong(lastCheckStr);
+        if ((System.currentTimeMillis() - lastCheck) > getUserDataCheckInterval()) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -506,6 +506,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the user-admin node. */
     public static final String N_USER_ADMIN = "user-admin";
 
+    /** Node name for the user data check interval. */
+    public static final String N_USER_DATA_CHECK_INTERVAL = "userDataCheckInterval";
+
     /** The node name for the user-deletedresource node. */
     public static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
 
@@ -919,13 +922,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_VALIDATIONHANDLER, 0, A_CLASS);
 
         // add login manager creation rules
-        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 6);
+        digester.addCallMethod("*/" + N_LOGINMANAGER, "setLoginManager", 7);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_DISABLEMINUTES, 0);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAXBADATTEMPTS, 1);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_ENABLESCURITY, 2);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_TOKEN_LIFETIME, 3);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_MAX_INACTIVE_TIME, 4);
         digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_PASSWORD_CHANGE_INTERVAL, 5);
+        digester.addCallParam("*/" + N_LOGINMANAGER + "/" + N_USER_DATA_CHECK_INTERVAL, 6);
 
         // add login message creation rules
         digester.addObjectCreate("*/" + N_LOGINMESSAGE, CmsLoginMessage.class);
@@ -1358,6 +1362,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     m_loginManager.getPasswordChangeIntervalStr());
             }
 
+            if (m_loginManager.getUserDataCheckIntervalStr() != null) {
+                managerElement.addElement(N_USER_DATA_CHECK_INTERVAL).addText(
+                    m_loginManager.getUserDataCheckIntervalStr());
+            }
         }
 
         // login message
@@ -1901,6 +1909,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 CmsLoginManager.ENABLE_SECURITY_DEFAULT,
                 null,
                 null,
+                null,
                 null);
         }
         if (m_loginMessage != null) {
@@ -2407,6 +2416,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * @param tokenLifetime the token lifetime
      * @param maxInactive maximum time since last login before CmsLockInactiveAccountsJob locks an account
      * @param passwordChangeInterval the password change interval
+     * @param userDataCheckInterval the user data check interval
      */
     public void setLoginManager(
         String disableMinutesStr,
@@ -2414,7 +2424,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         String enableSecurityStr,
         String tokenLifetime,
         String maxInactive,
-        String passwordChangeInterval) {
+        String passwordChangeInterval,
+        String userDataCheckInterval) {
 
         int disableMinutes;
         try {
@@ -2435,7 +2446,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             enableSecurity,
             tokenLifetime,
             maxInactive,
-            passwordChangeInterval);
+            passwordChangeInterval,
+            userDataCheckInterval);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(
                 Messages.get().getBundle().key(

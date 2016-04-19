@@ -28,7 +28,9 @@
 package org.opencms.ui.login;
 
 import org.opencms.db.CmsLoginMessage;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
@@ -38,13 +40,19 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsCustomLoginException;
 import org.opencms.security.CmsRole;
+import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
+import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
+import org.opencms.ui.components.CmsBasicDialog;
+import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
+import org.opencms.ui.dialogs.CmsUserDataDialog;
 import org.opencms.ui.login.CmsLoginHelper.LoginParameters;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsLoginUserAgreement;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceLoginHandler;
@@ -52,7 +60,9 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,6 +74,7 @@ import com.vaadin.server.Page;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 
 /**
@@ -199,7 +210,7 @@ public class CmsLoginController {
     private LoginParameters m_params;
 
     /** The UI instance. */
-    private I_CmsLoginUI m_ui;
+    I_CmsLoginUI m_ui;
 
     /***
      * Creates a new instance.<p>
@@ -475,10 +486,57 @@ public class CmsLoginController {
                 settings);
 
             String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
+            final CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
+            if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
+                I_CmsDialogContext context = new A_CmsDialogContext(null, null) {
 
-            CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
-            m_ui.openLoginTarget(targetInfo);
+                    @Override
+                    public void finish(CmsProject project, String siteRoot) {
 
+                        finish(null);
+                    }
+
+                    @Override
+                    public void finish(Collection<CmsUUID> result) {
+
+                        m_ui.openLoginTarget(targetInfo);
+                    }
+
+                    public void focus(CmsUUID structureId) {
+
+                        // nothing to do
+                    }
+
+                    public List<CmsUUID> getAllStructureIdsInView() {
+
+                        return null;
+                    }
+
+                    @Override
+                    public void start(String title, Component dialog, DialogWidth style) {
+
+                        if (dialog != null) {
+                            m_window = CmsBasicDialog.prepareWindow(style);
+                            m_window.setCaption(title);
+                            m_window.setContent(dialog);
+                            UI.getCurrent().addWindow(m_window);
+                            if (dialog instanceof CmsBasicDialog) {
+                                ((CmsBasicDialog)dialog).initActionHandler(m_window);
+                            }
+                        }
+                    }
+                };
+                CmsUser u = currentCms.readUser(userObj.getId());
+                u.setAdditionalInfo(
+                    CmsUserSettings.ADDITIONAL_INFO_LAST_USER_DATA_CHECK,
+                    Long.toString(System.currentTimeMillis()));
+                currentCms.writeUser(u);
+                CmsUserDataDialog dialog = new CmsUserDataDialog(context, true);
+                context.start(dialog.getTitle(UI.getCurrent().getLocale()), dialog);
+            } else {
+
+                m_ui.openLoginTarget(targetInfo);
+            }
         } catch (Exception e) {
 
             // there was an error during login
