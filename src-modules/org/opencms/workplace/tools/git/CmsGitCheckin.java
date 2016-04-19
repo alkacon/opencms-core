@@ -622,7 +622,7 @@ public class CmsGitCheckin {
         }
         String commitMessage = "";
         if (m_commitMessage != null) {
-            commitMessage = " -msg \"" + m_commitMessage + "\"";
+            commitMessage = " -msg \"" + m_commitMessage.replace("\"", "\\\"") + "\"";
         }
         String gitUserName = "";
         if (m_gitUserName != null) {
