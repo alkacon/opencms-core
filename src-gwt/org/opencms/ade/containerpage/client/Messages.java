@@ -259,7 +259,7 @@ public final class Messages {
     public static final String GUI_SWITCH_EDIT_LEVEL_1 = "GUI_SWITCH_EDIT_LEVEL_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_SWITCH_EDIT_LEVEL_ALL_0 = "GUI_SWITCH_EDIT_LEVEL_ALL_0";
+    public static final String GUI_SWITCH_EDIT_LEVEL_ALL_1 = "GUI_SWITCH_EDIT_LEVEL_ALL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SWITCH_ELEMENT_VIEW_NOTIFICATION_1 = "GUI_SWITCH_ELEMENT_VIEW_NOTIFICATION_1";

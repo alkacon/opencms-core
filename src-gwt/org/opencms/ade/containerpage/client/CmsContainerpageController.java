@@ -3341,12 +3341,11 @@ public final class CmsContainerpageController {
             if (nativeEvent.getCtrlKey()) {
                 // look for short cuts
                 if (keyCode == KeyCodes.KEY_E) {
-                    openNextElementView();
-                    nativeEvent.preventDefault();
-                    nativeEvent.stopPropagation();
-                }
-                if (keyCode == KeyCodes.KEY_K) {
-                    circleContainerEditLayers();
+                    if (nativeEvent.getShiftKey()) {
+                        circleContainerEditLayers();
+                    } else {
+                        openNextElementView();
+                    }
                     nativeEvent.preventDefault();
                     nativeEvent.stopPropagation();
                 }
@@ -3663,7 +3662,7 @@ public final class CmsContainerpageController {
         while (!hasEditables) {
             if (m_currentEditLevel == m_maxContainerLevel) {
                 m_currentEditLevel = -1;
-                message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_ALL_0);
+                message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_ALL_1, m_elementView.getTitle());
             } else {
                 m_currentEditLevel++;
                 message = Messages.get().key(Messages.GUI_SWITCH_EDIT_LEVEL_1, Integer.valueOf(m_currentEditLevel));
