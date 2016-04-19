@@ -84,7 +84,13 @@ public final class CmsDbPool {
     /** Key for the entity manager pool size. */
     public static final String KEY_ENTITY_MANAGER_POOL_SIZE = "entityMangerPoolSize";
 
-    /** Key for jdbc driver. */
+    /**
+     * Key for the connection properties (optional). Alternative to {@link #KEY_JDBC_URL_PARAMS jdbc url params} to
+     * configure the jdbc driver. (Notice that not all drivers support both configuration methods.)
+     * <p>
+     * From the Apache's Commons DBCP 1.4 API: 'list of arbitrary string tag/value pairs as connection arguments;
+     * normally at least a "user" and "password" property should be included.'
+     */
     public static final String KEY_CONNECTION_PROPERTIES = "connectionProperties";
 
     /** Key for jdbc driver. */
