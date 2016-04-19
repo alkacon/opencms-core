@@ -678,6 +678,7 @@ public class CmsGitToolOptionsPanel extends VerticalLayout {
                 m_configurationSelector.setItemCaption(configuration, configuration.getName());
             }
             m_configurationSelector.setNullSelectionAllowed(false);
+            m_configurationSelector.setNewItemsAllowed(false);
             m_configurationSelector.setWidth("350px");
             m_configurationSelector.select(m_checkinBean.getCurrentConfiguration());
 
