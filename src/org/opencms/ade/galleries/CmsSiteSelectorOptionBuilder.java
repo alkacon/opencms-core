@@ -126,6 +126,10 @@ public class CmsSiteSelectorOptionBuilder {
                 }
             }
             for (CmsSite site : sites) {
+                // Do not add the shared site - it will be among sites if you are on the shared site at the moment.
+                if (site.isSharedSite()) {
+                    continue;
+                }
                 String siteRoot = site.getSiteRoot();
                 if (!rootCms.existsResource(siteRoot, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
                     if (startFolder != null) {
@@ -166,6 +170,11 @@ public class CmsSiteSelectorOptionBuilder {
     public void addSharedSite() {
 
         String shared = OpenCms.getSiteManager().getSharedFolder();
+        if (shared.endsWith("/")) {
+            // IMPORTANT: remove last "/".
+            // Otherwise the version without slash will be added as well when you are in the shared folder currently.
+            shared = shared.substring(0, shared.length() - 1);
+        }
         if ((shared != null) && m_cms.existsResource(shared, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED)) {
             addOption(
                 Type.shared,
