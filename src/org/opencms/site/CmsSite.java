@@ -478,6 +478,17 @@ public final class CmsSite implements Cloneable, Comparable<CmsSite> {
     }
 
     /**
+     * Returns a flag indicating if the site is the shared site.
+     *
+     * @return <code>true</code> if the site is the shared site,
+     *      or <code>false</code> if it is not the shared site.
+     */
+    public boolean isSharedSite() {
+
+        return OpenCms.getSiteManager().getSharedFolder().equals(m_siteRoot + "/");
+    }
+
+    /**
      * Returns the web server.<p>
      *
      * @return the web server
