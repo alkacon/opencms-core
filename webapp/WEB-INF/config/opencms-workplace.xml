@@ -457,7 +457,7 @@
 					order="50" autosetnavigation="false" autosettitle="false" info="desc.jsp" />
 				<accesscontrol>
 					<accessentry principal="DEFAULT" permissions="+r+v" />
-					<accessentry principal="ROLE.DEVELOPER" permissions="+r+v+w+c" />
+					<accessentry principal="ROLE.VFS_MANAGER" permissions="+r+v+w+c" />
 					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c" />
 				</accesscontrol>
 				<editoptions>

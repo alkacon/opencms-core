@@ -47,7 +47,7 @@ public class CmsContentToolHandler extends CmsOfflineToolHandler {
     public boolean isEnabled(CmsObject cms) {
 
         return super.isEnabled(cms)
-            && (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)
+            && (OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER)
                 || OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER));
     }
 
@@ -57,7 +57,7 @@ public class CmsContentToolHandler extends CmsOfflineToolHandler {
     @Override
     public boolean isVisible(CmsObject cms) {
 
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)
+        return OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER)
             || OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
     }
 }

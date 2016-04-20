@@ -340,7 +340,7 @@ public final class CmsSiteManagerImpl {
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (workplaceMode && OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
+            if (workplaceMode && OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER)) {
                 if (!siteroots.contains("/")) {
                     // add the root site if the user is in the workplace and has the required role
                     siteroots.add("/");

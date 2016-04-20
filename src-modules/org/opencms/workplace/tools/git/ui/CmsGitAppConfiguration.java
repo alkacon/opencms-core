@@ -140,7 +140,7 @@ public class CmsGitAppConfiguration extends A_CmsWorkplaceAppConfiguration {
     @Override
     public CmsAppVisibilityStatus getVisibility(CmsObject cms) {
 
-        boolean isDeveloper = OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER);
+        boolean isDeveloper = OpenCms.getRoleManager().hasRole(cms, CmsRole.VFS_MANAGER);
         return new CmsAppVisibilityStatus(isDeveloper, isDeveloper, "");
     }
 

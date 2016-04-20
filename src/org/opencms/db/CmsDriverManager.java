@@ -775,7 +775,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // if the resource type is jsp
         // write is only allowed for developers
         if (!canIgnorePermissions && (CmsResourceTypeJsp.isJsp(resource))) {
-            if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.DEVELOPER, resource)) {
+            if (!m_securityManager.hasRoleForResource(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource)) {
                 denied |= CmsPermissionSet.PERMISSION_WRITE;
             }
         }
@@ -1640,7 +1640,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             if (CmsResourceTypeJsp.isJsp(resource)) {
                 // security check when trying to create a new jsp file
-                m_securityManager.checkRoleForResource(dbc, CmsRole.DEVELOPER, parentFolder);
+                m_securityManager.checkRoleForResource(dbc, CmsRole.VFS_MANAGER, parentFolder);
             }
 
             // check import configuration of "lost and found" folder

@@ -687,7 +687,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             if (CmsResourceTypeJsp.isJspTypeId(type)) {
                 // security check preventing the creation of a jsp file without permissions
-                checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
+                checkRoleForResource(dbc, CmsRole.VFS_MANAGER, resource);
             }
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
@@ -5624,7 +5624,7 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             if (CmsResourceTypeJsp.isJspTypeId(type)) {
                 // security check preventing the creation of a jsp file without permissions
-                checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
+                checkRoleForResource(dbc, CmsRole.VFS_MANAGER, resource);
             }
             m_driverManager.replaceResource(dbc, resource, type, content, properties);
         } catch (Exception e) {

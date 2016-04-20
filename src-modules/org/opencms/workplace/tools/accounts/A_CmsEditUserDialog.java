@@ -97,6 +97,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     /** Session parameter name for the user object. */
     private static final String USER_OBJECT = "USER";
 
+    /** The no role value. */
+    private static final String NO_ROLE = "NO_ROLE";
+
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
 
@@ -129,9 +132,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
     /** The user role. */
     private String m_role;
-
-    /** The no role value. */
-    private static final String NO_ROLE = "NO_ROLE";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -1051,7 +1051,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(siteRoot)) {
                 if (sitesList.size() > 1) {
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {
-                        if (!OpenCms.getRoleManager().hasRole(getCms(), m_user.getName(), CmsRole.DEVELOPER)) {
+                        if (!OpenCms.getRoleManager().hasRole(getCms(), m_user.getName(), CmsRole.VFS_MANAGER)) {
                             // skip the root site if not accessible
                             continue;
                         }
