@@ -43,7 +43,7 @@ import org.opencms.flex.CmsFlexResponse;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.jsp.CmsJspTagEditable;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.jsp.util.CmsJspStandardContextBean;
 import org.opencms.main.CmsEvent;
@@ -1149,7 +1149,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (controller == null) {
             // create new request / response wrappers
             if (!cms.getRequestContext().getCurrentProject().isOnlineProject()
-                && (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req))) {
+                && (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEnableAde.isDirectEditDisabled(req))) {
                 cms.getRequestContext().setAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT, Boolean.TRUE);
             }
             controller = new CmsFlexController(cms, resource, m_cache, req, res, streaming, top);

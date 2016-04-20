@@ -2989,40 +2989,6 @@ public final class CmsContainerpageController {
     }
 
     /**
-     * Writes the tool-bar visibility into the session cache.<p>
-     *
-     * @param visible <code>true</code> if the tool-bar is visible
-     */
-    public void setToolbarVisible(final boolean visible) {
-
-        removeEditButtonsPositionTimer();
-        CmsRpcAction<Void> action = new CmsRpcAction<Void>() {
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#execute()
-             */
-            @Override
-            public void execute() {
-
-                getCoreService().setToolbarVisible(visible, this);
-            }
-
-            /**
-             * @see org.opencms.gwt.client.rpc.CmsRpcAction#onResponse(java.lang.Object)
-             */
-            @Override
-            protected void onResponse(Void result) {
-
-                //nothing to do
-            }
-        };
-        action.execute();
-        if (visible) {
-            resetEditButtons();
-        }
-    }
-
-    /**
      * Method to determine whether a container element should be shown in the current template context.<p>
      *
      * @param elementData the element data

@@ -89,6 +89,6 @@ public class CmsToolbarSelectionButton extends A_CmsToolbarOptionButton {
         } else {
             getHandler().deactivateCurrentButton();
         }
-        getHandler().showPreview();
+        getHandler().showPreview(getElement().getAbsoluteLeft());
     }
 }

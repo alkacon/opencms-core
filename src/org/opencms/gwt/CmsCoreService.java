@@ -137,9 +137,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
     /** Serialization uid. */
     private static final long serialVersionUID = 5915848952948986278L;
 
-    /** The session cache. */
-    private CmsADESessionCache m_sessionCache;
-
     /**
      * Builds the tree structure for the given categories.<p>
      *
@@ -235,22 +232,48 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                     }
                 }
             }
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             // ignore, the user probably has not enough permissions to read the resource
+            LOG.debug(e.getLocalizedMessage(), e);
         }
         return result;
     }
 
-    public static String getVaadinWorkplaceLink(CmsObject cms, CmsUUID structureId) throws CmsException {
+    /**
+     * Returns the workplace link.<p>
+     *
+     * @param cms the cms context
+     * @param structureId the structure id of the current resource
+     *
+     * @return the workplace link
+     */
+    public static String getVaadinWorkplaceLink(CmsObject cms, CmsUUID structureId) {
 
-        String resourceRootFolder = structureId != null
-        ? CmsResource.getFolderPath(cms.readResource(structureId).getRootPath())
-        : cms.getRequestContext().getSiteRoot();
+        String resourceRootFolder = null;
+
+        if (structureId != null) {
+            try {
+                resourceRootFolder = CmsResource.getFolderPath(cms.readResource(structureId).getRootPath());
+            } catch (CmsException e) {
+                LOG.debug("Error reading resource for workplace link.", e);
+            }
+        }
+        if (resourceRootFolder == null) {
+            resourceRootFolder = cms.getRequestContext().getSiteRoot();
+        }
         return getVaadinWorkplaceLink(cms, resourceRootFolder);
 
     }
 
-    public static String getVaadinWorkplaceLink(CmsObject cms, String resourceRootFolder) throws CmsException {
+    /**
+     * Returns the workplace link.<p>
+     *
+     * @param cms the cms context
+     * @param resourceRootFolder the resource folder root path
+     *
+     * @return the workplace link
+     */
+    public static String getVaadinWorkplaceLink(CmsObject cms, String resourceRootFolder) {
 
         String result;
         CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(resourceRootFolder);
@@ -259,14 +282,13 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         : OpenCms.getSiteManager().startsWithShared(resourceRootFolder)
         ? OpenCms.getSiteManager().getSharedFolder()
         : "";
-        CmsObject siteCms = OpenCms.initCmsObject(cms);
         String link = CmsVaadinUtils.getWorkplaceLink()
             + "#!explorer/"
             + cms.getRequestContext().getCurrentProject().getUuid()
             + "!!"
             + siteRoot
             + "!!"
-            + siteCms.getRequestContext().removeSiteRoot(resourceRootFolder);
+            + cms.getRequestContext().removeSiteRoot(resourceRootFolder);
         result = link;
         return result;
     }
@@ -355,7 +377,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                 return new CmsReturnLinkInfo(
                     OpenCms.getLinkManager().substituteLink(cms, pageRes),
                     CmsReturnLinkInfo.Status.ok);
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
                 return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
             }
         } else {
@@ -380,7 +403,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
                             OpenCms.getLocaleManager().getDefaultLocales());
                         String link = CmsFileUtil.removeTrailingSeparator(pageLink) + "/" + detailName;
                         return new CmsReturnLinkInfo(link, CmsReturnLinkInfo.Status.ok);
-                    } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        LOG.debug(e.getLocalizedMessage(), e);
                         return new CmsReturnLinkInfo(null, CmsReturnLinkInfo.Status.notfound);
 
                     }
@@ -549,7 +573,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         try {
             return cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL);
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
+            LOG.debug(e.getLocalizedMessage(), e);
             return false;
         }
     }
@@ -861,7 +886,8 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
             try {
                 CmsResource res = cms.readResource(structureId);
                 result = res.getState();
-            } catch (@SuppressWarnings("unused") CmsVfsResourceNotFoundException e) {
+            } catch (CmsVfsResourceNotFoundException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
                 result = CmsResourceState.STATE_DELETED;
             }
         } catch (CmsException e) {
@@ -1050,7 +1076,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         CmsObject cms = getCmsObject();
         String navigationUri = cms.getRequestContext().getUri();
-        boolean toolbarVisible = getSessionCache().isToolbarVisible();
+        boolean toolbarVisible = CmsADESessionCache.getCache(getRequest(), getCmsObject()).isToolbarVisible();
         boolean isShowHelp = OpenCms.getADEManager().isShowEditorHelp(cms);
 
         CmsUUID structureId = null;
@@ -1196,7 +1222,7 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
 
         try {
             ensureSession();
-            getSessionCache().setToolbarVisible(visible);
+            CmsADESessionCache.getCache(getRequest(), getCmsObject()).setToolbarVisible(visible);
         } catch (Throwable e) {
             error(e);
         }
@@ -1333,19 +1359,6 @@ public class CmsCoreService extends CmsGwtService implements I_CmsCoreService {
         }
         CmsUser owner = cms.readUser(lock.getUserId());
         return CmsLockInfo.forLockedResource(owner.getName());
-    }
-
-    /**
-     * Returns the session cache.<p>
-     *
-     * @return the session cache
-     */
-    private CmsADESessionCache getSessionCache() {
-
-        if (m_sessionCache == null) {
-            m_sessionCache = CmsADESessionCache.getCache(getRequest(), getCmsObject());
-        }
-        return m_sessionCache;
     }
 
     /**

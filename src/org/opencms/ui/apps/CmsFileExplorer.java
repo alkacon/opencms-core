@@ -34,6 +34,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.lock.CmsLockActionRecord;
 import org.opencms.lock.CmsLockActionRecord.LockChange;
 import org.opencms.lock.CmsLockException;
@@ -85,6 +86,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 
@@ -1508,6 +1511,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                             CmsObject cms = A_CmsUI.getCmsObject();
                             CmsResource res = cms.readResource(itemId, CmsResourceFilter.IGNORE_EXPIRATION);
                             String link = OpenCms.getLinkManager().substituteLink(cms, res);
+                            HttpServletRequest req = CmsVaadinUtils.getRequest();
+                            CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
                             A_CmsUI.get().getPage().setLocation(link);
                             return;
                         } catch (CmsVfsResourceNotFoundException e) {

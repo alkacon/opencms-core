@@ -105,9 +105,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     /** The Z index manager. */
     private static final I_CmsContainerZIndexManager Z_INDEX_MANAGER = GWT.create(I_CmsContainerZIndexManager.class);
 
-    /** Style to toggle toolbar visibility. */
-    protected CmsStyleVariable m_toolbarVisibility;
-
     /** Add menu. */
     private CmsToolbarGalleryMenu m_add;
 
@@ -299,17 +296,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
     }
 
     /**
-     * Returns if the tool-bar is visible.<p>
-     *
-     * @return <code>true</code> if the tool-bar is visible
-     */
-    public boolean isToolbarVisible() {
-
-        return !org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide().equals(
-            m_toolbarVisibility.getValue());
-    }
-
-    /**
      * @see com.google.gwt.core.client.EntryPoint#onModuleLoad()
      */
     @Override
@@ -404,13 +390,8 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
         RootPanel.get().addStyleName(
             org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().hideButtonShowSmallElements());
 
-        m_toolbarVisibility = new CmsStyleVariable(m_toolbar);
-        m_toolbarVisibility.setValue(
-            org.opencms.gwt.client.ui.css.I_CmsLayoutBundle.INSTANCE.toolbarCss().toolbarHide());
-        if (CmsCoreProvider.get().isToolbarVisible()) {
-            showToolbar(true);
-            containerpageHandler.activateSelection();
-        }
+        containerpageHandler.activateSelection();
+
         RootPanel root = RootPanel.get();
         root.add(m_toolbar);
         CmsContainerpageUtil containerpageUtil = new CmsContainerpageUtil(
@@ -425,16 +406,6 @@ public class CmsContainerpageEditor extends A_CmsEntryPoint {
 
         // export open stack trace dialog function
         exportStacktraceDialogMethod();
-    }
-
-    /**
-     * Shows the tool-bar.<p>
-     *
-     * @param show if <code>true</code> the tool-bar will be shown
-     */
-    public void showToolbar(boolean show) {
-
-        CmsToolbar.showToolbar(m_toolbar, show, m_toolbarVisibility);
     }
 
     /**

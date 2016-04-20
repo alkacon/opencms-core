@@ -32,7 +32,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -258,19 +257,6 @@ public class CmsJspTagEditable extends BodyTagSupport {
     }
 
     /**
-     * Returns if direct edit is disabled for the current request.<p>
-     *
-     * @param request the servlet request
-     *
-     * @return <code>true</code> if direct edit is disabled for the current request
-     */
-    public static boolean isDirectEditDisabled(ServletRequest request) {
-
-        String disabledParam = request.getParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
-        return Boolean.parseBoolean(disabledParam);
-    }
-
-    /**
      * Checks if the current request should be direct edit enabled.
      * Online-, history-requests and temporary files will not be editable.
      *
@@ -281,7 +267,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public static boolean isEditableRequest(ServletRequest req) {
 
         boolean result = true;
-        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEditable.isDirectEditDisabled(req)) {
+        if (CmsHistoryResourceHandler.isHistoryRequest(req) || CmsJspTagEnableAde.isDirectEditDisabled(req)) {
             // don't display direct edit buttons on an historical resource
             result = false;
         } else {

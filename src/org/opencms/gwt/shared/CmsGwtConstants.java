@@ -81,6 +81,9 @@ public final class CmsGwtConstants {
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
     public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";
 
+    /** Parameter for the button left position. */
+    public static final String PARAM_BUTTON_LEFT = "__buttonLeft";
+
     /** Parameter to disable direct edit. */
     public static final String PARAM_DISABLE_DIRECT_EDIT = "__disableDirectEdit";
 
@@ -116,10 +119,6 @@ public final class CmsGwtConstants {
 
     /** Name for the pseudo-type 'navlevel'. */
     public static final String TYPE_NAVLEVEL = "navlevel";
-
-    public static final String WIN_EDITOR = "opencms_edit_window";
-
-    public static final String WIN_WORKPLACE = "opencms_workplace";
 
     /**
      * Hide constructor.<p>

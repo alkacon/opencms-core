@@ -926,11 +926,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
 
     /**
      * Toggles the tool-bars visibility.<p>
+     *
+     * @param buttonLeft the selection button absolute left position, needed to show the leave preview button in the same location
      */
-    public void showPreview() {
+    public void showPreview(int buttonLeft) {
 
         UrlBuilder location = Window.Location.createUrlBuilder();
         location.setParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT, Boolean.toString(true));
+        location.setParameter(CmsGwtConstants.PARAM_BUTTON_LEFT, Integer.toString(buttonLeft));
         Window.Location.assign(location.buildString());
     }
 

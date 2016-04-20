@@ -35,6 +35,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.gwt.CmsGwtActionElement;
 import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.directedit.CmsAdvancedDirectEditProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider;
@@ -44,6 +45,7 @@ import java.io.IOException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -56,51 +58,67 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 public class CmsJspTagEnableAde extends BodyTagSupport {
 
     /** The preview mode JavaScript include. */
-    private static final String PREVIEW_INCLUDE_SCRIPT = "<script type=\"text/javascript\">\n"
-        + "function openEditor(){\n"
-        + "var target=window.location.href;"
+    private static final String PREVIEW_INCLUDE_SCRIPT = "<script type=\"text/javascript\"> "
+        + "function openEditor(){ "
+        + "var target=window.location.href; "
+        + "if (target.indexOf(\""
+        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+        + "\")>0){ "
         + "target=target.replace(\""
         + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
-        + "=true\",\"\");\n"
-        + "window.location.href=target;\n"
-        + "}\n"
-        + "function injectButton(){\n"
-        + "if (self === top){\n"
-        + "var injectElement=document.createElement(\"div\");\n"
-        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()'></button>\";\n"
-        + "document.body.appendChild(injectElement);\n"
+        + "=true\",\""
+        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+        + "=false\"); "
+        + "} else { "
+        + "if (target.indexOf(\"?\")>0) { "
+        + "target+=\"&\"; "
+        + "} else { "
+        + "target+=\"?\"; "
+        + "} "
+        + "target+=\""
+        + CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT
+        + "=false\"; "
+        + "} "
+        + "window.location.href=target; "
+        + "} "
+        + "function injectButton(){ "
+        + "if (self === top){ "
+        + "var injectElement=document.createElement(\"div\"); "
+        + "injectElement.innerHTML=\"<button id='opencms-leave-preview' class='opencms-icon opencms-icon-edit-point cmsState-up' onClick='openEditor()'></button>\"; "
+        + "document.body.appendChild(injectElement); "
         + "}"
-        + "}\n"
-        + "document.addEventListener(\"DOMContentLoaded\",injectButton);\n"
-        + "\n</script>\n";
+        + "} "
+        + "document.addEventListener(\"DOMContentLoaded\",injectButton); "
+        + "</script>\n";
 
     /** The preview mode CSS include. */
-    private static final String PREVIEW_INCLUDE_STYLE = "\n<style type=\"text/css\">\n"
-        + "button#opencms-leave-preview{\n"
-        + "font-size:32px;\n"
-        + "color:#474747;\n"
-        + "border:none;\n"
-        + "background:transparent;\n"
-        + "position:fixed;\n"
-        + "top:5px;\n"
-        + "left:20%;\n"
-        + "z-index:1000000;"
-        + "padding: 4px;\n"
-        + "}\n"
-        + "button#opencms-leave-preview:hover{\n"
-        + "color:#356EE1;\n"
-        + "}\n"
-        + "button#opencms-leave-preview:after{\n"
-        + "content:\"\";"
-        + "position:absolute;\n"
-        + "z-index:-1;\n"
-        + "background: #fff;\n"
-        + "top:0;\n"
-        + "left:0;\n"
-        + "right:0;\n"
-        + "bottom:0;\n"
-        + "opacity:0.7;\n"
-        + "border-radius:4px;\n"
+    private static final String PREVIEW_INCLUDE_STYLE = "<style type=\"text/css\"> "
+        + "button#opencms-leave-preview{"
+        + "font-size:32px; "
+        + "color:#474747; "
+        + "border:none; "
+        + "background:transparent; "
+        + "position:fixed; "
+        + "top:5px; "
+        + "left:%s; "
+        + "z-index:1000000; "
+        + "padding:4px;"
+        + "} "
+        + "button#opencms-leave-preview:hover{"
+        + "color:#356EE1;"
+        + "} "
+        + "button#opencms-leave-preview:after{"
+        + "content:\"\"; "
+        + "position:absolute; "
+        + "z-index:-1; "
+        + "background:#fff; "
+        + "top:0; "
+        + "left:0; "
+        + "right:0; "
+        + "bottom:0; "
+        + "opacity:0.7; "
+        + "border-radius:4px;"
+        + "} "
         + "</style>\n";
 
     /** Serial version UID required for safe serialization. */
@@ -133,10 +151,19 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             // don't display advanced direct edit buttons if a temporary file is displayed
             return;
         }
+        updateDirectEditFlagInSession(req);
 
-        if (CmsJspTagEditable.isDirectEditDisabled(req)) {
+        if (isDirectEditDisabled(req)) {
             try {
-                context.getResponse().getWriter().print(getPreviewInclude());
+                String buttonLeft = (String)((HttpServletRequest)req).getSession().getAttribute(
+                    CmsGwtConstants.PARAM_BUTTON_LEFT);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buttonLeft)) {
+                    buttonLeft += "px";
+                } else {
+                    buttonLeft = "20%";
+                }
+
+                context.getResponse().getWriter().print(getPreviewInclude(buttonLeft));
             } catch (IOException e) {
                 throw new JspException(e);
             }
@@ -159,16 +186,72 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
     }
 
     /**
+     * Returns if direct edit is disabled for the current request.<p>
+     *
+     * @param request the servlet request
+     *
+     * @return <code>true</code> if direct edit is disabled for the current request
+     */
+    public static boolean isDirectEditDisabled(ServletRequest request) {
+
+        String disabledParam = request.getParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(disabledParam)) {
+            return Boolean.parseBoolean(disabledParam);
+        } else {
+            Boolean disabledAttr = (Boolean)((HttpServletRequest)request).getSession().getAttribute(
+                CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+            return (disabledAttr != null) && disabledAttr.booleanValue();
+        }
+    }
+
+    /**
+     * Removes the direct edit flag from session, turning the preview mode off.<p>
+     *
+     * @param session the session
+     */
+    public static void removeDirectEditFlagFromSession(HttpSession session) {
+
+        session.removeAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+    }
+
+    /**
+     * Updates the direct edit flag in the session and also storing the button left info if available.<p>
+     *
+     * @param request the request
+     */
+    public static void updateDirectEditFlagInSession(ServletRequest request) {
+
+        String disabledParam = request.getParameter(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(disabledParam)) {
+            if (Boolean.parseBoolean(disabledParam)) {
+                ((HttpServletRequest)request).getSession().setAttribute(
+                    CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT,
+                    Boolean.TRUE);
+                String buttonLeft = request.getParameter(CmsGwtConstants.PARAM_BUTTON_LEFT);
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buttonLeft)) {
+                    ((HttpServletRequest)request).getSession().setAttribute(
+                        CmsGwtConstants.PARAM_BUTTON_LEFT,
+                        buttonLeft);
+                }
+            } else {
+                ((HttpServletRequest)request).getSession().removeAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
+            }
+        }
+    }
+
+    /**
      * Returns the preview mode include.<p>
+     *
+     * @param buttonLeft the button left parameter
      *
      * @return the preview mode include
      */
-    private static String getPreviewInclude() {
+    private static String getPreviewInclude(String buttonLeft) {
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("\n<style type=\"text/css\">\n @import url(\"").append(
-            CmsGwtActionElement.getFontIconCssLink()).append("\");\n </style>\n");
-        buffer.append(PREVIEW_INCLUDE_STYLE);
+        buffer.append("<style type=\"text/css\"> @import url(\"").append(
+            CmsGwtActionElement.getFontIconCssLink()).append("\"); </style>\n");
+        buffer.append(String.format(PREVIEW_INCLUDE_STYLE, buttonLeft));
         buffer.append(PREVIEW_INCLUDE_SCRIPT);
         return buffer.toString();
     }

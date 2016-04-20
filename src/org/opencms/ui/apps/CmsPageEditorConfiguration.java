@@ -31,6 +31,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.gwt.CmsCoreService;
 import org.opencms.gwt.shared.CmsReturnLinkInfo;
+import org.opencms.jsp.CmsJspTagEnableAde;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -163,6 +164,7 @@ public class CmsPageEditorConfiguration extends A_CmsWorkplaceAppConfiguration i
         CmsObject cms = A_CmsUI.getCmsObject();
         String siteRoot = cms.getRequestContext().getSiteRoot();
         HttpServletRequest req = CmsVaadinUtils.getRequest();
+        CmsJspTagEnableAde.removeDirectEditFlagFromSession(req.getSession());
         CmsADESessionCache cache = CmsADESessionCache.getCache(req, cms);
         LastPageBean lastPage = cache.getLastPage();
         if (lastPage != null) {
