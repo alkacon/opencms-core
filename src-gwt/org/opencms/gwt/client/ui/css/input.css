@@ -500,8 +500,8 @@ div.selectionInput div.fader{
 }
 div.selectionInput .opener{
 	position: absolute;
-	right: 2px;
-	bottom: 1px;
+	right: 3px;
+	top: 7px;
 }
 
 div.textArea div.fader{
