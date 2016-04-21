@@ -396,7 +396,8 @@ public class CmsJspTagSearch extends CmsJspScopedVarBodyTagSuport implements I_C
         m_searchController.updateFromRequestParameters(pageContext.getRequest().getParameterMap(), false);
         I_CmsSearchControllerCommon common = m_searchController.getCommon();
         // Do not search for empty query, if configured
-        if (common.getState().getQuery().isEmpty() && !common.getConfig().getSearchForEmptyQueryParam()) {
+        if (common.getState().getQuery().isEmpty()
+            && (!common.getConfig().getIgnoreQueryParam() && !common.getConfig().getSearchForEmptyQueryParam())) {
             return new CmsSearchResultWrapper(m_searchController, null, null, m_cms, null);
         }
         CmsSolrQuery query = new CmsSolrQuery();
