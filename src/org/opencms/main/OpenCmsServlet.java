@@ -32,9 +32,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.site.CmsSite;
 import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 
@@ -308,15 +310,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 
         String handlerUri = (new StringBuffer(64)).append(HANDLE_VFS_PATH).append(errorCode).append(
             HANDLE_VFS_SUFFIX).toString();
+        // provide the original error code in a request attribute
+        req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
         CmsObject cms;
         CmsFile file;
         try {
             // create OpenCms context, this will be set in the root site
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            cms.getRequestContext().setUri(handlerUri);
             cms.getRequestContext().setSecureRequest(OpenCms.getSiteManager().usesSecureSite(req));
-            // read the error handler file
-            file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // unlikely to happen as the OpenCms "Guest" context can always be initialized
             CmsMessageContainer container = Messages.get().container(
@@ -334,9 +335,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             return;
         }
         try {
-            // provide the original error code in a request attribute
-            req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
-            OpenCms.getResourceManager().loadResource(cms, file, req, res);
+            if (!tryCustomErrorPage(cms, req, res, errorCode)) {
+                cms.getRequestContext().setUri(handlerUri);
+                cms.getRequestContext().setSecureRequest(OpenCms.getSiteManager().usesSecureSite(req));
+                // read the error handler file
+                file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
+                OpenCms.getResourceManager().loadResource(cms, file, req, res);
+            }
         } catch (CmsException e) {
             // unable to load error page handler VFS resource
             CmsMessageContainer container = Messages.get().container(
@@ -345,5 +350,71 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 handlerUri);
             throw new ServletException(org.opencms.jsp.Messages.getLocalizedMessage(container, req), e);
         }
+    }
+
+    /**
+     * Tries to load the custom error page at the given rootPath.
+     * @param cms {@link CmsObject} used for reading the resource (site root and uri get adjusted!)
+     * @param req the current request
+     * @param res the current response
+     * @param rootPath the VFS root path to the error page resource
+     * @return a flag, indicating if the error page could be loaded
+     */
+    private boolean loadCustomErrorPage(
+        CmsObject cms,
+        HttpServletRequest req,
+        HttpServletResponse res,
+        String rootPath) {
+
+        try {
+
+            // get the site of the error page resource
+            CmsSite errorSite = OpenCms.getSiteManager().getSiteForRootPath(rootPath);
+            cms.getRequestContext().setSiteRoot(errorSite.getSiteRoot());
+            String relPath = cms.getRequestContext().removeSiteRoot(rootPath);
+            cms.getRequestContext().setUri(relPath);
+
+            OpenCms.getResourceManager().loadResource(cms, cms.readResource(relPath), req, res);
+            return true;
+        } catch (Throwable e) {
+            // something went wrong log the exception and return false
+            LOG.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * Tries to load a site specific error page. If
+     * @param cms {@link CmsObject} used for reading the resource (site root and uri get adjusted!)
+     * @param req the current request
+     * @param res the current response
+     * @param errorCode the error code to display
+     * @return a flag, indicating if the custom error page could be loaded.
+     */
+    private boolean tryCustomErrorPage(CmsObject cms, HttpServletRequest req, HttpServletResponse res, int errorCode) {
+
+        String siteRoot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+        if (site != null) {
+            // store current site root and URI
+            String currentSiteRoot = cms.getRequestContext().getSiteRoot();
+            String currentUri = cms.getRequestContext().getUri();
+            try {
+                if (site.getErrorPage() != null) {
+                    String rootPath = site.getErrorPage();
+                    if (loadCustomErrorPage(cms, req, res, rootPath)) {
+                        return true;
+                    }
+                }
+                String rootPath = CmsStringUtil.joinPaths(siteRoot, "/.errorpages/handle" + errorCode + ".html");
+                if (loadCustomErrorPage(cms, req, res, rootPath)) {
+                    return true;
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(currentSiteRoot);
+                cms.getRequestContext().setUri(currentUri);
+            }
+        }
+        return false;
     }
 }

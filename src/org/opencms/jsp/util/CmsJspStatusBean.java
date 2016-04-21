@@ -160,7 +160,10 @@ public class CmsJspStatusBean extends CmsJspActionElement {
      * @param rootPath the resource to be used as error page
      *
      * @return <code>true</code> if the forward was successful performed, <code>false</code> otherwise
+     *
+     * @deprecated will not work for container pages and other pages using cms:include tags
      */
+    @Deprecated
     public boolean forwardToErrorPage(String rootPath) {
 
         try {

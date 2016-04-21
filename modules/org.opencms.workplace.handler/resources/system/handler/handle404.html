@@ -1,28 +1,8 @@
-<%@ page session="false" isErrorPage="true" contentType="text/html" import="org.opencms.jsp.util.*,org.opencms.file.*,org.opencms.site.*,org.opencms.util.*,org.opencms.main.*,org.apache.commons.logging.*,org.opencms.flex.*"%><%
+<%@ page session="false" isErrorPage="true" contentType="text/html" import="org.opencms.jsp.util.CmsJspStatusBean"%><%
 	
 	// initialize instance of status bean
 	CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
 	
-	// try to forward to the configured error page of the currently requested site
-	boolean forwarded = false;
-	
-	
-	CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(cms.getSiteRoot());
-	if (site != null && site.getErrorPage() != null) {
-		forwarded = cms.forwardToErrorPage(site.getErrorPage());
-	} else if (cms.getRequestResourceName()==null || !cms.getRequestResourceName().startsWith("/system/")) {
-		// check for site specific error page only in case of non system resources
-	
-		// use the root path as the site root will not be set in the current request context
-		String errorPage =CmsStringUtil.joinPaths(cms.getSiteRoot(),"/.errorpages/handle"+cms.getStatusCode()+".html");
-		if (cms.getCmsObject().existsResource(errorPage)) {
-			forwarded = cms.forwardToErrorPage(errorPage);
-		}
-	}
-	
-
-	// use the traditional error page mechanism if not forwarded
-	if (!forwarded) {
 %><!doctype html>
 <html lang="en">
 <head>
@@ -150,4 +130,4 @@
         </footer>
     </div>
 </body>
-</html><% } %>
+</html>
