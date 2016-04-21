@@ -5,7 +5,7 @@
 			box-shadow: none;
 		}
 		.o-permissions-heading {
-			line-height: $v-unit-size;
+			margin: round($o-layout-margin/2) 0;
 			
 			&:first-child{
 				padding-left: round($v-unit-size/2);

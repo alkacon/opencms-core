@@ -65,6 +65,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -218,12 +219,12 @@ public class CmsPermissionView extends CssLayout {
         I_CmsPrincipal principal;
         try {
             principal = CmsPrincipal.readPrincipalIncludingHistory(cms, entry.getPrincipal());
-        } catch (@SuppressWarnings("unused") CmsException e) {
+        } catch (CmsException e) {
             principal = null;
+            LOG.debug(e.getLocalizedMessage(), e);
         }
 
         m_principalName = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
-        @SuppressWarnings("unused")
         String ou = null;
         String displayName;
 
@@ -338,8 +339,22 @@ public class CmsPermissionView extends CssLayout {
         }
 
         m_label.setContentMode(ContentMode.HTML);
+        String ouName = null;
+        if (ou != null) {
+            try {
+                ouName = OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, ou).getDisplayName(
+                    UI.getCurrent().getLocale());
+            } catch (CmsException e) {
+                LOG.debug("Error reading OU name.", e);
+            }
+        }
         m_label.setValue(
-            icon.getHtml() + " <b>" + displayName + "</b> " + entry.getPermissions().getPermissionString());
+            icon.getHtml()
+                + " <b>"
+                + displayName
+                + "</b> "
+                + entry.getPermissions().getPermissionString()
+                + (ouName != null ? ("<br />" + ouName) : ""));
         m_label.setWidthUndefined();
         m_details.setIcon(FontAwesome.PLUS_SQUARE_O);
         m_details.addClickListener(new ClickListener() {
