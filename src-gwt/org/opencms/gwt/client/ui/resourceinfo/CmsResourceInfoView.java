@@ -166,6 +166,12 @@ public class CmsResourceInfoView extends Composite implements I_CmsDescendantRes
     protected FlowPanel m_infoPanel;
 
     /**
+     * The info panel.<p>
+     */
+    @UiField
+    protected FlowPanel m_infoPanel;
+
+    /**
      * Text field for resource information.<p>
      */
     @UiField
