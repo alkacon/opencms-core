@@ -155,14 +155,15 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
 
         if (isDirectEditDisabled(req)) {
             try {
-                String buttonLeft = (String)((HttpServletRequest)req).getSession().getAttribute(
+                String buttonLeft = null;
+                Integer left = (Integer)((HttpServletRequest)req).getSession().getAttribute(
                     CmsGwtConstants.PARAM_BUTTON_LEFT);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buttonLeft)) {
-                    buttonLeft += "px";
+
+                if (left != null) {
+                    buttonLeft = left.toString() + "px";
                 } else {
                     buttonLeft = "20%";
                 }
-
                 context.getResponse().getWriter().print(getPreviewInclude(buttonLeft));
             } catch (IOException e) {
                 throw new JspException(e);
@@ -229,9 +230,17 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
                     Boolean.TRUE);
                 String buttonLeft = request.getParameter(CmsGwtConstants.PARAM_BUTTON_LEFT);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(buttonLeft)) {
-                    ((HttpServletRequest)request).getSession().setAttribute(
-                        CmsGwtConstants.PARAM_BUTTON_LEFT,
-                        buttonLeft);
+                    Integer left = null;
+                    try {
+                        left = Integer.valueOf(buttonLeft);
+                        if (left.intValue() > 0) {
+                            ((HttpServletRequest)request).getSession().setAttribute(
+                                CmsGwtConstants.PARAM_BUTTON_LEFT,
+                                left);
+                        }
+                    } catch (NumberFormatException e) {
+                        // malformed parameter, ignore
+                    }
                 }
             } else {
                 ((HttpServletRequest)request).getSession().removeAttribute(CmsGwtConstants.PARAM_DISABLE_DIRECT_EDIT);
