@@ -127,6 +127,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -946,6 +947,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#chtype(String, int)
      * @see I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      */
+    @SuppressWarnings({"javadoc", "deprecation"})
     public void chtype(CmsDbContext dbc, CmsResource resource, int type) throws CmsException {
 
         // must operate on a clone to ensure resource is not modified in case permissions are not granted
@@ -1961,6 +1963,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#createResource(String, int)
      * @see I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
+    @SuppressWarnings("javadoc")
     public CmsResource createResource(
         CmsDbContext dbc,
         String resourcename,
@@ -5529,18 +5532,35 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.clearUserCache(newUser);
         // set the last login time to the current time
         newUser.setLastlogin(System.currentTimeMillis());
-        dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
+
         // write the changed user object back to the user driver
         Map<String, Object> additionalInfosForRepositories = OpenCms.getRepositoryManager().getAdditionalInfoForLogin(
             newUser.getName(),
             password);
-        newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
+        boolean requiresAddInfoUpdate = false;
+
+        // check for changes
+        for (Entry<String, Object> entry : additionalInfosForRepositories.entrySet()) {
+            Object value = entry.getValue();
+            Object current = newUser.getAdditionalInfo(entry.getKey());
+            if (((value == null) && (current != null)) || ((value != null) && !value.equals(current))) {
+                requiresAddInfoUpdate = true;
+                break;
+            }
+        }
+        if (requiresAddInfoUpdate) {
+            newUser.getAdditionalInfo().putAll(additionalInfosForRepositories);
+        }
         String lastPasswordChange = (String)newUser.getAdditionalInfo(
             CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE);
         if (lastPasswordChange == null) {
+            requiresAddInfoUpdate = true;
             newUser.getAdditionalInfo().put(
                 CmsUserSettings.ADDITIONAL_INFO_LAST_PASSWORD_CHANGE,
                 "" + System.currentTimeMillis());
+        }
+        if (!requiresAddInfoUpdate) {
+            dbc.setAttribute(ATTRIBUTE_LOGIN, newUser.getName());
         }
         getUserDriver(dbc).writeUser(dbc, newUser);
         // check if we need to update the password
@@ -8297,6 +8317,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @see CmsObject#replaceResource(String, int, byte[], List)
      * @see I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
+    @SuppressWarnings("javadoc")
     public void replaceResource(
         CmsDbContext dbc,
         CmsResource resource,
@@ -9280,6 +9301,42 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
             }
         }
+    }
+
+    /**
+     * Updates the last login date on the given user to the current time.<p>
+     *
+     * @param dbc the current database context
+     * @param user the user to be updated
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void updateLastLoginDate(CmsDbContext dbc, CmsUser user) throws CmsException {
+
+        m_monitor.clearUserCache(user);
+        // set the last login time to the current time
+        user.setLastlogin(System.currentTimeMillis());
+        dbc.setAttribute(ATTRIBUTE_LOGIN, user.getName());
+        getUserDriver(dbc).writeUser(dbc, user);
+        // update cache
+        m_monitor.cacheUser(user);
+
+        // invalidate all user dependent caches
+        m_monitor.flushCache(
+            CmsMemoryMonitor.CacheType.ACL,
+            CmsMemoryMonitor.CacheType.GROUP,
+            CmsMemoryMonitor.CacheType.ORG_UNIT,
+            CmsMemoryMonitor.CacheType.USERGROUPS,
+            CmsMemoryMonitor.CacheType.USER_LIST,
+            CmsMemoryMonitor.CacheType.PERMISSION,
+            CmsMemoryMonitor.CacheType.RESOURCE_LIST);
+
+        // fire user modified event
+        Map<String, Object> eventData = new HashMap<String, Object>();
+        eventData.put(I_CmsEventListener.KEY_USER_ID, user.getId().toString());
+        eventData.put(I_CmsEventListener.KEY_USER_NAME, user.getName());
+        eventData.put(I_CmsEventListener.KEY_USER_ACTION, I_CmsEventListener.VALUE_USER_MODIFIED_ACTION_WRITE_USER);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**

@@ -2690,6 +2690,7 @@ public final class OpenCmsCore {
                             LOG.error("Unable to set the startup project '" + settings.getStartProject() + "'.", e);
                         }
                     }
+                    m_adminCms.updateLastLoginDate(user);
                     // fire the login user event
                     OpenCms.fireCmsEvent(
                         I_CmsEventListener.EVENT_LOGIN_USER,

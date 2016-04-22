@@ -57,6 +57,7 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
@@ -2322,6 +2323,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
+    @SuppressWarnings("deprecation")
     public CmsFolder readAncestor(String resourcename, int type) throws CmsException {
 
         return readAncestor(resourcename, CmsResourceFilter.requireType(type));
@@ -2418,9 +2420,9 @@ public final class CmsObject {
     throws CmsException, CmsSecurityException {
 
         CmsResource resource;
-        try {
+        if (CmsUUID.isValidUUID(resourceNameOrID)) {
             resource = readResource(new CmsUUID(resourceNameOrID), filter);
-        } catch (NumberFormatException e) {
+        } else {
             resource = readResource(resourceNameOrID, filter);
         }
         return m_securityManager.readDefaultFile(m_context, resource, filter);
@@ -3844,6 +3846,19 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).unlockResource(this, m_securityManager, resource);
+    }
+
+    /**
+     * Updates the last login date on the given user to the current time.<p>
+     *
+     * @param user the user to be updated
+     *
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER} for the current project
+     * @throws CmsException if operation was not successful
+     */
+    public void updateLastLoginDate(CmsUser user) throws CmsRoleViolationException, CmsException {
+
+        m_securityManager.updateLastLoginDate(m_context, user);
     }
 
     /**

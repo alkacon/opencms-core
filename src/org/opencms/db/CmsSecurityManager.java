@@ -678,6 +678,7 @@ public final class CmsSecurityManager {
      * @see org.opencms.file.types.I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      * @see CmsObject#chtype(String, int)
      */
+    @SuppressWarnings("javadoc")
     public void chtype(CmsRequestContext context, CmsResource resource, int type)
     throws CmsException, CmsSecurityException {
 
@@ -5611,6 +5612,7 @@ public final class CmsSecurityManager {
      * @see CmsObject#replaceResource(String, int, byte[], List)
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
+    @SuppressWarnings("javadoc")
     public void replaceResource(
         CmsRequestContext context,
         CmsResource resource,
@@ -6329,6 +6331,30 @@ public final class CmsSecurityManager {
                 null,
                 Messages.get().container(Messages.ERR_UNSUBSCRIBE_RESOURCE_ALL_1, context.getSitePath(resource)),
                 e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
+     * Updates the last login date on the given user to the current time.<p>
+     *
+     * @param context the current request context
+     * @param user the user to be updated
+     *
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER} for the current project
+     * @throws CmsException if operation was not successful
+     */
+    public void updateLastLoginDate(CmsRequestContext context, CmsUser user)
+    throws CmsException, CmsRoleViolationException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName()));
+            checkRoleForUserModification(dbc, user.getName(), role);
+            m_driverManager.updateLastLoginDate(dbc, user);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_WRITE_USER_1, user.getName()), e);
         } finally {
             dbc.clear();
         }
