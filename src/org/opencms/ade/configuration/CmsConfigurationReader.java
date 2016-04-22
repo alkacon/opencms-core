@@ -783,19 +783,27 @@ public class CmsConfigurationReader {
         m_propertyConfigs.add(propConfig);
     }
 
+    /**
+     * Reads the local macro formatters from the .formatters folder if present.<p>
+     *
+     * @param node the xml content node
+     *
+     * @return the local formatters
+     */
     private Set<String> readLocalMacroFormatters(I_CmsXmlContentLocation node) {
 
         Set<String> addFormatters = new HashSet<String>();
         String path = m_cms.getSitePath(node.getDocument().getFile());
         path = CmsStringUtil.joinPaths(CmsResource.getParentFolder(path), ".formatters");
         try {
-            I_CmsResourceType macroType = OpenCms.getResourceManager().getResourceType(
-                CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER);
-
-            CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(macroType);
-            List<CmsResource> macroFormatters = m_cms.readResources(path, filter);
-            for (CmsResource formatter : macroFormatters) {
-                addFormatters.add(formatter.getStructureId().toString());
+            if (m_cms.existsResource(path, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                I_CmsResourceType macroType = OpenCms.getResourceManager().getResourceType(
+                    CmsFormatterConfigurationCache.TYPE_MACRO_FORMATTER);
+                CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(macroType);
+                List<CmsResource> macroFormatters = m_cms.readResources(path, filter);
+                for (CmsResource formatter : macroFormatters) {
+                    addFormatters.add(formatter.getStructureId().toString());
+                }
             }
         } catch (CmsException e) {
             LOG.warn(e.getMessage(), e);
