@@ -3707,8 +3707,6 @@ public final class CmsContainerpageController {
         org.opencms.ade.containerpage.client.ui.CmsContainerPageContainer container) {
 
         boolean result = (m_currentEditLevel == -1) || (m_currentEditLevel == container.getContainerLevel());
-        CmsDebugLog.consoleLog(
-            "container " + container.getContainerId() + " matches level " + m_currentEditLevel + " " + result);
         return result;
     }
 
