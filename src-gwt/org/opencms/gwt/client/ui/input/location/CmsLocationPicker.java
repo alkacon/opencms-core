@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui.input.location;
 
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsPushButton;
 import org.opencms.gwt.client.ui.I_CmsButton.ButtonStyle;
@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 /**
  * A google maps based location picker widget.<p>
  */
-public class CmsLocationPicker extends Composite implements HasValueChangeHandlers<String>, I_HasResizeOnShow {
+public class CmsLocationPicker extends Composite implements HasValueChangeHandlers<String>, I_CmsHasResizeOnShow {
 
     /**
      * @see com.google.gwt.uibinder.client.UiBinder
@@ -135,7 +135,7 @@ public class CmsLocationPicker extends Composite implements HasValueChangeHandle
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

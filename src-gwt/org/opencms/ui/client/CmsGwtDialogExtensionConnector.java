@@ -57,7 +57,6 @@ import org.opencms.ui.shared.components.I_CmsGwtDialogClientRpc;
 import org.opencms.ui.shared.components.I_CmsGwtDialogServerRpc;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -261,7 +260,7 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
      */
     public void openInfoDialog(String string) {
 
-        CmsResourceInfoDialog.load(new CmsUUID(string), true, new ArrayList<CmsUUID>(), new CloseHandler<PopupPanel>() {
+        CmsResourceInfoDialog.load(new CmsUUID(string), true, null, new CloseHandler<PopupPanel>() {
 
             public void onClose(CloseEvent<PopupPanel> event) {
 

@@ -28,7 +28,7 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.util.CmsDomUtil;
 
 import com.google.gwt.dom.client.Element;
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.HTML;
  * Wraps an edit widget to supply a widget label.<p>
  **/
 public class CmsFormWidgetWrapper extends Composite
-implements I_CmsFormEditWidget, HasResizeHandlers, I_HasResizeOnShow {
+implements I_CmsFormEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
 
     /** The edit widget. */
     private I_CmsEditWidget m_editWidget;
@@ -163,14 +163,14 @@ implements I_CmsFormEditWidget, HasResizeHandlers, I_HasResizeOnShow {
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
         // make sure the widget has been initialized
         assert m_editWidget != null;
-        if (m_editWidget instanceof I_HasResizeOnShow) {
-            ((I_HasResizeOnShow)m_editWidget).resizeOnShow();
+        if (m_editWidget instanceof I_CmsHasResizeOnShow) {
+            ((I_CmsHasResizeOnShow)m_editWidget).resizeOnShow();
         }
     }
 

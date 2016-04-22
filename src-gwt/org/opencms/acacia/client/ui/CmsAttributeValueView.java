@@ -38,8 +38,8 @@ import org.opencms.acacia.client.css.I_CmsLayoutBundle;
 import org.opencms.acacia.client.widgets.I_CmsEditWidget;
 import org.opencms.acacia.client.widgets.I_CmsFormEditWidget;
 import org.opencms.acacia.shared.CmsEntity;
-import org.opencms.gwt.client.I_DescendantResizeHandler;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.dnd.I_CmsDragHandle;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -97,7 +97,7 @@ import com.google.gwt.user.client.ui.Widget;
  * UI object holding an attribute value.<p>
  */
 public class CmsAttributeValueView extends Composite
-implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseDownHandlers {
+implements I_CmsDraggable, I_CmsHasResizeOnShow, HasMouseOverHandlers, HasMouseOutHandlers, HasMouseDownHandlers {
 
     /**
      * The widget value change handler.<p>
@@ -569,22 +569,22 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
         // call resize on all children implementing org.opencms.acacia.client.ui.I_HasResizeOnShow
         if (hasValue()) {
             if (isSimpleValue()) {
-                if (m_widget instanceof I_HasResizeOnShow) {
-                    ((I_HasResizeOnShow)m_widget).resizeOnShow();
+                if (m_widget instanceof I_CmsHasResizeOnShow) {
+                    ((I_CmsHasResizeOnShow)m_widget).resizeOnShow();
                 }
             } else {
                 for (Widget panel : m_widgetHolder) {
                     if (panel instanceof HasWidgets.ForIsWidget) {
                         for (Widget w : (HasWidgets.ForIsWidget)panel) {
-                            if (w instanceof I_HasResizeOnShow) {
-                                ((I_HasResizeOnShow)w).resizeOnShow();
+                            if (w instanceof I_CmsHasResizeOnShow) {
+                                ((I_CmsHasResizeOnShow)w).resizeOnShow();
                             }
                         }
                     }
@@ -908,8 +908,8 @@ implements I_CmsDraggable, I_HasResizeOnShow, HasMouseOverHandlers, HasMouseOutH
 
         Widget parent = getParent();
         while (parent != null) {
-            if (parent instanceof I_DescendantResizeHandler) {
-                ((I_DescendantResizeHandler)parent).onResizeDescendant();
+            if (parent instanceof I_CmsDescendantResizeHandler) {
+                ((I_CmsDescendantResizeHandler)parent).onResizeDescendant();
                 break;
             }
             parent = parent.getParent();

@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.util.CmsStringUtil;
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @since 8.0.0
  *
  */
-public class CmsTabbedPanel<E extends Widget> extends Composite implements I_DescendantResizeHandler, Iterable<E> {
+public class CmsTabbedPanel<E extends Widget> extends Composite implements I_CmsDescendantResizeHandler, Iterable<E> {
 
     /** Enumeration with layout keys. */
     public enum CmsTabbedPanelStyle {
@@ -491,6 +491,7 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      * @param tabIndex the child widget's index
      * @return the child widget
      */
+    @SuppressWarnings("unchecked")
     public E getWidget(int tabIndex) {
 
         return (E)m_tabPanel.getWidget(tabIndex);
@@ -528,13 +529,14 @@ public class CmsTabbedPanel<E extends Widget> extends Composite implements I_Des
      *
      * @return the iterator
      */
+    @SuppressWarnings("unchecked")
     public Iterator<E> iterator() {
 
         return (Iterator<E>)m_tabPanel.iterator();
     }
 
     /**
-     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 

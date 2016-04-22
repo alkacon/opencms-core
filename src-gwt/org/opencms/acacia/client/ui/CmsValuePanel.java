@@ -28,7 +28,7 @@
 package org.opencms.acacia.client.ui;
 
 import org.opencms.acacia.client.css.I_CmsLayoutBundle;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.dnd.CmsDNDHandler.Orientation;
 import org.opencms.gwt.client.dnd.I_CmsDraggable;
 import org.opencms.gwt.client.dnd.I_CmsDropTarget;
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The attribute values panel.<p>
  */
-public class CmsValuePanel extends FlowPanel implements I_CmsDropTarget, I_HasResizeOnShow {
+public class CmsValuePanel extends FlowPanel implements I_CmsDropTarget, I_CmsHasResizeOnShow {
 
     /** The current place holder. */
     protected Element m_placeholder;
@@ -137,13 +137,13 @@ public class CmsValuePanel extends FlowPanel implements I_CmsDropTarget, I_HasRe
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 
         for (Widget w : this) {
-            if (w instanceof I_HasResizeOnShow) {
-                ((I_HasResizeOnShow)w).resizeOnShow();
+            if (w instanceof I_CmsHasResizeOnShow) {
+                ((I_CmsHasResizeOnShow)w).resizeOnShow();
             }
         }
     }

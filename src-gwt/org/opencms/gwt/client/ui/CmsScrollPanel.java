@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsFocusedScrollingHandler;
@@ -52,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Scroll panel implementation allowing focused scrolling.<p>
  */
-public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_DescendantResizeHandler {
+public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_CmsDescendantResizeHandler {
 
     /**Inner class for the resize button. */
     protected class ResizeButton extends CmsPushButton {
@@ -208,7 +208,7 @@ public class CmsScrollPanel extends ScrollPanel implements HasResizeHandlers, I_
     }
 
     /**
-     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 

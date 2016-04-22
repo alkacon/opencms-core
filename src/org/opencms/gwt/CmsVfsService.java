@@ -879,18 +879,24 @@ public class CmsVfsService extends CmsGwtService implements I_CmsVfsService {
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String, boolean, java.util.List)
+     * @see org.opencms.gwt.shared.rpc.I_CmsVfsService#getResourceStatus(org.opencms.util.CmsUUID, java.lang.String, boolean, org.opencms.util.CmsUUID)
      */
     public CmsResourceStatusBean getResourceStatus(
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
-        List<CmsUUID> additionalTargets) throws CmsRpcException {
+        CmsUUID detailContentId) throws CmsRpcException {
 
         try {
             CmsObject cms = getCmsObject();
             CmsDefaultResourceStatusProvider provider = new CmsDefaultResourceStatusProvider();
-            return provider.getResourceStatus(cms, structureId, contentLocale, includeTargets, additionalTargets);
+            return provider.getResourceStatus(
+                cms,
+                structureId,
+                contentLocale,
+                includeTargets,
+                detailContentId,
+                detailContentId != null ? Collections.singletonList(detailContentId) : null);
         } catch (Throwable e) {
             error(e);
             return null;

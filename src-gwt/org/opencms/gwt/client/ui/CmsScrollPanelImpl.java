@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDomUtil;
 import org.opencms.gwt.client.util.CmsDomUtil.Style;
@@ -399,8 +399,8 @@ public class CmsScrollPanelImpl extends CmsScrollPanel {
         } else if (m_scrollLayer != null) {
             m_scrollLayer.getStyle().setDisplay(Display.NONE);
         }
-        if (m_scrollbar instanceof I_DescendantResizeHandler) {
-            ((I_DescendantResizeHandler)m_scrollbar).onResizeDescendant();
+        if (m_scrollbar instanceof I_CmsDescendantResizeHandler) {
+            ((I_CmsDescendantResizeHandler)m_scrollbar).onResizeDescendant();
         }
         maybeUpdateScrollbarPositions();
     }

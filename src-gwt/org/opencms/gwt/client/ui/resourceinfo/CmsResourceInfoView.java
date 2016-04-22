@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.db.CmsResourceState;
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.contextmenu.CmsAbout;
@@ -48,13 +49,16 @@ import org.opencms.util.CmsUUID;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -62,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A widget used to display various resource information to a user.<p>
  */
-public class CmsResourceInfoView extends Composite {
+public class CmsResourceInfoView extends Composite implements I_CmsDescendantResizeHandler {
 
     /**
      * Context menu handler for resource info boxes.<p>
@@ -149,6 +153,12 @@ public class CmsResourceInfoView extends Composite {
      */
     @UiField
     protected SimplePanel m_infoBoxContainer;
+
+    /**
+     * The info panel.<p>
+     */
+    @UiField
+    protected FlowPanel m_infoPanel;
 
     /**
      * Text field for resource information.<p>
@@ -252,7 +262,7 @@ public class CmsResourceInfoView extends Composite {
         m_size.setText("" + status.getSize() + " Bytes");
         m_userCreated.setText(status.getUserCreated());
         m_userLastModified.setText(status.getUserLastModified());
-        m_scrollPanel.setHeight("280px");
+        m_scrollPanel.setHeight(CmsResourceInfoDialog.SCROLLPANEL_HEIGHT + "px");
         List<String> locales = status.getLocales();
         if (locales != null) {
             StringBuffer buffer = new StringBuffer();
@@ -272,6 +282,32 @@ public class CmsResourceInfoView extends Composite {
             }
             m_locales.setText(buffer.toString());
         }
+        if (status.getAdditionalAttributes() != null) {
+            for (Entry<String, String> entry : status.getAdditionalAttributes().entrySet()) {
+                CmsResourceInfoLine line = new CmsResourceInfoLine();
+                line.setLabel(entry.getKey());
+                line.setText(entry.getValue());
+                m_infoPanel.add(line);
+            }
+        }
+
+    }
+
+    /**
+     * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
+     */
+    public void onResizeDescendant() {
+
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+
+                m_scrollPanel.onResizeDescendant();
+
+            }
+        };
+        timer.schedule(100);
     }
 
     /**

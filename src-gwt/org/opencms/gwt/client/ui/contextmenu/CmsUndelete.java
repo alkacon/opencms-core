@@ -35,8 +35,6 @@ import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
-
 /**
  * ADE context menu option for undeleting a file.<p>
  */
@@ -72,7 +70,7 @@ public class CmsUndelete implements I_CmsHasContextMenuCommand, I_CmsContextMenu
                     structureId,
                     CmsCoreProvider.get().getLocale(),
                     false,
-                    new ArrayList<CmsUUID>(),
+                    null,
                     this);
 
             }

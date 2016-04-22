@@ -35,7 +35,6 @@ import org.opencms.gwt.client.util.CmsNewLinkFunctionTable;
 import org.opencms.gwt.client.util.CmsPositionBean;
 import org.opencms.gwt.client.util.I_CmsUniqueActiveItem;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.Map;
@@ -281,11 +280,7 @@ implements HasMouseOverHandlers, HasMouseOutHandlers, I_CmsUniqueActiveItem {
 
             public void onClick(ClickEvent event) {
 
-                CmsResourceInfoDialog.load(
-                    m_editableData.getStructureId(),
-                    true,
-                    Collections.<CmsUUID> emptyList(),
-                    null);
+                CmsResourceInfoDialog.load(m_editableData.getStructureId(), true, null, null);
             }
         });
         return favButton;

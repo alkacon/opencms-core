@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.property;
 
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsListItemWidget;
@@ -175,8 +175,8 @@ public class CmsPropertyPanel extends A_CmsFormFieldPanel {
             public void onSelection(SelectionEvent<Integer> event) {
 
                 Widget selectedTab = m_tabPanel.getWidget(event.getSelectedItem().intValue());
-                if (selectedTab instanceof I_DescendantResizeHandler) {
-                    ((I_DescendantResizeHandler)selectedTab).onResizeDescendant();
+                if (selectedTab instanceof I_CmsDescendantResizeHandler) {
+                    ((I_CmsDescendantResizeHandler)selectedTab).onResizeDescendant();
                 }
             }
         });

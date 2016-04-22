@@ -701,15 +701,10 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
      */
     public void openElementsInfo() {
 
-        CmsUUID detailId = CmsContainerpageController.get().getData().getDetailId();
-        List<CmsUUID> detailIdList = new ArrayList<CmsUUID>();
-        if (detailId != null) {
-            detailIdList.add(detailId);
-        }
         CmsResourceInfoDialog.load(
             CmsCoreProvider.get().getStructureId(),
             true,
-            detailIdList,
+            CmsContainerpageController.get().getData().getDetailId(),
             new CloseHandler<PopupPanel>() {
 
                 public void onClose(CloseEvent<PopupPanel> event) {
@@ -905,7 +900,7 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     public void showElementInfo(CmsContainerPageElementPanel element) {
 
         CmsUUID structureId = element.getStructureId();
-        CmsResourceInfoDialog.load(structureId, true, new ArrayList<CmsUUID>(), null);
+        CmsResourceInfoDialog.load(structureId, true, null, null);
     }
 
     /**
