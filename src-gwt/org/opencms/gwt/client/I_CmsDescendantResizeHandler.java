@@ -32,7 +32,7 @@ package org.opencms.gwt.client;
  *
  * @since 9.5.0
  */
-public interface I_DescendantResizeHandler {
+public interface I_CmsDescendantResizeHandler {
 
     /**
      * This method should be called when a descendant widget changes its size.<p>

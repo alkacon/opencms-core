@@ -29,6 +29,7 @@ package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.gwt.client.CmsCoreProvider;
 import org.opencms.gwt.client.CmsEditableData;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsFieldSet;
 import org.opencms.gwt.client.ui.CmsList;
@@ -73,7 +74,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * Widget which shows which contents refer to a resource. <p>
  */
-public class CmsResourceRelationView extends Composite {
+public class CmsResourceRelationView extends Composite implements I_CmsDescendantResizeHandler {
 
     /** Enum for the display mode. */
     public enum Mode {
@@ -89,11 +90,18 @@ public class CmsResourceRelationView extends Composite {
     /** Set of context menu actions which we do not want to appear in the context menu for the relation source items. */
     protected static Set<String> m_filteredActions = new HashSet<String>();
 
+    static {
+        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
+        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
+        m_filteredActions.add(CmsLogout.class.getName());
+    }
+
     /** The panel containing the resource boxes. */
-    protected CmsList<CmsListItem> m_list = new CmsList<CmsListItem>();
+    protected CmsList<CmsListItem> m_list;
 
     /** List for relations from other sites. */
-    protected CmsList<CmsListItem> m_otherSitesList = new CmsList<CmsListItem>();
+    protected CmsList<CmsListItem> m_otherSitesList;
 
     /** Main panel. */
     protected FlowPanel m_panel = new FlowPanel();
@@ -106,6 +114,9 @@ public class CmsResourceRelationView extends Composite {
 
     /** Scroll panel. */
     CmsScrollPanel m_scrollPanel;
+
+    /** The dialog scroll panels. */
+    List<CmsScrollPanel> m_scrollPanels;
 
     /** The edit button. */
     private CmsPushButton m_editButton;
@@ -125,6 +136,7 @@ public class CmsResourceRelationView extends Composite {
     public CmsResourceRelationView(CmsResourceStatusBean status, Mode mode) {
 
         initWidget(m_panel);
+        m_scrollPanels = new ArrayList<CmsScrollPanel>();
         m_statusBean = status;
         m_mode = mode;
         // wrap list info item in another panel to achieve layout uniformity with other similar widgets
@@ -136,42 +148,27 @@ public class CmsResourceRelationView extends Composite {
         infoWidget.addButton(menuButton);
         m_panel.add(infoBoxPanel);
         infoBoxPanel.add(infoWidget);
-        CmsFieldSet fieldset = new CmsFieldSet();
-        CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
-        m_scrollPanel = scrollPanel;
-        scrollPanel.add(m_list);
-
-        fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
-        fieldset.setLegend(getLegend());
-        fieldset.add(scrollPanel);
-        m_panel.add(fieldset);
+        m_list = createList(getLegend());
         fill();
     }
 
-    static {
-        m_filteredActions.add(CmsGwtConstants.ACTION_TEMPLATECONTEXTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_EDITSMALLELEMENTS);
-        m_filteredActions.add(CmsGwtConstants.ACTION_SELECTELEMENTVIEW);
-        m_filteredActions.add(CmsLogout.class.getName());
-    }
-
     /**
-     * This method should be called when this view is shown.<p>
+     * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
      */
-    public void onSelect() {
+    public void onResizeDescendant() {
 
         Timer timer = new Timer() {
 
             @Override
             public void run() {
 
-                m_scrollPanel.onResizeDescendant();
+                for (CmsScrollPanel panel : m_scrollPanels) {
+                    panel.onResizeDescendant();
+                }
 
             }
         };
         timer.schedule(100);
-
     }
 
     /**
@@ -197,7 +194,7 @@ public class CmsResourceRelationView extends Composite {
             m_list.add(item);
         } else {
             if ((m_mode == Mode.sources) && !m_statusBean.getOtherSiteRelationSources().isEmpty()) {
-                m_otherSitesList = ensureOtherSitesList();
+                m_otherSitesList = createList(Messages.get().key(Messages.GUI_RESOURCEINFO_OTHERSITES_LEGEND_0));
                 for (CmsResourceStatusRelationBean relationBean : m_statusBean.getOtherSiteRelationSources()) {
                     CmsListItemWidget itemWidget = new CmsListItemWidget(relationBean.getInfoBean());
                     CmsListItem item = new CmsListItem(itemWidget);
@@ -281,30 +278,32 @@ public class CmsResourceRelationView extends Composite {
         }
 
         m_list.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 5);
-        if (m_otherSitesList.getParent() != null) {
+        if (m_otherSitesList != null) {
             m_otherSitesList.truncate("RES_INFO", CmsPopup.DEFAULT_WIDTH - 5);
         }
 
     }
 
     /**
-     * Adds the panel containing relations from other sites.<p>
+     * Creates a relation item list wrapped in a field set and appends it to the dialog panel.<p>
      *
-     * @return the added CmsList
+     * @param label the list label
+     *
+     * @return the list
      */
-    private CmsList<CmsListItem> ensureOtherSitesList() {
+    private CmsList<CmsListItem> createList(String label) {
 
         CmsFieldSet fieldset = new CmsFieldSet();
         CmsScrollPanel scrollPanel = GWT.create(CmsScrollPanel.class);
-        m_scrollPanel = scrollPanel;
-        scrollPanel.add(m_otherSitesList);
+        CmsList<CmsListItem> list = new CmsList<CmsListItem>();
+        scrollPanel.add(list);
+        m_scrollPanels.add(scrollPanel);
         fieldset.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        scrollPanel.getElement().getStyle().setHeight(280, Style.Unit.PX);
-        fieldset.setLegend(Messages.get().key(Messages.GUI_RESOURCEINFO_OTHERSITES_LEGEND_0));
+        scrollPanel.getElement().getStyle().setHeight(CmsResourceInfoDialog.SCROLLPANEL_HEIGHT, Style.Unit.PX);
+        fieldset.setLegend(label);
         fieldset.add(scrollPanel);
         m_panel.add(fieldset);
-        return m_otherSitesList;
-
+        return list;
     }
 
     /**

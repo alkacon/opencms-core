@@ -28,7 +28,7 @@
 package org.opencms.gwt.client.util;
 
 import org.opencms.gwt.client.CmsEditableDataJSO;
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.Messages;
 import org.opencms.gwt.client.ui.CmsAlertDialog;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
@@ -1818,15 +1818,15 @@ public final class CmsDomUtil {
     }-*/;
 
     /**
-     * Calls {@link org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
+     * Calls {@link org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()} on the closest resizable ancestor.<p>
      *
      * @param parent the parent widget
      */
     public static void resizeAncestor(Widget parent) {
 
         while (parent != null) {
-            if (parent instanceof I_DescendantResizeHandler) {
-                ((I_DescendantResizeHandler)parent).onResizeDescendant();
+            if (parent instanceof I_CmsDescendantResizeHandler) {
+                ((I_CmsDescendantResizeHandler)parent).onResizeDescendant();
                 return;
             } else {
                 parent = parent.getParent();

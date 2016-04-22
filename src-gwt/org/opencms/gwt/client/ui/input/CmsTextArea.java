@@ -28,7 +28,7 @@
 package org.opencms.gwt.client.ui.input;
 
 import org.opencms.gwt.client.I_CmsHasInit;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsScrollPanel;
 import org.opencms.gwt.client.ui.I_CmsAutoHider;
 import org.opencms.gwt.client.ui.css.I_CmsInputLayoutBundle;
@@ -75,7 +75,7 @@ import com.google.gwt.user.client.ui.TextArea;
  */
 public class CmsTextArea extends Composite
 implements I_CmsFormWidget, I_CmsHasInit, HasValueChangeHandlers<String>, HasResizeHandlers, HasFocusHandlers,
-I_HasResizeOnShow {
+I_CmsHasResizeOnShow {
 
     /** The widget type identifier for this widget. */
     private static final String WIDGET_TYPE = "textarea";
@@ -294,7 +294,7 @@ I_HasResizeOnShow {
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

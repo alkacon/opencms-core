@@ -27,7 +27,7 @@
 
 package org.opencms.acacia.client.widgets;
 
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.location.CmsLocationPicker;
 
 import com.google.gwt.dom.client.Element;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
  * set in the configuration string of the xsd is shown.<p>
  *
  * */
-public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidget, I_HasResizeOnShow {
+public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidget, I_CmsHasResizeOnShow {
 
     /** Value of the activation. */
     private boolean m_active = true;
@@ -122,7 +122,7 @@ public class CmsLocationPickerWidget extends Composite implements I_CmsEditWidge
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

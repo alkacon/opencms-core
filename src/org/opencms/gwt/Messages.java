@@ -45,6 +45,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_DUPLICATE_PATH_0 = "ERR_ALIAS_DUPLICATE_PATH_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ALIAS_INVALID_PATH_0 = "ERR_ALIAS_INVALID_PATH_0";
 
@@ -53,7 +54,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INHERITANCE_GROUP_NOT_FOUND_1 = "ERR_INHERITANCE_GROUP_NOT_FOUND_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INSTANTIATION_FAILED_1 = "ERR_INSTANTIATION_FAILED_1";
 
@@ -116,6 +116,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0 = "GUI_QUICKLAUNCH_PAGE_NOT_FOUND_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_PERMALINK_0 = "GUI_STATUS_PERMALINK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_RESOURCE_ID_0 = "GUI_STATUS_RESOURCE_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_STATUS_STRUCTURE_ID_0 = "GUI_STATUS_STRUCTURE_ID_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_STATUS_TAB_FROM_CP_0 = "GUI_STATUS_TAB_FROM_CP_0";

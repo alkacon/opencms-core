@@ -31,8 +31,6 @@ import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.util.CmsUUID;
 
-import java.util.ArrayList;
-
 /**
  * Context menu entry for displaying resource information.<p>
  */
@@ -53,7 +51,7 @@ public class CmsResourceInfo implements I_CmsHasContextMenuCommand, I_CmsContext
      */
     public void execute(CmsUUID structureId, I_CmsContextMenuHandler handler, CmsContextMenuEntryBean bean) {
 
-        CmsResourceInfoDialog.load(structureId, true, new ArrayList<CmsUUID>(), null);
+        CmsResourceInfoDialog.load(structureId, true, null, null);
     }
 
     /**

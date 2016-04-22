@@ -33,6 +33,7 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -44,6 +45,9 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Resource state object. */
     CmsResourceState m_stateBean;
+
+    /** Additional resource attributes to display. */
+    private Map<String, String> m_additionalAttributes;
 
     /** Creation date.*/
     private String m_dateCreated;
@@ -110,6 +114,15 @@ public class CmsResourceStatusBean implements IsSerializable {
 
     /** Last modifier. */
     private String m_userLastModified;
+
+    /**
+     * Returns the additional resource attributes to display.<p>
+     * @return the additional resource attributes
+     */
+    public Map<String, String> getAdditionalAttributes() {
+
+        return m_additionalAttributes;
+    }
 
     /**
      * Gets the date created.
@@ -339,6 +352,16 @@ public class CmsResourceStatusBean implements IsSerializable {
     public String getUserLastModified() {
 
         return m_userLastModified;
+    }
+
+    /**
+     * Sets the additional resource attributes.<p>
+     *
+     * @param additionalAttributes the additional resource attributes
+     */
+    public void setAdditionalAttributes(Map<String, String> additionalAttributes) {
+
+        m_additionalAttributes = additionalAttributes;
     }
 
     /**

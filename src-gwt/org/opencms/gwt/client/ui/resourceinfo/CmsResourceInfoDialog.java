@@ -28,12 +28,12 @@
 package org.opencms.gwt.client.ui.resourceinfo;
 
 import org.opencms.gwt.client.CmsCoreProvider;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.CmsPopup;
 import org.opencms.gwt.client.ui.CmsTabContentWrapper;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceRelationView.Mode;
-import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.shared.CmsResourceStatusBean;
 import org.opencms.gwt.shared.CmsResourceStatusTabId;
 import org.opencms.util.CmsUUID;
@@ -56,8 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class CmsResourceInfoDialog extends CmsPopup {
 
+    /** The scroll panel height. */
+    protected static final int SCROLLPANEL_HEIGHT = 300;
+
     /** The tab panel. */
-    CmsTabbedPanel<Widget> m_tabPanel;
+    CmsTabbedPanel<CmsTabContentWrapper> m_tabPanel;
 
     /**
      * Creates the dialog for the given resource information.<p>
@@ -74,7 +77,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
         setWidth(610);
         removePadding();
 
-        final CmsTabbedPanel<Widget> tabPanel = new CmsTabbedPanel<Widget>();
+        final CmsTabbedPanel<CmsTabContentWrapper> tabPanel = new CmsTabbedPanel<CmsTabContentWrapper>();
         m_tabPanel = tabPanel;
         tabPanel.setAutoResize(true);
         tabPanel.setAutoResizeHeightDelta(45);
@@ -102,10 +105,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     relationViews.add(null);
                     break;
                 case tabSiblings:
-                    CmsDebugLog.consoleLog("case tabSiblings");
                     if (statusBean.getSiblings().size() > 0) {
-                        CmsDebugLog.consoleLog("more than one sibling");
-
                         CmsResourceRelationView siblings = new CmsResourceRelationView(statusBean, Mode.siblings);
                         setTabMinHeight(siblings);
                         tabPanel.add(new CmsTabContentWrapper(siblings), tabEntry.getValue());
@@ -117,15 +117,15 @@ public class CmsResourceInfoDialog extends CmsPopup {
             }
         }
         if (relationViews.get(0) != null) {
-            relationViews.get(0).onSelect();
+            relationViews.get(0).onResizeDescendant();
         }
         tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
             public void onSelection(SelectionEvent<Integer> event) {
 
-                int tab = event.getSelectedItem().intValue();
-                if (relationViews.get(tab) != null) {
-                    relationViews.get(tab).onSelect();
+                Widget tabContent = tabPanel.getWidget(event.getSelectedItem().intValue()).getWidget();
+                if (tabContent instanceof I_CmsDescendantResizeHandler) {
+                    ((I_CmsDescendantResizeHandler)tabContent).onResizeDescendant();
                 }
                 delayedResize();
             }
@@ -142,13 +142,13 @@ public class CmsResourceInfoDialog extends CmsPopup {
      *
      * @param structureId the structure id of the resource for which the resource info should be loaded
      * @param includeTargets true if relation targets should also be displayed
-     * @param targetIds the structure ids of additional resources to include with the relation targets
+     * @param detailContentId the structure id of the detail content if present
      * @param closeHandler the close handler for the dialog (may be null if no close handler is needed)
      */
     public static void load(
         final CmsUUID structureId,
         final boolean includeTargets,
-        final List<CmsUUID> targetIds,
+        final CmsUUID detailContentId,
         final CloseHandler<PopupPanel> closeHandler) {
 
         CmsRpcAction<CmsResourceStatusBean> action = new CmsRpcAction<CmsResourceStatusBean>() {
@@ -161,7 +161,7 @@ public class CmsResourceInfoDialog extends CmsPopup {
                     structureId,
                     CmsCoreProvider.get().getLocale(),
                     includeTargets,
-                    targetIds,
+                    detailContentId,
                     this);
             }
 

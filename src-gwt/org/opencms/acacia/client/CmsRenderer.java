@@ -37,7 +37,7 @@ import org.opencms.acacia.shared.CmsEntity;
 import org.opencms.acacia.shared.CmsEntityAttribute;
 import org.opencms.acacia.shared.CmsTabInfo;
 import org.opencms.acacia.shared.CmsType;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.CmsTabbedPanel;
 import org.opencms.gwt.client.ui.CmsTabbedPanel.CmsTabbedPanelStyle;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -96,8 +96,8 @@ public class CmsRenderer implements I_CmsEntityRenderer {
 
                     FlowPanel tab = m_tabsPanel.getWidget(event.getSelectedItem().intValue());
                     for (Widget w : tab) {
-                        if (w instanceof I_HasResizeOnShow) {
-                            ((I_HasResizeOnShow)w).resizeOnShow();
+                        if (w instanceof I_CmsHasResizeOnShow) {
+                            ((I_CmsHasResizeOnShow)w).resizeOnShow();
                         }
                     }
                 }

@@ -82,7 +82,7 @@ public final class CmsInlineEntityWidget extends Composite {
     /**
      * Flow panel with handling descendant resizes to reposition pop-up.<p>
      */
-    protected class FormPanel extends FlowPanel implements org.opencms.gwt.client.I_DescendantResizeHandler {
+    protected class FormPanel extends FlowPanel implements org.opencms.gwt.client.I_CmsDescendantResizeHandler {
 
         /**
          * Constructor.<p>
@@ -92,7 +92,7 @@ public final class CmsInlineEntityWidget extends Composite {
         }
 
         /**
-         * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
+         * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
          */
         public void onResizeDescendant() {
 

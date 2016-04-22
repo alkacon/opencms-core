@@ -27,7 +27,7 @@
 
 package org.opencms.gwt.client.ui;
 
-import org.opencms.gwt.client.I_DescendantResizeHandler;
+import org.opencms.gwt.client.I_CmsDescendantResizeHandler;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsDebugLog;
 import org.opencms.gwt.client.util.CmsPositionBean;
@@ -53,7 +53,7 @@ import com.google.gwt.user.client.ui.VerticalScrollbar;
  * A custom scroll bar to be used with {@link org.opencms.gwt.client.ui.CmsScrollPanel}.<p>
  */
 public class CmsScrollBar extends FocusPanel
-implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
+implements I_CmsDescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
 
     /**
      * The timer used to continue to shift the knob as the user holds down one of
@@ -399,7 +399,7 @@ implements I_DescendantResizeHandler, HasValue<Integer>, VerticalScrollbar {
     }
 
     /**
-     * @see org.opencms.gwt.client.I_DescendantResizeHandler#onResizeDescendant()
+     * @see org.opencms.gwt.client.I_CmsDescendantResizeHandler#onResizeDescendant()
      */
     public void onResizeDescendant() {
 

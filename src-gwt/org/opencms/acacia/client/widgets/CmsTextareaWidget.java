@@ -28,7 +28,7 @@
 package org.opencms.acacia.client.widgets;
 
 import org.opencms.acacia.client.css.I_CmsWidgetsLayoutBundle;
-import org.opencms.gwt.client.I_HasResizeOnShow;
+import org.opencms.gwt.client.I_CmsHasResizeOnShow;
 import org.opencms.gwt.client.ui.input.CmsTextArea;
 import org.opencms.util.CmsStringUtil;
 
@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Composite;
  * Provides a display only widget, for use on a widget dialog.<p>
  *
  * */
-public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_HasResizeOnShow {
+public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, HasResizeHandlers, I_CmsHasResizeOnShow {
 
     /** Default number of rows to display. */
     private static final int DEFAULT_ROWS_NUMBER = 5;
@@ -182,7 +182,7 @@ public class CmsTextareaWidget extends Composite implements I_CmsEditWidget, Has
     }
 
     /**
-     * @see org.opencms.gwt.client.I_HasResizeOnShow#resizeOnShow()
+     * @see org.opencms.gwt.client.I_CmsHasResizeOnShow#resizeOnShow()
      */
     public void resizeOnShow() {
 

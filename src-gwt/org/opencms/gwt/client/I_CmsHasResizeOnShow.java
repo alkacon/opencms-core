@@ -32,7 +32,7 @@ package org.opencms.gwt.client;
  *
  * @since 9.5.0
  */
-public interface I_HasResizeOnShow {
+public interface I_CmsHasResizeOnShow {
 
     /**
      * Adjusts widget's size once it's visible.<p>

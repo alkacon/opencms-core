@@ -57,6 +57,7 @@ import org.opencms.relations.CmsRelationType;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.search.galleries.CmsGallerySearch;
 import org.opencms.search.galleries.CmsGallerySearchResult;
+import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -108,15 +109,17 @@ public class CmsDefaultResourceStatusProvider {
         CmsRelationTargetListBean result = new CmsRelationTargetListBean();
         CmsResource content = cms.readResource(source, CmsResourceFilter.ALL);
         boolean isContainerPage = CmsResourceTypeXmlContainerPage.isContainerPage(content);
-        for (CmsUUID structureId : additionalIds) {
-            try {
-                CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
-                result.add(res);
-                if (res.getState().isChanged() && cancelIfChanged) {
-                    return result;
+        if (additionalIds != null) {
+            for (CmsUUID structureId : additionalIds) {
+                try {
+                    CmsResource res = cms.readResource(structureId, CmsResourceFilter.ALL);
+                    result.add(res);
+                    if (res.getState().isChanged() && cancelIfChanged) {
+                        return result;
+                    }
+                } catch (CmsException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
-            } catch (CmsException e) {
-                LOG.error(e.getLocalizedMessage(), e);
             }
         }
         List<CmsRelation> relations = cms.readRelations(CmsRelationFilter.relationsFromStructureId(source));
@@ -149,6 +152,7 @@ public class CmsDefaultResourceStatusProvider {
      * @param structureId the structure id of the resource for which we want the information
      * @param contentLocale the content locale
      * @param includeTargets true if relation targets should be included
+     * @param detailContentId the structure id of the detail content if present
      * @param additionalStructureIds structure ids of additional resources to include with the relation targets
      *
      * @return the resource status information
@@ -159,6 +163,7 @@ public class CmsDefaultResourceStatusProvider {
         CmsUUID structureId,
         String contentLocale,
         boolean includeTargets,
+        CmsUUID detailContentId,
         List<CmsUUID> additionalStructureIds) throws CmsException {
 
         Locale locale = OpenCms.getWorkplaceManager().getWorkplaceLocale(cms);
@@ -237,6 +242,20 @@ public class CmsDefaultResourceStatusProvider {
             }
             result.setLocales(localeStrings);
         }
+        Map<String, String> additionalAttributes = new LinkedHashMap<String, String>();
+        additionalAttributes.put(
+            Messages.get().getBundle(locale).key(Messages.GUI_STATUS_PERMALINK_0),
+            OpenCms.getLinkManager().getPermalink(cms, cms.getSitePath(resource), detailContentId));
+
+        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR)) {
+            additionalAttributes.put(
+                Messages.get().getBundle(locale).key(Messages.GUI_STATUS_STRUCTURE_ID_0),
+                resource.getStructureId().toString());
+            additionalAttributes.put(
+                Messages.get().getBundle(locale).key(Messages.GUI_STATUS_RESOURCE_ID_0),
+                resource.getResourceId().toString());
+        }
+        result.setAdditionalAttributes(additionalAttributes);
 
         List<CmsRelation> relations = cms.readRelations(
             CmsRelationFilter.relationsToStructureId(resource.getStructureId()));
