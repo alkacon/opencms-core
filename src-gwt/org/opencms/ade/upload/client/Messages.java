@@ -61,6 +61,9 @@ public final class Messages {
     public static final String GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0 = "GUI_UPLOAD_DRAG_AND_DROP_ENABLED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_FILE_EXISTING_DELETED_1 = "GUI_UPLOAD_FILE_EXISTING_DELETED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_FILE_INVALID_NAME_2 = "GUI_UPLOAD_FILE_INVALID_NAME_2";
 
     /** Message constant for key in the resource bundle. */
@@ -77,6 +80,9 @@ public final class Messages {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_HOOK_DIALOG_TITLE_0 = "GUI_UPLOAD_HOOK_DIALOG_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UPLOAD_INFO_INVALID_0 = "GUI_UPLOAD_INFO_INVALID_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOAD_INFO_OVERWRITE_0 = "GUI_UPLOAD_INFO_OVERWRITE_0";

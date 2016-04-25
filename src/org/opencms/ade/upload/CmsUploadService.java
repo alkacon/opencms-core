@@ -28,12 +28,14 @@
 package org.opencms.ade.upload;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.gwt.CmsGwtService;
 import org.opencms.gwt.shared.CmsUploadFileBean;
 import org.opencms.gwt.shared.CmsUploadProgessInfo;
 import org.opencms.gwt.shared.CmsUploadProgessInfo.UPLOAD_STATE;
 import org.opencms.gwt.shared.rpc.I_CmsUploadService;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -75,12 +77,13 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
     }
 
     /**
-     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#checkUploadFiles(java.util.List, java.lang.String)
+     * @see org.opencms.gwt.shared.rpc.I_CmsUploadService#checkUploadFiles(java.util.List, java.lang.String, boolean)
      */
-    public CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder) {
+    public CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder, boolean isRootPath) {
 
         List<String> existingResourceNames = new ArrayList<String>();
         List<String> invalidFileNames = new ArrayList<String>();
+        List<String> existingDeleted = new ArrayList<String>();
         boolean isActive = false;
 
         // check if there is an active upload
@@ -92,8 +95,12 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
                 try {
                     Streams.checkFileName(fileName);
                     String newResName = CmsUploadBean.getNewResourceName(getCmsObject(), fileName, targetFolder);
-                    if (existsResource(newResName)) {
-                        existingResourceNames.add(fileName);
+                    if (existsResource(newResName, isRootPath)) {
+                        if (isDeletedResource(newResName, isRootPath)) {
+                            existingDeleted.add(fileName);
+                        } else {
+                            existingResourceNames.add(fileName);
+                        }
                     }
                 } catch (InvalidFileNameException e) {
                     invalidFileNames.add(fileName);
@@ -102,7 +109,7 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
         } else {
             isActive = true;
         }
-        return new CmsUploadFileBean(existingResourceNames, invalidFileNames, isActive);
+        return new CmsUploadFileBean(existingResourceNames, invalidFileNames, existingDeleted, isActive);
     }
 
     /**
@@ -126,24 +133,59 @@ public class CmsUploadService extends CmsGwtService implements I_CmsUploadServic
      * Checks if a resource already exists for the given path.<p>
      *
      * @param path the path
+     * @param rootPath in case the path is a root path
      *
      * @return true if a resource already exists
      */
-    private boolean existsResource(String path) {
+    private boolean existsResource(String path, boolean rootPath) {
 
         CmsObject cms = getCmsObject();
-        if (cms.existsResource(path, CmsResourceFilter.ALL)) {
-            return true;
-        }
-        String origSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot("");
+        if (rootPath) {
+            String origSiteRoot = cms.getRequestContext().getSiteRoot();
+            try {
+                cms.getRequestContext().setSiteRoot("");
+                if (cms.existsResource(path, CmsResourceFilter.ALL)) {
+                    return true;
+                }
+            } finally {
+                cms.getRequestContext().setSiteRoot(origSiteRoot);
+            }
+        } else {
             if (cms.existsResource(path, CmsResourceFilter.ALL)) {
                 return true;
             }
-        } finally {
-            cms.getRequestContext().setSiteRoot(origSiteRoot);
         }
         return false;
+    }
+
+    /**
+     * Checks if a the resource exists but is marked as deleted.<p>
+     *
+     * @param path the path
+     * @param rootPath in case the path is a root path
+     *
+     * @return true is the resource exists but is marked as deleted
+     */
+    private boolean isDeletedResource(String path, boolean rootPath) {
+
+        CmsObject cms = getCmsObject();
+        CmsResource res = null;
+        try {
+            if (rootPath) {
+                String origSiteRoot = cms.getRequestContext().getSiteRoot();
+                try {
+                    cms.getRequestContext().setSiteRoot("");
+                    res = cms.readResource(path, CmsResourceFilter.ALL);
+
+                } finally {
+                    cms.getRequestContext().setSiteRoot(origSiteRoot);
+                }
+            } else {
+                res = cms.readResource(path, CmsResourceFilter.ALL);
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
+        return (res != null) && res.getState().isDeleted();
     }
 }

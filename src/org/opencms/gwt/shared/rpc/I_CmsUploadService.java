@@ -61,11 +61,12 @@ public interface I_CmsUploadService extends RemoteService {
      *
      * @param fileNames the filenames to check
      * @param targetFolder the folder to check
+     * @param isRootPath <code>true</code> in case the target folder path is a root path
      *
      * @return a {@link CmsUploadFileBean} that holds the list of resource names (without the path)
      * that already exist in the VFS and a list of filenames that are invalid
      */
-    CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder);
+    CmsUploadFileBean checkUploadFiles(List<String> fileNames, String targetFolder, boolean isRootPath);
 
     /**
      * Returns the upload progress information.<p>

@@ -60,9 +60,14 @@ public interface I_CmsUploadServiceAsync {
      *
      * @param fileNames the filenames to check
      * @param targetFolder the folder to check
+     * @param isRootPath <code>true</code> in case the target folder path is a root path
      * @param callback the async callback
      */
-    void checkUploadFiles(List<String> fileNames, String targetFolder, AsyncCallback<CmsUploadFileBean> callback);
+    void checkUploadFiles(
+        List<String> fileNames,
+        String targetFolder,
+        boolean isRootPath,
+        AsyncCallback<CmsUploadFileBean> callback);
 
     /**
      * Returns the upload progress information.<p>
