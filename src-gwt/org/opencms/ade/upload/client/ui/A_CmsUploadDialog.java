@@ -123,6 +123,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     /** The scroll panel. */
     protected CmsScrollPanel m_scrollPanel;
 
+    /** True if the target folder is given as a root path. */
+    boolean m_isTargetRootPath;
+
     /** The uploaded file names. */
     protected List<String> m_uploadedFiles;
 
@@ -170,9 +173,6 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
     /** The close handler registration. */
     private HandlerRegistration m_handlerReg;
-
-    /** True if the target folder is given as a root path. */
-    private boolean m_isTargetRootPath;
 
     /** Stores the list items of all added files. */
     private Map<String, CmsListItem> m_listItems;
@@ -567,7 +567,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             Collections.sort(sortedFileNames, String.CASE_INSENSITIVE_ORDER);
             for (String filename : sortedFileNames) {
                 CmsFileInfo file = m_allFiles.get(filename);
-                addFileToList(file, false, isTooLarge(file));
+                addFileToList(file, false, false, isTooLarge(file));
             }
             doResize();
         }
@@ -807,6 +807,17 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
     }
 
     /**
+    <<<<<<< branch_10_0_x
+    =======
+     * Required to be called when the content has changed.<p>
+     */
+    protected void onResize() {
+
+        m_scrollPanel.onResize();
+    }
+
+    /**
+    >>>>>>> 6a741b3 Improved error handling in case of deleted resources would be overwritten by uploaded files.
      * Decides how to go on depending on the information of the server response.<p>
      *
      * Shows a warning if there is another upload process active (inside the same session).<p>
@@ -825,7 +836,9 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             m_okButton.enable();
             CmsNotification.get().send(Type.WARNING, Messages.get().key(Messages.GUI_UPLOAD_NOTIFICATION_RUNNING_0));
         } else {
-            if (!result.getExistingResourceNames().isEmpty() || !result.getInvalidFileNames().isEmpty()) {
+            if (!result.getExistingResourceNames().isEmpty()
+                || !result.getInvalidFileNames().isEmpty()
+                || !result.getExistingDeletedFileNames().isEmpty()) {
                 showOverwriteDialog(result);
             } else {
                 commit();
@@ -1014,9 +1027,10 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
      *
      * @param file the file to add
      * @param invalid signals if the filename is invalid
+     * @param existingDeleted in case of existing files marked as deleted
      * @param isTooLarge signals if the file size limit is exceeded
      */
-    private void addFileToList(final CmsFileInfo file, boolean invalid, boolean isTooLarge) {
+    private void addFileToList(final CmsFileInfo file, boolean invalid, boolean existingDeleted, boolean isTooLarge) {
 
         CmsListInfoBean infoBean = createInfoBean(file);
         CmsListItemWidget listItemWidget = new CmsListItemWidget(infoBean);
@@ -1025,7 +1039,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
         CmsCheckBox check = new CmsCheckBox();
         check.setChecked(false);
-        if (!invalid && !isTooLarge) {
+        if (!invalid && !isTooLarge && !existingDeleted) {
             if (file.getFileSize() == 0) {
                 check.setChecked(false);
             }
@@ -1038,6 +1052,12 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
             } else {
                 addClickHandlerToCheckBox(check, null, file);
             }
+        } else if (existingDeleted) {
+            // is invalid
+            String message = Messages.get().key(Messages.GUI_UPLOAD_FILE_EXISTING_DELETED_1, file.getFileName());
+            check.disable(message);
+            listItemWidget.setBackground(Background.RED);
+            listItemWidget.setSubtitleLabel(message);
         } else if (isTooLarge) {
             String message = getFileSizeTooLargeMessage(file);
             check.disable(message);
@@ -1107,7 +1127,7 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
 
                 List<String> filesToCheck = new ArrayList<String>(getFilesToUpload().keySet());
                 filesToCheck.removeAll(getFilesToUnzip(false));
-                getUploadService().checkUploadFiles(filesToCheck, getTargetFolder(), this);
+                getUploadService().checkUploadFiles(filesToCheck, getTargetFolder(), m_isTargetRootPath, this);
             }
 
             /**
@@ -1315,7 +1335,11 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         // update the dialog
         m_selectionDone = true;
         m_okButton.enable();
-        displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
+        if (infoBean.getInvalidFileNames().isEmpty() && infoBean.getExistingDeletedFileNames().isEmpty()) {
+            displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_OVERWRITE_0), true);
+        } else {
+            displayDialogInfo(Messages.get().key(Messages.GUI_UPLOAD_INFO_INVALID_0), true);
+        }
         if (m_uploadButton instanceof UIObject) {
             ((UIObject)m_uploadButton).getElement().getStyle().setDisplay(Display.NONE);
         }
@@ -1326,14 +1350,22 @@ public abstract class A_CmsUploadDialog extends CmsPopup implements I_CmsUploadD
         List<String> existings = new ArrayList<String>(infoBean.getExistingResourceNames());
         Collections.sort(existings, String.CASE_INSENSITIVE_ORDER);
         for (String filename : existings) {
-            addFileToList(m_filesToUpload.get(filename), false, false);
+            addFileToList(m_filesToUpload.get(filename), false, false, false);
         }
 
         // handle the invalid files
         List<String> invalids = new ArrayList<String>(infoBean.getInvalidFileNames());
         Collections.sort(invalids, String.CASE_INSENSITIVE_ORDER);
         for (String filename : invalids) {
-            addFileToList(m_filesToUpload.get(filename), true, false);
+            addFileToList(m_filesToUpload.get(filename), true, false, false);
+            m_filesToUpload.remove(filename);
+        }
+
+        // handle the invalid files
+        List<String> existingDeleted = new ArrayList<String>(infoBean.getExistingDeletedFileNames());
+        Collections.sort(existingDeleted, String.CASE_INSENSITIVE_ORDER);
+        for (String filename : existingDeleted) {
+            addFileToList(m_filesToUpload.get(filename), false, true, false);
             m_filesToUpload.remove(filename);
         }
 

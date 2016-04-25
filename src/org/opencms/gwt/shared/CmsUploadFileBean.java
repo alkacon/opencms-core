@@ -47,6 +47,9 @@ public class CmsUploadFileBean implements IsSerializable {
     /** The list of filenames that are invalid. */
     private List<String> m_invalidFileNames;
 
+    /** The list of filenames that point to existing but deleted files. */
+    private List<String> m_existingDeletedFileNames;
+
     /**
      * The default constructor.<p>
      */
@@ -60,13 +63,29 @@ public class CmsUploadFileBean implements IsSerializable {
      *
      * @param existingFileNames list of filenames that already exist on the VFS
      * @param invalidFileNames list of filenames that are invalid
+     * @param existingDeleted the list of filenames that point to existing but deleted files
      * @param active the upload active flag
      */
-    public CmsUploadFileBean(List<String> existingFileNames, List<String> invalidFileNames, boolean active) {
+    public CmsUploadFileBean(
+        List<String> existingFileNames,
+        List<String> invalidFileNames,
+        List<String> existingDeleted,
+        boolean active) {
 
         m_existingFileNames = existingFileNames;
         m_invalidFileNames = invalidFileNames;
+        m_existingDeletedFileNames = existingDeleted;
         m_active = active;
+    }
+
+    /**
+     * Returns the list of filenames that point to existing but deleted files.<p>
+     *
+     * @return the list of filenames that point to existing but deleted files
+     */
+    public List<String> getExistingDeletedFileNames() {
+
+        return m_existingDeletedFileNames;
     }
 
     /**
@@ -107,6 +126,16 @@ public class CmsUploadFileBean implements IsSerializable {
     public void setActive(boolean active) {
 
         m_active = active;
+    }
+
+    /**
+     * Sets the list of filenames that point to existing but deleted files.<p>
+     *
+     * @param existingDeletedFileNames list of filenames that point to existing but deleted files
+     */
+    public void setExistingDeletedFileNames(List<String> existingDeletedFileNames) {
+
+        m_existingDeletedFileNames = existingDeletedFileNames;
     }
 
     /**
