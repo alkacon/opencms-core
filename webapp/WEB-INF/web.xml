@@ -28,6 +28,21 @@
 		the 500 error from "/opencms-errorhandler/system/handler/handle500.html" 
 		to "/mycms-errorhandler/system/handler/handle500.html" -->
 
+	<filter>
+		<filter-name>OpenCmsUrlRewriter</filter-name>
+		<filter-class>org.opencms.main.OpenCmsUrlServletFilter</filter-class>
+		<!-- Use the init-param to prevent rewriting for URI that start with the provided prefixes
+		<init-param>
+			<param-name>additionalExcludePrefixes</param-name>
+			<param-value>/my-servlet-1|/my-servlet-2</param-value>
+		</init-param>
+		 -->
+	</filter>
+	<filter-mapping>
+		<filter-name>OpenCmsUrlRewriter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<context-param>
 		<param-name>OpenCmsServlet</param-name>
 		<param-value>/opencms/*</param-value>

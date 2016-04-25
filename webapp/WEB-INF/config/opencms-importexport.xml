@@ -73,7 +73,7 @@
 		</defaultsuffixes>
 		<rendersettings>
 			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
-			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>
+			<vfs-prefix>${CONTEXT_NAME}</vfs-prefix>
 			<userelativelinks>false</userelativelinks>
 			<exporturl>http://127.0.0.1:8080${CONTEXT_NAME}/handle404</exporturl>
 			<plainoptimization>true</plainoptimization>
