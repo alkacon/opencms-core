@@ -28,9 +28,7 @@
 package org.opencms.main;
 
 import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestProperties;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -38,11 +36,11 @@ import junit.framework.TestSuite;
 public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
 
     /** Servlet context. */
-    static String SERVLETCONTEXT;
+    static String SERVLETCONTEXT = "/opencms";
     /** Export path. */
-    static String EXPORTPATH;
+    static String EXPORTPATH = "/export";
     /** Servlet name prefixed with /. */
-    static String SERVLETPATH;
+    static String SERVLETPATH = "/opencms";
     /** resources folder. */
     private static String RESOURCES_FOLDER = "/resources/";
     /** VAADIN folder. */
@@ -51,6 +49,14 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
     private static String WEBDAV_FOLDER = "/webdav";
     /** workplace folder. */
     private static String WORKPLACE_FOLDER = "/workplace";
+    /** The default exclude prefixes. */
+    private static String[] DEFAULT_EXCLUDE_PREFIXES = new String[] {
+        EXPORTPATH,
+        SERVLETPATH,
+        RESOURCES_FOLDER,
+        VAADIN_FOLDER,
+        WEBDAV_FOLDER,
+        WORKPLACE_FOLDER};
     /** Test url prefix. */
     private static String TESTPREFIX_ONE = "/test1";
     /** Test url prefix. */
@@ -77,33 +83,13 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
      */
     public static Test suite() {
 
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-
         TestSuite suite = new TestSuite();
         suite.setName(TestOpenCmsUrlServletFilter.class.getName());
 
         suite.addTest(new TestOpenCmsUrlServletFilter("testDefaultRegex"));
         suite.addTest(new TestOpenCmsUrlServletFilter("testRegexWithConfiguration"));
 
-        TestSetup wrapper = new TestSetup(suite) {
-
-            @Override
-            protected void setUp() {
-
-                setupOpenCms("simpletest", "/");
-                SERVLETCONTEXT = OpenCms.getSystemInfo().getContextPath();
-                EXPORTPATH = "/" + OpenCms.getStaticExportManager().getExportPathForConfiguration();
-                SERVLETPATH = OpenCms.getSystemInfo().getServletPath() + "/";
-            }
-
-            @Override
-            protected void tearDown() {
-
-                removeOpenCms();
-            }
-        };
-
-        return wrapper;
+        return suite;
     }
 
     /**
@@ -111,10 +97,10 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
      */
     public void testDefaultRegex() {
 
-        echo("Testing the Regex for URL rewriting via the servlet filter");
+        System.out.println("Testing the Regex for URL rewriting via the servlet filter");
 
         // Test
-        String defaultRegex = OpenCmsUrlServletFilter.createRegex(null);
+        String defaultRegex = OpenCmsUrlServletFilter.createRegex(SERVLETCONTEXT, DEFAULT_EXCLUDE_PREFIXES, null);
 
         // default prefixes
         matches(defaultRegex, SERVLETPATH, true);
@@ -136,10 +122,13 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
      */
     public void testRegexWithConfiguration() {
 
-        echo("Testing the Regex for URL rewriting via the servlet filter with extra configuration");
+        System.out.println("Testing the Regex for URL rewriting via the servlet filter with extra configuration");
 
         // Test
-        String defaultRegex = OpenCmsUrlServletFilter.createRegex(ADDITIONAL_CONFIG);
+        String defaultRegex = OpenCmsUrlServletFilter.createRegex(
+            SERVLETCONTEXT,
+            DEFAULT_EXCLUDE_PREFIXES,
+            ADDITIONAL_CONFIG);
 
         // default prefixes
         matches(defaultRegex, SERVLETPATH, true);
@@ -164,7 +153,8 @@ public class TestOpenCmsUrlServletFilter extends OpenCmsTestCase {
     private void matches(String regex, String prefix, boolean shouldMatch) {
 
         String url = SERVLETCONTEXT + prefix;
-        echo("Testing for url (with context): " + url + " (should " + (shouldMatch ? "" : " not ") + "match).");
+        System.out.println(
+            "Testing for url (with context): " + url + " (should " + (shouldMatch ? "" : " not ") + "match).");
         if (shouldMatch) {
             assertTrue("Folder " + prefix + " should be matched.", url.matches(regex));
         } else {
