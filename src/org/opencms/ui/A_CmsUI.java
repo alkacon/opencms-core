@@ -28,15 +28,24 @@
 package org.opencms.ui;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsUIServlet;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
 import org.opencms.ui.components.extensions.CmsWindowExtension;
+import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.ui.util.CmsDisplayType;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
+
+import javax.servlet.http.HttpSession;
 
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -89,6 +98,34 @@ public abstract class A_CmsUI extends UI {
     }
 
     /**
+     * Changes to the given project. Will update session and workplace settings.<p>
+     *
+     * @param project the project to change to
+     */
+    public void changeProject(CmsProject project) {
+
+        if (!getCmsObject().getRequestContext().getCurrentProject().equals(project)) {
+            getCmsObject().getRequestContext().setCurrentProject(project);
+            getWorkplaceSettings().setProject(project.getUuid());
+            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+        }
+    }
+
+    /**
+     * Changes to the given site. Will update session and workplace settings.<p>
+     *
+     * @param siteRoot the site to change to
+     */
+    public void changeSite(String siteRoot) {
+
+        if (!getCmsObject().getRequestContext().getSiteRoot().equals(siteRoot)) {
+            getCmsObject().getRequestContext().setSiteRoot(siteRoot);
+            getWorkplaceSettings().setSite(siteRoot);
+            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
+        }
+    }
+
+    /**
      * Gets the display type from the time when the UI was initialized.<p>
      *
      * @return the display type
@@ -99,6 +136,16 @@ public abstract class A_CmsUI extends UI {
     }
 
     /**
+     * Returns the HTTP session.<p>
+     *
+     * @return the HTTP session
+     */
+    public HttpSession getHttpSession() {
+
+        return ((WrappedHttpSession)getSession().getSession()).getHttpSession();
+    }
+
+    /**
      * Gets the stored folder.<p>
      *
      * @return the stored folder
@@ -106,6 +153,24 @@ public abstract class A_CmsUI extends UI {
     public CmsResource getStoredFolder() {
 
         return (CmsResource)(getSession().getAttribute("WP_FOLDER"));
+    }
+
+    /**
+     * Returns the workplace settings.<p>
+     *
+     * @return the workplace settings
+     */
+    public CmsWorkplaceSettings getWorkplaceSettings() {
+
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getSession().getSession().getAttribute(
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            settings = CmsLoginHelper.initSiteAndProject(getCmsObject());
+            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
+                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
+                settings);
+        }
+        return settings;
     }
 
     /**

@@ -57,6 +57,13 @@ public interface I_CmsContextMenuHandler {
     Map<String, I_CmsContextMenuCommand> getContextMenuCommands();
 
     /**
+     * Returns the context type.<p>
+     *
+     * @return the context type
+     */
+    String getContextType();
+
+    /**
      * Returns the editor handler.<p>
      *
      * @return the editor handler
@@ -69,6 +76,14 @@ public interface I_CmsContextMenuHandler {
      * @param targetUri the target URI
      */
     void leavePage(String targetUri);
+
+    /**
+     * Called when site and or project have been changed.<p>
+     *
+     * @param sitePath the site path to the target resource
+     * @param serverLink the server link to the resource
+     */
+    void onSiteOrProjectChange(String sitePath, String serverLink);
 
     /**
      * Reloads the resource edited.<p>

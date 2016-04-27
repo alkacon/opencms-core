@@ -28,7 +28,6 @@
 package org.opencms.ui.apps;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
@@ -44,17 +43,12 @@ import org.opencms.ui.components.I_CmsWindowCloseListener;
 import org.opencms.ui.components.extensions.CmsHistoryExtension;
 import org.opencms.ui.components.extensions.CmsPollServerExtension;
 import org.opencms.ui.components.extensions.CmsWindowCloseExtension;
-import org.opencms.ui.login.CmsLoginHelper;
 import org.opencms.util.CmsExpiringValue;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.logging.Log;
@@ -70,8 +64,6 @@ import com.vaadin.server.Page;
 import com.vaadin.server.Page.BrowserWindowResizeEvent;
 import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.WrappedHttpSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
@@ -202,34 +194,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Changes to the given project. Will update session and workplace settings.<p>
-     *
-     * @param project the project to change to
-     */
-    public void changeProject(CmsProject project) {
-
-        if (!getCmsObject().getRequestContext().getCurrentProject().equals(project)) {
-            getCmsObject().getRequestContext().setCurrentProject(project);
-            getWorkplaceSettings().setProject(project.getUuid());
-            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
-        }
-    }
-
-    /**
-     * Changes to the given site. Will update session and workplace settings.<p>
-     *
-     * @param siteRoot the site to change to
-     */
-    public void changeSite(String siteRoot) {
-
-        if (!getCmsObject().getRequestContext().getSiteRoot().equals(siteRoot)) {
-            getCmsObject().getRequestContext().setSiteRoot(siteRoot);
-            getWorkplaceSettings().setSite(siteRoot);
-            OpenCms.getSessionManager().updateSessionInfo(getCmsObject(), getHttpSession());
-        }
-    }
-
-    /**
      * Checks for new broadcasts.<p>
      */
     public void checkBroadcasts() {
@@ -328,16 +292,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
     }
 
     /**
-     * Returns the HTTP session.<p>
-     *
-     * @return the HTTP session
-     */
-    public HttpSession getHttpSession() {
-
-        return ((WrappedHttpSession)getSession().getSession()).getHttpSession();
-    }
-
-    /**
      * @see com.vaadin.ui.AbstractComponent#getLocale()
      */
     @Override
@@ -387,24 +341,6 @@ implements ViewDisplay, ViewProvider, ViewChangeListener, I_CmsWindowCloseListen
 
         NavigationState state = new NavigationState(viewAndParameters);
         return state.getViewName();
-    }
-
-    /**
-     * Returns the workplace settings.<p>
-     *
-     * @return the workplace settings
-     */
-    public CmsWorkplaceSettings getWorkplaceSettings() {
-
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getSession().getSession().getAttribute(
-            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) {
-            settings = CmsLoginHelper.initSiteAndProject(getCmsObject());
-            VaadinService.getCurrentRequest().getWrappedSession().setAttribute(
-                CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS,
-                settings);
-        }
-        return settings;
     }
 
     /**

@@ -147,14 +147,11 @@ public class CmsDefaultMenuItemProvider implements I_CmsContextMenuItemProvider 
             new CmsContextMenuActionItem(new CmsPropertiesDialogAction(), null, 2500, 0),
 
             // toolbar menu entries
-            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 100, 0),
-            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 300, 0),
+            new CmsContextMenuActionItem(new CmsProjectDialogAction(), null, 100, 0),
+            new CmsContextMenuActionItem(new CmsPreferencesDialogAction(), null, 300, 0),
             new CmsContextMenuActionItem(new CmsPublishQueueDialogAction(), null, 500, 0),
-            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0),
-            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 1000, 0)
-
-        );
-
+            new CmsContextMenuActionItem(new CmsClassicWorkplaceAction(), null, 700, 0),
+            new CmsContextMenuActionItem(new CmsAboutDialogAction(), null, 900, 0));
     }
 
 }

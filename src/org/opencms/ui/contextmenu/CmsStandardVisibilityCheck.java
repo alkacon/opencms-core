@@ -33,7 +33,6 @@ import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.file;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.folder;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.haseditor;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.inproject;
-import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mainmenu;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.mylock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.noinheritedlock;
 import static org.opencms.ui.contextmenu.CmsVisibilityCheckFlag.nootherlock;
@@ -143,9 +142,6 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         notonline,
         notdeleted,
         inproject);
-
-    /** Visibility check for main menu entries. */
-    public static final CmsStandardVisibilityCheck MAIN_MENU = new CmsStandardVisibilityCheck(mainmenu);
 
     /** Visibility check used for copy to project dialog. */
     public static final CmsStandardVisibilityCheck OTHER_PROJECT = new CmsStandardVisibilityCheck(
@@ -273,11 +269,6 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
         }
 
         if ((resource != null)) {
-            // in case of main menu entries, the given resource is null
-            if (flag(mainmenu)) {
-                return VISIBILITY_INVISIBLE;
-            }
-
             CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
             if (flag(file) && !resource.isFile()) {
                 return VISIBILITY_INVISIBLE;
@@ -427,9 +418,7 @@ public final class CmsStandardVisibilityCheck extends A_CmsSimpleVisibilityCheck
             }
 
         } else {
-            if (!flag(mainmenu)) {
-                return VISIBILITY_INVISIBLE;
-            }
+            return VISIBILITY_INVISIBLE;
         }
         if (inActiveKey != null) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(inActiveKey).prioritize(prioritize);

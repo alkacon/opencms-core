@@ -56,15 +56,17 @@ public class CmsExplorerDialogContext extends A_CmsDialogContext implements I_Cm
     /**
      * Creates a new instance.<p>
      *
+     * @param contextType the context type
      * @param appContext the app context
      * @param explorer the explorer app instance
      * @param resources the list of selected resources
      */
     public CmsExplorerDialogContext(
+        ContextType contextType,
         I_CmsAppUIContext appContext,
         CmsFileExplorer explorer,
         List<CmsResource> resources) {
-        super(appContext, resources);
+        super(contextType, appContext, resources);
         m_explorer = explorer;
     }
 

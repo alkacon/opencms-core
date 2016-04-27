@@ -113,7 +113,7 @@ class CmsContextMenuOverlay extends VOverlay {
     }
 
     /**
-     * @see com.vaadin.client.ui.VOverlay#hide()
+     * Hides the overlay.<p>
      */
     @Override
     public void hide() {

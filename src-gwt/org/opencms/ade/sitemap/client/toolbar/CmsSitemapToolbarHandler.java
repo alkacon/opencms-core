@@ -38,6 +38,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -141,6 +142,14 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+     */
+    public String getContextType() {
+
+        return CmsGwtConstants.CONTEXT_TYPE_SITEMAP_TOOLBAR;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
      */
     public I_CmsContentEditorHandler getEditorHandler() {
@@ -153,7 +162,7 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
      */
     public void leavePage(String targetUri) {
 
-        Window.Location.replace(targetUri);
+        Window.Location.assign(targetUri);
     }
 
     /**
@@ -162,6 +171,14 @@ public class CmsSitemapToolbarHandler extends A_CmsToolbarHandler {
     public void loadContextMenu(CmsUUID structureId, AdeContext context) {
 
         CmsSitemapView.getInstance().getToolbar().getContextMenuButton().showMenu(m_contextMenuEntries);
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+     */
+    public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+        CmsSitemapView.getInstance().getController().openSiteMap(sitePath);
     }
 
     /**

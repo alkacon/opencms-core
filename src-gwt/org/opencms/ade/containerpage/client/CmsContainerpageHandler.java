@@ -429,6 +429,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+     */
+    public String getContextType() {
+
+        return CmsGwtConstants.CONTEXT_TYPE_CONTAINERPAGE_TOOLBAR;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
      */
     public I_CmsContentEditorHandler getEditorHandler() {
@@ -663,6 +671,14 @@ public class CmsContainerpageHandler extends A_CmsToolbarHandler {
             Messages.get().key(Messages.ERR_LOCK_TITLE_RESOURCE_LOCKED_0),
             errorMessage);
         alert.center();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+     */
+    public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+        leavePage(serverLink);
     }
 
     /**

@@ -44,6 +44,7 @@ import org.opencms.ui.A_CmsDialogContext;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.Messages;
 import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.CmsFileExplorerConfiguration;
@@ -488,7 +489,7 @@ public class CmsLoginController {
             String loginTarget = getLoginTarget(currentCms, settings, m_params.getRequestedResource());
             final CmsLoginTargetInfo targetInfo = new CmsLoginTargetInfo(loginTarget, user, password);
             if (OpenCms.getLoginManager().requiresUserDataCheck(currentCms, userObj)) {
-                I_CmsDialogContext context = new A_CmsDialogContext(null, null) {
+                I_CmsDialogContext context = new A_CmsDialogContext(ContextType.appToolbar, null, null) {
 
                     @Override
                     public void finish(CmsProject project, String siteRoot) {

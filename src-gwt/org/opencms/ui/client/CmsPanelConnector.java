@@ -47,7 +47,7 @@ public class CmsPanelConnector extends PanelConnector {
     private static final long serialVersionUID = 1L;
 
     /** Saved scrollTop value. */
-    private Integer m_scrollTop;
+    Integer m_scrollTop;
 
     /**
      * @see com.vaadin.client.ui.panel.PanelConnector#postLayout()
@@ -75,10 +75,10 @@ public class CmsPanelConnector extends PanelConnector {
     /**
      * @see com.vaadin.client.ui.panel.PanelConnector#updateFromUIDL(com.vaadin.client.UIDL, com.vaadin.client.ApplicationConnection)
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 
-        // TODO Auto-generated method stub
         super.updateFromUIDL(uidl, client);
         if (isRealUpdate(uidl)) {
             m_scrollTop = new Integer(getState().scrollTop);

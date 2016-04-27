@@ -55,18 +55,23 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     /** The app context. */
     private I_CmsAppUIContext m_appContext;
 
+    /** The context type. */
+    private ContextType m_contextType;
+
     /** The list of resources. */
     private List<CmsResource> m_resources;
 
     /**
      * Constructor.<p>
      *
+     * @param contextType the context type, to be used for visibility evaluation
      * @param appContext the app context
      * @param resources the list of resources
      */
-    protected A_CmsDialogContext(I_CmsAppUIContext appContext, List<CmsResource> resources) {
+    protected A_CmsDialogContext(ContextType contextType, I_CmsAppUIContext appContext, List<CmsResource> resources) {
         m_appContext = appContext;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
+        m_contextType = contextType;
     }
 
     /**
@@ -122,11 +127,28 @@ public abstract class A_CmsDialogContext implements I_CmsDialogContext {
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#getContextType()
+     */
+    public ContextType getContextType() {
+
+        return m_contextType;
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#getResources()
      */
     public List<CmsResource> getResources() {
 
         return m_resources;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#navigateTo(java.lang.String)
+     */
+    public void navigateTo(String appId) {
+
+        closeWindow();
+        A_CmsUI.get().getNavigator().navigateTo(appId);
     }
 
     /**

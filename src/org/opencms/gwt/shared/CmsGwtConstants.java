@@ -66,6 +66,9 @@ public final class CmsGwtConstants {
     /** Context menu action id. */
     public static final String ACTION_EDITSMALLELEMENTS = "editsmallelements";
 
+    /** Context menu action parameter dialog id. */
+    public static final String ACTION_PARAM_DIALOG_ID = "dialogId";
+
     /** Context menu action id. */
     public static final String ACTION_SELECTELEMENTVIEW = "selectelementview";
 
@@ -77,6 +80,18 @@ public final class CmsGwtConstants {
 
     /** Name for configuration  setting to limit collector results while computing publish lists for collectors. */
     public static final String COLLECTOR_PUBLISH_LIST_LIMIT = "collectorPublishListLimit";
+
+    /** The context type sitemap toolbar. */
+    public static final String CONTEXT_TYPE_APP_TOOLBAR = "appToolbar";
+
+    /** The context type containerpage toolbar. */
+    public static final String CONTEXT_TYPE_CONTAINERPAGE_TOOLBAR = "containerpageToolbar";
+
+    /** The context type file table. */
+    public static final String CONTEXT_TYPE_FILE_TABLE = "fileTable";
+
+    /** The context type sitemap toolbar. */
+    public static final String CONTEXT_TYPE_SITEMAP_TOOLBAR = "sitemapToolbar";
 
     /** A HTML comment that will cause the container page editor to reload the page if it is contained in HTML which is reloaded after the element or its settings have been edited. */
     public static final String FORMATTER_RELOAD_MARKER = "<!--FORMATTER_RELOAD_g3jf9o0n-->";

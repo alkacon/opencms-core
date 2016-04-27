@@ -2095,6 +2095,7 @@ public final class CmsContainerpageController {
     public void leaveUnsaved(String targetUri) {
 
         setPageChanged(false, true);
+        CmsDebugLog.consoleLog("assigning window location: " + targetUri);
         Window.Location.assign(targetUri);
     }
 

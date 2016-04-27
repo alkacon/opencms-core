@@ -372,6 +372,7 @@
 						<separator/>
 						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted"/>
+						<entry key="GUI_LABEL_PROJECT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsProjectDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ADVANCED_PROPERTIES_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditProperties" rule="containerpage-no-different-site-and-has-editor-role"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PREVIEW_0" name="org.opencms.gwt.client.ui.contextmenu.CmsPreview" rule="containerpage"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PAGE_INFO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsResourceInfo" rule="containerpage"/>
@@ -387,6 +388,7 @@
 							<entry key="GUI_EXPLORER_CONTEXT_SEO_0" name="org.opencms.gwt.client.ui.contextmenu.CmsOpenSeoDialog" rule="containerpage-no-different-site-and-has-editor-role"/>
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="containerpage-basic"/>
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="containerpage-basic"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="containerpage-basic"/>
 					</contextmenu>
 				</editoptions>
@@ -473,6 +475,7 @@
 						<separator/>
 						<entry key="GUI_EXPLORER_CONTEXT_HISTORY_0" uri="views/admin/admin-main.jsp?root=explorer&amp;path=%2Fhistory" rule="nondeleted"/>
 						<entry key="GUI_EXPLORER_CONTEXT_PROPERTY_0" uri="/system/workplace/commons/properties.jsp" rule="nondeleted"/>
+						<entry key="GUI_LABEL_PROJECT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsProjectDialogAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_GO_TO_PARENT_0" name="org.opencms.ade.sitemap.client.toolbar.CmsGoToParentAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_REFRESH_0" name="org.opencms.ade.sitemap.client.toolbar.CmsRefreshAction" rule="sitemap"/>
 						<entry key="GUI_EXPLORER_CONTEXT_ADE_ADVANCED_0" rule="sitemap">
@@ -480,6 +483,8 @@
 							<entry key="GUI_EXPLORER_CONTEXT_EDIT_SITE_CONFIG_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditFile" params="reload=true|filename=%(subsite)/.content/.config" rule="sitemapcheckfile"/>
 						</entry>
 						<entry key="GUI_EXPLORER_CONTEXT_USERSETTINGS_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEditUserSettings" rule="sitemap"/>
+						<entry key="GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0" name="org.opencms.gwt.client.ui.contextmenu.CmsEmbeddedAction" params="dialogId=org.opencms.ui.actions.CmsPublishQueueDialogAction" rule="sitemap"/>
+						<entry key="GUI_EXPLORER_CONTEXT_ABOUT_0" name="org.opencms.gwt.client.ui.contextmenu.CmsAbout" rule="sitemap"/>
 					</contextmenu>
 				</editoptions>
 			</explorertype>

@@ -32,6 +32,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -77,6 +78,14 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
             m_contextMenuCommands = initializer.initCommands();
         }
         return m_contextMenuCommands;
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+     */
+    public String getContextType() {
+
+        return CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE;
     }
 
     /**
@@ -131,6 +140,14 @@ public class CmsContextMenuHandler implements I_CmsContextMenuHandler {
             }
         };
         action.execute();
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+     */
+    public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+        leavePage(serverLink);
     }
 
     /**

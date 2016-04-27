@@ -33,6 +33,7 @@ import org.opencms.gwt.client.rpc.CmsRpcAction;
 import org.opencms.gwt.client.ui.css.I_CmsLayoutBundle;
 import org.opencms.gwt.client.util.CmsEmbeddedDialogHandler;
 import org.opencms.gwt.shared.CmsCoreData.UserInfo;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -77,7 +78,10 @@ public class CmsUserInfo extends CmsMenuButton {
 
                 public void onClick(ClickEvent event) {
 
-                    new CmsEmbeddedDialogHandler().openDialog("edituserdata", Collections.<CmsUUID> emptyList());
+                    new CmsEmbeddedDialogHandler().openDialog(
+                        "org.opencms.ui.actions.CmsEditUserDialogAction",
+                        CmsGwtConstants.CONTEXT_TYPE_APP_TOOLBAR,
+                        Collections.<CmsUUID> emptyList());
                     closeMenu();
                 }
             });

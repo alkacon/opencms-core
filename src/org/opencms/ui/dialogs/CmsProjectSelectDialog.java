@@ -31,9 +31,9 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.apps.CmsAppWorkplaceUi;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsOkCancelActionHandler;
@@ -146,13 +146,13 @@ public class CmsProjectSelectDialog extends CmsBasicDialog {
         try {
             CmsProject project = m_context.getCms().readProject((CmsUUID)m_projectComboBox.getValue());
             if (!m_context.getCms().getRequestContext().getCurrentProject().equals(project)) {
-                CmsAppWorkplaceUi.get().changeProject(project);
+                A_CmsUI.get().changeProject(project);
             } else {
                 project = null;
             }
             String siteRoot = (String)m_siteComboBox.getValue();
             if (!m_context.getCms().getRequestContext().getSiteRoot().equals(siteRoot)) {
-                CmsAppWorkplaceUi.get().changeSite(siteRoot);
+                A_CmsUI.get().changeSite(siteRoot);
             } else {
                 siteRoot = null;
             }

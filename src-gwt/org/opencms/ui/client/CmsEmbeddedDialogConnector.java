@@ -51,6 +51,21 @@ public class CmsEmbeddedDialogConnector extends AbstractExtensionConnector imple
     }-*/;
 
     /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#finishForProjectOrSiteChange(java.lang.String, java.lang.String)
+     */
+    public native void finishForProjectOrSiteChange(String sitePath, String serverLink)/*-{
+
+        $wnd.connector.finishForProjectOrSiteChange(sitePath, serverLink);
+    }-*/;
+
+    /**
+     * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#leavePage(java.lang.String)
+     */
+    public native void leavePage(String targetUri)/*-{
+        $wnd.connector.leavePage(targetUri);
+    }-*/;
+
+    /**
      * @see org.opencms.ui.shared.rpc.I_CmsEmbeddedDialogClientRPC#reloadParent()
      */
     public native void reloadParent()/*-{

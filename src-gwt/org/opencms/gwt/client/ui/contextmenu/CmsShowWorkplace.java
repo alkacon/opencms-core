@@ -112,31 +112,4 @@ public final class CmsShowWorkplace implements I_CmsHasContextMenuCommand {
         };
         callback.execute();
     }
-
-    /**
-     * Opens the workplace.<p>
-     *
-     * @param path the workplace path to open
-     * @param winWidth the width of the window
-     * @param winHeight the height of the window
-     * @param winLeft the left space of the window
-     * @param winTop the top space of the window
-     */
-    public static native void openWorkplace(String path, String defaultTarget) /*-{
-        $wnd.location.href = path;
-
-        if ($wnd.opener && $wnd.opener != self) {
-
-            $wnd.opener.location.href = path;
-            $wnd.opener.focus();
-        } else {
-            var openerStr = '';
-            var deWindow = $wnd.open(path, defaultTarget, openerStr);
-            if (deWindow) {
-                deWindow.focus();
-            } else {
-                @org.opencms.gwt.client.util.CmsDomUtil::showPopupBlockerMessage()();
-            }
-        }
-    }-*/;
 }

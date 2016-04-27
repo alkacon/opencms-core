@@ -29,25 +29,27 @@ package org.opencms.ui.dialogs;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.ui.actions.I_CmsWorkplaceAction;
 import org.opencms.ui.apps.Messages;
 import org.opencms.ui.components.CmsErrorDialog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
-import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Component;
 
 /**
  * Separate UI for VAADIN based dialog embedded into a GWT module.<p>
@@ -57,9 +59,6 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
     /** The dialogs path fragment. */
     public static final String DIALOGS_PATH = "dialogs/";
-
-    /** The available dialog classes by id. */
-    private static Map<String, Class<? extends Component>> m_availableDialogs;
 
     /** The serial version id. */
     private static final long serialVersionUID = 1201184887611215370L;
@@ -91,26 +90,36 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
     protected void init(VaadinRequest request) {
 
         super.init(request);
-        final I_CmsDialogContext context = new CmsEmbeddedDialogContext(Collections.<CmsResource> emptyList());
         Throwable t = null;
         String errorMessage = null;
         try {
             OpenCms.getRoleManager().checkRole(getCmsObject(), CmsRole.ELEMENT_AUTHOR);
-
             try {
-                Component dialog = getDialog(request, context);
-                if (dialog != null) {
-                    String title;
-                    if (dialog instanceof I_CmsHasTitle) {
-                        title = ((I_CmsHasTitle)dialog).getTitle(getLocale());
-                    } else {
-                        title = CmsVaadinUtils.getMessageText(org.opencms.ui.dialogs.Messages.GUI_DIALOG_0);
+                String resources = request.getParameter("resources");
+                List<CmsResource> resourceList;
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resources)) {
+                    resourceList = new ArrayList<CmsResource>();
+                    String[] resIds = resources.split(";");
+                    for (int i = 0; i < resIds.length; i++) {
+                        if (CmsUUID.isValidUUID(resIds[i])) {
+                            resourceList.add(
+                                getCmsObject().readResource(
+                                    new CmsUUID(resIds[i]),
+                                    CmsResourceFilter.IGNORE_EXPIRATION));
+                        }
+
                     }
-                    context.start(title, dialog);
                 } else {
-                    errorMessage = CmsVaadinUtils.getMessageText(
-                        org.opencms.ui.dialogs.Messages.ERR_DIALOG_NOT_AVAILABLE_1,
-                        request.getPathInfo());
+                    resourceList = Collections.<CmsResource> emptyList();
+                }
+                String typeParam = request.getParameter("contextType");
+                ContextType type = ContextType.valueOf(typeParam);
+                I_CmsDialogContext context = new CmsEmbeddedDialogContext(type, resourceList);
+                I_CmsWorkplaceAction action = getAction(request);
+                if (action.isActive(context)) {
+                    action.executeAction(context);
+                } else {
+                    errorMessage = CmsVaadinUtils.getMessageText(Messages.GUI_WORKPLACE_ACCESS_DENIED_TITLE_0);
                 }
             } catch (Throwable e) {
                 t = e;
@@ -127,53 +136,28 @@ public class CmsEmbeddedDialogsUI extends A_CmsUI {
 
                 public void run() {
 
-                    context.finish(null);
-
+                    new CmsEmbeddedDialogContext(null, Collections.<CmsResource> emptyList()).finish(null);
                 }
             });
         }
     }
 
     /**
-     * Creates a dialog instance.<p>
+     * Returns the dialog action matching the given request.<p>
      *
-     * @param context the dialog context
-     * @param dialogClass the dialog class
+     * @param request the request
      *
-     * @return the instance
+     * @return the dialog action
      *
-     * @throws Exception in case instantiating the dialog fails
+     * @throws Exception in case instantiating the action fails
      */
-    Component createDialogInstance(I_CmsDialogContext context, Class<? extends Component> dialogClass)
-    throws Exception {
+    private I_CmsWorkplaceAction getAction(VaadinRequest request) throws Exception {
 
-        Constructor<? extends Component> constructor = dialogClass.getConstructor(I_CmsDialogContext.class);
-        return constructor.newInstance(context);
-    }
-
-    /**
-     * Returns the requested dialog instance.<p>
-     *
-     * @param request the VAADIN request
-     * @param context the dialog context
-     *
-     * @return the dialog instance
-     *
-     * @throws Exception in case instantiating the dialog fails
-     */
-    private Component getDialog(VaadinRequest request, I_CmsDialogContext context) throws Exception {
-
-        if (m_availableDialogs == null) {
-            Map<String, Class<? extends Component>> dialogs = new HashMap<String, Class<? extends Component>>();
-            dialogs.put(CmsUserDataDialog.DIALOG_ID, CmsUserDataDialog.class);
-            m_availableDialogs = dialogs;
-        }
         String dialogId = getDialogId(request);
-        Component result = null;
-        if (m_availableDialogs.containsKey(dialogId)) {
-            result = createDialogInstance(context, m_availableDialogs.get(dialogId));
-        }
-        return result;
+        @SuppressWarnings("unchecked")
+        Class<I_CmsWorkplaceAction> actionClass = (Class<I_CmsWorkplaceAction>)getClass().getClassLoader().loadClass(
+            dialogId);
+        return actionClass.newInstance();
     }
 
     /**

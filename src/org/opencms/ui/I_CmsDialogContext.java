@@ -45,6 +45,23 @@ import com.vaadin.ui.Component;
 public interface I_CmsDialogContext {
 
     /**
+     * The available context types.<p>
+     */
+    enum ContextType {
+        /** The file table context. */
+        fileTable,
+
+        /** The app toolbar context. */
+        appToolbar,
+
+        /** The container page toolbar context. */
+        containerpageToolbar,
+
+        /** The sitemap toolbar context. */
+        sitemapToolbar
+    }
+
+    /**
      * Signals an error which occurred in the dialog.<p>
      *
      * @param error the error which occcurred
@@ -96,11 +113,26 @@ public interface I_CmsDialogContext {
     CmsObject getCms();
 
     /**
+     * Returns the context type.<p>
+     * May be used for visibility evaluation.<p>
+     *
+     * @return the context type
+     */
+    ContextType getContextType();
+
+    /**
      * Gets the list of resources for which the dialog should be opened.<p>
      *
      * @return the list of resources
      */
     List<CmsResource> getResources();
+
+    /**
+     * Navigates to the given app.<p>
+     *
+     * @param appId the app id
+     */
+    void navigateTo(String appId);
 
     /**
      * Call when the dialog view has changed to re-center the dialog window.<p>

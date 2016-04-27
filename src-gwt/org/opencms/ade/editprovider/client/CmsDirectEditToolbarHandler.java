@@ -39,6 +39,7 @@ import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommandInitializer;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuEntry;
 import org.opencms.gwt.shared.CmsContextMenuEntryBean;
 import org.opencms.gwt.shared.CmsCoreData.AdeContext;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
@@ -141,6 +142,14 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
     }
 
     /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+     */
+    public String getContextType() {
+
+        return CmsGwtConstants.CONTEXT_TYPE_APP_TOOLBAR;
+    }
+
+    /**
      * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
      */
     public I_CmsContentEditorHandler getEditorHandler() {
@@ -196,6 +205,14 @@ public class CmsDirectEditToolbarHandler extends A_CmsToolbarHandler {
         };
         menuAction.execute();
 
+    }
+
+    /**
+     * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+     */
+    public void onSiteOrProjectChange(String sitePath, String serverLink) {
+
+        leavePage(serverLink);
     }
 
     /**

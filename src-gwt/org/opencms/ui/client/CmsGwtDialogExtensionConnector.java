@@ -50,6 +50,7 @@ import org.opencms.gwt.client.ui.input.upload.CmsFileInput;
 import org.opencms.gwt.client.ui.preferences.CmsUserSettingsDialog;
 import org.opencms.gwt.client.ui.replace.CmsReplaceHandler;
 import org.opencms.gwt.client.ui.resourceinfo.CmsResourceInfoDialog;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.CmsHistoryVersion;
 import org.opencms.gwt.shared.CmsPreviewInfo;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
@@ -104,6 +105,14 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
         }
 
         /**
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+         */
+        public String getContextType() {
+
+            return CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE;
+        }
+
+        /**
          * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
          */
         public I_CmsContentEditorHandler getEditorHandler() {
@@ -116,6 +125,14 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
          * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
          */
         public void leavePage(String targetUri) {
+
+            notImplemented();
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+         */
+        public void onSiteOrProjectChange(String sitePath, String serverLink) {
 
             notImplemented();
         }
@@ -172,12 +189,22 @@ public class CmsGwtDialogExtensionConnector extends AbstractExtensionConnector i
                 return null;
             }
 
+            public String getContextType() {
+
+                return CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE;
+            }
+
             public I_CmsContentEditorHandler getEditorHandler() {
 
                 return null;
             }
 
             public void leavePage(String targetUri) {
+
+                // nothing to do
+            }
+
+            public void onSiteOrProjectChange(String sitePath, String serverLink) {
 
                 // nothing to do
             }

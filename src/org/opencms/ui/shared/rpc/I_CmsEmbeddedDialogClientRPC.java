@@ -42,6 +42,21 @@ public interface I_CmsEmbeddedDialogClientRPC extends ClientRpc {
     void finish(String resourceIds);
 
     /**
+     * Removes the dialog iFrame and reloads the app for the given site path and server link.<p>
+     *
+     * @param sitePath the site path
+     * @param serverLink the server link
+     */
+    void finishForProjectOrSiteChange(String sitePath, String serverLink);
+
+    /**
+     * Leaves the current page calling the given URI.<p>
+     *
+     * @param targetUri the target URI
+     */
+    void leavePage(String targetUri);
+
+    /**
      * Reloads the parent window.<p>
      */
     void reloadParent();

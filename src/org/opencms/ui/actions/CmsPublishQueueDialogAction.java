@@ -27,33 +27,22 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
-
-import java.util.List;
 
 /**
  * The publish queue dialog action.<p>
  */
-public class CmsPublishQueueDialogAction extends A_CmsWorkplaceAction {
+public class CmsPublishQueueDialogAction extends A_CmsToolbarAction {
 
     /** The action id. */
     public static final String ACTION_ID = "publishqueue";
-
-    /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.MAIN_MENU;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
      */
     public void executeAction(I_CmsDialogContext context) {
 
-        A_CmsUI.get().getNavigator().navigateTo("/publishqueue");
+        context.navigateTo("/" + ACTION_ID);
     }
 
     /**
@@ -70,13 +59,5 @@ public class CmsPublishQueueDialogAction extends A_CmsWorkplaceAction {
     public String getTitle() {
 
         return getWorkplaceMessage(org.opencms.ui.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_QUEUE_0);
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-        return VISIBILITY.getVisibility(cms, resources);
     }
 }

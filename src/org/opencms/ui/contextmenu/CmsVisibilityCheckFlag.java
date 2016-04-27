@@ -46,9 +46,6 @@ public enum CmsVisibilityCheckFlag {
     /** Check that the resource is in the current project. */
     inproject,
 
-    /** Visible in main menu. */
-    mainmenu,
-
     /** Checks if resource is locked by current user. */
     mylock,
 

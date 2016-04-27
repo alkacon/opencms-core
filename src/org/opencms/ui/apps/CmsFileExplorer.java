@@ -49,6 +49,7 @@ import org.opencms.ui.CmsVaadinUtils;
 import org.opencms.ui.FontOpenCms;
 import org.opencms.ui.I_CmsContextMenuBuilder;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.actions.CmsCopyMoveDialogAction;
 import org.opencms.ui.actions.CmsPropertiesDialogAction;
@@ -421,6 +422,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
                 resources = Collections.singletonList(source);
             }
             CmsExplorerDialogContext context = new CmsExplorerDialogContext(
+                ContextType.fileTable,
                 m_appContext,
                 CmsFileExplorer.this,
                 resources);
@@ -734,7 +736,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
                 I_CmsWorkplaceAction propAction = new CmsPropertiesDialogAction();
                 I_CmsDialogContext context = createDialogContext();
-                if (propAction.getVisibility(A_CmsUI.getCmsObject(), context.getResources()).isActive()) {
+                if (propAction.getVisibility(context).isActive()) {
                     propAction.executeAction(context);
                 }
             }
@@ -1011,7 +1013,8 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
     public void initUI(I_CmsAppUIContext context) {
 
         m_appContext = context;
-        m_appContext.setMenuDialogContext(new CmsExplorerDialogContext(m_appContext, this, null));
+        m_appContext.setMenuDialogContext(
+            new CmsExplorerDialogContext(ContextType.appToolbar, m_appContext, this, null));
         HorizontalSplitPanel sp = new HorizontalSplitPanel();
         sp.setSizeFull();
         sp.setFirstComponent(m_fileTree);
@@ -1323,7 +1326,7 @@ implements I_CmsWorkplaceApp, I_CmsCachableApp, ViewChangeListener, I_CmsWindowC
 
         List<CmsResource> resources = m_fileTable.getSelectedResources();
         m_lastDialogContextResources = resources;
-        return new CmsExplorerDialogContext(m_appContext, this, resources);
+        return new CmsExplorerDialogContext(ContextType.fileTable, m_appContext, this, resources);
     }
 
     /**

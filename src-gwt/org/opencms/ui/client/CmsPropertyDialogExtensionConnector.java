@@ -33,6 +33,7 @@ import org.opencms.gwt.client.ui.contenteditor.I_CmsContentEditorHandler;
 import org.opencms.gwt.client.ui.contextmenu.CmsEditProperties;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuCommand;
 import org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler;
+import org.opencms.gwt.shared.CmsGwtConstants;
 import org.opencms.gwt.shared.property.CmsPropertiesBean;
 import org.opencms.gwt.shared.property.CmsPropertyChangeSet;
 import org.opencms.gwt.shared.rpc.I_CmsVfsService;
@@ -85,6 +86,14 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
         }
 
         /**
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getContextType()
+         */
+        public String getContextType() {
+
+            return CmsGwtConstants.CONTEXT_TYPE_FILE_TABLE;
+        }
+
+        /**
          * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#getEditorHandler()
          */
         public I_CmsContentEditorHandler getEditorHandler() {
@@ -97,6 +106,14 @@ implements I_CmsPropertyClientRpc, CmsEditProperties.I_MultiFileNavigation {
          * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#leavePage(java.lang.String)
          */
         public void leavePage(String targetUri) {
+
+            notImplemented();
+        }
+
+        /**
+         * @see org.opencms.gwt.client.ui.contextmenu.I_CmsContextMenuHandler#onSiteOrProjectChange(java.lang.String, java.lang.String)
+         */
+        public void onSiteOrProjectChange(String sitePath, String serverLink) {
 
             notImplemented();
         }

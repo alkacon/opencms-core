@@ -30,8 +30,10 @@ package org.opencms.ui.dialogs;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.OpenCms;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
+import org.opencms.ui.apps.CmsFileExplorer;
 import org.opencms.ui.apps.I_CmsAppUIContext;
 import org.opencms.ui.components.CmsBasicDialog;
 import org.opencms.ui.components.CmsBasicDialog.DialogWidth;
@@ -42,6 +44,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.ui.Component;
@@ -67,13 +70,18 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     /** The window used to display the dialog. */
     private Window m_window;
 
+    /** The context type. */
+    private ContextType m_contextType;
+
     /**
      * Constructor.<p>
      *
+     * @param contextType the context type
      * @param resources the resources
      */
-    public CmsEmbeddedDialogContext(List<CmsResource> resources) {
+    public CmsEmbeddedDialogContext(ContextType contextType, List<CmsResource> resources) {
         extend(UI.getCurrent());
+        m_contextType = contextType;
         m_resources = resources != null ? resources : Collections.<CmsResource> emptyList();
     }
 
@@ -112,7 +120,20 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     public void finish(CmsProject project, String siteRoot) {
 
         if ((project != null) || (siteRoot != null)) {
-            reload();
+            String sitePath = "/";
+            if (siteRoot != null) {
+                @SuppressWarnings("unchecked")
+                Map<String, String> openedPaths = (Map<String, String>)UI.getCurrent().getSession().getAttribute(
+                    CmsFileExplorer.OPENED_PATHS);
+                if (openedPaths.containsKey(siteRoot)) {
+                    sitePath = openedPaths.get(siteRoot);
+                }
+            } else if ((m_resources != null) && !m_resources.isEmpty()) {
+                sitePath = A_CmsUI.getCmsObject().getSitePath(m_resources.get(0));
+            }
+            getClientRPC().finishForProjectOrSiteChange(
+                sitePath,
+                OpenCms.getLinkManager().getServerLink(getCms(), sitePath));
         } else {
             finish(null);
         }
@@ -130,7 +151,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
                 resources += id.toString() + ";";
             }
         }
-        getRpcProxy(I_CmsEmbeddedDialogClientRPC.class).finish(resources);
+        getClientRPC().finish(resources);
     }
 
     /**
@@ -166,11 +187,28 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * @see org.opencms.ui.I_CmsDialogContext#getContextType()
+     */
+    public ContextType getContextType() {
+
+        return m_contextType;
+    }
+
+    /**
      * @see org.opencms.ui.I_CmsDialogContext#getResources()
      */
     public List<CmsResource> getResources() {
 
         return m_resources;
+    }
+
+    /**
+     * @see org.opencms.ui.I_CmsDialogContext#navigateTo(java.lang.String)
+     */
+    public void navigateTo(String appId) {
+
+        String targetUri = OpenCms.getSystemInfo().getWorkplaceContext() + "#!" + appId;
+        getClientRPC().leavePage(targetUri);
     }
 
     /**
@@ -227,6 +265,16 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
     }
 
     /**
+     * Returns the client RPC.<p>
+     *
+     * @return the client RPC
+     */
+    protected I_CmsEmbeddedDialogClientRPC getClientRPC() {
+
+        return getRpcProxy(I_CmsEmbeddedDialogClientRPC.class);
+    }
+
+    /**
      * Handles the window close event.<p>
      */
     void handleWindowClose() {
@@ -241,7 +289,7 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     void removeDialogFrame() {
 
-        getRpcProxy(I_CmsEmbeddedDialogClientRPC.class).finish(null);
+        getClientRPC().finish(null);
     }
 
     /**
@@ -249,6 +297,6 @@ public class CmsEmbeddedDialogContext extends AbstractExtension implements I_Cms
      */
     private void reloadParent() {
 
-        getRpcProxy(I_CmsEmbeddedDialogClientRPC.class).reloadParent();
+        getClientRPC().reloadParent();
     }
 }

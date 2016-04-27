@@ -27,29 +27,21 @@
 
 package org.opencms.ui.actions;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 import org.opencms.ui.A_CmsUI;
 import org.opencms.ui.I_CmsDialogContext;
 import org.opencms.ui.I_CmsUpdateListener;
 import org.opencms.ui.components.extensions.CmsGwtDialogExtension;
-import org.opencms.ui.contextmenu.CmsStandardVisibilityCheck;
-import org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility;
 import org.opencms.workplace.explorer.Messages;
-import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
 
 import java.util.List;
 
 /**
  * The about dialog action.<p>
  */
-public class CmsAboutDialogAction extends A_CmsWorkplaceAction {
+public class CmsAboutDialogAction extends A_CmsToolbarAction {
 
     /** The action id. */
     public static final String ACTION_ID = "about";
-
-    /** The action visibility. */
-    public static final I_CmsHasMenuItemVisibility VISIBILITY = CmsStandardVisibilityCheck.MAIN_MENU;
 
     /**
      * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
@@ -86,13 +78,5 @@ public class CmsAboutDialogAction extends A_CmsWorkplaceAction {
     public String getTitle() {
 
         return getWorkplaceMessage(Messages.GUI_EXPLORER_CONTEXT_ABOUT_0);
-    }
-
-    /**
-     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
-     */
-    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
-
-        return VISIBILITY.getVisibility(cms, resources);
     }
 }

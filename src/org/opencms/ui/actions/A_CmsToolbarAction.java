@@ -27,39 +27,37 @@
 
 package org.opencms.ui.actions;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.ui.I_CmsDialogContext;
-import org.opencms.ui.dialogs.CmsProjectSelectDialog;
-import org.opencms.workplace.Messages;
+import org.opencms.ui.I_CmsDialogContext.ContextType;
+import org.opencms.workplace.explorer.menu.CmsMenuItemVisibilityMode;
+
+import java.util.List;
 
 /**
- * The set project dialog action.<p>
+ * Workplace action only visible in the toolbar context menus, not within the file table.<p>
  */
-public class CmsProjectDialogAction extends A_CmsToolbarAction {
-
-    /** The action id. */
-    public static final String ACTION_ID = "setproject";
+public abstract class A_CmsToolbarAction extends A_CmsWorkplaceAction {
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#executeAction(org.opencms.ui.I_CmsDialogContext)
+     * @see org.opencms.ui.contextmenu.I_CmsHasMenuItemVisibility#getVisibility(org.opencms.file.CmsObject, java.util.List)
      */
-    public void executeAction(I_CmsDialogContext context) {
+    public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, List<CmsResource> resources) {
 
-        openDialog(new CmsProjectSelectDialog(context), context);
+        return ((resources != null) && !resources.isEmpty())
+        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+        : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }
 
     /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getId()
+     * @see org.opencms.ui.actions.A_CmsWorkplaceAction#getVisibility(org.opencms.ui.I_CmsDialogContext)
      */
-    public String getId() {
+    @Override
+    public CmsMenuItemVisibilityMode getVisibility(I_CmsDialogContext context) {
 
-        return ACTION_ID;
-    }
-
-    /**
-     * @see org.opencms.ui.actions.I_CmsWorkplaceAction#getTitle()
-     */
-    public String getTitle() {
-
-        return getWorkplaceMessage(Messages.GUI_LABEL_PROJECT_0);
+        return ContextType.fileTable.equals(context.getContextType())
+        ? CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE
+        : CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }
 }
